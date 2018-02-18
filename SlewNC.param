@@ -1,0 +1,15 @@
+Run: 91
+Layer: 4 4 
+segment[0]: 1 2 3 4
+segment[1]: 9 10 11 12 
+#segment[1]: 1 2 3 4
+#segment[0]: 5 6 7 8
+#segment[1]: 13 14 15 16
+#segment[0]: 9 10 11 12
+#segment[1]: 9 10 11 12
+itanum: 20 21
+Conffile: conf/Apr2012/analyzerNCcalib2tmp2.conf
+Slewfile: SlewingMapBL_NCtmp_iseg2.param
+WriteParam: 0
+
+	 

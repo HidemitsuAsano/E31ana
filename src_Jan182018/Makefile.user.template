@@ -1,0 +1,54 @@
+RTG4LIBDIR = ~/work/geant/knucl3
+
+evall:
+	make lib; make evdisp; make evana; make evtracking
+
+evdisp: Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventDisplay.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventDisplay.o $(LIBLINK) $(OBJSLIB)
+
+evBLdisp: Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventDisplayBL.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventDisplayBL.o $(LIBLINK) $(OBJSLIB)
+
+
+evana: Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventAnalysis.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventAnalysis.o $(LIBLINK) $(OBJSLIB)
+
+
+evhist: Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventAnalysis_Hist.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventAnalysis_Hist.o $(LIBLINK) $(OBJSLIB)
+
+
+eveff: Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventAnalysis_Eff.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventAnalysis_Eff.o $(LIBLINK) $(OBJSLIB)
+
+
+evtracking: Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventAnalysis_Tracking.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventAnalysis_Tracking.o $(LIBLINK) $(OBJSLIB)
+
+sdd: Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventAnalysisSDD.o EventAlloc.o EventTemp.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventAnalysisSDD.o EventAlloc.o EventTemp.o $(LIBLINK) $(OBJSLIB)
+
+merge_check: Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventAnalysisMTDC.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventAnalysisMTDC.o $(LIBLINK) $(OBJSLIB)
+
+#mtdc: Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventAnalysisMTDC.o $(OBJS)
+#	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ Main.o File.o FileType.o VEvent.o BLEvent.o rawread3.o EventAnalysisMTDC.o $(LIBLINK) $(OBJSLIB)
+
+ana: UserAna.o $(ALLSO)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ UserAna.o $(LIBLINK) $(RTLIBDIR)/$(ALLSO)
+
+
+trahist: UserTrackAna.o $(ALLSO)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ UserTrackAna.o $(LIBLINK) $(RTLIBDIR)/$(ALLSO) $(RTG4LIBDIR)/libKnuclRootData.so
+
+xt: UserXT.o $(ALLSO)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ UserXT.o $(LIBLINK) $(RTLIBDIR)/$(ALLSO)
+
+sim: UserSimDatG4.o $(ALLSO)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ UserSimDatG4.o $(LIBLINK) $(RTLIBDIR)/$(ALLSO) $(RTG4LIBDIR)/libKnuclRootData.so
+
+mtdc_decoder: mtdc_decoder.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ mtdc_decoder.o $(LIBLINK) $(OBJSLIB)
+
+mtdc_off_ana: mtdc_off_ana.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ mtdc_off_ana.o $(LIBLINK) $(OBJSLIB)

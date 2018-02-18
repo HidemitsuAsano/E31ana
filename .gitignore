@@ -1,0 +1,13 @@
+*.root
+*.log
+*.dat
+*.so
+*.o
+src/tmp/
+src/lib/
+src/CVS/
+conf/CVS/
+param/CVS/
+lib/
+bin/
+CVS/

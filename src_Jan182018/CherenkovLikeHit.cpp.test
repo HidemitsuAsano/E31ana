@@ -1,0 +1,59 @@
+// CherenkovLikeHit.cpp
+
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <new>
+#include <cstring>
+
+#include "CherenkovLikeHit.h"
+
+ClassImp(CherenkovLikeHit);
+
+// + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
+CherenkovLikeHit::CherenkovLikeHit()
+{
+  Clear();
+}
+
+// + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
+CherenkovLikeHit::CherenkovLikeHit( const CherenkovLikeHit &hit )
+{
+  ADC1    = hit.adc1();
+  ADC2    = hit.adc2();
+  ADC3    = hit.adc3();
+  ADC4    = hit.adc4();
+  TDC0    = hit.tdc();
+  CrateT       = hit.crt();
+  SlotT        = hit.slt();
+  ChannelT     = hit.cht();
+  CrateA1      = hit.cra1();
+  SlotA1       = hit.sla1();
+  ChannelA1    = hit.cha1();
+  CrateA2      = hit.cra2();
+  SlotA2       = hit.sla2();
+  ChannelA2    = hit.cha2();
+  CrateA3      = hit.cra3();
+  SlotA3       = hit.sla3();
+  ChannelA3    = hit.cha3();
+  CrateA4      = hit.cra4();
+  SlotA4       = hit.sla4();
+  ChannelA4    = hit.cha4();
+}
+
+// + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
+void CherenkovLikeHit::Clear()
+{
+  CrateT  = SlotT  = ChannelT  = -1;
+  CrateA1 = SlotA1 = ChannelA1 = -1;
+  CrateA2 = SlotA2 = ChannelA2 = -1;
+  CrateA3 = SlotA3 = ChannelA3 = -1;
+  CrateA4 = SlotA4 = ChannelA4 = -1;
+  TDC0 = -1;
+  ADC1 = ADC2 = ADC3 = ADC4 = 0;
+
+  NumPhoton = 0;
+  Time = -999;
+
+}
+
