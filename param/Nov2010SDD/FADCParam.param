@@ -1,0 +1,22 @@
+#
+# FADCParam
+#
+#
+########
+# Range of each part
+LowerLimitBase: 0
+UpperLimitBase: 5
+LowerLimitPeak: 10
+UpperLimitPeak: 20
+LowerLimitPost: 25
+UpperLimitPost: 31
+########
+# FitFunction for each part
+BaseFunc: pol1
+PeakFunc: pol4
+PostFunc: expo
+#
+########
+NPoint: 32
+Interval: 0.32
+#

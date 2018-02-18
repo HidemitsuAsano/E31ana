@@ -1,0 +1,22 @@
+#
+# CDSFittingParam
+#
+#
+########
+# MaxNumber of CDCHit for analysis
+MaxCDCHit: 150
+########
+# Limit of CDCTDC#
+UpperLimitCDCTDC: 850
+LowerLimitCDCTDC: 350
+#
+########
+# Limit of Chi#
+MaxChi: 50
+#
+########
+# Magnetic Field of Solenoid#
+#MagneticField: -0.500
+MagneticField: 0.0
+#
+######

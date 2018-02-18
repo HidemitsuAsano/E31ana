@@ -1,0 +1,45 @@
+##
+#
+# Scaler Definition
+#
+# ith  name
+   0    sec
+   1    tm
+   2    ft
+   3    first
+   4    firstwveto
+   5    accept
+   6    reject
+   7    smpbusy
+   8    cdh
+   9    sddor
+  10    sddcounter
+  11    beampre
+  12    kaon
+  13    electron
+  14    pion
+  15    proton
+  16    sdd1_low
+  17    sdd2_low
+  18    sdd3_low
+  19    sdd4_low
+  20    sdd5_low
+  21    sdd6_low
+  22    sdd7_low
+  23    sdd8_low
+  24    sdd1_high
+  25    sdd2_high
+  26    sdd3_high
+  27    sdd4_high
+  28    sdd5_high
+  29  	sdd6_high
+  30    sdd7_high
+  31   	sdd8_high
+  32    sdd1_reset
+  33    sdd2_reset
+  34    sdd3_reset
+  35    sdd4_reset
+  36    sdd5_reset
+  37  	sdd6_reset
+  38    sdd7_reset
+  39   	sdd8_reset

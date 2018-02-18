@@ -1,0 +1,14 @@
+make link;
+make[1]: ディレクトリ `/gpfs/home/had/tyamaga/private/k18ana/src' に入ります
+make[1]: ディレクトリ `/gpfs/home/had/tyamaga/private/k18ana/src' から出ます
+make lib;
+make[1]: ディレクトリ `/gpfs/home/had/tyamaga/private/k18ana/src' に入ります
+g++ -MMD -O2 -g -fPIC  -DUSE_ROOT  -pthread -m64 -I/group/had/knucl/knucl_soft/root_v5.34.36/include -I/home/had/tyamaga/private/tmp/source/KinFitter/  -Wall -c -o tmp/TKO_Dict.o tmp/TKO_Dict.cpp
+g++ -MMD -O2 -g -fPIC  -DUSE_ROOT  -pthread -m64 -I/group/had/knucl/knucl_soft/root_v5.34.36/include -I/home/had/tyamaga/private/tmp/source/KinFitter/  -Wall -c -o tmp/EventHeader_Dict.o tmp/EventHeader_Dict.cpp
+g++ -MMD -O2 -g -fPIC  -DUSE_ROOT  -pthread -m64 -I/group/had/knucl/knucl_soft/root_v5.34.36/include -I/home/had/tyamaga/private/tmp/source/KinFitter/  -Wall -c -o tmp/HodoscopeLikeHit_Dict.o tmp/HodoscopeLikeHit_Dict.cpp
+g++ -MMD -O2 -g -fPIC  -DUSE_ROOT  -pthread -m64 -I/group/had/knucl/knucl_soft/root_v5.34.36/include -I/home/had/tyamaga/private/tmp/source/KinFitter/  -Wall -c -o tmp/CherenkovLikeHit_Dict.o tmp/CherenkovLikeHit_Dict.cpp
+g++ -MMD -O2 -g -fPIC  -DUSE_ROOT  -pthread -m64 -I/group/had/knucl/knucl_soft/root_v5.34.36/include -I/home/had/tyamaga/private/tmp/source/KinFitter/  -Wall -c -o tmp/ChamberLikeHit_Dict.o tmp/ChamberLikeHit_Dict.cpp
+g++ -MMD -O2 -g -fPIC  -DUSE_ROOT  -pthread -m64 -I/group/had/knucl/knucl_soft/root_v5.34.36/include -I/home/had/tyamaga/private/tmp/source/KinFitter/  -Wall -c -o tmp/MTDCHit_Dict.o tmp/MTDCHit_Dict.cpp
+g++ -MMD -O2 -g -fPIC  -DUSE_ROOT  -pthread -m64 -I/group/had/knucl/knucl_soft/root_v5.34.36/include -I/home/had/tyamaga/private/tmp/source/KinFitter/  -Wall -c -o tmp/TDCHit_Dict.o tmp/TDCHit_Dict.cpp
+g++ -MMD -O2 -g -fPIC  -DUSE_ROOT  -pthread -m64 -I/group/had/knucl/knucl_soft/root_v5.34.36/include -I/home/had/tyamaga/private/tmp/source/KinFitter/  -Wall -c -o tmp/ADCHit_Dict.o tmp/ADCHit_Dict.cpp
+g++ -MMD -O2 -g -fPIC  -DUSE_ROOT  -pthread -m64 -I/group/had/knucl/knucl_soft/root_v5.34.36/include -I/home/had/tyamaga/private/tmp/source/KinFitter/  -Wall -c -o tmp/HitMan_Dict.o tmp/HitMan_Dict.cpp

@@ -1,0 +1,483 @@
+#include "File.h"
+#include "ConfMan.h"
+#include "TKO.h"
+#include "CDSHitMan.h"
+#include "BeamLineHitMan.h"
+#include "EventHeader.h"
+#include "ScalerMan.h"
+
+#include "EventAlloc.h"
+#include "EventTemp.h"
+#include "Display.h"
+
+#define Debug 0
+
+const double TOFOffs[5] = {-0.0249496,-0.0770768,0.0312703,-0.0360381,-0.0330606};
+
+class EventAnalysisMyBHD: public EventTemp
+{
+public:
+  EventAnalysisMyBHD();
+  ~EventAnalysisMyBHD();
+private:
+  TFile *rtFile;
+  TTree *evTree;
+  TTree *scaTree;
+  CDSHitMan *cdsMan;
+  BeamLineHitMan *blMan;
+  EventHeader *header;
+  ScalerMan *scaMan;
+public:
+  void Initialize( ConfMan *conf );
+  void USca( int nsca, unsigned int *sca );
+  bool UAna( TKOHitCollection *tko );
+  void Finalize();
+
+  void InitializeHistogram();
+};
+
+EventAnalysisMyBHD::EventAnalysisMyBHD()
+  : EventTemp()
+{
+}
+
+EventAnalysisMyBHD::~EventAnalysisMyBHD()
+{
+}
+
+const int MaxTreeSize = 1900000000000;
+void EventAnalysisMyBHD::Initialize( ConfMan *conf )
+{
+#if 1
+  std::cout << " Enter EventAnalysisMyBHD::Initialize " << std::endl;
+#endif
+  confMan = conf;
+  
+  rtFile = new TFile( confMan->GetOutFileName().c_str(), "recreate" );
+  InitializeHistogram();
+
+  header = new EventHeader();
+  if( header==NULL ){ std::cerr << "!!!!" << std::endl; return; }
+  cdsMan = new CDSHitMan();
+  if( cdsMan==NULL ){ std::cerr << "!!!!" << std::endl; return; }
+  blMan = new BeamLineHitMan();
+  if( blMan ==NULL ){ std::cerr << "!!!!" << std::endl; return; }
+  scaMan = new ScalerMan();
+  if( scaMan==NULL ){ std::cerr << "!!!!" << std::endl; return; }
+}
+
+void EventAnalysisMyBHD::USca( int nsca, unsigned int *sca )
+{
+#if 0
+  std::cout << " Enter EventAnalysisMyBHD::USca " << std::endl;
+#endif
+  Block_Event_Number++;
+  header->SetBlockEventNumber( Block_Event_Number );
+  scaMan->SetBlockEventNumber( Block_Event_Number );
+  for( int i=0; i<nsca; i++ ){
+    scaMan->AddHit( sca[i], confMan->GetScalerMapManager()->GetName(i) );
+  }
+#if 0
+  std::cout << nsca << std::endl;
+  for( int i=0; i<nsca; i++ ){
+   std::cout << "  " << sca[i];
+  }
+  std::cout << std::endl;
+#endif
+
+  TH1F *h1;
+  for( int i=0; i<scaMan->nsca(); i++ ){
+    int val = scaMan->sca(i)->val();
+    TString name = scaMan->sca(i)->name();
+    h1 = (TH1F*)gFile->Get("Scaler"); h1->Fill(i,val);
+  }
+
+
+  scaMan->Clear();
+}
+
+bool EventAnalysisMyBHD::UAna( TKOHitCollection *tko )
+{
+#if 0
+	std::cout << " Enter EventAnalysisMyBHD::UAna " << std::endl;
+#endif
+
+  static int HitNum[2][71];
+
+	Event_Number++;
+	{ int status = confMan->CheckEvNum( Event_Number, Block_Event_Number );
+		if( status==1 ) return true;
+		if( status==2 ) return false; }
+
+		if( Event_Number%5000==0 )
+			std::cout << " Event# : " << Event_Number << "  BlockEvent# : " << Block_Event_Number << std::endl;
+
+		header->SetRunNumber(0);
+		header->SetEventNumber(Event_Number);
+
+		header->Convert( tko, confMan );
+
+		blMan->Convert( tko, confMan );
+
+		rtFile->cd();
+		TH1F *h1;
+		TH2F *h2;
+
+		// ======== //
+		// Raw Data //
+		// ======== //
+
+		// Multihit of TRG and BPD//
+    Int_t NumOfTRGSegments = 10;
+    int MulTRG[3]={0,0,0};	
+    for(int i=0; i<NumOfTRGSegments; i++){
+      HodoscopeLikeHit* hit = blMan->BHD(i);
+      if(hit->CheckRange()){
+        MulTRG[0]++;
+        if(hit->seg()<=5)
+          MulTRG[1]++;
+        else
+          MulTRG[2]++;
+      }
+    }
+    Int_t NumOfBPDSegments = 70;
+    int MulBPD=0;	
+    for(int i=0; i<NumOfBPDSegments; i++){
+      HodoscopeLikeHit* hit = blMan->BPD(i);
+      if(hit->CheckRange())
+        MulBPD++;
+    }
+
+    // Selection //
+    //if(MulTRG[0]!=2||MulTRG[1]!=1||MulTRG[2]!=1||MulBPD!=1){
+    if(MulTRG[0]!=2){
+      header->Clear();
+      blMan->Clear();
+      cdsMan->Clear();
+      return true;
+    }
+
+    // Trigger Pattern
+    for( int i=0; i<20; i++ ){
+      int val = header->pattern(i);
+      if( 0<val ){
+        h1 = (TH1F*)gFile->Get("Pattern"); h1->Fill(i);
+      }
+    }
+
+
+    // TRG
+    int nTRG=0;
+    int udseg[2] = {0,0};
+    double CTimeMean[2] = {0,0};
+    double TRGHitPos[2] = {0,0};
+    double TRGCTSub[2] = {0,0};
+    for( int i=0; i<NumOfTRGSegments; i++ ){
+      HodoscopeLikeHit *hit = blMan->BHD(i);
+      int seg = hit->seg();
+      int au = hit->adcu(), ad = hit->adcd();
+      int tu = hit->tdcu(), td = hit->tdcd();
+      double timeu = hit->time(0), timed = hit->time(1);
+      double ctimeu = hit->ctime(0), ctimed = hit->ctime(1);
+      double eneu = hit->ene(0), ened = hit->ene(1);
+      double emean = hit->emean();
+      double tmean = hit->tmean();
+      double ctmean = hit->ctmean();
+      double ctsub = hit->ctsub();
+#if Debug
+      std::cout << "= trg =" << std::endl;
+      std::cout << "seg = " << seg << std::endl;
+#endif
+
+      h1 = (TH1F*)gFile->Get( Form("TRGu%d_ADC",seg) ); h1->Fill( au );
+      h1 = (TH1F*)gFile->Get( Form("TRGd%d_ADC",seg) ); h1->Fill( ad );
+      if(tu>0){
+        h1 = (TH1F*)gFile->Get( Form("TRGu%d_TDC",seg) ); h1->Fill( tu );
+        h1 = (TH1F*)gFile->Get( Form("TRGu%d_Time",seg) ); h1->Fill( timeu );
+        h1 = (TH1F*)gFile->Get( Form("TRGu%d_CTime",seg) ); h1->Fill( ctimeu );
+      }
+      if(td>0){
+        h1 = (TH1F*)gFile->Get( Form("TRGd%d_TDC",seg) ); h1->Fill( td );
+        h1 = (TH1F*)gFile->Get( Form("TRGd%d_Time",seg) ); h1->Fill( timed );
+        h1 = (TH1F*)gFile->Get( Form("TRGd%d_CTime",seg) ); h1->Fill( ctimed );
+      }
+      if( hit->CheckRange() ){
+        h1 = (TH1F*)gFile->Get( Form("TRGu%d_ADCwT",seg) ); h1->Fill( au );
+        h1 = (TH1F*)gFile->Get( Form("TRGd%d_ADCwT",seg) ); h1->Fill( ad );
+        h1 = (TH1F*)gFile->Get( Form("TRGu%d_dE",seg) ); h1->Fill( eneu );
+        h1 = (TH1F*)gFile->Get( Form("TRGd%d_dE",seg) ); h1->Fill( ened );
+        h1 = (TH1F*)gFile->Get( Form("TRG%d_dEMean",seg) ); h1->Fill( emean );
+        h1 = (TH1F*)gFile->Get( Form("TRG%d_TimeMean",seg) ); h1->Fill( tmean );
+        h1 = (TH1F*)gFile->Get( Form("TRG%d_CTimeMean",seg) ); h1->Fill( ctmean );
+        h2 = (TH2F*)gFile->Get( Form("TRGu%d_AvT",seg) );  h2->Fill( au, tu );
+        h2 = (TH2F*)gFile->Get( Form("TRGd%d_AvT",seg) );  h2->Fill( ad, td );
+        h2 = (TH2F*)gFile->Get( Form("TRGu%d_dEvTime",seg) );  h2->Fill( eneu, timeu );
+        h2 = (TH2F*)gFile->Get( Form("TRGd%d_dEvTime",seg) );  h2->Fill( ened, timed );
+        h2 = (TH2F*)gFile->Get( Form("TRGu%d_dEvCTime",seg) );  h2->Fill( eneu, ctimeu );
+        h2 = (TH2F*)gFile->Get( Form("TRGd%d_dEvCTime",seg) );  h2->Fill( ened, ctimed );
+        h1 = (TH1F*)gFile->Get( "TRG_HitPat" ); h1->Fill( seg );
+        h1 = (TH1F*)gFile->Get( Form("TRG%d_CTimeSub",seg) ); h1->Fill( ctsub );
+        if(seg <=5){
+          udseg[0] = seg;
+          CTimeMean[0] = ctmean;
+          TRGHitPos[0] = hit->y();
+          TRGCTSub[0] = ctsub;
+          h1 = (TH1F*)gFile->Get( "TRGU_CTimeSub" ); h1->Fill( ctsub );
+        }
+        else {
+          udseg[1] = seg-5;
+          CTimeMean[1] = ctmean;
+          TRGHitPos[1] = hit->y();
+          TRGCTSub[1] = ctsub;
+          h1 = (TH1F*)gFile->Get( "TRGD_CTimeSub" ); h1->Fill( ctsub );
+        }
+        nTRG++;
+      }
+    }
+    h2 = (TH2F*)gFile->Get( "TRG_HitPos2D" ); h2->Fill(TRGHitPos[0],TRGHitPos[1]);
+    h2 = (TH2F*)gFile->Get( "TRG_CTimeSub2D" ); h2->Fill( TRGCTSub[0],TRGCTSub[1] );
+    h1 = (TH1F*)gFile->Get( "TRG_Mult" ); h1->Fill( nTRG );
+    double tof = CTimeMean[1] - CTimeMean[0];
+    h2 = (TH2F*)gFile->Get( "TRG_HitPat2D" ); h2->Fill( udseg[0],udseg[1] );
+
+    // BPD
+    int nBPD=0;
+    double BPD_CTimeMean;
+    for( int i=0; i<NumOfBPDSegments; i++ ){
+      HodoscopeLikeHit *hit = blMan->BPD(i);
+      int seg = hit->seg();
+      int au = hit->adcu(), ad = hit->adcd();
+      int tu = hit->tdcu(), td = hit->tdcd();
+      double timeu = hit->time(0), timed = hit->time(1);
+      double ctimeu = hit->ctime(0), ctimed = hit->ctime(1);
+      double eneu = hit->ene(0), ened = hit->ene(1);
+      double emean = hit->emean();
+      double tmean = hit->tmean();
+      double ctmean = hit->ctmean();
+      double ctsub = hit->ctsub();
+#if Debug
+      std::cout << "= trg =" << std::endl;
+      std::cout << "seg = " << seg << std::endl;
+#endif
+
+      h1 = (TH1F*)gFile->Get( Form("BPDu%d_ADC",seg) ); h1->Fill( au );
+      h1 = (TH1F*)gFile->Get( Form("BPDd%d_ADC",seg) ); h1->Fill( ad );
+      if(tu>0){
+        h1 = (TH1F*)gFile->Get( Form("BPDu%d_TDC",seg) ); h1->Fill( tu );
+        h1 = (TH1F*)gFile->Get( Form("BPDu%d_Time",seg) ); h1->Fill( timeu );
+        h1 = (TH1F*)gFile->Get( Form("BPDu%d_CTime",seg) ); h1->Fill( ctimeu );
+      }
+      if(td>0){
+        h1 = (TH1F*)gFile->Get( Form("BPDd%d_TDC",seg) ); h1->Fill( td );
+        h1 = (TH1F*)gFile->Get( Form("BPDd%d_Time",seg) ); h1->Fill( timed );
+        h1 = (TH1F*)gFile->Get( Form("BPDd%d_CTime",seg) ); h1->Fill( ctimed );
+      }
+      if( hit->CheckRange() ){
+        HitNum[1][seg]++;
+        HitNum[1][0]++;
+        h1 = (TH1F*)gFile->Get( Form("BPDu%d_ADCwT",seg) ); h1->Fill( au );
+        h1 = (TH1F*)gFile->Get( Form("BPDd%d_ADCwT",seg) ); h1->Fill( ad );
+        h1 = (TH1F*)gFile->Get( Form("BPDu%d_dE",seg) ); h1->Fill( eneu );
+        h1 = (TH1F*)gFile->Get( Form("BPDd%d_dE",seg) ); h1->Fill( ened );
+        h1 = (TH1F*)gFile->Get( Form("BPD%d_dEMean",seg) ); h1->Fill( emean );
+        h1 = (TH1F*)gFile->Get( Form("BPD%d_TimeMean",seg) ); h1->Fill( tmean );
+        h1 = (TH1F*)gFile->Get( Form("BPD%d_CTimeMean",seg) ); h1->Fill( ctmean );
+        h2 = (TH2F*)gFile->Get( Form("BPD%d_CTimeMean_TRGSeg",seg) ); h2->Fill( ctmean,udseg[0] );
+        h2 = (TH2F*)gFile->Get( Form("BPDu%d_AvT",seg) );  h2->Fill( au, tu );
+        h2 = (TH2F*)gFile->Get( Form("BPDd%d_AvT",seg) );  h2->Fill( ad, td );
+        h2 = (TH2F*)gFile->Get( Form("BPDu%d_dEvTime",seg) );  h2->Fill( eneu, timeu );
+        h2 = (TH2F*)gFile->Get( Form("BPDd%d_dEvTime",seg) );  h2->Fill( ened, timed );
+        h2 = (TH2F*)gFile->Get( Form("BPDu%d_dEvCTime",seg) );  h2->Fill( eneu, ctimeu );
+        h2 = (TH2F*)gFile->Get( Form("BPDd%d_dEvCTime",seg) );  h2->Fill( ened, ctimed );
+        h1 = (TH1F*)gFile->Get( "BPD_HitPat" ); h1->Fill( seg );
+        BPD_CTimeMean = ctmean;
+        nBPD++;
+
+        // TOF
+        double trgtof = CTimeMean[1] - CTimeMean[0];
+        double bpdtof_u = CTimeMean[0] - BPD_CTimeMean;
+        double bpdtof_d = CTimeMean[1] - BPD_CTimeMean;
+        if(udseg[0]==udseg[1] && udseg[0]!=0){
+          h1 = (TH1F*)gFile->Get( Form("TRG%dU_BPD_TOF",udseg[0]) ); h1->Fill(bpdtof_u);
+          h1 = (TH1F*)gFile->Get( Form("TRG%dD_BPD_TOF",udseg[0]) ); h1->Fill(bpdtof_d);
+          h1 = (TH1F*)gFile->Get( Form("TRG%dU_BPD%02d_TOF",udseg[0],seg) ); h1->Fill(bpdtof_u);
+          h1 = (TH1F*)gFile->Get( Form("TRG%dD_BPD%02d_TOF",udseg[0],seg) ); h1->Fill(bpdtof_d);
+          if(seg>=20 && seg<=60){
+            h1 = (TH1F*)gFile->Get( "TRGU_BPD_TOF" ); h1->Fill(bpdtof_u);
+            h2 = (TH2F*)gFile->Get( "TRGU_BPD_CTime2D" ); h2->Fill(CTimeMean[0],BPD_CTimeMean);
+            h1 = (TH1F*)gFile->Get( "TRGD_BPD_TOF" ); h1->Fill(bpdtof_d);
+            h2 = (TH2F*)gFile->Get( "TRGU_BPD_TOF_TRGSeg" ); h2->Fill(bpdtof_u,udseg[0]);
+            h2 = (TH2F*)gFile->Get( "TRGD_BPD_TOF_TRGSeg" ); h2->Fill(bpdtof_d,udseg[1]);
+            h2 = (TH2F*)gFile->Get( "TRGD_BPD_CTime2D" ); h2->Fill(CTimeMean[1],BPD_CTimeMean);
+            h2 = (TH2F*)gFile->Get( "TRGU_BPD_TOFbyEvent" ); h2->Fill(HitNum[1][0],bpdtof_u);
+            h2 = (TH2F*)gFile->Get( "TRGD_BPD_TOFbyEvent" ); h2->Fill(HitNum[1][0],bpdtof_u);
+          }
+          h1 = (TH1F*)gFile->Get( Form("TRGU_BPD%02d_TOF",seg) ); h1->Fill(bpdtof_u);
+          h1 = (TH1F*)gFile->Get( Form("TRGD_BPD%02d_TOF",seg) ); h1->Fill(bpdtof_d);
+          h2 = (TH2F*)gFile->Get( Form("TRGU_BPD%02d_TOFbyEvent",seg) ); h2->Fill(HitNum[1][seg],bpdtof_u);
+          h2 = (TH2F*)gFile->Get( Form("TRGD_BPD%02d_TOFbyEvent",seg) ); h2->Fill(HitNum[1][seg],bpdtof_d);
+        }
+
+        // TRG Hit Position
+        if(seg == 50){
+          h1 = (TH1F*)gFile->Get( "TRGU_HitPos" ); h1->Fill(TRGHitPos[0]);
+          h1 = (TH1F*)gFile->Get( "TRGD_HitPos" ); h1->Fill(TRGHitPos[1]);
+        }
+
+        h2 = (TH2F*)gFile->Get( "TRGSub_BPDSeg" ); h2->Fill(seg,TRGCTSub[0]-TRGCTSub[1]);
+        h2 = (TH2F*)gFile->Get( "TRGSub_BPDTOFU" ); h2->Fill(bpdtof_u,TRGCTSub[0]-TRGCTSub[1]);
+        h2 = (TH2F*)gFile->Get( "TRGSub_BPDTOFD" ); h2->Fill(bpdtof_d,TRGCTSub[0]-TRGCTSub[1]);
+
+      }
+    }
+    h1 = (TH1F*)gFile->Get( "BPD_Mult" ); h1->Fill( nBPD );
+    double trgtof = CTimeMean[1] - CTimeMean[0];
+    double bpdtof_u = CTimeMean[0] - BPD_CTimeMean;
+    double bpdtof_d = CTimeMean[1] - BPD_CTimeMean;
+
+    // TOF
+    //HitNum[0][udseg[0]]++;
+    HitNum[0][0]++;
+    h1 = (TH1F*)gFile->Get( Form("TRG%dU_TRG%dD_TOF",udseg[0],udseg[1]) ); h1->Fill(tof);
+    //h2 = (TH2F*)gFile->Get( Form("TRG%dU_TRG%dD_TOFbyEvent",udseg[0],udseg[0]) ); h2->Fill(HitNum[0][udseg[0]],tof);
+    h1 = (TH1F*)gFile->Get( "TRGU_TRGD_TOF" ); h1->Fill(tof);
+    h2 = (TH2F*)gFile->Get( "TRGU_TRGD_CTime2D" ); h2->Fill(CTimeMean[0],CTimeMean[1]);
+    h2 = (TH2F*)gFile->Get( "TRGU_TRGD_TOFbyEvent" ); h2->Fill(HitNum[0][0],tof);
+
+    header->Clear();
+    blMan->Clear();
+    cdsMan->Clear();
+    return true;
+}
+
+void EventAnalysisMyBHD::Finalize()
+{
+  std::cout << " Enter EventAnalysisMyBHD::Finalize " << std::endl;
+
+  rtFile->cd();
+  gFile->Write();
+  gFile->Close();
+
+  delete blMan;
+  delete cdsMan;
+  delete header;
+}
+
+void EventAnalysisMyBHD::InitializeHistogram()
+{
+  Int_t NumOfTRGSegments = 10;
+  Int_t NumOfBPDSegments = 70;
+
+  rtFile->cd();
+
+  // Scaler
+  new TH1F( "Scaler", "Scaler", 50, 0, 50 );
+
+  // Trigger Pattern
+  new TH1F( "Pattern", "Trigger Pattern", 20, 0, 20 );
+
+  // TRG
+  std::cout << "Define Histograms for TRG" << std::endl;
+  for( int seg=1; seg<=NumOfTRGSegments; seg++ ){
+    new TH1F( Form("TRGu%d_ADC",seg),   Form("ADC TRGU%d",seg),    1000,    0, 4000 );
+    new TH1F( Form("TRGd%d_ADC",seg),   Form("ADC TRGD%d",seg),    1000,    0, 4000 );
+    new TH1F( Form("TRGu%d_dE",seg),   Form("dE TRGU%d",seg),    200,    0, 20 );
+    new TH1F( Form("TRGd%d_dE",seg),   Form("dE TRGD%d",seg),    200,    0, 20 );
+    new TH1F( Form("TRG%d_dEMean",seg),   Form("Mean dE TRG%d",seg),    200,    0, 20 );
+    new TH1F( Form("TRGu%d_TDC",seg),   Form("TDC TRGU%d",seg),    1000,    0, 4000 );
+    new TH1F( Form("TRGd%d_TDC",seg),   Form("TDC TRGD%d",seg),    1000,    0, 4000 );
+    new TH1F( Form("TRGu%d_Time",seg),   Form("Time TRGU%d",seg),    4000,    -20, 20 );
+    new TH1F( Form("TRGd%d_Time",seg),   Form("Time TRGD%d",seg),    4000,    -20, 20 );
+    new TH1F( Form("TRG%d_TimeMean",seg),   Form("Mean Time TRG%d",seg),    4000,    -20, 20 );
+    new TH1F( Form("TRGu%d_CTime",seg),   Form("CTime TRGU%d",seg),    4000,    -20, 20 );
+    new TH1F( Form("TRGd%d_CTime",seg),   Form("CTime TRGD%d",seg),    4000,    -20, 20 );
+    new TH1F( Form("TRG%d_CTimeMean",seg),   Form("Mean CTime TRG%d",seg),    4000,    -20, 20 );
+    new TH1F( Form("TRG%d_CTimeSub",seg),   Form("Sub CTime TRG%d",seg),    500,    -5, 5 );
+    new TH1F( Form("TRGu%d_ADCwT",seg), Form("ADC wTDC TRGU%d",seg),  1000,    0, 4000 );
+    new TH1F( Form("TRGd%d_ADCwT",seg), Form("ADC wTDC TRGD%d",seg),  1000,    0, 4000 );
+    new TH2F( Form("TRGu%d_AvT",seg),   Form("ADC TDC corr. TRGU%d",seg),     200,    0, 4000,  200,    0, 4000 );
+    new TH2F( Form("TRGd%d_AvT",seg),   Form("ADC TDC corr. TRGD%d",seg),     200,    0, 4000,  200,    0, 4000 );
+    new TH2F( Form("TRGu%d_dEvTime",seg),   Form("dE Time corr. TRGU%d",seg),     200,    0, 20,  2000,    -20, 20 );
+    new TH2F( Form("TRGd%d_dEvTime",seg),   Form("dE Time corr. TRGD%d",seg),     200,    0, 20,  2000,    -20, 20 );
+    new TH2F( Form("TRGu%d_dEvCTime",seg),   Form("dE CTime corr. TRGU%d",seg),     200,    0, 20,  2000,    -100, 100 );
+    new TH2F( Form("TRGd%d_dEvCTime",seg),   Form("dE CTime corr. TRGD%d",seg),     200,    0, 20,  2000,    -100, 100 );
+  }
+  new TH1F( "TRGU_CTimeSub" ,   "Sub CTime TRGU" ,    500,    -5, 5 );
+  new TH1F( "TRGD_CTimeSub" ,   "Sub CTime TRGD" ,    500,    -5, 5 );
+  new TH2F( "TRG_CTimeSub2D" ,   "Sub CTime TRG 2D" ,    500,    -5, 5, 500, -5, 5 );
+  new TH1F( "TRGU_HitPos", "TRGU Hit position", 200, 0, 20);
+  new TH1F( "TRGD_HitPos", "TRGD Hit position", 200, 0, 20);
+  new TH2F( "TRG_HitPos2D", "TRG Hit position 2D", 200, 0, 20, 200, 0, 20);
+  new TH1F( "TRG_Mult", "Multipliciy TRG", NumOfTRGSegments, 1, NumOfTRGSegments+1 );
+  new TH1F( "TRG_HitPat", "Hit Pattern TRG", NumOfTRGSegments, 1, NumOfTRGSegments+1 );
+  new TH2F( "TRG_HitPat2D", "2D Hit Pattern TRG", NumOfTRGSegments, 1, NumOfTRGSegments, NumOfTRGSegments, 1, NumOfTRGSegments);
+
+  // BPD
+  std::cout << "Define Histograms for BPD" << std::endl;
+  for( int seg=1; seg<=NumOfBPDSegments; seg++ ){
+    new TH1F( Form("BPDu%d_ADC",seg),   Form("ADC BPDU%d",seg),    1000,    0, 4000 );
+    new TH1F( Form("BPDd%d_ADC",seg),   Form("ADC BPDD%d",seg),    1000,    0, 4000 );
+    new TH1F( Form("BPDu%d_dE",seg),   Form("dE BPDU%d",seg),    200,    0, 20 );
+    new TH1F( Form("BPDd%d_dE",seg),   Form("dE BPDD%d",seg),    200,    0, 20 );
+    new TH1F( Form("BPD%d_dEMean",seg),   Form("Mean dE BPD%d",seg),    200,    0, 20 );
+    new TH1F( Form("BPDu%d_TDC",seg),   Form("TDC BPDU%d",seg),    1000,    0, 4000 );
+    new TH1F( Form("BPDd%d_TDC",seg),   Form("TDC BPDD%d",seg),    1000,    0, 4000 );
+    new TH1F( Form("BPDu%d_Time",seg),   Form("Time BPDU%d",seg),    4000,    -20, 20 );
+    new TH1F( Form("BPDd%d_Time",seg),   Form("Time BPDD%d",seg),    4000,    -20, 20 );
+    new TH1F( Form("BPD%d_TimeMean",seg),   Form("Mean Time BPD%d",seg),    4000,    -20, 20 );
+    new TH1F( Form("BPDu%d_CTime",seg),   Form("CTime BPDU%d",seg),    4000,    -20, 20 );
+    new TH1F( Form("BPDd%d_CTime",seg),   Form("CTime BPDD%d",seg),    4000,    -20, 20 );
+    new TH1F( Form("BPD%d_CTimeMean",seg),   Form("Mean CTime BPD%d",seg),    4000,    -20, 20 );
+    new TH2F( Form("BPD%d_CTimeMean_TRGSeg",seg),   Form("Mean CTime BPD%d vs TRG Segment",seg),    4000,    -20, 20, 6, 0, 6 );
+    new TH1F( Form("BPDu%d_ADCwT",seg), Form("ADC wTDC BPDU%d",seg),  1000,    0, 4000 );
+    new TH1F( Form("BPDd%d_ADCwT",seg), Form("ADC wTDC BPDD%d",seg),  1000,    0, 4000 );
+    new TH2F( Form("BPDu%d_AvT",seg),   Form("ADC TDC corr. BPDU%d",seg),     200,    0, 4000,  200,    0, 4000 );
+    new TH2F( Form("BPDd%d_AvT",seg),   Form("ADC TDC corr. BPDD%d",seg),     200,    0, 4000,  200,    0, 4000 );
+    new TH2F( Form("BPDu%d_dEvTime",seg),   Form("dE Time corr. BPDU%d",seg),     200,    0, 20,  2000,    -20, 20 );
+    new TH2F( Form("BPDd%d_dEvTime",seg),   Form("dE Time corr. BPDD%d",seg),     200,    0, 20,  2000,    -20, 20 );
+    new TH2F( Form("BPDu%d_dEvCTime",seg),   Form("dE CTime corr. BPDU%d",seg),     200,    0, 20,  2000,    -100, 100 );
+    new TH2F( Form("BPDd%d_dEvCTime",seg),   Form("dE CTime corr. BPDD%d",seg),     200,    0, 20,  2000,    -100, 100 );
+  }
+  new TH1F( "BPD_Mult", "Multipliciy BPD", NumOfBPDSegments, 1, NumOfBPDSegments+1 );
+  new TH1F( "BPD_HitPat", "Hit Pattern BPD", NumOfBPDSegments, 1, NumOfBPDSegments+1 );
+  new TH2F( "TRGSub_BPDSeg" ,   "CTime sub TRGU and TRGD vs BPD segments" ,    71,    0, 71, 500, -5, 5 );
+  new TH2F( "TRGSub_BPDTOFU" ,   "CTime sub TRGU and TRGD vs BPD TOF (U)" ,    500,   -5, 5, 500, -5, 5 );
+  new TH2F( "TRGSub_BPDTOFD" ,   "CTime sub TRGU and TRGD vs BPD TOF (D)" ,    500,   -5, 5, 500, -5, 5 );
+
+  // TOF
+  new TH1F( "TRGU_TRGD_TOF", "TOF TRGU and TRGD", 4000, -5, 5 );
+  new TH2F( "TRGU_TRGD_CTime2D", "CTime TRGU and TRGD 2D", 4000, -5, 5, 4000, -5, 5 );
+  new TH2F( "TRGU_TRGD_TOFbyEvent", "TOF TRGU and TRGD by event", 1500, 0, 150000, 200, -5, 5 );
+  new TH1F( "TRGU_BPD_TOF", "TOF TRGU and BPD", 4000, -5, 5 );
+  new TH2F( "TRGU_BPD_TOF_TRGSeg", "TOF TRGU and BPD vs TRG Segment", 4000, -5, 5, 6, 0, 6 );
+  new TH2F( "TRGD_BPD_TOF_TRGSeg", "TOF TRGD and BPD vs TRG Segment", 4000, -5, 5, 6, 0, 6 );
+  new TH2F( "TRGU_BPD_CTime2D", "CTime TRGU and BPD 2D", 4000, -5, 5, 4000, -5, 5 );
+  new TH2F( "TRGU_BPD_TOFbyEvent", "TOF TRGU and BPD by event", 1500, 0, 150000, 200, -5, 5 );
+  new TH1F( "TRGD_BPD_TOF", "TOF TRGD and BPD", 4000, -5, 5 );
+  new TH2F( "TRGD_BPD_CTime2D", "CTime TRGU and BPD 2D", 4000, -5, 5, 4000, -5, 5 );
+  new TH2F( "TRGD_BPD_TOFbyEvent", "TOF TRGD and BPD by event", 1500, 0, 150000, 200, -5, 5 );
+  for(int j=1; j<=NumOfBPDSegments; j++){
+    new TH1F( Form("TRGU_BPD%02d_TOF",j), Form("TOF TRGU and BPD%02d",j), 4000, -5, 5 );
+    new TH1F( Form("TRGD_BPD%02d_TOF",j), Form("TOF TRGD and BPD%02d",j), 4000, -5, 5 );
+    new TH2F( Form("TRGU_BPD%02d_TOFbyEvent",j), Form("TOF TRGU and BPD%02d by event",j), 1500, 0, 150000, 200, -5, 5 );
+    new TH2F( Form("TRGD_BPD%02d_TOFbyEvent",j), Form("TOF TRGD and BPD%02d by event",j), 1500, 0, 150000, 200, -5, 5 );
+  }
+  for(int i=1; i<=NumOfTRGSegments/2; i++){
+    for(int j=1; j<=NumOfTRGSegments/2; i++){
+      new TH1F( Form("TRG%dU_TRG%dD_TOF",i,j), Form("TOF TRG%dU and TRG%dD",i,j), 4000, -5, 5 );
+    }
+    new TH2F( Form("TRG%dU_TRG%dD_TOFbyEvent",i,i), Form("TOF TRG%dU and TRG%dD by event",i,i), 1500, 0, 150000, 200, -5, 5 );
+    new TH1F( Form("TRG%dU_BPD_TOF",i), Form("TOF TRG%dU and BPD",i), 4000, -5, 5 );
+    new TH1F( Form("TRG%dD_BPD_TOF",i), Form("TOF TRG%dD and BPD",i), 4000, -5, 5 );
+    for(int k=1; k<=NumOfBPDSegments; k++){
+      new TH1F( Form("TRG%dU_BPD%02d_TOF",i,k), Form("TOF TRG%dU and BPD%02d",i,k), 4000, -5, 5 );
+      new TH1F( Form("TRG%dD_BPD%02d_TOF",i,k), Form("TOF TRG%dD and BPD%02d",i,k), 4000, -5, 5 );
+    }
+  }
+}
+
+EventTemp *EventAlloc::EventAllocator()
+{
+  EventAnalysisMyBHD *event = new EventAnalysisMyBHD();
+  return (EventTemp*)event;
+}

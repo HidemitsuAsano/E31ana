@@ -1,0 +1,79 @@
+#
+# Resolution for Drift chamers.
+#
+# units : [cm] or [nsec] or [MeV]
+# assuming a gaussian distribution
+#
+# The wire#=0 means that the value is applied to all wires.
+# If wire#!=0 exists after wire#=0, the value is uploaded.
+#
+## PDC
+# CID  Layer  Wire  TimeResl[cm]  EneResl[MeV]
+   15     0    0    0.013             0.00
+   16     0    0    0.018             0.00
+#
+## BLC
+# CID  Layer  Wire  TimeResl[cm]  EneResl[MeV]
+   17     0    0    0.017             0.00
+   18     0    0    0.018             0.00
+#
+## FDC
+   23     0    0    0.012             0.00
+## BPC
+   40     0    0    0.011             0.00
+## CDC
+# CID  Layer  Wire  TimeResl[cm]  EneResl[MeV]
+    0     0    0    0.030             0.00
+#
+## T0
+# CID  Layer(dummy) 	 Segment  TimeResl[nsec]  EneResl[MeV]
+     4     0   		  0  	     	0.000             0.00
+#    4     0   		  0  	     	0.045             0.00
+#    4     0   		  0  	     	0.060             0.00
+#    4     0   		  0  	     	0.000             0.00
+#    4     0   		  0  	     	0.010             0.00
+#    4     0   		  0  	     	0.050             0.00
+
+
+
+## CDH
+# CID  Layer(dummy)  Segment TimeResl[nsec]  EneResl[MeV]
+    1     0             0     0.100                0.00
+## NC
+# CID  Layer(dummy)  Segment TimeResl[nsec]  EneResl[MeV]
+#   32     0             0     0.090                0.00
+#   32     0             0     0.13                 0.00
+#   32     0             0     0.10                 0.00
+#   32     0             0     0.06                 0.00
+#   32     0             0     0.20                 0.00
+#   32     0             0     0.30                 0.00
+#   32     0             0     0.60                 0.00
+#   32     0             0     1.00                 0.00
+#   32     0             0     1.60                 0.00
+#   32     0             0     1.30                 0.00
+    32     0             0     0.16                 0.00
+
+
+
+
+## PC
+# CID  Layer(dummy)  Segment TimeResl[nsec]  EneResl[MeV]
+#   35     0             0     0.080                0.00
+#   35     0             0     0.060                0.00
+    35     0             0     0.00                0.00
+
+## BPD
+# CID  Layer(dummy)  Segment TimeResl[nsec]  EneResl[MeV]
+#   35     0             0     0.080                0.00
+#   35     0             0     0.060                0.00
+#   41     0             0     0.090                0.00
+#   41     0             0     0.200                0.00
+#   41     0             0     0.300                0.00
+#   41     0             0     0.100                0.00
+#   41     0             0     0.150                0.00
+#   41     0             0     0.120                0.00
+#   41     0             0     0.080                0.00
+#   41     0             0     0.180                0.00
+#   41     0             0     0.200                0.00
+    41     0             0     0.120                0.14
+

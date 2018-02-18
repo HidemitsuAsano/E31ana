@@ -1,0 +1,306 @@
+#include "File.h"
+#include "ConfMan.h"
+#include "TKO.h"
+#include "CDSHitMan.h"
+#include "BeamLineHitMan.h"
+#include "EventHeader.h"
+#include "ScalerMan.h"
+
+#include "EventAlloc.h"
+#include "EventTemp.h"
+#include "Display.h"
+
+#define Debug 0
+
+class EventAnalysisMyBeam: public EventTemp
+{
+  public:
+    EventAnalysisMyBeam();
+    ~EventAnalysisMyBeam();
+  private:
+    TFile *rtFile;
+    TTree *evTree;
+    TTree *scaTree;
+    CDSHitMan *cdsMan;
+    BeamLineHitMan *blMan;
+    EventHeader *header;
+    ScalerMan *scaMan;
+  public:
+    void Initialize( ConfMan *conf );
+    void USca( int nsca, unsigned int *sca );
+    bool UAna( TKOHitCollection *tko );
+    void Finalize();
+
+    void InitializeHistogram();
+};
+
+  EventAnalysisMyBeam::EventAnalysisMyBeam()
+: EventTemp()
+{
+}
+
+EventAnalysisMyBeam::~EventAnalysisMyBeam()
+{
+}
+
+const int MaxTreeSize = 1900000000000;
+void EventAnalysisMyBeam::Initialize( ConfMan *conf )
+{
+#if 1
+  std::cout << " Enter EventAnalysisMyBeam::Initialize " << std::endl;
+#endif
+  confMan = conf;
+
+  rtFile = new TFile( confMan->GetOutFileName().c_str(), "recreate" );
+  InitializeHistogram();
+
+  header = new EventHeader();
+  if( header==NULL ){ std::cerr << "!!!!" << std::endl; return; }
+  cdsMan = new CDSHitMan();
+  if( cdsMan==NULL ){ std::cerr << "!!!!" << std::endl; return; }
+  blMan = new BeamLineHitMan();
+  if( blMan ==NULL ){ std::cerr << "!!!!" << std::endl; return; }
+  scaMan = new ScalerMan();
+  if( scaMan==NULL ){ std::cerr << "!!!!" << std::endl; return; }
+}
+
+void EventAnalysisMyBeam::USca( int nsca, unsigned int *sca )
+{
+#if 0
+  std::cout << " Enter EventAnalysisMyBeam::USca " << std::endl;
+#endif
+  Block_Event_Number++;
+  header->SetBlockEventNumber( Block_Event_Number );
+  scaMan->SetBlockEventNumber( Block_Event_Number );
+  for( int i=0; i<nsca; i++ ){
+    scaMan->AddHit( sca[i], confMan->GetScalerMapManager()->GetName(i) );
+  }
+#if 0
+  std::cout << nsca << std::endl;
+  for( int i=0; i<nsca; i++ ){
+    std::cout << "  " << sca[i];
+  }
+  std::cout << std::endl;
+#endif
+
+  TH1F *h1;
+  for( int i=0; i<scaMan->nsca(); i++ ){
+    int val = scaMan->sca(i)->val();
+    TString name = scaMan->sca(i)->name();
+    h1 = (TH1F*)gFile->Get("Scaler"); h1->Fill(i,val);
+  }
+
+
+  scaMan->Clear();
+}
+
+bool EventAnalysisMyBeam::UAna( TKOHitCollection *tko )
+{
+#if 0
+  std::cout << " Enter EventAnalysisMyBeam::UAna " << std::endl;
+#endif
+
+  Event_Number++;
+  { int status = confMan->CheckEvNum( Event_Number, Block_Event_Number );
+    if( status==1 ) return true;
+    if( status==2 ) return false; }
+
+    if( Event_Number%5000==0 )
+      std::cout << " Event# : " << Event_Number << "  BlockEvent# : " << Block_Event_Number << std::endl;
+
+    header->SetRunNumber(0);
+    header->SetEventNumber(Event_Number);
+
+    header->Convert( tko, confMan );
+
+    blMan->Convert( tko, confMan );
+
+    rtFile->cd();
+    TH1F *h1;
+    TH2F *h2;
+    DetectorList *dlist=DetectorList::GetInstance();
+
+    // ======== //
+    // Raw Data //
+    // ======== //
+
+
+    // Multiplicity //
+    int MulBHD=0;	
+    for(int i=0; i<blMan->nBHD(); i++){
+      HodoscopeLikeHit* hit = blMan->BHD(i);
+      if(hit->CheckRange()) MulBHD++;
+    }
+    int MulT0=0;	
+    for(int i=0; i<blMan->nT0(); i++){
+      HodoscopeLikeHit* hit = blMan->T0(i);
+      if(hit->CheckRange()) MulT0++;
+    }
+    int MulDEF=0;	
+    for(int i=0; i<blMan->nDEF(); i++){
+      HodoscopeLikeHit* hit = blMan->DEF(i);
+      if(hit->CheckRange()) MulDEF++;
+    }
+
+    // Selection //
+    if(MulBHD!=1 || MulT0!=1 || MulDEF!=1){
+      header->Clear();
+      blMan->Clear();
+      cdsMan->Clear();
+      return true;
+    }
+
+    // T0 timing
+    double T0Timing[5]; for(int i=0;i<5;i++){T0Timing[i]=-999.;}
+    for(int i=0; i<blMan->nT0(); i++){
+      HodoscopeLikeHit* hit = blMan->T0(i);
+      int seg = hit->seg();
+      if(hit->CheckRange()) T0Timing[seg-1] = hit->ctmean();
+    }
+
+    // Trigger Pattern
+    for( int i=0; i<20; i++ ){
+      int val = header->pattern(i);
+      if( 0<val ){
+        h1 = (TH1F*)gFile->Get("Pattern"); h1->Fill(i);
+      }
+    }
+
+    // Hodoscope
+    const int nhodo=4;
+    int hodoid[nhodo]={CID_BHD,CID_T0,CID_BPD,CID_DEF};
+    int hodonHit[nhodo];
+    int hodoseg[nhodo][100];
+    double hodoemean[nhodo][100];
+    double hodoctmean[nhodo][100];
+    double hodohitpos[nhodo][100];
+    TVector3 hodopos[nhodo][100];
+    for(int ihodo=0; ihodo<nhodo; ihodo++){
+      const int cid = hodoid[ihodo];
+      const char* name = dlist->GetName(cid).data();
+      const int nsegs = dlist->GetNsegs(cid);
+      for(int i=0; i<blMan->nHodo(cid); i++){
+        HodoscopeLikeHit* hit = blMan->Hodoi(cid,i);
+        if(hit->CheckRange()){
+          hodoseg[ihodo][i] = hit->seg();
+          hodoemean[ihodo][i] = hit->emean();
+          hodoctmean[ihodo][i] = hit->ctmean();
+          hodohitpos[ihodo][i] = hit->hitpos();
+          h1 = (TH1F*)gFile->Get( Form("%s%d_dEMean",name,hodoseg[ihodo][i]) );
+          h1->Fill( hodoemean[ihodo][i] );
+          h1 = (TH1F*)gFile->Get( Form("%s%d_CTimeMean",name,hodoseg[ihodo][i]) );
+          h1->Fill( hodoctmean[ihodo][i] );
+          h1 = (TH1F*)gFile->Get( Form("%s%d_Position",name,hodoseg[ihodo][i]) );
+          h1->Fill( hodohitpos[ihodo][i] );
+          h2 = (TH2F*)gFile->Get( Form("%s%d_dEMeanvCTimeMean",name,hodoseg[ihodo][i]) );
+          h2->Fill( hodoemean[ihodo][i],hodoctmean[ihodo][i] );
+          h2 = (TH2F*)gFile->Get( Form("%s_SegmentvPosition",name) );
+          h2->Fill( hodoseg[ihodo][i],hodohitpos[ihodo][i] );
+          for(int t0seg=0; t0seg<5; t0seg++){
+            if(T0Timing[t0seg]>-900){
+              double tof = hodoctmean[ihodo][i]-T0Timing[t0seg]; if(ihodo==1) tof=tof*-1.;
+              h2 = (TH2F*)gFile->Get( Form("T0%d%s_TOF",t0seg+1,name) );
+              h2->Fill( hodoseg[ihodo][i], tof );
+              h2 = (TH2F*)gFile->Get( Form("T0%d%s_SegmentvPosition",t0seg+1,name) );
+              h2->Fill( hodoseg[ihodo][i],hodohitpos[ihodo][i] );
+            } 
+          }
+          hodonHit[ihodo]++;
+        }
+      }
+      h1 = (TH1F*)gFile->Get( Form("%s_Mult",name) ); h1->Fill( hodonHit[ihodo] );
+    }
+    // Cherenkov
+    const int nchere=1;
+    int chereid[nchere]={CID_AC};
+    char* cherename[nchere]={"AC"};
+    double chereadc[nchere]; 
+    for(int ichere=0; ichere<nchere; ichere++){
+      double adcsum = 0;
+      double tdc = 0;
+      for(int i=0; i<blMan->nChere(chereid[ichere]); i++){
+        CherenkovLikeHit* hit = blMan->Cherei(chereid[ichere],i);
+        tdc = hit->tdc(1);
+        h1 = (TH1F*)gFile->Get( Form("%s_TDC",cherename[ichere]) );
+        h1->Fill( tdc );
+        for(int ich=1; ich<=4; ich++){
+          adcsum += hit->adc(ich);
+        }
+      }
+      h1 = (TH1F*)gFile->Get( Form("%s_ADC",cherename[ichere]) );
+      h1->Fill( adcsum );
+    }
+
+    header->Clear();
+    blMan->Clear();
+    cdsMan->Clear();
+    return true;
+}
+
+void EventAnalysisMyBeam::Finalize()
+{
+  std::cout << " Enter EventAnalysisMyBeam::Finalize " << std::endl;
+
+  rtFile->cd();
+  gFile->Write();
+  gFile->Close();
+
+  delete blMan;
+  delete cdsMan;
+  delete header;
+}
+
+void EventAnalysisMyBeam::InitializeHistogram()
+{
+  rtFile->cd();
+
+  // Scaler
+  new TH1F( "Scaler", "Scaler", 50, 0, 50 );
+
+  // Trigger Pattern
+  new TH1F( "Pattern", "Trigger Pattern", 20, 0, 20 );
+
+  // Hodoscope
+  const int nhodo = 4;
+  int NumOfSegments[nhodo] = {20,5,70,8};
+  TString CounterName[nhodo] = {"BHD","T0","BPD","DEF"};
+  for(int ihodo=0; ihodo<nhodo; ihodo++){
+    std::cout << "Define Histograms for " << CounterName[ihodo].Data() << std::endl;
+    new TH1F( Form("%s_HitPat",CounterName[ihodo].Data()), Form("Hit Pattern %s;%s segment",CounterName[ihodo].Data(),CounterName[ihodo].Data()), NumOfSegments[ihodo]+1, 0, NumOfSegments[ihodo]+1 );
+    new TH2F( Form("%s_SegmentvPosition",CounterName[ihodo].Data()), Form("Hit Position %s;%s segment;Position (cm)",CounterName[ihodo].Data(),CounterName[ihodo].Data()), NumOfSegments[ihodo]+1, 0, NumOfSegments[ihodo]+1, 201, -50.25, 50.25 );
+    for(int seg=1; seg<=NumOfSegments[1]; seg++){
+      new TH1F( Form("T0%d%s_HitPat",seg,CounterName[ihodo].Data()), Form("Hit Pattern %s;%s segment",CounterName[ihodo].Data(),CounterName[ihodo].Data()), NumOfSegments[ihodo]+1, 0, NumOfSegments[ihodo]+1 );
+      new TH2F( Form("T0%d%s_SegmentvPosition",seg,CounterName[ihodo].Data()), Form("Hit Position %s;%s segment;Position (cm)",CounterName[ihodo].Data(),CounterName[ihodo].Data()), NumOfSegments[ihodo]+1, 0, NumOfSegments[ihodo]+1, 201, -50.25, 50.25 );
+    }
+    for( int seg=1; seg<=NumOfSegments[ihodo]; seg++ ){
+      new TH1F( Form("%s%d_dEMean",CounterName[ihodo].Data(),seg),   Form("Mean dE %s%d;dE (MeV);Counts",CounterName[ihodo].Data(),seg),    400,    0, 40 );
+      new TH1F( Form("%s%d_CTimeMean",CounterName[ihodo].Data(),seg),   Form("Mean CTime %s%d;Time (ns);Counts",CounterName[ihodo].Data(),seg),    4000,    -100, 100 );
+      new TH1F( Form("%s%d_Position",CounterName[ihodo].Data(),seg),   Form("Hit position %s%d;Position (cm);Counts",CounterName[ihodo].Data(),seg),    500,    -50, 50 );
+      new TH2F( Form("%s%d_dEMeanvCTimeMean",CounterName[ihodo].Data(),seg),   Form("dEMean CTimeMean corr. %s%d;dE (MeV);Time (ns)",CounterName[ihodo].Data(),seg),     400,    0, 40,  4000,    -100, 100 );
+    }
+    new TH1F( Form("%s_Mult",CounterName[ihodo].Data()), Form("Multiplicity %s;Multiplicity;Counts",CounterName[ihodo].Data()), NumOfSegments[ihodo]+1, 0, NumOfSegments[ihodo]+1 );
+  }
+  // Cherenkov
+  const int nchere = 1;
+  TString ChereName[nchere] = {"AC"};
+  for(int ichere=0; ichere<nchere; ichere++){
+    std::cout << "Define Histograms for " << ChereName[ichere].Data() << std::endl;
+    new TH1F( Form("%s_ADC",ChereName[ichere].Data()), Form("ADC Sum %s;ADC ch.;Counts",ChereName[ichere].Data()),4000, 0, 16000 );
+    new TH1F( Form("%s_TDC",ChereName[ichere].Data()), Form("TDC %s;TDC ch,;Counts",ChereName[ichere].Data()),4000, 0, 4000 );
+  }
+
+  // TOF
+  std::cout << "Define Histograms for TOF" << std::endl;
+  for(int ihodo=0; ihodo<nhodo; ihodo++){
+    for(int seg=1;seg<=5;seg++){
+      new TH2F( Form("T0%d%s_TOF",seg,CounterName[ihodo].Data()), Form("TOF T0%d-%s;%s segment;TOF (ns)",seg,CounterName[ihodo].Data(),CounterName[ihodo].Data()), NumOfSegments[ihodo], 1, NumOfSegments[ihodo]+1, 4000, -50, 50 );
+    }
+  }
+
+}
+
+EventTemp *EventAlloc::EventAllocator()
+{
+  EventAnalysisMyBeam *event = new EventAnalysisMyBeam();
+  return (EventTemp*)event;
+}

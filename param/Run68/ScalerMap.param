@@ -1,0 +1,45 @@
+##
+#
+# Scaler Definition
+#
+# ith  name
+   0    FT
+   1    TM1
+   2    TM2
+   3    firstlevelUnviasedTrigger
+   4    firstlevelwCompVeto
+   5    Accept
+   6    Reject
+   7    SMPbusy
+   8    SEC
+   9    Beam_x10
+  10    K
+  11    pi_x10
+  12    BHDxT0_x10
+  13    KxvBVCtrig
+  14    KxvBVCxCharged
+  15    CDH3xK
+  16    Cosmic
+  17    KxNeutral
+  18    KxCharged
+  19    CDH1xKtrig
+  20    CDH2xKtrig
+  21    pixvBVCtrig
+  22    CDH1xpitrig
+  23    CDH3xKtrig
+  24    KxvBVC
+  25    KxvBVCxNeutral
+  26    pixvBVC
+  27    pixvBVCxNeutral
+  28    CDH1xK
+  29    CDH2xK
+  30    CDH1xpi
+  31    CDH2xpi
+  32    CDH1xKxCharged
+  33    CDH1xKxNeutral
+  34    CDH1xpixCharged
+  35    CDH1xpixNeutral
+  36    CDH2xKxCharged
+  37    CDH2xKxNeutral
+  38    CDH3xKxCharged
+  39    CDH3xKxNeutral

@@ -1,0 +1,51 @@
+#
+# BLDCFittingParam
+#
+#
+########
+# MaxNumber of BLDCHit for analysis
+MaxBLDCHit: 480
+MaxHitInLayer: 160
+MaxHitInTrack: 160
+########
+# Limit of BLDCTDC#
+UpperLimitBLDCTDC: 0
+LowerLimitBLDCTDC: 0
+#
+########
+# Limit of Chi#
+MaxChi: 500
+MaxChiPreTracking: 50
+MaxSlope: 4.0
+#
+########
+# Magnetic Field of Solenoid#
+#MagneticField: -0.500
+#MagneticField: 0.0
+#
+######
+#Layer Condition: 1(alive),0(killed),-1(dead)
+LayerBLC1a: 1 1 1 1 1 1 1 1
+LayerBLC1b: 1 1 1 1 1 1 1 1
+LayerBLC2a: 1 1 1 1 1 1 1 1
+LayerBLC2b: 1 1 1 1 1 1 1 1
+LayerBPC:   1 1 1 1 1 1 1 1
+LayerFDC1:  1 1 1 1 1 1 1 1
+########
+# MinNumber for tracking
+MinHitXBLC1: 5
+MinHitXBLC1a: 4
+MinHitXBLC1b: 4
+MinHitXBLC2: 5
+MinHitXBLC2a: 4
+MinHitXBLC2b: 4
+MinHitXBPC:  4
+MinHitYBLC1: 5
+MinHitYBLC1a: 4
+MinHitYBLC1b: 4
+MinHitYBLC2: 5
+MinHitYBLC2a: 4
+MinHitYBLC2b: 4
+MinHitYBPC:  4
+MinHitXFDC1: 6
+MinHitYFDC1: 6

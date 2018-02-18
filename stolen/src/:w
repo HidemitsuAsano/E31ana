@@ -1,0 +1,11 @@
+// CDHCluster.h
+//
+
+#ifndef CDHCLUSTER_h
+#define CDHCLUSTER_h
+
+#include <vector>
+#include <map>
+#include "TVector3.h"
+#include "HodoscopeLikeHit.h"
+#include "ConfMan.h"

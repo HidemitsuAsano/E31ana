@@ -1,0 +1,45 @@
+##
+#
+# Scaler Definition
+#
+# ith  name
+   0    SEC
+   1    Unviased2ndlevel
+   2    FT
+   3    1stlevelUnviasedTrigger
+   4    1stlevelwCompVeto
+   5    Accept
+   6    Reject
+   7    SMPbusy
+   8    TM1
+   9    TM2
+  10    Cosmic
+  11    Beam_f
+  12    K
+  13    e
+  14    pi
+  15    p
+  16    CDH1*Ktrig
+  17    CDH2*Ktrig
+  18    CDH3*Ktrig
+  19    CDH1*pitrig
+  20    CDH2*pitrig
+  21    Prescale1stfor2nd
+  22    Neutral
+  23    Charged
+  24    NeutronCounter
+  25    non1
+  26    non2
+  27    CDH1*K
+  28    CDH2*K
+  29    CDH3*K
+  30    CDH1*pi
+  31    CDH2*pi
+  32    CDH1*K*Neutral
+  33    CDH1*K*Charged
+  34    CDH1*pi*Neutral
+  35    CDH1*pi*Charged
+  36    CDH2*K*Neutral
+  37    CDH2*K*Charged
+  38    CDH2*pi*Neutral
+  39    CDH2*pi*Charged
