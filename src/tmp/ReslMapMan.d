@@ -1,19 +1,19 @@
 tmp/ReslMapMan.o: ReslMapMan.cpp ReslMapMan.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/TObject.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/Rtypes.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/RConfig.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/RVersion.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/DllImport.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/Rtypeinfo.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/snprintf.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/strlcpy.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/TGenericClassInfo.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/TSchemaHelper.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/TStorage.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/TVersionCheck.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/Riosfwd.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/TBuffer.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/TRandom.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/TNamed.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/TString.h \
- /group/had/knucl/knucl_soft/root_v5.34.36/include/TMathBase.h
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/TObject.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/Rtypes.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/RConfig.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/RVersion.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/DllImport.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/Rtypeinfo.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/snprintf.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/strlcpy.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/TGenericClassInfo.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/TSchemaHelper.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/TStorage.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/TVersionCheck.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/Riosfwd.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/TBuffer.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/TRandom.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/TNamed.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/TString.h \
+ /gpfs/group/had/knucl/knucl_soft/root_v5.34.36/include/TMathBase.h

@@ -27,6 +27,8 @@ namespace Tools
   inline void H1(TString name,  double val,
 		 int nbin, double lbin, double ubin);
   inline void H1(TString name,  double val,
+		 int nbin, double lbin, double ubin, TString xtitle);
+  inline void H1(TString name,  double val,
 		 int nbin, double lbin, double ubin, double weight);
 
   inline void H2(TString name,  double val1, double val2,
@@ -131,6 +133,21 @@ inline void Tools::H1(TString name, double val,
     h1->Fill(val);
   }
 }
+
+inline void Tools::H1(TString name, double val,
+		      int nbinx, double lbinx, double ubinx, TString xtitle)
+{
+  if( TH1F* h1 = dynamic_cast<TH1F *>(gFile->Get(name.Data())) ){
+    //    std::cout<<"exist "<<name<<std::endl;
+    h1->Fill(val);
+  }else{
+    //    std::cout<<"new "<<name<<std::endl;
+    h1 = new TH1F(name,name, nbinx,lbinx,ubinx);
+    h1->SetXTitle(xtitle.Data());
+    h1->Fill(val);
+  }
+}
+
 inline void Tools::H1(TString name, double val,
 		      int nbinx, double lbinx, double ubinx,
 		      double weight)
@@ -176,7 +193,7 @@ inline void Tools::SetXTitleH1(TString histname,TString xtitle)
   if( TH1F* h1 = dynamic_cast<TH1F *>(gFile->Get(histname.Data())) ){
     h1->SetXTitle(xtitle.Data());
   }else{
-   std::cout << __FILE__ << "L. " << __LINE__  << "can not file histgram named   " << histname << std::endl;
+    std::cout << __FILE__ << " L. " << __LINE__  << " can not find histgram named   " << histname << std::endl;
   }
 }
 
@@ -185,26 +202,26 @@ inline void Tools::SetYTitleH1(TString histname,TString xtitle)
   if( TH1F* h1 = dynamic_cast<TH1F *>(gFile->Get(histname.Data())) ){
     h1->SetYTitle(xtitle.Data());
   }else{
-   std::cout << __FILE__ << "L. " << __LINE__  << "can not file histgram named   " << histname << std::endl;
+    std::cout << __FILE__ << " L. " << __LINE__  << " can not find histgram named   " << histname << std::endl;
   }
 }
 
 
 inline void Tools::SetXTitleH2(TString histname,TString xtitle)
 {
-  if( TH1F* h2 = dynamic_cast<TH1F *>(gFile->Get(histname.Data())) ){
+  if( TH2F* h2 = dynamic_cast<TH2F *>(gFile->Get(histname.Data())) ){
     h2->GetXaxis()->SetTitle(xtitle.Data());
   }else{
-   std::cout << __FILE__ << "L. " << __LINE__  << "can not file histgram named   " << histname << std::endl;
+    std::cout << __FILE__ << " L. " << __LINE__  << " can not find histgram named   " << histname << std::endl;
   }
 }
 
 inline void Tools::SetYTitleH2(TString histname,TString ytitle)
 {
-  if( TH1F* h2 = dynamic_cast<TH1F *>(gFile->Get(histname.Data())) ){
+  if( TH2F* h2 = dynamic_cast<TH2F *>(gFile->Get(histname.Data())) ){
     h2->GetYaxis()->SetTitle(ytitle.Data());
   }else{
-   std::cout << __FILE__ << "L. " << __LINE__  << "can not file histgram named   " << histname << std::endl;
+    std::cout << __FILE__ << " L. " << __LINE__  << " can not find histgram named   " << histname << std::endl;
   }
 }
 

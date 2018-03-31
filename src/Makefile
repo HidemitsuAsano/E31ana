@@ -245,6 +245,9 @@ SRCS	= $(wildcard *.cpp)
 evanaraw:  $(TMPDIR)/EventAnalysisRawAll.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@  $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisRawAll.o $(LIBLINK) $(OBJSLIB)
 
+evanaxt:  $(TMPDIR)/EventAnalysisXT.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@  $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisXT.o $(LIBLINK) $(OBJSLIB)
+
 evanatko:  $(TMPDIR)/EventAnalysisTKO.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@  $(TMPDIR)/EventAnalysisTKO.o $(patsubst %,$(TMPDIR)/%,$(EVENT))  $(LIBLINK) $(OBJSLIB)
 
@@ -253,6 +256,9 @@ evanabpc:  $(TMPDIR)/EventAnalysisBPC.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(pat
 
 evanabldc:  $(TMPDIR)/EventAnalysisBLDC.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@  $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisBLDC.o $(LIBLINK) $(OBJSLIB)
+
+evanadc:  $(TMPDIR)/EventAnalysisDC.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@  $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisDC.o $(LIBLINK) $(OBJSLIB)
 
 # source file does not exist. (asano)
 #mktree:  $(TMPDIR)/EventAnalysisTree.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(patsubst %,$(TMPDIR)/%,$(OBJS))

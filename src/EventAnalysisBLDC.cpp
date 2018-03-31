@@ -102,6 +102,7 @@ void EventAnalysisBLDC::Initialize( ConfMan *conf )
 #if 1
   std::cout << " Enter EventAnalysisBLDC::Initialize " << std::endl;
 #endif
+  //TODO : avoid hard code (H.Asano)
   name[0]="BLC1a";  name[1]="BLC1b";  name[2]= "BLC2a";  name[3]="BLC2b";  name[4]="BPC";
   nwire[0]=32;  nwire[1]=32;  nwire[2]=32;  nwire[3]=32;  nwire[4]=32;
   cid[0]=15;  cid[1]=16;  cid[2]=17;  cid[3]=18;  cid[4]=40;

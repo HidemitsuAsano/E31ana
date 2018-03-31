@@ -1,3 +1,8 @@
+//asano memo (Mar. 14th, 2018)
+//The output was strange , peak at 0 bin in drift time distribution 
+//reason ???
+//anyway, do not use this code. use EventAnalysisRawAll.cpp
+
 #include "File.h"
 #include "ConfMan.h"
 #include "TKO.h"
