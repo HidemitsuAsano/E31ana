@@ -14,7 +14,7 @@ MakeDtDx2(int run_start,int run_end){
 		 98,99.7,100};
   int nthre=sizeof(thre)/sizeof(thre[0]);
   DetectorList *dlist=DetectorList::GetInstance();
-  dlist->Initialize("../param/Run74/Detectors.list");
+  dlist->Initialize("../param/Run78/Detectors.list");
 
   TFile *f[100];
   int nfile=run_end-run_start+1;
