@@ -1,6 +1,6 @@
 #Type Chamber:0  Counter:1  NotDetector:3
 #Num1 :number of layers for a chamber, number of segments for a Counter
-#Num2 :number of wires for a chamber, number of sensors for a Counter
+#Num2 :number of wires per a layer for a chamber, number of sensors for a Counter
 #Num3 :not used
 #Flag1: shape is common for all the semgments
 #Flag2: invisible

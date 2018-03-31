@@ -1,6 +1,15 @@
+#CounterMap 
+
+The number of SMP is 11 ,instead of 10 in Run78 because SKS-TOF was added.
+The CounterMap should be modified from the original one (Number of SMP 10 -> 11), otherwise analysis codes will be crashed.
+
+
+--history 
 Jan.06, 2018
 all config files are copied from Run74, except for CounterMap
 
-Fev 10, 2018
+Feb 10, 2018
 -BLDC wire map update
 -TGain is calibrated
+
+
