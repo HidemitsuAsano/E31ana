@@ -317,8 +317,8 @@ void CalcChamber(TFile *f,ConfMan *conf,int cr,int sl, double interval=80,bool P
     double p1 =-f1->GetParameter(1);
     double p2 =-f1->GetParameter(2);
     
-    //BLC2b TDC
-    if((cr==1&&sl>8&&sl<17)){
+    //BLC2b TDC layer 2-8
+    if((cr==1&&sl>9&&sl<17)){
       p1*=-1;
       p2*=-1;
     }
@@ -737,7 +737,7 @@ void TGainRun78Chamber(ConfMan *conf){
   const int slini[7]={18, 1, 7, 1, 1, 1, 1};
   const int slend[7]={22, 4,22,16,20,20,20};
   for(int icr=0;icr<7;icr++){
-    for(int isl=slini[icr];isl<slend[icr];isl++){
+    for(int isl=slini[icr];isl<=slend[icr];isl++){
       if(cr[icr]==1 && isl==21) continue;
       CalcChamber(f,conf,cr[icr],isl,40.,true);
     }
@@ -784,7 +784,7 @@ void TGainRun78Chamber_4(ConfMan *conf){
   const int slini[7]={18, 1, 7, 1, 1, 1, 1};
   const int slend[7]={22, 4,22,16,20,20,20};
   for(int icr=0;icr<7;icr++){
-    for(int isl=slini[icr];isl<slend[icr];isl++){
+    for(int isl=slini[icr];isl<=slend[icr];isl++){
       if(cr[icr]==1 && isl==21) continue;
       CalcChamber(f,conf,cr[icr],isl,40.,true);
     }
@@ -812,7 +812,7 @@ void TGainRun78Chamber_5(ConfMan *conf){
   const int slini[7]={18, 1, 7, 1, 1, 1, 1};
   const int slend[7]={22, 4,22,16,20,20,20};
   for(int icr=0;icr<7;icr++){
-    for(int isl=slini[icr];isl<slend[icr];isl++){
+    for(int isl=slini[icr];isl<=slend[icr];isl++){
       if(cr[icr]==1 && isl==21) continue;
       CalcChamber(f,conf,cr[icr],isl,40.,true);
     }
