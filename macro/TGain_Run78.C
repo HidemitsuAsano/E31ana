@@ -316,7 +316,9 @@ void CalcChamber(TFile *f,ConfMan *conf,int cr,int sl, double interval=80,bool P
 
     double p1 =-f1->GetParameter(1);
     double p2 =-f1->GetParameter(2);
-    if(cr==0||(cr==1&&sl>8&&sl<17)){
+    
+    //BLC2b TDC
+    if((cr==1&&sl>8&&sl<17)){
       p1*=-1;
       p2*=-1;
     }
