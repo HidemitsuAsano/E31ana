@@ -3,6 +3,8 @@
 The number of SMP is 11 ,instead of 10 in Run78 because SKS-TOF was added.
 The CounterMap should be modified from the original one (Number of SMP 10 -> 11), otherwise analysis codes will be crashed.
 
+In the original Countermap from K1.8BR DAQ-PC, channel ordering of Crate1 slot 9 and 16 was inverted.
+
 
 --history 
 Jan.06, 2018
