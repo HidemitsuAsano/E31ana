@@ -317,8 +317,8 @@ void CalcChamber(TFile *f,ConfMan *conf,int cr,int sl, double interval=80,bool P
     double p1 =-f1->GetParameter(1);
     double p2 =-f1->GetParameter(2);
     
-    //BLC2b TDC layer 2-8
-    if( (cr==0 && sl>3)  &&  (cr==1&&sl>9&&sl<17)){
+    //BLC1a,BLC2b layer1-8,  BLC2b TDC layer 2-5
+    if( (cr==0 && sl>3)  ||  (cr==1&&sl>9&&sl<16)){
       p1*=-1;
       p2*=-1;
     }
