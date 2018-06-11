@@ -87,6 +87,7 @@ class ConfMan : public TObject
   std::string XTMapFileNameBL;
   std::string XTMapROOTNameBL;
   XTMapMan *XTMapManager;
+  int xtmapverbosity;
 
   std::string GeometryMapFileNameCDS;
   std::string GeometryMapFileNameBL;
@@ -141,6 +142,7 @@ class ConfMan : public TObject
   void SetOutFileName( const std::string &name ) { OutFileName = name; }
   void SetCDSTrackFileName( const std::string &name ) { CDSTrackFileName = name; }
   void SetMTDCFileName( const std::string &name ) { MTDCFileName = name; }
+  void SetXTMapVerbosity(const int ver ){ xtmapverbosity = ver  ;} 
 
   std::string GetProgramName(      ) const { return ProgramName; }
   //  char*       GetProgramName(      ) const { return ProgramName.data(); }
@@ -174,7 +176,7 @@ class ConfMan : public TObject
   void SetSolenoidCurrent(int i){CurrentInSolenoid = i;}
   void SetUshiwakaCurrent(int i){CurrentInUshiwaka = i;}
   void SetBeamMomentum(float i){BeamMomentum = i;}
-
+  
   int  GetRunNumber()       const {return RunNumber;}
   int  GetSolenoidCurrent() const {return CurrentInSolenoid;}
   int  GetUshiwakaCurrent() const {return CurrentInUshiwaka;}

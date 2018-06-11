@@ -127,6 +127,7 @@ void ConfMan::Clear()
   XTMapFileNameCDS = DefaultFileName;
   XTMapFileNameBL = DefaultFileName;
   XTMapROOTNameBL = DefaultFileName;
+  xtmapverbosity = 0;
   GeometryMapFileNameCDS = DefaultFileName;
   GeometryMapFileNameBL = DefaultFileName;
   GeometryMapFileNameHall = DefaultFileName;
@@ -600,6 +601,7 @@ bool ConfMan::InitializeParameterFiles()
   
   if( XTMapFileNameCDS != DefaultFileName || XTMapFileNameBL  != DefaultFileName || XTMapROOTNameBL  != DefaultFileName)
     XTMapManager = new XTMapMan();
+    XTMapManager->Verbosity(xtmapverbosity);
   if( XTMapManager!=0 ){
     XTMapManager->SetFileNameCDS( XTMapFileNameCDS );
     XTMapManager->SetFileNameBL(  XTMapFileNameBL );

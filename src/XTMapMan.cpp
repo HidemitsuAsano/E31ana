@@ -153,7 +153,7 @@ bool XTMapMan::Initialize(BLDCWireMapMan *wiremapman)
 	delete xtmap;
       }
       else{
-	std::cerr << "[" << funcname << "]: Invalid data format" << std::endl;
+	std::cerr << __FILE__ << " [" << funcname << "]: Invalid data format" << std::endl;
 	std::cerr << std::string(str) << std::endl;
       }
     }
@@ -161,12 +161,20 @@ bool XTMapMan::Initialize(BLDCWireMapMan *wiremapman)
     //    std::cout << "[" << funcname << "] CDS is initialized." << std::endl;
     std::cout <<" CDS." ;//<< std::endl;
   }
-
+  //CDS done
+  
+  //BL text file
   std::vector<double> threshold;
   bool OLDPARAM=true;
   const int MAXCHAR = 512;
   const int MAXTOKEN = 30;
   const char* DELIMITER = " ";
+  driftlengthmax[0] = fabs(wiremapman->GetWireMap(CID_BLC1a,1)->GetdXY()/2.0);
+  driftlengthmax[1] = fabs(wiremapman->GetWireMap(CID_BLC1b,1)->GetdXY()/2.0);
+  driftlengthmax[2] = fabs(wiremapman->GetWireMap(CID_BLC2a,1)->GetdXY()/2.0);
+  driftlengthmax[3] = fabs(wiremapman->GetWireMap(CID_BLC2b,1)->GetdXY()/2.0);
+  driftlengthmax[4] = fabs(wiremapman->GetWireMap(CID_BPC,1)->GetdXY()/2.0);
+  driftlengthmax[5] = fabs(wiremapman->GetWireMap(CID_FDC1,1)->GetdXY()/2.0);
   if( FileNameBL!=DefaultFileName ){
     if( (fp=fopen(FileNameBL.c_str(), "r"))==0 ){
       std::cerr << " File open fail. [" << FileNameBL << "]" << std::endl;
@@ -178,20 +186,22 @@ bool XTMapMan::Initialize(BLDCWireMapMan *wiremapman)
       if( OLDPARAM&&(nd=sscanf(str,"%d %d %d %d %lf %lf %lf %lf %lf %lf", 
 		     &cid, &layer, &wire, &npar, 
 		     &par[0], &par[1], &par[2], 
-		     &par[3], &par[4], &par[5] )) >=6 ) {
-#if 0
-	std::cout << cid << layer << "  " << wire << "  " << npar;
-	for( int i=0; i<npar; i++ ) std::cout << "  " << par[i];
-	std::cout << std::endl;
-#endif
+		     &par[3], &par[4], &par[5] )) >=6 ) { //Those format is not used in Inoue's param file.
+  if(verbosity){
+    std::cout << "CID " << cid << " layer " << layer << " wire: " << wire << " npar " << npar;
+    for( int i=0; i<npar; i++ ) std::cout << "  par" << i << ":" << par[i];
+    std::cout << std::endl;
+  }
 	key = KEY(cid,layer,wire);
 	XTMap *xtmap = new XTMap();
 	for( int i=0; i<npar; i++ ) xtmap->SetParam(par[i]);
 	xtContainer[key] = *xtmap;
 	delete xtmap;
-      }else if( (nd=sscanf(str,"XTParam: %d %lf %d ",&cid,&cellsize,&npar))==3 ){
-	//	std::cout<<cid<<"  "<<npar<<"  "<<cellsize<<std::endl;
-	OLDPARAM=false;	
+      }else if( (nd=sscanf(str,"XTParam: %d %lf %d ",&cid,&cellsize,&npar))==3 ){ //always used this one.
+	if(verbosity){
+    std::cout<< __FILE__ << " L." << __LINE__ << " cid:" << cid<<" npar:"<<npar<< " cellsize:"<<cellsize<<std::endl;
+	}
+  OLDPARAM=false;	
       }else if(!OLDPARAM){
 	const char* token[MAXTOKEN] = {};
 	int n=0;
@@ -220,7 +230,9 @@ bool XTMapMan::Initialize(BLDCWireMapMan *wiremapman)
 	  key = KEY(cid,layer,wire);
 	  TGraph* gr=new TGraph(npar);
 	  for (int i = 0; i < npar; i++){
-	    //	    std::cout<<cid<<"  "<<layer<<"  "<<wire<<"  "<<atof(token[2+i])<<"  "<<threshold[i]<<std::endl;
+	    if(verbosity){
+        std::cout<< __FILE__ << " L." << __LINE__ << " CID " << cid<<"  layer:"<<layer<< " wire:"<<wire<<"  "<<atof(token[3+i])<<"  "<<threshold[i]<<std::endl;
+      }
 	    gr->SetPoint(i,atof(token[3+i]),threshold[i]);
 	  }
 
@@ -246,9 +258,11 @@ bool XTMapMan::Initialize(BLDCWireMapMan *wiremapman)
       return true;
     }
     TH1F* h1;
-
+    
+    
     for(int lay=1;lay<=8;lay++){
       int nwireblc1a = wiremapman->GetNWire(CID_BLC1a,lay );
+
       if(verbosity>0){
         std::cout << __FILE__ << " L." << __LINE__ << std::endl;
         std::cout << "CID of BLC1a " << CID_BLC1a << std::endl;
@@ -339,6 +353,9 @@ bool XTMapMan::Initialize(BLDCWireMapMan *wiremapman)
     delete f;
   }
   std::cout <</* "[" << funcname << "] Initialization*/" finish." << std::endl;
+  
+  
+  
   return true;
 }
 
@@ -369,6 +386,50 @@ bool XTMapMan::SetParam( const int &cid, const int &layer, const int &wire, cons
 		<< std::endl;
       return false;
     }
+  }
+}
+
+//H. Asano
+//Function to update parameters of BL chambers 
+//input: CID, layer, wire, # of parameters (npar), array of drift time (par), array of drift length (max. = cellsize)
+//output: true if succeeded.
+// + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
+bool XTMapMan::SetParamBL( const int &cid, const int &layer, const int &wire, const int &npar, double *dt, double *dx)
+{
+  static const std::string funcname = "XTMapMan::SetParamBL";
+  unsigned int key;
+
+  key = KEY(cid,layer,wire);
+  XTMapContainer2::iterator ix = xtContainer2.find(key);
+  if( ix != xtContainer2.end() ){ 
+    if(verbosity){
+      int npar = (ix->second).GetN();
+      double *x,*y;
+      x = (ix->second).GetX();
+      y = (ix->second).GetY();
+      if(npar>0){
+        std::cout << __FILE__ << " L." << __LINE__ << " before changing parameters" << std::endl;
+        for(int i=0;i<npar;i++){
+          std::cout << x[i] << " " << y[i] << std::endl;
+        }
+      }
+    }
+    for( int i=0; i<npar; i++ ) (ix->second).SetPoint(i,dt[i],dx[i]);
+    if(verbosity){
+      int npar = (ix->second).GetN();
+      double *x,*y;
+      x = (ix->second).GetX();
+      y = (ix->second).GetY();
+      if(npar>0){
+        std::cout << __FILE__ << " L." << __LINE__ << "after changing parameters" << std::endl;
+        for(int i=0;i<npar;i++){
+          std::cout << x[i] << " " << y[i] << std::endl;
+        }
+      }
+    }
+    
+
+    return true;
   }
 }
 
@@ -557,6 +618,22 @@ int XTMapMan::nparam( const int &cid, const int &layer, const int &wire )
   }
   return 0;
 }
+
+// + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
+int XTMapMan::nparamBL( const int &cid, const int &layer, const int &wire )
+{
+  static const std::string funcname = "XTMapMan::nparamBL";
+  unsigned int key;
+
+  // wire# != 0
+  key = KEY(cid,layer,wire);
+  XTMapContainer2::iterator ix = xtContainer2.find(key);
+  if( ix != xtContainer2.end() ){
+    return (ix->second).GetN();
+  }
+
+  return 0;
+}
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
 double XTMapMan::param( const int &cid, const int &layer, const int &wire, const int &i )
 {
@@ -580,6 +657,24 @@ double XTMapMan::param( const int &cid, const int &layer, const int &wire, const
 }
 
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
+double XTMapMan::paramBL( const int &cid, const int &layer, const int &wire, const int &i )
+{
+  static const std::string funcname = "XTMapMan::paramBL";
+  unsigned int key;
+
+  // wire# != 0
+  key = KEY(cid,layer,wire);
+  XTMapContainer2::iterator ix = xtContainer2.find(key);
+  if( ix != xtContainer2.end() ){
+    double x,y;
+    (ix->second).GetPoint(i,x,y);
+    return x;
+  }else{
+    return 0;
+  }
+}
+
+// + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
 void XTMapMan::PrintMapHeader( std::ostream &p_out )
 {
   static const std::string funcname = "XTMapMan::PrintMapHeader";
@@ -598,49 +693,106 @@ void XTMapMan::PrintMapHeader( std::ostream &p_out )
 }
 
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
+void XTMapMan::PrintMapHeaderBL( std::ostream &p_out )
+{
+  static const std::string funcname = "XTMapMan::PrintMapHeaderBL";
+
+  std::cout << " ---- " << funcname << " ---- " << std::endl;
+  p_out << "#" << std::endl
+	<< "# XT curve for beam line Drift chamers." << std::endl;
+}
+
+// + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
 void XTMapMan::PrintMap( const int &Cid, std::ostream &p_out )
 {
   static const std::string funcname = "XTMapMan::PrintMap";
   unsigned int key;
   XTMap xtmap;
+  TGraph gr;
   int cid, cid_old=-1;
 
   std::cout << " ---- " << funcname << " ---- " << std::endl;
+  if(Cid==CID_CDC){
+    for( XTMapContainer::const_iterator i=xtContainer.begin();
+        i!=xtContainer.end(); i++ ){
+      key = i->first;
+      xtmap = i->second;
+      cid = ((key>>CSHIFT)&CMASK);
+      if( !( cid==Cid || Cid==-1 ) ) continue;
+      if( cid!=cid_old ){
+        p_out	<< "# CID  Layer    Wire    npar            p0             p1             p2             p3             p4             p5" << std::endl;
+        cid_old = cid;
+      }
+      p_out << std::setw(5) << cid
+        << std::setw(8) << ((key>>LSHIFT)&LMASK)
+        << std::setw(8) << ((key>>WSHIFT)&WMASK)
+        << std::setw(7) << xtmap.nParam();
+      p_out.setf(std::ios::showpoint);
+      p_out.setf(std::ios::scientific, std::ios::floatfield);
+      for( int j=0; j<xtmap.nParam(); j++ ){
+        p_out  << std::setprecision(5) << std::setw(15) << xtmap.GetParam(j);
+      }
+      p_out << std::endl;
+    }
+  }else if(//print XTmap to text files
+   Cid == CID_BLC1a ||
+   Cid == CID_BLC1b || 
+   Cid == CID_BLC2a || 
+   Cid == CID_BLC2b || 
+   Cid == CID_BPC   || 
+   Cid == CID_FDC1){//beam line chambers
+    bool IsfirstLine=true;
+    for (XTMapContainer2::const_iterator i = xtContainer2.begin(); i!=xtContainer2.end();i++){
+      key = i->first;
+      gr = i->second;
+      cid = ((key>>CSHIFT)&CMASK);
+      if( !( cid==Cid || Cid==-1 ) ) continue;
+      int nparambl = nparamBL(Cid,1,1);
+      if(IsfirstLine){
+        //temporaly hard-coded here.
+        const double thre[]={0,0.3,2,5,10,17,25,32,
+          40,50,60,68,75,83,90,95,
+          98,99.7,100};
+        int idc = 0;
+        if(Cid == CID_BLC1a) idc = 0;
+        if(Cid == CID_BLC1b) idc = 1;
+        if(Cid == CID_BLC2a) idc = 2;
+        if(Cid == CID_BLC2b) idc = 3;
+        if(Cid == CID_BPC)   idc = 4;
+        if(Cid == CID_FDC1)  idc = 5;
 
-  for( XTMapContainer::const_iterator i=xtContainer.begin();
-       i!=xtContainer.end(); i++ ){
-    key = i->first;
-    xtmap = i->second;
-    cid = ((key>>CSHIFT)&CMASK);
-    if( !( cid==Cid || Cid==-1 ) ) continue;
-    if( cid!=cid_old ){
-      p_out	<< "# CID  Layer    Wire    npar            p0             p1             p2             p3             p4             p5" << std::endl;
-      cid_old = cid;
-    }
-    p_out << std::setw(5) << cid
-	  << std::setw(8) << ((key>>LSHIFT)&LMASK)
-	  << std::setw(8) << ((key>>WSHIFT)&WMASK)
-	  << std::setw(7) << xtmap.nParam();
-    p_out.setf(std::ios::showpoint);
-    p_out.setf(std::ios::scientific, std::ios::floatfield);
-    for( int j=0; j<xtmap.nParam(); j++ ){
-      p_out  << std::setprecision(5) << std::setw(15) << xtmap.GetParam(j);
-    }
-    p_out << std::endl;
-  }
+        p_out << "XTParam: "<< Cid <<"  "<< driftlengthmax[idc] <<"  "<< nparambl << std::endl;
+        p_out << "Threshold: ";
+        for(int j=0;j<nparambl;j++) p_out<<thre[j]<<"  ";
+        p_out<<std::endl;
+        IsfirstLine = false;
+      }//if firstline
+      p_out<<std::setw(5)<<Cid
+      <<std::setw(5)<<((key>>LSHIFT)&LMASK)  
+      <<std::setw(5)<<((key>>WSHIFT)&WMASK) << " " ;
+      p_out.setf(std::ios_base::fixed,std::ios_base::floatfield);
+      double *x;
+      x = gr.GetX();
+      for(int j=0;j<nparambl;j++){
+        p_out<<std::setw(8)<<std::setprecision(2)<<x[j];
+      }
+      p_out<<std::endl;
+    }   
+  }//if beam line chamber   
 }
 
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
 void XTMapMan::PrintMapBL( std::ostream &p_out )
 {
   static const std::string funcname = "XTMapMan::PrintMapBL";
-  PrintMapHeader(p_out);
+  PrintMapHeaderBL(p_out);
   PrintMap(CID_BLC1a,p_out);
   PrintMap(CID_BLC1b,p_out);
   PrintMap(CID_BLC2a,p_out);
   PrintMap(CID_BLC2b,p_out);
   PrintMap(CID_BPC,p_out);
 }
+
 
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
 void XTMapMan::PrintMapCDS( std::ostream &p_out )

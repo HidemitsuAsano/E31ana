@@ -243,10 +243,10 @@ const int MTDCIDList[]={ CID_BHDmul,  CID_T0mul ,  CID_BVCmul,	  CID_HVC1mul,  C
 const int nMTDCIDList=sizeof(MTDCIDList)/sizeof(int);
 
 // TriggerPattern
-enum gTriggerPattern { Trig_Beam     = 1, // <-- correct ??
-		       Trig_Kaon     = 2,
-		       Trig_Electron = 3,
-		       Trig_KCDH1f   = 3,
+enum gTriggerPattern { Trig_Beam     = 1, // BHD & T0 & DEF
+		       Trig_Kaon     = 2,             // Beam & AC
+		       Trig_Electron = 3,             
+		       Trig_KCDH1f   = 3,                
 		       Trig_Pion     = 4,
 		       Trig_Proton   = 5,
 		       Trig_KCDH1    = 6,

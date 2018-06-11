@@ -34,6 +34,9 @@ namespace Tools
   inline void H2(TString name,  double val1, double val2,
 		 int nbinx, double lbinx, double ubinx,
 		 int nbiny, double lbiny, double ubiny);
+  inline void H2(TString name,  double val1, double val2,
+		 int nbinx, double lbinx, double ubinx,
+		 int nbiny, double lbiny, double ubiny,TString xtitle, TString ytitle);
   inline void H2I(TString name,  double val1, double val2,
 		 int nbinx, double lbinx, double ubinx,
 		 int nbiny, double lbiny, double ubiny);
@@ -171,6 +174,21 @@ inline void Tools::H2(TString name, double val1, double val2,
   }else{
     //    std::cout<<"new "<<name<<std::endl;
     h1= new TH2F(name,name, nbinx,lbinx,ubinx, nbiny,lbiny,ubiny); 
+    h1->Fill(val1,val2);
+  }  
+}
+
+inline void Tools::H2(TString name, double val1, double val2,
+		      int nbinx, double lbinx, double ubinx,
+		      int nbiny, double lbiny, double ubiny,TString xtitle,TString ytitle)
+{
+  if( TH2F* h1 = dynamic_cast<TH2F *>(gFile->Get(name.Data())) ){
+    h1->Fill(val1,val2);
+  }else{
+    //    std::cout<<"new "<<name<<std::endl;
+    h1= new TH2F(name,name, nbinx,lbinx,ubinx, nbiny,lbiny,ubiny); 
+    h1->SetXTitle(xtitle.Data());
+    h1->SetYTitle(ytitle.Data());
     h1->Fill(val1,val2);
   }  
 }

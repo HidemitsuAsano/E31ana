@@ -1,3 +1,7 @@
+//comment: H.Asano (May, 2018)
+//
+//Note: This code is obsolete. You can not compile.
+
 #include "File.h"
 #include "ConfMan.h"
 #include "TKO.h"

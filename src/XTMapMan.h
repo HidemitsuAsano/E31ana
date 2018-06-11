@@ -61,12 +61,15 @@ class XTMapMan : public TObject
   XTMapContainer xtContainer;
   typedef std::map <unsigned int, TH1F> XTHistContainer;
   XTHistContainer xthistContainer;
-
+  
+  double driftlengthmax[6];//max. drift length in each BLDC
  public:
   void SetGainMapMan( const XTMapContainer container )  { xtContainer = container; }
 
   int nparam( const int &cid, const int &layer, const int &wire );
+  int nparamBL( const int &cid, const int &layer, const int &wire );//H.Asano
   double param( const int &cid, const int &layer, const int &wire, const int &i );
+  double paramBL( const int &cid, const int &layer, const int &wire, const int &i );//H.Asano
 
   std::string GetFileNameCDS() { return FileNameCDS; }
   std::string GetFileNameBL()  { return FileNameBL; }
@@ -75,8 +78,10 @@ class XTMapMan : public TObject
   double CalcDriftLength( const int &cid, const int &layer, const int &wire, const double &dt );
   double CalcDxDt( const int &cid, const int &layer, const int &wire, const double &dt );
   bool SetParam( const int &cid, const int &layer, const int &wire, const int &npar, double *par );
+  bool SetParamBL( const int &cid, const int &layer, const int &wire, const int &npar, double *par, double *threshold);
 
   void PrintMapHeader( std::ostream &p_out = std::cout );
+  void PrintMapHeaderBL( std::ostream &p_out = std::cout );
   void PrintMap( const int &Cid = -1, std::ostream &p_out = std::cout );
   void PrintMapBL( std::ostream &p_out = std::cout );
   void PrintMapCDS( std::ostream &p_out = std::cout );
