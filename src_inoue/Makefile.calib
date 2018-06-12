@@ -1,0 +1,4 @@
+# -*- coding:utf-8 mode:makefile -*-
+
+tcal: $(TMPDIR)/tcal.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)

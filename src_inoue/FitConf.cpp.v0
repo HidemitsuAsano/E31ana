@@ -1,0 +1,1577 @@
+#include "FitConf.h"
+
+using namespace std;
+
+const char *FIT_OPTION="Q";
+
+void FitConf::reFill()
+{
+  fillHist(f_data, "data");
+  fillHist_Sim(1);
+  fillHist_Sim(2);
+  for( int i=0; i<f_K0.size(); i++ ) fillHist(f_K0[i], Form("K0_%d", i));
+  for( int i=0; i<f_Sm.size(); i++ ) fillHist(f_Sm[i], Form("Sm_%d", i));
+  for( int i=0; i<f_Sp.size(); i++ ) fillHist(f_Sp[i], Form("Sp_%d", i));
+  for( int i=0; i<f_BG.size(); i++ ) fillHist(f_BG[i], Form("BG_%d", i));
+}
+
+void FitConf::drawFit(TH1F *h1, TObjArray *mc, TFractionFitter *fitter)
+{
+  TCanvas *c1 = new TCanvas("c1", "c1");
+  h1->Draw("e");
+  TH1* h1_fit=fitter->GetPlot();
+
+  h1_fit->SetLineColor(kRed);
+  h1_fit-> Draw("same");
+
+  c1-> Update();
+  string str;
+  cin>>str;
+  cout<<"Please input any word"<<endl;
+  if( str=="q" ) return;
+}
+
+void FitConf::makeLS()
+{
+  double x[fBinMin.size()];
+  double xerr[fBinMin.size()];
+  double y[fBinMin.size()];
+  double yerr[fBinMin.size()];
+
+  for( int i=0; i<fBinMin.size(); i++ ){
+    x[i]=0.5*(fBinMin[i]+fBinMax[i]);
+    xerr[i]=0.5*(fBinMax[i]-fBinMin[i]);
+    y[i]=fNumData[i]*fFrac1[i];
+    double sum_frac=fFrac1[i]+fFrac2[i]+fFracBG[i];
+    //    if( fErr12[i]>0 ) cout<<i<<"  Err12="<<fErr12[i]<<endl;
+    // yerr[i]=fNumData[i]*sqrt(fErr1[i]);
+    yerr[i]=fNumData[i]*sqrt(fFrac1[i]*fFrac1[i]*fErr2[i]+fFrac2[i]*fFrac2[i]*fErr1[i]-2*fErr12[i]*fFrac1[i]*fFrac2[i]);
+  }
+
+  TGraphErrors *gra1 = new TGraphErrors(fBinMin.size(), x, y, xerr, yerr);
+  gra1-> SetLineColor(kRed);
+  gra1-> SetMarkerColor(kRed);
+  gra1-> Write("LineShape_sim1");
+
+  for( int i=0; i<fBinMin.size(); i++ ){
+    x[i]=0.5*(fBinMin[i]+fBinMax[i]);
+    xerr[i]=0.5*(fBinMax[i]-fBinMin[i]);
+    y[i]=fNumData[i]*fFrac2[i];
+    double sum_frac=fFrac2[i]+fFrac2[i]+fFracBG[i];
+    //    if( fErr12[i]>0 ) cout<<i<<"  Err12="<<fErr12[i]<<endl;
+    //    yerr[i]=fNumData[i]*sqrt(fErr2[i]);
+    yerr[i]=fNumData[i]*sqrt(fFrac1[i]*fFrac1[i]*fErr2[i]+fFrac2[i]*fFrac2[i]*fErr1[i]-2*fErr12[i]*fFrac1[i]*fFrac2[i]);
+    cout<<i<<"  "<<yerr[i]<<"  "<<fErr1[i]<<"  "<<fErr2[i]<<"  "<<fErr12[i]<<endl;
+  }
+
+  TGraphErrors *gra2 = new TGraphErrors(fBinMin.size(), x, y, xerr, yerr);
+  gra2-> SetLineColor(kBlue);
+  gra2-> SetMarkerColor(kBlue);
+  gra2-> Write("LineShape_sim2");
+}
+
+
+void FitConf::makeCS()
+{
+  double x[fBinMin.size()];
+  double xerr[fBinMin.size()];
+  double y[fBinMin.size()];
+  double yerr[fBinMin.size()];
+
+  for( int i=0; i<fBinMin.size(); i++ ){
+    x[i]=0.5*(fBinMin[i]+fBinMax[i]);
+    xerr[i]=0.5*(fBinMax[i]-fBinMin[i]);
+    double acc=fEff1[i]/fTrig1[i];
+    double acc_err=sqrt(1./fEff1[i]);
+    y[i]=fNumData[i]*fFrac1[i]/acc;
+    double sum_frac=fFrac1[i]+fFrac2[i]+fFracBG[i];
+    if( fErr12[i]>0 ) cout<<i<<"  Err12="<<fErr12[i]<<endl;
+    //    yerr[i]=fNumData[i]*sqrt(fErr1[i] + acc_err*acc_err);
+    yerr[i]=fNumData[i]*sqrt(fFrac1[i]*fFrac1[i]*fErr2[i]+fFrac2[i]*fFrac2[i]*fErr1[i]-2*fErr12[i]*fFrac1[i]*fFrac2[i]  + acc_err*acc_err)/acc;
+  }
+
+  TGraphErrors *gra1 = new TGraphErrors(fBinMin.size(), x, y, xerr, yerr);
+  gra1-> SetLineColor(kRed);
+  gra1-> SetMarkerColor(kRed);
+  gra1-> Write("CrossSection_sim1");
+
+  for( int i=0; i<fBinMin.size(); i++ ){
+    x[i]=0.5*(fBinMin[i]+fBinMax[i]);
+    xerr[i]=0.5*(fBinMax[i]-fBinMin[i]);
+    double acc=fEff2[i]/fTrig2[i];
+    double acc_err=sqrt(1./fEff2[i]);
+    y[i]=fNumData[i]*fFrac2[i]/acc;
+    double sum_frac=fFrac2[i]+fFrac2[i]+fFracBG[i];
+    if( fErr12[i]>0 ) cout<<i<<"  Err12="<<fErr12[i]<<endl;
+    //    yerr[i]=fNumData[i]*sqrt(fErr2[i] + acc_err*acc_err);
+    yerr[i]=fNumData[i]*sqrt(fFrac1[i]*fFrac1[i]*fErr2[i]+fFrac2[i]*fFrac2[i]*fErr1[i]-2*fErr12[i]*fFrac1[i]*fFrac2[i] + acc_err*acc_err)/acc;
+  }
+
+  TGraphErrors *gra2 = new TGraphErrors(fBinMin.size(), x, y, xerr, yerr);
+  gra2-> SetLineColor(kBlue);
+  gra2-> SetMarkerColor(kBlue);
+  gra2-> Write("CrossSection_sim2");
+}
+
+void FitConf::printParam(std::ostream &out)
+{
+  out<<"DataFile: "<<f_data->GetName()<<endl;
+  out<<"Sim1: "<<f_sim1->GetName()<<endl;
+  out<<"Sim2: "<<f_sim2->GetName()<<endl;
+
+  out<<"K0: "<<f_K0.size()<<endl;
+  for( int i=0; i<f_K0.size(); i++ ){
+    out<<"    "<<f_K0[i]->GetName()<<"  "<<setw(5)<<fNumK0All[i]<<"  "<<fFracK0[i]<<endl;
+  }
+
+  out<<setw(5)<<"Sm: "<<f_Sm.size()<<endl;
+  for( int i=0; i<f_Sm.size(); i++ ){
+    out<<"    "<<f_Sm[i]->GetName()<<"  "<<setw(5)<<fNumSmAll[i]<<"  "<<fFracSm[i]<<endl;
+  }
+
+  out<<setw(5)<<"Sp: "<<f_Sp.size()<<endl;
+  for( int i=0; i<f_Sp.size(); i++ ){
+    out<<"    "<<f_Sp[i]->GetName()<<"  "<<setw(5)<<fNumSpAll[i]<<"  "<<fFracSp[i]<<endl;
+  }
+  out<<"OutRoot: "<<f_out->GetName()<<endl;
+
+  out<<"NumTagged: "<<setw(7)<<fNumDataAll<<" "<<setw(7)<<fNumDataK0<<" "<<setw(7)<<fNumDataSm<<" "<<setw(7)<<fNumDataSp<<endl;
+  out<<"Rebin: "<<fRebinF<<endl;
+  out<<"NBin: "<<fBinMin.size()<<endl;
+  for( int i=0; i<fBinMin.size(); i++ ){
+    cout<<setw(3)<<fBinMin[i]<<" "<<setw(5)<<fBinMax[i]<<" "<<setw(5)<<fNumData[i]<<" "<<setw(7)<<fNumSim1[i]<<" "<<setw(7)<<fNumSim2[i]
+	<<" "<<setw(7)<<fFrac1[i]<<" "<<setw(7)<<fFrac2[i]<<" "<<setw(7)<<fFracBG2[i]
+	<<" "<<setw(7)<<fErr1[i]<<" "<<setw(7)<<fErr2[i]<<" "<<setw(7)<<fErr12[i]
+	<<" "<<setw(7)<<fChi2[i]<<" "<<setw(5)<<fNDF[i]
+	<<" "<<setw(7)<<fTrig1[i]<<" "<<setw(7)<<fEff1[i]<<" "<<setw(7)<<fTrig2[i]<<" "<<setw(7)<<fEff2[i]<<endl;
+  }
+}
+
+void FitConf::makeAccKN()
+{
+  double x[fBinMin.size()];
+  double xerr[fBinMin.size()];
+  double y[fBinMin.size()];
+  double yerr[fBinMin.size()];
+
+  for( int i=0; i<fBinMin.size(); i++ ){
+    x[i]=0.5*(fBinMin[i]+fBinMax[i]);
+    xerr[i]=0.5*(fBinMax[i]-fBinMin[i]);
+
+    if( fEff1[i]!=0 ){
+      y[i]=fEff1[i]/fTrig1[i];
+      yerr[i]=y[i]/sqrt(fEff1[i]);
+    }
+    else{
+      y[i]=0;
+      yerr[i]=0;
+    }
+  }
+
+  TGraphErrors *gra1 = new TGraphErrors(fBinMin.size(), x, y, xerr, yerr);
+  if( f_out->Get("gra_Acc_sim1") ) f_out->Get("gra_Acc_sim1")-> Clear();
+  gra1-> Write("gra_Acc_sim1");
+
+  for( int i=0; i<fBinMin.size(); i++ ){
+    x[i]=0.5*(fBinMin[i]+fBinMax[i]);
+    xerr[i]=0.5*(fBinMax[i]-fBinMin[i]);
+
+    if( fEff1[i]!=0 ){
+      y[i]=fEff2[i]/fTrig2[i];
+      yerr[i]=y[i]/sqrt(fEff2[i]);
+    }
+    else{
+      y[i]=0;
+      yerr[i]=0;
+    }
+  }
+
+  TGraphErrors *gra2 = new TGraphErrors(fBinMin.size(), x, y, xerr, yerr);
+  if( f_out->Get("gra_Acc_sim2") ) f_out->Get("gra_Acc_sim2")-> Clear();
+  gra2-> Write("gra_Acc_sim2");
+}
+
+void FitConf::makeChi2()
+{
+  double x[fBinMin.size()];
+  double xerr[fBinMin.size()];
+  double y[fBinMin.size()];
+  double yerr[fBinMin.size()];
+
+  int index=0;
+  for( int i=0; i<fBinMin.size(); i++ ){
+    if( fChi2[i]>0 ){
+      x[index]=0.5*(fBinMin[i]+fBinMax[i]);
+      xerr[index]=0.5*(fBinMax[i]-fBinMin[i]);
+      y[index]=fChi2[i]/(fNDF[i]-2);
+      yerr[index]=0;
+
+      index++;
+    }
+  }
+
+  TGraphErrors *gra = new TGraphErrors(index, x, y, xerr, yerr);
+  gra-> Write("gra_chi2");
+}
+
+bool FitConf::fitIM()
+{
+  cout<<"===== Fit pi+ pi-m n pi-, n pi+ IM ====="<<endl;
+  TH1F *h1_data= (TH1F*)f_out->Get("FitIM_data")-> Clone("FitIM_data_clone");
+  TObjArray *mc=new TObjArray(4);
+  TH1F *h1;
+  h1=(TH1F*)f_out->Get("FitIM_K0_0");
+  mc->Add(h1);
+  h1=(TH1F*)f_out->Get("FitIM_Sm_0");
+  mc->Add(h1);
+  h1=(TH1F*)f_out->Get("FitIM_Sp_0");
+  mc->Add(h1);
+
+  TH1F *h1_BG=(TH1F*)f_out->Get("FitIM_MCsum");
+  h1_BG->Reset();
+  h1_BG->Add((TH1F*)f_out->Get("FitIM_sim1"));
+  h1_BG->Add((TH1F*)f_out->Get("FitIM_sim2"));
+  double BG_entries=calcEntries(h1_BG);
+  //  h1_BG-> Draw();
+  // gPad-> Update();
+  // string str;
+  // cin>>str;
+  mc-> Add(h1_BG);
+  //  h1_data-> Add(h1_BG, -1);
+  double frac_BG=BG_entries/h1_data->GetEntries();
+
+  //  TFractionFitter *fitter =new TFractionFitter(h1_data, mc);
+  TFractionFitter *fitter =new TFractionFitter(h1_data, mc, FIT_OPTION);
+  fitter->GetFitter()-> SetParameter(0, "K0", fFracK0[0], 0.05, 0, 1.0);
+  fitter->GetFitter()-> SetParameter(1, "S-", fFracSm[0], 0.05, 0, 1.0);
+  fitter->GetFitter()-> SetParameter(2, "S+", fFracSp[0], 0.05, 0, 1.0);
+  fitter->GetFitter()-> SetParameter(3, "BG", frac_BG, 0.05, frac_BG-1.0e-5, frac_BG+1.0e-5);
+  fitter->GetFitter()-> FixParameter(3);
+  int status=fitter-> Fit();
+
+  while( status!=0 ){
+    delete fitter;
+    fitter=new TFractionFitter(h1_data, mc, FIT_OPTION);
+    double param1=gRandom->Rndm();
+    double param2=param1*gRandom->Rndm();
+    double param3=1.0-param1-param2;
+
+    fitter->GetFitter()-> SetParameter(0, "K0", param1, 0.05, 0, 1.0);
+    fitter->GetFitter()-> SetParameter(1, "S-", param2, 0.05, 0, 1.0);
+    fitter->GetFitter()-> SetParameter(2, "S+", param3, 0.05, 0, 1.0);
+    fitter->GetFitter()-> SetParameter(3, "BG", 1.0, 0.05, 0.999999, 1.0000001);
+    fitter->GetFitter()-> FixParameter(3);
+    status=fitter-> Fit();
+ 
+    status=fitter-> Fit();    
+    cout<<"Re-fit status : "<<status<<endl;
+  }
+  // double args[10];
+  // fitter-> GetFitter()-> ExecuteCommand("HESSE", args, 10);
+  // fitter-> GetFitter()-> ExecuteCommand("MINOS", args, 10);
+
+  if( status==0 ){
+    //    cout<<"===== Fitting succeed ====="<<endl;
+    //    drawFit(h1_data, mc, fitter);
+    double result, err;
+    fitter->GetResult(0, result, err);
+    fFracK0[0]=result;
+
+    fitter->GetResult(1, result, err);
+    fFracSm[0]=result;
+
+    fitter->GetResult(2, result, err);
+    fFracSp[0]=result;
+
+    delete fitter;
+    return true;
+  }
+  else{
+    cout<<"===== Fitting fault  status : "<<status<<"  ====="<<endl;
+    fitter->GetFitter()->PrintResults(1, 0);
+
+    string str;
+    cin>>str;
+    if( str=="q" ) exit(0);
+
+    delete fitter;
+    return false;
+  }
+}
+
+bool FitConf::fitKNpi(int index)
+{
+  cout<<"===== d(K-, n pi-) and d(K-, n pi+) Fitting  ["<<fBinMin[index]<<" : "<<fBinMax[index]<<"] ====="<<endl;
+  bool stop_flag=false;
+
+  TH1F *h1_data = (TH1F*)f_out->Get(Form("FitKNpi_data_%d", index));
+  if( fNumData[index]<5 ){
+    cout<<"  !!! a few entries !!! "<<fNumData[index]<<endl;
+    return false;
+  }
+  TH1F *h1_1=(TH1F*)f_out->Get(Form("FitKNpi_sim1_%d", index));
+  TH1F *h1_2=(TH1F*)f_out->Get(Form("FitKNpi_sim2_%d", index));
+
+  TH1F *h1_BG=(TH1F*)f_out->Get(Form("FitKNpi_MCsum_%d", index));
+  h1_BG-> Reset();
+  for( int i=0; i<f_K0.size(); i++ ){
+    TH1F *h1_tmp=(TH1F*)f_out->Get(Form("FitKNpi_K0_%d_%d", i, index));
+    h1_BG-> Add(h1_tmp, getScaleSp(i));
+  }
+  for( int i=0; i<f_Sm.size(); i++ ){
+    TH1F *h1_tmp=(TH1F*)f_out->Get(Form("FitKNpi_Sm_%d_%d", i, index));
+    h1_BG-> Add(h1_tmp, getScaleSm(i));
+  }
+  for( int i=0; i<f_Sp.size(); i++ ){
+    TH1F *h1_tmp=(TH1F*)f_out->Get(Form("FitKNpi_Sp_%d_%d", i, index));
+    h1_BG-> Add(h1_tmp, getScaleSp(i));
+  }
+  double BGsum=calcEntries(h1_BG);
+  double BGfrac=BGsum/fNumData[index];
+
+  double sum=0;
+  int status=-999;
+  TFractionFitter *fitter=0;
+  if( h1_BG->GetEntries()==0 ){
+    TObjArray *mc=new TObjArray(2);
+    mc-> Add(h1_1);
+    mc-> Add(h1_2);
+    TFractionFitter *fitter=new TFractionFitter(h1_data, mc, "Q");
+    //    TFractionFitter *fitter=new TFractionFitter(h1_data, mc);
+    fitter->GetFitter()-> SetParameter(0, "sim1", fFrac1[index], 0.05, 0, 1.0);
+    fitter->GetFitter()-> SetParameter(1, "sim2", fFrac2[index], 0.05, 0, 1.0);
+    status=fitter-> Fit();
+
+    while( status!=0 ){
+      delete fitter;
+      fitter=new TFractionFitter(h1_data, mc, "Q");
+      double param=gRandom->Rndm();
+
+      fitter->GetFitter()-> SetParameter(0, "sim1", param, 0.05, 0, 1.0);
+      fitter->GetFitter()-> SetParameter(1, "sim2", 1-param, 0.05, 0, 1.0);
+      status=fitter-> Fit();
+
+      cout<<"Re-fit status : "<<status<<endl;
+    }
+
+    // double args[10];
+    // fitter-> GetFitter()-> ExecuteCommand("HESSE", args, 10);
+    // fitter-> GetFitter()-> ExecuteCommand("MINOS", args, 10);
+
+    if( status==0 ){
+      fErr1[index]=fitter->GetFitter()->GetCovarianceMatrixElement(0, 0);
+      fErr2[index]=fitter->GetFitter()->GetCovarianceMatrixElement(1, 1);
+      fErr12[index]=fitter->GetFitter()->GetCovarianceMatrixElement(0, 1);
+
+      double result, err;
+      fitter->GetResult(0, result, err);
+      sum+=result;
+      fFrac1[index]=result;
+      if( err*err!=fErr1[index] ){
+	cout<<"!!!!! Err1**2 : "<<err*err<<"   "<<fErr1[index]<<" !!!!!"<<endl;
+      }
+
+      
+      fitter->GetResult(1, result, err);
+      sum+=result;
+      fFrac2[index]=result;
+      if( err*err!=fErr2[index] ){
+	cout<<"!!!!! Err2**2 : "<<err*err<<"   "<<fErr2[index]<<" !!!!!"<<endl;
+      }
+
+      fFracBG2[index]=0;
+
+      fChi2[index]=fitter->GetChisquare();
+      fNDF[index]=ndf(h1_data, mc);
+      if( fitter->GetFitter()->GetCovarianceMatrixElement(0, 1)!=fitter->GetFitter()->GetCovarianceMatrixElement(1, 0) ){
+	cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+	string str;
+	cin>>str;
+      }
+      //      cout<<"fraction sum : "<<sum<<endl;
+    }
+  }
+  else{
+    TObjArray *mc=new TObjArray(3);
+    mc-> Add(h1_1);
+    mc-> Add(h1_2);
+    mc-> Add(h1_BG);
+
+    TFractionFitter *fitter=new TFractionFitter(h1_data, mc, FIT_OPTION);
+    //    TFractionFitter *fitter=new TFractionFitter(h1_data, mc);
+    fitter->GetFitter()-> SetParameter(0, "sim1", fFrac1[index], 0.05, 0, 1.0);
+    fitter->GetFitter()-> SetParameter(1, "sim2", fFrac2[index], 0.05, 0, 1.0);
+    fitter->GetFitter()-> SetParameter(2, "BG", BGfrac, 0.05, BGfrac-0.001, BGfrac+0.001);
+    fitter->GetFitter()-> FixParameter(2);
+
+    status=fitter-> Fit();
+
+    while( status!=0 ){
+      delete fitter;
+      fitter=new TFractionFitter(h1_data, mc, "Q");
+      double param=gRandom->Rndm();
+
+      fitter->GetFitter()-> SetParameter(0, "sim1", param, 0.05, 0, 1.0);
+      fitter->GetFitter()-> SetParameter(1, "sim2", 1-param, 0.05, 0, 1.0);
+      fitter->GetFitter()-> SetParameter(2, "BG", BGfrac, 0.05, BGfrac-0.001, BGfrac+0.001);
+      fitter->GetFitter()-> FixParameter(2);
+      status=fitter-> Fit();
+
+      cout<<"Re-fit status : "<<status<<endl;
+    }
+
+    // double args[10];
+    // fitter-> GetFitter()-> ExecuteCommand("HESSE", args, 10);
+    // fitter-> GetFitter()-> ExecuteCommand("MINOS", args, 10);
+
+    if( status==0 ){
+      fErr1[index]=fitter->GetFitter()->GetCovarianceMatrixElement(0, 0);
+      fErr2[index]=fitter->GetFitter()->GetCovarianceMatrixElement(1, 1);
+      fErr12[index]=fitter->GetFitter()->GetCovarianceMatrixElement(0, 1);
+
+      double result, err;
+      fitter->GetResult(0, result, err);
+      sum+=result;
+      fFrac1[index]=result;
+      if( err*err!=fErr1[index] ){
+	cout<<"!!!!! Err1**2 : "<<err*err<<"   "<<fErr1[index]<<" !!!!!"<<endl;
+      }
+      
+      fitter->GetResult(1, result, err);
+      sum+=result;
+      fFrac2[index]=result;
+      if( err*err!=fErr2[index] ){
+	cout<<"!!!!! Err2**2 : "<<err*err<<"   "<<fErr2[index]<<" !!!!!"<<endl;
+      }
+
+      fitter->GetResult(2, result, err);
+      sum+=result;
+      fFracBG2[index]=result;
+
+      fChi2[index]=fitter->GetChisquare();
+      fNDF[index]=ndf(h1_data, mc);
+
+      //      cout<<"sim1 : "<<fFrac1[index]<<"  sim2 : "<<fFrac2[index]<<"  BG : "<<result<<endl;
+      if( fitter->GetFitter()->GetCovarianceMatrixElement(0, 1)!=fitter->GetFitter()->GetCovarianceMatrixElement(1, 0) ){
+	cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+	string str;
+	cin>>str;
+      }
+    }
+  }
+
+  if( status==0 ){
+    // cout<<"sim1 : "<<fFrac1[index]<<"  "<<fFrac2[index]<<" "<<endl;
+    // cout<<"Chi2 : "<<fChi2[index]<<"  NDF : "<<fNDF[index]<<endl;
+
+    cout<<"===== Fitting succeed ====="<<endl;
+
+    // string str;
+    // cin>>str;
+    // if( str=="q" ) exit(0);
+    delete fitter;
+    return true;
+  }
+  else{
+    cout<<"===== Fitting fault  status : "<<status<<"  ====="<<endl;
+    fitter->GetFitter()->PrintResults(1, 0);
+    string str;
+    cin>>str;
+    if( str=="q" ) exit(0);
+
+    delete fitter;
+    return false;
+  }
+}
+
+void FitConf::fillHist_Sim(const int id)
+{
+  TFile *f=0;
+  if( id==1 ) f=f_sim1;
+  if( id==2 ) f=f_sim2;
+  TString suffix2=Form("sim%d", id);
+  cout<<"===== fill Hist for sim  TFile : "<<f->GetName()<<"  suffix : "<<suffix2<<" ====="<<endl;
+
+  TTree *tree = (TTree*)f->Get("npipi_event");
+  AnaInfo *anaInfo = new AnaInfo();
+  tree-> SetBranchAddress("AnaInfo", &anaInfo);
+  cout<<"      Entries : "<<tree->GetEntries()<<endl;
+
+  TH1F *h1;
+  TH2F *h2;
+  h1=(TH1F*)f_out->Get(Form("FitIM_%s", suffix2.Data())); h1-> Reset();
+  h1=(TH1F*)f_out->Get(Form("IM_pipi_%s", suffix2.Data())); h1-> Reset();
+  h1=(TH1F*)f_out->Get(Form("IM_npip_%s", suffix2.Data())); h1-> Reset();
+  h1=(TH1F*)f_out->Get(Form("IM_npim_%s", suffix2.Data())); h1-> Reset();
+
+  for( int i=0; i<fBinMin.size(); i++ ){
+    h1=(TH1F*)f_out->Get(Form("FitKNpi_%s_%d", suffix2.Data(), i)); h1->Reset();
+    h1=(TH1F*)f_out->Get(Form("KNpim_MM_%s_%d", suffix2.Data(), i)); h1->Reset();
+    h1=(TH1F*)f_out->Get(Form("KNpip_MM_%s_%d", suffix2.Data(), i)); h1->Reset();
+    h2=(TH2F*)f_out->Get(Form("KNpim_KNpip_MM_%s_%d", suffix2.Data(), i)); h2->Reset();
+  }
+
+  for( int ev=0; ev<tree->GetEntries(); ev++ ){
+    tree-> GetEntry(ev);
+    TLorentzVector target_lmom;
+    target_lmom.SetVectM(TVector3(0, 0, 0), dMass);
+
+    TLorentzVector beam_lmom=anaInfo->beam(0)->lmom();
+    TLorentzVector n_lmom=anaInfo->forwardNeutral(0)->lmom();
+    TLorentzVector pim_lmom=anaInfo->CDS(CDS_PiMinus, 0)->lmom();
+    TLorentzVector pip_lmom=anaInfo->CDS(CDS_PiPlus, 0)->lmom();
+    TLorentzVector pipi_lmom=anaInfo->CDS2(CDS_PiMinus, CDS_PiPlus, 0)->lmom();
+
+    double kn_mm=(beam_lmom+target_lmom-n_lmom).M();
+    double knpipi_mm=(beam_lmom+target_lmom-n_lmom-pim_lmom-pip_lmom).M();
+    double knpim_mm=(beam_lmom+target_lmom-n_lmom-pim_lmom).M();
+    double knpip_mm=(beam_lmom+target_lmom-n_lmom-pip_lmom).M();
+
+    double npim_im=(n_lmom+pim_lmom).M();
+    double npip_im=(n_lmom+pip_lmom).M();
+    double pipi_im=pipi_lmom.M();
+
+    if( Npipi_N_MIN<knpipi_mm && knpipi_mm<Npipi_N_MAX ){
+      h1=(TH1F*)f_out->Get(Form("FitIM_%s", suffix2.Data()));
+      if( !h1 ){
+	cout<<"  !!! "<<Form("FitIM_%s", suffix2.Data())<<" !!!"<<endl;
+	exit(0);
+      }
+      double weight=getScale(id, kn_mm);
+      h1-> Fill(pipi_im, weight);
+      h1-> Fill(npim_im, weight);
+      h1-> Fill(1.0+npip_im, weight);
+      h1=(TH1F*)f_out->Get(Form("IM_pipi_%s", suffix2.Data())), h1-> Fill(pipi_im, weight);
+      h1=(TH1F*)f_out->Get(Form("IM_npim_%s", suffix2.Data())), h1-> Fill(npim_im, weight);
+      h1=(TH1F*)f_out->Get(Form("IM_npip_%s", suffix2.Data())), h1-> Fill(npip_im, weight);
+
+      bool K0_flag=false; bool Sm_flag=false; bool Sp_flag=false;
+      if( Npipi_K0_MIN<pipi_im && pipi_im<Npipi_K0_MAX ) K0_flag=true;
+      if( Npipi_Sm_MIN<npim_im && npim_im<Npipi_Sm_MAX ) Sm_flag=true;
+      if( Npipi_Sp_MIN<npip_im && npip_im<Npipi_Sp_MAX ) Sp_flag=true;
+
+      if( !K0_flag && !Sm_flag && !Sp_flag ){
+	int bin_index=getMMIndex(kn_mm);
+	if( bin_index>=0 ){
+	  h1=(TH1F*)f_out->Get(Form("FitKNpi_%s_%d", suffix2.Data(), bin_index));
+	  if( !h1 ){
+	    cout<<"  !!! "<<Form("FitKNpi_%s_%d", suffix2.Data(), bin_index)<<" !!!"<<endl;
+	  }
+	  h1-> Fill(knpim_mm-1.0);
+	  h1-> Fill(knpip_mm);
+
+	  h1=(TH1F*)f_out->Get(Form("KNpim_MM_%s_%d", suffix2.Data(), bin_index)), h1-> Fill(knpim_mm);
+	  h1=(TH1F*)f_out->Get(Form("KNpip_MM_%s_%d", suffix2.Data(), bin_index)), h1-> Fill(knpip_mm);
+
+	  h2 = (TH2F*)f_out->Get(Form("KNpim_KNpip_MM_%s_%d", suffix2.Data(), bin_index)), h2-> Fill(knpim_mm, knpip_mm);
+	}
+      }
+    }
+  }
+}
+
+
+void FitConf::fillHist(TFile *f, const char *suffix)
+{
+  cout<<"===== fill Hist  TFile : "<<f->GetName()<<"  suffix : "<<suffix<<" ====="<<endl;
+  TString suffix2=suffix;
+
+  TTree *tree = (TTree*)f->Get("npipi_event");
+  AnaInfo *anaInfo = new AnaInfo();
+  tree-> SetBranchAddress("AnaInfo", &anaInfo);
+  cout<<"      Entries : "<<tree->GetEntries()<<endl;
+
+  TH1F *h1;
+  TH2F *h2;
+  h1=(TH1F*)f_out->Get(Form("FitIM_%s", suffix2.Data())), h1-> Reset();
+  h1=(TH1F*)f_out->Get(Form("IM_pipi_%s", suffix2.Data())); h1-> Reset();
+  h1=(TH1F*)f_out->Get(Form("IM_npip_%s", suffix2.Data())); h1-> Reset();
+  h1=(TH1F*)f_out->Get(Form("IM_npim_%s", suffix2.Data())); h1-> Reset();
+
+  for( int i=0; i<fBinMin.size(); i++ ){
+    h1=(TH1F*)f_out->Get(Form("FitKNpi_%s_%d", suffix2.Data(), i)); h1->Reset();
+    h1=(TH1F*)f_out->Get(Form("KNpim_MM_%s_%d", suffix2.Data(), i)); h1->Reset();
+    h1=(TH1F*)f_out->Get(Form("KNpip_MM_%s_%d", suffix2.Data(), i)); h1->Reset();
+    h2=(TH2F*)f_out->Get(Form("KNpim_KNpip_MM_%s_%d", suffix2.Data(), i)); h2->Reset();
+  }
+
+  for( int ev=0; ev<tree->GetEntries(); ev++ ){
+    tree-> GetEntry(ev);
+    TLorentzVector target_lmom;
+    target_lmom.SetVectM(TVector3(0, 0, 0), dMass);
+
+    TLorentzVector beam_lmom=anaInfo->beam(0)->lmom();
+    TLorentzVector n_lmom=anaInfo->forwardNeutral(0)->lmom();
+    TLorentzVector pim_lmom=anaInfo->CDS(CDS_PiMinus, 0)->lmom();
+    TLorentzVector pip_lmom=anaInfo->CDS(CDS_PiPlus, 0)->lmom();
+    TLorentzVector pipi_lmom=anaInfo->CDS2(CDS_PiMinus, CDS_PiPlus, 0)->lmom();
+
+    double kn_mm=(beam_lmom+target_lmom-n_lmom).M();
+    double knpipi_mm=(beam_lmom+target_lmom-n_lmom-pim_lmom-pip_lmom).M();
+    double knpim_mm=(beam_lmom+target_lmom-n_lmom-pim_lmom).M();
+    double knpip_mm=(beam_lmom+target_lmom-n_lmom-pip_lmom).M();
+
+    double npim_im=(n_lmom+pim_lmom).M();
+    double npip_im=(n_lmom+pip_lmom).M();
+    double pipi_im=pipi_lmom.M();
+
+    if( Npipi_N_MIN<knpipi_mm && knpipi_mm<Npipi_N_MAX ){
+      h1=(TH1F*)f_out->Get(Form("FitIM_%s", suffix2.Data()));
+      if( !h1 ){
+	cout<<"  !!! "<<Form("FitIM_%s", suffix2.Data())<<" !!!"<<endl;
+	exit(0);
+      }
+      h1-> Fill(pipi_im);
+      h1-> Fill(npim_im);
+      h1-> Fill(1.0+npip_im);
+
+      h1=(TH1F*)f_out->Get(Form("IM_pipi_%s", suffix2.Data())), h1-> Fill(pipi_im);
+      h1=(TH1F*)f_out->Get(Form("IM_npim_%s", suffix2.Data())), h1-> Fill(npim_im);
+      h1=(TH1F*)f_out->Get(Form("IM_npip_%s", suffix2.Data())), h1-> Fill(npip_im);
+
+      bool K0_flag=false; bool Sm_flag=false; bool Sp_flag=false;
+      if( Npipi_K0_MIN<pipi_im && pipi_im<Npipi_K0_MAX ) K0_flag=true;
+      if( Npipi_Sm_MIN<npim_im && npim_im<Npipi_Sm_MAX ) Sm_flag=true;
+      if( Npipi_Sp_MIN<npip_im && npip_im<Npipi_Sp_MAX ) Sp_flag=true;
+
+      if( !K0_flag && !Sm_flag && !Sp_flag ){
+	int bin_index=getMMIndex(kn_mm);
+	if( bin_index>=0 ){
+	  h1=(TH1F*)f_out->Get(Form("FitKNpi_%s_%d", suffix2.Data(), bin_index));
+	  if( !h1 ){
+	    cout<<"  !!! "<<Form("FitKNpi_%s_%d", suffix2.Data(), bin_index)<<" !!!"<<endl;
+	  }
+	  h1-> Fill(knpim_mm-1.0);
+	  h1-> Fill(knpip_mm);
+
+	  h1=(TH1F*)f_out->Get(Form("KNpim_MM_%s_%d", suffix2.Data(), bin_index)), h1-> Fill(knpim_mm);
+	  h1=(TH1F*)f_out->Get(Form("KNpip_MM_%s_%d", suffix2.Data(), bin_index)), h1-> Fill(knpip_mm);
+
+	  h2 = (TH2F*)f_out->Get(Form("KNpim_KNpip_MM_%s_%d", suffix2.Data(), bin_index)), h2-> Fill(knpim_mm, knpip_mm);
+	}
+      }
+    }
+  }
+}
+
+void FitConf::readData()
+{
+  TTree *tree = (TTree*)f_data->Get("npipi_event");
+  AnaInfo *anaInfo = new AnaInfo();
+  tree-> SetBranchAddress("AnaInfo", &anaInfo);
+
+  for( int i=0; i<fBinMin.size(); i++ ) fNumData[i]=0;
+  fNumDataK0=0;
+  fNumDataSm=0;
+  fNumDataSp=0;
+
+  cout<<"Read Data Entries : "<<tree->GetEntries()<<endl;
+  for( int ev=0; ev<tree->GetEntries(); ev++ ){
+    tree-> GetEntry(ev);
+    TLorentzVector target_lmom;
+    target_lmom.SetVectM(TVector3(0, 0, 0), dMass);
+    TLorentzVector beam_lmom=anaInfo->beam(0)->lmom();
+    TLorentzVector n_lmom=anaInfo->forwardNeutral(0)->lmom();
+    TLorentzVector pim_lmom=anaInfo->CDS(CDS_PiMinus, 0)->lmom();
+    TLorentzVector pip_lmom=anaInfo->CDS(CDS_PiPlus, 0)->lmom();
+    TLorentzVector pipi_lmom=anaInfo->CDS2(CDS_PiMinus, CDS_PiPlus, 0)->lmom();
+
+    double kn_mm=(beam_lmom+target_lmom-n_lmom).M();
+    // cout<<"beam : "<<beam_lmom.M()<<endl;
+    // cout<<"fn : "<<n_lmom.M()<<endl;
+    // cout<<"KN : "<<kn_mm<<endl;
+    double knpipi_mm=(beam_lmom+target_lmom-n_lmom-pim_lmom-pip_lmom).M();
+    double knpim_mm=(beam_lmom+target_lmom-n_lmom-pim_lmom).M();
+    double knpip_mm=(beam_lmom+target_lmom-n_lmom-pip_lmom).M();
+
+    double npim_im=(n_lmom+pim_lmom).M();
+    double npip_im=(n_lmom+pip_lmom).M();
+    double pipi_im=pipi_lmom.M();
+
+    if( Npipi_N_MIN<knpipi_mm && knpipi_mm<Npipi_N_MAX ){
+      fNumDataAll+=1.0;
+
+      bool K0_flag=false; bool Sm_flag=false; bool Sp_flag=false;
+      if( Npipi_K0_MIN<pipi_im && pipi_im<Npipi_K0_MAX ) K0_flag=true;
+      if( Npipi_Sm_MIN<npim_im && npim_im<Npipi_Sm_MAX ) Sm_flag=true;
+      if( Npipi_Sp_MIN<npip_im && npip_im<Npipi_Sp_MAX ) Sp_flag=true;
+
+      if( K0_flag ) fNumDataK0+=1.0;
+      if( Sm_flag ) fNumDataSm+=1.0;
+      if( Sp_flag ) fNumDataSp+=1.0;
+
+      if( !K0_flag && !Sm_flag && !Sp_flag ){
+	int bin_index=getMMIndex(kn_mm);
+	if( bin_index>=0 ) fNumData[bin_index] += 1.0;
+      }
+    }
+  }
+
+  for( int i=0; i<fBinMin.size(); i++ ){
+    cout<<"d(K-, n) ["<<fBinMin[i]<<"  "<<fBinMax[i]<<"] = "<<fNumData[i]<<endl;
+  }
+
+  delete anaInfo;
+}
+
+void FitConf::readSim1()
+{
+  for( int i=0; i<fBinMin.size(); i++ ){
+    fNumSim1[i]=0;
+    fTrig1[i]=0;
+    fEff1[i]=0;
+  }
+
+  Float_t m;
+  TNtuple *tup=(TNtuple*)f_sim1->Get("tup_trig_mass_fn");
+  tup-> SetBranchAddress("m", &m);
+  for( int ev=0; ev<tup->GetEntries(); ev++ ){
+    tup->GetEntry(ev);
+    //    cout<<" trig mass : "<<m<<endl;
+    int bin_index=getMMIndex(m);
+    if( bin_index>=0 ) fTrig1[bin_index]+=1.0;
+  }
+
+  tup=(TNtuple*)f_sim1->Get("tup_eff_mass_fn_pipi_mmN_woAll");
+  tup-> SetBranchAddress("m", &m);
+  for( int ev=0; ev<tup->GetEntries(); ev++ ){
+    tup->GetEntry(ev);
+    //    cout<<" trig mass : "<<m<<endl;
+    int bin_index=getMMIndex(m);
+    if( bin_index>=0 ) fEff1[bin_index]+=1.0;
+  }
+
+  TTree *tree = (TTree*)f_sim1->Get("npipi_event");
+  AnaInfo *anaInfo = new AnaInfo();
+  tree-> SetBranchAddress("AnaInfo", &anaInfo);
+
+  cout<<"Read Sim1 Entries : "<<tree->GetEntries()<<endl;
+  for( int ev=0; ev<tree->GetEntries(); ev++ ){
+    tree-> GetEntry(ev);
+    TLorentzVector target_lmom;
+    target_lmom.SetVectM(TVector3(0, 0, 0), dMass);
+    TLorentzVector beam_lmom=anaInfo->beam(0)->lmom();
+    TLorentzVector n_lmom=anaInfo->forwardNeutral(0)->lmom();
+    TLorentzVector pim_lmom=anaInfo->CDS(CDS_PiMinus, 0)->lmom();
+    TLorentzVector pip_lmom=anaInfo->CDS(CDS_PiPlus, 0)->lmom();
+    TLorentzVector pipi_lmom=anaInfo->CDS2(CDS_PiMinus, CDS_PiPlus, 0)->lmom();
+
+    double kn_mm=(beam_lmom+target_lmom-n_lmom).M();
+    double knpipi_mm=(beam_lmom+target_lmom-n_lmom-pim_lmom-pip_lmom).M();
+    double knpim_mm=(beam_lmom+target_lmom-n_lmom-pim_lmom).M();
+    double knpip_mm=(beam_lmom+target_lmom-n_lmom-pip_lmom).M();
+
+    double npim_im=(n_lmom+pim_lmom).M();
+    double npip_im=(n_lmom+pip_lmom).M();
+    double pipi_im=pipi_lmom.M();
+
+    if( Npipi_N_MIN<knpipi_mm && knpipi_mm<Npipi_N_MAX ){
+
+      bool K0_flag=false; bool Sm_flag=false; bool Sp_flag=false;
+      if( Npipi_K0_MIN<pipi_im && pipi_im<Npipi_K0_MAX ) K0_flag=true;
+      if( Npipi_Sm_MIN<npim_im && npim_im<Npipi_Sm_MAX ) Sm_flag=true;
+      if( Npipi_Sp_MIN<npip_im && npip_im<Npipi_Sp_MAX ) Sp_flag=true;
+
+      if( !K0_flag && !Sm_flag && !Sp_flag ){
+	int bin_index=getMMIndex(kn_mm);
+	if( bin_index>=0 ) fNumSim1[bin_index] += 1.0;
+      }
+    }
+  }
+
+  for( int i=0; i<fBinMin.size(); i++ ){
+    cout<<"d(K-, n) ["<<fBinMin[i]<<"  "<<fBinMax[i]<<"] = "<<fNumSim1[i]<<" "<<fTrig1[i]<<" "<<fEff1[i]<<endl;
+  }
+  delete anaInfo;
+}
+
+void FitConf::readSim2()
+{
+  for( int i=0; i<fBinMin.size(); i++ ){
+    fNumSim2[i]=0;
+    fTrig2[i]=0;
+    fEff2[i]=0;
+  }
+
+  Float_t m;
+  TNtuple *tup=(TNtuple*)f_sim2->Get("tup_trig_mass_fn");
+  tup-> SetBranchAddress("m", &m);
+  for( int ev=0; ev<tup->GetEntries(); ev++ ){
+    tup->GetEntry(ev);
+    //    cout<<" trig mass : "<<m<<endl;
+    int bin_index=getMMIndex(m);
+    if( bin_index>=0 ) fTrig2[bin_index]+=1.0;
+  }
+
+  tup=(TNtuple*)f_sim2->Get("tup_eff_mass_fn_pipi_mmN_woAll");
+  tup-> SetBranchAddress("m", &m);
+  for( int ev=0; ev<tup->GetEntries(); ev++ ){
+    tup->GetEntry(ev);
+    //    cout<<" trig mass : "<<m<<endl;
+    int bin_index=getMMIndex(m);
+    if( bin_index>=0 ) fEff2[bin_index]+=1.0;
+  }
+
+  TTree *tree = (TTree*)f_sim2->Get("npipi_event");
+  AnaInfo *anaInfo = new AnaInfo();
+  tree-> SetBranchAddress("AnaInfo", &anaInfo);
+
+  cout<<"Read Sim2 Entries : "<<tree->GetEntries()<<endl;
+  for( int ev=0; ev<tree->GetEntries(); ev++ ){
+    tree-> GetEntry(ev);
+    TLorentzVector target_lmom;
+    target_lmom.SetVectM(TVector3(0, 0, 0), dMass);
+    TLorentzVector beam_lmom=anaInfo->beam(0)->lmom();
+    TLorentzVector n_lmom=anaInfo->forwardNeutral(0)->lmom();
+    TLorentzVector pim_lmom=anaInfo->CDS(CDS_PiMinus, 0)->lmom();
+    TLorentzVector pip_lmom=anaInfo->CDS(CDS_PiPlus, 0)->lmom();
+    TLorentzVector pipi_lmom=anaInfo->CDS2(CDS_PiMinus, CDS_PiPlus, 0)->lmom();
+
+    double kn_mm=(beam_lmom+target_lmom-n_lmom).M();
+    double knpipi_mm=(beam_lmom+target_lmom-n_lmom-pim_lmom-pip_lmom).M();
+    double knpim_mm=(beam_lmom+target_lmom-n_lmom-pim_lmom).M();
+    double knpip_mm=(beam_lmom+target_lmom-n_lmom-pip_lmom).M();
+
+    double npim_im=(n_lmom+pim_lmom).M();
+    double npip_im=(n_lmom+pip_lmom).M();
+    double pipi_im=pipi_lmom.M();
+
+    if( Npipi_N_MIN<knpipi_mm && knpipi_mm<Npipi_N_MAX ){
+
+      bool K0_flag=false; bool Sm_flag=false; bool Sp_flag=false;
+      if( Npipi_K0_MIN<pipi_im && pipi_im<Npipi_K0_MAX ) K0_flag=true;
+      if( Npipi_Sm_MIN<npim_im && npim_im<Npipi_Sm_MAX ) Sm_flag=true;
+      if( Npipi_Sp_MIN<npip_im && npip_im<Npipi_Sp_MAX ) Sp_flag=true;
+
+      if( !K0_flag && !Sm_flag && !Sp_flag ){
+	int bin_index=getMMIndex(kn_mm);
+	if( bin_index>=0 ) fNumSim2[bin_index] += 1.0;
+      }
+    }
+  }
+
+  for( int i=0; i<fBinMin.size(); i++ ){
+    cout<<"d(K-, n) ["<<fBinMin[i]<<"  "<<fBinMax[i]<<"] = "<<fNumSim2[i]<<" "<<fTrig2[i]<<" "<<fEff2[i]<<endl;
+  }
+  delete anaInfo;
+}
+
+void FitConf::initHist(char *suffix)
+{
+  TString suffix2=suffix;
+  int nbin=2000/fRebinF;
+  for( int i=0;  i<fBinMin.size(); i++ ){
+    new TH2F(Form("KNpim_KNpip_MM_%s_%d", suffix2.Data(), i), "", nbin, 0, 2.0, nbin, 0, 2.0);
+    new TH1F(Form("FitKNpi_%s_%d", suffix2.Data(), i), Form("FitKNpi_%s_%d", suffix2.Data(), i), nbin, 0, 2.0);
+
+    new TH1F(Form("KNpim_MM_%s_%d", suffix2.Data(), i), Form("KNpim_MM_%s_%d", suffix2.Data(), i), nbin, 0, 2.0);
+    new TH1F(Form("KNpip_MM_%s_%d", suffix2.Data(), i), Form("KNpip_MM_%s_%d", suffix2.Data(), i), nbin, 0, 2.0);
+  }
+  cout<<suffix2<<endl;
+  new TH1F(Form("FitIM_%s", suffix2.Data()), Form("FitIM_%s", suffix2.Data()), 3000, 0, 3.0);
+
+  new TH1F(Form("IM_pipi_%s", suffix2.Data()), "", 1000, 0, 1.0);
+  new TH1F(Form("IM_npim_%s", suffix2.Data()), "", 1000, 1.0, 2.0);
+  new TH1F(Form("IM_npip_%s", suffix2.Data()), "", 1000, 1.0, 2.0);
+}
+
+void FitConf::init(char *filename)
+{
+  ifstream ifs(filename);
+
+  string outfilename;
+  string str, str2;
+  int num;
+
+  while( getline(ifs, str) ){
+    if( str[0]=='#' ) continue;
+
+    if( str.find("DataFile:")==0 ){
+      stringstream ss(str); ss>>str2; ss>>str2;
+      f_data =new TFile(str2.c_str());
+    }
+    if( str.find("Sim1:")==0 ){
+      stringstream ss(str); ss>>str2; ss>>str2;
+      f_sim1 =new TFile(str2.c_str());
+    }
+    if( str.find("Sim2:")==0 ){
+      stringstream ss(str); ss>>str2; ss>>str2;
+      f_sim2 =new TFile(str2.c_str());
+    }
+    if( str.find("K0:")==0 ){
+      stringstream ss(str); ss>>str2; ss>>num;
+      for( int i=0; i<num; i++ ){
+	getline(ifs, str);
+	f_K0.push_back(new TFile(str.c_str()));
+      }
+    }
+    if( str.find("Sm:")==0 ){
+      stringstream ss(str); ss>>str2; ss>>num;
+      for( int i=0; i<num; i++ ){
+	getline(ifs, str);
+	f_Sm.push_back(new TFile(str.c_str()));
+      }
+    }
+    if( str.find("Sp:")==0 ){
+      stringstream ss(str); ss>>str2; ss>>num;
+      for( int i=0; i<num; i++ ){
+	getline(ifs, str);
+	f_Sp.push_back(new TFile(str.c_str()));
+      }
+    }
+    if( str.find("BG:")==0 ){
+      stringstream ss(str); ss>>str2; ss>>num;
+      for( int i=0; i<num; i++ ){
+	getline(ifs, str);
+	f_BG.push_back(new TFile(str.c_str()));
+      }
+    }
+    if( str.find("OutRoot:")==0 ){
+      stringstream ss(str); ss>>str2; ss>>str2;
+      outfilename=str2;
+    }
+
+    if( str.find("NBin:")==0 ){
+      stringstream ss(str); ss>>str2; ss>>num;
+
+      double min, max;
+      for( int i=0; i<num; i++ ){
+	getline(ifs, str);
+	if( sscanf(str.c_str(), "%lf %lf", &min, &max)==2 ){
+	  fBinMin.push_back(min);
+	  fBinMax.push_back(max);
+	  fNumData.push_back(0);
+	  fNumSim1.push_back(0);
+	  fNumSim2.push_back(0);
+
+	  fEff1.push_back(0);
+	  fEff2.push_back(0);
+	  fTrig1.push_back(0);
+	  fTrig2.push_back(0);
+	  fFrac1.push_back(0);
+	  fFrac2.push_back(0);
+	  fFracBG2.push_back(0);
+	  fErr1.push_back(0);	
+	  fErr2.push_back(0);	
+	  fErr12.push_back(0);
+	  fChi2.push_back(0);	
+	  fNDF.push_back(0);
+	}
+	else{ 
+	  std::cout<<"  !!! read bin range error !!!"<<std::endl;
+	  exit(0);
+	}
+      }
+    }
+    if( str.find("Rebin:")==0 ){
+      stringstream ss(str); ss>>str2; ss>>num;
+      fRebinF=num;
+    }
+  }
+  fFracK0.resize(f_K0.size());
+  fFracSm.resize(f_Sm.size());
+  fFracSp.resize(f_Sp.size());
+
+  f_out=new TFile(outfilename.c_str(), "recreate");
+  f_out-> cd();
+  initHist("data");
+  initHist("sim1");
+  initHist("sim2");
+  for( int i=0; i<f_K0.size(); i++ ) initHist(Form("K0_%d", i));
+  for( int i=0; i<f_Sm.size(); i++ ) initHist(Form("Sm_%d", i));
+  for( int i=0; i<f_Sp.size(); i++ ) initHist(Form("Sp_%d", i));
+  for( int i=0; i<f_BG.size(); i++ ) initHist(Form("BG_%d", i));
+  initHist("MCsum");
+
+  cout<<"===== init Hist Finish ====="<<endl;
+  //  f_out->ls();
+
+  readData();
+  readSim1();
+  readSim2();
+
+  fillHist(f_data, "data");
+  fillHist_Sim(1);
+  fillHist_Sim(2);
+  for( int i=0; i<f_K0.size(); i++ ) fillHist(f_K0[i], Form("K0_%d", i));
+  for( int i=0; i<f_Sm.size(); i++ ) fillHist(f_Sm[i], Form("Sm_%d", i));
+  for( int i=0; i<f_Sp.size(); i++ ) fillHist(f_Sp[i], Form("Sp_%d", i));
+  for( int i=0; i<f_BG.size(); i++ ) fillHist(f_BG[i], Form("BG_%d", i));
+
+  fNumK0All.resize(f_K0.size());
+  for( int i=0; i<f_K0.size(); i++ ){
+    TH1F *h1 = (TH1F*)f_out->Get(Form("FitIM_K0_%d", i));
+    fNumK0All[i]=h1->GetEntries()/3.0;
+    fFracK0[i]=0;
+  }
+  fFracK0[0]=fNumDataK0/fNumDataAll;
+
+  fNumSmAll.resize(f_Sm.size());
+  for( int i=0; i<f_Sm.size(); i++ ){
+    TH1F *h1 = (TH1F*)f_out->Get(Form("FitIM_Sm_%d", i));
+    fNumSmAll[i]=h1->GetEntries()/3.0;
+    fFracSm[i]=0;
+  }
+  fFracSm[0]=fNumDataSm/fNumDataAll;
+
+  fNumSpAll.resize(f_Sp.size());
+  for( int i=0; i<f_Sp.size(); i++ ){
+    TH1F *h1 = (TH1F*)f_out->Get(Form("FitIM_Sp_%d", i));
+    fNumSpAll[i]=h1->GetEntries()/3.0;
+    fFracSp[i]=0;
+  }
+  fFracSp[0]=fNumDataSp/fNumDataAll;
+}
+
+void FitConf::finit()
+{
+  cout<<"===== FitConf::finit ====="<<endl;
+  printParam();
+  if( f_out ){
+    makeAccKN();
+    makeChi2();
+    makeLS();
+    makeCS();
+
+    f_out-> Write();
+    f_out-> Close();
+    delete f_out;
+  }
+}
+
+int FitConf::getMMIndex(double mm)
+{
+  for( int i=0; i<fBinMin.size(); i++ ){
+    if( fBinMin[i]<=mm && mm<fBinMax[i] ) return i;
+  }
+
+  return -1;
+}
+
+double FitConf::getScale(const int id, double mm)
+{
+  if( id<1 || 2<id ){
+    cout<<"  !!! FitConf::getScale error id="<<id<<"  !!!"<<endl;
+  }
+
+  for( int i=0; i<fBinMin.size(); i++ ){
+    if( fBinMin[i]<=mm && mm<fBinMax[i] ){
+      if( id==1 ) return fNumData[i]*fFrac1[i]/fNumSim1[i];
+      if( id==2 ) return fNumData[i]*fFrac2[i]/fNumSim2[i];
+    }
+  }
+
+  //  cout<<"  !!! FitConf::getScale"<<id<<"  out of range mm:"<<mm<<" !!!"<<endl;
+  return 0.0;
+}
+
+double FitConf::calcEntries(TH1F *h1)
+{
+  double sum=0;
+  for( int bin=1; bin<=h1->GetNbinsX(); bin++ ){
+    sum += h1->GetBinContent(bin);
+  }
+  h1-> SetEntries(sum);
+
+  return sum;
+}
+
+double FitConf::ndf(TH1 *data, TObjArray *mc)
+{
+  double result=0;
+  for( int bin=1; bin<=data->GetNbinsX(); bin++ ){
+    bool flag=false;
+    if( data->GetBinContent(bin)>0 ) flag=true;
+    for( int i=0; i<mc->GetEntries(); i++ ){
+      TH1* h1=(TH1*)mc->At(i);
+      if( h1->GetBinContent(bin)>0 ) flag=true;
+    }
+    if( flag ) result+=1.0;
+  }
+
+  result-=mc->GetEntries();
+  return result;
+}
+
+void FitConf::drawKNpi(int index)
+{
+  gStyle-> SetPadTopMargin(0.01);
+  gStyle-> SetPadRightMargin(0.1);
+  gStyle-> SetPadBottomMargin(0.15);
+  gStyle-> SetPadLeftMargin(0.15);
+
+  TCanvas *c1=0;
+  TString name=Form("pic_KNpi_%d", index);
+  if( f_out->Get(name) ){
+    c1=(TCanvas*)f_out->Get(name);
+    c1-> Delete();
+  }
+  c1=new TCanvas(name, name);
+
+  gStyle-> SetPadLeftMargin(0.15);
+  gStyle-> SetPadBottomMargin(0.15);
+  gStyle-> SetPadTopMargin(0.002);
+  gStyle-> SetPadRightMargin(0.002);
+  TPad *pad=new TPad("pad", "pad", 0, 0, 0.6, 0.6);
+  pad-> Draw();
+
+  gStyle-> SetPadBottomMargin(0.002);
+  TPad *padx=new TPad("padx", "padx", 0, 0.6, 0.6, 1.0);
+  padx-> Draw();
+
+  gStyle-> SetPadBottomMargin(0.15);
+  gStyle-> SetPadLeftMargin(0.002);
+  TPad *pady=new TPad("pady", "pady", 0.6, 0.0, 1.0, 0.6);
+  pady-> Draw();
+
+  pad-> cd();
+  TH2F *h2 = (TH2F*)gFile-> Get(Form("KNpim_KNpip_MM_data_%d", index));
+  h2-> SetStats(0);
+  h2-> GetXaxis()-> CenterTitle();
+  h2-> GetYaxis()-> CenterTitle();
+  h2-> SetLabelSize(0.05, "XY");
+  h2-> GetXaxis()-> SetTitleSize(0.06);
+  h2-> GetYaxis()-> SetTitleSize(0.06);
+  h2-> GetYaxis()-> SetTitle("d(K^{-}, n #pi^{+})\"X\" [GeV/c^{2}]");
+  h2-> GetXaxis()-> SetTitle("d(K^{-}, n #pi^{-})\"X\" [GeV/c^{2}]");
+  h2-> GetYaxis()-> SetRangeUser(1.05, 1.55);
+  h2-> GetXaxis()-> SetRangeUser(1.05, 1.55);
+  h2-> Draw("colz");
+
+  padx-> cd();
+  TH1F *h1=(TH1F*)f_out->Get(Form("KNpim_MM_data_%d", index));
+  h1-> SetTitle("");
+  h1-> SetStats(0);
+  h1-> SetLineWidth(2);
+  h1-> SetLineColor(kBlack);
+  h1-> GetXaxis()-> CenterTitle();
+  h1-> GetYaxis()-> CenterTitle();
+  h1-> SetLabelSize(0.05, "XY");
+  h1-> GetXaxis()-> SetTitleSize(0.06);
+  h1-> GetYaxis()-> SetTitleSize(0.06);
+  h1-> GetXaxis()-> SetTitle("d(K^{-}, n #pi^{-})\"X\" [GeV/c^{2}]");
+  h1-> GetYaxis()-> SetTitle(Form("Counts/%1.0lf MeV/c^{2}", 1000*h1->GetBinWidth(1)));
+  h1-> GetXaxis()-> SetRangeUser(1.05, 1.55);
+
+  TH1F *h1_sum=(TH1F*)f_out->Get(Form("KNpim_MM_MCsum_%d", index));
+  h1_sum-> Reset();
+  TH1F *h1_sim1=(TH1F*)f_out->Get(Form("KNpim_MM_sim1_%d", index))-> Clone();
+  h1_sim1->Scale(getScale(1, 0.5*(fBinMin[index]+fBinMax[index])));
+  TH1F *h1_sim2=(TH1F*)f_out->Get(Form("KNpim_MM_sim2_%d", index))-> Clone();
+  h1_sim2->Scale(getScale(2, 0.5*(fBinMin[index]+fBinMax[index])));
+		 
+  TH1F *h1_K0 = (TH1F*)f_out->Get(Form("KNpim_MM_K0_%d_%d", 0, index))-> Clone("IM_npim_K0_0_clone");
+  h1_K0-> Scale(getScaleK0(0));
+  for( int i=1; i<f_K0.size(); i++ ) h1_K0-> Add((TH1F*)f_out->Get(Form("KNpim_MM_K0_%d_%d", i, index)), getScaleK0(i));
+
+  TH1F *h1_Sm = (TH1F*)f_out->Get(Form("KNpim_MM_Sm_%d_%d", 0, index))-> Clone("IM_npip_Sm_0_clone");
+  h1_Sm-> Scale(getScaleSm(0));
+  for( int i=1; i<f_Sm.size(); i++ ) h1_Sm-> Add((TH1F*)f_out->Get(Form("KNpim_MM_Sm_%d_%d", i, index)), getScaleSm(i));
+
+  TH1F *h1_Sp = (TH1F*)f_out->Get(Form("KNpim_MM_Sp_%d_%d", 0, index))-> Clone("IM_npip_Sp_0_clone");
+  h1_Sp-> Scale(getScaleSp(0));
+  for( int i=1; i<f_Sp.size(); i++ ) h1_Sp-> Add((TH1F*)f_out->Get(Form("KNpim_MM_Sp_%d_%d", i, index)), getScaleSp(i));
+  h1_sum-> Add(h1_sim1);
+  h1_sum-> Add(h1_sim2);
+  h1_sum-> Add(h1_K0);
+  h1_sum-> Add(h1_Sm);
+  h1_sum-> Add(h1_Sp);
+
+  h1-> Draw("e");
+
+  h1_sum-> SetLineWidth(2);
+  h1_sum-> SetLineColor(kGray);
+  h1_sum-> Draw("same");
+
+  h1-> Draw("e, same");
+
+  h1_sim1-> SetLineColor(kRed);
+  h1_sim1-> SetLineWidth(2);
+  h1_sim1-> Draw("same");
+
+  h1_sim2-> SetLineColor(kBlue);
+  h1_sim2-> SetLineWidth(2);
+  h1_sim2-> Draw("same");
+
+  h1_K0-> SetLineColor(3);
+  h1_K0-> Draw("same");
+
+  h1_Sm-> SetLineColor(6);
+  h1_Sm-> Draw("same");
+
+  h1_Sp-> SetLineColor(6);
+  h1_Sp-> Draw("same");
+
+  pady-> cd();
+  h1=(TH1F*)f_out->Get(Form("KNpip_MM_data_%d", index));
+  TGraphErrors *gra=new TGraphErrors(h1->GetNbinsX());
+  for( int bin=1; bin<=h1->GetNbinsX(); bin++ ){
+    gra-> SetPoint(bin-1, h1->GetBinContent(bin), h1->GetBinCenter(bin));
+    gra-> SetPointError(bin-1, h1->GetBinError(bin), 0.5*h1->GetBinWidth(bin));
+  }
+
+  h1_K0 = (TH1F*)f_out->Get(Form("KNpip_MM_K0_%d_%d", 0, index))-> Clone("IM_npip_K0_0_clone");
+  h1_K0-> Scale(getScaleK0(0));
+  for( int i=1; i<f_K0.size(); i++ ) h1_K0-> Add((TH1F*)f_out->Get(Form("KNpip_MM_K0_%d_%d", i, index)), getScaleK0(i));
+
+  h1_Sm = (TH1F*)f_out->Get(Form("KNpip_MM_Sm_%d_%d", 0, index))-> Clone("IM_npip_Sm_0_clone");
+  h1_Sm-> Scale(getScaleSm(0));
+  for( int i=1; i<f_Sm.size(); i++ ) h1_Sm-> Add((TH1F*)f_out->Get(Form("KNpip_MM_Sm_%d_%d", i, index)), getScaleSm(i));
+
+  h1_Sp = (TH1F*)f_out->Get(Form("KNpip_MM_Sp_%d_%d", 0, index))-> Clone("IM_npip_Sp_0_clone");
+  h1_Sp-> Scale(getScaleSp(0));
+  for( int i=1; i<f_Sp.size(); i++ ) h1_Sp-> Add((TH1F*)f_out->Get(Form("KNpip_MM_Sp_%d_%d", i, index)), getScaleSp(i));
+
+  h1_sum=(TH1F*)f_out->Get(Form("KNpip_MM_MCsum_%d", index));
+  h1_sum-> Reset();
+  h1_sim1=(TH1F*)f_out->Get(Form("KNpip_MM_sim1_%d", index))-> Clone();
+  h1_sim1->Scale(getScale(1, 0.5*(fBinMin[index]+fBinMax[index])));
+  h1_sim2=(TH1F*)f_out->Get(Form("KNpip_MM_sim2_%d", index))-> Clone();
+  h1_sim2->Scale(getScale(2, 0.5*(fBinMin[index]+fBinMax[index])));
+
+  TGraph *gra_K0=new TGraph(2*h1->GetNbinsX());
+  for( int bin=1; bin<=h1->GetNbinsX(); bin++ ){
+    gra_K0-> SetPoint(2*bin-2, h1_K0->GetBinContent(bin), h1_K0->GetBinCenter(bin)-0.5*h1->GetBinWidth(bin));
+    gra_K0-> SetPoint(2*bin-1, h1_K0->GetBinContent(bin), h1_K0->GetBinCenter(bin)+0.5*h1->GetBinWidth(bin));
+  }
+
+  TGraph *gra_Sm=new TGraph(2*h1->GetNbinsX());
+  for( int bin=1; bin<=h1->GetNbinsX(); bin++ ){
+    gra_Sm-> SetPoint(2*bin-2, h1_Sm->GetBinContent(bin), h1_Sm->GetBinCenter(bin)-0.5*h1->GetBinWidth(bin));
+    gra_Sm-> SetPoint(2*bin-1, h1_Sm->GetBinContent(bin), h1_Sm->GetBinCenter(bin)+0.5*h1->GetBinWidth(bin));
+  }
+  TGraph *gra_Sp=new TGraph(2*h1->GetNbinsX());
+  for( int bin=1; bin<=h1->GetNbinsX(); bin++ ){
+    gra_Sp-> SetPoint(2*bin-2, h1_Sp->GetBinContent(bin), h1_Sp->GetBinCenter(bin)-0.5*h1->GetBinWidth(bin));
+    gra_Sp-> SetPoint(2*bin-1, h1_Sp->GetBinContent(bin), h1_Sp->GetBinCenter(bin)+0.5*h1->GetBinWidth(bin));
+  }
+
+  TGraph *gra_sim1=new TGraph(2*h1->GetNbinsX());
+  for( int bin=1; bin<=h1->GetNbinsX(); bin++ ){
+    gra_sim1-> SetPoint(2*bin-2, h1_sim1->GetBinContent(bin), h1_sim1->GetBinCenter(bin)-0.5*h1->GetBinWidth(bin));
+    gra_sim1-> SetPoint(2*bin-1, h1_sim1->GetBinContent(bin), h1_sim1->GetBinCenter(bin)+0.5*h1->GetBinWidth(bin));
+  }
+  TGraph *gra_sim2=new TGraph(2*h1->GetNbinsX());
+  for( int bin=1; bin<=h1->GetNbinsX(); bin++ ){
+    gra_sim2-> SetPoint(2*bin-2, h1_sim2->GetBinContent(bin), h1_sim2->GetBinCenter(bin)-0.5*h1->GetBinWidth(bin));
+    gra_sim2-> SetPoint(2*bin-1, h1_sim2->GetBinContent(bin), h1_sim2->GetBinCenter(bin)+0.5*h1->GetBinWidth(bin));
+  }
+
+  h1_sum-> Add(h1_sim1);
+  h1_sum-> Add(h1_sim2);
+  h1_sum-> Add(h1_K0);
+  h1_sum-> Add(h1_Sm);
+  h1_sum-> Add(h1_Sp);
+  TGraph *gra_sum=new TGraph(2*h1->GetNbinsX());
+  for( int bin=1; bin<=h1->GetNbinsX(); bin++ ){
+    gra_sum-> SetPoint(2*bin-2, h1_sum->GetBinContent(bin), h1_sum->GetBinCenter(bin)-0.5*h1->GetBinWidth(bin));
+    gra_sum-> SetPoint(2*bin-1, h1_sum->GetBinContent(bin), h1_sum->GetBinCenter(bin)+0.5*h1->GetBinWidth(bin));
+  }
+
+  gra-> SetTitle("");
+  gra-> SetMarkerStyle(0);
+  gra-> SetLineWidth(2);
+  gra-> SetLineColor(kBlack);
+  gra-> SetMinimum(1.05);
+  gra-> SetMaximum(1.55);
+  gra-> GetXaxis()-> SetTitle(Form("Counts/%1.0lf MeV/c^{2}]", 1000.*h1->GetBinWidth(1)));
+  gra-> Draw("APZ");
+
+  gra_sum-> SetLineColor(kGray);
+  gra_sum-> SetLineWidth(2);
+  gra_sum-> Draw("L");
+
+  gra_sim1-> SetLineColor(kRed);
+  gra_sim1-> SetLineWidth(2);
+  gra_sim1-> Draw("L");
+  gra_sim2-> SetLineColor(kBlue);
+  gra_sim2-> SetLineWidth(2);
+  gra_sim2-> Draw("L");
+
+
+  gra_K0-> SetLineColor(3);
+  gra_K0-> Draw("L");
+  gra_Sm-> SetLineColor(7);
+  gra_Sm-> Draw("L");
+  gra_Sp-> SetLineColor(5);
+  gra_Sp-> Draw("L");
+
+  c1-> Write(name);
+}
+
+void FitConf::drawSp()
+{
+  gStyle-> SetPadTopMargin(0.01);
+  gStyle-> SetPadRightMargin(0.1);
+  gStyle-> SetPadBottomMargin(0.15);
+  gStyle-> SetPadLeftMargin(0.15);
+
+  TCanvas *c1=0;
+  if( f_out->Get("pic_Sp") ){
+    c1=(TCanvas*)f_out->Get("pic_Sp");
+    c1-> Delete();
+  }
+  c1=new TCanvas("pic_Sp", "pic_Sp");
+
+  TH1F *h1 = (TH1F*)f_out->Get("IM_npip_data");
+  TH1F *h1_K0 = (TH1F*)f_out->Get("IM_npip_K0_0")-> Clone("IM_npip_K0_0_clone");
+  h1_K0-> Scale(getScaleK0(0));
+  for( int i=1; i<f_K0.size(); i++ ) h1_K0-> Add((TH1F*)f_out->Get(Form("IM_npip_K0_%d", i)), getScaleK0(i));
+
+  TH1F *h1_Sm = (TH1F*)f_out->Get("IM_npip_Sm_0")-> Clone("IM_npip_Sm_0_clone");
+  h1_Sm-> Scale(getScaleSm(0));
+  for( int i=1; i<f_Sm.size(); i++ ) h1_Sm-> Add((TH1F*)f_out->Get(Form("IM_npip_Sm_%d", i)), getScaleSm(i));
+
+  TH1F *h1_Sp = (TH1F*)f_out->Get("IM_npip_Sp_0")-> Clone("IM_npip_Sp_0_clone");
+  h1_Sp-> Scale(getScaleSp(0));
+  for( int i=1; i<f_Sp.size(); i++ ) h1_Sp-> Add((TH1F*)f_out->Get(Form("IM_npip_Sp_%d", i)), getScaleSp(i));
+
+  TH1F *h1_sim1 = (TH1F*)f_out->Get("IM_npip_sim1");
+  TH1F *h1_sim2 = (TH1F*)f_out->Get("IM_npip_sim2");
+
+  TH1F *h1_sum = (TH1F*)f_out->Get("IM_npip_MCsum");
+  h1_sum->Reset();
+
+  h1_sum-> Add(h1_K0);
+  h1_sum-> Add(h1_Sm);
+  h1_sum-> Add(h1_Sp);
+  h1_sum-> Add(h1_sim1);
+  h1_sum-> Add(h1_sim2);
+  h1_sum-> SetLineColor(kGray);
+  h1_sum-> SetLineWidth(2);
+
+  h1-> SetStats(0);
+  h1-> GetXaxis()-> CenterTitle();
+  h1-> GetYaxis()-> CenterTitle();
+  h1-> SetLabelSize(0.05, "XY");
+  h1-> GetXaxis()-> SetTitleSize(0.06);
+  h1-> GetYaxis()-> SetTitleSize(0.06);
+  h1-> GetXaxis()-> SetTitle("Invariant mass of n #pi^{+} [GeV/c^{2}]");
+  h1-> GetYaxis()-> SetTitle(Form("Counts/%1.0lf MeV/c^{2}", 1000.*h1->GetBinWidth(1)));
+  h1-> SetLineColor(kBlack);
+  h1-> SetLineWidth(2);
+  h1-> GetXaxis()-> SetRangeUser(1.05, 1.55);
+
+  if( h1_sum->GetMaximum()>h1->GetMaximum() ){
+    h1-> GetYaxis()-> SetRangeUser(0, 1.1*h1_sum->GetMaximum());
+  }
+  h1-> Draw("e");
+  h1_sum-> Draw("same");
+  h1-> Draw("e, same");
+
+  h1_K0-> SetLineWidth(2);
+  h1_K0-> SetLineColor(3);
+  h1_K0-> Draw("same");
+
+  h1_Sm-> SetLineWidth(2);
+  h1_Sm-> SetLineColor(6);
+  h1_Sm-> Draw("same");
+
+  h1_Sp-> SetLineWidth(2);
+  h1_Sp-> SetLineColor(5);
+  h1_Sp-> Draw("same");
+
+  h1_sim1-> SetLineColor(kRed);
+  h1_sim1-> Draw("same");
+
+  h1_sim2-> SetLineColor(kBlue);
+  h1_sim2-> Draw("same");
+  TLegend *leg=new TLegend(0.4, 0.65, 0.9, 0.95);
+  leg-> SetNColumns(2);
+  leg-> SetFillStyle(0);
+  leg-> SetBorderSize(0);
+  leg-> AddEntry(h1, "Data", "lep");
+  leg-> AddEntry(h1_K0, "K^{0} prod", "lp");
+  leg-> AddEntry(h1_Sm, "Forward #Sigma^{-}", "lp");
+  leg-> AddEntry(h1_Sp, "Forward #Sigma^{+}", "lp");
+  leg-> AddEntry(h1_sim2, "#Lambda(1405) #rightarrow #Sigma^{-} #pi^{+}", "lp");
+  leg-> AddEntry(h1_sim1, "#Lambda(1405) #rightarrow #Sigma^{+} #pi^{-}", "lp");
+  leg-> Draw();
+
+  //  c1-> Update();
+  c1-> Write("pic_Sp");
+}
+
+void FitConf::drawK0()
+{
+  gStyle-> SetPadTopMargin(0.01);
+  gStyle-> SetPadRightMargin(0.1);
+  gStyle-> SetPadBottomMargin(0.15);
+  gStyle-> SetPadLeftMargin(0.15);
+
+  TCanvas *c1=0;
+  if( f_out->Get("pic_K0") ){
+    c1=(TCanvas*)f_out->Get("pic_K0");
+    c1-> Delete();
+  }
+  c1=new TCanvas("pic_K0", "pic_K0");
+
+  TH1F *h1 = (TH1F*)f_out->Get("IM_pipi_data");
+  TH1F *h1_K0 = (TH1F*)f_out->Get("IM_pipi_K0_0")-> Clone("IM_pipi_K0_0_clone");
+  h1_K0-> Scale(getScaleK0(0));
+  for( int i=1; i<f_K0.size(); i++ ) h1_K0-> Add((TH1F*)f_out->Get(Form("IM_pipi_K0_%d", i)), getScaleK0(i));
+
+  TH1F *h1_Sm = (TH1F*)f_out->Get("IM_pipi_Sm_0")-> Clone("IM_pipi_Sm_0_clone");
+  h1_Sm-> Scale(getScaleSm(0));
+  for( int i=1; i<f_Sm.size(); i++ ) h1_Sm-> Add((TH1F*)f_out->Get(Form("IM_pipi_Sm_%d", i)), getScaleSm(i));
+
+  TH1F *h1_Sp = (TH1F*)f_out->Get("IM_pipi_Sp_0")-> Clone("IM_pipi_Sp_0_clone");
+  h1_Sp-> Scale(getScaleSp(0));
+  for( int i=1; i<f_Sp.size(); i++ ) h1_Sp-> Add((TH1F*)f_out->Get(Form("IM_pipi_Sp_%d", i)), getScaleSp(i));
+
+  TH1F *h1_sim1 = (TH1F*)f_out->Get("IM_pipi_sim1");
+  TH1F *h1_sim2 = (TH1F*)f_out->Get("IM_pipi_sim2");
+
+  TH1F *h1_sum = (TH1F*)f_out->Get("IM_pipi_MCsum");
+  h1_sum->Reset();
+
+  h1_sum-> Add(h1_K0);
+  h1_sum-> Add(h1_Sm);
+  h1_sum-> Add(h1_Sp);
+  h1_sum-> Add(h1_sim1);
+  h1_sum-> Add(h1_sim2);
+  h1_sum-> SetLineColor(kGray);
+  h1_sum-> SetLineWidth(2);
+
+  h1-> SetStats(0);
+  h1-> GetXaxis()-> CenterTitle();
+  h1-> GetYaxis()-> CenterTitle();
+  h1-> SetLabelSize(0.05, "XY");
+  h1-> GetXaxis()-> SetTitleSize(0.06);
+  h1-> GetYaxis()-> SetTitleSize(0.06);
+  h1-> GetXaxis()-> SetTitle("Invariant mass of #pi^{+} #pi^{-} [GeV/c^{2}]");
+  h1-> GetYaxis()-> SetTitle(Form("Counts/%1.0lf MeV/c^{2}", 1000.*h1->GetBinWidth(1)));
+  h1-> SetLineColor(kBlack);
+  h1-> SetLineWidth(2);
+  h1-> GetXaxis()-> SetRangeUser(0.25, 0.75);
+
+  if( h1_sum->GetMaximum()>h1->GetMaximum() ){
+    h1-> GetYaxis()-> SetRangeUser(0, 1.1*h1_sum->GetMaximum());
+  }
+  h1-> Draw("e");
+  h1_sum-> Draw("same");
+  h1-> Draw("e, same");
+
+  h1_K0-> SetLineWidth(2);
+  h1_K0-> SetLineColor(3);
+  h1_K0-> Draw("same");
+
+  h1_Sm-> SetLineWidth(2);
+  h1_Sm-> SetLineColor(6);
+  h1_Sm-> Draw("same");
+
+  h1_Sp-> SetLineWidth(2);
+  h1_Sp-> SetLineColor(5);
+  h1_Sp-> Draw("same");
+
+  h1_sim1-> SetLineColor(kRed);
+  h1_sim1-> Draw("same");
+
+  h1_sim2-> SetLineColor(kBlue);
+  h1_sim2-> Draw("same");
+  TLegend *leg=new TLegend(0.6, 0.5, 0.9, 0.95);
+  leg-> SetFillStyle(0);
+  leg-> SetBorderSize(0);
+  leg-> AddEntry(h1, "Data", "lep");
+  leg-> AddEntry(h1_K0, "K^{0} prod", "lp");
+  leg-> AddEntry(h1_Sm, "Forward #Sigma^{-}", "lp");
+  leg-> AddEntry(h1_Sp, "Forward #Sigma^{+}", "lp");
+  leg-> AddEntry(h1_sim2, "#Lambda(1405) #rightarrow #Sigma^{-} #pi^{+}", "lp");
+  leg-> AddEntry(h1_sim1, "#Lambda(1405) #rightarrow #Sigma^{+} #pi^{-}", "lp");
+  leg-> Draw();
+
+  //  c1-> Update();
+  c1-> Write("pic_K0");
+}
+
+void FitConf::drawSm()
+{
+  gStyle-> SetPadTopMargin(0.01);
+  gStyle-> SetPadRightMargin(0.1);
+  gStyle-> SetPadBottomMargin(0.15);
+  gStyle-> SetPadLeftMargin(0.15);
+
+  TCanvas *c1=0;
+  if( f_out->Get("pic_Sm") ){
+    c1=(TCanvas*)f_out->Get("pic_Sm");
+    c1-> Delete();
+  }
+  c1=new TCanvas("pic_Sm", "pic_Sm");
+
+  TH1F *h1 = (TH1F*)f_out->Get("IM_npim_data");
+  TH1F *h1_K0 = (TH1F*)f_out->Get("IM_npim_K0_0")-> Clone("IM_npim_K0_0_clone");
+  h1_K0-> Scale(getScaleK0(0));
+  for( int i=1; i<f_K0.size(); i++ ) h1_K0-> Add((TH1F*)f_out->Get(Form("IM_npim_K0_%d", i)), getScaleK0(i));
+
+  TH1F *h1_Sm = (TH1F*)f_out->Get("IM_npim_Sm_0")-> Clone("IM_npim_Sm_0_clone");
+  h1_Sm-> Scale(getScaleSm(0));
+  for( int i=1; i<f_Sm.size(); i++ ) h1_Sm-> Add((TH1F*)f_out->Get(Form("IM_npim_Sm_%d", i)), getScaleSm(i));
+
+  TH1F *h1_Sp = (TH1F*)f_out->Get("IM_npim_Sp_0")-> Clone("IM_npim_Sp_0_clone");
+  h1_Sp-> Scale(getScaleSp(0));
+  for( int i=1; i<f_Sp.size(); i++ ) h1_Sp-> Add((TH1F*)f_out->Get(Form("IM_npim_Sp_%d", i)), getScaleSp(i));
+
+  TH1F *h1_sim1 = (TH1F*)f_out->Get("IM_npim_sim1");
+  TH1F *h1_sim2 = (TH1F*)f_out->Get("IM_npim_sim2");
+
+  TH1F *h1_sum = (TH1F*)f_out->Get("IM_npim_MCsum");
+  h1_sum->Reset();
+
+  h1_sum-> Add(h1_K0);
+  h1_sum-> Add(h1_Sm);
+  h1_sum-> Add(h1_Sp);
+  h1_sum-> Add(h1_sim1);
+  h1_sum-> Add(h1_sim2);
+  h1_sum-> SetLineColor(kGray);
+  h1_sum-> SetLineWidth(2);
+
+  h1-> SetStats(0);
+  h1-> GetXaxis()-> CenterTitle();
+  h1-> GetYaxis()-> CenterTitle();
+  h1-> SetLabelSize(0.05, "XY");
+  h1-> GetXaxis()-> SetTitleSize(0.06);
+  h1-> GetYaxis()-> SetTitleSize(0.06);
+  h1-> GetXaxis()-> SetTitle("Invariant mass of n #pi^{-} [GeV/c^{2}]");
+  h1-> GetYaxis()-> SetTitle(Form("Counts/%1.0lf MeV/c^{2}", 1000.*h1->GetBinWidth(1)));
+  h1-> SetLineColor(kBlack);
+  h1-> SetLineWidth(2);
+  h1-> GetXaxis()-> SetRangeUser(1.05, 1.55);
+
+  if( h1_sum->GetMaximum()>h1->GetMaximum() ){
+    h1-> GetYaxis()-> SetRangeUser(0, 1.1*h1_sum->GetMaximum());
+  }
+  h1-> Draw("e");
+  h1_sum-> Draw("same");
+  h1-> Draw("e, same");
+
+  h1_K0-> SetLineWidth(2);
+  h1_K0-> SetLineColor(3);
+  h1_K0-> Draw("same");
+
+  h1_Sm-> SetLineWidth(2);
+  h1_Sm-> SetLineColor(6);
+  h1_Sm-> Draw("same");
+
+  h1_Sp-> SetLineWidth(2);
+  h1_Sp-> SetLineColor(5);
+  h1_Sp-> Draw("same");
+
+  h1_sim1-> SetLineColor(kRed);
+  h1_sim1-> Draw("same");
+
+  h1_sim2-> SetLineColor(kBlue);
+  h1_sim2-> Draw("same");
+  TLegend *leg=new TLegend(0.6, 0.5, 0.9, 0.95);
+  leg-> SetFillStyle(0);
+  leg-> SetBorderSize(0);
+  leg-> AddEntry(h1, "Data", "lep");
+  leg-> AddEntry(h1_K0, "K^{0} prod", "lp");
+  leg-> AddEntry(h1_Sm, "Forward #Sigma^{-}", "lp");
+  leg-> AddEntry(h1_Sp, "Forward #Sigma^{+}", "lp");
+  leg-> AddEntry(h1_sim2, "#Lambda(1405) #rightarrow #Sigma^{-} #pi^{+}", "lp");
+  leg-> AddEntry(h1_sim1, "#Lambda(1405) #rightarrow #Sigma^{+} #pi^{-}", "lp");
+  leg-> Draw();
+
+  //  c1-> Update();
+  c1-> Write("pic_Sm");
+}

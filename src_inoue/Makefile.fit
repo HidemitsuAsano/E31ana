@@ -1,0 +1,2 @@
+fitKN: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/FitKN.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
+       $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)

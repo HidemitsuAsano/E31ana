@@ -1,0 +1,623 @@
+#include "File.h"
+#include "ConfMan.h"
+#include "TKO.h"
+#include "CDSHitMan.h"
+#include "BeamLineHitMan.h"
+#include "EventHeader.h"
+#include "ScalerMan.h"
+#include "BeamLineTrackMan.h"
+#include "HistManBeamAna.h"
+#include "CDSTrackingMan.h"
+
+#include "EventAlloc.h"
+#include "EventTemp.h"
+#include "BeamSpectrometer.h"
+
+#include "HistManwMC.h"
+
+#define CHECK_TREE 1
+#define BLDC_CHI_CUT 1
+//#define BLDC_WIDE_TIMING 1
+
+class EventAnalysisNpipi: public EventTemp
+{
+public:
+  EventAnalysisNpipi();
+  ~EventAnalysisNpipi();
+
+private:
+  int Event_Number_onSpill;
+  int CDC_Event_Num;
+  TFile *cdcFile;
+  TTree *cdcTree;
+  CDSTrackingMan *cdstrackMan;
+  EventHeader *cdcHeader;
+
+  TFile *rtFile;
+  CDSHitMan *cdsMan;
+  CDSTrackingMan *trackingMan;
+  BeamLineHitMan *blMan;
+  EventHeader *header;
+  ScalerMan *scaMan;
+
+  BeamLineTrackMan *bltrackMan;
+  BeamSpectrometer *beamSpec;
+
+  HistManwMC *histMan;
+
+#if CHECK_TREE
+  int fNT0;
+  int fReductionNum;
+#endif
+
+public:
+  void Initialize( ConfMan *conf );
+  void InitializeHistogram();
+  void USca( int nsca, unsigned int *sca );
+  bool UAna( TKOHitCollection *tko );
+  void Clear();
+  void Finalize();
+};
+
+EventAnalysisNpipi::EventAnalysisNpipi()
+  : EventTemp()
+{
+  std::cout<<"EventAnalysisNpipi::Constractor Call"<<std::endl;
+}
+
+EventAnalysisNpipi::~EventAnalysisNpipi()
+{
+}
+
+const int MaxTreeSize = 1900000000000;
+void EventAnalysisNpipi::Initialize( ConfMan *conf )
+{
+  std::cout<<"EventAnalysisNpipi::Initialization START"<<std::endl;
+  Event_Number_onSpill = 0;
+  CDC_Event_Num = 0;
+  confMan = conf;
+  cdcFile = new TFile((TString)confMan->GetCDSTrackFileName());
+  cdstrackMan = new CDSTrackingMan();
+  cdcHeader = new EventHeader();
+  cdcTree = (TTree*)cdcFile-> Get("EventTree");
+  cdcTree-> SetBranchAddress("EventHeader", &cdcHeader);
+  cdcTree-> SetBranchAddress("CDSTrackingMan", &cdstrackMan);
+  
+  rtFile = new TFile( confMan->GetOutFileName().c_str(), "recreate" );
+
+  header = new EventHeader();
+  cdsMan = new CDSHitMan();
+  blMan = new BeamLineHitMan();
+  scaMan = new ScalerMan();
+  bltrackMan = new BeamLineTrackMan();
+  beamSpec = new BeamSpectrometer(confMan);
+
+  histMan = new HistManwMC(rtFile, confMan);
+  histMan-> setK18ana(blMan, cdsMan, bltrackMan, cdstrackMan);
+  histMan-> initHist();
+
+  InitializeHistogram();
+  std::cout<<"EventAnalysisNpipi::Initialization FINISH"<<std::endl;
+}
+
+void EventAnalysisNpipi::USca( int nsca, unsigned int *sca )
+{
+  Block_Event_Number++;
+  header->SetBlockEventNumber( Block_Event_Number );
+  scaMan->SetBlockEventNumber( Block_Event_Number );
+  for( int i=0; i<nsca; i++ ){
+   scaMan->AddHit( sca[i], confMan->GetScalerMapManager()->GetName(i) );
+  }
+
+  scaMan->Clear();
+}
+
+bool EventAnalysisNpipi::UAna( TKOHitCollection *tko )
+{
+  TH1F *h1;
+  TH2F *h2;
+#if CHECK_TREE
+  TTree *check_tree = (TTree*)gFile-> Get("CheckTree");
+  fReductionNum = -1;
+  fNT0 = 0;
+#endif
+
+  Event_Number++;
+  { int status = confMan->CheckEvNum( Event_Number, Block_Event_Number );
+    if( status==1 ) return true;
+    if( status==2 ) return false; }
+
+  if( Event_Number%5000==0 )
+    std::cout << " Event# : " << Event_Number << "  BlockEvent# : " << Block_Event_Number << std::endl;
+
+  TH1F *h1_ER = (TH1F*)gFile-> Get("EventReduction");
+  h1_ER-> Fill(-1);
+    
+  header->SetRunNumber(0);
+  header->SetEventNumber(Event_Number);
+  
+  header->Convert( tko, confMan );
+  if( header->IsTrig(Trig_Cosmic) ){
+    Clear();
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return true;
+  }
+  Event_Number_onSpill++;
+
+  TH1F *h1_Kf = (TH1F*)gFile-> Get("Kf_Reduction");
+  TH1F *h1_N  = (TH1F*)gFile-> Get("N_Reduction");
+
+  blMan->Convert( tko, confMan );
+  cdsMan->Convert( tko, confMan );
+
+#if CHECK_TREE
+  fReductionNum = 0;
+#endif
+  h1_ER-> Fill(0);
+  if( header->IsTrig(Trig_Kf)      ) h1_Kf-> Fill(0);
+  if( header->IsTrig(Trig_Neutral) ) h1_N-> Fill(0);
+
+  //*** Check T0 1hit ***//
+  int nT0=0;
+  double T0time = DBL_MIN;
+  for( int i=0; i<blMan->nT0(); i++ ){
+    if( blMan->T0(i)->CheckRange() ){
+      nT0++;
+      T0time = blMan->T0(i)->ctmean();
+    }
+  }
+  h1 = (TH1F*)gFile-> Get("nT0"), h1->Fill(nT0);
+#if CHECK_TREE
+  fNT0 = nT0;
+#endif
+
+  if( nT0!=1 ){
+    Clear();
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return true;
+  }
+#if CHECK_TREE
+  fReductionNum = 1;
+#endif
+
+  h1_ER-> Fill(1);
+  if( header->IsTrig(Trig_Kf)      ) h1_Kf-> Fill(1);
+  if( header->IsTrig(Trig_Neutral) ) h1_N-> Fill(1);
+
+  //*** Check BHD-T0 TOF ***//
+  bool kaon_flag = false;
+  bool pion_flag = false;
+  for( int i=0; i<blMan->nBHD(); i++ ){
+    if( blMan->BHD(i)->CheckRange() ){
+      double tof = T0time-blMan->BHD(i)->ctmean();
+      h1 = (TH1F*)gFile-> Get("BHDT0"), h1-> Fill(tof);
+      if( header->IsTrig(Trig_Kaon) ) h1 = (TH1F*)gFile-> Get("BHDT0_K"), h1-> Fill(tof);
+      if( header->IsTrig(Trig_Pion) ) h1 = (TH1F*)gFile-> Get("BHDT0_pi"), h1-> Fill(tof);
+      if( 27<tof && tof<31 ) kaon_flag = true;
+      if( 24<tof && tof<27 ) pion_flag = true;
+    }
+  }
+  histMan->setBeamKaon(kaon_flag);
+  histMan->setBeamPion(pion_flag);
+
+  int beam_pid=Beam_Other;
+  if( header->IsTrig(Trig_Kaon) ){
+    if( kaon_flag ) beam_pid=Beam_Kaon;
+  } 
+  else if( header->IsTrig(Trig_Pion) ){
+    if( pion_flag ) beam_pid=Beam_Pion;
+  }
+  histMan->setBeamPID(beam_pid);
+
+  if( beam_pid!=Beam_Kaon && beam_pid!=Beam_Pion ){
+    Clear();
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return true;
+  }
+
+  if( beam_pid==Beam_Kaon){
+    h1_ER-> Fill(2);
+    if( header->IsTrig(Trig_Kf)      ) h1_Kf-> Fill(2);
+    if( header->IsTrig(Trig_Neutral) ) h1_N-> Fill(2);
+#if CHECK_TREE
+    fReductionNum = 2;
+#endif
+  }
+
+  bltrackMan-> DoTracking(blMan, confMan, true, true);
+
+  int ntrackBLC1=0;
+  int ntrackBLC1_1=0;
+  int ntrackBLC1_2=0;
+  LocalTrack *trackBLC1=0;
+  for( int i=0; i<bltrackMan->ntrackBLC1(); i++ ){
+    double tracktime = bltrackMan->trackBLC1(i)->GetTrackTime();
+    if( beam_pid==Beam_Kaon ) h1 = (TH1F*)gFile-> Get("BLC1_time"), h1-> Fill(tracktime);
+    else if( beam_pid==Beam_Pion ) h1 = (TH1F*)gFile-> Get("BLC1_time_pi"), h1-> Fill(tracktime);
+    if( -50<tracktime && tracktime<200 ) ntrackBLC1_1++;
+    if( -30<tracktime && tracktime<100 ) ntrackBLC1_2++;
+    if( -20<tracktime && tracktime<20 ){
+      ntrackBLC1++;
+      trackBLC1 = bltrackMan->trackBLC1(i);
+    }
+  }
+
+  if( beam_pid==Beam_Kaon ){
+    h1 = (TH1F*)gFile-> Get("ntrackBLC1"), h1-> Fill(bltrackMan->ntrackBLC1());
+    h1 = (TH1F*)gFile-> Get("ntrackBLC1_1"), h1-> Fill(ntrackBLC1_1);
+    h1 = (TH1F*)gFile-> Get("ntrackBLC1_2"), h1-> Fill(ntrackBLC1_2);
+  }
+  else if( beam_pid==Beam_Pion ){
+    h1 = (TH1F*)gFile-> Get("ntrackBLC1_pi"), h1-> Fill(bltrackMan->ntrackBLC1());
+    h1 = (TH1F*)gFile-> Get("ntrackBLC1_1_pi"), h1-> Fill(ntrackBLC1_1);
+    h1 = (TH1F*)gFile-> Get("ntrackBLC1_2_pi"), h1-> Fill(ntrackBLC1_2);
+  }
+
+  if( ntrackBLC1!=1 ){
+    Clear();
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return true;
+  }
+#if BLDC_WIDE_TIMING
+  if( ntrackBLC1_2!=1 ){
+    Clear();
+    h1 = (TH1F*)rtFile-> Get("check_hist"), h1-> Fill(2);
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return true;
+  }
+#endif
+  if( beam_pid==Beam_Kaon ) h1 = (TH1F*)gFile-> Get("BLC1_chi2"), h1-> Fill(trackBLC1->chi2all());
+  else if( beam_pid==Beam_Pion ) h1 = (TH1F*)gFile-> Get("BLC1_chi2_pi"), h1-> Fill(trackBLC1->chi2all());
+#if BLDC_CHI_CUT
+  if( trackBLC1->chi2all()>30 ){
+    Clear();
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return true;
+  }
+#endif
+  if( beam_pid==Beam_Kaon){
+    h1_ER-> Fill(3);
+#if CHECK_TREE
+    fReductionNum = 3;
+#endif
+    if( header->IsTrig(Trig_Kf)      ) h1_Kf-> Fill(3);
+    if( header->IsTrig(Trig_Neutral) ) h1_N-> Fill(3);
+  }
+
+  int ntrackBLC2=0;
+  int ntrackBLC2_1=0;
+  int ntrackBLC2_2=0;
+  LocalTrack *trackBLC2=0;
+  for( int i=0; i<bltrackMan->ntrackBLC2(); i++ ){
+    double tracktime = bltrackMan->trackBLC2(i)->GetTrackTime();
+    if( beam_pid==Beam_Kaon ) h1 = (TH1F*)gFile-> Get("BLC2_time"), h1-> Fill(tracktime);
+    else if( beam_pid==Beam_Pion ) h1 = (TH1F*)gFile-> Get("BLC2_time_pi"), h1-> Fill(tracktime);
+    if( -50<tracktime && tracktime<200 ) ntrackBLC2_1++;
+    if( -30<tracktime && tracktime<100 ) ntrackBLC2_2++;
+    if( -20<tracktime && tracktime<20 ){
+      ntrackBLC2++;
+      trackBLC2 = bltrackMan->trackBLC2(i);
+    }
+  }
+  if( beam_pid==Beam_Kaon ){
+    h1 = (TH1F*)gFile-> Get("ntrackBLC2"), h1-> Fill(bltrackMan->ntrackBLC2());
+    h1 = (TH1F*)gFile-> Get("ntrackBLC2_1"), h1-> Fill(ntrackBLC2_1);
+    h1 = (TH1F*)gFile-> Get("ntrackBLC2_2"), h1-> Fill(ntrackBLC2_2);
+  }
+  else if( beam_pid==Beam_Kaon ){
+    h1 = (TH1F*)gFile-> Get("ntrackBLC2_pi"), h1-> Fill(bltrackMan->ntrackBLC2());
+    h1 = (TH1F*)gFile-> Get("ntrackBLC2_1_pi"), h1-> Fill(ntrackBLC2_1);
+    h1 = (TH1F*)gFile-> Get("ntrackBLC2_2_pi"), h1-> Fill(ntrackBLC2_2);
+  }
+
+  if( ntrackBLC2!=1 ){
+    Clear();
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return true;
+  }
+#if BLDC_WIDE_TIMING
+  if( ntrackBLC2_2!=1 ){
+    Clear();
+    h1 = (TH1F*)rtFile-> Get("check_hist"), h1-> Fill(3);
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return true;
+  }
+#endif
+  if( beam_pid==Beam_Kaon ) h1 = (TH1F*)gFile-> Get("BLC2_chi2"), h1-> Fill(trackBLC2->chi2all());
+  else if( beam_pid==Beam_Pion ) h1 = (TH1F*)gFile-> Get("BLC2_chi2_pi"), h1-> Fill(trackBLC2->chi2all());
+
+#if BLDC_CHI_CUT
+  if( trackBLC2->chi2all()>30 ){
+    Clear();
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return true;
+  }
+#endif
+
+  if( beam_pid==Beam_Kaon){
+#if CHECK_TREE
+    fReductionNum=4;
+#endif
+    h1_ER-> Fill(4);
+    if( header->IsTrig(Trig_Kf)      ) h1_Kf-> Fill(4);
+    if( header->IsTrig(Trig_Neutral) ) h1_N-> Fill(4);
+  }
+
+  beamSpec->TMinuitFit(trackBLC1, trackBLC2, confMan);
+  if( beam_pid==Beam_Kaon ) h1 = (TH1F*)gFile-> Get("D5_chi2"), h1-> Fill(beamSpec->chisquare());
+  else if( beam_pid==Beam_Pion ) h1 = (TH1F*)gFile-> Get("D5_chi2"), h1-> Fill(beamSpec->chisquare());
+#if BLDC_CHI_CUT
+  if( beamSpec->chisquare()>30 ){
+    Clear();
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return true;
+  }
+#endif
+  double D5mom = beamSpec-> mom();
+  if( beam_pid==Beam_Kaon )  h1 = (TH1F*)gFile-> Get("D5_mom"), h1->Fill(beamSpec->mom());
+  else if( beam_pid==Beam_Pion ) h1= (TH1F*)gFile-> Get("D5_mom_pi"), h1-> Fill(beamSpec->mom());
+
+  if( beam_pid==Beam_Kaon){
+    h1_ER-> Fill(5);
+#if CHECK_TREE
+    fReductionNum=5;
+#endif
+    if( header->IsTrig(Trig_Kf)      ) h1_Kf-> Fill(5);
+    if( header->IsTrig(Trig_Neutral) ) h1_N-> Fill(5);  
+  }
+
+  int ntrackBPC=0;
+  int ntrackBPC_1=0;
+  int ntrackBPC_2=0;
+  LocalTrack *trackBPC=0;
+  for( int i=0; i<bltrackMan->ntrackBPC(); i++ ){
+    double tracktime = bltrackMan->trackBPC(i)->GetTrackTime();
+    if( beam_pid==Beam_Kaon ) h1 = (TH1F*)gFile-> Get("BPC_time"), h1-> Fill(tracktime);
+
+    if( -50<tracktime && tracktime<200 ) ntrackBPC_1++;
+    if( -30<tracktime && tracktime<100 ) ntrackBPC_2++;
+    if( -20<tracktime && tracktime<20 ){
+      ntrackBPC++;
+      trackBPC = bltrackMan->trackBPC(i);
+    }
+  }
+  if( beam_pid==Beam_Kaon ){
+    h1 = (TH1F*)gFile-> Get("ntrackBPC"), h1-> Fill(bltrackMan->ntrackBPC());
+    h1 = (TH1F*)gFile-> Get("ntrackBPC_1"), h1-> Fill(ntrackBPC_1);
+    h1 = (TH1F*)gFile-> Get("ntrackBPC_2"), h1-> Fill(ntrackBPC_2);
+  }
+  else if( beam_pid==Beam_Pion ){
+    h1 = (TH1F*)gFile-> Get("ntrackBPC_pi"), h1-> Fill(bltrackMan->ntrackBPC());
+    h1 = (TH1F*)gFile-> Get("ntrackBPC_1_pi"), h1-> Fill(ntrackBPC_1);
+    h1 = (TH1F*)gFile-> Get("ntrackBPC_2_pi"), h1-> Fill(ntrackBPC_2);
+  }
+
+  if( ntrackBPC!=1 ){
+    Clear();
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return true;
+  }
+#if BLDC_WIDE_TIMING
+  if( ntrackBPC_2!=1 ){
+    Clear();
+    h1 = (TH1F*)rtFile-> Get("check_hist"), h1-> Fill(4);
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return true;
+  }
+#endif
+  if( beam_pid==Beam_Kaon ) h1 = (TH1F*)gFile-> Get("BPC_chi2"), h1-> Fill(trackBPC->chi2all());
+  else if( beam_pid==Beam_Pion ) h1 = (TH1F*)gFile-> Get("BPC_chi2_pi"), h1-> Fill(trackBPC->chi2all());
+
+#if BLDC_CHI_CUT
+  if( trackBPC->chi2all()>30 ){
+    Clear();
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return true;
+  }
+#endif
+  double center_z = 0.5*(-130-20.3);
+  TVector3 BLC2_track_pos = trackBLC2-> GetPosatZ(center_z);
+  TVector3 BPC_track_pos  = trackBPC-> GetPosatZ(center_z);
+  TVector3 BLC2_mom_dir = trackBLC2-> GetMomDir();
+  TVector3 BPC_mom_dir = trackBPC-> GetMomDir();
+  if( beam_pid==Beam_Kaon ){
+    h2 = (TH2F*)rtFile-> Get("BLC2BPC_diff"), h2-> Fill((BLC2_track_pos-BPC_track_pos).X(), (BLC2_track_pos-BPC_track_pos).Y());
+    h2 = (TH2F*)rtFile-> Get("BLC2BPC_dir_diff"), h2-> Fill((BLC2_mom_dir-BPC_mom_dir).X(), (BLC2_mom_dir-BPC_mom_dir).Y());
+  } else if( beam_pid==Beam_Pion ){
+    h2 = (TH2F*)rtFile-> Get("BLC2BPC_diff_pi"), h2-> Fill((BLC2_track_pos-BPC_track_pos).X(), (BLC2_track_pos-BPC_track_pos).Y());
+    h2 = (TH2F*)rtFile-> Get("BLC2BPC_dir_diff_pi"), h2-> Fill((BLC2_mom_dir-BPC_mom_dir).X(), (BLC2_mom_dir-BPC_mom_dir).Y());
+  }
+
+  if( beam_pid==Beam_Kaon){
+    h1_ER-> Fill(6);
+#if CHECK_TREE
+    fReductionNum=6;
+#endif
+    if( header->IsTrig(Trig_Kf)      ) h1_Kf-> Fill(6);
+    if( header->IsTrig(Trig_Neutral) ) h1_N-> Fill(6);
+  }
+
+  TVector3 BPC_FF = trackBPC-> GetPosatZ(-4);
+  if( beam_pid==Beam_Kaon ) h1= (TH1F*)gFile->Get("BeamProf"), h1->Fill(BPC_FF.X(), BPC_FF.Y());
+  else if( beam_pid==Beam_Pion ) h1= (TH1F*)gFile->Get("BeamProf_pi"), h1->Fill(BPC_FF.X(), BPC_FF.Y());
+
+  if( header->IsTrig(Trig_Kf) ){
+    h1= (TH1F*)gFile->Get("BeamProf_Kf"), h1->Fill(BPC_FF.X(), BPC_FF.Y());
+    if( beam_pid==Beam_Kaon){
+      if( GeomTools::GetID(BPC_FF)==CID_Fiducial ) h1_Kf-> Fill(7);
+    }
+  }
+
+  //****************************************//
+  //*** CDC Tracking File Event Matching ***//
+  //****************************************//
+  cdcTree-> GetEntry(CDC_Event_Num);
+  if( CDC_Event_Num>cdcTree->GetEntries() ){
+    Clear();
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return true;
+  }
+  while( cdcHeader->ev()<Event_Number ){
+    CDC_Event_Num++;
+    if( CDC_Event_Num>cdcTree->GetEntries() ){
+      Clear();
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+      return true;
+    }
+    cdcTree-> GetEntry(CDC_Event_Num);
+  }
+  if( cdcHeader->ev()>Event_Number ){
+    Clear();
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return true;
+  }
+  if( cdcHeader->ev()!=Event_Number ){
+    std::cout<<"  !!! CDC File Event matching miss !!!"<<std::endl;
+    Clear();
+#if CHECK_TREE
+    check_tree-> Fill();
+#endif
+    return false;
+  }
+
+  histMan-> setT0time(T0time);
+  histMan-> setD5mom(D5mom);
+  histMan-> setTrackBPC(trackBPC);
+  histMan-> ana(header);
+  histMan-> fill(header);
+
+  Clear();
+#if CHECK_TREE
+  check_tree-> Fill();
+#endif
+  return true;
+}
+
+void EventAnalysisNpipi::Clear()
+{
+  header->Clear();
+  histMan-> Clear();
+  beamSpec-> Clear();
+}
+
+void EventAnalysisNpipi::InitializeHistogram()
+{
+  rtFile-> cd();
+  new TH1F("EventReduction", "Event Reduction", 21, -1.5, 19.5);
+  new TH1F("Kf_Reduction", "K/f Event Reduction", 10, -0.5, 9.5);
+  new TH1F("N_Reduction", "Neutral Event Reduction", 15, -0.5, 14.5);
+
+  new TH1F("check_hist", "histogram for check", 100, -0.5, 99.5);
+
+  new TH1F("nT0", "multipliciy T0", 6, -0.5, 5.5);
+
+  new TH1F("BHDT0",    "BHD-T0", 1000, 0.0, 100);
+  new TH1F("BHDT0_K",  "BHD-T0", 1000, 0.0, 100);
+  new TH1F("BHDT0_pi", "BHD-T0", 1000, 0.0, 100);
+
+  new TH1F("ntrackBLC1", "BLC1 n track", 10, -0.5, 9.5);
+  new TH1F("ntrackBLC1_1", "BLC1 n track", 10, -0.5, 9.5);
+  new TH1F("ntrackBLC1_2", "BLC1 n track", 10, -0.5, 9.5);
+  new TH1F("BLC1_time", "BLC1 track time", 10000, -200, 800);
+  new TH1F("BLC1_chi2", "BLC1 chi-square", 1000, 0.0, 100);
+  new TH1F("ntrackBLC1_pi", "BLC1 n track", 10, -0.5, 9.5);
+  new TH1F("ntrackBLC1_1_pi", "BLC1 n track", 10, -0.5, 9.5);
+  new TH1F("ntrackBLC1_2_pi", "BLC1 n track", 10, -0.5, 9.5);
+  new TH1F("BLC1_time_pi", "BLC1 track time", 10000, -200, 800);
+  new TH1F("BLC1_chi2_pi", "BLC1 chi-square", 1000, 0.0, 100);
+
+  new TH1F("ntrackBLC2", "BLC2 n track", 10, -0.5, 9.5);
+  new TH1F("ntrackBLC2_1", "BLC2 n track", 10, -0.5, 9.5);
+  new TH1F("ntrackBLC2_2", "BLC2 n track", 10, -0.5, 9.5);
+  new TH1F("BLC2_time", "BLC2 track time", 10000, -200, 800);
+  new TH1F("BLC2_chi2", "BLC2 chi-square", 1000, 0.0, 100);
+  new TH1F("ntrackBLC2_pi", "BLC2 n track", 10, -0.5, 9.5);
+  new TH1F("ntrackBLC2_1_pi", "BLC2 n track", 10, -0.5, 9.5);
+  new TH1F("ntrackBLC2_2_pi", "BLC2 n track", 10, -0.5, 9.5);
+  new TH1F("BLC2_time_pi", "BLC2 track time", 10000, -200, 800);
+  new TH1F("BLC2_chi2_pi", "BLC2 chi-square", 1000, 0.0, 100);
+
+  new TH1F("ntrackBPC", "BPC n track", 10, -0.5, 9.5);
+  new TH1F("ntrackBPC_1", "BPC n track", 10, -0.5, 9.5);
+  new TH1F("ntrackBPC_2", "BPC n track", 10, -0.5, 9.5);
+  new TH1F("BPC_time", "BPC track time", 10000, -200, 800);
+  new TH1F("BPC_chi2", "BPC chi-square", 1000, 0.0, 100);
+  new TH1F("ntrackBPC_pi", "BPC n track", 10, -0.5, 9.5);
+  new TH1F("ntrackBPC_1_pi", "BPC n track", 10, -0.5, 9.5);
+  new TH1F("ntrackBPC_2_pi", "BPC n track", 10, -0.5, 9.5);
+  new TH1F("BPC_time_pi", "BPC track time", 10000, -200, 800);
+  new TH1F("BPC_chi2_pi", "BPC chi-square", 1000, 0.0, 100);
+
+  new TH2F("BLC2BPC_diff", "BLC2 BPC pos diff", 1000, -10, 10, 1000, -10, 10);
+  new TH2F("BLC2BPC_dir_diff", "BLC2 BPC dir diff", 1000, -0.1, 0.1, 1000, -0.1, 0.1);
+  new TH2F("BLC2BPC_diff_pi", "BLC2 BPC pos diff", 1000, -10, 10, 1000, -10, 10);
+  new TH2F("BLC2BPC_dir_diff_pi", "BLC2 BPC dir diff", 1000, -0.1, 0.1, 1000, -0.1, 0.1);
+
+  new TH1F("D5_mom",  "Beam Momentum by D5", 1000,  0.5, 1.5);
+  new TH1F("D5_chi2", "D5 chisquare", 1000,  0.0, 100);
+  new TH1F("D5_mom_pi",  "Beam Momentum by D5", 1000,  0.5, 1.5);
+  new TH1F("D5_chi2_pi", "D5 chisquare", 1000,  0.0, 100);
+
+  new TH2F("BeamProf",    "Beam Profile at FF",        1000, -30, 30, 1000, -30, 30);
+  new TH2F("BeamProf_pi",    "Beam Profile at FF",        1000, -30, 30, 1000, -30, 30);
+  new TH2F("BeamProf_Kf", "Beam Profile at FF w/ K/f", 1000, -30, 30, 1000, -30, 30);
+
+#if CHECK_TREE
+  new TTree("CheckTree", "CheckTree");
+  TTree *tree = (TTree*)gFile-> Get("CheckTree");
+  tree-> Branch("EventNumber", &Event_Number, "EventNumber/I");
+  tree-> Branch("ReductionNum", &fReductionNum, "ReductionNum/I");
+  tree-> Branch("nT0", &fNT0, "nT0/I");
+#endif
+}
+
+void EventAnalysisNpipi::Finalize()
+{
+  std::cout<<"EventAnalysisNpipi Finish   Event Number : "<<Event_Number<<"  Event Number on Spill : "<<Event_Number_onSpill<<std::endl;
+  histMan->finit();
+
+  delete blMan;
+  delete cdsMan;
+  delete header;
+
+  delete bltrackMan;
+  delete beamSpec;
+}
+
+EventTemp *EventAlloc::EventAllocator()
+{
+  EventAnalysisNpipi *event = new EventAnalysisNpipi();
+  return (EventTemp*)event;
+}
