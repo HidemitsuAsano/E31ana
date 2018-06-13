@@ -37,16 +37,75 @@ int MyAnaTools::targetNA()
 
 bool MyAnaTools::goodBeam(AnaInfo *anaInfo)
 {
-  if( anaInfo->nBeam()!=1 ) return false;
-  if( anaInfo->beam(0)->T0seg()<0 ) return false;
-  if( !isTOFKaon(anaInfo->beam(0)->tof()) ) return false;
-  if( !anaBLC1(anaInfo) ) return false;
-  if( !anaBLC2(anaInfo) ) return false;
-  if( !anaD5(anaInfo) ) return false;
-  if( !connectD5BHD(anaInfo) ) return false;
-  if( !anaBPC(anaInfo) ) return false;
-  if( !connectBLC2BPC(anaInfo) ) return false;
+  int Verbosity=0;
+  if(Verbosity>99){
+    cout << __FILE__ << " L." << __LINE__ << " goodBeam ? " << endl; 
+    cout << "nBeam " << anaInfo->nBeam() << endl; 
+    cout << "T0seg "<<  anaInfo->beam(0)->T0seg() << endl;
+    cout << "tof " << anaInfo->beam(0)->tof() << " isTOFKaon " << isTOFKaon(anaInfo->beam(0)->tof()) << endl;
+    cout << "anaBLC1 " << anaBLC1(anaInfo) << endl;
+    cout << "anaBLC2 " << anaBLC2(anaInfo) << endl;
+    cout << "anaD5   " << anaD5(anaInfo) << endl;
+    cout << "connectD5BHD" << connectD5BHD(anaInfo) << endl;
+    cout << "anaBPC  " << anaBPC(anaInfo) << endl;
+    cout << "connectBLC2BPC " << connectBLC2BPC(anaInfo)  << endl;
+  }
 
+
+  if( anaInfo->nBeam()!=1 ){
+    if(Verbosity){
+      cout << __FILE__ << " L." << __LINE__ << " nBeam !=1 " << endl; 
+    }
+    return false;
+  }
+  if( anaInfo->beam(0)->T0seg()<0 ){
+    if(Verbosity){
+      cout << __FILE__ << " L." << __LINE__ << " T0seg() <0 " << endl; 
+    }
+    return false;
+  }
+  if( !isTOFKaon(anaInfo->beam(0)->tof()) ){
+    if(Verbosity){
+      cout << __FILE__ << " L." << __LINE__ << " isTOFKaon " << endl; 
+    }
+    return false;
+  }
+  if( !anaBLC1(anaInfo) ){
+    if(Verbosity){
+      cout << __FILE__ << " L." << __LINE__ << " !anaBLC1 " << endl; 
+    }
+    return false;
+  }
+  if( !anaBLC2(anaInfo) ){
+    if(Verbosity){
+      cout << __FILE__ << " L." << __LINE__ << " !anaBLC2 " << endl; 
+    }
+    return false;
+  }
+  if( !anaD5(anaInfo) ){
+    if(Verbosity){
+      cout << __FILE__ << " L." << __LINE__ << " !anaD5 " << endl; 
+    }
+    return false;
+  }
+  if( !connectD5BHD(anaInfo) ){
+    if(Verbosity){
+      cout << __FILE__ << " L." << __LINE__ << " !connectD5BHD " << endl; 
+    }
+    return false;
+  }
+  if( !anaBPC(anaInfo) ){
+    if(Verbosity){
+      cout << __FILE__ << " L." << __LINE__ << " !anaBPC " << endl; 
+    }
+    return false;
+  }
+  if( !connectBLC2BPC(anaInfo) ){
+    if(Verbosity){
+      cout << __FILE__ << " L." << __LINE__ << " !connectBLC2BPC " << endl; 
+    }
+    return false;
+  }
   anaInfo->beam(0)->SetFlag(true);
   return true;
 }

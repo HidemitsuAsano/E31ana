@@ -6,6 +6,7 @@
 #include "BeamSpectrometer.h"
 #include "TrackTools.h"
 
+#include "Tools.h"
 #include "MyTools.h"
 #include "AnaInfo.h"
 #include "MyHistReadCDS.h"
@@ -114,13 +115,13 @@ void EventAnalysisReadAna::Initialize(ConfMan *conf)
   cdsTree-> SetBranchAddress("EventHeader", &cdsHeader);  
   cdsTree-> SetBranchAddress("CDSTrackingMan", &cdstrackMan);
   
-  //anaFile = new TFile(confMan->GetMTDCTrackFileName().c_str());
+  anaFile = new TFile(confMan->GetMTDCTrackFileName().c_str());
   anaInfo = new AnaInfo();
   anaHeader = new EventHeader();
   Ana_Event_Number=0;
-  //anaTree = (TTree*)anaFile-> Get("EventTree");
-  //anaTree-> SetBranchAddress("EventHeader", &anaHeader);  
-  //anaTree-> SetBranchAddress("AnaInfo", &anaInfo);
+  anaTree = (TTree*)anaFile-> Get("EventTree");
+  anaTree-> SetBranchAddress("EventHeader", &anaHeader);  
+  anaTree-> SetBranchAddress("AnaInfo", &anaInfo);
   
   rtFile = new TFile(confMan->GetOutFileName().c_str(), "recreate");
   header = new EventHeader();
@@ -163,21 +164,21 @@ bool EventAnalysisReadAna::cdsFileMatching()
 
 bool EventAnalysisReadAna::anaFileMatching()
 {
-  //anaTree -> GetEntry(Ana_Event_Number);
-  //if(Ana_Event_Number>=anaTree->GetEntries()){
-  //  anaHeader->Clear();
-  //  anaInfo->Clear();
-  //  return false;
-  //}
-  //while( anaHeader->ev()<Event_Number ){
-  Ana_Event_Number++;
-    //if(Ana_Event_Number>anaTree->GetEntries()){
-    // anaHeader->Clear();
-    //  anaInfo->Clear();
-    //  return false;
-    //}
-    //anaTree -> GetEntry(Ana_Event_Number);
-  //}
+  anaTree -> GetEntry(Ana_Event_Number);
+  if(Ana_Event_Number>=anaTree->GetEntries()){
+    anaHeader->Clear();
+    anaInfo->Clear();
+    return false;
+  }
+  while( anaHeader->ev()<Event_Number ){
+    Ana_Event_Number++;
+    if(Ana_Event_Number>anaTree->GetEntries()){
+      anaHeader->Clear();
+      anaInfo->Clear();
+      return false;
+    }
+    anaTree -> GetEntry(Ana_Event_Number);
+  }
   if(anaHeader->ev()>Event_Number){
     anaHeader->Clear();
     anaInfo->Clear();

@@ -10,6 +10,7 @@
 #include "TVector3.h"
 #include "TH1F.h"
 #include "TH2F.h"
+#include "TH2I.h"
 #include "TFile.h"
 #include "GlobalVariables.h"
 #include "TMacro.h"
@@ -26,13 +27,28 @@ namespace Tools
   inline void H1(TString name,  double val,
 		 int nbin, double lbin, double ubin);
   inline void H1(TString name,  double val,
+		 int nbin, double lbin, double ubin, TString xtitle);
+  inline void H1(TString name,  double val,
 		 int nbin, double lbin, double ubin, double weight);
+
   inline void H2(TString name,  double val1, double val2,
+		 int nbinx, double lbinx, double ubinx,
+		 int nbiny, double lbiny, double ubiny);
+  inline void H2(TString name,  double val1, double val2,
+		 int nbinx, double lbinx, double ubinx,
+		 int nbiny, double lbiny, double ubiny,TString xtitle, TString ytitle);
+  inline void H2I(TString name,  double val1, double val2,
 		 int nbinx, double lbinx, double ubinx,
 		 int nbiny, double lbiny, double ubiny);
   inline void WriteFile(TString afile,TString direntry);
   inline void WriteFile(TString afile);
   inline void SaveFile(TString filename);
+  
+  //added by H.Asano
+  inline void SetXTitleH1(TString histname,TString xtitle);
+  inline void SetYTitleH1(TString histname,TString ytitle);
+  inline void SetXTitleH2(TString histname,TString xtitle);
+  inline void SetYTitleH2(TString histname,TString ytitle);
 };
 
 inline void Tools::WriteFile(TString afile,TString direntry){
@@ -120,6 +136,21 @@ inline void Tools::H1(TString name, double val,
     h1->Fill(val);
   }
 }
+
+inline void Tools::H1(TString name, double val,
+		      int nbinx, double lbinx, double ubinx, TString xtitle)
+{
+  if( TH1F* h1 = dynamic_cast<TH1F *>(gFile->Get(name.Data())) ){
+    //    std::cout<<"exist "<<name<<std::endl;
+    h1->Fill(val);
+  }else{
+    //    std::cout<<"new "<<name<<std::endl;
+    h1 = new TH1F(name,name, nbinx,lbinx,ubinx);
+    h1->SetXTitle(xtitle.Data());
+    h1->Fill(val);
+  }
+}
+
 inline void Tools::H1(TString name, double val,
 		      int nbinx, double lbinx, double ubinx,
 		      double weight)
@@ -145,6 +176,71 @@ inline void Tools::H2(TString name, double val1, double val2,
     h1= new TH2F(name,name, nbinx,lbinx,ubinx, nbiny,lbiny,ubiny); 
     h1->Fill(val1,val2);
   }  
+}
+
+inline void Tools::H2(TString name, double val1, double val2,
+		      int nbinx, double lbinx, double ubinx,
+		      int nbiny, double lbiny, double ubiny,TString xtitle,TString ytitle)
+{
+  if( TH2F* h1 = dynamic_cast<TH2F *>(gFile->Get(name.Data())) ){
+    h1->Fill(val1,val2);
+  }else{
+    //    std::cout<<"new "<<name<<std::endl;
+    h1= new TH2F(name,name, nbinx,lbinx,ubinx, nbiny,lbiny,ubiny); 
+    h1->SetXTitle(xtitle.Data());
+    h1->SetYTitle(ytitle.Data());
+    h1->Fill(val1,val2);
+  }  
+}
+
+inline void Tools::H2I(TString name, double val1, double val2,
+		      int nbinx, double lbinx, double ubinx,
+		      int nbiny, double lbiny, double ubiny)
+{
+  if( TH2I* h1 = dynamic_cast<TH2I *>(gFile->Get(name.Data())) ){
+    h1->Fill(val1,val2);
+  }else{
+    //    std::cout<<"new "<<name<<std::endl;
+    h1= new TH2I(name,name, nbinx,lbinx,ubinx, nbiny,lbiny,ubiny); 
+    h1->Fill(val1,val2);
+  }  
+}
+
+inline void Tools::SetXTitleH1(TString histname,TString xtitle)
+{
+  if( TH1F* h1 = dynamic_cast<TH1F *>(gFile->Get(histname.Data())) ){
+    h1->SetXTitle(xtitle.Data());
+  }else{
+    std::cout << __FILE__ << " L. " << __LINE__  << " can not find histgram named   " << histname << std::endl;
+  }
+}
+
+inline void Tools::SetYTitleH1(TString histname,TString xtitle)
+{
+  if( TH1F* h1 = dynamic_cast<TH1F *>(gFile->Get(histname.Data())) ){
+    h1->SetYTitle(xtitle.Data());
+  }else{
+    std::cout << __FILE__ << " L. " << __LINE__  << " can not find histgram named   " << histname << std::endl;
+  }
+}
+
+
+inline void Tools::SetXTitleH2(TString histname,TString xtitle)
+{
+  if( TH2F* h2 = dynamic_cast<TH2F *>(gFile->Get(histname.Data())) ){
+    h2->GetXaxis()->SetTitle(xtitle.Data());
+  }else{
+    std::cout << __FILE__ << " L. " << __LINE__  << " can not find histgram named   " << histname << std::endl;
+  }
+}
+
+inline void Tools::SetYTitleH2(TString histname,TString ytitle)
+{
+  if( TH2F* h2 = dynamic_cast<TH2F *>(gFile->Get(histname.Data())) ){
+    h2->GetYaxis()->SetTitle(ytitle.Data());
+  }else{
+    std::cout << __FILE__ << " L. " << __LINE__  << " can not find histgram named   " << histname << std::endl;
+  }
 }
 
 #endif
