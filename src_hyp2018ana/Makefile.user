@@ -1,0 +1,386 @@
+# -*- coding:utf-8 mode:makefile -*-
+
+###############################################################################################################################
+#
+# EventAnalysisTemplate
+#
+###############################################################################################################################
+evanaTemplate: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisTemplate.o $(patsubst %,$(TMPDIR)/%,$(OBJS)) \
+	$(TMPDIR)/UserTools.o
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB) 
+
+###############################################################################################################################
+
+
+dumpRS: $(TMPDIR)/dumpRS.o
+	 $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+anaFN: 	$(TMPDIR)/anaFN.o $(TMPDIR)/FNAnaMan.o $(TMPDIR)/FNAnaMan_postAna.o $(TMPDIR)/KNpipi_cut.o  $(TMPDIR)/MyTools.o \
+	$(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+anaFP: $(TMPDIR)/anaFP.o $(TMPDIR)/FPAnaMan.o
+	 $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+evall:
+	make lib; make evtracking;
+
+evanaBT: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisBT.o $(TMPDIR)/MyHistTools.o
+	 $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+evdisp: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventDisplay.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventDisplay.o $(LIBLINK) $(OBJSLIB)
+
+ev1: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysis1.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysis1.o $(LIBLINK) $(OBJSLIB)
+
+evanaSca: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisSca.o $(TMPDIR)/MyHistTrig.o $(TMPDIR)/MyHistTools.o
+	    $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+evanaTrig: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisTrig.o $(TMPDIR)/MyTools.o
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+###############################################################################################################################
+#
+# CDSTracking File Maker
+#
+###############################################################################################################################
+evtracking_wSlew: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysis_Tracking_wSlew.o $(patsubst %,$(TMPDIR)/%,$(OBJS)) $(TMPDIR)/MyTools.o
+	    $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+evtrackingHist: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysis_TrackingHist.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	    $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+###############################################################################################################################
+#
+# AnaInfo Maker
+#
+###############################################################################################################################
+evanaMakeInfo: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisMakeInfo.o \
+	    $(TMPDIR)/MyTools.o $(TMPDIR)/MyHistTools.o 
+	    $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+###############################################################################################################################
+#
+# AnaInfo Reader
+#
+###############################################################################################################################
+# for data
+evanaReadTemp: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisReadTemp.o \
+	       $(TMPDIR)/MyTools.o $(TMPDIR)/MyHistTools.o $(TMPDIR)/MyAnaTools.o
+	       $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+# for MC
+simRead: $(TMPDIR)/UserSimRead.o
+	 $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+evanaReadBeam: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisReadBeam.o \
+	       $(TMPDIR)/MyHistReadBeam.o \
+	       $(TMPDIR)/MyHistT0BVC.o \
+	       $(TMPDIR)/MyHistT0DEF.o \
+	       $(TMPDIR)/MyTools.o $(TMPDIR)/MyHistTools.o $(TMPDIR)/MyAnaTools.o
+	       $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+# for data
+evanaChargedMode:  $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisChargedMode.o \
+	       $(TMPDIR)/MyHistReadCDS.o $(TMPDIR)/MyHistReadNC.o $(TMPDIR)/MyHistReadFC.o \
+	       $(TMPDIR)/MyHistReadKNpim.o $(TMPDIR)/MyHistReadKNpip.o $(TMPDIR)/MyHistReadKNkm.o \
+	       $(TMPDIR)/MyHistReadKNpipi_H2.o \
+	       $(TMPDIR)/MyHistReadKNpipi_D2.o \
+	       $(TMPDIR)/MyHistReadKPpimpim_D2.o \
+	       $(TMPDIR)/MyHistReadCDS_Lpim_D2.o \
+	       $(TMPDIR)/MyHistReadVtxDEF.o	\
+	       $(TMPDIR)/MyTools.o $(TMPDIR)/MyHistTools.o $(TMPDIR)/MyAnaTools.o
+	       $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+# for MC
+simReadAna:  $(TMPDIR)/MySimReadAna.o \
+	       $(TMPDIR)/MyHistReadCDS.o $(TMPDIR)/MyHistReadNC.o $(TMPDIR)/MyHistReadFC.o \
+	       $(TMPDIR)/MyHistReadKNpim.o $(TMPDIR)/MyHistReadKNpip.o $(TMPDIR)/MyHistReadKNkm.o \
+	       $(TMPDIR)/MyHistReadKNpipi_D2.o \
+	       $(TMPDIR)/MyHistReadKPpimpim_D2.o \
+	       $(TMPDIR)/MyHistReadCDS_Lpim_D2.o \
+	       $(TMPDIR)/MyHistMCAcc.o \
+	       $(TMPDIR)/MyHistMCChkCou.o \
+	       $(TMPDIR)/MyHistMCFC.o \
+	       $(TMPDIR)/MyTools.o $(TMPDIR)/MyHistTools.o $(TMPDIR)/MyAnaTools.o $(TMPDIR)/MyMCTools.o
+	       $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+evanaReadCalib: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisReadCalib.o \
+		   $(TMPDIR)/MyHistCalibCDS.o \
+		   $(TMPDIR)/MyTools.o $(TMPDIR)/MyHistTools.o $(TMPDIR)/MyAnaTools.o
+	       	   $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+simReadCalib: $(TMPDIR)/MySimReadCalib.o \
+		   $(TMPDIR)/MyHistCalibCDS.o \
+		   $(TMPDIR)/MyTools.o $(TMPDIR)/MyHistTools.o $(TMPDIR)/MyAnaTools.o
+	       	   $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+# for data
+evanaReadCalibCDC: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisReadCalibCDC.o \
+		   $(TMPDIR)/MyHistReadCalibCDC.o \
+		   $(TMPDIR)/MyTools.o $(TMPDIR)/MyHistTools.o $(TMPDIR)/MyAnaTools.o
+	       	   $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+# for MC
+simReadCalibCDC: $(TMPDIR)/MySimReadCalibCDC.o \
+		 $(TMPDIR)/MyHistReadCalibCDC.o \
+		 $(TMPDIR)/MyTools.o $(TMPDIR)/MyHistTools.o $(TMPDIR)/MyAnaTools.o
+	       	 $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+# for data
+evanaReadCDCeff: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisReadCDCeff.o \
+		   $(TMPDIR)/MyTools.o $(TMPDIR)/MyHistTools.o $(TMPDIR)/MyAnaTools.o
+	       	   $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+evanaReadNC_ov:  $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisReadNC_ov.o \
+	       $(TMPDIR)/MyHistRead_NC_ov.o \
+	       $(TMPDIR)/MyTools.o $(TMPDIR)/MyHistTools.o $(TMPDIR)/MyAnaTools.o
+	       $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+evanaReadChk:  $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisReadChk.o \
+	       $(TMPDIR)/MyHistReadCDS.o $(TMPDIR)/MyHistReadNC.o $(TMPDIR)/MyHistReadFC.o \
+	       $(TMPDIR)/MyHistReadKNpim.o $(TMPDIR)/MyHistReadKNpip.o $(TMPDIR)/MyHistReadKNkm.o \
+	       $(TMPDIR)/MyHistReadKNpipi_D2.o \
+	       $(TMPDIR)/MyHistReadKPpimpim_D2.o \
+	       $(TMPDIR)/MyHistReadCDS_Lpim_D2.o \
+	       $(TMPDIR)/MyHistReadVtxDEF.o	\
+	       $(TMPDIR)/MyHistTrigChk.o	\
+	       $(TMPDIR)/MyTools.o $(TMPDIR)/MyHistTools.o $(TMPDIR)/MyAnaTools.o
+	       $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+
+###############################################################################################################################
+#
+# AnaInfo Reader for MC sim
+#
+###############################################################################################################################
+
+
+###############################################################################################################################
+
+evanaCalib: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisCalib.o \
+	    $(TMPDIR)/MyTools.o $(TMPDIR)/MyHistTools.o \
+	    $(TMPDIR)/MyHistT0.o $(TMPDIR)/MyHistBHD.o $(TMPDIR)/MyHistCVC.o $(TMPDIR)/MyHistPC.o $(TMPDIR)/MyHistNC.o \
+	    $(TMPDIR)/MyHistDEF.o $(TMPDIR)/MyHistCDH.o $(TMPDIR)/MyHistCDS.o $(TMPDIR)/MyHistBVC.o $(TMPDIR)/MyHistBD.o \
+	    $(TMPDIR)/MyHistBPD.o $(TMPDIR)/MyHistBHDT0.o $(TMPDIR)/MyHistBLC1a.o $(TMPDIR)/MyHistBLC1b.o $(TMPDIR)/MyHistBLC2a.o \
+	    $(TMPDIR)/MyHistBLC2b.o $(TMPDIR)/MyHistBPC.o $(TMPDIR)/MyHistFDC1.o $(TMPDIR)/MyHistCDC.o $(TMPDIR)/MyHistReduction.o \
+	    $(TMPDIR)/MyHistBLC1.o $(TMPDIR)/MyHistBLC2.o $(TMPDIR)/MyHistBeamAna.o $(TMPDIR)/MyHistT0BVC.o $(TMPDIR)/MyHistT0DEF.o \
+	    $(TMPDIR)/MyHistT0PCCVC.o
+	    $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+momentum: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisMomentum.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisMomentum.o $(LIBLINK) $(OBJSLIB)
+
+xt: $(TMPDIR)/UserXT.o $(ALLSO)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(TMPDIR)/UserXT.o $(LIBLINK) $(RTLIBDIR)/$(ALLSO)
+
+mtdc_decoder: $(TMPDIR)/mtdc_decoder.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(TMPDIR)/mtdc_decoder.o $(LIBLINK) $(OBJSLIB)
+
+mtdc_off_ana: $(TMPDIR)/mtdc_off_ana.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(TMPDIR)/mtdc_off_ana.o $(LIBLINK) $(OBJSLIB)
+
+conv_sim: $(TMPDIR)/MySimDatG4.o 	 \
+	$(TMPDIR)/SimDataMan.o		 \
+	$(TMPDIR)/MyTools.o \
+	$(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+simBT: $(TMPDIR)/MySimDatBT.o 	 \
+	$(TMPDIR)/SimDataMan.o		 \
+	$(TMPDIR)/MyTools.o \
+	$(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+simBT_pi: $(TMPDIR)/MySimDatBT_pi.o 	 \
+	$(TMPDIR)/SimDataMan.o		 \
+	$(TMPDIR)/MyTools.o \
+	$(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+simKP:  $(TMPDIR)/MySimDatKP.o 	 \
+	$(TMPDIR)/SimDataMan.o		 \
+	$(TMPDIR)/MyTools.o \
+	$(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+simFC:  $(TMPDIR)/MySimDatFC.o 	 \
+	$(TMPDIR)/SimDataMan.o		 \
+	$(TMPDIR)/MyTools.o \
+	$(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+
+
+chk_sim: $(TMPDIR)/MySimChkG4.o 	 \
+	$(TMPDIR)/SimDataMan.o		 \
+	$(TMPDIR)/MyTools.o \
+	$(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+sim:	$(TMPDIR)/UserSimDatG4.o 	 \
+	$(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+
+
+
+readSim_H2: $(TMPDIR)/ReadSim.o $(patsubst %,$(TMPDIR)/%,$(OBJS))	\
+	    $(TMPDIR)/HistManwMC_tools.o	\
+	    $(TMPDIR)/HistManwMC_H2.o	\
+	    $(TMPDIR)/HistManwMC_NC.o	\
+	    $(TMPDIR)/HistManwMC_FC.o     \
+	    $(TMPDIR)/HistManwMC_ana.o     \
+	    $(TMPDIR)/HistManwMC_initCom.o     \
+	    $(TMPDIR)/HistManwMC_initH2.o     \
+	    $(TMPDIR)/HistManwMC_Calib.o     \
+	    $(TMPDIR)/HistManwMC_fill_pppim.o     \
+	    $(TMPDIR)/SimDataReader.o		  \
+	    $(TMPDIR)/SimDataReader_knEl.o	  \
+	    $(TMPDIR)/MyTools.o			  \
+	    $(TMPDIR)/HistTools.o
+	    $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+readSim_D2: $(TMPDIR)/ReadSim.o $(patsubst %,$(TMPDIR)/%,$(OBJS))	\
+	    $(TMPDIR)/HistManwMC_tools.o	\
+	    $(TMPDIR)/HistManwMC_D2.o	\
+	    $(TMPDIR)/HistManwMC_NC.o	\
+	    $(TMPDIR)/HistManwMC_FC.o     \
+	    $(TMPDIR)/HistManwMC_ana.o     \
+	    $(TMPDIR)/HistManwMC_initCom.o     \
+	    $(TMPDIR)/HistManwMC_initD2.o     \
+	    $(TMPDIR)/HistManwMC_Calib.o     \
+	    $(TMPDIR)/HistManwMC_fill_pppim.o     \
+	    $(TMPDIR)/SimDataReader.o		  \
+	    $(TMPDIR)/SimDataReader_knEl.o	  \
+	    $(TMPDIR)/MyTools.o			  \
+	    $(TMPDIR)/HistTools.o
+	    $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+evanaHistwMC_D2: $(patsubst %,$(TMPDIR)/%,$(EVENT)) \
+	         $(TMPDIR)/EventAnalysisHistwMC.o     \
+	         $(TMPDIR)/HistTools.o		      \
+	         $(TMPDIR)/HistManwMC_D2.o     \
+	    	 $(TMPDIR)/HistManwMC_NC.o     \
+	    	 $(TMPDIR)/HistManwMC_FC.o     \
+	    	 $(TMPDIR)/HistManwMC_ana.o     \
+	         $(TMPDIR)/HistManwMC_initD2.o     \
+	         $(TMPDIR)/HistManwMC_initCom.o     \
+	         $(TMPDIR)/HistManwMC_Calib.o     \
+	         $(TMPDIR)/HistManwMC_fill_pppim.o     \
+	         $(TMPDIR)/SimDataReader.o     \
+		 $(TMPDIR)/SimDataReader_knEl.o	  \
+	         $(TMPDIR)/MyTools.o		 
+	         $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+evanaHistwMC_H2: $(patsubst %,$(TMPDIR)/%,$(EVENT)) \
+	         $(TMPDIR)/EventAnalysisHistwMC.o     \
+	         $(TMPDIR)/HistManwMC_H2.o     \
+	    	 $(TMPDIR)/HistManwMC_NC.o     \
+	    	 $(TMPDIR)/HistManwMC_FC.o     \
+	    	 $(TMPDIR)/HistManwMC_ana.o     \
+	         $(TMPDIR)/HistManwMC_initH2.o     \
+	         $(TMPDIR)/HistManwMC_initCom.o     \
+	         $(TMPDIR)/HistManwMC_Calib.o     \
+	         $(TMPDIR)/HistManwMC_fill_pppim.o     \
+	         $(TMPDIR)/SimDataReader.o     \
+		 $(TMPDIR)/SimDataReader_knEl.o	  \
+	         $(TMPDIR)/MyTools.o		  \
+	         $(TMPDIR)/HistTools.o
+	         $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+evanaBPC: $(patsubst %,$(TMPDIR)/%,$(EVENT))	       \
+	  $(TMPDIR)/EventAnalysisBPC.o	 \
+	  $(TMPDIR)/HistManBPC.o	 \
+	  $(TMPDIR)/DCEffMan.o	 \
+	  $(TMPDIR)/BPCTrackMan.o	\
+	  $(TMPDIR)/BLDCTrack.o	\
+	  $(TMPDIR)/XYTrack.o	\
+	  $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	  $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) \
+	  $(TMPDIR)/EventAnalysisBPC.o \
+	  $(TMPDIR)/HistManBPC.o	 \
+	  $(TMPDIR)/DCEffMan.o	 \
+	  $(TMPDIR)/BPCTrackMan.o	\
+	  $(TMPDIR)/BLDCTrack.o	\
+	  $(TMPDIR)/XYTrack.o	\
+	  $(LIBLINK) $(OBJSLIB)
+
+evanaBPC2: $(patsubst %,$(TMPDIR)/%,$(EVENT))	       \
+	  $(TMPDIR)/EventAnalysisBPC2.o	 \
+	  $(TMPDIR)/HistManBPC2.o	 \
+	  $(TMPDIR)/DCEffMan.o	 \
+	  $(TMPDIR)/BPCTrackMan.o	\
+	  $(TMPDIR)/BLDCTrack.o	\
+	  $(TMPDIR)/XYTrack.o	\
+	  $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	  $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) \
+	  $(TMPDIR)/EventAnalysisBPC2.o \
+	  $(TMPDIR)/HistManBPC2.o	 \
+	  $(TMPDIR)/DCEffMan.o	 \
+	  $(TMPDIR)/BPCTrackMan.o	\
+	  $(TMPDIR)/BLDCTrack.o	\
+	  $(TMPDIR)/XYTrack.o	\
+	  $(LIBLINK) $(OBJSLIB)
+
+evanaFDC: $(patsubst %,$(TMPDIR)/%,$(EVENT))	       \
+	  $(TMPDIR)/EventAnalysisFDC.o	 \
+	  $(TMPDIR)/HistManFDC.o	 \
+	  $(TMPDIR)/DCEffMan.o	 \
+	  $(TMPDIR)/BPCTrackMan.o	\
+	  $(TMPDIR)/BLDCTrack.o	\
+	  $(TMPDIR)/XYTrack.o	\
+	  $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	  $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) \
+	  $(TMPDIR)/EventAnalysisFDC.o \
+	  $(TMPDIR)/HistManFDC.o	 \
+	  $(TMPDIR)/DCEffMan.o	 \
+	  $(TMPDIR)/BPCTrackMan.o	\
+	  $(TMPDIR)/BLDCTrack.o	\
+	  $(TMPDIR)/XYTrack.o	\
+	  $(LIBLINK) $(OBJSLIB)
+
+evdispBPC: $(patsubst %,$(TMPDIR)/%,$(EVENT))	       \
+	   $(TMPDIR)/EventDispBPC.o	 \
+	   $(TMPDIR)/DispBPC.o	 \
+	   $(TMPDIR)/BPCTrackMan.o	\
+	   $(TMPDIR)/BLDCTrack.o	\
+	   $(TMPDIR)/XYTrack.o	\
+	   $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	   $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) \
+	   $(TMPDIR)/EventDispBPC.o \
+	   $(TMPDIR)/DispBPC.o	 \
+	   $(TMPDIR)/BPCTrackMan.o	\
+	   $(TMPDIR)/BLDCTrack.o	\
+	   $(TMPDIR)/XYTrack.o	\
+	   $(LIBLINK) $(OBJSLIB)
+
+evdispBLC: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventDispBLC2.o $(patsubst %,$(TMPDIR)/%,$(OBJS)) $(TMPDIR)/DisplayBLC.o
+	   $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+evanaAnaData: $(patsubst %,$(TMPDIR)/%,$(EVENT)) \
+	    $(TMPDIR)/EventAnalysisAnaData.o     \
+	    $(TMPDIR)/MyTools.o	       \
+	    $(TMPDIR)/HistMan.o       \
+	    $(patsubst %,$(TMPDIR)/%,$(OBJS)) 
+	    $(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+simReadChk:	$(TMPDIR)/MySimReadChk.o \
+		$(TMPDIR)/MyHistMCChkCou.o \
+		$(TMPDIR)/MyHistTools.o
+		$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+
+c_echo: $(TMPDIR)/c_echo.o
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^
+
+
+fitKN: $(TMPDIR)/fit_KN.o $(TMPDIR)/FitConf.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
+
+simLpn:$(TMPDIR)/UserSimLpn.o \
+	$(TMPDIR)/SimDataMan.o \
+	$(TMPDIR)/SimDataMan_Dict.o \
+	$(TMPDIR)/KnuclRootData.o \
+	$(TMPDIR)/KnuclRootData_Dict.o \
+        $(TMPDIR)/ComCrossSectionTable.o \
+	$(TMPDIR)/ComCrossSectionTable_Dict.o \
+	$(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB) $(KFLIB)
