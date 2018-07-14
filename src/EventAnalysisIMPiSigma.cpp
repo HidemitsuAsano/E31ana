@@ -108,7 +108,7 @@ namespace cdscuts{
 
 namespace anacuts{
   const double beta_MAX = 0.728786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
-  const double dE_MIN = 5.0; // 8.0MeVee * 3cm / 5cm;
+  const double dE_MIN = 2.0; // 8.0MeVee * 3cm / 5cm;
 
   const double pipi_MIN = 0.485;
   const double pipi_MAX = 0.510;
@@ -136,7 +136,7 @@ private:
   bool EveSelectCDHMul();
   bool EveSelectBeamline();
   double AnaBeamSpec(ConfMan *confMan);
-  
+  bool IsForwardCharge();
   
   TFile *rtFile;// histograms
   TFile *rtFile2;// condensed file
@@ -548,11 +548,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   TLorentzVector LVec_target;  // 4-Momentum(deuteron-target) in LAB
   LVec_target.SetVectM( Pp_target, dMass );//deuteron target
   TLorentzVector LVec_targetP; // 4-Momentum(p-target) in LAB
-  LVec_targetP.SetVectM( Pp_target, pMass );//H target
+  //LVec_targetP.SetVectM( Pp_target, pMass );//H target
   TLorentzVector LVec_beambfCM;  // 4-Momentum(beam) in CM
   TLorentzVector LVec_beamCM;    // 4-Momentum(beam) in CM with dE correcion
   TLorentzVector LVec_targetCM;  // 4-Momentum(deuteron-target) in CM
-  TLorentzVector LVec_targetPCM; // 4-Momentum(p-target) in CM
+  //TLorentzVector LVec_targetPCM; // 4-Momentum(p-target) in CM
   
   double x1, y1, x2, y2;
   double z1 = 0, z2 = 20;
@@ -568,11 +568,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   TVector3 boost = (LVec_target+LVec_beam).BoostVector();
   LVec_beambfCM = LVec_beam;
   LVec_targetCM = LVec_target;
-  LVec_targetPCM = LVec_targetP;
+  //LVec_targetPCM = LVec_targetP;
   //boost to CM frame
   LVec_beambfCM.Boost( -1*boost );
   LVec_targetCM.Boost( -1*boost );
-  LVec_targetPCM.Boost( -1*boost );
+  //LVec_targetPCM.Boost( -1*boost );
 
 
   //** + + + + + + + + + + + + **//
@@ -607,10 +607,13 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     if( !track->CDHFlag() ) continue;
 
     double mom = track->Momentum();
-    TVector3 vtxbline, vtxbhelix, vtxb;
+    TVector3 vtxbline, vtxbhelix; //,vtxb;
     track->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtxbline, vtxbhelix );
     track->SetPID(-1);
-    vtxb = (vtxbline+vtxbhelix)*0.5;//not used, so far
+    Tools::Fill2D(Form("Vtx_ZX"),vtxbline.Z(),vtxbline.X());
+    Tools::Fill2D(Form("Vtx_ZY"),vtxbline.Z(),vtxbline.Y());
+    Tools::Fill2D(Form("Vtx_XY"),vtxbline.X(),vtxbline.Y());
+    //vtxb = (vtxbline+vtxbhelix)*0.5;//not used, so far
 
     double tof = 999.;
     double mass2 = -999.;
@@ -678,6 +681,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     Tools::Fill2D( "PID_CDS_beta", 1/beta_calc, mom );
     Tools::Fill2D( "PID_CDS", mass2, mom );
 
+
     //** energy loss calculation **//
     double tmpl;
     TVector3 vtx_beam, vtx_cds;
@@ -708,38 +712,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   Tools::Fill1D( Form("ntrack_pi_minus"), pim_ID.size() );
   Tools::Fill1D( Form("ntrack_K_minus"),  km_ID.size() );
          
-  //** charge veto with BVC, CVC (TOF=CVC), & PC **//
-  int nBVC = 0;
-  int nCVC = 0;
-  int nPC  = 0;
-  for( int i=0; i<blMan->nBVC(); i++ ){
-    if( blMan->BVC(i)->CheckRange() ) nBVC++;
-  }
-  for( int i=0; i<blMan->nTOF(); i++ ){
-    if( blMan->TOF(i)->CheckRange() ) nCVC++;
-  }
-  for( int i=0; i<blMan->nPC(); i++ ){
-    if( blMan->PC(i)->CheckRange() ) nPC++;
-  }
-  Tools::Fill1D( Form("mul_BVC"), nBVC );
-  Tools::Fill1D( Form("mul_CVC"), nCVC );
-  Tools::Fill1D( Form("mul_PC"),  nPC );
-  bool chargedhit = false;
-  if( nBVC || nCVC || nPC ) chargedhit = true; 
-  //if( GRUN=="49c" ){
-  //  if( nBVC ) chargedhit = true;
-  //}else if( GRUN=="65" ){
-  //  if( nBVC || nCVC || nPC ) chargedhit = true;
-  //}
-
-
-
   //TLorentzVector Lpipdef, Lpimdef;
   TVector3 vtx_react;
   //  pi+ pi- X event  
   //  with CDH multiplicity selection
   if( pim_ID.size()==1 && pip_ID.size()==1 &&
-      trackMan->nGoodTrack()==cdscuts::cds_ngoodtrack && !chargedhit ){
+      trackMan->nGoodTrack()==cdscuts::cds_ngoodtrack && !IsForwardCharge() ){
 
     //=== condense pi+ pi- X candidates ===//
     rtFile2->cd();
@@ -823,7 +801,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     if(Verbosity){
       std::cerr<<"Min/Max = "<<PhiMin/TwoPi*360<<"/"<<PhiMax/TwoPi*360<<" deg"<<std::endl;
     }
-    int nCDC = 0;
+    int nCDCforVeto = 0;
     for( int ilr=14; ilr<16; ilr++ ){ // charge veto using layer 14, 15
       for( int icdchit=0; icdchit<cdsMan->nCDC(ilr); icdchit++ ){
         CDCHit *cdc=cdsMan->CDC(ilr,icdchit);
@@ -834,18 +812,18 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
           <<" deg :: diff = "<<angle/TwoPi*360<<" deg"<<std::endl;
         }
         Tools::Fill1D( Form("diff_CDH_CDC"), angle/TwoPi*360 );
-        if( PhiMin<angle && angle<PhiMax ) nCDC++;
+        if( PhiMin<angle && angle<PhiMax ) nCDCforVeto++;
       }//icdchit
     }//ilr
     if(Verbosity){
-      std::cerr<<"# of CDC hits for nCDH candidate = "<<nCDC<<std::endl;
+      std::cerr<<"# of CDC hits for nCDH candidate = "<<nCDCforVeto<<std::endl;
     }
     Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
     //Pos_CDH.SetZ(ncdhhit->hitpos());
 
 
     //** neutral particle in CDH **//
-    if( !nCDC ){
+    if( !nCDCforVeto ){
       CDSTrack *track_pip = trackMan->Track( pip_ID[0] ); // only 1 track
       CDSTrack *track_pim = trackMan->Track( pim_ID[0] ); // only 1 track
 
@@ -960,33 +938,34 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       //** + + + + + + + + + + + + + **//
       //**  fill histograms & tree   **//
       //** + + + + + + + + + + + + + **//
-
-
       kf_flag = -1;
 
       Tools::Fill2D( Form("dE_betainv"), 1/NeutralBetaCDH, ncdhhit->emean() );
       Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
-      
       if( GeomTools::GetID(vtx_react)==CID_Fiducial ){
 	Tools::Fill2D( Form("dE_betainv_fiducial"), 1/NeutralBetaCDH, ncdhhit->emean() );
 	Tools::Fill2D( Form("MMom_MMass_fiducial"), mm_mass, P_missn.Mag() );
 
 	if(  NeutralBetaCDH<anacuts::beta_MAX ){
-	  Tools::Fill2D( Form("dE_betainv_fiducial_beta"), 1/NeutralBetaCDH, ncdhhit->emean() );
+	  Tools::Fill2D( Form("dE_betainv_fiducial_beta"), 1./NeutralBetaCDH, ncdhhit->emean() );
 	  Tools::Fill2D( Form("MMom_MMass_fiducial_beta"), mm_mass, P_missn.Mag() );
 
 	  if( anacuts::dE_MIN<ncdhhit->emean() ){
-	    Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE"), 1/NeutralBetaCDH, ncdhhit->emean() );
+	    Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE"), 1./NeutralBetaCDH, ncdhhit->emean() );
 	    Tools::Fill2D( Form("MMom_MMass_fiducial_beta_dE"), mm_mass, P_missn.Mag() );
 
 	    Tools::Fill1D( Form("IMpipi"), (L_pim+L_pip).M() );
+      bool K0rejectFlag=false;
+      bool MissNcutFlag=false;
+      bool SigmaPFlag=false;
+      bool SigmaMFlag=false;
 
 	    if( ((L_pim+L_pip).M()<anacuts::pipi_MIN || anacuts::pipi_MAX<(L_pim+L_pip).M())){ // K0 rejection
-	      Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE_res"), 1/NeutralBetaCDH, ncdhhit->emean() );
+	      Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE_res"), 1./NeutralBetaCDH, ncdhhit->emean() );
 	      Tools::Fill2D( Form("MMom_MMass_fiducial_beta_dE_res"), mm_mass, P_missn.Mag() );
 
 	      if( anacuts::neutron_MIN<mm_mass && mm_mass<anacuts::neutron_MAX ){
-          Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE_res_n"), 1/NeutralBetaCDH, ncdhhit->emean() );
+          Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE_res_n"), 1./NeutralBetaCDH, ncdhhit->emean() );
           Tools::Fill2D( Form("MMom_MMass_fiducial_beta_dE_res_n"), mm_mass, P_missn.Mag() );
 
           Tools::Fill2D( Form("MMom_NMom"), P_n.Mag(), P_missn.Mag() );
@@ -1035,7 +1014,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 	//** fill tree **//
 
       } // if( GeomTools::GetID(vtx_react)==CID_Fiducial )
-    } // if( !nCDC )
+    } // if( !nCDCforVeto )
   }//pi+,pi-X event
   else{
     Clear( nAbort_pipi );
@@ -1104,7 +1083,7 @@ void EventAnalysis::InitializeHistogram()
 
   //** CDC and CDH information from CDC-trackig file **//
   Tools::newTH1F( Form("nGoodTrack"), 11, -0.5, 10.5 );
-  Tools::newTH1F( Form("mul_CDH"), 11, -0.5, 10.5 );
+  Tools::newTH1F( Form("mul_CDH"),Form("CDH multiplicity"), 11, -0.5, 10.5 );
   Tools::newTH1F( Form("mul_CDH_assoc"), 11, -0.5, 10.5 );
   Tools::newTH2F( Form("CDHtime"), 36, -0.5, 35.5,1600,0,40);
  
@@ -1138,37 +1117,40 @@ void EventAnalysis::InitializeHistogram()
   Tools::newTH1F( Form("ntrack_deuteron"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_pi_minus"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_K_minus"), 6, -0.5, 5.5 );
+  Tools::newTH2F( Form("Vtx_ZX"),1000,-25,25,500,-12.5,12.5);
+  Tools::newTH2F( Form("Vtx_ZY"),1000,-25,25,500,-12.5,12.5);
+  Tools::newTH2F( Form("Vtx_XY"),500,-12.5,12.5,500,-12.5,12.5);
 
   //** forward counters **//
   Tools::newTH1F( Form("mul_BVC"), 9, -0.5, 8.5 );
   Tools::newTH1F( Form("mul_CVC"), 11, -0.5, 10.5 );
   Tools::newTH1F( Form("mul_PC"), 11, -0.5, 10.5 );
 
-  //** p pi+ pi- X event **//
+  //** pi+ pi- X event **//
   Tools::newTH1F( Form("diff_CDH"), 73, -36.5, 36.5 );
-  Tools::newTH1F( Form("diff_CDH_CDC"), 180, 0, 180 );
+  Tools::newTH1F( Form("diff_CDH_CDC"), 181, 0, 181 );
   Tools::newTH2F( Form("dE_betainv"), 200, 0, 10, 200, 0, 50);
   Tools::newTH2F( Form("dE_betainv_fiducial"), 200, 0, 10, 200, 0, 50);
   Tools::newTH2F( Form("dE_betainv_fiducial_beta"), 200, 0, 10, 200, 0, 50);
   Tools::newTH2F( Form("dE_betainv_fiducial_beta_dE"), 200, 0, 10, 200, 0, 50);
   Tools::newTH2F( Form("dE_betainv_fiducial_beta_dE_res"), 200, 0, 10, 200, 0, 50);
   Tools::newTH2F( Form("dE_betainv_fiducial_beta_dE_res_n"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fiducial_beta_dE_Lambda"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fiducial_beta_dE_Lambda_n"), 200, 0, 10, 200, 0, 50);
+  //Tools::newTH2F( Form("dE_betainv_fiducial_beta_dE_Lambda"), 200, 0, 10, 200, 0, 50);
+  //Tools::newTH2F( Form("dE_betainv_fiducial_beta_dE_Lambda_n"), 200, 0, 10, 200, 0, 50);
   Tools::newTH2F( Form("MMom_MMass"), 140, 0.4, 1.8, 100, 0, 1.5 );
   Tools::newTH2F( Form("MMom_MMass_fiducial"), 140, 0.4, 1.8, 100, 0, 1.5 );
   Tools::newTH2F( Form("MMom_MMass_fiducial_beta"), 140, 0.4, 1.8, 100, 0, 1.5 );
   Tools::newTH2F( Form("MMom_MMass_fiducial_beta_dE"), 140, 0.4, 1.8, 100, 0, 1.5 );
   Tools::newTH2F( Form("MMom_MMass_fiducial_beta_dE_res"), 140, 0.4, 1.8, 100, 0, 1.5 );
   Tools::newTH2F( Form("MMom_MMass_fiducial_beta_dE_res_n"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  Tools::newTH2F( Form("MMom_MMass_fiducial_beta_dE_Lambda"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  Tools::newTH2F( Form("MMom_MMass_fiducial_beta_dE_Lambda_n"), 140, 0.4, 1.8, 100, 0, 1.5 );
+  //Tools::newTH2F( Form("MMom_MMass_fiducial_beta_dE_Lambda"), 140, 0.4, 1.8, 100, 0, 1.5 );
+  //Tools::newTH2F( Form("MMom_MMass_fiducial_beta_dE_Lambda_n"), 140, 0.4, 1.8, 100, 0, 1.5 );
 
-  Tools::newTH1F( Form("IMpipi"), 40, 0.4, 0.6 );
-  Tools::newTH1F( Form("IMppi"),  56, 1.06, 1.2 );
+  Tools::newTH1F( Form("IMpipi"), 200, 0.4, 0.6 );
+  //Tools::newTH1F( Form("IMppi"),  56, 1.06, 1.2 );
 
   Tools::newTH2F( Form("MMom_NMom"), 100, 0, 1.5, 100, 0, 1.5 );
-  Tools::newTH2F( Form("IMnpim_IMnpip"), 70, 1, 1.7, 70, 1, 1.7 );
+  Tools::newTH2F( Form("IMnpim_IMnpip"), 140, 1, 1.7, 140, 1, 1.7 );
   Tools::newTH2F( Form("IMmnpim_IMmnpip"), 70, 1, 1.7, 70, 1, 1.7 );
   Tools::newTH2F( Form("MMnppip_MMnppim"), 70, 1, 1.7, 70, 1, 1.7 );
   Tools::newTH2F( Form("Cosn_IMnppipi"), 50, 2, 3, 50, -1, 1 );
@@ -1309,11 +1291,11 @@ bool EventAnalysis::EveSelectBeamline()
   double chibpc = 999;
   for( int i=0; i<bltrackMan->ntrackBPC(); i++ ){
     Tools::Fill1D( Form("tracktime_BPC"), bltrackMan->trackBPC(i)->GetTrackTime() );
-    Tools::Fill1D( Form("trackchi2_BPC"), bltrackMan->trackBPC(i)->chi2all() );
     if( bltrackMan->trackBPC(i)->CheckRange(-30,100) ){
       nbpc++;
       bpcGoodTrackID = i;
       chibpc = bltrackMan->trackBPC(i)->chi2all();
+      Tools::Fill1D( Form("trackchi2_BPC"),chibpc);
     }
   }
 
@@ -1405,7 +1387,26 @@ double EventAnalysis::AnaBeamSpec(ConfMan *confMan){
   return beammom;
 }
 
-
+bool EventAnalysis::IsForwardCharge(){
+  //** charge veto with BVC, CVC (TOF=CVC), & PC **//
+  int nBVC = 0;
+  int nCVC = 0;
+  int nPC  = 0;
+  for( int i=0; i<blMan->nBVC(); i++ ){
+    if( blMan->BVC(i)->CheckRange() ) nBVC++;
+  }
+  for( int i=0; i<blMan->nTOF(); i++ ){
+    if( blMan->TOF(i)->CheckRange() ) nCVC++;
+  }
+  for( int i=0; i<blMan->nPC(); i++ ){
+    if( blMan->PC(i)->CheckRange() ) nPC++;
+  }
+  Tools::Fill1D( Form("mul_BVC"), nBVC );
+  Tools::Fill1D( Form("mul_CVC"), nCVC );
+  Tools::Fill1D( Form("mul_PC"),  nPC );
+  if( nBVC || nCVC || nPC ) return true;
+  else return false;
+}
 
 //**--**--**--**--**--**--**--**--**--**--**--**--**--**//
 void EventAnalysis::Clear( int &nAbort)
