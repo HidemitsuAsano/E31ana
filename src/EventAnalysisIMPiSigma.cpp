@@ -133,6 +133,13 @@ private:
   double AnaBeamSpec(ConfMan *confMan);
   bool IsForwardCharge();
   bool IsForwardNeutron();
+  int CDSChargedAna(LocalTrack *bpc,
+             const TLorentzVector beam,
+             std::vector <int> &cdhseg,
+             std::vector <int> &pimid, 
+             std::vector <int> &pipid,
+             std::vector <int> &kmid,
+             std::vector <int> &protonid);
   
   TFile *rtFile;// histograms
   TFile *rtFile2;// condensed file
@@ -587,138 +594,23 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   //**  PID in CDS             **//
   //** + + + + + + + + + + + + **//
   //** vectors for PID container **//
-  std::vector <int> pip_ID;
   std::vector <int> pim_ID;
+  std::vector <int> pip_ID;
   std::vector <int> km_ID;
   std::vector <int> p_ID;
-  std::vector <int> d_ID;
-
-  std::vector <int> spip_ID;
-  std::vector <int> spim_ID;
-  std::vector <int> skm_ID;
-  std::vector <int> sp_ID;
 
   std::vector <int> vCDHseg;
-
-
-  //** PID of CDS tracks **//
-  int CDHseg=-1;
-  for( int it=0; it<trackMan->nGoodTrack(); it++ ){
-    CDSTrack *track = trackMan->Track( trackMan->GoodTrackID(it) );
-
-    //** chi2 cut can be applied in CDSTrackingMan with MaxChi in CDSFittingParam_posi.param **//
-    Tools::Fill1D( Form("trackchi2_CDC"), track->Chi() );
-    if( track->Chi()>cdscuts::cds_chi2_max ) continue; 
-    
-    //asano memo
-    //checking if there is CDH hits at the projected position of the track 
-    if( !track->CDHFlag() ) continue;
-
-    double mom = track->Momentum();
-    TVector3 vtxbline, vtxbhelix; //,vtxb;
-    track->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtxbline, vtxbhelix );
-    track->SetPID(-1);
-    Tools::Fill2D(Form("Vtx_ZX"),vtxbline.Z(),vtxbline.X());
-    Tools::Fill2D(Form("Vtx_ZY"),vtxbline.Z(),vtxbline.Y());
-    Tools::Fill2D(Form("Vtx_XY"),vtxbline.X(),vtxbline.Y());
-    //vtxb = (vtxbline+vtxbhelix)*0.5;//not used, so far
-
-    double tof = 999.;
-    double mass2 = -999.;
-    int nCDHass = track->nCDHHit();
-    Tools::Fill1D(Form("mul_CDH_assoc"),nCDHass);
-    for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
-      HodoscopeLikeHit *cdhhit = track->CDHHit( cdsMan, icdh );
-      double tmptof = cdhhit->ctmean()-ctmT0;
-      if( tmptof<tof || tof==999. ){
-        tof = tmptof;
-        CDHseg = cdhhit->seg();
-      }
-    }
-    
-    //asano memo
-    //AYASHII ?
-    //check if the segment has been already used in the analysis.
-    bool CDHflag = true;
-    for( int icdhseg=0; icdhseg<(int)vCDHseg.size(); icdhseg++ ){
-      if( CDHseg==vCDHseg[icdhseg] ) CDHflag = false;
-    }
-    if( !CDHflag ){
-      std::cout << "L. " << __LINE__ << " CDHseg " << CDHseg << " is used by another track " << std::endl;
-      continue;//go to next CDStrack
-    }
-    vCDHseg.push_back( CDHseg );
-
-    //** calculation of beta and squared-mass **//
-    double tmptof, beta_calc;
-    if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
-				PIDBeam, beta_calc, mass2, tmptof ) ){
-      std::cerr<<" !!! failure in PID_CDS [FindMass2()] !!! "<<std::endl;
-      continue;
-    }
-
-    //** Retiming of CDC track by CDH info. **//
-    if(DoCDCRetiming){
-      track->Retiming( cdsMan, confMan, beta_calc, true );
-      //asano memo
-      //why need this ?
-      for( int m=0; m<5; m++ ){
-        track->HelixFitting( cdsMan ); //** 5 times iteration **//
-      }
-      track->Calc( confMan );
-    }
-
-
-    //** finalize PID **//
-    if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
-				PIDBeam, beta_calc, mass2, tmptof ) ){ //** not FindMass2C() [20170622] **//
-      std::cerr<<" !!! failure in PID_CDS [FindMass2()] !!! "<<std::endl;
-      continue;
-    }
-    
-    //RUN68 inoue's param.
-    int pid = -1;
-    pid = TrackTools::PIDcorr_wide(mom,mass2);
-
-    track->SetPID( pid );
-    Tools::Fill2D( "PID_CDS_beta", 1/beta_calc, mom );
-    Tools::Fill2D( "PID_CDS", mass2, mom );
-
-
-    //** energy loss calculation **//
-    double tmpl=0;
-    TVector3 vtx_beam, vtx_cds;
-    if( !track->CalcVertexTimeLength( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), track->Mass(),
-				      vtx_beam, vtx_cds, tmptof, tmpl, true ) ){
-      std::cerr<<" !!! failure in energy loss calculation [CalcVertexTimeLength()] !!! "<<std::endl;
-      continue;
-    }
-
-    if( pid==CDS_PiMinus ){
-      pim_ID.push_back( trackMan->GoodTrackID(it) );
-    }else if( pid==CDS_PiPlus ){
-      pip_ID.push_back( trackMan->GoodTrackID(it) );
-    }else if( pid==CDS_Proton ){
-      p_ID.push_back( trackMan->GoodTrackID(it) );
-    }else if( pid==CDS_Deuteron ){
-      d_ID.push_back( trackMan->GoodTrackID(it) );
-    }else if( pid==CDS_Kaon ){
-      km_ID.push_back( trackMan->GoodTrackID(it) );
-    }
-  } // for( int it=0; it<trackMan->nGoodTrack(); it++ ){
-  //** end of PID (except for neutron) **//
-
-  Tools::Fill1D( Form("ntrack_CDS"), pip_ID.size()+p_ID.size()+d_ID.size()+pim_ID.size()+km_ID.size() );
+  // PID of CDS tracks //
+  int nIDedTrack = CDSChargedAna(bpctrack,LVec_beam,vCDHseg,pim_ID,pip_ID,km_ID,p_ID);
+  
+  Tools::Fill1D( Form("ntrack_CDS"), nIDedTrack );
   Tools::Fill1D( Form("ntrack_pi_plus"),  pip_ID.size() );
   Tools::Fill1D( Form("ntrack_proton"),   p_ID.size() );
-  Tools::Fill1D( Form("ntrack_deuteron"), d_ID.size() );
   Tools::Fill1D( Form("ntrack_pi_minus"), pim_ID.size() );
   Tools::Fill1D( Form("ntrack_K_minus"),  km_ID.size() );
          
-  //TLorentzVector Lpipdef, Lpimdef;
   //  pi+ pi- X event  
   //  with CDH multiplicity selection
-
   bool pimpipFlag = false;
   if( pim_ID.size()==1 && pip_ID.size()==1) pimpipFlag = true;
   if( pimpipFlag &&
@@ -751,6 +643,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     if(Verbosity){
       if( NeutralCDHseg.size()!=1 ){
         std::cerr<<" CDH neutral hit is not 1 :: "<<NeutralCDHseg.size()<<std::endl;
+      }else{
+        Tools::Fill1D( Form("CDHNeutralseg"),NeutralCDHseg.at(0));
       }
       std::cerr<<"# of diff = "<<NeutralCDHseg.size()<<std::endl;
       std::cerr<<"CDH hits =   ";
@@ -828,6 +722,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
     //** neutral particle in CDH **//
     if( !nCDCforVeto ){
+      if(NeutralCDHseg.size()!=1){
+         std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
+      }
+      
+
       CDSTrack *track_pip = trackMan->Track( pip_ID[0] ); // only 1 track
       CDSTrack *track_pim = trackMan->Track( pim_ID[0] ); // only 1 track
 
@@ -980,6 +879,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         // K0 rejection
 	      Tools::Fill2D( Form("dE_betainv_fid_beta_dE_woK0"), 1./NeutralBetaCDH, ncdhhit->emean() );
 	      Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_woK0"), mm_mass, P_missn.Mag() );
+      
+        Tools::Fill2D( Form("IMnpim_IMnpip_dE"), (L_n+L_pip).M(), (L_n+L_pim).M() );
       }else{
         // K0 selection
 	      Tools::Fill2D( Form("dE_betainv_fid_beta_dE_wK0"), 1./NeutralBetaCDH, ncdhhit->emean() );
@@ -990,7 +891,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         Tools::Fill2D( Form("dE_betainv_fid_beta_dE_woK0_n"), 1./NeutralBetaCDH, ncdhhit->emean() );
         Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_woK0_n"), mm_mass, P_missn.Mag() );
         Tools::Fill2D( Form("MMom_NMom"), P_n.Mag(), P_missn.Mag() );
-        Tools::Fill2D( Form("IMnpim_IMnpip"), (L_n+L_pip).M(), (L_n+L_pim).M() );
+        Tools::Fill2D( Form("IMnpim_IMnpip_wmn_dE"), (L_n+L_pip).M(), (L_n+L_pim).M() );
       }
 
       if( MissNFlag ){
@@ -1047,7 +948,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         Tools::Fill2D( Form("dE_betainv_fid_beta_dE2_woK0_n"), 1./NeutralBetaCDH, ncdhhit->emean() );
         Tools::Fill2D( Form("MMom_MMass_fid_beta_dE2_woK0_n"), mm_mass, P_missn.Mag() );
         Tools::Fill2D( Form("MMom_NMom_dE2"), P_n.Mag(), P_missn.Mag() );
-        Tools::Fill2D( Form("IMnpim_IMnpip_dE2"), (L_n+L_pip).M(), (L_n+L_pim).M() );
+        Tools::Fill2D( Form("IMnpim_IMnpip_wmn_dE2"), (L_n+L_pip).M(), (L_n+L_pim).M() );
       }
 
       if( MissNFlag && (SigmaPFlag || SigmaMFlag)){
@@ -1159,7 +1060,7 @@ void EventAnalysis::InitializeHistogram()
   Tools::newTH1F( Form("mul_CDH"),Form("CDH multiplicity"), 11, -0.5, 10.5 );
   Tools::newTH1F( Form("mul_CDH_assoc"), 11, -0.5, 10.5 );
   Tools::newTH2F( Form("CDHtime"), 36, -0.5, 35.5,1600,0,40);
- 
+  Tools::newTH1F( Form("CDHNeutralSeg"),36,-0.5,35.5);
 
   //** beam line **//
   Tools::newTH1F( Form("mul_BHD"), 12, -0.5, 11.5 );
@@ -1187,7 +1088,7 @@ void EventAnalysis::InitializeHistogram()
   Tools::newTH1F( Form("ntrack_CDS"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_pi_plus"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_proton"), 6, -0.5, 5.5 );
-  Tools::newTH1F( Form("ntrack_deuteron"), 6, -0.5, 5.5 );
+  //Tools::newTH1F( Form("ntrack_deuteron"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_pi_minus"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_K_minus"), 6, -0.5, 5.5 );
   Tools::newTH2F( Form("Vtx_ZX"),1000,-25,25,500,-12.5,12.5);
@@ -1241,8 +1142,10 @@ void EventAnalysis::InitializeHistogram()
 
   Tools::newTH2F( Form("MMom_NMom"), 100, 0, 1.5, 100, 0, 1.5 );
   Tools::newTH2F( Form("MMom_NMom_dE2"), 100, 0, 1.5, 100, 0, 1.5 );
-  Tools::newTH2F( Form("IMnpim_IMnpip"), 140, 1, 1.7, 140, 1, 1.7 );
+  Tools::newTH2F( Form("IMnpim_IMnpip_dE"), 140, 1, 1.7, 140, 1, 1.7 );
   Tools::newTH2F( Form("IMnpim_IMnpip_dE2"), 140, 1, 1.7, 140, 1, 1.7 );
+  Tools::newTH2F( Form("IMnpim_IMnpip_wmn_dE"), 140, 1, 1.7, 140, 1, 1.7 );
+  Tools::newTH2F( Form("IMnpim_IMnpip_wmn_dE2"), 140, 1, 1.7, 140, 1, 1.7 );
   Tools::newTH2F( Form("IMmnpim_IMmnpip"), 70, 1, 1.7, 70, 1, 1.7 );
   Tools::newTH2F( Form("IMmnpim_IMmnpip_dE2"), 70, 1, 1.7, 70, 1, 1.7 );
   Tools::newTH2F( Form("MMnpip_MMnpim"), 70, 1, 1.7, 70, 1, 1.7 );
@@ -1495,6 +1398,126 @@ double EventAnalysis::AnaBeamSpec(ConfMan *confMan){
 
   return beammom;
 }
+
+//
+
+int EventAnalysis::CDSChargedAna(LocalTrack* bpctrack,
+                          const TLorentzVector LVec_beam,
+                          std::vector <int> &cdhseg, 
+                          std::vector <int> &pimid,  
+                          std::vector <int> &pipid,  
+                          std::vector <int> &kmid,   
+                          std::vector <int> &protonid)
+{
+  int CDHseg=-1;
+  for( int it=0; it<trackMan->nGoodTrack(); it++ ){
+    CDSTrack *track = trackMan->Track( trackMan->GoodTrackID(it) );
+
+    // chi2 cut can be applied in CDSTrackingMan with MaxChi in CDSFittingParam_posi.param 
+    Tools::Fill1D( Form("trackchi2_CDC"), track->Chi() );
+    if( track->Chi()>cdscuts::cds_chi2_max ) continue; 
+    
+    //asano memo
+    //checking if there is CDH hits at the projected position of the track 
+    if( !track->CDHFlag() ) continue;
+
+    double mom = track->Momentum();
+    TVector3 vtxbline, vtxbhelix; //,vtxb;
+    track->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtxbline, vtxbhelix );
+    track->SetPID(-1);
+    Tools::Fill2D(Form("Vtx_ZX"),vtxbline.Z(),vtxbline.X());
+    Tools::Fill2D(Form("Vtx_ZY"),vtxbline.Z(),vtxbline.Y());
+    Tools::Fill2D(Form("Vtx_XY"),vtxbline.X(),vtxbline.Y());
+    //vtxb = (vtxbline+vtxbhelix)*0.5;//not used, so far
+
+    double tof = 999.;
+    double mass2 = -999.;
+    int nCDHass = track->nCDHHit();
+    Tools::Fill1D(Form("mul_CDH_assoc"),nCDHass);
+    for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
+      HodoscopeLikeHit *cdhhit = track->CDHHit( cdsMan, icdh );
+      double tmptof = cdhhit->ctmean()-ctmT0;
+      if( tmptof<tof || tof==999. ){
+        tof = tmptof;
+        CDHseg = cdhhit->seg();
+      }
+    }
+    
+    //asano memo
+    //AYASHII ?
+    //check if the segment has been already used in the analysis.
+    bool CDHflag = true;
+    for( int icdhseg=0; icdhseg<(int)cdhseg.size(); icdhseg++ ){
+      if( CDHseg==cdhseg[icdhseg] ) CDHflag = false;
+    }
+    if( !CDHflag ){
+      std::cout << "L. " << __LINE__ << " CDHseg " << CDHseg << " is used by another track " << std::endl;
+      continue;//go to next CDStrack
+    }
+    cdhseg.push_back( CDHseg );
+
+    // calculation of beta and squared-mass //
+    double tmptof, beta_calc;
+    if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
+				PIDBeam, beta_calc, mass2, tmptof ) ){
+      std::cerr<<" !!! failure in PID_CDS [FindMass2()] !!! "<<std::endl;
+      continue;
+    }
+
+    // Retiming of CDC track by CDH info. //
+    if(DoCDCRetiming){
+      track->Retiming( cdsMan, confMan, beta_calc, true );
+      //asano memo
+      //why need this ?
+      for( int m=0; m<5; m++ ){
+        track->HelixFitting( cdsMan ); // 5 times iteration //
+      }
+      track->Calc( confMan );
+    }
+
+
+    // finalize PID //
+    if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
+				PIDBeam, beta_calc, mass2, tmptof ) ){ // not FindMass2C() [20170622] //
+      std::cerr<<" !!! failure in PID_CDS [FindMass2()] !!! "<<std::endl;
+      continue;
+    }
+    
+    //RUN68 inoue's param.
+    int pid = -1;
+    pid = TrackTools::PIDcorr_wide(mom,mass2);
+
+    track->SetPID( pid );
+    Tools::Fill2D( "PID_CDS_beta", 1/beta_calc, mom );
+    Tools::Fill2D( "PID_CDS", mass2, mom );
+
+
+    // energy loss calculation //
+    double tmpl=0;
+    TVector3 vtx_beam, vtx_cds;
+    if( !track->CalcVertexTimeLength( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), track->Mass(),
+				      vtx_beam, vtx_cds, tmptof, tmpl, true ) ){
+      std::cerr<<" !!! failure in energy loss calculation [CalcVertexTimeLength()] !!! "<<std::endl;
+      continue;
+    }
+
+    if( pid==CDS_PiMinus ){
+      pimid.push_back( trackMan->GoodTrackID(it) );
+    }else if( pid==CDS_PiPlus ){
+      pipid.push_back( trackMan->GoodTrackID(it) );
+    }else if( pid==CDS_Proton ){
+      protonid.push_back( trackMan->GoodTrackID(it) );
+    }else if( pid==CDS_Kaon ){
+      kmid.push_back( trackMan->GoodTrackID(it) );
+    }
+  } // for( int it=0; it<trackMan->nGoodTrack(); it++ ){
+  // end of PID (except for neutron) //
+  return pimid.size()+pipid.size()+protonid.size()+kmid.size();
+}
+
+
+
+
 
 bool EventAnalysis::IsForwardCharge(){
   //** charge veto with BVC, CVC (TOF=CVC), & PC **//
