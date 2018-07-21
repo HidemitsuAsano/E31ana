@@ -20,7 +20,7 @@ namespace anacuts{
   const double Sigmam_MAX = 1.22;
 }
 
-void plothists(const char *filename="evanaIMpisigma_all_v7.root")
+void plothists(const char *filename="evanaIMpisigma_all_v8.root")
 {
   cout << "filename " << filename << endl;
   gStyle->SetPadGridX(gridon);
@@ -46,7 +46,7 @@ void plothists(const char *filename="evanaIMpisigma_all_v7.root")
   //physics plots
   //IM pi+pi- when nCDH==3, fudicial OK,
   TCanvas *c_IMpipi = new TCanvas("c_IMpipi","c_IMpipi");
-  TH1F* h1_IMpipi = f->Get("IMpipi_dE2");
+  TH1F* h1_IMpipi = f->Get("IMpipi");
   c_IMpipi->cd();
   gPad->SetLeftMargin(0.13);
   gPad->SetRightMargin(0.03);
@@ -75,42 +75,81 @@ void plothists(const char *filename="evanaIMpisigma_all_v7.root")
   TH1D* proMMass = h2_MMom_MMass_fid_beta_dE->ProjectionX();
   proMMass->Draw();
   
-  TCanvas *cMMom_MMass_fid_beta_dE2 = new TCanvas("cMMom_MMass_fid_beta_dE2","");
-  TH2F* h2_MMom_MMass_fid_beta_dE2 = f->Get("MMom_MMass_fid_beta_dE2");
-  h2_MMom_MMass_fid_beta_dE2->SetXTitle("missing mass [GeV/c^{2}]");
-  h2_MMom_MMass_fid_beta_dE2->GetXaxis()->CenterTitle();
-  h2_MMom_MMass_fid_beta_dE2->SetYTitle("missing momentum [GeV/c]");
-  h2_MMom_MMass_fid_beta_dE2->GetYaxis()->CenterTitle();
-  h2_MMom_MMass_fid_beta_dE2->Draw("colz");
+  TCanvas *cMMom_MMass_fid_beta = new TCanvas("cMMom_MMass_fid_beta","");
+  TH2F* h2_MMom_MMass_fid_beta = f->Get("MMom_MMass_fid_beta");
+  h2_MMom_MMass_fid_beta->SetXTitle("missing mass [GeV/c^{2}]");
+  h2_MMom_MMass_fid_beta->GetXaxis()->CenterTitle();
+  h2_MMom_MMass_fid_beta->SetYTitle("missing momentum [GeV/c]");
+  h2_MMom_MMass_fid_beta->GetYaxis()->CenterTitle();
+  h2_MMom_MMass_fid_beta->Draw("colz");
   
-  TCanvas *cMMom_MMass_fid_beta_dE2_px = new TCanvas("cMMom_MMass_fid_beta_dE2_px","");
-  TH1D* proMMass2 = h2_MMom_MMass_fid_beta_dE2->ProjectionX();
+  TCanvas *cMMom_MMass_fid_beta_px = new TCanvas("cMMom_MMass_fid_beta_px","");
+  TH1D* proMMass2 = h2_MMom_MMass_fid_beta->ProjectionX();
   proMMass2->Draw();
+
+ 
+  TCanvas *cMMom_MMass_fid_beta_wSid = new TCanvas("cMMom_MMass_fid_beta_wSid","");
+  TH2F* h2_MMom_MMass_fid_beta_wSid = f->Get("MMom_MMass_fid_beta_dE_woK0_wSid");
+  h2_MMom_MMass_fid_beta_wSid->SetXTitle("missing mass [GeV/c^{2}]");
+  h2_MMom_MMass_fid_beta_wSid->GetXaxis()->CenterTitle();
+  h2_MMom_MMass_fid_beta_wSid->SetYTitle("missing momentum [GeV/c]");
+  h2_MMom_MMass_fid_beta_wSid->GetYaxis()->CenterTitle();
+  h2_MMom_MMass_fid_beta_wSid->Draw("colz");
   
-  TCanvas *cIMnpim_IMnpip_dE2 = new TCanvas("cIMnpim_IMnpip_dE2","");
-  TH2F* h2_IMnpim_IMnpip_dE2 = f->Get("IMnpim_IMnpip_dE2");
-  h2_IMnpim_IMnpip_dE2->SetXTitle("IM(#pi^{+}n) [GeV/c^{2}]");
-  h2_IMnpim_IMnpip_dE2->GetXaxis()->CenterTitle();
-  h2_IMnpim_IMnpip_dE2->SetYTitle("IM(#pi^{-}n) [GeV/c^{2}]");
-  h2_IMnpim_IMnpip_dE2->GetYaxis()->CenterTitle();
-  h2_IMnpim_IMnpip_dE2->Draw("colz");
+  TCanvas *cMMom_MMass_fid_beta_wSid_px = new TCanvas("cMMom_MMass_fid_beta_px","");
+  TH1D* proMMass2_wSid = h2_MMom_MMass_fid_beta_wSid->ProjectionX();
+  proMMass2_wSid->Draw();
+
+
+  
+  TCanvas *cIMnpim_IMnpip = new TCanvas("cIMnpim_IMnpip","");
+  TH2F* h2_IMnpim_IMnpip = f->Get("IMnpim_IMnpip");
+  h2_IMnpim_IMnpip->SetXTitle("IM(#pi^{+}n) [GeV/c^{2}]");
+  h2_IMnpim_IMnpip->GetXaxis()->CenterTitle();
+  h2_IMnpim_IMnpip->SetYTitle("IM(#pi^{-}n) [GeV/c^{2}]");
+  h2_IMnpim_IMnpip->GetYaxis()->CenterTitle();
+  h2_IMnpim_IMnpip->Draw("colz");
   
 
-  TCanvas *cIMnpim_IMnpip_dE2_px = new TCanvas("cIMnpim_IMnpip_dE2_px","");
-  TH1D* h2_IMnpim_IMnpip_dE2_px = h2_IMnpim_IMnpip_dE2->ProjectionX();
-  h2_IMnpim_IMnpip_dE2_px->Draw();
-  TH1D* h2_IMnpim_IMnpip_dE2_px_clone = h2_IMnpim_IMnpip_dE2_px->Clone();
-  h2_IMnpim_IMnpip_dE2_px_clone->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
-  h2_IMnpim_IMnpip_dE2_px_clone->SetFillColor(3);
-  h2_IMnpim_IMnpip_dE2_px_clone->Draw("same");
+  TCanvas *cIMnpim_IMnpip_px = new TCanvas("cIMnpim_IMnpip_px","");
+  TH1D* h2_IMnpim_IMnpip_px = h2_IMnpim_IMnpip->ProjectionX();
+  h2_IMnpim_IMnpip_px->Draw();
+  TH1D* h2_IMnpim_IMnpip_px_clone = h2_IMnpim_IMnpip_px->Clone();
+  h2_IMnpim_IMnpip_px_clone->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
+  h2_IMnpim_IMnpip_px_clone->SetFillColor(3);
+  h2_IMnpim_IMnpip_px_clone->Draw("same");
 
-  TCanvas *cIMnpim_IMnpip_dE2_py = new TCanvas("cIMnpim_IMnpip_dE2_py","");
-  TH1D* h2_IMnpim_IMnpip_dE2_py = h2_IMnpim_IMnpip_dE2->ProjectionY();
-  h2_IMnpim_IMnpip_dE2_py->Draw();
-  TH1D* h2_IMnpim_IMnpip_dE2_py_clone = h2_IMnpim_IMnpip_dE2_py->Clone();
-  h2_IMnpim_IMnpip_dE2_py_clone->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
-  h2_IMnpim_IMnpip_dE2_py_clone->SetFillColor(4);
-  h2_IMnpim_IMnpip_dE2_py_clone->Draw("same");
+  TCanvas *cIMnpim_IMnpip_py = new TCanvas("cIMnpim_IMnpip_py","");
+  TH1D* h2_IMnpim_IMnpip_py = h2_IMnpim_IMnpip->ProjectionY();
+  h2_IMnpim_IMnpip_py->Draw();
+  TH1D* h2_IMnpim_IMnpip_py_clone = h2_IMnpim_IMnpip_py->Clone();
+  h2_IMnpim_IMnpip_py_clone->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
+  h2_IMnpim_IMnpip_py_clone->SetFillColor(4);
+  h2_IMnpim_IMnpip_py_clone->Draw("same");
+  
+  TCanvas *cIMmnpim_IMmnpip = new TCanvas("cIMmnpim_IMmnpip","");
+  TH2F* h2_IMmnpim_IMmnpip = f->Get("IMmnpim_IMmnpip");
+  h2_IMmnpim_IMmnpip->SetXTitle("IM(#pi^{+}n) [GeV/c^{2}]");
+  h2_IMmnpim_IMmnpip->GetXaxis()->CenterTitle();
+  h2_IMmnpim_IMmnpip->SetYTitle("IM(#pi^{-}n) [GeV/c^{2}]");
+  h2_IMmnpim_IMmnpip->GetYaxis()->CenterTitle();
+  h2_IMmnpim_IMmnpip->Draw("colz");
+  
+  TCanvas *cIMmnpim_IMmnpip_px = new TCanvas("cIMmnpim_IMmnpip_px","");
+  TH1D* h2_IMmnpim_IMmnpip_px = h2_IMmnpim_IMmnpip->ProjectionX();
+  h2_IMmnpim_IMmnpip_px->Draw();
+  //TH1D* h2_IMmnpim_IMmnpip_px_clone = h2_IMmnpim_IMmnpip_px->Clone();
+  //h2_IMmnpim_IMmnpip_px_clone->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
+  //h2_IMmnpim_IMmnpip_px_clone->SetFillColor(3);
+  //h2_IMmnpim_IMmnpip_px_clone->Draw("same");
+
+  TCanvas *cIMmnpim_IMmnpip_py = new TCanvas("cIMmnpim_IMmnpip_py","");
+  TH1D* h2_IMmnpim_IMmnpip_py = h2_IMmnpim_IMmnpip->ProjectionY();
+  h2_IMmnpim_IMmnpip_py->Draw();
+  //TH1D* h2_IMmnpim_IMmnpip_py_clone = h2_IMmnpim_IMmnpip_py->Clone();
+  //h2_IMmnpim_IMmnpip_py_clone->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
+  //h2_IMmnpim_IMmnpip_py_clone->SetFillColor(4);
+  //h2_IMmnpim_IMmnpip_py_clone->Draw("same");
 
   TCanvas *cIMnpipi_wSid = new TCanvas("cIMnpipi_wSid","");
   TH1F* h1_IMnpipi_wSid = f->Get("IMnpipi_wSid");
@@ -131,14 +170,13 @@ void plothists(const char *filename="evanaIMpisigma_all_v7.root")
   h2_IMnpipi_MMnmiss_woK0_wSid->GetYaxis()->CenterTitle();
   h2_IMnpipi_MMnmiss_woK0_wSid->Draw("colz");
   
-
-  TCanvas *cCosn_IMnpipi_dE2 = new TCanvas("cCosn_IMnpipi_dE2","");
-  TH2F* h2_cCosn_IMnpipi_dE2 = f->Get("Cosn_IMnpipi_dE2");
-  h2_cCosn_IMnpipi_dE2->SetXTitle("IM(n#pi^{-}#pi^{+}) [GeV/c^{2}]");
-  h2_cCosn_IMnpipi_dE2->GetXaxis()->CenterTitle();
-  h2_cCosn_IMnpipi_dE2->SetYTitle("cos#theta_{CM}");
-  h2_cCosn_IMnpipi_dE2->GetYaxis()->CenterTitle();
-  h2_cCosn_IMnpipi_dE2->Draw("colz");
+  TCanvas *cCosn_IMnpipi = new TCanvas("cCosn_IMnpipi","");
+  TH2F* h2_cCosn_IMnpipi = f->Get("Cosn_IMnpipi");
+  h2_cCosn_IMnpipi->SetXTitle("IM(n#pi^{-}#pi^{+}) [GeV/c^{2}]");
+  h2_cCosn_IMnpipi->GetXaxis()->CenterTitle();
+  h2_cCosn_IMnpipi->SetYTitle("cos#theta_{CM}");
+  h2_cCosn_IMnpipi->GetYaxis()->CenterTitle();
+  h2_cCosn_IMnpipi->Draw("colz");
 
   return;
 }
@@ -183,6 +221,58 @@ void QACDS(const char *filename){
   gStyle->SetStatX(0.98);
   gStyle->SetStatY(0.9);
   gStyle->SetStatBorderSize(1);
+  
+  TCanvas *ctrackchi2_CDC = new TCanvas("ctrackchi2_CDC","ctrackchi2_CDC");
+  TH1F* h1_trackchi2_CDC = f->Get("trackchi2_CDC");
+  h1_trackchi2_CDC->SetXTitle("CDC track chi2/ndf");
+  h1_trackchi2_CDC->GetXaxis()->CenterTitle();
+  h1_trackchi2_CDC->Draw();
+
+  TCanvas *cntrack = new TCanvas("cntrac","cntrack");
+  TH1F* h1_ntrack_CDS = f->Get("ntrack_CDS");
+  //h1_ntrack_CDS->SetXTitle("# of tracks");
+  //h1_ntrack_CDS->GetXaxis()->CenterTitle();
+  //h1_ntrack_CDS->Draw();
+  TH1F* h1_ntrack_pi_plus = f->Get("ntrack_pi_plus");
+  h1_ntrack_pi_plus->SetTitle("");
+  h1_ntrack_pi_plus->SetLineColor(1);
+  h1_ntrack_pi_plus->SetXTitle("# of tracks per event");
+  h1_ntrack_pi_plus->GetXaxis()->CenterTitle();
+  h1_ntrack_pi_plus->Draw("");
+  TH1F* h1_ntrack_pi_minus = f->Get("ntrack_pi_minus");
+  h1_ntrack_pi_minus->SetLineColor(2);
+  h1_ntrack_pi_minus->Draw("same");
+  TH1F* h1_ntrack_proton = f->Get("ntrack_proton");
+  h1_ntrack_proton->SetLineColor(3);
+  h1_ntrack_proton->Draw("same");
+  TH1F* h1_ntrack_K_minus = f->Get("ntrack_K_minus");
+  h1_ntrack_K_minus->SetLineColor(4);
+  h1_ntrack_K_minus->Draw("same");
+  
+  TLegend *legend = new TLegend(0.6,0.7,0.9,0.9);
+  //legend->SetHeader("The Legend Title","C"); // option "C" allows to center the header
+  //legend->AddEntry(h1_ntrack_CDS,"# of good CDS track per event","L");
+  legend->AddEntry(h1_ntrack_pi_plus,"# of #pi^{+}","L");
+  legend->AddEntry(h1_ntrack_pi_minus,"# of #pi^{-}","L");
+  legend->AddEntry(h1_ntrack_proton,"# of proton","L");
+  legend->AddEntry(h1_ntrack_K_minus,"# of K^{-}","L");
+  legend->Draw();
+
+
+  TCanvas *cCDS_mom_betainv  = new TCanvas("CDS_mom_betainv","CDS_mom_betainv");
+  TH2F *h2_CDS_mom_betainv = f->Get("PID_CDS_beta");
+  //h2_CDS_mom_betainv->GetXaxis()->SetRangeUser(-0.3,1.5);
+  h2_CDS_mom_betainv->GetXaxis()->SetTitle("mass^{2} [(GeV/c^{2})^{2}]");
+  h2_CDS_mom_betainv->GetXaxis()->CenterTitle();
+  //h2_CDS_mom_betainv->GetYaxis()->SetRangeUser(-1.0,1.0);
+  h2_CDS_mom_betainv->GetYaxis()->SetTitle("1/#beta");
+  h2_CDS_mom_betainv->GetYaxis()->CenterTitle();
+  gPad->SetLogz();
+  h2_CDS_mom_betainv->Draw("colz");
+  gStyle->SetOptStat(0);
+  cCDS_mom_betainv->Update();
+  cCDS_mom_betainv->Modified();
+
    
   TCanvas *cCDS_mass2_mom  = new TCanvas("CDS_mass2_mom","CDS_mass2_mom");
   TH2F *h2_CDS_mass2_mom = f->Get("PID_CDS");
@@ -207,7 +297,8 @@ void QACDS(const char *filename){
   h2_Vtx_ZX->GetYaxis()->SetTitle("X Vertex [cm]");
   h2_Vtx_ZX->GetYaxis()->CenterTitle();
   h2_Vtx_ZX->Draw("colz");
-  
+  double maxZX = h2_Vtx_ZX->GetMaximum();
+
   TCanvas *cVtx_ZY  = new TCanvas("Vtx_ZY","Vtx_ZY");
   TH2F *h2_Vtx_ZY = f->Get("Vtx_ZY");
   h2_Vtx_ZY->SetTitle("CDS Vertex");
@@ -216,6 +307,7 @@ void QACDS(const char *filename){
   h2_Vtx_ZY->GetYaxis()->SetTitle("Y Vertex [cm]");
   h2_Vtx_ZY->GetYaxis()->CenterTitle();
   h2_Vtx_ZY->Draw("colz");
+  double maxZY = h2_Vtx_ZY->GetMaximum();
   
   TCanvas *cVtx_XY  = new TCanvas("Vtx_XY","Vtx_XY");
   TH2F *h2_Vtx_XY = f->Get("Vtx_XY");
@@ -225,7 +317,38 @@ void QACDS(const char *filename){
   h2_Vtx_XY->GetYaxis()->SetTitle("Y Vertex [cm]");
   h2_Vtx_XY->GetYaxis()->CenterTitle();
   h2_Vtx_XY->Draw("colz");
+  double maxXY = h2_Vtx_XY->GetMaximum();
     
+  //fiducial cuts
+  TCanvas *cVtx_ZX_fid  = new TCanvas("Vtx_ZX_fid","Vtx_ZX_fid");
+  TH2F *h2_Vtx_ZX_fid = f->Get("Vtx_ZX_fid");
+  h2_Vtx_ZX_fid->SetTitle("CDS Vertex");
+  h2_Vtx_ZX_fid->GetXaxis()->SetTitle("Z Vertex [cm]");
+  h2_Vtx_ZX_fid->GetXaxis()->CenterTitle();
+  h2_Vtx_ZX_fid->GetYaxis()->SetTitle("X Vertex [cm]");
+  h2_Vtx_ZX_fid->GetYaxis()->CenterTitle();
+  h2_Vtx_ZX_fid->SetMaximum(maxZX);
+  h2_Vtx_ZX_fid->Draw("colz");
+  
+  TCanvas *cVtx_ZY_fid  = new TCanvas("Vtx_ZY_fid","Vtx_ZY_fid");
+  TH2F *h2_Vtx_ZY_fid = f->Get("Vtx_ZY_fid");
+  h2_Vtx_ZY_fid->SetTitle("CDS Vertex");
+  h2_Vtx_ZY_fid->GetXaxis()->SetTitle("Z Vertex [cm]");
+  h2_Vtx_ZY_fid->GetXaxis()->CenterTitle();
+  h2_Vtx_ZY_fid->GetYaxis()->SetTitle("Y Vertex [cm]");
+  h2_Vtx_ZY_fid->GetYaxis()->CenterTitle();
+  h2_Vtx_ZY_fid->SetMaximum(maxZY);
+  h2_Vtx_ZY_fid->Draw("colz");
+  
+  TCanvas *cVtx_XY_fid  = new TCanvas("Vtx_XY_fid","Vtx_XY_fid");
+  TH2F *h2_Vtx_XY_fid = f->Get("Vtx_XY_fid");
+  h2_Vtx_XY_fid->SetTitle("CDS Vertex");
+  h2_Vtx_XY_fid->GetXaxis()->SetTitle("X Vertex [cm]");
+  h2_Vtx_XY_fid->GetXaxis()->CenterTitle();
+  h2_Vtx_XY_fid->GetYaxis()->SetTitle("Y Vertex [cm]");
+  h2_Vtx_XY_fid->GetYaxis()->CenterTitle();
+  h2_Vtx_XY_fid->SetMaximum(maxXY);
+  h2_Vtx_XY_fid->Draw("colz");
   
   /*
   TCanvas *cVtx_X_center  = new TCanvas("Vtx_X_center","Vtx_X_center");
