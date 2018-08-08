@@ -2,7 +2,7 @@ CC=gcc
 CXX=g++
 #CXX=clang
 lCOPT=-DOFFLINE -DDEBUG -DNT -DRAW
-CXXOPT = $(COPT) -Wall
+CXXOPT = $(COPT) -Wall #-Werror
 
 CONFIGS	= -DUSE_ROOT #-DDEBUG
 
@@ -29,7 +29,7 @@ ROOTINC	= $(shell $(ROOT)/bin/root-config --cflags)
 EXPLLINKLIBS = $(shell $(ROOT)/bin/root-config --libs) -lMinuit -lGeom -lEG
 CERN	= /cern/pro
 
-KFINC	= -I/w/e15/common/KinFitter/
+KFINC	= -I/gpfs/home/had/hiasano/source/
 
 INC	= $(ROOTINC) $(KFINC)
 MATH	= -lm
@@ -237,7 +237,7 @@ $(ALLSO): $(patsubst %,$(TMPDIR)/%,$(RAWDATA)) $(patsubst %,$(TMPDIR)/%,$(RAWHIT
 $(TMPDIR)/%_Dict.cpp: %.h	
 	@echo ------------------------- Making $@
 	$(ROOTSYS)/bin/rootcint -f $@ -c $(INCLUDE) $(PWD)/$< LinkDef/$(<D)/$*_LinkDef.h
-	@echo ------------------------- Done "\(^o^)/" Done
+	@echo ------------------------- Done "\(ToT)/" Done
 
 SRCS	= $(wildcard *.cpp)
 -include $(SRCS:%.cpp=%.d)
@@ -247,6 +247,9 @@ evanaraw:  $(TMPDIR)/EventAnalysisRawAll.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(
 
 evanaxt:  $(TMPDIR)/EventAnalysisXT.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@  $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisXT.o $(LIBLINK) $(OBJSLIB)
+
+evanadctimecorr:  $(TMPDIR)/EventAnalysisDCTimeCorr.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@  $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisDCTimeCorr.o $(LIBLINK) $(OBJSLIB)
 
 evanatko:  $(TMPDIR)/EventAnalysisTKO.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@  $(TMPDIR)/EventAnalysisTKO.o $(patsubst %,$(TMPDIR)/%,$(EVENT))  $(LIBLINK) $(OBJSLIB)
@@ -260,6 +263,9 @@ evanabldc:  $(TMPDIR)/EventAnalysisBLDC.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(p
 evanadc:  $(TMPDIR)/EventAnalysisDC.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@  $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisDC.o $(LIBLINK) $(OBJSLIB)
 
+evanacdc:  $(TMPDIR)/EventAnalysisCDC.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@  $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisCDC.o $(LIBLINK) $(OBJSLIB)
+
 # source file does not exist. (asano)
 #mktree:  $(TMPDIR)/EventAnalysisTree.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(patsubst %,$(TMPDIR)/%,$(OBJS))
 #	$(CXX) $(CFLAGS) -o $(BINDIR)/$@  $(TMPDIR)/EventAnalysisTree.o $(patsubst %,$(TMPDIR)/%,$(EVENT))  $(LIBLINK) $(OBJSLIB)
@@ -268,7 +274,7 @@ evanadc:  $(TMPDIR)/EventAnalysisDC.o $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(patsu
 include Makefile.user
 
 clean:
-	rm -f $(TARGET) dbtest libe471db.a *.o *.d *_Dict.h *_Dict.cpp $(TMPDIR)/*.o $(TMPDIR)/*.d $(TMPDIR)/*.h *~ LinkDef/*~
+	rm -rf $(TARGET) dbtest libe471db.a *.o *.d *_Dict.h *_Dict.cpp $(TMPDIR)/*.o $(TMPDIR)/*.d $(TMPDIR)/*.h *~ LinkDef/*~ $(BINDIR)/*
 
 libclean:
 	rm -f $(RTLIBDIR)/lib* libObjs.a libMnGld.a

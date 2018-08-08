@@ -137,14 +137,14 @@ namespace anacuts{
 namespace kin{
   const int npart=6;
   const int kmbeam=0;
-  const int promptpim=1;
+  const int pim_g1=1;//pi- 1st generation
   const int Sp=2;
   const int nmiss=3;
   const int ncds=4;
-  const int decaypip=5;
-  const int promptpip=1;
+  const int pip_g2=5;//pi+ 2nd generation
+  const int pip_g1=1;//pi- 1st generation
   const int Sm=2;
-  const int decaypim=5;
+  const int pim_g2=5;//pi- 2nd generation
   
   const int maxitr=50;
   const double maxdchi2=5e-5;
@@ -315,24 +315,22 @@ private:
   TMatrixD *covZero;
   TMatrixD *covParticle_Spmode[7];
   TMatrixD *covParticle_Smmode[7];
-  TLorentzVector kf1mom_beam;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
-  TLorentzVector kf1mom_pip;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
-  TLorentzVector kf1mom_pim;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
-  TLorentzVector kf1mom_p;      // 4-momentum(proton) after kinematical refit for pi- Sigma+
-  TLorentzVector kf1mom_n;      // 4-momentum(neutron) after kinematical refit for pi- Sigma+
-  double kf1_chi2;   // chi2 of kinematical refit
-  double kf1_NDF;    // NDF of kinematical refit
-  double kf1_status; // status of kinematical refit -> details can be found in this code
-  double kf1_pvalue; // p-value of kinematical refit
-  TLorentzVector kf2mom_beam;   // 4-momentum(beam) after kinematical refit for pi+ Sigma-
-  TLorentzVector kf2mom_pip;    // 4-momentum(pi+) after kinematical refit for pi+ Sigma-
-  TLorentzVector kf2mom_pim;    // 4-momentum(pi-) after kinematical refit for pi+ Sigma-
-  TLorentzVector kf2mom_p;      // 4-momentum(proton) after kinematical refit for pi+ Sigma-
-  TLorentzVector kf2mom_n;      // 4-momentum(neutron) after kinematical refit for pi+ Sigma-
-  double kf2_chi2;   // chi2 of kinematical refit
-  double kf2_NDF;    // NDF of kinematical refit
-  double kf2_status; // status of kinematical refit -> details can be found in this code
-  double kf2_pvalue; // p-value of kinematical refit
+  TLorentzVector kfSpmode_mom_beam;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
+  TLorentzVector kfSpmode_mom_pip;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
+  TLorentzVector kfSpmode_mom_pim;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
+  TLorentzVector kfSpmode_mom_n;      // 4-momentum(neutron) after kinematical refit for pi- Sigma+
+  double kfSpmode_chi2;   // chi2 of kinematical refit
+  double kfSpmode_NDF;    // NDF of kinematical refit
+  double kfSpmode_status; // status of kinematical refit -> details can be found in this code
+  double kfSpmode_pvalue; // p-value of kinematical refit
+  TLorentzVector kfSmmode_mom_beam;   // 4-momentum(beam) after kinematical refit for pi+ Sigma-
+  TLorentzVector kfSmmode_mom_pip;    // 4-momentum(pi+) after kinematical refit for pi+ Sigma-
+  TLorentzVector kfSmmode_mom_pim;    // 4-momentum(pi-) after kinematical refit for pi+ Sigma-
+  TLorentzVector kfSmmode_mom_n;      // 4-momentum(neutron) after kinematical refit for pi+ Sigma-
+  double kfSmmode_chi2;   // chi2 of kinematical refit
+  double kfSmmode_NDF;    // NDF of kinematical refit
+  double kfSmmode_status; // status of kinematical refit -> details can be found in this code
+  double kfSmmode_pvalue; // p-value of kinematical refit
   int kf_flag; // flag of correct pair reconstruction, etc
   //= = = = npippim final-sample tree = = = =//
 
@@ -448,24 +446,22 @@ void EventAnalysis::Initialize( ConfMan *conf )
   npippimTree->Branch( "run_num", &run_num );
   npippimTree->Branch( "event_num", &event_num );
   //npippimTree->Branch( "block_num", &block_num );
-  npippimTree->Branch( "kf1mom_beam",   &kf1mom_beam );
-  npippimTree->Branch( "kf1mom_pip", &kf1mom_pip );
-  npippimTree->Branch( "kf1mom_pim", &kf1mom_pim );
-  npippimTree->Branch( "kf1mom_p", &kf1mom_p );
-  npippimTree->Branch( "kf1mom_n", &kf1mom_n );
-  npippimTree->Branch( "kf1_chi2", &kf1_chi2 );
-  npippimTree->Branch( "kf1_NDF", &kf1_NDF );
-  npippimTree->Branch( "kf1_status", &kf1_status );
-  npippimTree->Branch( "kf1_pvalue", &kf1_pvalue );
-  npippimTree->Branch( "kf2mom_beam",   &kf2mom_beam );
-  npippimTree->Branch( "kf2mom_pip", &kf2mom_pip );
-  npippimTree->Branch( "kf2mom_pim", &kf2mom_pim );
-  npippimTree->Branch( "kf2mom_p", &kf2mom_p );
-  npippimTree->Branch( "kf2mom_n", &kf2mom_n );
-  npippimTree->Branch( "kf2_chi2", &kf2_chi2 );
-  npippimTree->Branch( "kf2_NDF", &kf2_NDF );
-  npippimTree->Branch( "kf2_status", &kf2_status );
-  npippimTree->Branch( "kf2_pvalue", &kf2_pvalue );
+  npippimTree->Branch( "kfSpmode_mom_beam",   &kfSpmode_mom_beam );
+  npippimTree->Branch( "kfSpmode_mom_pip", &kfSpmode_mom_pip );
+  npippimTree->Branch( "kfSpmode_mom_pim", &kfSpmode_mom_pim );
+  npippimTree->Branch( "kfSpmode_mom_n", &kfSpmode_mom_n );
+  npippimTree->Branch( "kfSpmode_chi2", &kfSpmode_chi2 );
+  npippimTree->Branch( "kfSpmode_NDF", &kfSpmode_NDF );
+  npippimTree->Branch( "kfSpmode_status", &kfSpmode_status );
+  npippimTree->Branch( "kfSpmode_pvalue", &kfSpmode_pvalue );
+  npippimTree->Branch( "kfSmmode_mom_beam",   &kfSmmode_mom_beam );
+  npippimTree->Branch( "kfSmmode_mom_pip", &kfSmmode_mom_pip );
+  npippimTree->Branch( "kfSmmode_mom_pim", &kfSmmode_mom_pim );
+  npippimTree->Branch( "kfSmmode_mom_n", &kfSmmode_mom_n );
+  npippimTree->Branch( "kfSmmode_chi2", &kfSmmode_chi2 );
+  npippimTree->Branch( "kfSmmode_NDF", &kfSmmode_NDF );
+  npippimTree->Branch( "kfSmmode_status", &kfSmmode_status );
+  npippimTree->Branch( "kfSmmode_pvalue", &kfSmmode_pvalue );
   npippimTree->Branch( "kf_flag", &kf_flag );
 
   trackMan = new CDSTrackingMan(); //** = dE correction is performed in this code **//
@@ -980,7 +976,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         if( (anacuts::Sigmam_MIN<(L_n+L_pim).M() && (L_n+L_pim).M()<anacuts::Sigmam_MAX)) SigmaMFlag=true;
 
         if( NBetaOK && NdEOK1 ){
-      //K0rejection 
+        //K0rejection 
       if(K0rejectFlag){
         // K0 rejection
 	      Tools::Fill2D( Form("dE_betainv_fid_beta_dE_woK0"), 1./NeutralBetaCDH, ncdhhit->emean() );
@@ -1050,19 +1046,19 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       //  = 1) TLorentzVector LVec_beam, L_pim, (L_n+L_pip), L_nmiss, L_n, L_pip = for pi- Sigma+
       TLorentzVector TL_meas_Spmode[kin::npart]; // measured
       TL_meas_Spmode[kin::kmbeam] = LVec_beam;
-      TL_meas_Spmode[kin::promptpim] = L_pim;
+      TL_meas_Spmode[kin::pim_g1] = L_pim;
       TL_meas_Spmode[kin::Sp] = (L_n+L_pip);
       TL_meas_Spmode[kin::nmiss] = L_nmiss;
       TL_meas_Spmode[kin::ncds] = L_n;
-      TL_meas_Spmode[kin::decaypip] = L_pip;
+      TL_meas_Spmode[kin::pip_g2] = L_pip;
       //  = 2) TLorentzVector LVec_beam, L_pip, (L_n+L_pim), L_nmiss, L_n, L_pim = for pi+ Sigma-
       TLorentzVector TL_meas_Smmode[kin::npart]; // measured
       TL_meas_Smmode[kin::kmbeam] = LVec_beam;
-      TL_meas_Smmode[kin::promptpip] = L_pip;
+      TL_meas_Smmode[kin::pip_g1] = L_pip;
       TL_meas_Smmode[kin::Sm] = (L_n+L_pim);
       TL_meas_Smmode[kin::nmiss] = L_nmiss;
       TL_meas_Smmode[kin::ncds] = L_n;
-      TL_meas_Smmode[kin::decaypim] = L_pim;
+      TL_meas_Smmode[kin::pim_g2] = L_pim;
       TLorentzVector TL_kfit_Spmode[kin::npart]; // kinematical fitted
       TLorentzVector TL_kfit_Smmode[kin::npart]; // kinematical fitted
       // LVec_target is defined as (0, 0, 0, M_d2)
@@ -1094,18 +1090,17 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       TFitParticlePxPyPz Particle_Spmode[kin::npart];//-321,-211,3222,2112,2112, 211
       TFitParticlePxPyPz Particle_Smmode[kin::npart];//-321, 211,3112,2112,2112,-211
       for( int i=0; i<kin::npart; i++ ){
-        Particle_Spmode[i] = TFitParticlePxPyPz(str_partcile_Spmode[i], str_partcile_Spmode[i], &TV_meas_Spmode[i],
+        Particle_Spmode[i] = TFitParticlePxPyPz(str_particle_Spmode[i], str_particle_Spmode[i], &TV_meas_Spmode[i],
             pdg->GetParticle(PDG_Spmode[i])->Mass(), covParticle_Spmode[i]);
-        Particle_Smmode[i] = TFitParticlePxPyPz(str_partcile_Smmode[i], str_partcile_Smmode[i], &TV_meas2[i],
+        Particle_Smmode[i] = TFitParticlePxPyPz(str_particle_Smmode[i], str_particle_Smmode[i], &TV_meas_Smmode[i],
             pdg->GetParticle(PDG_Smmode[i])->Mass(), covParticle_Smmode[i]);
       }//for i
-    } // if( dE_MIN<ncdhhit->emean() )
 		//*** definition of constraints ***//
 		// constraint :: mass of Sigma
     TFitConstraintM ConstMS_Spmode = TFitConstraintM("M_Sp", "M_Sp", 0, 0, pdg->GetParticle(PDG_Spmode[kin::Sp])->Mass());
 		TFitConstraintM ConstMS_Smmode = TFitConstraintM("M_Sm", "M_Sm", 0, 0, pdg->GetParticle(PDG_Smmode[kin::Sm])->Mass());
-		ConstMS_Spmode.addParticles1(&Particle_Spmode[kin::ncds], &Particle_Spmode[kin::decaypip]);
-		ConstMS_Smmode.addParticles1(&Particle_Smmode[kin::ncds], &Particle_Smmode[kin::decaypim]);
+		ConstMS_Spmode.addParticles1(&Particle_Spmode[kin::ncds], &Particle_Spmode[kin::pip_g2]);
+		ConstMS_Smmode.addParticles1(&Particle_Smmode[kin::ncds], &Particle_Smmode[kin::pim_g2]);
 		// constraint :: 4-momentum conservation
 		TFitConstraintEp ConstEp_Spmode[4];
 		TFitConstraintEp ConstEp_Smmode[4];
@@ -1116,9 +1111,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 		  ConstEp_Smmode[i] = TFitConstraintEp(str_constEp_Smmode[i], str_constEp_Smmode[i], 0, TFitConstraintEp::component(i), 0);
 		  ConstEp_Spmode[i].addParticles1(&ParticleTgt, &Particle_Spmode[kin::kmbeam]);
 		  ConstEp_Smmode[i].addParticles1(&ParticleTgt, &Particle_Smmode[kin::kmbeam]);
-		  ConstEp_Spmode[i].addParticles2(&Particle_Spmode[kin::promptpim], &Particle_Spmode[kin::nmiss], &Particle_Spmode[kin::ncds], &Particle_Spmode[kin::decaypip]);// pim, miss_n,cds_n, pip
+		  ConstEp_Spmode[i].addParticles2(&Particle_Spmode[kin::pim_g1], &Particle_Spmode[kin::nmiss], &Particle_Spmode[kin::ncds], &Particle_Spmode[kin::pip_g2]);// pim, miss_n,cds_n, pip
 		  
-      ConstEp_Smmode[i].addParticles2(&Particle_Smmode[kin::promptpip], &Particle_Smmode[kin::nmiss], &Particle_Smmode[kin::ncds], &Particle_Smmode[kin::decaypim]);// pip, miss_n,cds_n, pim
+      ConstEp_Smmode[i].addParticles2(&Particle_Smmode[kin::pip_g1], &Particle_Smmode[kin::nmiss], &Particle_Smmode[kin::ncds], &Particle_Smmode[kin::pim_g2]);// pip, miss_n,cds_n, pim
 		}//for
 
 		//--- KinFitter :: execution ---//
@@ -1126,10 +1121,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 		TKinFitter kinfitter_Spmode;
 		TKinFitter kinfitter_Smmode;
 		// add measured particles
-		kinfitter_Spmode.addMeasParticles(&Particle_Spmode[kin::kmbeam], &Particle_Spmode[kin::promptpim], &Particle_Spmode[kin::cdsn], &Particle_Spmode[kin::decaypim]); // K, pi-, n, pi+
-		kinfitter_Smmode.addMeasParticles(&Particle_Smmode[kin::kmbeam], &Particle_Smmode[kin::promptpip], &Particle_Smmode[kin::cdsn], &Particle_Smmode[kin::decaypip]); // K, pi+, n, pi-
-		kinfitter_Spmode.addUnmeasParticles(&Particle_Spmode[kin::missn]); // missing-n
-		kinfitter_Smmode.addUnmeasParticles(&Particle_Smmode[kin::missn]); // missing-n
+		kinfitter_Spmode.addMeasParticles(&Particle_Spmode[kin::kmbeam], &Particle_Spmode[kin::pim_g1], &Particle_Spmode[kin::ncds], &Particle_Spmode[kin::pim_g2]); // K, pi-, n, pi+
+		kinfitter_Smmode.addMeasParticles(&Particle_Smmode[kin::kmbeam], &Particle_Smmode[kin::pip_g1], &Particle_Smmode[kin::ncds], &Particle_Smmode[kin::pip_g2]); // K, pi+, n, pi-
+		kinfitter_Spmode.addUnmeasParticles(&Particle_Spmode[kin::nmiss]); // missing-n
+		kinfitter_Smmode.addUnmeasParticles(&Particle_Smmode[kin::nmiss]); // missing-n
 		// add constraints
 		kinfitter_Spmode.addConstraint(&ConstMS_Spmode); // mass of Sigma+
 		kinfitter_Smmode.addConstraint(&ConstMS_Smmode); // mass of Sigma-
@@ -1154,8 +1149,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 		  TL_kfit_Spmode[i] = (*Particle_Spmode[i].getCurr4Vec());
 		  TL_kfit_Smmode[i] = (*Particle_Smmode[i].getCurr4Vec());
 		}
-		TL_kfit_Spmode[kin::Sp] = TL_kfit1[kin::ncds]+TL_kfit1[kin::decaypip];
-		TL_kfit_Smmode[kin::Sm] = TL_kfit2[kin::ncds]+TL_kfit2[kin::decaypim];
+		TL_kfit_Spmode[kin::Sp] = TL_kfit_Spmode[kin::ncds]+TL_kfit_Spmode[kin::pip_g2];
+		TL_kfit_Smmode[kin::Sm] = TL_kfit_Smmode[kin::ncds]+TL_kfit_Smmode[kin::pim_g2];
 
 
 		Tools::Fill2D( Form("KFchi2_vs"), kinfitter_Spmode.getS()/kinfitter_Spmode.getNDF(),
@@ -1165,30 +1160,29 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 		std::cerr<<"pi+ S- : status = "<<kinfitter_Smmode.getStatus()<<", chi2/NDF = "<<kinfitter_Smmode.getS()<<"/"<<kinfitter_Smmode.getNDF()<<std::endl;
 
 		//** fill tree **//
-		kf1mom_beam   = TL_kfit1[0];
-		kf1mom_pip    = TL_kfit1[6];
-		kf1mom_pim    = TL_kfit1[1];
-		kf1mom_p      = TL_kfit1[3];
-		kf1mom_n      = TL_kfit1[5];
-		kf1_chi2      = kinfitter_Spmode.getS();
-		kf1_NDF       = kinfitter_Spmode.getNDF();
-		kf1_status    = kinfitter_Spmode.getStatus();
-		kf1_pvalue    = ROOT::Math::chisquared_cdf_c(kinfitter_Spmode.getS(), kinfitter_Spmode.getNDF());
-		kf2mom_beam   = TL_kfit2[0];
-		kf2mom_pip    = TL_kfit2[1];
-		kf2mom_pim    = TL_kfit2[6];
-		kf2mom_p      = TL_kfit2[3];
-		kf2mom_n      = TL_kfit2[5];
-		kf2_chi2      = kinfitter_Smmode.getS();
-		kf2_NDF       = kinfitter_Smmode.getNDF();
-		kf2_status    = kinfitter_Smmode.getStatus();
-		kf2_pvalue    = ROOT::Math::chisquared_cdf_c(kinfitter_Smmode.getS(), kinfitter_Smmode.getNDF());
+		kfSpmode_mom_beam   = TL_kfit_Spmode[kin::kmbeam];
+		kfSpmode_mom_pip    = TL_kfit_Spmode[kin::pip_g2];
+		kfSpmode_mom_pim    = TL_kfit_Spmode[kin::pim_g1];
+		kfSpmode_mom_n      = TL_kfit_Spmode[kin::ncds];
+		kfSpmode_chi2      = kinfitter_Spmode.getS();
+		kfSpmode_NDF       = kinfitter_Spmode.getNDF();
+		kfSpmode_status    = kinfitter_Spmode.getStatus();
+		kfSpmode_pvalue    = ROOT::Math::chisquared_cdf_c(kinfitter_Spmode.getS(), kinfitter_Spmode.getNDF());
+		kfSmmode_mom_beam   = TL_kfit_Smmode[kin::kmbeam];
+		kfSmmode_mom_pip    = TL_kfit_Smmode[kin::pip_g1];
+		kfSmmode_mom_pim    = TL_kfit_Smmode[kin::pim_g2];
+		kfSmmode_mom_n      = TL_kfit_Smmode[kin::ncds];
+		kfSmmode_chi2      = kinfitter_Smmode.getS();
+		kfSmmode_NDF       = kinfitter_Smmode.getNDF();
+		kfSmmode_status    = kinfitter_Smmode.getStatus();
+		kfSmmode_pvalue    = ROOT::Math::chisquared_cdf_c(kinfitter_Smmode.getS(), kinfitter_Smmode.getNDF());
 		kf_flag       = 1;
 
 		// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
 		// %%% Kinematical Fit using KinFitter %%% //
 		// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
 
+      } // if( dE_MIN<ncdhhit->emean() )
 
     mom_beam   = LVec_beam;   // 4-momentum(beam)
     mom_target = LVec_target; // 4-momentum(target)

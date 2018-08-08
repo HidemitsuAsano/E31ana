@@ -1,6 +1,9 @@
 evall:
 	make lib; make evdisp; make evtracking
 
+#KFLIB = -L/gpfs/group/had/knucl/e15/common/KinFitter/lib/Linux26SL5_x86_64_gcc412/5.34.03/ -lTKinFitter
+KFLIB = -L/gpfs/home/had/hiasano/source/lib/Linux26SL6_x86_64_gcc447/5.34.36/ -lTKinFitter
+
 evana_template: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisTemplate.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
 
@@ -18,6 +21,9 @@ momentum: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisMomentum.o $
 
 evlpn_sada: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysis_Lpn_sada.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysis_Lpn_sada.o $(LIBLINK) $(OBJSLIB)
+
+evpisigma: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o $(LIBLINK) $(OBJSLIB) $(KFLIB)
 
 xt: $(TMPDIR)/UserXT.o $(ALLSO)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(TMPDIR)/UserXT.o $(LIBLINK) $(RTLIBDIR)/$(ALLSO)
@@ -48,7 +54,8 @@ simread:$(TMPDIR)/UserSimRead.o \
 	$(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB)
 
-KFLIB	= -L/w/e15/common/KinFitter/lib/Linux26SL6_x86_64_gcc447/5.34.13/ -lTKinFitter
+#KFLIB	= -L/gpfs/group/had/knucl/e15/common/KinFitter/lib/Linux26SL5_x86_64_gcc412/5.34.03/ -lTKinFitter
+KFLIB	= -L/gpfs/home/had/hiasano/source/lib/Linux26SL6_x86_64_gcc447/5.34.36/ -lTKinFitter
 simLpn:$(TMPDIR)/UserSimLpn.o \
 	$(TMPDIR)/SimDataMan.o \
 	$(TMPDIR)/SimDataMan_Dict.o \
