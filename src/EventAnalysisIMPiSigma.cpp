@@ -38,8 +38,6 @@
 #include <KinFitter/TFitConstraintM.h>
 #include <KinFitter/TFitConstraintEp.h>
 
-#define DEBUG 0
-
 #define KFDEBUG 0 // verbose level of the KinFitter
 // 0: quiet, 1: print result, 2: print iterations, 3: print also matrices
 
@@ -47,8 +45,9 @@
 
 const int MaxTreeSize = 1000000000;
 
-bool DoCDCRetiming = false;
-int Verbosity = 0;
+const bool DoCDCRetiming = false;
+const int Verbosity = 0;
+const bool DoKinFit = false;
 
 namespace blcuts{
   
@@ -103,7 +102,7 @@ namespace blcuts{
 namespace cdscuts{
   const int cds_ngoodtrack = 2;
   const int cdhmulti = 3;
-  const double tdc_cdh_max = 25; // ns
+  const double tdc_cdh_max = 50; // ns
   const double cds_chi2_max = 30;
   const bool useclosestpi = true;
 }
@@ -333,7 +332,7 @@ private:
   double kfSmmode_pvalue; // p-value of kinematical refit
   int kf_flag; // flag of correct pair reconstruction, etc
   //= = = = npippim final-sample tree = = = =//
-
+  TDatabasePDG *pdg;
   
 public:
   void Initialize( ConfMan *conf );
@@ -482,6 +481,9 @@ void EventAnalysis::Initialize( ConfMan *conf )
   ResetCounters();
   InitKinFitMatrix();
   
+  pdg = new TDatabasePDG();
+  pdg->ReadPDGTable("pdg_table.txt");
+  pdg->Print();
 }
 
 
@@ -781,14 +783,14 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       if(Verbosity) std::cerr<<"CDH isolation cuts : OK " << std::endl;
     }
 
-    //** copy neutral CDH hit candidate **//
+    // copy neutral CDH hit candidate 
     int cdhcan = -1;
     for( int ihit=0; ihit<cdsMan->nCDH(); ihit++ ){
       if( cdsMan->CDH(ihit)->seg()==NeutralCDHseg[0] ) cdhcan = ihit;
     }
     HodoscopeLikeHit *ncdhhit = cdsMan->CDH(cdhcan);
 
-    //** charge veto using CDC **//
+    // charge veto using CDC 
     TVector3 Pos_CDH;
     confMan->GetGeomMapManager()->GetPos( CID_CDH, ncdhhit->seg(), Pos_CDH );
     if(Verbosity){
@@ -838,8 +840,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       TVector3 vtx_pip;//vertex(beam-pip) on beam
       TVector3 vtx_beam;
       track_pip->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpip, vtx_pip ); 
-      TVector3 vtx_beam_wpim;//vertex(beam-pip) on beam
-      TVector3 vtx_pim;//vertex(beam-pip) on beam
+      TVector3 vtx_beam_wpim;//vertex(beam-pim) on beam
+      TVector3 vtx_pim;//vertex(beam-pim) on beam
       track_pim->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpim, vtx_pim ); 
       
       double dcapipvtx =  (vtx_pip-vtx_beam_wpip).Mag();
@@ -848,13 +850,14 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
       //reaction vertex is determined from beam and nearest vtx 
       if(dcapipvtx <= dcapimvtx){
-        vtx_react = vtx_pip;
+        //follows sakuma/sada's way , avg. of scattered particle ana beam particle [20180829]
+        vtx_react = 0.5*(vtx_pip+vtx_beam_wpip);
         if(cdscuts::useclosestpi) vtx_dis  = vtx_pip;
         else              vtx_dis  = vtx_pim;
         vtx_beam = vtx_beam_wpip;
       }
       else if (dcapipvtx > dcapimvtx){
-        vtx_react = vtx_pim;
+        vtx_react = 0.5*(vtx_pim+vtx_beam_wpim);
         if(cdscuts::useclosestpi) vtx_dis = vtx_pim;
         else             vtx_dis = vtx_pip;
         vtx_beam = vtx_beam_wpim;
@@ -865,6 +868,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       double dcapippim=-9999.;
       if(vtx_flag) dcapippim = (vtx2-vtx1).Mag();
       
+
 
       //** beam kaon tof **//
       TVector3 Pos_T0;
@@ -938,9 +942,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       bool SigmaPFlag=false;
       bool SigmaMFlag=false;
       bool NBetaOK=false;
-      bool NdEOK1=false;
+      bool NdEOK=false;
 
-      Tools::Fill2D( Form("dE_betainv"), 1/NeutralBetaCDH, ncdhhit->emean() );
+      Tools::Fill2D( Form("dE_betainv"), 1./NeutralBetaCDH, ncdhhit->emean() );
       Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
 
       Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_beam.Z(),vtx_beam.X());
@@ -952,7 +956,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_beam.Z(),vtx_beam.Y());
         Tools::Fill2D(Form("Vtx_XY_fid"),vtx_beam.X(),vtx_beam.Y());
 
-        Tools::Fill2D( Form("dE_betainv_fid"), 1/NeutralBetaCDH, ncdhhit->emean() );
+        Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
         Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
          
         if(NeutralBetaCDH<anacuts::beta_MAX)NBetaOK=true;
@@ -960,8 +964,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
           Tools::Fill2D( Form("dE_betainv_fid_beta"), 1./NeutralBetaCDH, ncdhhit->emean() );
           Tools::Fill2D( Form("MMom_MMass_fid_beta"), mm_mass, P_missn.Mag() );
         }
-        if(anacuts::dE_MIN_1<ncdhhit->emean()) NdEOK1=true;
-        if( NBetaOK && NdEOK1 ){
+        if(anacuts::dE_MIN_1<ncdhhit->emean()) NdEOK=true;
+        if( NBetaOK && NdEOK ){
           Tools::Fill2D( Form("dE_betainv_fid_beta_dE"), 1./NeutralBetaCDH, ncdhhit->emean() );
           Tools::Fill2D( Form("MMom_MMass_fid_beta_dE"), mm_mass, P_missn.Mag() );
           Tools::Fill1D( Form("IMpipi_dE"), (L_pim+L_pip).M() );
@@ -975,7 +979,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         //Sigma- production in CDS
         if( (anacuts::Sigmam_MIN<(L_n+L_pim).M() && (L_n+L_pim).M()<anacuts::Sigmam_MAX)) SigmaMFlag=true;
 
-        if( NBetaOK && NdEOK1 ){
+        if( NBetaOK && NdEOK ){
         //K0rejection 
       if(K0rejectFlag){
         // K0 rejection
@@ -1037,7 +1041,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         Tools::Fill1D( Form("DCA_pip_SigmaM"),dcapipvtx);
         Tools::Fill1D( Form("DCA_pim_SigmaM"),dcapimvtx);
       }
- 
+      
+      if(DoKinFit){
       // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
       // %%% Kinematical Fit using KinFitter %%% //
       // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
@@ -1070,8 +1075,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         TV_meas_Smmode[i] = TL_meas_Smmode[i].Vect();
       }
 
-      TDatabasePDG *pdg = new TDatabasePDG();
-      pdg->ReadPDGTable("pdg_table.txt");
 
       int PDG_Spmode[kin::npart] = {-321, -211, 3222, 2112, 2112,  211}; // pi-Sigma 
       int PDG_Smmode[kin::npart] = {-321,  211, 3112, 2112, 2112, -211}; // pi+Sigma 
@@ -1181,7 +1184,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 		// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
 		// %%% Kinematical Fit using KinFitter %%% //
 		// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
-
+    }//if DoKinFit
       } // if( dE_MIN<ncdhhit->emean() )
 
     mom_beam   = LVec_beam;   // 4-momentum(beam)
@@ -1370,7 +1373,8 @@ void EventAnalysis::InitializeHistogram()
   Tools::newTH1F( Form("DCA_pip_SigmaM"), 500, 0, 5 );
   Tools::newTH1F( Form("DCA_pim_SigmaM"), 500, 0, 5 );
   Tools::newTH1F( Form("DCA_pippim"), 500, 0, 5);
-
+   
+  Tools::newTH2F( Form("KFchi2_vs"),100,0,100,100,0,100);
   //Tools::newTH2F( Form("MMom_NMom_Lambda"), 100, 0, 1.5, 100, 0, 1.5 );
   //Tools::newTH2F( Form("Cosn_IMnppipi_Lambda"), 50, 2, 3, 50, -1, 1 );
   //Tools::newTH2F( Form("Cosn_IMppipi_Lambda"), 100, 1, 2, 50, -1, 1 );
