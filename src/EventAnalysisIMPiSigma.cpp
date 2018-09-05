@@ -48,6 +48,7 @@ const int MaxTreeSize = 1000000000;
 const bool DoCDCRetiming = false;
 const int Verbosity = 0;
 const bool DoKinFit = false;
+const bool AddQAplots = true;
 
 namespace blcuts{
   
@@ -102,14 +103,14 @@ namespace blcuts{
 namespace cdscuts{
   const int cds_ngoodtrack = 2;
   const int cdhmulti = 3;
-  const double tdc_cdh_max = 50; // ns
+  const double tdc_cdh_max = 9999; // ns 
   const double cds_chi2_max = 30;
   const bool useclosestpi = true;
 }
 
 namespace anacuts{
   const double beta_MAX = 0.728786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
-  const double dE_MIN_1 = 4.0; // 8.0MeVee * 3cm / 5cm;
+  const double dE_MIN = 2.0; // no big reason to 4 
 
   const double pipi_MIN = 0.485;
   const double pipi_MAX = 0.510;
@@ -368,13 +369,14 @@ void EventAnalysis::Initialize( ConfMan *conf )
   if(DoCDCRetiming) std::cout << " Yes" << std::endl;
   else              std::cout << "  No" << std::endl;
   
+  std::cout << " CDH TDC cuts " << cdscuts::tdc_cdh_max << std::endl;
   std::cout << " CDH multiplicity cut: " << cdscuts::cdhmulti << std::endl;
   std::cout << " CDS # of good tracks cut: " << cdscuts::cds_ngoodtrack << std::endl; 
   std::cout << " use closest pion for vertex " << cdscuts::useclosestpi << std::endl;
   std::cout << std::endl;
   std::cout << "##################################" << std::endl;
   std::cout << "CDS Neutron ID: beta_MAX " << anacuts::beta_MAX << std::endl;
-  std::cout << "CDS Neutron ID: dE_MIN_1 " << anacuts::dE_MIN_1 << std::endl;
+  std::cout << "CDS Neutron ID: dE_MIN " << anacuts::dE_MIN << std::endl;
   std::cout << "K0 rejection window "
   <<  anacuts::pipi_MIN << " - " << anacuts::pipi_MAX << std::endl;
   std::cout << "missing neutron window " 
@@ -583,7 +585,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 #endif
 
   //** fill event count **//
-  Tools::Fill1D( Form("EventCheck"), 1 );
   Event_Number++;
 
   //** control of start and stop events **//
@@ -639,24 +640,31 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   nTrack += nallTrack;
   Tools::Fill1D( Form("nGoodTrack"), nGoodTrack );
 
+  Tools::Fill1D( Form("EventCheck"), 1 );
+
+  //CDH-hits cut
+  if(!EveSelectCDHMul()) return true;
+  Tools::Fill1D( Form("EventCheck"), 2 );
+  
   //** # of good CDS tracks cut **//
   if( nGoodTrack!=cdscuts::cds_ngoodtrack ){//require pi+,pi-
     Clear( nAbort_nGoodTrack );
     return true;
   }
-
-  //CDH-hits cut
-  if(!EveSelectCDHMul()) return true;
+  Tools::Fill1D( Form("EventCheck"), 3 );
 
   //beam line analysis and event selection
   if(!EveSelectBeamline()) return true;
+  Tools::Fill1D( Form("EventCheck"), 4 );
   
   //PID beam
   if(PIDBeam!=Beam_Kaon) return true;
+  Tools::Fill1D( Form("EventCheck"), 5 );
 
   //BLC1-D5-BLC2 analysis and chi2 selection
   double beammom = AnaBeamSpec(confMan);
   if(beammom <-100) return true;//chi2 cut
+  Tools::Fill1D( Form("EventCheck"), 6 );
 
   //** beam momentum calculation **//
   TVector3 Pp_target; Pp_target.SetXYZ( 0, 0, 0 ); 
@@ -704,7 +712,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   std::vector <int> vCDHseg;
   // PID of CDS tracks //
   int nIDedTrack = CDSChargedAna(bpctrack,LVec_beam,vCDHseg,pim_ID,pip_ID,km_ID,p_ID);
-  
+  if(nIDedTrack<0) return true;
   Tools::Fill1D( Form("ntrack_CDS"), nIDedTrack );
   Tools::Fill1D( Form("ntrack_pi_plus"),  pip_ID.size() );
   Tools::Fill1D( Form("ntrack_proton"),   p_ID.size() );
@@ -781,6 +789,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       return true;
     }else{
       if(Verbosity) std::cerr<<"CDH isolation cuts : OK " << std::endl;
+      Tools::Fill1D( Form("EventCheck"), 13 );
     }
 
     // copy neutral CDH hit candidate 
@@ -826,7 +835,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       if(NeutralCDHseg.size()!=1){
          std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
       }else{
-        Tools::Fill1D(Form("CDHNeutralSeg"),NeutralCDHseg.at(0));
+        if(AddQAplots) Tools::Fill1D(Form("CDHNeutralSeg"),NeutralCDHseg.at(0));
       }
       
 
@@ -946,16 +955,19 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
       Tools::Fill2D( Form("dE_betainv"), 1./NeutralBetaCDH, ncdhhit->emean() );
       Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
-
-      Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_beam.Z(),vtx_beam.X());
-      Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_beam.Z(),vtx_beam.Y());
-      Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_beam.X(),vtx_beam.Y());
-
+      
+      if(AddQAplots){
+        Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_beam.Z(),vtx_beam.X());
+        Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_beam.Z(),vtx_beam.Y());
+        Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_beam.X(),vtx_beam.Y());
+      }
       if( GeomTools::GetID(vtx_beam)==CID_Fiducial ){
-        Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_beam.Z(),vtx_beam.X());
-        Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_beam.Z(),vtx_beam.Y());
-        Tools::Fill2D(Form("Vtx_XY_fid"),vtx_beam.X(),vtx_beam.Y());
-
+        if(AddQAplots){
+          Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_beam.Z(),vtx_beam.X());
+          Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_beam.Z(),vtx_beam.Y());
+          Tools::Fill2D(Form("Vtx_XY_fid"),vtx_beam.X(),vtx_beam.Y());
+          Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,  ncdhhit->emean());
+        }
         Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
         Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
          
@@ -964,7 +976,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
           Tools::Fill2D( Form("dE_betainv_fid_beta"), 1./NeutralBetaCDH, ncdhhit->emean() );
           Tools::Fill2D( Form("MMom_MMass_fid_beta"), mm_mass, P_missn.Mag() );
         }
-        if(anacuts::dE_MIN_1<ncdhhit->emean()) NdEOK=true;
+        if(anacuts::dE_MIN<ncdhhit->emean()) NdEOK=true;
         if( NBetaOK && NdEOK ){
           Tools::Fill2D( Form("dE_betainv_fid_beta_dE"), 1./NeutralBetaCDH, ncdhhit->emean() );
           Tools::Fill2D( Form("MMom_MMass_fid_beta_dE"), mm_mass, P_missn.Mag() );
@@ -1006,12 +1018,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
       if( MissNFlag ){
         Tools::Fill1D( Form("IMnpipi"), (L_n+L_pim+L_pip).M() );
-        Tools::Fill2D( Form("IMnpipi_MMnmiss"),P_missn.Mag(), (L_n+L_pim+L_pip).M() );
+        Tools::Fill2D( Form("MMnmiss_IMnpipi"),(L_n+L_pim+L_pip).M(), P_missn.Mag());
       }
 
       if( MissNFlag && (SigmaPFlag || SigmaMFlag)){
         Tools::Fill1D( Form("IMnpipi_wSid"), (L_n+L_pim+L_pip).M() );
-        Tools::Fill2D( Form("IMnpipi_MMnmiss_wSid"),P_missn.Mag(), (L_n+L_pim+L_pip).M() );
+        Tools::Fill2D( Form("MMnmiss_IMnpipi_wSid"),(L_n+L_pim+L_pip).M(), P_missn.Mag());
       }
 
 		  if( MissNFlag && K0rejectFlag && (SigmaPFlag || SigmaMFlag)){
@@ -1023,10 +1035,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         //cos theta 
         Tools::Fill2D( Form("Cosn_IMnpipi"), (L_n+L_pim+L_pip).M(), cos_n );
         //
-        Tools::Fill2D( Form("IMnpipi_MMnmiss_woK0_wSid"),P_missn.Mag(), (L_n+L_pim+L_pip).M() );
+        Tools::Fill2D( Form("MMnmiss_IMnpipi_woK0_wSid"), (L_n+L_pim+L_pip).M(), P_missn.Mag());
          
         //momentum transfer 
-        Tools::Fill2D( Form("IMnpipi_q_woK0_wSid"),(LVec_beam.Vect()-L_nmiss.Vect()).Mag(), (L_n+L_pim+L_pip).M() );
+        Tools::Fill2D( Form("q_IMnpipi_woK0_wSid"),(L_n+L_pim+L_pip).M(), (LVec_beam.Vect()-L_nmiss.Vect()).Mag());
 
         Tools::Fill1D( Form("DCA_pip"), dcapipvtx );
         Tools::Fill1D( Form("DCA_pim"), dcapimvtx );
@@ -1279,10 +1291,14 @@ void EventAnalysis::InitializeHistogram()
   Tools::newTH1F( Form("nGoodTrack"), 11, -0.5, 10.5 );
   Tools::newTH1F( Form("mul_CDH"),Form("CDH multiplicity"), 11, -0.5, 10.5 );
   Tools::newTH1F( Form("mul_CDH_assoc"), 11, -0.5, 10.5 );
-  Tools::newTH2F( Form("CDHtime"), 36, -0.5, 35.5,1600,0,40);
-  Tools::newTH1F( Form("CDHNeutralSeg"),36,-0.5,35.5);
-  Tools::newTH1F( Form("npimangle"),628,0,2*3.14);
-  Tools::newTH1F( Form("npipangle"),628,0,2*3.14);
+  if(AddQAplots){
+    Tools::newTH2F( Form("CDHtime"),36,0.5,36.5,4000,0,200);
+    Tools::newTH2F( Form("NeutraltimeEnergy"),4000,0,200,100,0,100);
+    //Tools::newTH3F( Form("CDHtimeEnergy"),36,0.5,36.5,4000,0,200,100,0,100);
+    Tools::newTH1F( Form("CDHNeutralSeg"),36, 0.5, 36.5);
+  }
+  Tools::newTH1F( Form("npimangle"),628, 0, 2*3.14);
+  Tools::newTH1F( Form("npipangle"),628, 0, 2*3.14);
 
   //** beam line **//
   Tools::newTH1F( Form("mul_BHD"), 12, -0.5, 11.5 );
@@ -1313,16 +1329,19 @@ void EventAnalysis::InitializeHistogram()
   //Tools::newTH1F( Form("ntrack_deuteron"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_pi_minus"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_K_minus"), 6, -0.5, 5.5 );
-  Tools::newTH2F( Form("Vtx_ZX"),1000,-25,25,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_ZY"),1000,-25,25,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_XY"),500,-12.5,12.5,500,-12.5,12.5);
+  
+  if(AddQAplots){
+    Tools::newTH2F( Form("Vtx_ZX"),1000,-25,25,500,-12.5,12.5);
+    Tools::newTH2F( Form("Vtx_ZY"),1000,-25,25,500,-12.5,12.5);
+    Tools::newTH2F( Form("Vtx_XY"),500,-12.5,12.5,500,-12.5,12.5);
 
-  Tools::newTH2F( Form("Vtx_ZX_nofid"),1000,-25,25,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_ZY_nofid"),1000,-25,25,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_XY_nofid"),500,-12.5,12.5,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_ZX_fid"),1000,-25,25,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_ZY_fid"),1000,-25,25,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_XY_fid"),500,-12.5,12.5,500,-12.5,12.5);
+    Tools::newTH2F( Form("Vtx_ZX_nofid"),1000,-25,25,500,-12.5,12.5);
+    Tools::newTH2F( Form("Vtx_ZY_nofid"),1000,-25,25,500,-12.5,12.5);
+    Tools::newTH2F( Form("Vtx_XY_nofid"),500,-12.5,12.5,500,-12.5,12.5);
+    Tools::newTH2F( Form("Vtx_ZX_fid"),1000,-25,25,500,-12.5,12.5);
+    Tools::newTH2F( Form("Vtx_ZY_fid"),1000,-25,25,500,-12.5,12.5);
+    Tools::newTH2F( Form("Vtx_XY_fid"),500,-12.5,12.5,500,-12.5,12.5);
+  }
   //** forward counters **//
   Tools::newTH1F( Form("mul_BVC"), 9, -0.5, 8.5 );
   Tools::newTH1F( Form("mul_CVC"), 11, -0.5, 10.5 );
@@ -1361,10 +1380,10 @@ void EventAnalysis::InitializeHistogram()
   Tools::newTH1F( Form("IMnpipi"), 100, 1, 2 );
   Tools::newTH1F( Form("IMnpipi_wSid"), 100, 1, 2 );
   Tools::newTH1F( Form("IMnpipi_woK0_wSid"), 100, 1, 2 );
-  Tools::newTH2F( Form("IMnpipi_MMnmiss"),100,0,1.5,100,1,2);
-  Tools::newTH2F( Form("IMnpipi_MMnmiss_wSid"),100,0,1.5,100,1,2);
-  Tools::newTH2F( Form("IMnpipi_MMnmiss_woK0_wSid"),100,0,1.5,100,1,2);
-  Tools::newTH2F( Form("IMnpipi_q_woK0_wSid"),200,0,2,100,1,2);
+  Tools::newTH2F( Form("MMnmiss_IMnpipi"),100,1,2,100,0,1.5);
+  Tools::newTH2F( Form("MMnmiss_IMnpipi_wSid"),100,1,2,100,0,1.5);
+  Tools::newTH2F( Form("MMnmiss_IMnpipi_woK0_wSid"),100,1,2,100,0,1.5);
+  Tools::newTH2F( Form("q_IMnpipi_woK0_wSid"),100,1,2,200,0,1);
   //Tools::newTH1F( Form("DCA_p"), 200, 0, 2 );
   Tools::newTH1F( Form("DCA_pip"), 500, 0, 5 );
   Tools::newTH1F( Form("DCA_pim"), 500, 0, 5 );
@@ -1392,7 +1411,7 @@ bool EventAnalysis::EveSelectCDHMul()
   //** # of CDH-hits cut **//
   int nCDH = 0;
   for( int i=0; i<cdsMan->nCDH(); i++ ){
-    Tools::Fill2D(Form("CDHtime"),cdsMan->CDH(i)->seg(),cdsMan->CDH(i)->ctmean());
+    if(AddQAplots)Tools::Fill2D(Form("CDHtime"),cdsMan->CDH(i)->seg(),cdsMan->CDH(i)->ctmean());
     //if( cdsMan->CDH(i)->CheckRange() ) nCDH++; //** only requirement of TDC **//
     if( cdsMan->CDH(i)->CheckRange() && cdsMan->CDH(i)->ctmean()<cdscuts::tdc_cdh_max ){
       nCDH++;
@@ -1617,12 +1636,16 @@ int EventAnalysis::CDSChargedAna(LocalTrack* bpctrack,
 
     // chi2 cut can be applied in CDSTrackingMan with MaxChi in CDSFittingParam_posi.param 
     Tools::Fill1D( Form("trackchi2_CDC"), track->Chi() );
-    if( track->Chi()>cdscuts::cds_chi2_max ) continue; 
-    
+    if( track->Chi()>cdscuts::cds_chi2_max ){
+      Tools::Fill1D( Form("EventCheck"), 7 );
+      return -1;// continue; 
+    }
     //asano memo
     //checking if there is CDH hits at the projected position of the track 
-    if( !track->CDHFlag() ) continue;
-
+    if( !track->CDHFlag() ){
+      Tools::Fill1D( Form("EventCheck"), 8 );
+      return -1;//continue;
+    }
     double mom = track->Momentum();
     TVector3 vtxbline, vtxbhelix; //,vtxb;
     track->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtxbline, vtxbhelix );
@@ -1646,15 +1669,16 @@ int EventAnalysis::CDSChargedAna(LocalTrack* bpctrack,
     }
     
     //asano memo
-    //AYASHII ?
     //check if the segment has been already used in the analysis.
     bool CDHflag = true;
-    for( int icdhseg=0; icdhseg<(int)cdhseg.size(); icdhseg++ ){
+    for( int icdhseg=0; icdhseg<(int)cdhseg.size(); icdhseg++){
       if( CDHseg==cdhseg[icdhseg] ) CDHflag = false;
     }
     if( !CDHflag ){
+      Tools::Fill1D( Form("EventCheck"), 9 );
       std::cout << "L. " << __LINE__ << " CDHseg " << CDHseg << " is used by another track " << std::endl;
-      continue;//go to next CDStrack
+      return -1;
+      //continue;//go to next CDStrack
     }
     cdhseg.push_back( CDHseg );
 
@@ -1663,7 +1687,10 @@ int EventAnalysis::CDSChargedAna(LocalTrack* bpctrack,
     if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
 				PIDBeam, beta_calc, mass2, tmptof ) ){
       std::cerr<<" !!! failure in PID_CDS [FindMass2()] !!! "<<std::endl;
-      continue;
+      Tools::Fill1D( Form("EventCheck"), 10 );
+      std::cout << "L. " << __LINE__ << " CDHseg " << CDHseg << " is used by another track " << std::endl;
+      return -1;
+      //continue;
     }
 
     // Retiming of CDC track by CDH info. //
@@ -1682,7 +1709,9 @@ int EventAnalysis::CDSChargedAna(LocalTrack* bpctrack,
     if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
 				PIDBeam, beta_calc, mass2, tmptof ) ){ // not FindMass2C() [20170622] //
       std::cerr<<" !!! failure in PID_CDS [FindMass2()] !!! "<<std::endl;
-      continue;
+      Tools::Fill1D( Form("EventCheck"), 11 );
+      return -1;
+      //continue;
     }
     
     //RUN68 inoue's param.
@@ -1700,7 +1729,9 @@ int EventAnalysis::CDSChargedAna(LocalTrack* bpctrack,
     if( !track->CalcVertexTimeLength( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), track->Mass(),
 				      vtx_beam, vtx_cds, tmptof, tmpl, true ) ){
       std::cerr<<" !!! failure in energy loss calculation [CalcVertexTimeLength()] !!! "<<std::endl;
-      continue;
+      Tools::Fill1D( Form("EventCheck"), 12 );
+      return -1;
+      //continue;
     }
 
     if( pid==CDS_PiMinus ){
