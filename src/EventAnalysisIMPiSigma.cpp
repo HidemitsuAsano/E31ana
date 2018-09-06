@@ -713,6 +713,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   // PID of CDS tracks //
   int nIDedTrack = CDSChargedAna(bpctrack,LVec_beam,vCDHseg,pim_ID,pip_ID,km_ID,p_ID);
   if(nIDedTrack<0) return true;
+  Tools::Fill1D( Form("EventCheck"),13);
   Tools::Fill1D( Form("ntrack_CDS"), nIDedTrack );
   Tools::Fill1D( Form("ntrack_pi_plus"),  pip_ID.size() );
   Tools::Fill1D( Form("ntrack_proton"),   p_ID.size() );
@@ -789,7 +790,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       return true;
     }else{
       if(Verbosity) std::cerr<<"CDH isolation cuts : OK " << std::endl;
-      Tools::Fill1D( Form("EventCheck"), 13 );
+      Tools::Fill1D( Form("EventCheck"), 14 );
     }
 
     // copy neutral CDH hit candidate 
@@ -1282,13 +1283,30 @@ void EventAnalysis::Finalize()
 void EventAnalysis::InitializeHistogram()
 //**--**--**--**--**--**--**--**--**--**--**--**--**--**//
 {
-  //** geneneral informantion **//
+  // geneneral informantion **//
   Tools::newTH1F( Form("Time"), 3000, -0.5, 2999.5 );
+  Tools::newTH1F( Form("nGoodTrack"), 11, -0.5, 10.5 );
   Tools::newTH1F( Form("EventCheck"), 20, 0, 20 );
+  // Event Reduction Check memo
+  // 1.  # of all events w/o cosmic trigger 
+  // 2.  after CDH cuts
+  // 3.  after the # of CDS good tracks cut
+  // 4.  after beam line analysis
+  // 5.  after beam PID (kaon)
+  // 6.  after BLC1-D5-BLC2 analysis
+  // 7.  filled if CDS chi2 is bad
+  // 8.  filled if a CDC track have no CDH hits
+  // 9.  filled if CDC tracks share a CDH segments
+  // 10. filled if FindMass2 is failed
+  // 11. filled if FindMass2 is failed after Retiming
+  // 12. filled if Energy loss calculation failed
+  // 13. filled if CDSChargedAna is OK.
+  // 14. filled if CDH isolation is OK.
+  
+  
   Tools::newTH1F( Form("Scaler"), 41, -0.5, 40.5 );
 
-  //** CDC and CDH information from CDC-trackig file **//
-  Tools::newTH1F( Form("nGoodTrack"), 11, -0.5, 10.5 );
+  // CDC and CDH information from CDC-trackig file **//
   Tools::newTH1F( Form("mul_CDH"),Form("CDH multiplicity"), 11, -0.5, 10.5 );
   Tools::newTH1F( Form("mul_CDH_assoc"), 11, -0.5, 10.5 );
   if(AddQAplots){
@@ -1630,21 +1648,26 @@ int EventAnalysis::CDSChargedAna(LocalTrack* bpctrack,
                           std::vector <int> &kmid,   
                           std::vector <int> &protonid)
 {
-  int CDHseg=-1;
+   int CDHseg=-1;
+  bool chi2OK = true;
+  bool CDHseg1hitOK = true;
+  bool CDHsharecheckOK = true;
+  bool FindMass2OK1 = true; 
+  bool FindMass2OK2 = true; 
+  bool EnergyLossOK = true;
+
   for( int it=0; it<trackMan->nGoodTrack(); it++ ){
     CDSTrack *track = trackMan->Track( trackMan->GoodTrackID(it) );
 
     // chi2 cut can be applied in CDSTrackingMan with MaxChi in CDSFittingParam_posi.param 
     Tools::Fill1D( Form("trackchi2_CDC"), track->Chi() );
     if( track->Chi()>cdscuts::cds_chi2_max ){
-      Tools::Fill1D( Form("EventCheck"), 7 );
-      return -1;// continue; 
+      chi2OK = false;
     }
     //asano memo
     //checking if there is CDH hits at the projected position of the track 
     if( !track->CDHFlag() ){
-      Tools::Fill1D( Form("EventCheck"), 8 );
-      return -1;//continue;
+      CDHseg1hitOK = false;
     }
     double mom = track->Momentum();
     TVector3 vtxbline, vtxbhelix; //,vtxb;
@@ -1659,6 +1682,9 @@ int EventAnalysis::CDSChargedAna(LocalTrack* bpctrack,
     double mass2 = -999.;
     int nCDHass = track->nCDHHit();
     Tools::Fill1D(Form("mul_CDH_assoc"),nCDHass);
+    if(nCDHass>1){
+      CDHseg1hitOK = false;
+    }
     for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
       HodoscopeLikeHit *cdhhit = track->CDHHit( cdsMan, icdh );
       double tmptof = cdhhit->ctmean()-ctmT0;
@@ -1675,22 +1701,21 @@ int EventAnalysis::CDSChargedAna(LocalTrack* bpctrack,
       if( CDHseg==cdhseg[icdhseg] ) CDHflag = false;
     }
     if( !CDHflag ){
-      Tools::Fill1D( Form("EventCheck"), 9 );
-      std::cout << "L. " << __LINE__ << " CDHseg " << CDHseg << " is used by another track " << std::endl;
-      return -1;
-      //continue;//go to next CDStrack
+      Tools::Fill1D( Form("EventCheck"), 9 );//put here to get event based info.
+      std::cerr << " The CDH segments is used by an another track !!! " << std::endl;
+      CDHsharecheckOK = false;
+      continue;//go to next CDStrack
     }
     cdhseg.push_back( CDHseg );
 
     // calculation of beta and squared-mass //
-    double tmptof, beta_calc;
+    double tmptof=0;
+    double beta_calc=0;
     if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
 				PIDBeam, beta_calc, mass2, tmptof ) ){
       std::cerr<<" !!! failure in PID_CDS [FindMass2()] !!! "<<std::endl;
-      Tools::Fill1D( Form("EventCheck"), 10 );
-      std::cout << "L. " << __LINE__ << " CDHseg " << CDHseg << " is used by another track " << std::endl;
-      return -1;
-      //continue;
+      FindMass2OK1 = false;
+      continue;
     }
 
     // Retiming of CDC track by CDH info. //
@@ -1709,9 +1734,8 @@ int EventAnalysis::CDSChargedAna(LocalTrack* bpctrack,
     if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
 				PIDBeam, beta_calc, mass2, tmptof ) ){ // not FindMass2C() [20170622] //
       std::cerr<<" !!! failure in PID_CDS [FindMass2()] !!! "<<std::endl;
-      Tools::Fill1D( Form("EventCheck"), 11 );
-      return -1;
-      //continue;
+      FindMass2OK2 = false;
+      continue;
     }
     
     //RUN68 inoue's param.
@@ -1723,15 +1747,14 @@ int EventAnalysis::CDSChargedAna(LocalTrack* bpctrack,
     Tools::Fill2D( "PID_CDS", mass2, mom );
 
 
-    // energy loss calculation //
+    // Energy loss calculation //
     double tmpl=0;
     TVector3 vtx_beam, vtx_cds;
     if( !track->CalcVertexTimeLength( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), track->Mass(),
 				      vtx_beam, vtx_cds, tmptof, tmpl, true ) ){
       std::cerr<<" !!! failure in energy loss calculation [CalcVertexTimeLength()] !!! "<<std::endl;
-      Tools::Fill1D( Form("EventCheck"), 12 );
-      return -1;
-      //continue;
+      EnergyLossOK = false;
+      continue;
     }
 
     if( pid==CDS_PiMinus ){
@@ -1743,8 +1766,39 @@ int EventAnalysis::CDSChargedAna(LocalTrack* bpctrack,
     }else if( pid==CDS_Kaon ){
       kmid.push_back( trackMan->GoodTrackID(it) );
     }
-  } // for( int it=0; it<trackMan->nGoodTrack(); it++ ){
+  } // for( int it=0; it<trackMan->nGoodTrack(); it++ )
   // end of PID (except for neutron) //
+  
+  if(!chi2OK){
+    Tools::Fill1D( Form("EventCheck"), 7 );
+    return -1;
+  }
+  
+  if(!CDHseg1hitOK){
+    Tools::Fill1D( Form("EventCheck"), 8 );
+    return -1;
+  }
+
+  if(!CDHsharecheckOK){
+    Tools::Fill1D( Form("EventCheck"), 9 );
+    return -1;
+  }
+
+  if(!FindMass2OK1){
+    Tools::Fill1D( Form("EventCheck"), 10 );
+    return -1;
+  }
+  
+  if(!FindMass2OK2){
+    Tools::Fill1D( Form("EventCheck"), 11 );
+    return -1;
+  }
+
+  if(!EnergyLossOK){
+    Tools::Fill1D( Form("EventCheck"), 12 );//put here to get event based info.
+    return -1; 
+  }
+
   return pimid.size()+pipid.size()+protonid.size()+kmid.size();
 }
 
