@@ -1,5 +1,5 @@
-const bool gridon=false;
-const bool staton=false;
+const bool gridon=true;
+const bool staton=true;
 
 namespace anacuts{
   const double beta_MAX = 0.728786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
@@ -19,7 +19,7 @@ namespace anacuts{
   const double Sigmam_MAX = 1.22;
 }
 
-void plothists(const char *filename="evanaIMpisigma_all_v18.root")
+void plothists_v15(const char *filename="evanaIMpisigma_all_v15.root")
 {
   cout << "filename " << filename << endl;
   gStyle->SetPadGridX(gridon);
@@ -31,17 +31,10 @@ void plothists(const char *filename="evanaIMpisigma_all_v18.root")
   gStyle->SetStatY(0.9);
   gStyle->SetStatBorderSize(1);
   
-  TFile *f = new TFile(filename,"READ"); 
-  
-  TCanvas *cEventCheck = new TCanvas("cEventCheck","cEventCheck");
-  cEventCheck->cd();
-  TF1 *h1_EventCheck = f->Get("EventCheck");
-  h1_EventCheck->Draw();
-  
   //QAbeamline(filename);
-   
+
   //CDS QA 
-  //QACDS(filename);
+  QACDS(filename);
 
   //Forward QA
   //QAForward(filename);
@@ -49,7 +42,7 @@ void plothists(const char *filename="evanaIMpisigma_all_v18.root")
   if(staton)gStyle->SetOptStat("emruo");
   else      gStyle->SetOptStat(0);
   
-  PhysicsPlots(filename);
+  //PhysicsPlots(filename);
 
   return;
 }
@@ -488,13 +481,15 @@ void PhysicsPlots(const char *filename){
   h1_IMnpipi_woK0_wSid->Draw("HE");
 
 
-  TCanvas *cMMnmiss_IMnpipi_woK0_wSid = new TCanvas("cMMnmiss_IMnpipi_woK0_wSid","");
-  TH2F* h2_MMnmiss_IMnpipi_woK0_wSid = f->Get("MMnmiss_IMnpipi_woK0_wSid");
-  h2_MMnmiss_IMnpipi_woK0_wSid->SetXTitle("IM(n#pi^{-}#pi^{+}) [GeV/c^{2}]");
-  h2_MMnmiss_IMnpipi_woK0_wSid->GetXaxis()->CenterTitle();
-  h2_MMnmiss_IMnpipi_woK0_wSid->SetYTitle("Missing Momentum [GeV/c]");
-  h2_MMnmiss_IMnpipi_woK0_wSid->GetYaxis()->CenterTitle();
-  h2_MMnmiss_IMnpipi_woK0_wSid->Draw("colz");
+
+
+  TCanvas *cIMnpipi_MMnmiss_woK0_wSid = new TCanvas("cIMnpipi_MMnmiss_woK0_wSid","");
+  TH2F* h2_IMnpipi_MMnmiss_woK0_wSid = f->Get("IMnpipi_MMnmiss_woK0_wSid");
+  h2_IMnpipi_MMnmiss_woK0_wSid->SetXTitle("Missing Momentum [GeV/c]");
+  h2_IMnpipi_MMnmiss_woK0_wSid->GetXaxis()->CenterTitle();
+  h2_IMnpipi_MMnmiss_woK0_wSid->SetYTitle("IM(n#pi^{-}#pi^{+}) [GeV/c^{2}]");
+  h2_IMnpipi_MMnmiss_woK0_wSid->GetYaxis()->CenterTitle();
+  h2_IMnpipi_MMnmiss_woK0_wSid->Draw("colz");
   
   TCanvas *cCosn_IMnpipi = new TCanvas("cCosn_IMnpipi","");
   TH2F* h2_cCosn_IMnpipi = f->Get("Cosn_IMnpipi");
@@ -505,42 +500,20 @@ void PhysicsPlots(const char *filename){
   h2_cCosn_IMnpipi->Draw("colz");
   
   
-  TCanvas *cq_IMnpipi_woK0_wSid = new TCanvas("cq_IMnpipi_woK0_wSid","");
-  TH2F* h2_q_IMnpipi_woK0_wSid = f->Get("q_IMnpipi_woK0_wSid");
-  h2_q_IMnpipi_woK0_wSid->SetXTitle("IM(n#pi^{-}#pi^{+}) [GeV/c^{2}]");
-  h2_q_IMnpipi_woK0_wSid->SetYTitle("mom. transfer [GeV/c]");
-  h2_q_IMnpipi_woK0_wSid->GetXaxis()->CenterTitle();
-  h2_q_IMnpipi_woK0_wSid->GetYaxis()->CenterTitle();
-  h2_q_IMnpipi_woK0_wSid->SetTitle("");
-  h2_q_IMnpipi_woK0_wSid->Draw("colz");
-  
-  //find Kp threshold
-  int kpbin = h2_q_IMnpipi_woK0_wSid->GetXaxis()->FindBin(1.432);
-  TCanvas *cq_IMnpipi_woK0_wSid_px = new TCanvas("cq_IMnpipi_woK0_wSid_px","");   
-  TH1D* h2_q_IMnpipi_woK0_wSid_px = h2_q_IMnpipi_woK0_wSid->ProjectionX("px");
-  h2_q_IMnpipi_woK0_wSid_px->SetTitle("");
-  //h2_q_IMnpipi_woK0_wSid_px->GetXaxis()->SetRange(0,kpbin);
-  h2_q_IMnpipi_woK0_wSid_px->Draw("E");
-  std::cout << kpbin << std::endl;
+  TCanvas *cIMnpipi_q_woK0_wSid = new TCanvas("cIMnpipi_q_woK0_wSid","");
+  TH2F* h2_IMnpipi_q_woK0_wSid = f->Get("IMnpipi_q_woK0_wSid");
+  h2_IMnpipi_q_woK0_wSid->SetXTitle("mom transfer [GeV/c]");
+  h2_IMnpipi_q_woK0_wSid->SetYTitle("IM(n#pi^{-}#pi^{+}) [GeV/c^{2}]");
+  h2_IMnpipi_q_woK0_wSid->GetXaxis()->CenterTitle();
+  h2_IMnpipi_q_woK0_wSid->GetYaxis()->CenterTitle();
+  h2_IMnpipi_q_woK0_wSid->Draw("colz");
 
-  TCanvas *cq_IMnpipi_woK0_wSid_py_nocut = new TCanvas("cq_IMnpipi_woK0_wSid_py_nocut","");   
-  TH1D* h2_q_IMnpipi_woK0_wSid_py_nocut = h2_q_IMnpipi_woK0_wSid->ProjectionY("pycut");
-  h2_q_IMnpipi_woK0_wSid_py_nocut->SetTitle("");
-  h2_q_IMnpipi_woK0_wSid_py_nocut->Rebin(4);
-  h2_q_IMnpipi_woK0_wSid_py_nocut->Draw("E");
-  
-  
-  TCanvas *cq_IMnpipi_woK0_wSid_py = new TCanvas("cq_IMnpipi_woK0_wSid_py","");   
-  TH1D* h2_q_IMnpipi_woK0_wSid_py = h2_q_IMnpipi_woK0_wSid->ProjectionY("py",0,kpbin-1);
-  h2_q_IMnpipi_woK0_wSid_py->SetTitle("");
-  h2_q_IMnpipi_woK0_wSid_py->Rebin(4);
-  h2_q_IMnpipi_woK0_wSid_py->Draw("E");
 
-  TCanvas *cq_IMnpipi_woK0_wSid_py2 = new TCanvas("cq_IMnpipi_woK0_wSid_py2","");   
-  TH1D* h2_q_IMnpipi_woK0_wSid_py2 = h2_q_IMnpipi_woK0_wSid->ProjectionY("py2",kpbin,200);
-  h2_q_IMnpipi_woK0_wSid_py2->SetTitle("");
-  h2_q_IMnpipi_woK0_wSid_py2->Rebin(4);
-  h2_q_IMnpipi_woK0_wSid_py2->Draw("E");
+
+
+
+
+
 
 }
 
