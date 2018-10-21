@@ -8,11 +8,11 @@
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 // reconstruction method is based on "EventAnalysis_pipipnn_sakuma.cpp"
 //----------------------------------------------------------------//
-//  exe-file: simpipipnn [./simpipipnn $(ConfFile) $(OutFile) $(InFile) $(CDCtrackingFile)]
+//  exe-file: simIMpisigma [./simIMpisigma $(ConfFile) $(OutFile) $(InFile) $(CDCtrackingFile)]
 //  input : conf-file, G4(knucl4.10)-file, CDC-tracking-file
 //  output: when $(OutFile) is "tmp.root", the following 2 files are generated.
 //     "tmp.root":      histogram file
-//     "tmp_pipipnn.root": basic information of pipipnn event is listed up in TTree 
+//     "tmp_pipipnn.root": basic information of pippimn event is listed up in TTree 
 //  *NOTE*: the same conf-file used to generate G4-file is needed
 //----------------------------------------------------------------//
 
@@ -48,7 +48,6 @@ const double MOM_RES = 2.0; // MeV/c
 // was evaluated to be 2.0 +/- 0.5 MeV/c (Hashimoto-D p.58)
 
 //** cut parameters **//
-//@@ only different cut parameters btw Sada & Yamaga are listed @@//
 double PARA_blc2bpc_dx_MIN;
 double PARA_blc2bpc_dx_MAX;
 double PARA_blc2bpc_dy_MIN;
@@ -61,10 +60,10 @@ double PARA_lnL_MAX;
 double PARA_MM_LP_MIN;
 double PARA_MM_LP_MAX;
 
-const double TDC_CDH_MAX = 20; // ns
+const double TDC_CDH_MAX = 999999; //ns (original:20 nsec.)
 const double ADC_CDH_MIN = 1;  // MeV
 
-//= = = = pipipnn final-sample tree = = = =//
+//= = = = pippimn final-sample tree = = = =//
 TLorentzVector mom_beam;   // 4-momentum(beam)
 TLorentzVector mom_target; // 4-momentum(target)
 TLorentzVector mom_pip;    // 4-momentum(pi+)
@@ -79,30 +78,25 @@ int block_num; // block number
 TLorentzVector mcmom_beam;   // generated 4-momentum(beam)
 TLorentzVector mcmom_pip;    // generated 4-momentum(pi+)
 TLorentzVector mcmom_pim;    // generated 4-momentum(pi-)
-//TLorentzVector mcmom_p;      // generated 4-momentum(proton)
 TLorentzVector mcmom_n;      // generated 4-momentum(neutron)
-TLorentzVector kf1mom_beam;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
-TLorentzVector kf1mom_pip;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
-TLorentzVector kf1mom_pim;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
-TLorentzVector kf1mom_n;      // 4-momentum(neutron) after kinematical refit for pi- Sigma+
-double kf1_chi2;   // chi2 of kinematical refit
-double kf1_NDF;    // NDF of kinematical refit
-double kf1_status; // status of kinematical refit -> details can be found in this code
-double kf1_pvalue; // p-value of kinematical refit
-TLorentzVector kf2mom_beam;   // 4-momentum(beam) after kinematical refit for pi+ Sigma-
-TLorentzVector kf2mom_pip;    // 4-momentum(pi+) after kinematical refit for pi+ Sigma-
-TLorentzVector kf2mom_pim;    // 4-momentum(pi-) after kinematical refit for pi+ Sigma-
-TLorentzVector kf2mom_n;      // 4-momentum(neutron) after kinematical refit for pi+ Sigma-
-double kf2_chi2;   // chi2 of kinematical refit
-double kf2_NDF;    // NDF of kinematical refit
-double kf2_status; // status of kinematical refit -> details can be found in this code
-double kf2_pvalue; // p-value of kinematical refit
-double kf3_chi2;   // chi2 of kinematical refit
-double kf3_NDF;    // NDF of kinematical refit
-double kf3_status; // status of kinematical refit -> details can be found in this code
-double kf3_pvalue; // p-value of kinematical refit
+TLorentzVector kfMomBeamSpmode;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
+TLorentzVector kfMom_pip_Spmode;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
+TLorentzVector kfMom_pim_Spmode;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
+TLorentzVector kfMom_n_Spmode;      // 4-momentum(neutron) after kinematical refit for pi- Sigma+
+double kf_chi2_Spmode;   // chi2 of kinematical refit
+double kf_NDF_Spmode;    // NDF of kinematical refit
+double kf_status_Spmode; // status of kinematical refit -> details can be found in this code
+double kf_pvalue_Spmode; // p-value of kinematical refit
+TLorentzVector kfMomBeamSmmode;   // 4-momentum(beam) after kinematical refit for pi+ Sigma-
+TLorentzVector kfMom_pip_Smmode;    // 4-momentum(pi+) after kinematical refit for pi+ Sigma-
+TLorentzVector kfMom_pim_Smmode;    // 4-momentum(pi-) after kinematical refit for pi+ Sigma-
+TLorentzVector kfMom_n_Smmode;      // 4-momentum(neutron) after kinematical refit for pi+ Sigma-
+double kf_chi2_Smmode;   // chi2 of kinematical refit
+double kf_NDF_Smmode;    // NDF of kinematical refit
+double kf_status_Smmode; // status of kinematical refit -> details can be found in this code
+double kf_pvalue_Smmode; // p-value of kinematical refit
 int kf_flag; // flag of correct pair reconstruction, etc
-//= = = = pipipnn final-sample tree = = = =//
+//= = = = pippimn final-sample tree = = = =//
 
 void InitializeHistogram();
 
@@ -111,7 +105,7 @@ using namespace std;
 int main( int argc, char** argv )
 {
   if( argc!=5 ){
-    cout<<argv[0]<<" $(ConfFile) $(OutFile) $(KnuclFile) $(CDCtrackingFile)"<<endl;
+    std::cout<<argv[0]<<" $(ConfFile) $(OutFile) $(KnuclFile) $(CDCtrackingFile)"<<std::endl;
     return 0;
   }
 
@@ -221,7 +215,7 @@ int main( int argc, char** argv )
   TTree *tree2 = (TTree*)simfile->Get("tree2");
   RunHeaderMC *runHeader=0;
   tree2->SetBranchAddress("RunHeaderMC", &runHeader);
-  if( tree2->GetEntries()==1 ) cout<<"  !!! tree2 entries==1 !!!"<<endl;
+  if( tree2->GetEntries()==1 ) std::cout<<"  !!! tree2 entries==1 !!!"<<std::endl;
   else tree2->GetEntry(0);
 
   TTree *tree=(TTree*)simfile->Get("tree");
@@ -249,53 +243,45 @@ int main( int argc, char** argv )
   TFile *outfile = new TFile(argv[2], "recreate");
   outfile->cd();
 
-  //** output file 2 : pipipnn final-sample tree **// 
+  //** output file 2 : pippimn final-sample tree **// 
   std::string outfile2_name = string(argv[2]);
-  outfile2_name.insert( outfile2_name.size()-5, "_pipipnn" );
-  std::cout<<"pipipnn file "<<outfile2_name<<std::endl;
+  outfile2_name.insert( outfile2_name.size()-5, "_pippimn" );
+  std::cout<<"pippimn file "<<outfile2_name<<std::endl;
   TFile *outfile2 = new TFile( outfile2_name.c_str(), "recreate" );
   outfile2->cd();
-  TTree *pipipnnTree = new TTree( "EventTree", "EventTree" );
-  pipipnnTree->Branch( "mom_beam",   &mom_beam );
-  pipipnnTree->Branch( "mom_target", &mom_target );
-  pipipnnTree->Branch( "mom_pip", &mom_pip );
-  pipipnnTree->Branch( "mom_pim", &mom_pim );
-  pipipnnTree->Branch( "mom_n", &mom_n );
-  pipipnnTree->Branch( "beta", &beta );
-  pipipnnTree->Branch( "dE", &dE );
-  pipipnnTree->Branch( "vtx_reaction", &vtx_reaction );
-  pipipnnTree->Branch( "run_num", &run_num );
-  pipipnnTree->Branch( "event_num", &event_num );
-  pipipnnTree->Branch( "block_num", &block_num );
-  pipipnnTree->Branch( "mcmom_beam",   &mcmom_beam );
-  pipipnnTree->Branch( "mcmom_pip", &mcmom_pip );
-  pipipnnTree->Branch( "mcmom_pim", &mcmom_pim );
-  pipipnnTree->Branch( "mcmom_n", &mcmom_n );
-  pipipnnTree->Branch( "kf1mom_beam",   &kf1mom_beam );
-  pipipnnTree->Branch( "kf1mom_pip", &kf1mom_pip );
-  pipipnnTree->Branch( "kf1mom_pim", &kf1mom_pim );
-  pipipnnTree->Branch( "kf1mom_n", &kf1mom_n );
-  pipipnnTree->Branch( "kf1_chi2", &kf1_chi2 );
-  pipipnnTree->Branch( "kf1_NDF", &kf1_NDF );
-  pipipnnTree->Branch( "kf1_status", &kf1_status );
-  pipipnnTree->Branch( "kf1_pvalue", &kf1_pvalue );
-  pipipnnTree->Branch( "kf2mom_beam",   &kf2mom_beam );
-  pipipnnTree->Branch( "kf2mom_pip", &kf2mom_pip );
-  pipipnnTree->Branch( "kf2mom_pim", &kf2mom_pim );
-  pipipnnTree->Branch( "kf2mom_n", &kf2mom_n );
-  pipipnnTree->Branch( "kf2_chi2", &kf2_chi2 );
-  pipipnnTree->Branch( "kf2_NDF", &kf2_NDF );
-  pipipnnTree->Branch( "kf2_status", &kf2_status );
-  pipipnnTree->Branch( "kf2_pvalue", &kf2_pvalue );
-  //pipipnnTree->Branch( "kf3mom_beam",   &kf3mom_beam );
-  //pipipnnTree->Branch( "kf3mom_pip", &kf3mom_pip );
-  //pipipnnTree->Branch( "kf3mom_pim", &kf3mom_pim );
-  //pipipnnTree->Branch( "kf3mom_n", &kf3mom_n );
-  pipipnnTree->Branch( "kf3_chi2", &kf3_chi2 );
-  pipipnnTree->Branch( "kf3_NDF", &kf3_NDF );
-  pipipnnTree->Branch( "kf3_status", &kf3_status );
-  pipipnnTree->Branch( "kf3_pvalue", &kf3_pvalue );
-  pipipnnTree->Branch( "kf_flag", &kf_flag );
+  TTree *pippimnTree = new TTree( "EventTree", "EventTree" );
+  pippimnTree->Branch( "mom_beam",   &mom_beam );
+  pippimnTree->Branch( "mom_target", &mom_target );
+  pippimnTree->Branch( "mom_pip", &mom_pip );
+  pippimnTree->Branch( "mom_pim", &mom_pim );
+  pippimnTree->Branch( "mom_n", &mom_n );
+  pippimnTree->Branch( "beta", &beta );
+  pippimnTree->Branch( "dE", &dE );
+  pippimnTree->Branch( "vtx_reaction", &vtx_reaction );
+  pippimnTree->Branch( "run_num", &run_num );
+  pippimnTree->Branch( "event_num", &event_num );
+  pippimnTree->Branch( "block_num", &block_num );
+  pippimnTree->Branch( "mcmom_beam",   &mcmom_beam );
+  pippimnTree->Branch( "mcmom_pip", &mcmom_pip );
+  pippimnTree->Branch( "mcmom_pim", &mcmom_pim );
+  pippimnTree->Branch( "mcmom_n", &mcmom_n );
+  pippimnTree->Branch( "kfMomBeamSpmode",   &kfMomBeamSpmode );
+  pippimnTree->Branch( "kfMom_pip_Spmode", &kfMom_pip_Spmode );
+  pippimnTree->Branch( "kfMom_pim_Spmode", &kfMom_pim_Spmode );
+  pippimnTree->Branch( "kfMom_n_Spmode", &kfMom_n_Spmode );
+  pippimnTree->Branch( "kf_chi2_Spmode", &kf_chi2_Spmode );
+  pippimnTree->Branch( "kf_NDF_Spmode", &kf_NDF_Spmode );
+  pippimnTree->Branch( "kf_status_Spmode", &kf_status_Spmode );
+  pippimnTree->Branch( "kf_pvalue_Spmode", &kf_pvalue_Spmode );
+  pippimnTree->Branch( "kfMomBeamSmmode",   &kfMomBeamSmmode );
+  pippimnTree->Branch( "kfMom_pip_Smmode", &kfMom_pip_Smmode );
+  pippimnTree->Branch( "kfMom_pim_Smmode", &kfMom_pim_Smmode );
+  pippimnTree->Branch( "kfMom_n_Smmode", &kfMom_n_Smmode );
+  pippimnTree->Branch( "kf_chi2_Smmode", &kf_chi2_Smmode );
+  pippimnTree->Branch( "kf_NDF_Smmode", &kf_NDF_Smmode );
+  pippimnTree->Branch( "kf_status_Smmode", &kf_status_Smmode );
+  pippimnTree->Branch( "kf_pvalue_Smmode", &kf_pvalue_Smmode );
+  pippimnTree->Branch( "kf_flag", &kf_flag );
   outfile->cd();
 
 
@@ -309,7 +295,7 @@ int main( int argc, char** argv )
 
 
   //*** for kinematical fit ***//
-  // beam_K(K+), pi-/+, Sigma+/-, p, n, n from S, pi+/- from S
+  // beam_K(K+), pi-/+, Sigma+/-, forward n, n from S, pi+/- from S
   // !!! only diagonal components !!!
   const int BIN = 100;
   double cov_MAX;
@@ -332,11 +318,11 @@ int main( int argc, char** argv )
   int stopn  = confMan->GetStopEvNum();
   int exen   = ( 0<stopn && stopn<eventn ) ? stopn : eventn;
 
-  cout<<"===== Lambda p n reconstruction in MC START ============="<<endl;
-  cout<<"     # of All  Event in EventTree:     "<<eventn<<endl;
-  cout<<"     # of Stop Event in analyzer.conf: "<<stopn<<endl;
-  cout<<"     # of Exe  Event in this program:  "<<exen<<endl;
-  cout<<"========================================================="<<endl;
+  std::cout<<"===== Lambda p n reconstruction in MC START ============="<<std::endl;
+  std::cout<<"     # of All  Event in EventTree:     "<<eventn<<std::endl;
+  std::cout<<"     # of Stop Event in analyzer.conf: "<<stopn<<std::endl;
+  std::cout<<"     # of Exe  Event in this program:  "<<exen<<std::endl;
+  std::cout<<"========================================================="<<std::endl;
 
   //** set cut parameters **//
   PARA_blc2bpc_dx_MIN = -0.75;
@@ -375,7 +361,7 @@ int main( int argc, char** argv )
   int nAbort_end = 0;
 
   int nFill_pppi = 0;
-  int nFill_pipipnn = 0;
+  int nFill_pippimn = 0;
 
   int nTrack_CDHshare = 0;
 
@@ -425,7 +411,7 @@ int main( int argc, char** argv )
     //##########################//
     bool flagG4Decay = false;
     bool piSpn_detect = false;
-    int kpp_track = -1;
+    int kpp_track = -1;//remove in the future ?
     int pi_parent  = 0;
     int Y_parent  = 0;
     int N_parent  = 0;
@@ -434,10 +420,10 @@ int main( int argc, char** argv )
       int parent  = mcData->track(j)->parentTrackID();
       int track   = mcData->track(j)->trackID();
       if( pdgcode==9999 && parent==0 ){ // Kpp
-	kpp_track = track;
-	pi_parent  = track;
-	Y_parent  = track;
-	N_parent  = track;
+        kpp_track = track;
+        pi_parent  = track;
+        Y_parent  = track;
+        N_parent  = track;
       }
     }
     std::cerr<<"======================"<<std::endl;
@@ -445,14 +431,16 @@ int main( int argc, char** argv )
     //std::cerr<<j<<" "<<reacData->PDG(j)<<" "<<reacData->GetParticle(j).P()<<std::endl;
     //}
     int reactionID = reacData->ReactionID();
-    int PDG1[7] = {321, -211, 3222, 2212, 2112, 2112,  211}; // pi-Sigma+
-    int PDG2[7] = {321,  211, 3112, 2212, 2112, 2112, -211}; // pi+Sigma-
-    int PDG3[7] = {321,  211, 3122, 2112, 2112, 2212, -211}; // pi+Lambda
-    int PDG[7] = {0, 0, 0, 0, 0, 0, 0};
-    for( int j=0; j<7; j++ ){
-      if( reactionID==2120 )      PDG[j] = PDG1[j];
-      else if( reactionID==2130 ) PDG[j] = PDG2[j];
-      else if( reactionID==2005 ) PDG[j] = PDG3[j];
+    //These partcile IDs are defined in pythia6
+    //see http://home.fnal.gov/~mrenna/lutp0613man2/node44.html
+    //                    K-    pi-  S+     n     n     pi+
+    int PDG_Spmode[6] = {-321, -211, 3222, 2112, 2112,  211}; // pi-Sigma+
+    //                    K-    pi+  S-     n     n     pi-
+    int PDG_Smmode[6] = {-321,  211, 3112, 2112, 2112, -211}; // pi+Sigma-
+    int PDG[6] = {0, 0, 0, 0, 0, 0, 0};
+    for( int j=0; j<6; j++ ){
+      if( reactionID==2120 )      PDG[j] = PDG_Spmode[j];
+      else if( reactionID==2130 ) PDG[j] = PDG_Smmode[j];
     }
     // beam_K(K+), pi, Y, N, N, N from Y, pi from Y
     int parentID[7] = {0, pi_parent, Y_parent, N_parent, 0, -1, -1};
@@ -463,13 +451,13 @@ int main( int argc, char** argv )
       int pdgcode = mcData->track(j)->pdgID();
       int parent  = mcData->track(j)->parentTrackID();
       int track   = mcData->track(j)->trackID();
-      //cerr<<j<<" | "<<pdgcode<<" "<<parent<<" "<<track<<endl;
+      //cerr<<j<<" | "<<pdgcode<<" "<<parent<<" "<<track<<std::endl;
       for( int k=0; k<7; k++ ){
 	if( pdgcode==PDG[k] && parent==parentID[k] && ID[k]==-1 ){
 	  ID[k] = j;
 	  trackID[k] = track;
 	  nparticle++;
-	  //cerr<<j<<","<<k<<" | "<<pdgcode<<" "<<parent<<" "<<track<<endl;
+	  //cerr<<j<<","<<k<<" | "<<pdgcode<<" "<<parent<<" "<<track<<std::endl;
 	  if( k==2 ){
 	    parentID[5] = track;
 	    parentID[6] = track;
@@ -480,7 +468,7 @@ int main( int argc, char** argv )
 	}
       }
     }
-    //cerr<<" nparticle = "<<nparticle<<endl;
+    //cerr<<" nparticle = "<<nparticle<<std::endl;
     if( nparticle==7 ) flagG4Decay = true;
 
     int nCDHhit[7] = {0, 0, 0, 0, 0, 0, 0};
@@ -754,7 +742,7 @@ int main( int argc, char** argv )
       for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
 	HodoscopeLikeHit *cdhhit=track->CDHHit(cdsMan,icdh);
 	double tmptof = cdhhit->ctmean() - ctmT0;      
-	//cerr<<icdh<<": "<<cdhhit->ctmean()<<" - "<<ctmT0<<" = "<<tmptof<<endl;
+	//cerr<<icdh<<": "<<cdhhit->ctmean()<<" - "<<ctmT0<<" = "<<tmptof<<std::endl;
 	if( tmptof<tof || tof==999. ){ //*** apply minimum TOF hit ***//
 	  tof = tmptof;
 	  CDHseg = cdhhit->seg();
@@ -809,7 +797,7 @@ int main( int argc, char** argv )
       if( pid<7 ) nTrack_PID++;
 
       //cerr<<"    pid = "<<pid<<", tof = "<<tmptof<<", beta = "<<beta_calc
-      //<<", mom = "<<mom<<", mass = "<<sqrt(fabs(mass2))<<endl;
+      //<<", mom = "<<mom<<", mass = "<<sqrt(fabs(mass2))<<std::endl;
 
     }// for( int it=0; it<cdstrackMan->nGoodTrack(); it++ ){
     //** end of PID **//
@@ -1046,7 +1034,7 @@ int main( int argc, char** argv )
 	}
 	P_n = tmp_mom*(Pos_CDH-vtx_react).Unit();
 	
-	cerr<<tmp_mom<<" ("<<P_n.CosTheta()<<" , "<<P_n.Phi()*360/TwoPi<<")"<<endl;
+	std::cerr<<tmp_mom<<" ("<<P_n.CosTheta()<<" , "<<P_n.Phi()*360./TwoPi<<")"<<std::endl;
 
 	L_p.SetVectM(   P_p,   pMass );
 	L_pim.SetVectM( P_pim, piMass );
@@ -1090,19 +1078,19 @@ int main( int argc, char** argv )
 
 	kf_flag = -1;
 	
-	Tools::Fill2D( Form("dE_betainv"), 1/beta, ncdhhit->emean() );
+	Tools::Fill2D( Form("dE_betainv"), 1./beta, ncdhhit->emean() );
 	Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
 	
 	if( GeomTools::GetID(vtx_react)==CID_Fiducial ){
-	  Tools::Fill2D( Form("dE_betainv_fiducial"), 1/beta, ncdhhit->emean() );
+	  Tools::Fill2D( Form("dE_betainv_fiducial"), 1./beta, ncdhhit->emean() );
 	  Tools::Fill2D( Form("MMom_MMass_fiducial"), mm_mass, P_missn.Mag() );
   
 	  if(  beta<beta_MAX ){
-	    Tools::Fill2D( Form("dE_betainv_fiducial_beta"), 1/beta, ncdhhit->emean() );
+	    Tools::Fill2D( Form("dE_betainv_fiducial_beta"), 1./beta, ncdhhit->emean() );
 	    Tools::Fill2D( Form("MMom_MMass_fiducial_beta"), mm_mass, P_missn.Mag() );
 	    
 	    if( dE_MIN<ncdhhit->emean() ){
-	      Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE"), 1/beta, ncdhhit->emean() );
+	      Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE"), 1./beta, ncdhhit->emean() );
 	      Tools::Fill2D( Form("MMom_MMass_fiducial_beta_dE"), mm_mass, P_missn.Mag() );
 	      
 	      Tools::Fill1D( Form("IMpipi"), (L_pim+L_pip).M() );
@@ -1115,11 +1103,11 @@ int main( int argc, char** argv )
 	      if( VTX_SIGMA==1 &&
 		  ((L_pim+L_pip).M()<pipi_MIN || pipi_MAX<(L_pim+L_pip).M()) &&
 		  ((L_p+L_pim).M()<ppi_MIN || ppi_MAX<(L_p+L_pim).M()) ){ // K0 & Lambda subtraction
-		Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE_res"), 1/beta, ncdhhit->emean() );
+		Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE_res"), 1./beta, ncdhhit->emean() );
 		Tools::Fill2D( Form("MMom_MMass_fiducial_beta_dE_res"), mm_mass, P_missn.Mag() );
 		
 		if( neutron_MIN<mm_mass && mm_mass<neutron_MAX ){ // missing n selection
-		  Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE_res_n"), 1/beta, ncdhhit->emean() );
+		  Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE_res_n"), 1./beta, ncdhhit->emean() );
 		  Tools::Fill2D( Form("MMom_MMass_fiducial_beta_dE_res_n"), mm_mass, P_missn.Mag() );
 		  
 		  Tools::Fill2D( Form("MMom_NMom"), P_n.Mag(), P_missn.Mag() );
@@ -1172,7 +1160,6 @@ int main( int argc, char** argv )
 		}
 		std::cerr<<" val = "<<val1<<" "<<val2<<" -> "<<genID[4]<<" "<<genID[5]<<std::endl;
 		mcmom_beam = TL_gene[0];
-		//mcmom_p    = TL_gene[3];
 		mcmom_n    = TL_gene[genID[5]];
 		if( reactionID==2120 ){
 		  mcmom_pip  = TL_gene[6];
@@ -1225,14 +1212,14 @@ int main( int argc, char** argv )
 		TFitParticlePxPyPz Particle2[7];
 		for( int i=0; i<7; i++ ){
 		  Particle1[i] = TFitParticlePxPyPz(str_particle1[i], str_particle1[i], &TV_meas1[i],
-						    pdg->GetParticle(PDG1[i])->Mass(), covParticle1[i]);
+						    pdg->GetParticle(PDG_Spmode[i])->Mass(), covParticle1[i]);
 		  Particle2[i] = TFitParticlePxPyPz(str_particle2[i], str_particle2[i], &TV_meas2[i],
-						    pdg->GetParticle(PDG2[i])->Mass(), covParticle2[i]);
+						    pdg->GetParticle(PDG_Smmode[i])->Mass(), covParticle2[i]);
 		}
 		//*** definition of constraints ***//
 		// constraint :: mass of Sigma
-		TFitConstraintM ConstMS1 = TFitConstraintM("M_Sp", "M_Sp", 0, 0, pdg->GetParticle(PDG1[2])->Mass());
-		TFitConstraintM ConstMS2 = TFitConstraintM("M_Sm", "M_Sm", 0, 0, pdg->GetParticle(PDG2[2])->Mass());
+		TFitConstraintM ConstMS1 = TFitConstraintM("M_Sp", "M_Sp", 0, 0, pdg->GetParticle(PDG_Spmode[2])->Mass());
+		TFitConstraintM ConstMS2 = TFitConstraintM("M_Sm", "M_Sm", 0, 0, pdg->GetParticle(PDG_Smmode[2])->Mass());
 		ConstMS1.addParticles1(&Particle1[5], &Particle1[6]);
 		ConstMS2.addParticles1(&Particle2[5], &Particle2[6]);
 		// constraint :: 4-momentum conservation
@@ -1300,24 +1287,24 @@ int main( int argc, char** argv )
 		else if ( reactionID==2130 ) std::cerr<<"*** pi+ S- ==> "<<correct_flag<<" ***"<<std::endl;
 
 		//** fill tree **//
-		kf1mom_beam   = TL_kfit1[0];
-		kf1mom_pip    = TL_kfit1[6];
-		kf1mom_pim    = TL_kfit1[1];
+		kfMomBeamSpmode   = TL_kfit1[0];
+		kfMom_pip_Spmode    = TL_kfit1[6];
+		kfMom_pim_Spmode    = TL_kfit1[1];
 		//kf1mom_p      = TL_kfit1[3];
-		kf1mom_n      = TL_kfit1[5];
-		kf1_chi2      = kinfitter1.getS();
-		kf1_NDF       = kinfitter1.getNDF();
-		kf1_status    = kinfitter1.getStatus();
-		kf1_pvalue    = ROOT::Math::chisquared_cdf_c(kinfitter1.getS(), kinfitter1.getNDF());
-		kf2mom_beam   = TL_kfit2[0];
-		kf2mom_pip    = TL_kfit2[1];
-		kf2mom_pim    = TL_kfit2[6];
+		kfMom_n_Spmode      = TL_kfit1[5];
+		kf_chi2_Spmode      = kinfitter1.getS();
+		kf_NDF_Spmode       = kinfitter1.getNDF();
+		kf_status_Spmode    = kinfitter1.getStatus();
+		kf_pvalue_Spmode    = ROOT::Math::chisquared_cdf_c(kinfitter1.getS(), kinfitter1.getNDF());
+		kfMomBeamSmmode   = TL_kfit2[0];
+		kfMom_pip_Smmode    = TL_kfit2[1];
+		kfMom_pim_Smmode    = TL_kfit2[6];
 		//kf2mom_p      = TL_kfit2[3];
-		kf2mom_n      = TL_kfit2[5];
-		kf2_chi2      = kinfitter2.getS();
-		kf2_NDF       = kinfitter2.getNDF();
-		kf2_status    = kinfitter2.getStatus();
-		kf2_pvalue    = ROOT::Math::chisquared_cdf_c(kinfitter2.getS(), kinfitter2.getNDF());
+		kfMom_n_Smmode      = TL_kfit2[5];
+		kf_chi2_Smmode      = kinfitter2.getS();
+		kf_NDF_Smmode       = kinfitter2.getNDF();
+		kf_status_Smmode    = kinfitter2.getStatus();
+		kf_pvalue_Smmode    = ROOT::Math::chisquared_cdf_c(kinfitter2.getS(), kinfitter2.getNDF());
 		kf_flag       = reactionID; //correct_flag;
 
 		// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
@@ -1347,155 +1334,15 @@ int main( int argc, char** argv )
 	      } // if( ((L_pim+L_pip).M()<pipi_MIN || pipi_MAX<(L_pim+L_pip).M()) &&
 
 
-	      // ********************** //
-	      // *** pi Lambda mode *** //
-	      // ********************** //
-	      // 0: Lambda reconstruction, vertex = K- & pi+
-	      else if( VTX_SIGMA==0 &&
-		       ((L_pim+L_pip).M()<pipi_MIN || pipi_MAX<(L_pim+L_pip).M()) ){ // K0 subtraction
-		Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE_Lambda"), 1/beta, ncdhhit->emean() );
-		Tools::Fill2D( Form("MMom_MMass_fiducial_beta_dE_Lambda"), mm_mass, P_missn.Mag() );
-
-		if ( ppi_MIN<(L_p+L_pim).M() && (L_p+L_pim).M()<ppi_MAX ){ // Lambda selection
-		  if( neutron_MIN<mm_mass && mm_mass<neutron_MAX ){ // missing n selection
-		    Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE_Lambda_n"), 1/beta, ncdhhit->emean() );
-		    Tools::Fill2D( Form("MMom_MMass_fiducial_beta_dE_Lambda_n"), mm_mass, P_missn.Mag() );
-		  
-		    Tools::Fill2D( Form("MMom_NMom_Lambda"), P_n.Mag(), P_missn.Mag() );
-		    Tools::Fill2D( Form("Cosn_IMnppipi_Lambda"), (L_n+L_p+L_pim+L_pip).M(), cos_n );
-		    Tools::Fill2D( Form("Cosn_IMppipi_Lambda"), (L_p+L_pim+L_pip).M(), cos_n );
-		    Tools::Fill2D( Form("IMppipi_IMnppipi_Lambda"), (L_n+L_p+L_pim+L_pip).M(), (L_p+L_pim+L_pip).M() );
-		    
-		    Tools::Fill1D( Form("DCA_p_Lambda"), dca_p );
-		    Tools::Fill1D( Form("DCA_pip_Lambda"), dca_pip );
-		    Tools::Fill1D( Form("DCA_pim_Lambda"), dca_pim );
-		  }
-		} // if ( ppi_MIN<(L_p+L_pim).M() && (L_p+L_pim).M()<ppi_MAX ){
-
-		// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
-		// %%% Kinematical Fit using KinFitter %%% //
-		// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
-		//--- set TLorentzVector for MC study---//
-		// beam_K(K+), pi+, Lambda, n, n, p from L, pi- from L 
-		//  = 3) TLorentzVector L3_beam, L_pip, (L_p+L_pim), L_n, L_nmiss, L_p, L_pim = for pi+ Lambda
-		TLorentzVector TL_meas[7]; // measured
-		TL_meas[0] = L3_beam;
-                TL_meas[1] = L_pip;
-                TL_meas[2] = (L_p+L_pim);
-                TL_meas[3] = L_n;     // * which n?
-                TL_meas[4] = L_nmiss; // * which n?
-                TL_meas[5] = L_p;
-                TL_meas[6] = L_pim;
-
-		double val1 = (TL_meas[3]-TL_gene[3]).P(); // n_measured - n_initial_1
-		double val2 = (TL_meas[3]-TL_gene[4]).P(); // n_measured - n_initial_2
-		int genID[7] = {0,1,2,3,4,5,6};
-		if( val2<val1 ){ // is there more good selection way?
-		  genID[3] = 4;
-		  genID[4] = 3;
-		}
-		std::cerr<<" val = "<<val1<<" "<<val2<<" -> "<<genID[3]<<" "<<genID[4]<<std::endl;
-		mcmom_beam = TL_gene[0];
-		//mcmom_p    = TL_gene[5];
-		mcmom_n    = TL_gene[genID[3]];
-		mcmom_pip  = TL_gene[1];
-		mcmom_pim  = TL_gene[6];
-
-		//--- set TLorentzVector ---//
-		// beam_K(K+), pi+, Lambda, n, n, p from L, pi- from L 
-		//  = 3) TLorentzVector L3_beam, L_pip, (L_p+L_pim), L_n, L_nmiss, L_p, L_pim = for pi+ Lambda
-		TLorentzVector TL_meas3[7]; // measured
-		TL_meas3[0] = L3_beam;
-		TL_meas3[1] = L_pip;
-		TL_meas3[2] = (L_p+L_pim);
-		TL_meas3[3] = L_n;
-		TL_meas3[4] = L_nmiss;
-		TL_meas3[5] = L_p;
-		TL_meas3[6] = L_pim;
-		TLorentzVector TL_kfit3[7]; // kinematical fitted
-		// L3_target is defined as (0, 0, 0, M_3He)
-		TVector3 TV_target = L3_target.Vect();
-		TVector3 TV_meas3[7];
-		for( int i=0; i<7; i++ ){
-		  TV_meas3[i] = TL_meas3[i].Vect();
-		}
-		
-		TDatabasePDG *pdg = new TDatabasePDG();
-		pdg->ReadPDGTable("pdg_table.txt");
-		int PDG3[7] = {321,  211, 3122, 2112, 2112, 2212, -211}; // pi+Lambda
-		
-		//--- KinFitter :: initialization ---//
-		//  = 3) TLorentzVector L3_beam, L_pip, (L_p+L_pim), L_n, L_nmiss, L_p, L_pim = for pi+ Lambda
-		//*** definition of fit particles in cartesian coordinates ***//
-		TString str_particle3[7] = {"L_beam", "L_pip", "L_Lam", "L_n", "L_mn", "L_p", "L_pim"};
-		TFitParticlePxPyPz ParticleTgt = TFitParticlePxPyPz("target", "target", &TV_target,
-								    pdg->GetParticle("He3")->Mass(), covZero);
-		TFitParticlePxPyPz Particle3[7];
-		//for( int i=0; i<7; i++ ){
-		///  Particle3[i] = TFitParticlePxPyPz(str_particle3[i], str_particle3[i], &TV_meas3[i],
-	//					    pdg->GetParticle(PDG3[i])->Mass(), covParticle3[i]);
-		//}
-		//*** definition of constraints ***//
-		// constraint :: mass of Sigma
-		TFitConstraintM ConstMS3 = TFitConstraintM("M_Lam", "M_Lam", 0, 0, pdg->GetParticle(PDG3[2])->Mass());
-		ConstMS3.addParticles1(&Particle3[5], &Particle3[6]);
-		// constraint :: 4-momentum conservation
-		TFitConstraintEp ConstEp3[4];
-		TString str_constEp3[4]  = {"Px", "Py", "Pz", "E"};
-		for( int i=0; i<4; i++ ){
-		  ConstEp3[i] = TFitConstraintEp(str_constEp3[i], str_constEp3[i], 0, TFitConstraintEp::component(i), 0);
-		  ConstEp3[i].addParticles1(&ParticleTgt, &Particle3[0]);
-		  ConstEp3[i].addParticles2(&Particle3[1], &Particle3[3], &Particle3[4], &Particle3[5], &Particle3[6]);
-		}
-		
-		//--- KinFitter :: execution ---//
-		//*** definition of the fitter ***//
-		TKinFitter kinfitter3;
-		// add measured particles
-		kinfitter3.addMeasParticles(&Particle3[0], &Particle3[1], &Particle3[3], &Particle3[5], &Particle3[6]); // K, pi+, n, p, pi-
-		kinfitter3.addUnmeasParticles(&Particle3[4]); // missing-n
-		// add constraints
-		kinfitter3.addConstraint(&ConstMS3); // mass of Lambda
-		for( int i=0; i<4; i++ ){
-		  kinfitter3.addConstraint(&ConstEp3[i]); // 4-momentum conservation
-		}
-		//*** perform the fit ***//
-		kinfitter3.setMaxNbIter(50);       // max number of iterations
-		kinfitter3.setMaxDeltaS(5e-5);     // max delta chi2
-		kinfitter3.setMaxF(1e-4);          // max sum of constraints
-		kinfitter3.setVerbosity(KFDEBUG);  // verbosity level
-		kinfitter3.fit();
-		//*** copy fit results ***//
-		for( int i=0; i<7; i++ ){
-		  TL_kfit3[i] = (*Particle3[i].getCurr4Vec());
-		}
-		TL_kfit3[2] = TL_kfit3[5]+TL_kfit3[6];
-		
-		
-		Tools::Fill2D( Form("KFchi2_vs"), kinfitter3.getS()/kinfitter3.getNDF(), 1 );
-		
-		std::cerr<<"pi+ L : status = "<<kinfitter3.getStatus()<<", chi2/NDF = "<<kinfitter3.getS()<<"/"<<kinfitter3.getNDF()<<std::endl;
-		
-		//** fill tree **//
-		//kf3mom_beam   = TL_kfit3[0];
-		//kf3mom_pip    = TL_kfit3[1];
-		//kf3mom_pim    = TL_kfit3[6];
-		//kf3mom_p      = TL_kfit3[5];
-		//kf3mom_n      = TL_kfit3[3];
-		kf3_chi2      = kinfitter3.getS();
-		kf3_NDF       = kinfitter3.getNDF();
-		kf3_status    = kinfitter3.getStatus();
-		kf3_pvalue    = ROOT::Math::chisquared_cdf_c(kinfitter3.getS(), kinfitter3.getNDF());
 		kf_flag       = reactionID; //correct_flag;
 		
 		// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
 		// %%% Kinematical Fit using KinFitter %%% //
 		// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
 
-#if 1
 		//--- for the covariance matrix evaluation ---//
 		if( flagG4Decay ){
-		  //cerr<<" flagG4Decay "<<flagG4Decay<<endl;
+		  //cerr<<" flagG4Decay "<<flagG4Decay<<std::endl;
 		  if( neutron_MIN<mm_mass && mm_mass<neutron_MAX ){
 		    if ( ppi_MIN<(L_p+L_pim).M() && (L_p+L_pim).M()<ppi_MAX ){
 		      for( int i=0; i<7; i++ ){
@@ -1509,7 +1356,6 @@ int main( int argc, char** argv )
 		    }
 		  }
 		}
-#endif
 
 		
 	      } // else if( ppi_MIN<(L_p+L_pim).M() && (L_p+L_pim).M()<ppi_MAX ){
@@ -1523,7 +1369,6 @@ int main( int argc, char** argv )
 	  mom_target = L3_target; // 4-momentum(target)
 	  mom_pip = L_pip;        // 4-momentum(pi+)
 	  mom_pim = L_pim;        // 4-momentum(pi-)
-	  //mom_p = L_p;            // 4-momentum(proton)
 	  mom_n = L_n;            // 4-momentum(neutron)
 	  dE = ncdhhit->emean();
 	  // beta is already filled
@@ -1532,12 +1377,12 @@ int main( int argc, char** argv )
 	  event_num = ev;     // event number
 	  block_num = 0;      // block number (temp)
   
-	  std::cout<<"%%% pipipnn event: Event_Number, Block_Event_Number, CDC_Event_Number = "
+	  std::cout<<"%%% pippimn event: Event_Number, Block_Event_Number, CDC_Event_Number = "
 		   <<ev<<" , "<<" ---, "<<ev_cdc<<std::endl;
 	  outfile2->cd();
-	  pipipnnTree->Fill();
+	  pippimnTree->Fill();
 	  outfile->cd();
-	  nFill_pipipnn++;
+	  nFill_pippimn++;
 	  //** fill tree **//
 	  
 	} // if( GeomTools::GetID(vtx_react)==CID_Fiducial ){	
@@ -1552,33 +1397,33 @@ int main( int argc, char** argv )
     
   } // for( int ev=0; ev<exen; ev++ ){
   
-  cout<<"===== Lambda p n reconstruction in MC END ====="<<endl;
-  cout<<" nEvent       = "<<exen<<endl;
-  cout<<" nEvent_Lp    = "<<nEvent_Lp<<endl;
-  cout<<" nEvent_Lpn   = "<<nEvent_Lpn<<endl;
-  cout<<"***********************************************"<<endl;
-  cout<<" nG4Event_piSpn  = "<<nG4Event_piSpn<<endl;
-  cout<<"***********************************************"<<endl;
-  cout<<" AllGoodTrack = "<<AllGoodTrack<<endl;
-  cout<<" nTrack       = "<<nTrack<<endl;
-  cout<<" nTrack_PID   = "<<nTrack_PID<<endl;
-  cout<<"***********************************************"<<endl;
-  cout<<" nAbort_nGoodTrack  = "<<nAbort_nGoodTrack<<endl;
-  cout<<" nAbort_nCDH        = "<<nAbort_nCDH<<endl;
-  cout<<" nAbort_nT0         = "<<nAbort_nT0<<endl;
-  cout<<" nAbort_nbpc        = "<<nAbort_nbpc<<endl;
-  cout<<" nAbort_bpctrack    = "<<nAbort_bpctrack<<endl;
-  cout<<" nAbort_nblc2       = "<<nAbort_nblc2<<endl;
-  cout<<" nAbort_fblc2bpc    = "<<nAbort_fblc2bpc<<endl;
-  cout<<" nAbort_flagbmom    = "<<nAbort_flagbmom<<endl;
-  cout<<" nAbort_ftarget     = "<<nAbort_ftarget<<endl;
-  cout<<" nAbort_CDHiso      = "<<nAbort_CDHiso<<std::endl;
-  cout<<" nAbort_pppi        = "<<nAbort_pppi<<std::endl;
-  cout<<" nAbort_end         = "<<nAbort_end<<std::endl;
-  cout<<"***********************************************"<<endl;
-  cout<<" nTrack_CDHshare = "<<nTrack_CDHshare<<endl;
-  cout<<"*** # of pi+ pi- p n n events = "<<nFill_pipipnn<<" ***"<<std::endl;
-  cout<<"==============================================="<<endl;
+  std::cout<<"===== Sigma pi reconstruction in MC END ====="<<std::endl;
+  std::cout<<" nEvent       = "<<exen<<std::endl;
+  std::cout<<" nEvent_Lp    = "<<nEvent_Lp<<std::endl;
+  std::cout<<" nEvent_Lpn   = "<<nEvent_Lpn<<std::endl;
+  std::cout<<"***********************************************"<<std::endl;
+  std::cout<<" nG4Event_piSpn  = "<<nG4Event_piSpn<<std::endl;
+  std::cout<<"***********************************************"<<std::endl;
+  std::cout<<" AllGoodTrack = "<<AllGoodTrack<<std::endl;
+  std::cout<<" nTrack       = "<<nTrack<<std::endl;
+  std::cout<<" nTrack_PID   = "<<nTrack_PID<<std::endl;
+  std::cout<<"***********************************************"<<std::endl;
+  std::cout<<" nAbort_nGoodTrack  = "<<nAbort_nGoodTrack<<std::endl;
+  std::cout<<" nAbort_nCDH        = "<<nAbort_nCDH<<std::endl;
+  std::cout<<" nAbort_nT0         = "<<nAbort_nT0<<std::endl;
+  std::cout<<" nAbort_nbpc        = "<<nAbort_nbpc<<std::endl;
+  std::cout<<" nAbort_bpctrack    = "<<nAbort_bpctrack<<std::endl;
+  std::cout<<" nAbort_nblc2       = "<<nAbort_nblc2<<std::endl;
+  std::cout<<" nAbort_fblc2bpc    = "<<nAbort_fblc2bpc<<std::endl;
+  std::cout<<" nAbort_flagbmom    = "<<nAbort_flagbmom<<std::endl;
+  std::cout<<" nAbort_ftarget     = "<<nAbort_ftarget<<std::endl;
+  std::cout<<" nAbort_CDHiso      = "<<nAbort_CDHiso<<std::endl;
+  std::cout<<" nAbort_pppi        = "<<nAbort_pppi<<std::endl;
+  std::cout<<" nAbort_end         = "<<nAbort_end<<std::endl;
+  std::cout<<"***********************************************"<<std::endl;
+  std::cout<<" nTrack_CDHshare = "<<nTrack_CDHshare<<std::endl;
+  std::cout<<"*** # of pi+ pi- p n n events = "<<nFill_pippimn<<" ***"<<std::endl;
+  std::cout<<"==============================================="<<std::endl;
 
   outfile->Write();
   outfile->Close();
@@ -1711,7 +1556,6 @@ void InitializeHistogram()
   Tools::newTH2F( Form("IMnpipi_MMnmiss_wSid"),100,0,1.5,100,1,2);
   Tools::newTH2F( Form("IMnpipi_MMnmiss_woK0_wSid"),100,0,1.5,100,1,2);
   Tools::newTH2F( Form("IMnpipi_q_woK0_wSid"),200,0,2,100,1,2);
-  //Tools::newTH1F( Form("DCA_p"), 200, 0, 2 );
   Tools::newTH1F( Form("DCA_pip"), 500, 0, 5 );
   Tools::newTH1F( Form("DCA_pim"), 500, 0, 5 );
   Tools::newTH1F( Form("DCA_pip_SigmaP"), 500, 0, 5 );
@@ -1721,12 +1565,5 @@ void InitializeHistogram()
   Tools::newTH1F( Form("DCA_pippim"), 500, 0, 5);
    
   Tools::newTH2F( Form("KFchi2_vs"),100,0,100,100,0,100);
-  //Tools::newTH2F( Form("MMom_NMom_Lambda"), 100, 0, 1.5, 100, 0, 1.5 );
-  //Tools::newTH2F( Form("Cosn_IMnppipi_Lambda"), 50, 2, 3, 50, -1, 1 );
-  //Tools::newTH2F( Form("Cosn_IMppipi_Lambda"), 100, 1, 2, 50, -1, 1 );
-  //Tools::newTH2F( Form("IMppipi_IMnppipi_Lambda"), 50, 2, 3, 100, 1, 2 );
-  //Tools::newTH1F( Form("DCA_p_Lambda"), 200, 0, 2 );
-  //Tools::newTH1F( Form("DCA_pip_Lambda"), 200, 0, 2 );
-  //Tools::newTH1F( Form("DCA_pim_Lambda"), 200, 0, 2 );
   return;
 }
