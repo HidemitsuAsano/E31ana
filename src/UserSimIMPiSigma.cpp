@@ -365,9 +365,11 @@ int main( int argc, char** argv )
 
   //=== event loop ===//
   for( int iev=0; iev<exen; iev++ ){
-    if( /*iev<100 ||*/ iev%100==0 ) std::cout<<"> Event Number "<< iev <<std::endl;
-    std::cout<<"> Event Number "<<iev<<std::endl;
-
+    if(Verbosity_){
+      std::cout<<"> Event Number "<<iev<<std::endl;
+    }else if( /*iev<100 ||*/ iev%1000==0 ){
+      std::cout<<"> Event Number "<< iev <<std::endl;
+    }
     Tools::Fill1D( Form("EventCheck"), 1 );
 
     cdsMan->Clear();
@@ -404,10 +406,10 @@ int main( int argc, char** argv )
     //int pi_parent  = 0;
     //int Y_parent  = 0;
     //int N_parent  = 0;
-    std::cerr<<"======================"<<std::endl;
-    std::cerr<<std::endl;
     //TODO check the relation btw parentID and trackID 
     if(Verbosity_){
+      std::cerr<<"======================"<<std::endl;
+      std::cerr<<std::endl;
       for( int ip=0; ip<reacData->ParticleSize(); ip++ ){
         std::cerr<< "L." << __LINE__ << " " 
         << ip<<" pdg code:"<<reacData->PDG(ip)<<" mom:"<<reacData->GetParticle(ip).P()
@@ -902,7 +904,7 @@ int main( int argc, char** argv )
         }
       }
       if( flag_isolation ){
-        std::cerr<<"CDH hit candidate is NOT isolated !!!"<<std::endl;
+        std::cerr<< "L."<< __LINE__ << " Event Number:" <<iev <<  " CDH hit candidate is NOT isolated !!!"<<std::endl;
         nAbort_CDHiso++;
         continue;
       }
@@ -1014,7 +1016,7 @@ int main( int argc, char** argv )
         }
         P_n = tmp_mom*(Pos_CDH-vtx_react).Unit();
 	
-        std::cerr << tmp_mom<<" ("<<P_n.CosTheta()<<" , "<<P_n.Phi()*360./TwoPi<<")"<<std::endl;
+        if(Verbosity_) std::cerr << tmp_mom<<" ("<<P_n.CosTheta()<<" , "<<P_n.Phi()*360./TwoPi<<")"<<std::endl;
 
         LVec_pim.SetVectM( P_pim, piMass );
         LVec_pip.SetVectM( P_pip, piMass );
@@ -1023,7 +1025,7 @@ int main( int argc, char** argv )
         double mm_mass   = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).M();
         TVector3 P_missn = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).Vect();
         LVec_nmiss.SetVectM( P_missn, nMass );
-        std::cerr<<"  missing mass = "<<mm_mass<<std::endl;
+        if(Verbosity_)std::cerr<<"  missing mass = "<<mm_mass<<std::endl;
 	
         TVector3 boost = (LVec_target+LVec_beam).BoostVector();
         TLorentzVector LVec_nmiss_CM = LVec_nmiss;
@@ -1031,7 +1033,7 @@ int main( int argc, char** argv )
         LVec_nmiss_CM.Boost(-boost);
         LVec_beam_CM.Boost(-boost);
         double cos_n = LVec_nmiss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_nmiss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
-        std::cerr<<"  missing mom = "<<LVec_nmiss.P()<<" | cos_CM = "<<cos_n<<std::endl;
+        if(Verbosity_)std::cerr<<"  missing mom = "<<LVec_nmiss.P()<<" | cos_CM = "<<cos_n<<std::endl;
 	
 	
         //** + + + + + + + + + + + + + **//
@@ -1132,7 +1134,7 @@ int main( int argc, char** argv )
                   genID[kin::nmiss] = kin::ncds;
                   genID[kin::ncds] = kin::nmiss;
                 }
-                std::cerr<< "L." << __LINE__ << " val = "<<val1<<" "<<val2<<" -> "<< genID[kin::nmiss] <<" "<< genID[kin::ncds] << std::endl;
+                if(Verbosity_)std::cerr<< "L." << __LINE__ << " val = "<<val1<<" "<<val2<<" -> "<< genID[kin::nmiss] <<" "<< genID[kin::ncds] << std::endl;
                 mcmom_beam = TL_gene[kin::kmbeam];
                 mcmom_ncds    = TL_gene[genID[kin::ncds]];
                 if( reactionID==gen::reactionID_Spmode ){
@@ -1328,8 +1330,10 @@ int main( int argc, char** argv )
           event_num = iev;     // event number
           block_num = 0;      // block number (temp)
   
-          std::cout<<"%%% pippimn event: Event_Number, Block_Event_Number, CDC_Event_Number = "
+          if(Verbosity_){
+            std::cout<<"%%% pippimn event: Event_Number, Block_Event_Number, CDC_Event_Number = "
             <<iev<<" , "<<" ---, "<<ev_cdc<<std::endl;
+          }
           outfile2->cd();
           pippimnTree->Fill();
           outfile->cd();
