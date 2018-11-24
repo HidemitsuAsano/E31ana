@@ -68,7 +68,7 @@ TLorentzVector mom_target; // 4-momentum(target)
 TLorentzVector mom_pip;    // 4-momentum(pi+)
 TLorentzVector mom_pim;    // 4-momentum(pi-)
 TLorentzVector mom_n;      // 4-momentum(neutron)
-double beta; // veracity of neutral particle on CDH
+double NeutralBetaCDH; // veracity of neutral particle on CDH
 double dE;   // energy deposit on CDH
 TVector3 vtx_reaction; // vertex(reaction)
 int run_num;   // run number
@@ -110,69 +110,87 @@ int main( int argc, char** argv )
 
   TDatabasePDG *pdg = new TDatabasePDG();
   pdg->ReadPDGTable("pdg_table.txt");
-  pdg->Print();
+  //pdg->Print();
   //-----------------------------------------//
   //--- covariance matrices for KinFitter ---//
   //-----------------------------------------//
   // ### obtained from (p_meas[j]-p_gene[j])
   // ###  using G4-data with TH1F(Form("cov_%d_%d_%d", i, j, j), 100, -cov_MAX, cov_MAX);
   // ###  and evaluated using "Air" Dora MC
-  // 1) TLorentzVector LVec_beam, LVec_pim, (L_n+LVec_pip), LVec_nmiss, L_n, LVec_pip = for pi- Sigma+
+  // 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+
   const double covVal_Spmode[kin::npart][16] = {
-    { 2.03675e-05, 0, 0, 0,
-      0, 1.72317e-05, 0, 0,
-      0, 0, 3.63879e-06, 0,
-      0, 0, 0, 3.13463e-06 },
-    { 9.61619e-06, 0, 0, 0,
-      0, 9.71896e-06, 0, 0,
-      0, 0, 1.95299e-05, 0,
-      0, 0, 0, 1.23025e-05 },
-    { 0.000344907, 0, 0, 0,
-      0, 0.000344784, 0, 0,
-      0, 0, 6.33015e-05, 0,
-      0, 0, 0, 4.95287e-05 },
-    { 0.000624282, 0, 0, 0,
-      0, 0.000664143, 0, 0,
-      0, 0, 0.00028286, 0,
-      0, 0, 0, 0.000121639 },
-    { 0.000253317, 0, 0, 0,
-      0, 0.000234635, 0, 0,
-      0, 0, 1.96443e-05, 0,
-      0, 0, 0, 2.26387e-05 },
-    { 9.82579e-06, 0, 0, 0,
-      0, 1.00648e-05, 0, 0,
-      0, 0, 1.50993e-05, 0,
-      0, 0, 0, 7.68311e-06 }
+    { 1.89064e-05, 0, 0, 0,
+      0, 1.89622e-05, 0, 0,
+      0, 0, 4.0112e-06, 0,
+      0, 0, 0, 3.22341e-06 },
+    { 0.000147362, 0, 0, 0,
+      0, 0.000151568, 0, 0,
+      0, 0, 0.000187105, 0,
+      0, 0, 0, 0.000302456 },
+    { 0.0226731, 0, 0, 0,
+      0, 0.0227568, 0, 0,
+      0, 0, 0.0152559, 0,
+      0, 0, 0, 0.0109434 },
+    { 0.0210347, 0, 0, 0,
+      0, 0.0213206, 0, 0,
+      0, 0, 0.0147438, 0,
+      0, 0, 0, 0.00531022 },
+    { 0.0206777, 0, 0, 0,
+      0, 0.0209008, 0, 0,
+      0, 0, 0.0146246, 0,
+      0, 0, 0, 0.00461358 },
+    { 2.96805e-05, 0, 0, 0,
+      0, 2.972e-05, 0, 0,
+      0, 0, 5.40635e-05, 0,
+      0, 0, 0, 3.58992e-05 },
   };
 
-  // 2) TLorentzVector LVec_beam, LVec_pip, (LVec_n+LVec_pim), L_nmiss, LVec_n, LVec_pim = for pi+ Sigma-
+  // 2) TLorentzVector LVec_beam, LVec_pip, (LVec_n+LVec_pim), LVec_nmiss, LVec_n, LVec_pim = for pi+ Sigma-
   const double covVal_Smmode[kin::npart][16] = {
-    { 2.03675e-05, 0, 0, 0,
-      0, 1.72317e-05, 0, 0,
-      0, 0, 3.63879e-06, 0,
-      0, 0, 0, 3.13463e-06 },
-    { 9.61619e-06, 0, 0, 0,
-      0, 9.71896e-06, 0, 0,
-      0, 0, 1.95299e-05, 0,
-      0, 0, 0, 1.23025e-05 },
-    { 0.000344907, 0, 0, 0,
-      0, 0.000344784, 0, 0,
-      0, 0, 6.33015e-05, 0,
-      0, 0, 0, 4.95287e-05 },
-    { 0.000624282, 0, 0, 0,
-      0, 0.000664143, 0, 0,
-      0, 0, 0.00028286, 0,
-      0, 0, 0, 0.000121639 },
-    { 0.000253317, 0, 0, 0,
-      0, 0.000234635, 0, 0,
-      0, 0, 1.96443e-05, 0,
-      0, 0, 0, 2.26387e-05 },
-    { 9.82579e-06, 0, 0, 0,
-      0, 1.00648e-05, 0, 0,
-      0, 0, 1.50993e-05, 0,
-      0, 0, 0, 7.68311e-06 }
+    { 1.89064e-05, 0, 0, 0,
+      0, 1.89622e-05, 0, 0,
+      0, 0, 4.0112e-06, 0,
+      0, 0, 0, 3.22341e-06 },
+    { 0.000147362, 0, 0, 0,
+      0, 0.000151568, 0, 0,
+      0, 0, 0.000187105, 0,
+      0, 0, 0, 0.000302456 },
+    { 0.0226731, 0, 0, 0,
+      0, 0.0227568, 0, 0,
+      0, 0, 0.0152559, 0,
+      0, 0, 0, 0.0109434 },
+    { 0.0210347, 0, 0, 0,
+      0, 0.0213206, 0, 0,
+      0, 0, 0.0147438, 0,
+      0, 0, 0, 0.00531022 },
+    { 0.0206777, 0, 0, 0,
+      0, 0.0209008, 0, 0,
+      0, 0, 0.0146246, 0,
+      0, 0, 0, 0.00461358 },
+    { 2.96805e-05, 0, 0, 0,
+      0, 2.972e-05, 0, 0,
+      0, 0, 5.40635e-05, 0,
+      0, 0, 0, 3.58992e-05 },
   };
-
+  
+  std::cout << "L." << __LINE__ << "cov. matrix for S+ mode" << std::endl;
+  for(int ip=0;ip<kin::npart;ip++){
+    for(int im=0;im<16;im++){
+      std::cout << covVal_Spmode[ip][im] << " ";
+      if(im==3 || im==7 || im==11 || im==15){
+        std::cout << std::endl;
+      }
+    }
+  }
+  std::cout << "L." << __LINE__ << "cov. matrix for S- mode" << std::endl;
+  for(int ip=0;ip<kin::npart;ip++){
+    for(int im=0;im<16;im++){
+      std::cout << covVal_Smmode[ip][im] << " ";
+      if(im==3 || im==7 || im==11 || im==15){
+        std::cout << std::endl;
+      }
+    }
+  }
 
   TMatrixD *covZero = new TMatrixD(4, 4);
   covZero->Zero();
@@ -255,7 +273,7 @@ int main( int argc, char** argv )
   pippimnTree->Branch( "mom_pip", &mom_pip );
   pippimnTree->Branch( "mom_pim", &mom_pim );
   pippimnTree->Branch( "mom_n", &mom_n );
-  pippimnTree->Branch( "beta", &beta );
+  pippimnTree->Branch( "beta", &NeutralBetaCDH );
   pippimnTree->Branch( "dE", &dE );
   pippimnTree->Branch( "vtx_reaction", &vtx_reaction );
   pippimnTree->Branch( "run_num", &run_num );
@@ -297,15 +315,17 @@ int main( int argc, char** argv )
   //*** for kinematical fit ***//
   // beam_K(K+), pi-/+, Sigma+/-, forward n, n from S, pi+/- from S
   // !!! only diagonal components !!!
-  const int BIN = 100;
+  const int BIN = 400;
   double cov_MAX;
   for( int ip=0; ip<kin::npart; ip++ ){
     for( int j=0; j<4; j++ ){
       for( int k=0; k<4; k++ ){
         if( ip==kin::kmbeam || ip==kin::pim_g1 || ip==kin::pip_g2 ) // K-, pi, pi
-          cov_MAX = 0.02;
+          //cov_MAX = 0.02;
+          cov_MAX = 0.08;
         else // Sigma, p, n_miss, n
-          cov_MAX = 0.1;
+          //cov_MAX = 0.1;
+          cov_MAX = 0.4;
         Tools::newTH1F(Form("cov_%d_%d_%d", ip, j, k), BIN, -cov_MAX, cov_MAX);
       }
     }
@@ -428,8 +448,14 @@ int main( int argc, char** argv )
     int PDG_Smmode[kin::npart] = {321,  211, 3112, 2112, 2112, -211}; // pi+Sigma-
     int PDG[kin::npart] = {0, 0, 0, 0, 0, 0};
     for( int i=0; i<kin::npart; i++ ){
-      if( reactionID==gen::reactionID_Spmode )      PDG[i] = PDG_Spmode[i];
-      else if( reactionID==gen::reactionID_Smmode ) PDG[i] = PDG_Smmode[i];
+      if( reactionID==gen::reactionID_Spmode ){
+        PDG[i] = PDG_Spmode[i];
+        if(Verbosity_)std::cerr << "L." << __LINE__ << " This is Sigma+ mode sim. " << std::endl;
+      }
+      else if( reactionID==gen::reactionID_Smmode ){
+        PDG[i] = PDG_Smmode[i];
+        if(Verbosity_)std::cerr << "L." << __LINE__ << " This is Sigma- mode sim. " << std::endl;
+      }
     }
     //        beam_K(K-), pi, nmiss, n from Sigma, pi from Sigma
     //       0: init. val. for prompt particles , -1:init. val. for decay partcle            
@@ -919,7 +945,7 @@ int main( int argc, char** argv )
       //** charge veto using CDC **//
       TVector3 Pos_CDH;
       confMan->GetGeomMapManager()->GetPos( CID_CDH, ncdhhit->seg(), Pos_CDH );
-      //std::cerr<<"CDH candidate = "<<ncdhhit->seg()<<" -> "<<Pos_CDH.Phi()/TwoPi*360<<" deg"<<std::endl;
+      if(Verbosity_) std::cerr<<"CDH candidate = "<<ncdhhit->seg()<<" -> "<<Pos_CDH.Phi()/TwoPi*360<<" deg"<<std::endl;
       
       const double PhiMin = -15.0/360.*TwoPi; // rad
       const double PhiMax =  15.0/360.*TwoPi; // rad
@@ -943,6 +969,13 @@ int main( int argc, char** argv )
       //Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is wrong in SIM [20170925]
       Pos_CDH.SetZ(ncdhhit->hitpos());
       
+      if(Verbosity_){
+        std::cout << "L." << __LINE__ << " CDH Z " << ncdhhit->hitpos() << std::endl;
+        double angle = Pos_CDH.Angle(Pos_CDH); // rad
+        std::cout << "L." << __LINE__ << " CDH angle " << angle << std::endl;
+        std::cout<<"L."<<__LINE__ << "CDH phi " << Pos_CDH.Phi()/TwoPi*360. <<std::endl;
+        std::cout<<"L."<<__LINE__ << "CDH costheta " << Pos_CDH.CosTheta() <<std::endl;
+      }
       //** neutral particle in CDH **//
       if( !nCDC ){
         CDSTrack *track_pip = cdstrackMan->Track( pip_ID[0] ); // only 1 track
@@ -989,15 +1022,15 @@ int main( int argc, char** argv )
         // LVec_beam.SetVectM( momout*LVec_beambf.Vect().Unit(), kpMass ); // not need energy-loss correction [20180329]
         double ntof = ncdhhit->ctmean()-ctmT0-beamtof;
         double nlen = (Pos_CDH-vtx_react).Mag();
-        beta = nlen/ntof/(Const*100.);
-        double tmp_mom = beta<1. ? nMass*beta/sqrt(1.-beta*beta) : 0.;
+        NeutralBetaCDH = nlen/ntof/(Const*100.);
+        double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0.;
         if(Verbosity_){
-          std::cerr<<"$$$ beta = "<<beta<<" mom_n = "<<tmp_mom<<std::endl; //" "<<1/sqrt(1+nMass*nMass)<<std::endl;
+          std::cerr<<"$$$ beta = "<<NeutralBetaCDH<<" mom_n = "<<tmp_mom<<std::endl; //" "<<1/sqrt(1+nMass*nMass)<<std::endl;
 	      }
         //** reconstructoin of missing neutorn **//
         TVector3 P_pim; // Momentum(pi-)
         TVector3 P_pip; // Momentum(pi+)
-        TVector3 P_n;   // Momentum(n)
+        TVector3 P_ncds;   // Momentum(n)
 	
         TLorentzVector LVec_pim; // 4-Momentum(pi-)
         TLorentzVector LVec_pip; // 4-Momentum(pi+)
@@ -1005,22 +1038,20 @@ int main( int argc, char** argv )
         TLorentzVector LVec_nmiss; // 4-Momentum(n_miss)
 
         track_pip->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_b, vtx_p );
-        double dca_pip  = (vtx_b-vtx_p).Mag(); // DCA(beam-pip)
         if( !track_pip->GetMomentum( vtx_p, P_pip, true, true ) ){
           std::cerr<<" !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
         }
         track_pim->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_b, vtx_p );
-        double dca_pim  = (vtx_b-vtx_p).Mag(); // DCA(beam-pim)
         if( !track_pim->GetMomentum( vtx_p, P_pim, true, true ) ){
           std::cerr<<" !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
         }
-        P_n = tmp_mom*(Pos_CDH-vtx_react).Unit();
+        P_ncds = tmp_mom*(Pos_CDH-vtx_react).Unit();
 	
-        if(Verbosity_) std::cerr << tmp_mom<<" ("<<P_n.CosTheta()<<" , "<<P_n.Phi()*360./TwoPi<<")"<<std::endl;
+        if(Verbosity_) std::cerr << tmp_mom<<" ("<<P_ncds.CosTheta()<<" , "<<P_ncds.Phi()*360./TwoPi<<")"<<std::endl;
 
         LVec_pim.SetVectM( P_pim, piMass );
         LVec_pip.SetVectM( P_pip, piMass );
-        LVec_n.SetVectM(   P_n,   nMass );
+        LVec_n.SetVectM(   P_ncds,   nMass );
 	
         double mm_mass   = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).M();
         TVector3 P_missn = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).Vect();
@@ -1039,283 +1070,327 @@ int main( int argc, char** argv )
         //** + + + + + + + + + + + + + **//
         //**  fill histograms & tree   **//
         //** + + + + + + + + + + + + + **//
-	
-        const double beta_MAX = 0.728786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
-        //const double dE_MIN = 5.0; // 8.0MeVee * 3cm / 5cm;
-        const double dE_MIN = 0.0;
-	
-        const double pipi_MIN = 0.485;
-        const double pipi_MAX = 0.510;
-	
-        const double neutron_MIN = 0.85;
-        const double neutron_MAX = 1.03;
-	
-        const double Sigmap_MIN = 1.18;
-        const double Sigmap_MAX = 1.20;
-        const double Sigmam_MIN = 1.19;
-        const double Sigmam_MAX = 1.21;
-
         kf_flag = -1;
-	
-        Tools::Fill2D( Form("dE_betainv"), 1./beta, ncdhhit->emean() );
+        bool K0rejectFlag=false;
+        bool MissNFlag=false;
+        bool SigmaPFlag=false;
+        bool SigmaMFlag=false;
+        bool NBetaOK=false;
+        bool NdEOK=false;
+
+        Tools::Fill2D( Form("dE_betainv"), 1./NeutralBetaCDH, ncdhhit->emean() );
         Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
-	
-        if( GeomTools::GetID(vtx_react)==CID_Fiducial ){
-          Tools::Fill2D( Form("dE_betainv_fid"), 1./beta, ncdhhit->emean() );
+      
+        //if(AddQAplots){
+        //Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_beam.Z(),vtx_beam.X());
+        //Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_beam.Z(),vtx_beam.Y());
+        //Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_beam.X(),vtx_beam.Y());
+        //}
+        //Fiducial cuts OK
+        if( GeomTools::GetID(vtx_beam)==CID_Fiducial ){
+          //if(AddQAplots){
+          //  Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_beam.Z(),vtx_beam.X());
+          //  Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_beam.Z(),vtx_beam.Y());
+          //  Tools::Fill2D(Form("Vtx_XY_fid"),vtx_beam.X(),vtx_beam.Y());
+          //  Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
+          //}
+          Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
           Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
-  
-          if(  beta<beta_MAX ){
-            Tools::Fill2D( Form("dE_betainv_fid_beta"), 1./beta, ncdhhit->emean() );
+         
+          if(NeutralBetaCDH<anacuts::beta_MAX) NBetaOK=true;
+        
+          if(NBetaOK){
+            Tools::Fill2D( Form("dE_betainv_fid_beta"), 1./NeutralBetaCDH, ncdhhit->emean() );
             Tools::Fill2D( Form("MMom_MMass_fid_beta"), mm_mass, P_missn.Mag() );
-	    
-            if( dE_MIN<ncdhhit->emean() ){
-              Tools::Fill2D( Form("dE_betainv_fid_beta_dE"), 1./beta, ncdhhit->emean() );
-              Tools::Fill2D( Form("MMom_MMass_fid_beta_dE"), mm_mass, P_missn.Mag() );
-	      
-              Tools::Fill1D( Form("IMpipi_dE"), (LVec_pim+LVec_pip).M() );
+          }
+          if(anacuts::dE_MIN<ncdhhit->emean()) NdEOK=true;
 
-              // ********************** //	      
-              // *** pi Sigma mode *** //
-              // ********************** //
-              // 1: Sigma reconstruction
-              if(((LVec_pim+LVec_pip).M()<pipi_MIN || pipi_MAX<(LVec_pim+LVec_pip).M())){ // K0 subtraction
-                Tools::Fill2D( Form("dE_betainv_fid_beta_dE_woK0"), 1./beta, ncdhhit->emean() );
-                Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_woK0"), mm_mass, P_missn.Mag() );
-		
-                if( neutron_MIN<mm_mass && mm_mass<neutron_MAX ){ // missing n selection
-                  Tools::Fill2D( Form("dE_betainv_fid_beta_dE_woK0_n"), 1./beta, ncdhhit->emean() );
-                  Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_woK0_n"), mm_mass, P_missn.Mag() );
+          if( NBetaOK && NdEOK ){
+            Tools::Fill2D( Form("dE_betainv_fid_beta_dE"), 1./NeutralBetaCDH, ncdhhit->emean() );
+            Tools::Fill2D( Form("MMom_MMass_fid_beta_dE"), mm_mass, P_missn.Mag() );
+            Tools::Fill1D( Form("IMpipi_dE"), (LVec_pim+LVec_pip).M() );
+            Tools::Fill2D( Form("IMpipi_NMom_dE"),P_ncds.Mag(), (LVec_pim+LVec_pip).M());
+          }
 
-                  Tools::Fill2D( Form("MMom_NMom"), P_n.Mag(), P_missn.Mag() );
-                  Tools::Fill2D( Form("IMnpim_IMnpip_dE"), (LVec_n+LVec_pip).M(), (LVec_n+LVec_pim).M() );
-		  
-                  if( (Sigmap_MIN<(LVec_n+LVec_pip).M() && (LVec_n+LVec_pip).M()<Sigmap_MAX) ||
-                      (Sigmam_MIN<(LVec_n+LVec_pim).M() && (LVec_n+LVec_pim).M()<Sigmam_MAX) ){ // Sigma selection
-                    Tools::Fill2D( Form("IMmnpim_IMmnpip"), (LVec_nmiss+LVec_pip).M(), (LVec_nmiss+LVec_pim).M() );
-                    Tools::Fill2D( Form("MMnpip_MMnpim"), (LVec_target+LVec_beam-LVec_pim-LVec_n).M(),
-                        (LVec_target+LVec_beam-LVec_pip-LVec_n).M() );
+          if( ((LVec_pim+LVec_pip).M()<anacuts::pipi_MIN || anacuts::pipi_MAX<(LVec_pim+LVec_pip).M())) K0rejectFlag=true;
+        
+          //missing mass neutron ID
+          if( anacuts::neutron_MIN<mm_mass && mm_mass<anacuts::neutron_MAX ) MissNFlag=true;
+        
+          //Sigma+ production in CDS
+          if( (anacuts::Sigmap_MIN<(LVec_n+LVec_pip).M() && (LVec_n+LVec_pip).M()<anacuts::Sigmap_MAX)) SigmaPFlag=true;
+        
+          //Sigma- production in CDS
+          if( (anacuts::Sigmam_MIN<(LVec_n+LVec_pim).M() && (LVec_n+LVec_pim).M()<anacuts::Sigmam_MAX)) SigmaMFlag=true;
 
-                    Tools::Fill2D( Form("Cosn_IMnpipi"), (LVec_n+LVec_pim+LVec_pip).M(), cos_n );
+          if( NBetaOK && NdEOK ){
+            //K0rejection 
+            if(K0rejectFlag){
+              // K0 rejection
+              Tools::Fill2D( Form("dE_betainv_fid_beta_dE_woK0"), 1./NeutralBetaCDH, ncdhhit->emean() );
+              Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_woK0"), mm_mass, P_missn.Mag() );
 
-                    Tools::Fill1D( Form("DCA_pip"), dca_pip );
-                    Tools::Fill1D( Form("DCA_pim"), dca_pim );
-                  }
-                } // if( neutron_MIN<mm_mass && mm_mass<neutron_MAX )
+              Tools::Fill2D( Form("IMnpim_IMnpip_dE_woK0"), (LVec_n+LVec_pip).M(), (LVec_n+LVec_pim).M() );
+              Tools::Fill2D( Form("dE_MMom_fid_beta_woK0"), P_missn.Mag() , ncdhhit->emean() );
+              Tools::Fill2D( Form("dE_MMass_fid_beta_woK0"), mm_mass , ncdhhit->emean() );
+            }else{
+              // K0 selection
+              Tools::Fill2D( Form("dE_betainv_fid_beta_dE_wK0"), 1./NeutralBetaCDH, ncdhhit->emean() );
+              Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_wK0"), mm_mass, P_missn.Mag() );
+            }
 
-                if(Verbosity_){
-                  std::cerr << "L."<< __LINE__ <<" Kinematical Fit using KinFitter" << std::endl;
-                }
-                // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
-                // %%% Kinematical Fit using KinFitter %%% //
-                // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
-                //--- set TLorentzVector for MC study---//
-                // beam_K(K+), pi-/+, Sigma+/-, n, n from Sigma, pi+/- from Sigma 
-                //  = 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+ 
-                //  = 2) TLorentzVector LVec_beam, LVec_pip, (LVec_n+LVec_pim), LVec_nmiss, LVec_n, LVec_pim = for pi+ Sigma- 
-                
-                TLorentzVector TL_meas[kin::npart]; // measured
-                TL_meas[kin::kmbeam] = LVec_beam;
-                TL_meas[kin::nmiss] = LVec_nmiss; // * which n?
-                TL_meas[kin::ncds] = LVec_n;     // * which n?
-                if( reactionID == gen::reactionID_Spmode ){
-                  TL_meas[kin::pim_g1] = LVec_pim;
-                  TL_meas[kin::Sp] = (LVec_n+LVec_pip);
-                  TL_meas[kin::pip_g2] = LVec_pip;
-                } else if ( reactionID == gen::reactionID_Smmode ){
-                  TL_meas[kin::pip_g1] = LVec_pip;
-                  TL_meas[kin::Sm] = (LVec_n+LVec_pim);
-                  TL_meas[kin::pim_g2] = LVec_pim;
-                }
+            if(K0rejectFlag && MissNFlag){
+              Tools::Fill2D( Form("dE_betainv_fid_beta_dE_woK0_n"), 1./NeutralBetaCDH, ncdhhit->emean() );
+              Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_woK0_n"), mm_mass, P_missn.Mag() );
+              Tools::Fill2D( Form("NMom_NMom_fid_beta_dE_woK0_n"), P_ncds.Mag(), P_missn.Mag() );
+              Tools::Fill2D( Form("IMnpim_IMnpip_dE_woK0_n"), (LVec_n+LVec_pip).M(), (LVec_n+LVec_pim).M() );
+            }
 
-                double val1 = (TL_meas[kin::ncds]-TL_gene[kin::nmiss]).P(); // n_measured - n_initial
-                double val2 = (TL_meas[kin::ncds]-TL_gene[kin::ncds]).P(); // n_measured - n_Sigma
-                int genID[kin::npart] = {0,1,2,3,4,5};
-                if( val1<val2 ){ // is there more good selection way?
-                  genID[kin::nmiss] = kin::ncds;
-                  genID[kin::ncds] = kin::nmiss;
-                }
-                if(Verbosity_)std::cerr<< "L." << __LINE__ << " val = "<<val1<<" "<<val2<<" -> "<< genID[kin::nmiss] <<" "<< genID[kin::ncds] << std::endl;
-                mcmom_beam = TL_gene[kin::kmbeam];
-                mcmom_ncds    = TL_gene[genID[kin::ncds]];
-                if( reactionID==gen::reactionID_Spmode ){
-                  mcmom_pip  = TL_gene[kin::pip_g2];
-                  mcmom_pim  = TL_gene[kin::pim_g1];
-                } else if ( reactionID==gen::reactionID_Smmode ){
-                  mcmom_pip  = TL_gene[kin::pip_g1];
-                  mcmom_pim  = TL_gene[kin::pim_g2];
-                }
+            if(K0rejectFlag && (SigmaPFlag || SigmaMFlag)){
+              Tools::Fill2D(Form("MMom_MMass_fid_beta_dE_woK0_wSid"),mm_mass, P_missn.Mag());
+            }
 
-                //--- set TLorentzVector ---//
-                // beam_K(K+), pi-/+, Sigma+/-, p, n, n from S, pi+/- from S 
-                //  = 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+
-                TLorentzVector TL_measSpmode[kin::npart]; // measured
-                TL_measSpmode[kin::kmbeam] = LVec_beam;
-                TL_measSpmode[kin::pim_g1] = LVec_pim;
-                TL_measSpmode[kin::Sp] = (LVec_n+LVec_pip);
-                TL_measSpmode[kin::nmiss] = LVec_nmiss;
-                TL_measSpmode[kin::ncds] = LVec_n;
-                TL_measSpmode[kin::pip_g2] = LVec_pip;
-                //  = 2) TLorentzVector LVec_beam, LVec_pip, (LVec_n+LVec_pim), LVec_nmiss, LVec_n, LVec_pim = for pi+ Sigma-
-                TLorentzVector TL_measSmmode[kin::npart]; // measured
-                TL_measSmmode[kin::kmbeam] = LVec_beam;
-                TL_measSmmode[kin::pip_g1] = LVec_pip;
-                TL_measSmmode[kin::Sm] = (LVec_n+LVec_pim);
-                TL_measSmmode[kin::nmiss] = LVec_nmiss;
-                TL_measSmmode[kin::ncds] = LVec_n;
-                TL_measSmmode[kin::pim_g2] = LVec_pim;
-                TLorentzVector TL_kfitSpmode[kin::npart]; // kinematical fitted
-                TLorentzVector TL_kfitSmmode[kin::npart]; // kinematical fitted
-                // LVec_target is defined as (0, 0, 0, M_D2)
-                TVector3 TV_target = LVec_target.Vect();
-                TVector3 TV_measSpmode[kin::npart];
-                TVector3 TV_measSmmode[kin::npart];
+            if( MissNFlag ){
+              Tools::Fill1D( Form("IMnpipi_n"), (LVec_n+LVec_pim+LVec_pip).M() );
+              Tools::Fill2D( Form("MMnmiss_IMnpipi_n"),(LVec_n+LVec_pim+LVec_pip).M(), P_missn.Mag());
+            }
+
+            if( MissNFlag && (SigmaPFlag || SigmaMFlag)){
+              Tools::Fill1D( Form("IMnpipi_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M() );
+              Tools::Fill2D( Form("MMnmiss_IMnpipi_wSid_n"),(LVec_n+LVec_pim+LVec_pip).M(), P_missn.Mag());
+            }
+
+            if( MissNFlag && K0rejectFlag && (SigmaPFlag || SigmaMFlag)){
+              Tools::Fill2D( Form("IMmnpim_IMmnpip_woK0_wSid_n"), (LVec_nmiss+LVec_pip).M(), (LVec_nmiss+LVec_pim).M() );
+              Tools::Fill2D( Form("MMnpip_MMnpim_woK0_wSid_n"), (LVec_target+LVec_beam-LVec_pim-LVec_n).M(),
+                  (LVec_target+LVec_beam-LVec_pip-LVec_n).M() );
+
+              Tools::Fill1D( Form("IMnpipi_woK0_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M() );
+
+              Tools::Fill2D( Form("dE_IMnpipi_woK0_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M(), ncdhhit->emean());
+              //cos theta 
+              Tools::Fill2D( Form("Cosn_IMnpipi_woK0_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M(), cos_n );
+              //
+              Tools::Fill2D( Form("MMnmiss_IMnpipi_woK0_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M(), P_missn.Mag());
+
+              //momentum transfer 
+              Tools::Fill2D( Form("q_IMnpipi_woK0_wSid_n"),(LVec_n+LVec_pim+LVec_pip).M(), (LVec_beam.Vect()-LVec_nmiss.Vect()).Mag());
+
+              Tools::Fill1D( Form("DCA_pip"), dcapipvtx );
+              Tools::Fill1D( Form("DCA_pim"), dcapimvtx );
+              //Tools::Fill1D( Form("DCA_pippim"), dcapippim);
+
+              if(Verbosity_){
+                std::cerr << "L."<< __LINE__ <<" Kinematical Fit using KinFitter" << std::endl;
+              }
+              // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
+              // %%% Kinematical Fit using KinFitter %%% //
+              // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
+              //--- set TLorentzVector for MC study---//
+              // beam_K(K+), pi-/+, Sigma+/-, n, n from Sigma, pi+/- from Sigma 
+              //  = 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+ 
+              //  = 2) TLorentzVector LVec_beam, LVec_pip, (LVec_n+LVec_pim), LVec_nmiss, LVec_n, LVec_pim = for pi+ Sigma- 
+
+              TLorentzVector TL_meas[kin::npart]; // measured
+              TL_meas[kin::kmbeam] = LVec_beam;
+              TL_meas[kin::nmiss] = LVec_nmiss; // * which n?
+              TL_meas[kin::ncds] = LVec_n;     // * which n?
+              if( reactionID == gen::reactionID_Spmode ){
+                TL_meas[kin::pim_g1] = LVec_pim;
+                TL_meas[kin::Sp] = (LVec_n+LVec_pip);
+                TL_meas[kin::pip_g2] = LVec_pip;
+              } else if ( reactionID == gen::reactionID_Smmode ){
+                TL_meas[kin::pip_g1] = LVec_pip;
+                TL_meas[kin::Sm] = (LVec_n+LVec_pim);
+                TL_meas[kin::pim_g2] = LVec_pim;
+              }
+
+              double val1 = (TL_meas[kin::ncds]-TL_gene[kin::nmiss]).P(); // n_measured - n_initial
+              double val2 = (TL_meas[kin::ncds]-TL_gene[kin::ncds]).P(); // n_measured - n_Sigma
+              int genID[kin::npart] = {0,1,2,3,4,5};
+              if( val1<val2 ){ // is there more good selection way?
+                genID[kin::nmiss] = kin::ncds;
+                genID[kin::ncds] = kin::nmiss;
+              }
+              if(Verbosity_)std::cerr<< "L." << __LINE__ << " val = "<<val1<<" "<<val2<<" -> "<< genID[kin::nmiss] <<" "<< genID[kin::ncds] << std::endl;
+              mcmom_beam = TL_gene[kin::kmbeam];
+              mcmom_ncds    = TL_gene[genID[kin::ncds]];
+              if( reactionID==gen::reactionID_Spmode ){
+                mcmom_pip  = TL_gene[kin::pip_g2];
+                mcmom_pim  = TL_gene[kin::pim_g1];
+              } else if ( reactionID==gen::reactionID_Smmode ){
+                mcmom_pip  = TL_gene[kin::pip_g1];
+                mcmom_pim  = TL_gene[kin::pim_g2];
+              }
+
+              //--- set TLorentzVector ---//
+              // beam_K(K+), pi-/+, Sigma+/-, p, n, n from S, pi+/- from S 
+              //  = 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+
+              TLorentzVector TL_measSpmode[kin::npart]; // measured
+              TL_measSpmode[kin::kmbeam] = LVec_beam;
+              TL_measSpmode[kin::pim_g1] = LVec_pim;
+              TL_measSpmode[kin::Sp] = (LVec_n+LVec_pip);
+              TL_measSpmode[kin::nmiss] = LVec_nmiss;
+              TL_measSpmode[kin::ncds] = LVec_n;
+              TL_measSpmode[kin::pip_g2] = LVec_pip;
+              //  = 2) TLorentzVector LVec_beam, LVec_pip, (LVec_n+LVec_pim), LVec_nmiss, LVec_n, LVec_pim = for pi+ Sigma-
+              TLorentzVector TL_measSmmode[kin::npart]; // measured
+              TL_measSmmode[kin::kmbeam] = LVec_beam;
+              TL_measSmmode[kin::pip_g1] = LVec_pip;
+              TL_measSmmode[kin::Sm] = (LVec_n+LVec_pim);
+              TL_measSmmode[kin::nmiss] = LVec_nmiss;
+              TL_measSmmode[kin::ncds] = LVec_n;
+              TL_measSmmode[kin::pim_g2] = LVec_pim;
+              TLorentzVector TL_kfitSpmode[kin::npart]; // kinematical fitted
+              TLorentzVector TL_kfitSmmode[kin::npart]; // kinematical fitted
+              // LVec_target is defined as (0, 0, 0, M_D2)
+              TVector3 TV_target = LVec_target.Vect();
+              TVector3 TV_measSpmode[kin::npart];
+              TVector3 TV_measSmmode[kin::npart];
+              for( int ip=0; ip<kin::npart; ip++ ){
+                TV_measSpmode[ip] = TL_measSpmode[ip].Vect();
+                TV_measSmmode[ip] = TL_measSmmode[ip].Vect();
+              }//for npart
+
+              //--- KinFitter :: initialization ---//
+              //  = 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip),  LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+
+              //  = 2) TLorentzVector LVec_beam, LVec_pip, (LVec_n+LVec_pim),  LVec_nmiss, LVec_n, LVec_pim = for pi+ Sigma-
+              //*** definition of fit particles in cartesian coordinates ***//
+              TString str_particleSpmode[kin::npart] = {"LVec_beam", "LVec_pim", "LVec_Sp",  "LVec_mn", "LVec_n", "LVec_pip"};
+              TString str_particleSmmode[kin::npart] = {"LVec_beam", "LVec_pip", "LVec_Sm",  "LVec_mn", "LVec_n", "LVec_pim"};
+              TFitParticlePxPyPz ParticleTgt = TFitParticlePxPyPz("target", "target", &TV_target,
+                  pdg->GetParticle("deuteron")->Mass(), covZero);
+              TFitParticlePxPyPz ParticleSpmode[kin::npart];
+              TFitParticlePxPyPz ParticleSmmode[kin::npart];
+              for( int ip=0; ip<kin::npart; ip++ ){
+                ParticleSpmode[ip] = TFitParticlePxPyPz(str_particleSpmode[ip], str_particleSpmode[ip], &TV_measSpmode[ip],
+                    pdg->GetParticle(PDG_Spmode[ip])->Mass(), covParticleSpmode[ip]);
+                ParticleSmmode[ip] = TFitParticlePxPyPz(str_particleSmmode[ip], str_particleSmmode[ip], &TV_measSmmode[ip],
+                    pdg->GetParticle(PDG_Smmode[ip])->Mass(), covParticleSmmode[ip]);
+              }
+              //*** definition of constraints ***//
+              // constraint :: mass of Sigma
+              TFitConstraintM ConstMSSpmode = TFitConstraintM("M_Sp", "M_Sp", 0, 0, pdg->GetParticle(PDG_Spmode[kin::Sp])->Mass());
+              TFitConstraintM ConstMSSmmode = TFitConstraintM("M_Sm", "M_Sm", 0, 0, pdg->GetParticle(PDG_Smmode[kin::Sm])->Mass());
+              ConstMSSpmode.addParticles1(&ParticleSpmode[kin::ncds], &ParticleSpmode[kin::pip_g2]);
+              ConstMSSmmode.addParticles1(&ParticleSmmode[kin::ncds], &ParticleSmmode[kin::pim_g2]);
+              // constraint :: 4-momentum conservation
+              TFitConstraintEp ConstEpSpmode[4];
+              TFitConstraintEp ConstEpSmmode[4];
+              TString str_constEpSpmode[4]  = {"Px", "Py", "Pz", "E"};
+              TString str_constEpSmmode[4]  = {"Px", "Py", "Pz", "E"};
+              for( int i=0; i<4; i++ ){
+                ConstEpSpmode[i] = TFitConstraintEp(str_constEpSpmode[i], str_constEpSpmode[i], 0, TFitConstraintEp::component(i), 0);
+                ConstEpSmmode[i] = TFitConstraintEp(str_constEpSmmode[i], str_constEpSmmode[i], 0, TFitConstraintEp::component(i), 0);
+                ConstEpSpmode[i].addParticles1(&ParticleTgt, &ParticleSpmode[kin::kmbeam]);
+                ConstEpSmmode[i].addParticles1(&ParticleTgt, &ParticleSmmode[kin::kmbeam]);
+                ConstEpSpmode[i].addParticles2(&ParticleSpmode[kin::pim_g1],&ParticleSpmode[kin::nmiss], &ParticleSpmode[kin::ncds], &ParticleSpmode[kin::pip_g2]);
+                ConstEpSmmode[i].addParticles2(&ParticleSmmode[kin::pip_g1],&ParticleSmmode[kin::nmiss], &ParticleSmmode[kin::ncds], &ParticleSmmode[kin::pim_g2]);
+              }//for i
+
+              //--- KinFitter :: execution ---//
+              //*** definition of the fitter ***//
+              TKinFitter kinfitter_Spmode;
+              TKinFitter kinfitter_Smmode;
+              // add measured particles
+              // K-, pi-, ncds, pi+  
+              kinfitter_Spmode.addMeasParticles(&ParticleSpmode[kin::kmbeam], &ParticleSpmode[kin::pim_g1], &ParticleSpmode[kin::ncds], &ParticleSpmode[kin::pip_g2]); 
+              // K, pi+,  n, pi- 
+              kinfitter_Smmode.addMeasParticles(&ParticleSmmode[kin::kmbeam], &ParticleSmmode[kin::pip_g1], &ParticleSmmode[kin::ncds], &ParticleSmmode[kin::pim_g2]); 
+              // unmeasured particle forward missing neutron
+              kinfitter_Spmode.addUnmeasParticles(&ParticleSpmode[kin::nmiss]); // missing-n
+              kinfitter_Smmode.addUnmeasParticles(&ParticleSmmode[kin::nmiss]); // missing-n
+              // add constraints 
+              kinfitter_Spmode.addConstraint(&ConstMSSpmode); // mass of Sigma+
+              kinfitter_Smmode.addConstraint(&ConstMSSmmode); // mass of Sigma-
+              for( int i=0; i<4; i++ ){
+                kinfitter_Spmode.addConstraint(&ConstEpSpmode[i]); // 4-momentum conservation
+                kinfitter_Smmode.addConstraint(&ConstEpSmmode[i]); // 4-momentum conservation
+              }
+
+              //*** perform the fit ***//
+              kinfitter_Spmode.setMaxNbIter(kin::maxitr);       // max number of iterations
+              kinfitter_Smmode.setMaxNbIter(kin::maxitr);       // max number of iterations
+              kinfitter_Spmode.setMaxDeltaS(kin::maxdchi2);     // max delta chi2
+              kinfitter_Smmode.setMaxDeltaS(kin::maxdchi2);     // max delta chi2
+              kinfitter_Spmode.setMaxF(kin::maxsumconst);          // max sum of constraints
+              kinfitter_Smmode.setMaxF(kin::maxsumconst);          // max sum of constraints
+              kinfitter_Spmode.setVerbosity(KFDEBUG);  // verbosity level
+              kinfitter_Smmode.setVerbosity(KFDEBUG);  // verbosity level
+              kinfitter_Spmode.fit();
+              kinfitter_Smmode.fit();
+              //*** copy fit results ***//
+              for( int ip=0; ip<kin::npart; ip++ ){
+                TL_kfitSpmode[ip] = (*ParticleSpmode[ip].getCurr4Vec());
+                TL_kfitSmmode[ip] = (*ParticleSmmode[ip].getCurr4Vec());
+              }
+              //reconstruct Lorentz vector of Sigma+/-
+              TL_kfitSpmode[kin::Sp] = TL_kfitSpmode[kin::ncds]+TL_kfitSpmode[kin::pip_g2];
+              TL_kfitSmmode[kin::Sm] = TL_kfitSmmode[kin::ncds]+TL_kfitSmmode[kin::pim_g2];
+
+              int correct_flag = 0;
+              if( kinfitter_Spmode.getStatus()==0 &&  //0 means that kinfit is converged 
+                  kinfitter_Spmode.getS()<kinfitter_Smmode.getS() && 
+                  reactionID==gen::reactionID_Spmode ){ 
+                correct_flag = 1;//Spmode
+              }else if( kinfitter_Smmode.getStatus()==0 && 
+                  kinfitter_Smmode.getS()<kinfitter_Spmode.getS() && 
+                  reactionID==gen::reactionID_Smmode ){ 
+                correct_flag = 1;//Smmode
+              }
+
+              double chi2 = kinfitter_Spmode.getS()<kinfitter_Smmode.getS() ? kinfitter_Spmode.getS():kinfitter_Smmode.getS();
+              Tools::Fill2D( Form("KFchi2_vs"), kinfitter_Spmode.getS()/kinfitter_Spmode.getNDF(),
+                  kinfitter_Smmode.getS()/kinfitter_Smmode.getNDF() );
+              if( chi2 < kin::chi2cut ) Tools::Fill1D( Form("KF_decision"), correct_flag );//TODO : avoid hard-code
+
+              if(Verbosity_){
+                std::cerr<<"pi- S+ : status = "<<kinfitter_Spmode.getStatus()<<", chi2/NDF = "<<kinfitter_Spmode.getS()<<"/"<<kinfitter_Spmode.getNDF()<<std::endl;
+                std::cerr<<"pi+ S- : status = "<<kinfitter_Smmode.getStatus()<<", chi2/NDF = "<<kinfitter_Smmode.getS()<<"/"<<kinfitter_Smmode.getNDF()<<std::endl;
+                if      ( reactionID==gen::reactionID_Spmode ) std::cerr<<"*** pi- S+ ==> "<<correct_flag<<" ***"<<std::endl;
+                else if ( reactionID==gen::reactionID_Smmode ) std::cerr<<"*** pi+ S- ==> "<<correct_flag<<" ***"<<std::endl;
+              }
+              //** fill tree **//
+              kfMomBeamSpmode   = TL_kfitSpmode[kin::kmbeam];
+              kfMom_pip_Spmode    = TL_kfitSpmode[kin::pip_g2];
+              kfMom_pim_Spmode    = TL_kfitSpmode[kin::pim_g1];
+              kfMom_n_Spmode      = TL_kfitSpmode[kin::ncds];
+              kf_chi2_Spmode      = kinfitter_Spmode.getS();//chi2
+              kf_NDF_Spmode       = kinfitter_Spmode.getNDF();
+              kf_status_Spmode    = kinfitter_Spmode.getStatus();
+              kf_pvalue_Spmode    = ROOT::Math::chisquared_cdf_c(kinfitter_Spmode.getS(), kinfitter_Spmode.getNDF());
+              kfMomBeamSmmode   = TL_kfitSmmode[kin::kmbeam];
+              kfMom_pim_Smmode    = TL_kfitSmmode[kin::pim_g1];
+              kfMom_pip_Smmode    = TL_kfitSmmode[kin::pip_g2];
+              kfMom_n_Smmode      = TL_kfitSmmode[kin::ncds];
+              kf_chi2_Smmode      = kinfitter_Smmode.getS();
+              kf_NDF_Smmode       = kinfitter_Smmode.getNDF();
+              kf_status_Smmode    = kinfitter_Smmode.getStatus();
+              kf_pvalue_Smmode    = ROOT::Math::chisquared_cdf_c(kinfitter_Smmode.getS(), kinfitter_Smmode.getNDF());
+              kf_flag       = reactionID; //correct_flag;
+
+              // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
+              // %%% Kinematical Fit using KinFitter %%% //
+              // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
+
+
+            //--- for the covariance matrix evaluation ---//
+              if( flagG4Decay ){
                 for( int ip=0; ip<kin::npart; ip++ ){
-                  TV_measSpmode[ip] = TL_measSpmode[ip].Vect();
-                  TV_measSmmode[ip] = TL_measSmmode[ip].Vect();
-                }//for iart
-		
-                //--- KinFitter :: initialization ---//
-                //  = 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip),  LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+
-                //  = 2) TLorentzVector LVec_beam, LVec_pip, (LVec_n+LVec_pim),  LVec_nmiss, LVec_n, LVec_pim = for pi+ Sigma-
-                //*** definition of fit particles in cartesian coordinates ***//
-                TString str_particleSpmode[kin::npart] = {"LVec_beam", "LVec_pim", "LVec_Sp",  "LVec_mn", "LVec_n", "LVec_pip"};
-                TString str_particleSmmode[kin::npart] = {"LVec_beam", "LVec_pip", "LVec_Sm",  "LVec_mn", "LVec_n", "LVec_pim"};
-                TFitParticlePxPyPz ParticleTgt = TFitParticlePxPyPz("target", "target", &TV_target,
-                    pdg->GetParticle("deuteron")->Mass(), covZero);
-                TFitParticlePxPyPz ParticleSpmode[kin::npart];
-                TFitParticlePxPyPz ParticleSmmode[kin::npart];
-                for( int ip=0; ip<kin::npart; ip++ ){
-                  ParticleSpmode[ip] = TFitParticlePxPyPz(str_particleSpmode[ip], str_particleSpmode[ip], &TV_measSpmode[ip],
-                      pdg->GetParticle(PDG_Spmode[ip])->Mass(), covParticleSpmode[ip]);
-                  ParticleSmmode[ip] = TFitParticlePxPyPz(str_particleSmmode[ip], str_particleSmmode[ip], &TV_measSmmode[ip],
-                      pdg->GetParticle(PDG_Smmode[ip])->Mass(), covParticleSmmode[ip]);
+                  for( int j=0; j<4; j++ ){
+                    //only 
+                    double val = (TL_meas[ip][j] - TL_gene[genID[ip]][j]);
+                    Tools::Fill1D(Form("cov_%d_%d_%d", ip, j, j), val);
+                    //if( j==k ) std::cerr<<" cov "<<i<<" , "<<j<<" = "<<TL_meas[i][j]<<" - "<<TL_gene[i][j]
+                    //<<" = "<< (TL_meas[i][j] - TL_gene[i][j])<<std::endl;
+                  } // for
                 }
-                //*** definition of constraints ***//
-                // constraint :: mass of Sigma
-                TFitConstraintM ConstMSSpmode = TFitConstraintM("M_Sp", "M_Sp", 0, 0, pdg->GetParticle(PDG_Spmode[kin::Sp])->Mass());
-                TFitConstraintM ConstMSSmmode = TFitConstraintM("M_Sm", "M_Sm", 0, 0, pdg->GetParticle(PDG_Smmode[kin::Sm])->Mass());
-                ConstMSSpmode.addParticles1(&ParticleSpmode[kin::ncds], &ParticleSpmode[kin::pip_g2]);
-                ConstMSSmmode.addParticles1(&ParticleSmmode[kin::ncds], &ParticleSmmode[kin::pim_g2]);
-                // constraint :: 4-momentum conservation
-                TFitConstraintEp ConstEpSpmode[4];
-                TFitConstraintEp ConstEpSmmode[4];
-                TString str_constEpSpmode[4]  = {"Px", "Py", "Pz", "E"};
-                TString str_constEpSmmode[4]  = {"Px", "Py", "Pz", "E"};
-                for( int ip=0; ip<4; ip++ ){
-                  ConstEpSpmode[ip] = TFitConstraintEp(str_constEpSpmode[ip], str_constEpSpmode[ip], 0, TFitConstraintEp::component(ip), 0);
-                  ConstEpSmmode[ip] = TFitConstraintEp(str_constEpSmmode[ip], str_constEpSmmode[ip], 0, TFitConstraintEp::component(ip), 0);
-                  ConstEpSpmode[ip].addParticles1(&ParticleTgt, &ParticleSpmode[kin::kmbeam]);
-                  ConstEpSmmode[ip].addParticles1(&ParticleTgt, &ParticleSmmode[kin::kmbeam]);
-                  ConstEpSpmode[ip].addParticles2(&ParticleSpmode[kin::pim_g1],&ParticleSpmode[kin::nmiss], &ParticleSpmode[kin::ncds], &ParticleSpmode[kin::pip_g2]);
-                  ConstEpSmmode[ip].addParticles2(&ParticleSmmode[kin::pip_g1],&ParticleSmmode[kin::nmiss], &ParticleSmmode[kin::ncds], &ParticleSmmode[kin::pim_g2]);
-                }//for ip
+              }//if flagG4Decay
+            } // if( MissNFlag && K0rejectFlag && (SigmaPFlag || SigmaMFlag))
 
-                //--- KinFitter :: execution ---//
-                //*** definition of the fitter ***//
-                TKinFitter kinfitter_Spmode;
-                TKinFitter kinfitter_Smmode;
-                // add measured particles
-                // K, pi-,  n, pi+  
-                kinfitter_Spmode.addMeasParticles(&ParticleSpmode[kin::kmbeam], &ParticleSpmode[kin::pim_g1], &ParticleSpmode[kin::ncds], &ParticleSpmode[kin::pip_g2]); 
-                // K, pi+,  n, pi- 
-                kinfitter_Smmode.addMeasParticles(&ParticleSmmode[kin::kmbeam], &ParticleSmmode[kin::pip_g1], &ParticleSmmode[kin::ncds], &ParticleSmmode[kin::pim_g2]); 
-                kinfitter_Spmode.addUnmeasParticles(&ParticleSpmode[kin::nmiss]); // missing-n
-                kinfitter_Smmode.addUnmeasParticles(&ParticleSmmode[kin::nmiss]); // missing-n
-                // add constraints
-                kinfitter_Spmode.addConstraint(&ConstMSSpmode); // mass of Sigma+
-                kinfitter_Smmode.addConstraint(&ConstMSSmmode); // mass of Sigma-
-                for( int ip=0; ip<4; ip++ ){
-                  kinfitter_Spmode.addConstraint(&ConstEpSpmode[ip]); // 4-momentum conservation
-                  kinfitter_Smmode.addConstraint(&ConstEpSmmode[ip]); // 4-momentum conservation
-                }
-                //*** perform the fit ***//
-                kinfitter_Spmode.setMaxNbIter(50);       // max number of iterations
-                kinfitter_Smmode.setMaxNbIter(50);       // max number of iterations
-                kinfitter_Spmode.setMaxDeltaS(5e-5);     // max delta chi2
-                kinfitter_Smmode.setMaxDeltaS(5e-5);     // max delta chi2
-                kinfitter_Spmode.setMaxF(1e-4);          // max sum of constraints
-                kinfitter_Smmode.setMaxF(1e-4);          // max sum of constraints
-                kinfitter_Spmode.setVerbosity(KFDEBUG);  // verbosity level
-                kinfitter_Smmode.setVerbosity(KFDEBUG);  // verbosity level
-                kinfitter_Spmode.fit();
-                kinfitter_Smmode.fit();
-                //*** copy fit results ***//
-                for( int ip=0; ip<kin::npart; ip++ ){
-                  TL_kfitSpmode[ip] = (*ParticleSpmode[ip].getCurr4Vec());
-                  TL_kfitSmmode[ip] = (*ParticleSmmode[ip].getCurr4Vec());
-                }
-                //reconstruct Lorentz vector of Sigma+/-
-                TL_kfitSpmode[kin::Sp] = TL_kfitSpmode[kin::ncds]+TL_kfitSpmode[kin::pip_g2];
-                TL_kfitSmmode[kin::Sm] = TL_kfitSmmode[kin::ncds]+TL_kfitSmmode[kin::pim_g2];
+            kf_flag = reactionID; //correct_flag;
 
-                int correct_flag = 0;
-                if( kinfitter_Spmode.getStatus()==0 && 
-                    kinfitter_Spmode.getS()<kinfitter_Smmode.getS() && 
-                    reactionID==gen::reactionID_Spmode ){ 
-                    correct_flag = 1;
-                }else if( kinfitter_Smmode.getStatus()==0 && 
-                          kinfitter_Smmode.getS()<kinfitter_Spmode.getS() && 
-                          reactionID==gen::reactionID_Smmode ){ 
-                          correct_flag = 1;
-                          }
-
-                double chi2 = kinfitter_Spmode.getS()<kinfitter_Smmode.getS() ? kinfitter_Spmode.getS():kinfitter_Smmode.getS();
-                Tools::Fill2D( Form("KFchi2_vs"), kinfitter_Spmode.getS()/kinfitter_Spmode.getNDF(),
-                    kinfitter_Smmode.getS()/kinfitter_Smmode.getNDF() );
-                if( chi2 < 6 ) Tools::Fill1D( Form("KF_decision"), correct_flag );//TODO : avoid hard-code
-                 
-                if(Verbosity_){
-                  std::cerr<<"pi- S+ : status = "<<kinfitter_Spmode.getStatus()<<", chi2/NDF = "<<kinfitter_Spmode.getS()<<"/"<<kinfitter_Spmode.getNDF()<<std::endl;
-                  std::cerr<<"pi+ S- : status = "<<kinfitter_Smmode.getStatus()<<", chi2/NDF = "<<kinfitter_Smmode.getS()<<"/"<<kinfitter_Smmode.getNDF()<<std::endl;
-                  if      ( reactionID==gen::reactionID_Spmode ) std::cerr<<"*** pi- S+ ==> "<<correct_flag<<" ***"<<std::endl;
-                  else if ( reactionID==gen::reactionID_Smmode ) std::cerr<<"*** pi+ S- ==> "<<correct_flag<<" ***"<<std::endl;
-                }
-                //** fill tree **//
-                kfMomBeamSpmode   = TL_kfitSpmode[kin::kmbeam];
-                kfMom_pip_Spmode    = TL_kfitSpmode[kin::pip_g2];
-                kfMom_pim_Spmode    = TL_kfitSpmode[kin::pim_g1];
-                kfMom_n_Spmode      = TL_kfitSpmode[kin::ncds];
-                kf_chi2_Spmode      = kinfitter_Spmode.getS();
-                kf_NDF_Spmode       = kinfitter_Spmode.getNDF();
-                kf_status_Spmode    = kinfitter_Spmode.getStatus();
-                kf_pvalue_Spmode    = ROOT::Math::chisquared_cdf_c(kinfitter_Spmode.getS(), kinfitter_Spmode.getNDF());
-                kfMomBeamSmmode   = TL_kfitSmmode[kin::kmbeam];
-                kfMom_pim_Smmode    = TL_kfitSmmode[kin::pim_g1];
-                kfMom_pip_Smmode    = TL_kfitSmmode[kin::pip_g2];
-                kfMom_n_Smmode      = TL_kfitSmmode[kin::ncds];
-                kf_chi2_Smmode      = kinfitter_Smmode.getS();
-                kf_NDF_Smmode       = kinfitter_Smmode.getNDF();
-                kf_status_Smmode    = kinfitter_Smmode.getStatus();
-                kf_pvalue_Smmode    = ROOT::Math::chisquared_cdf_c(kinfitter_Smmode.getS(), kinfitter_Smmode.getNDF());
-                kf_flag       = reactionID; //correct_flag;
-
-                // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
-                // %%% Kinematical Fit using KinFitter %%% //
-                // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
-
-                //--- for the covariance matrix evaluation ---//
-                if( flagG4Decay ){
-                  if( neutron_MIN<mm_mass && mm_mass<neutron_MAX ){
-                    if( (Sigmap_MIN<(LVec_n+LVec_pip).M() && (LVec_n+LVec_pip).M()<Sigmap_MAX) ||
-                        (Sigmam_MIN<(LVec_n+LVec_pim).M() && (LVec_n+LVec_pim).M()<Sigmam_MAX) ){
-                      for( int ip=0; ip<kin::npart; ip++ ){
-                        for( int j=0; j<4; j++ ){
-                          //only 
-                          double val = (TL_meas[ip][j] - TL_gene[genID[ip]][j]);
-                          Tools::Fill1D(Form("cov_%d_%d_%d", ip, j, j), val);
-                          //if( j==k ) std::cerr<<" cov "<<i<<" , "<<j<<" = "<<TL_meas[i][j]<<" - "<<TL_gene[i][j]
-                          //<<" = "<< (TL_meas[i][j] - TL_gene[i][j])<<std::endl;
-                        }
-                      } // for
-                    }
-                  }
-                }//if flagG4Decay
-              } // if( ((LVec_pim+LVec_pip).M()<pipi_MIN || pipi_MAX<(LVec_pim+LVec_pip).M()) &&
-
-              kf_flag = reactionID; //correct_flag;
-		
-            } // if( dE_MIN<ncdhhit->emean() )
-          } // if( beta<beta_MAX )
+          } // if( NBetaOK && NdEOK )
 
           //** fill tree **//
           mom_beam   = LVec_beam;   // 4-momentum(beam)
@@ -1481,41 +1556,47 @@ void InitializeHistogram()
   Tools::newTH2F( Form("dE_betainv_fid_beta_dE_woK0"), 200, 0, 10, 200, 0, 50);
   Tools::newTH2F( Form("dE_betainv_fid_beta_dE_wK0"), 200, 0, 10, 200, 0, 50);
   Tools::newTH2F( Form("dE_betainv_fid_beta_dE_woK0_n"), 200, 0, 10, 200, 0, 50);
+  Tools::newTH2F( Form("dE_MMom_fid_beta_woK0"), 100, 0, 1.5, 200, 0, 50);
+  Tools::newTH2F( Form("dE_MMass_fid_beta_woK0"), 140, 0.4, 1.8, 200, 0, 50);
+  
   Tools::newTH2F( Form("MMom_MMass"), 140, 0.4, 1.8, 100, 0, 1.5 );
   Tools::newTH2F( Form("MMom_MMass_fid"), 140, 0.4, 1.8, 100, 0, 1.5 );
   Tools::newTH2F( Form("MMom_MMass_fid_beta"), 140, 0.4, 1.8, 100, 0, 1.5 );
   Tools::newTH2F( Form("MMom_MMass_fid_beta_dE"), 140, 0.4, 1.8, 100, 0, 1.5 );
   Tools::newTH2F( Form("MMom_MMass_fid_beta_dE_woK0"), 140, 0.4, 1.8, 100, 0, 1.5 );
   Tools::newTH2F( Form("MMom_MMass_fid_beta_dE_woK0_wSid"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  //Tools::newTH2F( Form("MMom_MMass_fid_beta_dE_wK0"), 140, 0.4, 1.8, 100, 0, 1.5 ); not used so far
+  Tools::newTH2F( Form("MMom_MMass_fid_beta_dE_wK0"), 140, 0.4, 1.8, 100, 0, 1.5 ); 
   Tools::newTH2F( Form("MMom_MMass_fid_beta_dE_woK0_n"), 140, 0.4, 1.8, 100, 0, 1.5 );
  
   Tools::newTH1F( Form("IMpipi_dE"), 200, 0.4, 0.6 );
   Tools::newTH2F( Form("IMpipi_NMom_dE"),100,0, 1.5, 200, 0.4,0.6);
 
-  Tools::newTH2F( Form("MMom_NMom"), 100, 0, 1.5, 100, 0, 1.5 );
-  Tools::newTH2F( Form("IMnpim_IMnpip_dE"), 140, 1, 1.7, 140, 1, 1.7 );
-  Tools::newTH2F( Form("IMnpim_IMnpip_wmn_dE"), 140, 1, 1.7, 140, 1, 1.7 );
-  Tools::newTH2F( Form("IMmnpim_IMmnpip"), 70, 1, 1.7, 70, 1, 1.7 );
-  Tools::newTH2F( Form("MMnpip_MMnpim"), 70, 1, 1.7, 70, 1, 1.7 );
-  Tools::newTH2F( Form("Cosn_IMnpipi"), 100, 1, 2, 50, -1, 1 );
-  Tools::newTH1F( Form("IMnpipi"), 100, 1, 2 );
-  Tools::newTH1F( Form("IMnpipi_wSid"), 100, 1, 2 );
-  Tools::newTH1F( Form("IMnpipi_woK0_wSid"), 100, 1, 2 );
-  Tools::newTH2F( Form("IMnpipi_MMnmiss"),100,0,1.5,100,1,2);
-  Tools::newTH2F( Form("IMnpipi_MMnmiss_wSid"),100,0,1.5,100,1,2);
-  Tools::newTH2F( Form("IMnpipi_MMnmiss_woK0_wSid"),100,0,1.5,100,1,2);
-  Tools::newTH2F( Form("IMnpipi_q_woK0_wSid"),200,0,2,100,1,2);
+  Tools::newTH2F( Form("NMom_NMom_fid_beta_dE_woK0_n"), 100, 0, 1.5, 100, 0, 1.5 );
+  Tools::newTH2F( Form("IMnpim_IMnpip_dE_woK0"), 140, 1, 1.7, 140, 1, 1.7 );
+  Tools::newTH2F( Form("IMnpim_IMnpip_dE_woK0_n"), 140, 1, 1.7, 140, 1, 1.7 );
+  Tools::newTH2F( Form("IMmnpim_IMmnpip_woK0_wSid_n"), 70, 1, 1.7, 70, 1, 1.7 );
+  Tools::newTH2F( Form("MMnpip_MMnpim_woK0_wSid_n"), 70, 1, 1.7, 70, 1, 1.7 );
+  Tools::newTH2F( Form("Cosn_IMnpipi_woK0_wSid_n"), 100, 1, 2, 50, -1, 1 );
+  Tools::newTH1F( Form("IMnpipi_n"), 100, 1, 2 );
+  Tools::newTH1F( Form("IMnpipi_wSid_n"), 100, 1, 2 );
+  Tools::newTH1F( Form("IMnpipi_woK0_wSid_n"), 100, 1, 2 );
+  Tools::newTH2F( Form("dE_IMnpipi_woK0_wSid_n"), 100, 1, 2, 200, 0, 50);
+  Tools::newTH2F( Form("MMnmiss_IMnpipi_n"),100,1,2,100,0,1.5);
+  Tools::newTH2F( Form("MMnmiss_IMnpipi_wSid_n"),100,1,2,100,0,1.5);
+  Tools::newTH2F( Form("MMnmiss_IMnpipi_woK0_wSid_n"),100,1,2,100,0,1.5);
+  Tools::newTH2F( Form("q_IMnpipi_woK0_wSid_n"),100,1,2,300,0,1.5);
   Tools::newTH1F( Form("DCA_pip"), 500, 0, 5 );
   Tools::newTH1F( Form("DCA_pim"), 500, 0, 5 );
-  //Tools::newTH1F( Form("DCA_pip_SigmaP"), 500, 0, 5 );
-  //Tools::newTH1F( Form("DCA_pim_SigmaP"), 500, 0, 5 );
-  //Tools::newTH1F( Form("DCA_pip_SigmaM"), 500, 0, 5 );
-  //Tools::newTH1F( Form("DCA_pim_SigmaM"), 500, 0, 5 );
-  //Tools::newTH1F( Form("DCA_pippim"), 500, 0, 5);
+  Tools::newTH1F( Form("DCA_pip_SigmaP"), 500, 0, 5 );
+  Tools::newTH1F( Form("DCA_pim_SigmaP"), 500, 0, 5 );
+  Tools::newTH1F( Form("DCA_pip_SigmaM"), 500, 0, 5 );
+  Tools::newTH1F( Form("DCA_pim_SigmaM"), 500, 0, 5 );
+  Tools::newTH1F( Form("DCA_pippim"), 500, 0, 5);
    
   //KF histograms
   Tools::newTH2F( Form("KFchi2_vs"),100,0,100,100,0,100);
+  Tools::SetXTitleH2(Form("KFchi2_vs"),"chi2/NDF S+");
+  Tools::SetYTitleH2(Form("KFchi2_vs"),"chi2/NDF S-");
   Tools::newTH1F( Form("KF_decision"), 2, -0.5, 1.5 );
   return;
 }
