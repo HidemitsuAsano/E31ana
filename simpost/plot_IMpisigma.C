@@ -171,47 +171,47 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     MMom_MMass_fid_beta_dE_woK0[imode]->GetYaxis()->CenterTitle();
 
     IMnpim_IMnpip_dE_woK0[imode] = new TH2F(Form("IMnpim_IMnpip_dE_woK0_%s",smode[imode]), Form("IMnpim_IMnpip_dE_woK0_%s",smode[imode]),140, 1, 1.7, 140, 1, 1.7);
-    IMnpim_IMnpip_dE_woK0[imode]->SetXTitle("IM(n#pi^{+} [GeV/c^{2}]");
-    IMnpim_IMnpip_dE_woK0[imode]->SetYTitle("IM(n#pi^{-} [GeV/c^{2}]");
+    IMnpim_IMnpip_dE_woK0[imode]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+    IMnpim_IMnpip_dE_woK0[imode]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
     IMnpim_IMnpip_dE_woK0[imode]->GetXaxis()->CenterTitle();
     IMnpim_IMnpip_dE_woK0[imode]->GetXaxis()->CenterTitle();//
   
 
     IMnpim_IMnpip_dE_woK0_n[imode] = new TH2F(Form("IMnpim_IMnpip_dE_woK0_n_%s",smode[imode]),Form("IMnpim_IMnpip_dE_woK0_n_%s",smode[imode]),140, 1, 1.7, 140, 1, 1.7);
-    IMnpim_IMnpip_dE_woK0_n[imode]->SetXTitle("IM(n#pi^{+} [GeV/c^{2}]");
-    IMnpim_IMnpip_dE_woK0_n[imode]->SetYTitle("IM(n#pi^{-} [GeV/c^{2}]");
+    IMnpim_IMnpip_dE_woK0_n[imode]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+    IMnpim_IMnpip_dE_woK0_n[imode]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
     IMnpim_IMnpip_dE_woK0_n[imode]->GetXaxis()->CenterTitle();
     IMnpim_IMnpip_dE_woK0_n[imode]->GetYaxis()->CenterTitle();
 
   
     MMnpip_MMnpim_woK0_wSid_n[imode] = new TH2F(Form("MMnpip_MMnpim_woK0_wSid_n_%s",smode[imode]),Form("MMnpip_MMnpim_woK0_wSid_n_%s",smode[imode]),70, 1, 1.7, 70, 1, 1.7);
-    MMnpip_MMnpim_woK0_wSid_n[imode]->SetXTitle("Miss. Mass{n#pi^{+}} [GeV/c^2]");
-    MMnpip_MMnpim_woK0_wSid_n[imode]->SetYTitle("Miss. Mass{n#pi^{-}} [GeV/c^2]");
+    MMnpip_MMnpim_woK0_wSid_n[imode]->SetXTitle("Miss. Mass(n#pi^{+}) [GeV/c^{2}]");
+    MMnpip_MMnpim_woK0_wSid_n[imode]->SetYTitle("Miss. Mass(n#pi^{-}) [GeV/c^{2}]");
     MMnpip_MMnpim_woK0_wSid_n[imode]->GetXaxis()->CenterTitle();
     MMnpip_MMnpim_woK0_wSid_n[imode]->GetYaxis()->CenterTitle();
 
  
     dE_IMnpipi_woK0_wSid_n[imode] = new TH2F(Form("dE_IMnpipi_woK0_wSid_n_%s",smode[imode]),Form("dE_IMnpipi_woK0_wSid_n_%s",smode[imode]),100, 1, 2, 200, 0, 50);
-    dE_IMnpipi_woK0_wSid_n[imode]->SetXTitle("IM(n#pi^{+}#pi^{-} [GeV/c^{2}]");
+    dE_IMnpipi_woK0_wSid_n[imode]->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
     dE_IMnpipi_woK0_wSid_n[imode]->SetYTitle("dE [MeVee]");
     dE_IMnpipi_woK0_wSid_n[imode]->GetXaxis()->CenterTitle();
     dE_IMnpipi_woK0_wSid_n[imode]->GetYaxis()->CenterTitle();
 
   
     Cosn_IMnpipi_woK0_wSid_n[imode] = new TH2F(Form("Cosn_IMnpipi_woK0_wSid_n_%s",smode[imode]),Form("dE_Cosn_IMnpipi_woK0_wSid_n_%s",smode[imode]),100, 1, 2, 50, -1, 1);
-    Cosn_IMnpipi_woK0_wSid_n[imode]->SetXTitle("IM(n#pi^{+}#pi^{-} [GeV/c^{2}]");
+    Cosn_IMnpipi_woK0_wSid_n[imode]->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
     Cosn_IMnpipi_woK0_wSid_n[imode]->SetYTitle("cos#theta_{n} (CM)");
     Cosn_IMnpipi_woK0_wSid_n[imode]->GetXaxis()->CenterTitle();
     Cosn_IMnpipi_woK0_wSid_n[imode]->GetYaxis()->CenterTitle();
   
     MMnmiss_IMnpipi_woK0_wSid_n[imode] = new TH2F(Form("MMnmiss_IMnpipi_woK0_wSid_n_%s",smode[imode]),Form("MMnmiss_IMnpipi_woK0_wSid_n_%s",smode[imode]),100,1,2,100,0,1.5);
-    MMnmiss_IMnpipi_woK0_wSid_n[imode]->SetXTitle("IM(n#pi^{+}#pi^{-} [GeV/c^{2}]");
-    MMnmiss_IMnpipi_woK0_wSid_n[imode]->SetYTitle("Miss Mom. [GeV/c]");
+    MMnmiss_IMnpipi_woK0_wSid_n[imode]->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+    MMnmiss_IMnpipi_woK0_wSid_n[imode]->SetYTitle("Miss Mass. [GeV/c^{2}]");
     MMnmiss_IMnpipi_woK0_wSid_n[imode]->GetXaxis()->CenterTitle();
     MMnmiss_IMnpipi_woK0_wSid_n[imode]->GetYaxis()->CenterTitle();
 
     q_IMnpipi_woK0_wSid_n[imode] = new TH2F(Form("q_IMnpipi_woK0_wSid_n_%s",smode[imode]),Form("q_IMnpipi_woK0_wSid_n_%s",smode[imode]),100,1,2,300,0,1.5);
-    q_IMnpipi_woK0_wSid_n[imode]->SetXTitle("IM(n#pi^{+}#pi^{-} [GeV/c^{2}]");
+    q_IMnpipi_woK0_wSid_n[imode]->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
     q_IMnpipi_woK0_wSid_n[imode]->SetYTitle("Mom. Transfer [GeV/c]");
     q_IMnpipi_woK0_wSid_n[imode]->GetXaxis()->CenterTitle();
     q_IMnpipi_woK0_wSid_n[imode]->GetYaxis()->CenterTitle();
@@ -226,7 +226,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH1F *nmom = new TH1F("nmom", "nmom", 50, 0, 1.0);
   nmom->SetXTitle("mom. [GeV/c]");
   nmom->GetXaxis()->CenterTitle();
-  TH1F *mnmom = new TH1F("mnmom", "mnmom", 50, 0, 1.0);
+  TH1F *mnmom = new TH1F("mnmom", "mnmom", 100, 0, 2.0);
   mnmom->SetXTitle("mom. [GeV/c]");
   mnmom->GetXaxis()->CenterTitle();
   TH1F *npipmom = new TH1F("npipmom", "npipmom", 50, 0, 1.0);
@@ -320,7 +320,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
           MMnpip_MMnpim_woK0_wSid_n[0]->Fill(LVec_pim_n_miss.M(),LVec_pip_n_miss.M());
           dE_IMnpipi_woK0_wSid_n[0]->Fill(LVec_pip_pim_n.M(),dE);
           Cosn_IMnpipi_woK0_wSid_n[0]->Fill(LVec_pip_pim_n.M(),cos_n);
-          MMnmiss_IMnpipi_woK0_wSid_n[0]->Fill(LVec_pip_pim_n.M(), nmiss_mom);
+          MMnmiss_IMnpipi_woK0_wSid_n[0]->Fill(LVec_pip_pim_n.M(), nmiss_mass);
           q_IMnpipi_woK0_wSid_n[0]->Fill(LVec_pip_pim_n.M(),qkn.P());
         }
       
@@ -340,7 +340,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
           MMnpip_MMnpim_woK0_wSid_n[1]->Fill(LVec_pim_n_miss.M(),LVec_pip_n_miss.M());
           dE_IMnpipi_woK0_wSid_n[1]->Fill(LVec_pip_pim_n.M(),dE);
           Cosn_IMnpipi_woK0_wSid_n[1]->Fill(LVec_pip_pim_n.M(),cos_n);
-          MMnmiss_IMnpipi_woK0_wSid_n[1]->Fill(LVec_pip_pim_n.M(), nmiss_mom);
+          MMnmiss_IMnpipi_woK0_wSid_n[1]->Fill(LVec_pip_pim_n.M(), nmiss_mass);
           q_IMnpipi_woK0_wSid_n[1]->Fill(LVec_pip_pim_n.M(),qkn.P());
         }
       }
@@ -359,10 +359,12 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   std::cout << py->Integral(2,200)/(px->Integral(2,200)) << std::endl;
   std::cout << py->Integral(3,200)/(px->Integral(3,200)) << std::endl;
   std::cout << py->Integral(4,200)/(px->Integral(4,200)) << std::endl;
+  gPad->SetLogy();
 
   TCanvas *cnmom = new TCanvas("cnmom","cnmom");
   cnmom->cd();
   nmom->Draw("");
+  gPad->SetLogy(0);
 
   TCanvas *cmnmom = new TCanvas("cmnmom","cmnmom");
   cmnmom->cd();
