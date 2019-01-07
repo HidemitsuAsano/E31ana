@@ -59,7 +59,8 @@ double PARA_lnL_MAX;
 double PARA_MM_LP_MIN;
 double PARA_MM_LP_MAX;
 
-const double TDC_CDH_MAX = 999999; //ns (original:20 nsec.)
+//const double TDC_CDH_MAX = 999999; //ns (original:20 nsec.)
+const double TDC_CDH_MAX = 25; //ns (original:20 nsec.)
 const double ADC_CDH_MIN = 1;  // MeV
 
 //= = = = pippimn final-sample tree = = = =//
@@ -118,78 +119,26 @@ int main( int argc, char** argv )
   // ###  using G4-data with TH1F(Form("cov_%d_%d_%d", i, j, j), 100, -cov_MAX, cov_MAX);
   // ###  and evaluated using "Air" Dora MC
   // 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+
-  const double covVal_Spmode[kin::npart][16] = {
-    { 1.89064e-05, 0, 0, 0,
-      0, 1.89622e-05, 0, 0,
-      0, 0, 4.0112e-06, 0,
-      0, 0, 0, 3.22341e-06 },
-    { 0.000147362, 0, 0, 0,
-      0, 0.000151568, 0, 0,
-      0, 0, 0.000187105, 0,
-      0, 0, 0, 0.000302456 },
-    { 0.0226731, 0, 0, 0,
-      0, 0.0227568, 0, 0,
-      0, 0, 0.0152559, 0,
-      0, 0, 0, 0.0109434 },
-    { 0.0210347, 0, 0, 0,
-      0, 0.0213206, 0, 0,
-      0, 0, 0.0147438, 0,
-      0, 0, 0, 0.00531022 },
-    { 0.0206777, 0, 0, 0,
-      0, 0.0209008, 0, 0,
-      0, 0, 0.0146246, 0,
-      0, 0, 0, 0.00461358 },
-    { 2.96805e-05, 0, 0, 0,
-      0, 2.972e-05, 0, 0,
-      0, 0, 5.40635e-05, 0,
-      0, 0, 0, 3.58992e-05 },
-  };
-
-  // 2) TLorentzVector LVec_beam, LVec_pip, (LVec_n+LVec_pim), LVec_nmiss, LVec_n, LVec_pim = for pi+ Sigma-
-  const double covVal_Smmode[kin::npart][16] = {
-    { 1.89064e-05, 0, 0, 0,
-      0, 1.89622e-05, 0, 0,
-      0, 0, 4.0112e-06, 0,
-      0, 0, 0, 3.22341e-06 },
-    { 0.000147362, 0, 0, 0,
-      0, 0.000151568, 0, 0,
-      0, 0, 0.000187105, 0,
-      0, 0, 0, 0.000302456 },
-    { 0.0226731, 0, 0, 0,
-      0, 0.0227568, 0, 0,
-      0, 0, 0.0152559, 0,
-      0, 0, 0, 0.0109434 },
-    { 0.0210347, 0, 0, 0,
-      0, 0.0213206, 0, 0,
-      0, 0, 0.0147438, 0,
-      0, 0, 0, 0.00531022 },
-    { 0.0206777, 0, 0, 0,
-      0, 0.0209008, 0, 0,
-      0, 0, 0.0146246, 0,
-      0, 0, 0, 0.00461358 },
-    { 2.96805e-05, 0, 0, 0,
-      0, 2.972e-05, 0, 0,
-      0, 0, 5.40635e-05, 0,
-      0, 0, 0, 3.58992e-05 },
-  };
   
   std::cout << "L." << __LINE__ << "cov. matrix for S+ mode" << std::endl;
   for(int ip=0;ip<kin::npart;ip++){
     for(int im=0;im<16;im++){
-      std::cout << covVal_Spmode[ip][im] << " ";
+      std::cout << kin::covValSpmode[ip][im] << " ";
       if(im==3 || im==7 || im==11 || im==15){
         std::cout << std::endl;
       }
     }
+    std::cout << std::endl;
   }
   std::cout << "L." << __LINE__ << "cov. matrix for S- mode" << std::endl;
   for(int ip=0;ip<kin::npart;ip++){
     for(int im=0;im<16;im++){
-      std::cout << covVal_Smmode[ip][im] << " ";
+      std::cout << kin::covValSmmode[ip][im] << " ";
       if(im==3 || im==7 || im==11 || im==15){
         std::cout << std::endl;
       }
     }
+    std::cout << std::endl;
   }
 
   TMatrixD *covZero = new TMatrixD(4, 4);
@@ -204,8 +153,8 @@ int main( int argc, char** argv )
     for( int j=0; j<4; j++ ){
       for( int k=0; k<4; k++ ){
 	if( j==k ){
-	  (*covParticleSpmode[ip])[j][k] = covVal_Spmode[ip][n]; // only diagonal elements
-	  (*covParticleSmmode[ip])[j][k] = covVal_Smmode[ip][n]; // only diagonal elements
+	  (*covParticleSpmode[ip])[j][k] = kin::covValSpmode[ip][n]; // only diagonal elements
+	  (*covParticleSmmode[ip])[j][k] = kin::covValSmmode[ip][n]; // only diagonal elements
 	} else{
 	  (*covParticleSpmode[ip])[j][k] = 0;
 	  (*covParticleSmmode[ip])[j][k] = 0;
@@ -315,18 +264,20 @@ int main( int argc, char** argv )
   //*** for kinematical fit ***//
   // beam_K(K+), pi-/+, Sigma+/-, forward n, n from S, pi+/- from S
   // !!! only diagonal components !!!
-  const int BIN = 400;
+  const int BIN = 4000;
   double cov_MAX;
   for( int ip=0; ip<kin::npart; ip++ ){
     for( int j=0; j<4; j++ ){
       for( int k=0; k<4; k++ ){
-        if( ip==kin::kmbeam || ip==kin::pim_g1 || ip==kin::pip_g2 ) // K-, pi, pi
+       // if( ip==kin::kmbeam || ip==kin::pim_g1 || ip==kin::pip_g2 ) // K-, pi, pi
           //cov_MAX = 0.02;
-          cov_MAX = 0.08;
-        else // Sigma, p, n_miss, n
+       //   cov_MAX = 0.08;
+       // else // Sigma, p, n_miss, n
           //cov_MAX = 0.1;
           cov_MAX = 0.4;
         Tools::newTH1F(Form("cov_%d_%d_%d", ip, j, k), BIN, -cov_MAX, cov_MAX);
+        Tools::newTH2F(Form("cov_mom_%d_%d_%d", ip, j, k), BIN/4., -cov_MAX, cov_MAX,200,0,2.0);
+        //Tools::newTH2F(Form("cov_CDH_%d_%d_%d", ip, j, k), BIN, -cov_MAX, cov_MAX,36,0.5,36.5);
       }
     }
   }//for ip
@@ -374,8 +325,10 @@ int main( int argc, char** argv )
   int nAbort_ftarget = 0;
   int nAbort_CDHiso = 0;
   int nAbort_pippim = 0;
+  int nAbort_anothern = 0;
   int nAbort_end = 0;
-
+  bool IsGoodEvent = true;
+  
   int nFill_pippim = 0;
   int nFill_pippimn = 0;
 
@@ -426,12 +379,11 @@ int main( int argc, char** argv )
     //int pi_parent  = 0;
     //int Y_parent  = 0;
     //int N_parent  = 0;
-    //TODO check the relation btw parentID and trackID 
     if(Verbosity_){
-      std::cerr<<"======================"<<std::endl;
-      std::cerr<<std::endl;
+      std::cout<<"======================"<<std::endl;
+      std::cout<<std::endl;
       for( int ip=0; ip<reacData->ParticleSize(); ip++ ){
-        std::cerr<< "L." << __LINE__ << " " 
+        std::cout<< "L." << __LINE__ << " " 
         << ip<<" pdg code:"<<reacData->PDG(ip)<<" mom:"<<reacData->GetParticle(ip).P()
         <<std::endl;
       }
@@ -450,11 +402,11 @@ int main( int argc, char** argv )
     for( int i=0; i<kin::npart; i++ ){
       if( reactionID==gen::reactionID_Spmode ){
         PDG[i] = PDG_Spmode[i];
-        if(Verbosity_)std::cerr << "L." << __LINE__ << " This is Sigma+ mode sim. " << std::endl;
+        if(Verbosity_)std::cout << "L." << __LINE__ << " This is Sigma+ mode sim. " << std::endl;
       }
       else if( reactionID==gen::reactionID_Smmode ){
         PDG[i] = PDG_Smmode[i];
-        if(Verbosity_)std::cerr << "L." << __LINE__ << " This is Sigma- mode sim. " << std::endl;
+        if(Verbosity_)std::cout << "L." << __LINE__ << " This is Sigma- mode sim. " << std::endl;
       }
     }
     //        beam_K(K-), pi, nmiss, n from Sigma, pi from Sigma
@@ -466,10 +418,10 @@ int main( int argc, char** argv )
     int nparticle = 0;
     
     if(Verbosity_){
-      std::cerr<< std::endl;
-      std::cerr<< "L." << __LINE__ << "loop over track Size:" << mcData->trackSize() 
+      std::cout<< std::endl;
+      std::cout<< "L." << __LINE__ << "loop over track Size:" << mcData->trackSize() 
       << std::endl;
-      std::cerr<< std::endl;
+      std::cout<< std::endl;
     }
 
     for( int imctrk=0; imctrk<mcData->trackSize(); imctrk++ ){
@@ -480,8 +432,17 @@ int main( int argc, char** argv )
       //track ID
       int track   = mcData->track(imctrk)->trackID();
       double mom  = mcData->track(imctrk)->momentum().Mag();
+      TVector3 vec_vertex = mcData->track(imctrk)->vertex();
+      //This is flight length which is calcuted only when the track reaches to the CDH 
+      double flightlength = mcData->track(imctrk)->FlightLength();
       if(Verbosity_){
-        std::cerr<<"imctrk:" << imctrk<<" | "<< "pdgcode:" << pdgcode<<" parent_trkID:"<<parent<<" trackID:"<<track<< " mom:" << mom << std::endl;
+        std::cout<<"imctrk:" << imctrk<<" | "<< "pdgcode:" << pdgcode<< std::endl;
+        std::cout<<"parent_trkID:"<<  parent << std::endl;
+        std::cout<<"trackID:"<<track<< std::endl;
+        std::cout<<"mom:" << mom << std::endl;
+        std::cout<<"vertex R: " << vec_vertex.Perp() << std::endl;
+        std::cout<<"vertex Z: " << vec_vertex.Z() << std::endl;
+        std::cout<<"flight length:" << flightlength << std::endl;
       }
       for( int ip=0; ip<kin::npart; ip++ ){ 
         //   pick up necessary partciels stored in PDG[] array.
@@ -491,7 +452,7 @@ int main( int argc, char** argv )
           trackID[ip] = track;
           nparticle++;
           if(Verbosity_){
-            std::cerr<<"ip:" << ip<<" | "<<pdgcode<<" "<<parent<<" "<<track<<" "<<mcData->track(imctrk)->momentum().Mag()
+            std::cout<<"ip:" << ip<<" | "<<pdgcode<<" "<<parent<<" "<<track<<" "<<mcData->track(imctrk)->momentum().Mag()
               <<" ("<<mcData->track(imctrk)->momentum().CosTheta()<<" , "<<mcData->track(imctrk)->momentum().Phi()*360./TwoPi<<")"<<std::endl;
           }
           
@@ -500,8 +461,8 @@ int main( int argc, char** argv )
             parentID[kin::ncds] = track;
             parentID[kin::pip_g2] = track;//pip_g2 and pim_g2 are same.
             if(Verbosity_){
-              std::cerr << "parentID n  from Sigma:" << parentID[kin::ncds] << std::endl;
-              std::cerr << "parentID pi from Sigma:" << parentID[kin::pip_g2] << std::endl;
+              std::cout << "parentID n  from Sigma:" << parentID[kin::ncds] << std::endl;
+              std::cout << "parentID pi from Sigma:" << parentID[kin::pip_g2] << std::endl;
             }
           }
           break;
@@ -511,7 +472,7 @@ int main( int argc, char** argv )
 
     if( nparticle==kin::npart ) { 
       flagG4Decay = true;
-      if(Verbosity_) std::cerr << "L." << __LINE__ << " flagG4Decay OK " << std::endl;
+      if(Verbosity_) std::cout << "L." << __LINE__ << " flagG4Decay OK " << std::endl;
     }
     
 
@@ -564,7 +525,7 @@ int main( int argc, char** argv )
 
     if( nGoodTrack!=cdscuts::cds_ngoodtrack ){ // dedicated for pi+ pi- event
       nAbort_nGoodTrack++;
-      if(Verbosity_)std::cerr << "L." << __LINE__ << " Abort_nGoodTrack" << std::endl;
+      if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nGoodTrack" << std::endl;
       continue;
     }
 
@@ -572,6 +533,7 @@ int main( int argc, char** argv )
     int nCDH = 0;
     for( int i=0; i<cdsMan->nCDH(); i++ ){
       //if( cdsMan->CDH(i)->CheckRange() )
+      Tools::Fill2D(Form("CDHtime"),cdsMan->CDH(i)->seg(),cdsMan->CDH(i)->ctmean());
       if( cdsMan->CDH(i)->CheckRange() && cdsMan->CDH(i)->ctmean()<TDC_CDH_MAX ){
 	nCDH++;
       }
@@ -579,7 +541,7 @@ int main( int argc, char** argv )
     Tools::Fill1D( Form("mul_CDH"), nCDH );
     if( nCDH!=cdscuts::cdhmulti ){ //** only 3 hits events **// pi+, pi-, neutron from Sigma
       nAbort_nCDH++;
-      if(Verbosity_)std::cerr << "L." << __LINE__ << " Abort_nCDH" << std::endl;
+      if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nCDH" << std::endl;
       continue;
     }
 
@@ -592,7 +554,7 @@ int main( int argc, char** argv )
     Tools::Fill1D( Form("mul_T0"),  nT0 );
     if( nT0!=1 ){ 
       nAbort_nT0++;
-      if(Verbosity_)std::cerr << "L." << __LINE__ << " Abort_nT0" << std::endl;
+      if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nT0" << std::endl;
       continue;
     }
 
@@ -614,13 +576,13 @@ int main( int argc, char** argv )
     }
     Tools::Fill1D( Form("ntrack_BPC"), nbpc );
     if( nbpc!=1 ){
-      if(Verbosity_)std::cerr << "L." << __LINE__ << " Abort_nbpc" << std::endl;
+      if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nbpc" << std::endl;
       nAbort_nbpc++;
       continue;
     }
     LocalTrack *bpctrack = bltrackMan->trackBPC(bpcid);    
     if( bpctrack->chi2all()>10 ){
-      if(Verbosity_)std::cerr << "L." << __LINE__ << " Abort_bpctrack" << std::endl;
+      if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_bpctrack" << std::endl;
       nAbort_bpctrack++;
       continue;
     }
@@ -651,7 +613,7 @@ int main( int argc, char** argv )
     }
     Tools::Fill1D( Form("ntrack_BLC2"), nblc2 );
     if( !(nblc2==1 && blc2id!=-1) ){
-      if(Verbosity_)std::cerr << "L." << __LINE__ << " Abort_nblc2" << std::endl;
+      if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nblc2" << std::endl;
       nAbort_nblc2++;
       continue;
     }
@@ -696,7 +658,7 @@ int main( int argc, char** argv )
     }//iblc2trk
 
     if( !fblc2bpc ){
-      if(Verbosity_)std::cerr << "L." << __LINE__ << " Abort_fblc2bpc" << std::endl;
+      if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_fblc2bpc" << std::endl;
       nAbort_fblc2bpc++;
       continue;
     }
@@ -723,7 +685,7 @@ int main( int argc, char** argv )
       if( pdgcode==321 && parent==0 ){
         beammom = (mcData->track(imctrk)->momentum().Mag()+gRandom->Gaus(0,MOM_RES))/1000.0;
         if(Verbosity_>100){
-          std::cerr << "L." << __LINE__ << " beam mom:" << beammom << std::endl;
+          std::cout << "L." << __LINE__ << " beam mom:" << beammom << std::endl;
         }
         break;
       }
@@ -789,7 +751,7 @@ int main( int argc, char** argv )
       for( int icdhhit=0; icdhhit<cdstrack->nCDHHit(); icdhhit++ ){
         HodoscopeLikeHit *cdhhit = cdstrack->CDHHit(cdsMan,icdhhit);
         double tmptof = cdhhit->ctmean() - ctmT0;      
-        //cerr<<icdh<<": "<<cdhhit->ctmean()<<" - "<<ctmT0<<" = "<<tmptof<<std::endl;
+        //cout<<icdh<<": "<<cdhhit->ctmean()<<" - "<<ctmT0<<" = "<<tmptof<<std::endl;
         if( tmptof<tof || tof==999. ){ //*** apply minimum TOF hit ***//
           tof = tmptof;
           CDHseg = cdhhit->seg();
@@ -813,7 +775,7 @@ int main( int argc, char** argv )
       double tmptof, beta_calc;
       if( !TrackTools::FindMass2( cdstrack, bpctrack, tof, LVec_beam.Vect().Mag(),
 				  pid_beam, beta_calc, mass2, tmptof ) ){
-        std::cerr<<" !!! failure in PID_CDS [FindMass2()] !!! "<<std::endl;
+        std::cout<<" !!! failure in PID_CDS [FindMass2()] !!! "<<std::endl;
         continue;
       }
       int pid = TrackTools::PIDcorr(mom,mass2);      
@@ -826,7 +788,7 @@ int main( int argc, char** argv )
       TVector3 vtx_beam, vtx_cds;
       if( !cdstrack->CalcVertexTimeLength(bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), cdstrack->Mass(),
 				       vtx_beam, vtx_cds, tmptof, tmpl, true) ){
-        std::cerr<<" !!! failure in energy loss calculation [CalcVertexTimeLength()] !!! "<<std::endl;
+        std::cout<<" !!! failure in energy loss calculation [CalcVertexTimeLength()] !!! "<<std::endl;
         continue;
       }
 
@@ -843,7 +805,7 @@ int main( int argc, char** argv )
       
       if( pid<7 ) nTrack_PID++;
 
-      //cerr<<"    pid = "<<pid<<", tof = "<<tmptof<<", beta = "<<beta_calc
+      //cout<<"    pid = "<<pid<<", tof = "<<tmptof<<", beta = "<<beta_calc
       //<<", mom = "<<mom<<", mass = "<<sqrt(fabs(mass2))<<std::endl;
 
     }// for icdstrk
@@ -876,7 +838,7 @@ int main( int argc, char** argv )
     bool chargedhit = false;
     if( nBVC || nCVC || nPC ) chargedhit = true;
     if(Verbosity_){
-      std::cerr << "L." << __LINE__ <<  " charge veto!!" << std::endl;
+      std::cout << "L." << __LINE__ <<  " charge veto!!" << std::endl;
     }
 
     // + + + + + + + + + + + //
@@ -900,23 +862,23 @@ int main( int argc, char** argv )
 			   std::back_inserter(nCDHseg) );
 
       if( nCDHseg.size()!=1 ){
-        std::cerr<< "L." << __LINE__ << " CDH neutral hit is not 1 :: "<<nCDHseg.size()<<std::endl;
+        std::cout<< "L." << __LINE__ << " CDH neutral hit is not 1 :: "<<nCDHseg.size()<<std::endl;
       }
       
       if(Verbosity_){
-        std::cerr<<"# of diff = "<<nCDHseg.size()<<std::endl;
-        std::cerr<<"CDH hits =   ";
+        std::cout<<"# of diff = "<<nCDHseg.size()<<std::endl;
+        std::cout<<"CDH hits =   ";
         for( int n=0; n<(int)CDHhit_list.size(); n++ ){
-          std::cerr<<CDHhit_list[n]<<" ";
-        } std::cerr<<std::endl;
-        std::cerr<<"track hits = ";
+          std::cout<<CDHhit_list[n]<<" ";
+        } std::cout<<std::endl;
+        std::cout<<"track hits = ";
         for( int n=0; n<(int)vCDHseg.size(); n++ ){
-          std::cerr<<vCDHseg[n]<<" ";
-        } std::cerr<<std::endl;
-        std::cerr<<"diff hits =  ";
+          std::cout<<vCDHseg[n]<<" ";
+        } std::cout<<std::endl;
+        std::cout<<"diff hits =  ";
         for( int n=0; n<(int)nCDHseg.size(); n++ ){
-          std::cerr<<nCDHseg[n]<<" ";
-        } std::cerr<<std::endl;
+          std::cout<<nCDHseg[n]<<" ";
+        } std::cout<<std::endl;
       }
 
       //** isolation cut **//
@@ -930,7 +892,7 @@ int main( int argc, char** argv )
         }
       }
       if( flag_isolation ){
-        std::cerr<< "L."<< __LINE__ << " Event Number:" <<iev <<  " CDH hit candidate is NOT isolated !!!"<<std::endl;
+        std::cout<< "L."<< __LINE__ << " Event Number: " <<iev <<  " CDH hit candidate is NOT isolated !!!"<<std::endl;
         nAbort_CDHiso++;
         continue;
       }
@@ -945,11 +907,11 @@ int main( int argc, char** argv )
       //** charge veto using CDC **//
       TVector3 Pos_CDH;
       confMan->GetGeomMapManager()->GetPos( CID_CDH, ncdhhit->seg(), Pos_CDH );
-      if(Verbosity_) std::cerr<<"CDH candidate = "<<ncdhhit->seg()<<" -> "<<Pos_CDH.Phi()/TwoPi*360<<" deg"<<std::endl;
+      if(Verbosity_) std::cout<<"CDH candidate seg = "<<ncdhhit->seg()<<" -> "<<Pos_CDH.Phi()/TwoPi*360<<" deg"<<std::endl;
       
       const double PhiMin = -15.0/360.*TwoPi; // rad
       const double PhiMax =  15.0/360.*TwoPi; // rad
-      //std::cerr<<"Min/Max = "<<PhiMin/TwoPi*360<<"/"<<PhiMax/TwoPi*360<<" deg"<<std::endl;
+      //std::cout<<"Min/Max = "<<PhiMin/TwoPi*360<<"/"<<PhiMax/TwoPi*360<<" deg"<<std::endl;
       
       int nCDC = 0;
       for( int ilr=14; ilr<16; ilr++ ){ // charge veto using layer 14, 15
@@ -958,13 +920,13 @@ int main( int argc, char** argv )
           TVector3 Pos_CDC = cdc->wpos();
           Pos_CDC.SetZ(0); // only xy pos is used
           double angle = Pos_CDC.Angle(Pos_CDH); // rad
-          //std::cerr<<"CDC "<<l<<" "<<m<<" "<<cdc->wire()<<" -> "<<Pos_CDC.Phi()/TwoPi*360
+          //std::cout<<"CDC "<<l<<" "<<m<<" "<<cdc->wire()<<" -> "<<Pos_CDC.Phi()/TwoPi*360
           //<<" deg :: diff = "<<angle/TwoPi*360<<" deg"<<std::endl;
           Tools::Fill1D( Form("diff_CDH_CDC"), angle/TwoPi*360 );
           if( PhiMin<angle && angle<PhiMax ) nCDC++;
         }
       }
-      //std::cerr<<"# of CDC hits for nCDH candidate = "<<nCDC<<std::endl;
+      //std::cout<<"# of CDC hits for nCDH candidate = "<<nCDC<<std::endl;
       
       //Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is wrong in SIM [20170925]
       Pos_CDH.SetZ(ncdhhit->hitpos());
@@ -1025,7 +987,7 @@ int main( int argc, char** argv )
         NeutralBetaCDH = nlen/ntof/(Const*100.);
         double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0.;
         if(Verbosity_){
-          std::cerr<<"$$$ beta = "<<NeutralBetaCDH<<" mom_n = "<<tmp_mom<<std::endl; //" "<<1/sqrt(1+nMass*nMass)<<std::endl;
+          std::cout<<"$$$ beta = "<<NeutralBetaCDH<<" mom_n = "<<tmp_mom<<std::endl; //" "<<1/sqrt(1+nMass*nMass)<<std::endl;
 	      }
         //** reconstructoin of missing neutorn **//
         TVector3 P_pim; // Momentum(pi-)
@@ -1039,15 +1001,15 @@ int main( int argc, char** argv )
 
         track_pip->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_b, vtx_p );
         if( !track_pip->GetMomentum( vtx_p, P_pip, true, true ) ){
-          std::cerr<<" !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
+          std::cout<<" !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
         }
         track_pim->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_b, vtx_p );
         if( !track_pim->GetMomentum( vtx_p, P_pim, true, true ) ){
-          std::cerr<<" !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
+          std::cout<<" !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
         }
-        P_ncds = tmp_mom*(Pos_CDH-vtx_react).Unit();
+        P_ncds = tmp_mom*((Pos_CDH-vtx_react).Unit());
 	
-        if(Verbosity_) std::cerr << tmp_mom<<" ("<<P_ncds.CosTheta()<<" , "<<P_ncds.Phi()*360./TwoPi<<")"<<std::endl;
+        if(Verbosity_) std::cout << tmp_mom<<" ("<<P_ncds.CosTheta()<<" , "<<P_ncds.Phi()*360./TwoPi<<")"<<std::endl;
 
         LVec_pim.SetVectM( P_pim, piMass );
         LVec_pip.SetVectM( P_pip, piMass );
@@ -1056,7 +1018,7 @@ int main( int argc, char** argv )
         double mm_mass   = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).M();
         TVector3 P_missn = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).Vect();
         LVec_nmiss.SetVectM( P_missn, nMass );
-        if(Verbosity_)std::cerr<<"  missing mass = "<<mm_mass<<std::endl;
+        if(Verbosity_)std::cout<<"  missing mass = "<<mm_mass<<std::endl;
 	
         TVector3 boost = (LVec_target+LVec_beam).BoostVector();
         TLorentzVector LVec_nmiss_CM = LVec_nmiss;
@@ -1064,7 +1026,7 @@ int main( int argc, char** argv )
         LVec_nmiss_CM.Boost(-boost);
         LVec_beam_CM.Boost(-boost);
         double cos_n = LVec_nmiss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_nmiss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
-        if(Verbosity_)std::cerr<<"  missing mom = "<<LVec_nmiss.P()<<" | cos_CM = "<<cos_n<<std::endl;
+        if(Verbosity_)std::cout<<"  missing mom = "<<LVec_nmiss.P()<<" | cos_CM = "<<cos_n<<std::endl;
 	
 	
         //** + + + + + + + + + + + + + **//
@@ -1088,12 +1050,10 @@ int main( int argc, char** argv )
         //}
         //Fiducial cuts OK
         if( GeomTools::GetID(vtx_beam)==CID_Fiducial ){
-          //if(AddQAplots){
-          //  Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_beam.Z(),vtx_beam.X());
-          //  Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_beam.Z(),vtx_beam.Y());
-          //  Tools::Fill2D(Form("Vtx_XY_fid"),vtx_beam.X(),vtx_beam.Y());
-          //  Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
-          //}
+          Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_beam.Z(),vtx_beam.X());
+          Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_beam.Z(),vtx_beam.Y());
+          Tools::Fill2D(Form("Vtx_XY_fid"),vtx_beam.X(),vtx_beam.Y());
+          //Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
           Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
           Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
          
@@ -1181,16 +1141,17 @@ int main( int argc, char** argv )
               //Tools::Fill1D( Form("DCA_pippim"), dcapippim);
 
               if(Verbosity_){
-                std::cerr << "L."<< __LINE__ <<" Kinematical Fit using KinFitter" << std::endl;
+                std::cout << "L."<< __LINE__ <<" Kinematical Fit using KinFitter" << std::endl;
               }
-              // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
-              // %%% Kinematical Fit using KinFitter %%% //
-              // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
-              //--- set TLorentzVector for MC study---//
-              // beam_K(K+), pi-/+, Sigma+/-, n, n from Sigma, pi+/- from Sigma 
-              //  = 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+ 
-              //  = 2) TLorentzVector LVec_beam, LVec_pip, (LVec_n+LVec_pim), LVec_nmiss, LVec_n, LVec_pim = for pi+ Sigma- 
-
+            }//if (MissNFlag && K0rejectFlag && (SigmaPFlag || SigmaMFlag))
+            // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
+            // %%% Kinematical Fit using KinFitter %%% //
+            // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
+            //--- set TLorentzVector for MC study---//
+            // beam_K(K+), pi-/+, Sigma+/-, n, n from Sigma, pi+/- from Sigma 
+            //  = 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+ 
+            //  = 2) TLorentzVector LVec_beam, LVec_pip, (LVec_n+LVec_pim), LVec_nmiss, LVec_n, LVec_pim = for pi+ Sigma- 
+            if(K0rejectFlag){
               TLorentzVector TL_meas[kin::npart]; // measured
               TL_meas[kin::kmbeam] = LVec_beam;
               TL_meas[kin::nmiss] = LVec_nmiss; // * which n?
@@ -1208,11 +1169,17 @@ int main( int argc, char** argv )
               double val1 = (TL_meas[kin::ncds]-TL_gene[kin::nmiss]).P(); // n_measured - n_initial
               double val2 = (TL_meas[kin::ncds]-TL_gene[kin::ncds]).P(); // n_measured - n_Sigma
               int genID[kin::npart] = {0,1,2,3,4,5};
+              IsGoodEvent = true;
               if( val1<val2 ){ // is there more good selection way?
                 genID[kin::nmiss] = kin::ncds;
                 genID[kin::ncds] = kin::nmiss;
+
+                //ncds(gen.) is not detected, initial n is detected in CDS instead.
+                //abort this event !
+                nAbort_anothern++;
+                IsGoodEvent = false;
               }
-              if(Verbosity_)std::cerr<< "L." << __LINE__ << " val = "<<val1<<" "<<val2<<" -> "<< genID[kin::nmiss] <<" "<< genID[kin::ncds] << std::endl;
+              if(Verbosity_)std::cout<< "L." << __LINE__ << " val = "<<val1<<" "<<val2<<" -> "<< genID[kin::nmiss] <<" "<< genID[kin::ncds] << std::endl;
               mcmom_beam = TL_gene[kin::kmbeam];
               mcmom_ncds    = TL_gene[genID[kin::ncds]];
               if( reactionID==gen::reactionID_Spmode ){
@@ -1342,13 +1309,13 @@ int main( int argc, char** argv )
               double chi2 = kinfitter_Spmode.getS()<kinfitter_Smmode.getS() ? kinfitter_Spmode.getS():kinfitter_Smmode.getS();
               Tools::Fill2D( Form("KFchi2_vs"), kinfitter_Spmode.getS()/kinfitter_Spmode.getNDF(),
                   kinfitter_Smmode.getS()/kinfitter_Smmode.getNDF() );
-              if( chi2 < kin::chi2cut ) Tools::Fill1D( Form("KF_decision"), correct_flag );//TODO : avoid hard-code
+              if( chi2 < kin::chi2cut ) Tools::Fill1D( Form("KF_decision"), correct_flag );
 
               if(Verbosity_){
-                std::cerr<<"pi- S+ : status = "<<kinfitter_Spmode.getStatus()<<", chi2/NDF = "<<kinfitter_Spmode.getS()<<"/"<<kinfitter_Spmode.getNDF()<<std::endl;
-                std::cerr<<"pi+ S- : status = "<<kinfitter_Smmode.getStatus()<<", chi2/NDF = "<<kinfitter_Smmode.getS()<<"/"<<kinfitter_Smmode.getNDF()<<std::endl;
-                if      ( reactionID==gen::reactionID_Spmode ) std::cerr<<"*** pi- S+ ==> "<<correct_flag<<" ***"<<std::endl;
-                else if ( reactionID==gen::reactionID_Smmode ) std::cerr<<"*** pi+ S- ==> "<<correct_flag<<" ***"<<std::endl;
+                std::cout<<"pi- S+ : status = "<<kinfitter_Spmode.getStatus()<<", chi2/NDF = "<<kinfitter_Spmode.getS()<<"/"<<kinfitter_Spmode.getNDF()<<std::endl;
+                std::cout<<"pi+ S- : status = "<<kinfitter_Smmode.getStatus()<<", chi2/NDF = "<<kinfitter_Smmode.getS()<<"/"<<kinfitter_Smmode.getNDF()<<std::endl;
+                if      ( reactionID==gen::reactionID_Spmode ) std::cout<<"*** pi- S+ ==> "<<correct_flag<<" ***"<<std::endl;
+                else if ( reactionID==gen::reactionID_Smmode ) std::cout<<"*** pi+ S- ==> "<<correct_flag<<" ***"<<std::endl;
               }
               //** fill tree **//
               kfMomBeamSpmode   = TL_kfitSpmode[kin::kmbeam];
@@ -1375,18 +1342,68 @@ int main( int argc, char** argv )
 
 
             //--- for the covariance matrix evaluation ---//
-              if( flagG4Decay ){
-                for( int ip=0; ip<kin::npart; ip++ ){
-                  for( int j=0; j<4; j++ ){
-                    //only 
-                    double val = (TL_meas[ip][j] - TL_gene[genID[ip]][j]);
-                    Tools::Fill1D(Form("cov_%d_%d_%d", ip, j, j), val);
-                    //if( j==k ) std::cerr<<" cov "<<i<<" , "<<j<<" = "<<TL_meas[i][j]<<" - "<<TL_gene[i][j]
-                    //<<" = "<< (TL_meas[i][j] - TL_gene[i][j])<<std::endl;
-                  } // for
-                }
+              //if( flagG4Decay && IsGoodEvent && piSigma_detect ){
+              if( flagG4Decay && IsGoodEvent ){
+               // if (MissNFlag && K0rejectFlag && (SigmaPFlag || SigmaMFlag)){
+                if (MissNFlag && K0rejectFlag ){
+                  if( ((reactionID==gen::reactionID_Spmode)&&SigmaPFlag)
+                  ||  ((reactionID==gen::reactionID_Smmode)&&SigmaMFlag)){
+                    TVector3 primvtx;
+                    for( int ip=0; ip<kin::npart; ip++ ){
+                      for( int ii=0; ii<4; ii++ ){
+                        for( int jj=0; jj<4; jj++ ){
+                          //only 
+                          double val = (TL_meas[ip][ii] - TL_gene[genID[ip]][jj]);
+                          Tools::Fill1D(Form("cov_%d_%d_%d", ip, ii, jj), val);
+                          if(ip==kin::kmbeam) primvtx = mcData->track(ID[ip])->vertex();
+                          TVector3 vertex = mcData->track(ID[ip])->vertex();
+                          double mcDCA = (vertex.Mag()-primvtx.Mag())/10.0;
+                          //double mcDCA = vertex.Mag()-vtx_react.Mag();
+                          TVector3 vertexc(vertex.x()/10.,vertex.y()/10.,vertex.z()/10.); 
+                          
+                          double mom  = mcData->track(ID[ip])->momentum().Mag();
+
+                          //double mcDCAc = vertexc.Mag()-vtx_react.Mag();
+                          //Tools::Fill2D(Form("cov_zvtx_%d_%d_%d", ip, ii,jj), val, vertexc.z());
+                          Tools::Fill2D(Form("cov_mom_%d_%d_%d", ip, ii,jj), val, mom*0.001);
+                          if( ii==3 &&  ii==jj && ip==4 ){ 
+                            Tools::H1(Form("vtxdiffx"),vertexc.x()-vtx_react.x() ,1000,-2,2);
+                            Tools::H1(Form("vtxdiffy"),vertexc.y()-vtx_react.y() ,1000,-2,2);
+                            Tools::H1(Form("vtxdiffz"),vertexc.z()-vtx_react.z() ,1000,-10,10);
+                            if(Verbosity_){
+                              TLorentzVector TL_S = TL_gene[kin::ncds]+TL_gene[kin::pip_g2];
+                              TLorentzVector TL_Sreco = TL_meas[kin::ncds]+TL_meas[kin::pip_g2];
+                              
+                              std::cout << __LINE__ << std::endl;
+                              std::cout << "Mass gen n+pi " << TL_S.M() << std::endl;
+                              std::cout << "Mass reco n+pi " << TL_Sreco.M() << std::endl;
+                              std::cout << "IP " << ip << std::endl;
+                              std::cout << "mom (gen.) " << mom*0.001 << std::endl;
+                              std::cout << "LVec_n " << LVec_n.P() << std::endl;
+                              std::cout << "TL_meas[ip] " << TL_meas[ip].P() << std::endl;
+                              std::cout << "TL_gen[genID[ip]] " << TL_gene[genID[ip]].P() << std::endl;
+                              std::cout << "val " << val << std::endl;
+                            //  std::cout<< iev << std::endl;
+                            //  std::cout<< "ip:" << ip << std::endl;
+                            //std::cout<<" cov "<<ii<<" , "<<jj<<" = "<<TL_meas[ii][jj]<<" - "<<TL_gene[ii][jj]
+                            //<<" = "<< (TL_meas[ii][jj] - TL_gene[ii][jj])<<std::endl;
+                              std::cout << "mcDCA: " << mcDCA << std::endl;
+                              std::cout << "vertex X: " <<  vertex.x() << std::endl;
+                              std::cout << "vertex Y: " <<  vertex.y() << std::endl;
+                              std::cout << "vertex Z: " <<  vertex.z() << std::endl;
+                              std::cout << "reaVTX X: " <<  vtx_react.x() << std::endl;
+                              std::cout << "reaVTX Y: " <<  vtx_react.y() << std::endl;
+                              std::cout << "reaVTX Z: " <<  vtx_react.z() << std::endl;
+                              std::cout << "flight l: " << mcData->track(ID[ip])->FlightLength() << std::endl;
+                            }
+                          }
+                        }
+                      } // for
+                    }
+                  }
+                }//if (MissNFlag && K0rejectFlag && (SigmaPFlag || SigmaMFlag))
               }//if flagG4Decay
-            } // if( MissNFlag && K0rejectFlag && (SigmaPFlag || SigmaMFlag))
+            } // if( K0rejectFlag )
 
             kf_flag = reactionID; //correct_flag;
 
@@ -1410,9 +1427,12 @@ int main( int argc, char** argv )
             <<iev<<" , "<<" ---, "<<ev_cdc<<std::endl;
           }
           outfile2->cd();
-          pippimnTree->Fill();
+          //if(IsGoodEvent && piSigma_detect){
+          if(IsGoodEvent ){
+            pippimnTree->Fill();
+            nFill_pippimn++;
+          }
           outfile->cd();
-          nFill_pippimn++;
           //** fill tree **//
 	  
         } // if( GeomTools::GetID(vtx_react)==CID_Fiducial )
@@ -1445,7 +1465,8 @@ int main( int argc, char** argv )
   std::cout<<" nAbort_flagbmom    = "<<nAbort_flagbmom<<std::endl;
   std::cout<<" nAbort_ftarget     = "<<nAbort_ftarget<<std::endl;
   std::cout<<" nAbort_CDHiso      = "<<nAbort_CDHiso<<std::endl;
-  std::cout<<" nAbort_pippim        = "<<nAbort_pippim<<std::endl;
+  std::cout<<" nAbort_pippim      = "<<nAbort_pippim<<std::endl;
+  std::cout<<" nAbort_anothern    = "<<nAbort_anothern<<std::endl;
   std::cout<<" nAbort_end         = "<<nAbort_end<<std::endl;
   std::cout<<"***********************************************"<<std::endl;
   std::cout<<" nTrack_CDHshare = "<<nTrack_CDHshare<<std::endl;
