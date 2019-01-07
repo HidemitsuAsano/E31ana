@@ -1280,13 +1280,6 @@ void EventAnalysis::InitializeHistogram()
    
   Tools::newTH2F( Form("KFchi2_vs"),100,0,100,100,0,100);
   Tools::newTH1F( Form("KF_decision"), 2, -0.5, 1.5 );//TODO implement
-  //Tools::newTH2F( Form("MMom_NMom_Lambda"), 100, 0, 1.5, 100, 0, 1.5 );
-  //Tools::newTH2F( Form("Cosn_IMnppipi_Lambda"), 50, 2, 3, 50, -1, 1 );
-  //Tools::newTH2F( Form("Cosn_IMppipi_Lambda"), 100, 1, 2, 50, -1, 1 );
-  //Tools::newTH2F( Form("IMppipi_IMnppipi_Lambda"), 50, 2, 3, 100, 1, 2 );
-  //Tools::newTH1F( Form("DCA_p_Lambda"), 200, 0, 2 );
-  //Tools::newTH1F( Form("DCA_pip_Lambda"), 200, 0, 2 );
-  //Tools::newTH1F( Form("DCA_pim_Lambda"), 200, 0, 2 );
   return;
 }
 
