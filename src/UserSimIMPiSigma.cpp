@@ -108,6 +108,11 @@ int main( int argc, char** argv )
     std::cout<<argv[0]<<" $(ConfFile) $(OutFile) $(KnuclFile) $(CDCtrackingFile)"<<std::endl;
     return 0;
   }
+  
+
+  std::cout <<"L." << __LINE__ << "MOM_RES beam line: " << MOM_RES << std::endl;
+  std::cout <<"L." << __LINE__ << "TDC_CDH_MAX: " << TDC_CDH_MAX << std::endl;
+
 
   TDatabasePDG *pdg = new TDatabasePDG();
   pdg->ReadPDGTable("pdg_table.txt");
@@ -477,6 +482,7 @@ int main( int argc, char** argv )
     
 
     //actually not used ?
+    //std::cout << "ievt " << iev << std::endl;
     int nCDHhit[kin::npart] = {0, 0, 0, 0, 0, 0};
     if( flagG4Decay ){ // Sigma -> n pi decay
       for( int ihit=0; ihit<detData2->detectorHitSize(); ihit++ ){
@@ -484,12 +490,26 @@ int main( int argc, char** argv )
         int track  = detData2->detectorHit(ihit)->trackID();
         int parent = mcData->track(ihit)->parentTrackID();
         for( int ip=1; ip<kin::npart; ip++ ){// ip=0: beam (K-) is not included  
-          if( cid==CID_CDH && track==trackID[ip] ) nCDHhit[ip]++;
+          //std::cout << "L." << __LINE__ << " sim IP:" <<  ip << std::endl;
+          //std::cout << "L." << __LINE__ << " CID:" << cid << std::endl;
+          //std::cout << "L." << __LINE__ << " track:" << track << std::endl;
+          //std::cout << "L." << __LINE__ << " trackID[ip]:" << trackID[ip] << std::endl;
+          //std::cout << "L." << __LINE__ << " parent:" << parent << std::endl;
+          if( cid==CID_CDH && track==trackID[ip] ){
+            //std::cout << "match " << std::endl;
+            nCDHhit[ip]++;
+          }
         }
         //*** neutron hit search ***//
         //scan ncds and pip/pim from Sigma 
         for( int ip=4; ip<kin::npart; ip++ ){
-          if( cid==CID_CDH && parent==trackID[ip] ) nCDHhit[ip]++;
+          //std::cout << "L." << __LINE__ << " sim IP:" <<  ip << std::endl;
+          //std::cout << "L." << __LINE__ << " parent:" << parent << std::endl;
+          //std::cout << "L." << __LINE__ << " trackID[ip]:" << trackID[ip] << std::endl;
+          if( cid==CID_CDH && parent==trackID[ip] ){
+            //std::cout << "match " << std::endl;
+            nCDHhit[ip]++;
+          }
         }
         //*** neutron hit search ***//
       }//ihit
@@ -497,8 +517,9 @@ int main( int argc, char** argv )
 
     //determine whether pi-Sigma is detected in the CDS
     //pim_g1 = pip_g1 pip_g2 = pim_g2
-    //TODO : not working 
+    //not working right now, needs to change GEANT ADC thres.
     if( nCDHhit[kin::pim_g1] && nCDHhit[kin::ncds] && nCDHhit[kin::pip_g2] ){ 
+      //std::cout << "allmatch " << std::endl;
       piSigma_detect = true;
       nG4Event_piSigma++;
     }
@@ -1041,6 +1062,7 @@ int main( int argc, char** argv )
         bool NdEOK=false;
 
         Tools::Fill2D( Form("dE_betainv"), 1./NeutralBetaCDH, ncdhhit->emean() );
+        //Tools::Fill2D( Form("dE_time"),  , ncdhhit->ctmean() );
         Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
       
         //if(AddQAplots){
@@ -1053,7 +1075,7 @@ int main( int argc, char** argv )
           Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_beam.Z(),vtx_beam.X());
           Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_beam.Z(),vtx_beam.Y());
           Tools::Fill2D(Form("Vtx_XY_fid"),vtx_beam.X(),vtx_beam.Y());
-          //Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
+          Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
           Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
           Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
          
@@ -1132,7 +1154,7 @@ int main( int argc, char** argv )
               Tools::Fill2D( Form("Cosn_IMnpipi_woK0_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M(), cos_n );
               //
               Tools::Fill2D( Form("MMnmiss_IMnpipi_woK0_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M(), P_missn.Mag());
-
+              Tools::Fill2D( Form("nmom_IMnpipi_woK0_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M(), LVec_n.P());
               //momentum transfer 
               Tools::Fill2D( Form("q_IMnpipi_woK0_wSid_n"),(LVec_n+LVec_pim+LVec_pip).M(), (LVec_beam.Vect()-LVec_nmiss.Vect()).Mag());
 
@@ -1349,12 +1371,26 @@ int main( int argc, char** argv )
                   if( ((reactionID==gen::reactionID_Spmode)&&SigmaPFlag)
                   ||  ((reactionID==gen::reactionID_Smmode)&&SigmaMFlag)){
                     TVector3 primvtx;
+                    bool IsncdsMatchOK=true;
+                    //16.041, 16.0446, 7.08828 [MeV]
+                    double valpx = TL_meas[kin::ncds][0] - TL_gene[genID[kin::ncds]][0];  
+                    double valpy = TL_meas[kin::ncds][1] - TL_gene[genID[kin::ncds]][1];  
+                    double valpz = TL_meas[kin::ncds][2] - TL_gene[genID[kin::ncds]][2];  
+                    if(  !( -3.* 16.041/1000.  < valpx && valpx < 3.* 16.041/1000.)
+                      || !( -3.* 16.045/1000.  < valpy && valpy < 3.* 16.045/1000.) 
+                      || !( -3.* 7.0883/1000.  < valpz && valpz < 3.* 7.0883/1000.) ){
+                      IsncdsMatchOK=false;
+                    }
+
+
                     for( int ip=0; ip<kin::npart; ip++ ){
                       for( int ii=0; ii<4; ii++ ){
                         for( int jj=0; jj<4; jj++ ){
-                          //only 
+                          //only ncds and nmiss 
+                          
+
                           double val = (TL_meas[ip][ii] - TL_gene[genID[ip]][jj]);
-                          Tools::Fill1D(Form("cov_%d_%d_%d", ip, ii, jj), val);
+                          if(IsncdsMatchOK)Tools::Fill1D(Form("cov_%d_%d_%d", ip, ii, jj), val);
                           if(ip==kin::kmbeam) primvtx = mcData->track(ID[ip])->vertex();
                           TVector3 vertex = mcData->track(ID[ip])->vertex();
                           double mcDCA = (vertex.Mag()-primvtx.Mag())/10.0;
@@ -1365,7 +1401,7 @@ int main( int argc, char** argv )
 
                           //double mcDCAc = vertexc.Mag()-vtx_react.Mag();
                           //Tools::Fill2D(Form("cov_zvtx_%d_%d_%d", ip, ii,jj), val, vertexc.z());
-                          Tools::Fill2D(Form("cov_mom_%d_%d_%d", ip, ii,jj), val, mom*0.001);
+                          if(IsncdsMatchOK)Tools::Fill2D(Form("cov_mom_%d_%d_%d", ip, ii,jj), val, mom*0.001);
                           if( ii==3 &&  ii==jj && ip==4 ){ 
                             Tools::H1(Form("vtxdiffx"),vertexc.x()-vtx_react.x() ,1000,-2,2);
                             Tools::H1(Form("vtxdiffy"),vertexc.y()-vtx_react.y() ,1000,-2,2);
@@ -1570,6 +1606,7 @@ void InitializeHistogram()
   //** pi+ pi- X event **//
   Tools::newTH1F( Form("diff_CDH"), 73, -36.5, 36.5 );
   Tools::newTH1F( Form("diff_CDH_CDC"), 181, 0, 181 );
+  Tools::newTH2F( Form("NeutraltimeEnergy"), 500, 0, 100, 200, 0, 50);
   Tools::newTH2F( Form("dE_betainv"), 200, 0, 10, 200, 0, 50);
   Tools::newTH2F( Form("dE_betainv_fid"), 200, 0, 10, 200, 0, 50);
   Tools::newTH2F( Form("dE_betainv_fid_beta"), 200, 0, 10, 200, 0, 50);
@@ -1605,6 +1642,7 @@ void InitializeHistogram()
   Tools::newTH2F( Form("MMnmiss_IMnpipi_n"),100,1,2,100,0,1.5);
   Tools::newTH2F( Form("MMnmiss_IMnpipi_wSid_n"),100,1,2,100,0,1.5);
   Tools::newTH2F( Form("MMnmiss_IMnpipi_woK0_wSid_n"),100,1,2,100,0,1.5);
+  Tools::newTH2F( Form("nmom_IMnpipi_woK0_wSid_n"),100,1,2,100,0,1.0);
   Tools::newTH2F( Form("q_IMnpipi_woK0_wSid_n"),100,1,2,300,0,1.5);
   Tools::newTH1F( Form("DCA_pip"), 500, 0, 5 );
   Tools::newTH1F( Form("DCA_pim"), 500, 0, 5 );
