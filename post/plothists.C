@@ -3,7 +3,7 @@ const bool staton=false;
 
 namespace anacuts{
   const double beta_MAX = 0.728786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
-  const double dE_MIN = 2.0; // 8.0MeVee * 3cm / 5cm;
+  const double dE_MIN = 0.0; // 8.0MeVee * 3cm / 5cm;
 
   const double pipi_MIN = 0.485;
   const double pipi_MAX = 0.510;
@@ -19,7 +19,7 @@ namespace anacuts{
   const double Sigmam_MAX = 1.22;
 }
 
-void plothists(const char *filename="evanaIMpisigma_all_v18.root")
+void plothists(const char *filename="evanaIMpisigma_all_v23.root")
 {
   cout << "filename " << filename << endl;
   gStyle->SetPadGridX(gridon);
@@ -30,7 +30,7 @@ void plothists(const char *filename="evanaIMpisigma_all_v18.root")
   gStyle->SetStatX(0.98);
   gStyle->SetStatY(0.9);
   gStyle->SetStatBorderSize(1);
-  
+  //gStyle->SetPalette(56);
   TFile *f = new TFile(filename,"READ"); 
   
   TCanvas *cEventCheck = new TCanvas("cEventCheck","cEventCheck");
@@ -322,8 +322,10 @@ void QACDS(const char *filename){
   h1_6mevcut->SetLineColor(4);
   h1_6mevcut->Draw("same");
   
-  
-  //TCanvas *c
+  TCanvas *c_dE_fiducial = new TCanvas("c_dE_fiducial","c_dE_fiducial");
+  TH2F* h2_dE_betainv_fid_beta = f->Get("dE_betainv_fid_beta");
+  TH1D* h1_dE_beta = h2_dE_betainv_fid_beta->ProjectionY("py");
+  h1_dE_beta->Draw();
 
 
   return;
@@ -352,7 +354,7 @@ void PhysicsPlots(const char *filename){
   h1_IMpipi_clone->Draw("same");
   
 
-  TCanvas *cMMom_MMass_fid_beta_dE = new TCanvas("cMMom_MMass_fid_beta_dE","");
+  TCanvas *cMMom_MMass_fid_beta_dE = new TCanvas("cMMom_MMass_fid_beta_dE","cMMom_MMass_fid_beta_dE");
   TH2F* h2_MMom_MMass_fid_beta_dE = f->Get("MMom_MMass_fid_beta_dE");
   h2_MMom_MMass_fid_beta_dE->SetXTitle("missing mass [GeV/c^{2}]");
   h2_MMom_MMass_fid_beta_dE->GetXaxis()->CenterTitle();
@@ -360,24 +362,24 @@ void PhysicsPlots(const char *filename){
   h2_MMom_MMass_fid_beta_dE->GetYaxis()->CenterTitle();
   h2_MMom_MMass_fid_beta_dE->Draw("colz");
   
-  TCanvas *cMMom_MMass_fid_beta_dE_px = new TCanvas("cMMom_MMass_fid_beta_dE_px","");
+  TCanvas *cMMom_MMass_fid_beta_dE_px = new TCanvas("cMMom_MMass_fid_beta_dE_px","cMMom_MMass_fid_beta_dE_px");
   TH1D* proMMass = h2_MMom_MMass_fid_beta_dE->ProjectionX();
   proMMass->Draw();
   
-  TCanvas *cMMom_MMass_fid_beta = new TCanvas("cMMom_MMass_fid_beta","");
-  TH2F* h2_MMom_MMass_fid_beta = f->Get("MMom_MMass_fid_beta");
+  TCanvas *cMMom_MMass_fid_beta = new TCanvas("cMMom_MMass_fid_beta","cMMom_MMass_fid_beta");
+  TH2F* h2_MMom_MMass_fid_beta = f->Get("MMom_MMass_fid_beta_dE");
   h2_MMom_MMass_fid_beta->SetXTitle("missing mass [GeV/c^{2}]");
   h2_MMom_MMass_fid_beta->GetXaxis()->CenterTitle();
   h2_MMom_MMass_fid_beta->SetYTitle("missing momentum [GeV/c]");
   h2_MMom_MMass_fid_beta->GetYaxis()->CenterTitle();
   h2_MMom_MMass_fid_beta->Draw("colz");
   
-  TCanvas *cMMom_MMass_fid_beta_px = new TCanvas("cMMom_MMass_fid_beta_px","");
+  TCanvas *cMMom_MMass_fid_beta_px = new TCanvas("cMMom_MMass_fid_beta_px","cMMom_MMass_fid_beta_px");
   TH1D* proMMass2 = h2_MMom_MMass_fid_beta->ProjectionX();
   proMMass2->Draw();
 
  
-  TCanvas *cMMom_MMass_fid_beta_wSid = new TCanvas("cMMom_MMass_fid_beta_wSid","");
+  TCanvas *cMMom_MMass_fid_beta_wSid = new TCanvas("cMMom_MMass_fid_beta_wSid","cMMom_MMass_fid_beta_wSid");
   TH2F* h2_MMom_MMass_fid_beta_wSid = f->Get("MMom_MMass_fid_beta_dE_woK0_wSid");
   h2_MMom_MMass_fid_beta_wSid->SetXTitle("missing mass [GeV/c^{2}]");
   h2_MMom_MMass_fid_beta_wSid->GetXaxis()->CenterTitle();
@@ -385,40 +387,42 @@ void PhysicsPlots(const char *filename){
   h2_MMom_MMass_fid_beta_wSid->GetYaxis()->CenterTitle();
   h2_MMom_MMass_fid_beta_wSid->Draw("colz");
   
-  TCanvas *cMMom_MMass_fid_beta_wSid_px = new TCanvas("cMMom_MMass_fid_beta__wSid_px","");
+  TCanvas *cMMom_MMass_fid_beta_wSid_px = new TCanvas("cMMom_MMass_fid_beta_wSid_px","cMMom_MMass_fid_beta_wSid_px");
   TH1D* proMMass2_wSid = h2_MMom_MMass_fid_beta_wSid->ProjectionX();
-  proMMass2_wSid->Draw();
-
+  proMMass2->Draw();
+  proMMass2_wSid->SetLineColor(2);
+  proMMass2_wSid->Draw("same");
 
   
-  TCanvas *cIMnpim_IMnpip = new TCanvas("cIMnpim_IMnpip","");
-  TH2F* h2_IMnpim_IMnpip = f->Get("IMnpim_IMnpip_dE");
-  h2_IMnpim_IMnpip->SetXTitle("IM(#pi^{+}n) [GeV/c^{2}]");
-  h2_IMnpim_IMnpip->GetXaxis()->CenterTitle();
-  h2_IMnpim_IMnpip->SetYTitle("IM(#pi^{-}n) [GeV/c^{2}]");
-  h2_IMnpim_IMnpip->GetYaxis()->CenterTitle();
-  h2_IMnpim_IMnpip->Draw("colz");
+  // Sigma+/- selection w/o missing N ID after removing K0
+  TCanvas *cIMnpim_IMnpip = new TCanvas("cIMnpim_IMnpip_dE_woK0","cIMnpim_IMnpip_dE_woK0");
+  TH2F* h2_IMnpim_IMnpip_dE_woK0 = f->Get("IMnpim_IMnpip_dE_woK0");
+  h2_IMnpim_IMnpip_dE_woK0->SetXTitle("IM(#pi^{+}n) [GeV/c^{2}]");
+  h2_IMnpim_IMnpip_dE_woK0->GetXaxis()->CenterTitle();
+  h2_IMnpim_IMnpip_dE_woK0->SetYTitle("IM(#pi^{-}n) [GeV/c^{2}]");
+  h2_IMnpim_IMnpip_dE_woK0->GetYaxis()->CenterTitle();
+  h2_IMnpim_IMnpip_dE_woK0->Draw("colz");
   
 
-  TCanvas *cIMnpim_IMnpip_px = new TCanvas("cIMnpim_IMnpip_px","");
-  TH1D* h2_IMnpim_IMnpip_px = h2_IMnpim_IMnpip->ProjectionX();
-  h2_IMnpim_IMnpip_px->Draw();
-  TH1D* h2_IMnpim_IMnpip_px_clone = h2_IMnpim_IMnpip_px->Clone();
-  h2_IMnpim_IMnpip_px_clone->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
-  h2_IMnpim_IMnpip_px_clone->SetFillColor(3);
-  h2_IMnpim_IMnpip_px_clone->Draw("same");
+  TCanvas *cIMnpim_IMnpip_px = new TCanvas("cIMnpim_IMnpip_dE_woK0_px","cIMnpim_IMnpip_dE_woK0_px");
+  TH1D* h2_IMnpim_IMnpip_dE_woK0_px = h2_IMnpim_IMnpip_dE_woK0->ProjectionX();
+  h2_IMnpim_IMnpip_dE_woK0_px->Draw();
+  TH1D* h2_IMnpim_IMnpip_dE_woK0_px_clone = h2_IMnpim_IMnpip_dE_woK0_px->Clone();
+  h2_IMnpim_IMnpip_dE_woK0_px_clone->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
+  h2_IMnpim_IMnpip_dE_woK0_px_clone->SetFillColor(3);
+  h2_IMnpim_IMnpip_dE_woK0_px_clone->Draw("same");
 
-  TCanvas *cIMnpim_IMnpip_py = new TCanvas("cIMnpim_IMnpip_py","");
-  TH1D* h2_IMnpim_IMnpip_py = h2_IMnpim_IMnpip->ProjectionY();
-  h2_IMnpim_IMnpip_py->Draw();
-  TH1D* h2_IMnpim_IMnpip_py_clone = h2_IMnpim_IMnpip_py->Clone();
-  h2_IMnpim_IMnpip_py_clone->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
-  h2_IMnpim_IMnpip_py_clone->SetFillColor(4);
-  h2_IMnpim_IMnpip_py_clone->Draw("same");
-
-
-  //
-  TCanvas *cIMnpim_IMnpip_wmn = new TCanvas("cIMnpim_IMnpip_wmn","");
+  TCanvas *cIMnpim_IMnpip_py = new TCanvas("cIMnpim_IMnpip_dE_woK0_py","cIMnpim_IMnpip_dE_woK0_py");
+  TH1D* h2_IMnpim_IMnpip_dE_woK0_py = h2_IMnpim_IMnpip_dE_woK0->ProjectionY();
+  h2_IMnpim_IMnpip_dE_woK0_py->Draw();
+  TH1D* h2_IMnpim_IMnpip_dE_woK0_py_clone = h2_IMnpim_IMnpip_dE_woK0_py->Clone();
+  h2_IMnpim_IMnpip_dE_woK0_py_clone->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
+  h2_IMnpim_IMnpip_dE_woK0_py_clone->SetFillColor(4);
+  h2_IMnpim_IMnpip_dE_woK0_py_clone->Draw("same");
+  
+  /*
+  // Sigma+/- selection w/ missing N ID after removing K0
+  TCanvas *cIMnpim_IMnpip_wmn = new TCanvas("cIMnpim_IMnpip_wmn","cIMnpim_IMnpip_wmn");
   TH2F* h2_IMnpim_IMnpip_wmn = f->Get("IMnpim_IMnpip_wmn_dE");
   h2_IMnpim_IMnpip_wmn->SetXTitle("IM(#pi^{+}n) [GeV/c^{2}]");
   h2_IMnpim_IMnpip_wmn->GetXaxis()->CenterTitle();
@@ -427,7 +431,7 @@ void PhysicsPlots(const char *filename){
   h2_IMnpim_IMnpip_wmn->Draw("colz");
   
 
-  TCanvas *cIMnpim_IMnpip_wmn_px = new TCanvas("cIMnpim_IMnpip_wmn_px","");
+  TCanvas *cIMnpim_IMnpip_wmn_px = new TCanvas("cIMnpim_IMnpip_wmn_px","cIMnpim_IMnpip_wmn_px");
   TH1D* h2_IMnpim_IMnpip_wmn_px = h2_IMnpim_IMnpip_wmn->ProjectionX();
   h2_IMnpim_IMnpip_wmn_px->Draw();
   TH1D* h2_IMnpim_IMnpip_wmn_px_clone = h2_IMnpim_IMnpip_wmn_px->Clone();
@@ -435,17 +439,17 @@ void PhysicsPlots(const char *filename){
   h2_IMnpim_IMnpip_wmn_px_clone->SetFillColor(3);
   h2_IMnpim_IMnpip_wmn_px_clone->Draw("same");
 
-  TCanvas *cIMnpim_IMnpip_wmn_py = new TCanvas("cIMnpim_IMnpip_wmn_py","");
+  TCanvas *cIMnpim_IMnpip_wmn_py = new TCanvas("cIMnpim_IMnpip_wmn_py","cIMnpim_IMnpip_wmn_py");
   TH1D* h2_IMnpim_IMnpip_wmn_py = h2_IMnpim_IMnpip_wmn->ProjectionY();
   h2_IMnpim_IMnpip_wmn_py->Draw();
   TH1D* h2_IMnpim_IMnpip_wmn_py_clone = h2_IMnpim_IMnpip_wmn_py->Clone();
   h2_IMnpim_IMnpip_wmn_py_clone->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
   h2_IMnpim_IMnpip_wmn_py_clone->SetFillColor(4);
   h2_IMnpim_IMnpip_wmn_py_clone->Draw("same");
-
+  
 
   
-  TCanvas *cIMmnpim_IMmnpip = new TCanvas("cIMmnpim_IMmnpip","");
+  TCanvas *cIMmnpim_IMmnpip = new TCanvas("cIMmnpim_IMmnpip","cIMmnpim_IMmnpip");
   TH2F* h2_IMmnpim_IMmnpip = f->Get("IMmnpim_IMmnpip");
   h2_IMmnpim_IMmnpip->SetXTitle("IM(#pi^{+}n) [GeV/c^{2}]");
   h2_IMmnpim_IMmnpip->GetXaxis()->CenterTitle();
@@ -453,7 +457,7 @@ void PhysicsPlots(const char *filename){
   h2_IMmnpim_IMmnpip->GetYaxis()->CenterTitle();
   h2_IMmnpim_IMmnpip->Draw("colz");
   
-  TCanvas *cIMmnpim_IMmnpip_px = new TCanvas("cIMmnpim_IMmnpip_px","");
+  TCanvas *cIMmnpim_IMmnpip_px = new TCanvas("cIMmnpim_IMmnpip_px","cIMmnpim_IMmnpip_px");
   TH1D* h2_IMmnpim_IMmnpip_px = h2_IMmnpim_IMmnpip->ProjectionX();
   h2_IMmnpim_IMmnpip_px->Draw();
   //TH1D* h2_IMmnpim_IMmnpip_px_clone = h2_IMmnpim_IMmnpip_px->Clone();
@@ -461,7 +465,7 @@ void PhysicsPlots(const char *filename){
   //h2_IMmnpim_IMmnpip_px_clone->SetFillColor(3);
   //h2_IMmnpim_IMmnpip_px_clone->Draw("same");
 
-  TCanvas *cIMmnpim_IMmnpip_py = new TCanvas("cIMmnpim_IMmnpip_py","");
+  TCanvas *cIMmnpim_IMmnpip_py = new TCanvas("cIMmnpim_IMmnpip_py","cIMmnpim_IMmnpip_py");
   TH1D* h2_IMmnpim_IMmnpip_py = h2_IMmnpim_IMmnpip->ProjectionY();
   h2_IMmnpim_IMmnpip_py->Draw();
   //TH1D* h2_IMmnpim_IMmnpip_py_clone = h2_IMmnpim_IMmnpip_py->Clone();
@@ -469,7 +473,7 @@ void PhysicsPlots(const char *filename){
   //h2_IMmnpim_IMmnpip_py_clone->SetFillColor(4);
   //h2_IMmnpim_IMmnpip_py_clone->Draw("same");
 
-  TCanvas *cIMnpipi_wSid = new TCanvas("cIMnpipi_wSid","");
+  TCanvas *cIMnpipi_wSid = new TCanvas("cIMnpipi_wSid","cIMnpipi_wSid");
   //TH1F* h1_IMnpipi_wSid = f->Get("IMnpipi_wSid");
   //h1_IMnpipi_wSid->SetXTitle("IM(n#pi^{-}#pi^{+}) [GeV/c^{2}]");
   //h1_IMnpipi_wSid->GetXaxis()->CenterTitle();
@@ -486,61 +490,100 @@ void PhysicsPlots(const char *filename){
   h1_IMnpipi_woK0_wSid->SetYTitle("Counts per 10 MeV/c^{2}");
   h1_IMnpipi_woK0_wSid->GetYaxis()->CenterTitle();
   h1_IMnpipi_woK0_wSid->Draw("HE");
+  
 
+  //dE dep. check
+  TCanvas *cdE_MMom_fid_beta_woK0 = new TCanvas("cdE_MMom_fid_beta_woK0","cdE_MMom_fid_beta_woK0");
+  TH2F* h2_dE_MMom_fid_beta_woK0 = f->Get("dE_MMom_fid_beta_woK0");
+  h2_dE_MMom_fid_beta_woK0->SetXTitle("Missing Momentum [GeV/c]");
+  h2_dE_MMom_fid_beta_woK0->GetXaxis()->CenterTitle();
+  h2_dE_MMom_fid_beta_woK0->SetYTitle("Energy Dep. [MeVee]");
+  h2_dE_MMom_fid_beta_woK0->GetYaxis()->CenterTitle();
+  h2_dE_MMom_fid_beta_woK0->Draw("colz");
 
-  TCanvas *cMMnmiss_IMnpipi_woK0_wSid = new TCanvas("cMMnmiss_IMnpipi_woK0_wSid","");
+  TCanvas *cdE_MMass_fid_beta_woK0 = new TCanvas("cdE_MMass_fid_beta_woK0","cdE_MMass_fid_beta_woK0");
+  TH2F* h2_dE_MMass_fid_beta_woK0 = f->Get("dE_MMass_fid_beta_woK0");
+  h2_dE_MMass_fid_beta_woK0->SetXTitle("Missing Mass [GeV/c^{2}]");
+  h2_dE_MMass_fid_beta_woK0->GetXaxis()->CenterTitle();
+  h2_dE_MMass_fid_beta_woK0->SetYTitle("Energy Dep. [MeVee]");
+  h2_dE_MMass_fid_beta_woK0->GetYaxis()->CenterTitle();
+  h2_dE_MMass_fid_beta_woK0->Draw("colz");
+
+  //
+  TCanvas *cMMnmiss_IMnpipi_woK0_wSid = new TCanvas("cMMnmiss_IMnpipi_woK0_wSid","cMMnmiss_IMnpipi_woK0_wSid");
   TH2F* h2_MMnmiss_IMnpipi_woK0_wSid = f->Get("MMnmiss_IMnpipi_woK0_wSid");
   h2_MMnmiss_IMnpipi_woK0_wSid->SetXTitle("IM(n#pi^{-}#pi^{+}) [GeV/c^{2}]");
   h2_MMnmiss_IMnpipi_woK0_wSid->GetXaxis()->CenterTitle();
   h2_MMnmiss_IMnpipi_woK0_wSid->SetYTitle("Missing Momentum [GeV/c]");
   h2_MMnmiss_IMnpipi_woK0_wSid->GetYaxis()->CenterTitle();
   h2_MMnmiss_IMnpipi_woK0_wSid->Draw("colz");
-  
-  TCanvas *cCosn_IMnpipi = new TCanvas("cCosn_IMnpipi","");
-  TH2F* h2_cCosn_IMnpipi = f->Get("Cosn_IMnpipi");
+  */ 
+  TCanvas *cCosn_IMnpipi = new TCanvas("cCosn_IMnpipi","cCosn_IMnpipi");
+  TH2F* h2_cCosn_IMnpipi = f->Get("Cosn_IMnpipi_woK0_wSid_n");
   h2_cCosn_IMnpipi->SetXTitle("IM(n#pi^{-}#pi^{+}) [GeV/c^{2}]");
   h2_cCosn_IMnpipi->GetXaxis()->CenterTitle();
   h2_cCosn_IMnpipi->SetYTitle("cos#theta_{CM}");
   h2_cCosn_IMnpipi->GetYaxis()->CenterTitle();
   h2_cCosn_IMnpipi->Draw("colz");
   
-  
-  TCanvas *cq_IMnpipi_woK0_wSid = new TCanvas("cq_IMnpipi_woK0_wSid","");
-  TH2F* h2_q_IMnpipi_woK0_wSid = f->Get("q_IMnpipi_woK0_wSid");
-  h2_q_IMnpipi_woK0_wSid->SetXTitle("IM(n#pi^{-}#pi^{+}) [GeV/c^{2}]");
-  h2_q_IMnpipi_woK0_wSid->SetYTitle("mom. transfer [GeV/c]");
-  h2_q_IMnpipi_woK0_wSid->GetXaxis()->CenterTitle();
-  h2_q_IMnpipi_woK0_wSid->GetYaxis()->CenterTitle();
-  h2_q_IMnpipi_woK0_wSid->SetTitle("");
-  h2_q_IMnpipi_woK0_wSid->Draw("colz");
+  TCanvas *cq_IMnpipi_woK0_wSid = new TCanvas("cq_IMnpipi_woK0_wSid","cq_IMnpipi_woK0_wSid");
+  TH2F* h2_q_IMnpipi_woK0_wSid_n = f->Get("q_IMnpipi_woK0_wSid_n");
+  h2_q_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{-}#pi^{+}) [GeV/c^{2}]");
+  h2_q_IMnpipi_woK0_wSid_n->SetYTitle("mom. transfer [GeV/c]");
+  h2_q_IMnpipi_woK0_wSid_n->GetXaxis()->CenterTitle();
+  h2_q_IMnpipi_woK0_wSid_n->GetYaxis()->CenterTitle();
+  h2_q_IMnpipi_woK0_wSid_n->RebinX(2);
+  h2_q_IMnpipi_woK0_wSid_n->RebinY(6);
+  h2_q_IMnpipi_woK0_wSid_n->GetXaxis()->SetRangeUser(1.2,2.0);
+  //h2_q_IMnpipi_woK0_wSid_n->SetTitle("");
+  h2_q_IMnpipi_woK0_wSid_n->Draw("colz");
   
   //find Kp threshold
-  int kpbin = h2_q_IMnpipi_woK0_wSid->GetXaxis()->FindBin(1.432);
+  int kpbin = h2_q_IMnpipi_woK0_wSid_n->GetXaxis()->FindBin(1.432);
+  //find 350 MeV/c bin
+  int qcut350 = h2_q_IMnpipi_woK0_wSid_n->GetYaxis()->FindBin(0.350);  
+
   TCanvas *cq_IMnpipi_woK0_wSid_px = new TCanvas("cq_IMnpipi_woK0_wSid_px","");   
-  TH1D* h2_q_IMnpipi_woK0_wSid_px = h2_q_IMnpipi_woK0_wSid->ProjectionX("px");
-  h2_q_IMnpipi_woK0_wSid_px->SetTitle("");
-  //h2_q_IMnpipi_woK0_wSid_px->GetXaxis()->SetRange(0,kpbin);
-  h2_q_IMnpipi_woK0_wSid_px->Draw("E");
-  std::cout << kpbin << std::endl;
+  TH1D* h2_q_IMnpipi_woK0_wSid_n_px = h2_q_IMnpipi_woK0_wSid_n->ProjectionX("px");
+  h2_q_IMnpipi_woK0_wSid_n_px->GetXaxis()->SetRangeUser(1.2,2.0);
+  //h2_q_IMnpipi_woK0_wSid_n_px->SetTitle("");
+  //h2_q_IMnpipi_woK0_wSid_n_px->GetXaxis()->SetRange(0,kpbin);
+  //h2_q_IMnpipi_woK0_wSid_n_px->SetMaximum(1700);
+  h2_q_IMnpipi_woK0_wSid_n_px->Draw("E");
 
-  TCanvas *cq_IMnpipi_woK0_wSid_py_nocut = new TCanvas("cq_IMnpipi_woK0_wSid_py_nocut","");   
-  TH1D* h2_q_IMnpipi_woK0_wSid_py_nocut = h2_q_IMnpipi_woK0_wSid->ProjectionY("pycut");
-  h2_q_IMnpipi_woK0_wSid_py_nocut->SetTitle("");
-  h2_q_IMnpipi_woK0_wSid_py_nocut->Rebin(4);
-  h2_q_IMnpipi_woK0_wSid_py_nocut->Draw("E");
+  TH1D* h2_q_IMnpipi_woK0_wSid_n_px_qcut350 = h2_q_IMnpipi_woK0_wSid_n->ProjectionX("pxcut",qcut350,300);
+  h2_q_IMnpipi_woK0_wSid_n_px_qcut350->SetLineColor(2);
+  //h2_q_IMnpipi_woK0_wSid_n_px_qcut350->Draw("Esame");
+  //h2_q_IMnpipi_woK0_wSid_n_px->SetTitle("");
+
+
+
+  std::cout << "kpbin:"<< kpbin << std::endl;
+  std::cout << "qcut350:" << qcut350 << std::endl;
+
+  TCanvas *cq_IMnpipi_woK0_wSid_py_nocut = new TCanvas("cq_IMnpipi_woK0_wSid_py_nocut","cq_IMnpipi_woK0_wSid_py_nocut");   
+  TH1D* h2_q_IMnpipi_woK0_wSid_n_py_nocut = h2_q_IMnpipi_woK0_wSid_n->ProjectionY("pycut");
+  //h2_q_IMnpipi_woK0_wSid_n_py_nocut->SetTitle("");
+  //h2_q_IMnpipi_woK0_wSid_n_py_nocut->Rebin(4);
+  h2_q_IMnpipi_woK0_wSid_n_py_nocut->Draw("E");
   
   
-  TCanvas *cq_IMnpipi_woK0_wSid_py = new TCanvas("cq_IMnpipi_woK0_wSid_py","");   
-  TH1D* h2_q_IMnpipi_woK0_wSid_py = h2_q_IMnpipi_woK0_wSid->ProjectionY("py",0,kpbin-1);
-  h2_q_IMnpipi_woK0_wSid_py->SetTitle("");
-  h2_q_IMnpipi_woK0_wSid_py->Rebin(4);
-  h2_q_IMnpipi_woK0_wSid_py->Draw("E");
+  //TCanvas *cq_IMnpipi_woK0_wSid_py = new TCanvas("cq_IMnpipi_woK0_wSid_py","cq_IMnpipi_woK0_wSid_py");   
+  TH1D* h2_q_IMnpipi_woK0_wSid_n_py = h2_q_IMnpipi_woK0_wSid_n->ProjectionY("py",0,kpbin-1);
+  h2_q_IMnpipi_woK0_wSid_n_py->SetTitle("");
+  //h2_q_IMnpipi_woK0_wSid_n_py->Rebin(4);
+  h2_q_IMnpipi_woK0_wSid_n_py->SetLineColor(2);
+  h2_q_IMnpipi_woK0_wSid_n_py->Draw("Esame");
 
-  TCanvas *cq_IMnpipi_woK0_wSid_py2 = new TCanvas("cq_IMnpipi_woK0_wSid_py2","");   
-  TH1D* h2_q_IMnpipi_woK0_wSid_py2 = h2_q_IMnpipi_woK0_wSid->ProjectionY("py2",kpbin,200);
-  h2_q_IMnpipi_woK0_wSid_py2->SetTitle("");
-  h2_q_IMnpipi_woK0_wSid_py2->Rebin(4);
-  h2_q_IMnpipi_woK0_wSid_py2->Draw("E");
+  //TCanvas *cq_IMnpipi_woK0_wSid_py2 = new TCanvas("cq_IMnpipi_woK0_wSid_py2","cq_IMnpipi_woK0_wSid_py2");   
+  TH1D* h2_q_IMnpipi_woK0_wSid_n_py2 = h2_q_IMnpipi_woK0_wSid_n->ProjectionY("py2",kpbin,200);
+  h2_q_IMnpipi_woK0_wSid_n_py2->SetTitle("");
+  //h2_q_IMnpipi_woK0_wSid_n_py2->Rebin(4);
+  h2_q_IMnpipi_woK0_wSid_n_py2->SetLineColor(3);
+  h2_q_IMnpipi_woK0_wSid_n_py2->Draw("Esame");
+
+
+
 
 }
 
