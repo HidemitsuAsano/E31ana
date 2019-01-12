@@ -304,7 +304,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     if( (LVec_pip_pim.M()<anacuts::pipi_MIN || anacuts::pipi_MAX<LVec_pip_pim.M())) K0rejectFlag=true;
      
 
-    if( -1<kf_flag && 0.05<pvalue && K0rejectFlag ){
+    if( -1<kf_flag && 0.01<pvalue && K0rejectFlag ){
       if( kfSmmode_pvalue<kfSpmode_pvalue ){
         dE_betainv_fid[0]->Fill(1./NeutralBetaCDH,dE);
         if(NBetaOK){
