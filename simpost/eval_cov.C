@@ -14,6 +14,11 @@ void eval_cov(const char*filename="")
     cout << "file not found !" << filename << endl;
     return;
   }
+  
+  TString outfilename = string(filename);
+  outfilename.Insert(outfilename.Sizeof()-6,"_eval");
+  outfilename.Replace(outfilename.Sizeof()-5,5,"pdf");
+  std::cout << outfilename << std::endl;
   //TFile *f = new TFile("simdata012_ana00/sim_0000.root");
 
   const int num = 6;
@@ -74,11 +79,11 @@ void eval_cov(const char*filename="")
     }
   }
 
-  can[0]->Print("tmp.pdf(");
+  can[0]->Print(outfilename+"(");
   for( int i=1; i<num-1; i++ ){
-    can[i]->Print("tmp.pdf");
+    can[i]->Print(outfilename);
   }
-  can[num-1]->Print("tmp.pdf)");
+  can[num-1]->Print(outfilename+")");
   
   cout << "cov. matrix calculated from standard deviation of histogram" << endl;
   for( int i=0; i<num; i++ ){
@@ -133,7 +138,8 @@ void eval_cov(const char*filename="")
   leg->Draw();
   gPad->SetLeftMargin(0.13);
   gPad->SetRightMargin(0.03);
-  u1->Print("tmp2.pdf(");
+  outfilename.Insert(outfilename.Sizeof()-5,"2");
+  u1->Print(outfilename+"(");
 
   TCanvas *u2;
   u2 = new TCanvas("u2", "", 600, 600);
@@ -151,7 +157,7 @@ void eval_cov(const char*filename="")
   leg->Draw();
   gPad->SetLeftMargin(0.13);
   gPad->SetRightMargin(0.03);
-  u2->Print("tmp2.pdf)");
+  u2->Print(outfilename+")");
 
 #endif
 
