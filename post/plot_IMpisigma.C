@@ -363,11 +363,34 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH1D *py = (TH1D*) KFpvalue_vs->ProjectionY();
   py->SetLineColor(2);
   py->Draw("same");
+  TLegend *legKFpvalue_vs = new TLegend(0.55,0.65,0.76,0.82);
+  legKFpvalue_vs->AddEntry(px,"#Sigma^{+} mode");
+  legKFpvalue_vs->AddEntry(py,"#Sigma^{-} mode");
+  legKFpvalue_vs->SetFillColor(0);
+  legKFpvalue_vs->Draw();
+  gPad->SetLogy();
   int spbin = px->FindBin(pvalcut);
+  //std::cout << spbin << std::endl;
   int smbin = py->FindBin(pvalcut);
   std::cout << "Sp mode rejection ratio:" << px->Integral(0,spbin)/(px->Integral(0,201)) << std::endl;
   std::cout << "Sm mode rejection ratio:" << py->Integral(0,smbin)/(py->Integral(0,201)) << std::endl;
-  gPad->SetLogy();
+
+  //cumulative dist. of prob.
+  TCanvas *cKFpvalue_vs_cum = new TCanvas(Form("cKFpvalue_vs_cum"),"KFpvalue_vs_cum");
+  cKFpvalue_vs_cum->cd();
+  TH1 *px_cum = px->GetCumulative();
+  px_cum->Scale(1./px->GetEntries());
+  px_cum->Draw();
+  TH1 *py_cum = py->GetCumulative();
+  py_cum->SetLineColor(2);
+  py_cum->Scale(1./py->GetEntries());
+  py_cum->Draw("same");
+  TLegend *legKFpvalue_vs_cum = new TLegend(0.55,0.65,0.76,0.82);
+  legKFpvalue_vs_cum->AddEntry(px,"#Sigma^{+} mode");
+  legKFpvalue_vs_cum->AddEntry(py,"#Sigma^{-} mode");
+  legKFpvalue_vs_cum->SetFillColor(0);
+  legKFpvalue_vs_cum->Draw();
+
 
   TCanvas *cnmom = new TCanvas("cnmom","cnmom");
   cnmom->cd();
