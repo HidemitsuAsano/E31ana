@@ -31,21 +31,19 @@ void DCTimeCorr::SetParam( const int &npar, double *par )
 }
 
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
-DCTimeCorrMan::DCTimeCorrMan():FileNameCDC(DefaultFileName),FileNameBLDC(DefaultFileName)
+DCTimeCorrMan::DCTimeCorrMan()
 {
-  //FileNameCDC = DefaultFileName;
-  //FileNameBLDC = DefaultFileName;
+  FileNameCDC = DefaultFileName;
+  FileNameBLDC = DefaultFileName;
 }
 
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
-DCTimeCorrMan::DCTimeCorrMan( const DCTimeCorrMan &right ):
-FileNameCDC(right.FileNameCDC),
-FileNameBLDC(right.FileNameBLDC)
+DCTimeCorrMan::DCTimeCorrMan( const DCTimeCorrMan &right )
 {
-  //FileNameCDC = right.FileNameCDC;
-  //FileNameBLDC = right.FileNameBLDC;
+  FileNameCDC = right.FileNameCDC;
+  FileNameBLDC = right.FileNameBLDC;
   for( DCTimeCorrHistContainer::const_iterator i=right.dctimecorrContainer.begin();
-       i!=right.dctimecorrContainer.end(); ++i ){
+       i!=right.dctimecorrContainer.end(); i++ ){
     dctimecorrContainer[i->first] = i->second;
   }
 }
@@ -67,7 +65,7 @@ void DCTimeCorrMan::SetFileNameBLDC( const std::string & filename )
 {
   FileNameBLDC = filename;
 }
-//const unsigned int KEYMASK  = 0x000F;
+const unsigned int KEYMASK  = 0x000F;
 // |0111|1111|0001|1111|0000|1111|1111|0011|
 const unsigned int WMASK    = 0x00FF;      /* Wire Mask 8 Bits (0-255) */
 const unsigned int LMASK    = 0x001F;      /* Layer Mask 5 Bits (0-31) */
@@ -79,8 +77,8 @@ const unsigned int KEYFLAG  = 0x0003;
 
 #define KEY(cid,layer,wire) \
 ((((cid)&CMASK)<<CSHIFT) | (((layer)&LMASK)<<LSHIFT) | (((wire)&WMASK)<<WSHIFT) | KEYFLAG )
-//const int MAXCHAR = 144;
-//const int MaxParam = 4;
+const int MAXCHAR = 144;
+const int MaxParam = 4;
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
 bool DCTimeCorrMan::Initialize()
 {

@@ -205,7 +205,7 @@ HodoscopeLikeHit * HitMan::Hodo( const int &cid, const int &seg )
     return 0;
   }
   if(HodoContainer(cid))
-    return (i<HodoContainer(cid)->size()) ? &(*HodoContainer(cid))[i] : 0;
+    return (0<=i&&i<HodoContainer(cid)->size()) ? &(*HodoContainer(cid))[i] : 0;
   return 0;
 }
 
@@ -221,7 +221,7 @@ int HitMan::nHodo( const int &cid )
 HodoscopeLikeHit * HitMan::Hodoi( const int &cid, const unsigned int &i )
 {
   HodoscopeLikeContainer *container=HodoContainer(cid);
-  return (i<container->size()) ? &(*container)[i] : 0;
+  return (0<=i&&i<container->size()) ? &(*container)[i] : 0;
 }
 
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- //
@@ -250,7 +250,7 @@ CherenkovLikeHit * HitMan::Chere( const int &cid, const int &seg )
 {
   unsigned int i = CherenkovSegContainer[ KEY(cid,seg) ];
   CherenkovLikeContainer *container=ChereContainer(cid);
-  return (i<container->size()) ? &(*container)[i] : 0;
+  return (0<=i&&i<container->size()) ? &(*container)[i] : 0;
 }
 
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- //
@@ -266,7 +266,7 @@ int HitMan::nChere( const int &cid )
 CherenkovLikeHit* HitMan::Cherei( const int &cid, const unsigned int &i )
 {
   CherenkovLikeContainer *container=ChereContainer(cid);
-  return (i<container->size()) ? &(*container)[i] : 0;
+  return (0<=i&&i<container->size()) ? &(*container)[i] : 0;
 }
 
 void HitMan::Clear()

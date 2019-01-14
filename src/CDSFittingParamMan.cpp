@@ -24,9 +24,9 @@ CDSFittingParamMan::CDSFittingParamMan()
 }
 
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
-CDSFittingParamMan::CDSFittingParamMan( const std::string & filename ):FileName(filename)
+CDSFittingParamMan::CDSFittingParamMan( const std::string & filename )
 {
-  //FileName = filename; asano
+  FileName = filename;
   MAXCDCHIT=0;
   MAGFIELD=0;
   MAXCHI=0;
@@ -35,9 +35,9 @@ CDSFittingParamMan::CDSFittingParamMan( const std::string & filename ):FileName(
 }
 
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
-CDSFittingParamMan::CDSFittingParamMan( const CDSFittingParamMan &right ):FileName(right.FileName)
+CDSFittingParamMan::CDSFittingParamMan( const CDSFittingParamMan &right )
 {
-  //FileName = right.FileName; asano
+  FileName = right.FileName;
   MAXCDCHIT=right.MAXCDCHIT;
   MAGFIELD=right.MAGFIELD;
   MAXCHI=right.MAXCHI;

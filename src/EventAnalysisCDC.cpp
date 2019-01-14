@@ -13,24 +13,24 @@
 #include "EventAlloc.h"
 #include "EventTemp.h"
 #include "Display.h"
-#include "GlobalVariables.h"
 #include "Tools.h"
 
-class EventAnalsysCDC: public EventTemp
+class EventAnalysis: public EventTemp
 {
 public:
-  EventAnalsysCDC();
-  ~EventAnalsysCDC();
+  EventAnalysis();
+  ~EventAnalysis();
 private:
   TFile *rtFile;
   TFile *cdcFile;
   TTree *cdcTree;
+  TTree *evTree;
+  TTree *scaTree;
   CDSHitMan *cdsMan;
   CDSTrackingMan *trackMan;
   EventHeader *header;
-  Time_t Time;
-  double scainit[40];
-  double scaend[40];
+  EventHeader *header2;
+  int t0,t1;
   
   int AllGoodTrack;
   int nTrack;
@@ -42,93 +42,108 @@ public:
   void USca( int nsca, unsigned int *sca );
   bool UAna( TKOHitCollection *tko );
   void Finalize();
-  bool EndOfAnEvent(bool flag=true);
-  void UTime( int time ){ Time = time; };
 };
 
-EventAnalsysCDC::EventAnalsysCDC()
+EventAnalysis::EventAnalysis()
   : EventTemp()
 {
 }
 
-EventAnalsysCDC::~EventAnalsysCDC()
+EventAnalysis::~EventAnalysis()
 {
 }
 
-void EventAnalsysCDC::Initialize( ConfMan *conf )
+const int MaxTreeSize = 100000000000;
+void EventAnalysis::Initialize( ConfMan *conf )
 {
+#if 1
+  std::cout << " Enter EventAnalysis::Initialize " << std::endl;
+#endif
   confMan = conf;
   cdcFile = new TFile(confMan->GetCDSTrackFileName().c_str());
   if(!cdcFile->IsOpen()){
     std::cout<<" failed to open " <<confMan->GetCDSTrackFileName().c_str()<< "  !!!"<<std::endl;
     exit(false);
   }
-  
-  header = new EventHeader();
-  if( header==NULL ){ std::cerr << "!!!!" << std::endl; return; }
-  cdsMan = new CDSHitMan();
-  if( cdsMan==NULL ){ std::cerr << "!!!!" << std::endl; return; }
-  trackMan = new CDSTrackingMan();
-  if( trackMan ==NULL) { std::cerr << "!!!!" << std::endl; return;}
-  
-  //open CDC tracking man
-  cdcTree=(TTree*)cdcFile->Get("EventTree");
-  cdcTree->SetBranchAddress( "EventHeader" ,&header);  
-  cdcTree->SetBranchAddress( "CDSTrackingMan", &trackMan );
 
+  cdcTree=(TTree*)cdcFile->Get("EventTree");
+  cdcTree->SetBranchAddress( "CDSTrackingMan", &trackMan );
+  cdcTree->SetBranchAddress( "EventHeader" ,&header2)
+;  
   rtFile = new TFile( confMan->GetOutFileName().c_str(), "recreate" );
   rtFile->cd();
+  InitializeHistogram();
 
+  evTree = new TTree( "EventTree", "EventTree" );
+  header = new EventHeader();
+  if( header==NULL ){ std::cerr << "!!!!" << std::endl; return; }
+  evTree->Branch( "EventHeader", &header );
+  cdsMan = new CDSHitMan();
+  if( cdsMan==NULL ){ std::cerr << "!!!!" << std::endl; return; }
+  //  evTree->Branch( "CDSHitMan", &cdsMan );
+  //  trackMan = new CDSTrackingMan();  
+  //  if( trackMan==NULL ){ std::cerr << "!!!!" << std::endl; return; }
+  //  evTree->Branch( "CDSTrackingMan", &trackMan );
 
+  t0=clock();
   AllGoodTrack=0;
   nTrack=0;
   CDC_Event_Number=0;
 }
 
-void EventAnalsysCDC::USca( int nsca, unsigned int *sca )
+void EventAnalysis::USca( int nsca, unsigned int *sca )
 {
 #if 0
-  std::cout << " Enter EventAnalsysCDC::USca " << std::endl;
+  std::cout << " Enter EventAnalysis::USca " << std::endl;
 #endif
   Block_Event_Number++;
   header->SetBlockEventNumber( Block_Event_Number );
 }
 
-bool EventAnalsysCDC::UAna( TKOHitCollection *tko )
+bool EventAnalysis::UAna( TKOHitCollection *tko )
 {
 #if 0
-  std::cout << " Enter EventAnalsysCDC::UAna " << std::endl;
+  std::cout << " Enter EventAnalysis::UAna " << std::endl;
 #endif
 
   Event_Number++;
   { int status = confMan->CheckEvNum( Event_Number, Block_Event_Number );
-    if( status==1 ) return EndOfAnEvent();
-    if( status==2 ) return EndOfAnEvent(false);}
-  if( Event_Number%5000==0 )
-    std::cout << " Event# : " << Event_Number << "  BlockEvent# : " << Block_Event_Number <<"  " <<Time<<"  "<<scaend[10]<<std::endl;
-  
+    if( status==1 ) return true;
+    if( status==2 ) return false; }
 
+  if( Event_Number%1000==0)
+    {
+      t1=clock();
+      std::cout << " Event# : " << Event_Number << "  BlockEvent# : " << Block_Event_Number << " AllTrack# : " << nTrack <<" GoodTrack# : " << AllGoodTrack << " Time (s): " << (t1-t0)*1.0e-6 << std::endl;
+    }
+  
   if(CDC_Event_Number>=cdcTree->GetEntries()) return false;
   cdcTree->GetEntry(CDC_Event_Number);
-  if(header->ev()!=Event_Number) return true;
+  //  std::cout<<header2->ev()<<"\t"<<Event_Number<<std::endl;
+  if(header2->ev()!=Event_Number) return true;
   CDC_Event_Number++;
   header->SetRunNumber(0);
   header->SetEventNumber(Event_Number);
   
   header->Convert( tko, confMan );
 
-  if(header->IsTrig(Trig_Cosmic)) return EndOfAnEvent();
-  
+  if( header->IsTrig(Trig_Cosmic) ){
+    header->Clear();
+    cdsMan->Clear();
+    return true;
+  }
   cdsMan->Convert( tko, confMan );
-  
-  //
   trackMan->Calc( cdsMan, confMan);  
 
   int nGoodTrack=trackMan->nGoodTrack();
   int nallTrack=  trackMan->nTrack();
   AllGoodTrack+=nGoodTrack;
   nTrack+=nallTrack;
-  if( nGoodTrack<1 ) return EndOfAnEvent();  
+  if( nGoodTrack<1 ){
+    header->Clear();
+    cdsMan->Clear();
+    return true;
+  }
 
   for( int it=0; it<trackMan->nGoodTrack(); it++ ){
     CDSTrack *track = trackMan->Track( trackMan->GoodTrackID(it) );
@@ -171,15 +186,16 @@ bool EventAnalsysCDC::UAna( TKOHitCollection *tko )
 	} //layer
     // finish CDC XT histo filling
   }// cdc itrack
+  evTree->Fill();
 
   header->Clear();
   cdsMan->Clear();
   return true;
 }
 
-void EventAnalsysCDC::Finalize()
+void EventAnalysis::Finalize()
 {
-  std::cout << " Enter EventAnalsysCDC::Finalize " << std::endl;
+  std::cout << " Enter EventAnalysis::Finalize " << std::endl;
 
   rtFile->cd();
   //  confMan->SaveCDSParam();
@@ -191,7 +207,7 @@ void EventAnalsysCDC::Finalize()
   delete header;
 }
 
-void EventAnalsysCDC::InitializeHistogram()
+void EventAnalysis::InitializeHistogram()
 {
   for(int layer=1;layer<=NumOfCDCLayers;layer++)
     { 
@@ -209,16 +225,8 @@ void EventAnalsysCDC::InitializeHistogram()
 	}
     }
 }
-
-bool EventAnalsysCDC::EndOfAnEvent(bool flag){
-  header->Clear();
-  cdsMan->Clear();
-  trackMan->Clear();
-  return flag;
-}
-
 EventTemp *EventAlloc::EventAllocator()
 {
-  EventAnalsysCDC *event = new EventAnalsysCDC();
+  EventAnalysis *event = new EventAnalysis();
   return (EventTemp*)event;
 }

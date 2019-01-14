@@ -78,10 +78,7 @@ int DetectorList::GetData(const int &type,const unsigned int &cid){
 }
 
 bool DetectorList::GetFlag(const unsigned int &cid,int type){
-  //Asano memo
-  //bug ? but this function is never used
-  //if(type<0&&type>1) return false;
-  if(type<0 || type>1) return false;
+  if(type<0&&type>1) return false;
   std::map<unsigned int,bool>::iterator it = FlagContainer[type].find(cid);
   if(it != FlagContainer[type].end()) return it->second;
   else return false;

@@ -190,7 +190,7 @@ void DB_Manager::ConvertRunSummaryCVStoDB(const char* st)
      if ( nelem != ncol ) {
        std::cout << "Data structure for run summary is inconsistent "   << std::endl;
        std::cout << "with RUN49c run summary table structure (default)" << std::endl;
-       std::cout << "Read data from CSV might be inncorrect. " << std::endl;
+       std::cout << "Read data from CSV might be inncorrect. " << std::cout;
        std::cout << "Please check data structure " << std::endl; exit(1);
      }
 

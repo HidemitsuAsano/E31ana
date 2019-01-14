@@ -163,7 +163,7 @@ bool EventAnalysisNCPC::UAna( TKOHitCollection *tko )
       seg=(slayer[iset]-1)*16+sseg[iset]+iseg;
       HodoscopeLikeHit *hit = blMan->Hodo(cid[ic],seg);
       if(!hit)continue;
-      double data[10]={};
+      double data[8]={};
       data[0] = hit->adcu(), data[1] = hit->adcd();
       data[2] = hit->tdcu(), data[3] = hit->tdcd();
       data[4] = hit->tu(), data[5] = hit->td();

@@ -324,17 +324,14 @@ int TrackTools::PIDcorr(double mom,double mass2)
   double fmom=fabs(mom);
   TF1 *f_sigma[4];
 
-  double param[4][4]={0.049154,0.011690,0.090581,piMass,
-		      0.049154,0.011690,0.090581,kpMass,
-		      0.049154,0.011690,0.090581,pMass,
-		      0.049154,0.011690,0.090581,dMass};
+  double param[4][4]={{0.049154,0.011690,0.090581,piMass},
+		      {0.049154,0.011690,0.090581,kpMass},
+		      {0.049154,0.011690,0.090581,pMass},
+		      {0.049154,0.011690,0.090581,dMass}};
   for(int n=0;n<4;n++)
     {
       f_sigma[n]=new TF1("f_sigma","sqrt( 4*pow([3],4)*[0]*[0]*x*x+4*pow([3],4)*(1+pow([3]/x,2))*[1]*[1]+4*x*x*([3]*[3]+x*x)*[2]*[2])");
-     
-  //asano memo bug?
-     // f_sigma[n]->SetParameters(param[n][0],param[n][1],param[n][2],param[n][3],param[n][4]);
-      f_sigma[n]->SetParameters(param[n][0],param[n][1],param[n][2],param[n][3]);
+      f_sigma[n]->SetParameters(param[n][0],param[n][1],param[n][2],param[n][3],param[n][4]);
     }
 
   if(mom>0) {
@@ -383,6 +380,39 @@ int TrackTools::PIDcorr(double mom,double mass2)
   delete f_sigma[2];
   delete f_sigma[3];
   return ptype;
+}
+
+
+int TrackTools::PIDcorr_wide(double mom,double mass2)
+{
+  const double PID_Param[3] = { 0.00381414, 0.000119896, 0.0113647 };
+  const double Kpi_mid_mass2 = 0.1031;
+  const double Ppi_mid_mass2 = 0.76247;
+
+  double pi_sigma = sqrt(4.*piMass*piMass*mom*mom*PID_Param[0]+4.*piMass*piMass*piMass*piMass*PID_Param[1]*(1+piMass*piMass/(mom*mom))+4.*mom*mom*(piMass*piMass+mom*mom)*PID_Param[2]);
+  double k_sigma = sqrt(4.*kpMass*kpMass*mom*mom*PID_Param[0]+4.*kpMass*kpMass*kpMass*kpMass*PID_Param[1]*(1+kpMass*kpMass/(mom*mom))+4.*mom*mom*(kpMass*kpMass+mom*mom)*PID_Param[2]);
+  double p_sigma = sqrt(4.*pMass*pMass*mom*mom*PID_Param[0]+4.*pMass*pMass*pMass*pMass*PID_Param[1]*(1+pMass*pMass/(mom*mom))+4.*mom*mom*(pMass*pMass+mom*mom)*PID_Param[2]);
+
+  bool pim_flag=false, pip_flag=false, km_flag=false, p_flag=false;
+  if( mom>0 ){
+    if( piMass*piMass-2.5*pi_sigma<mass2 && mass2<piMass*piMass+2.5*pi_sigma ) pip_flag=true;
+    if( pMass*pMass-2.5*p_sigma<mass2 && mass2<pMass*pMass+2.5*p_sigma && mom>0.1 ) p_flag=true;
+
+    if( pip_flag && p_flag ){
+      if( mass2<Ppi_mid_mass2 ) return CDS_PiPlus;
+      else return CDS_Proton;
+    }
+    else if( pip_flag ) return CDS_PiPlus;
+    else if( p_flag ) return CDS_Proton;
+  }
+  else{
+    if( piMass*piMass-2.5*pi_sigma<mass2 && mass2<piMass*piMass+2.5*pi_sigma ) pim_flag=true;
+    if( kpMass*kpMass-2.5*k_sigma<mass2 && mass2<kpMass*kpMass+2.5*k_sigma && mom<-0.03 ) km_flag=true;
+
+    if( pim_flag ) return CDS_PiMinus;
+    else if( km_flag ) return CDS_Kaon;
+  }
+  return CDS_Other;
 }
 
 

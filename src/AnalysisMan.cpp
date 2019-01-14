@@ -7,23 +7,7 @@ static const int MAXCHAR = 144;
 
 AnalysisMan::AnalysisMan()
   : DumpLevel(0), CDSAnaMode(1), D5AnaFlag(true), FCAnaFlag(true), ParamFileName(DefaultParamFileName),
-    confMan(0), scaMan(0), header(0), cdsMan(0), blMan(0), cdstrackMan(0), bltrackMan(0), beamSpec(0), fieldMan(0), tableMan(0),
-BHDT0_Param(),
-Vtx_ZX_Param(),
-Vtx_ZY_Param(),
-Vtx_R2_Param(0),
-Vtx_Z_Param(),        
-CDS_PID_Param(),   
-FC_PID_Param(),   
-FC_Cut_Param(),       
-FC_ADC_Param(),       
-CDS_Lambda_Param(),   
-CDS_K0_Param(),       
-FC_Lambda_Param(),
-FC_Lambda1520_Param(),
-PC_ZX_Param(),        
-USWK_Z(0),                
-FieldInZ(0)              
+    confMan(0), scaMan(0), header(0), cdsMan(0), blMan(0), cdstrackMan(0), bltrackMan(0), beamSpec(0), fieldMan(0), tableMan(0)
 {
   Clear();
 }

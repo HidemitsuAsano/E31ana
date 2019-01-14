@@ -265,7 +265,7 @@ void Display3D::SetCounterFrame( ConfMan *conf, Int_t cid, Bool_t fLocal, Int_t 
 {
   if( cid==CID_TOFstop || cid==CID_T0 || cid==CID_B1 || cid==CID_B2 ||
       cid==CID_PA || cid==CID_BHD ){
-    int numseg=0;
+    int numseg;
     int hitdirection; // x:0, y:1, z:2
     if( cid==CID_TOFstop  ){ numseg = NumOfTOFstopSegments; hitdirection=1; }
     else if( cid==CID_T0  ){ numseg = NumOfT0Segments;      hitdirection=1; }
@@ -312,7 +312,7 @@ void Display3D::SetCounterHit( ConfMan *conf, BeamLineHitMan *bl, Int_t cid, Boo
 {
   if( cid==CID_TOFstop || cid==CID_T0 || cid==CID_B1 || cid==CID_B2 ||
       cid==CID_PA || cid==CID_BHD ){
-    int numseg=0;
+    int numseg;
     int hitdirection; // x:0, y:1, z:2
     if( cid==CID_TOFstop  ){ numseg = NumOfTOFstopSegments; hitdirection=1; }
     else if( cid==CID_T0  ){ numseg = NumOfT0Segments;      hitdirection=1; }
@@ -450,7 +450,7 @@ void Display3D::Draw( Option_t *option )
     pl->SetLineColor( line->color() );
     pl->SetLineWidth( line->width() );
     pl->Draw(option);
-    ++ip;
+    ip++;
   }
 
   std::map < std::string, Mark * >::const_iterator im = PMarkCon.begin();
@@ -466,7 +466,7 @@ void Display3D::Draw( Option_t *option )
     pl->SetMarkerColor( mark->color() );
     pl->SetMarkerSize( mark->size() );
     pl->Draw(option);
-    ++im;
+    im++;
   }
 
 }
@@ -495,7 +495,7 @@ void Display3D::Paint( Option_t * )
       shape->GetBuffer3D(reqSections);
       viewer->AddObject(buffer);
     }
-    ++is;
+    is++;
   }
 }
 
@@ -550,17 +550,17 @@ void Display3D::PrintObj()
   std::map <std::string, Shape*>::iterator is = ShapesCon.begin();
   while( is!=ShapesCon.end() ){
     std::cout << "Name:" << is->first << std::endl;
-    ++is;
+    is++;
   }
   std::map <std::string, Line*>::iterator ip = PLineCon.begin();
   while( ip!=PLineCon.end() ){
     std::cout << "Name:" << ip->first << std::endl;
-    ++ip;
+    ip++;
   }
   std::map <std::string, Mark*>::iterator im = PMarkCon.begin();
   while( im!=PMarkCon.end() ){
     std::cout << "Name:" << im->first << std::endl;
-    ++im;
+    im++;
   }
 
 }

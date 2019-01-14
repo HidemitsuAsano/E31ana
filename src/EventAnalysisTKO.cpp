@@ -5,7 +5,6 @@
 #include "BeamLineHitMan.h"
 #include "EventHeader.h"
 #include "ScalerMan.h"
-#include "analysis.h"
 
 #include "EventAlloc.h"
 #include "EventTemp.h"
@@ -36,7 +35,7 @@ EventAnalysisTKO::~EventAnalysisTKO()
 {
 }
 
-//const int MaxTreeSize = 1900000000000;
+const int MaxTreeSize = 1900000000000;
 void EventAnalysisTKO::Initialize( ConfMan *conf )
 {
 #if 1
@@ -63,11 +62,11 @@ bool EventAnalysisTKO::UAna( TKOHitCollection *tko )
 #endif
 
   Event_Number++;
-  
+  /*
   { int status = confMan->CheckEvNum( Event_Number, Block_Event_Number );
     if( status==1 ) return true;
     if( status==2 ) return false; }
- 
+  */
   if( Event_Number%5000==0 )
   std::cout << " Event# : " << Event_Number << "  BlockEvent# : " << Block_Event_Number << std::endl;
   
@@ -86,19 +85,15 @@ bool EventAnalysisTKO::UAna( TKOHitCollection *tko )
 
 void EventAnalysisTKO::InitializeHistogram(){
   rtFile->cd();  
-  
-  const int ncrate=MAXSMP; 
-   
   int ic=0;
   for(int isl=1;isl<24;isl++)
     for(int ich=0;ich<64;ich++)
       new TH1F(Form("TKOc%dn%da%d",ic,isl,ich),Form("TKOc%dn%da%d",ic,isl,ich),4096,-0.5,4095.5);
-  for(ic=1;ic<ncrate;ic++)
+  for(ic=1;ic<10;ic++)
     for(int isl=1;isl<24;isl++)
       for(int ich=0;ich<32;ich++)
 	new TH1F(Form("TKOc%dn%da%d",ic,isl,ich),Form("TKOc%dn%da%d",ic,isl,ich),4096,-0.5,4095.5);
 }
-
 void EventAnalysisTKO::Finalize()
 {
   std::cout << " Enter EventAnalysisTKO::Finalize " << std::endl;

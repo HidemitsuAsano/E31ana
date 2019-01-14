@@ -12,7 +12,7 @@
 #include "GlobalVariables.h"
 #include "Tools.h"
 
-#include <TParameter.h>
+#include "TParameter.h"
 
 #define RUN43 0
 #define TKOHIS 0
@@ -26,7 +26,7 @@ public:
 private:
   TFile *rtFile;
   TTree *evTree;
-  //TTree *scaTree;
+  TTree *scaTree;
   CDSHitMan *cdsMan;
   BeamLineHitMan *blMan;
   EventHeader *header;
@@ -41,21 +41,19 @@ private:
   int spillinit;
   int spillfini;
   TString tmpname;
-  //flag if there is tdc calibration (i.e) GainMap.param
-  bool is_TDCcalib;
+
 public:
   void Initialize( ConfMan *conf );
   void USca( int nsca, unsigned int *sca );
   bool UAna( TKOHitCollection *tko );
   void Finalize();
-  bool EndOfAnEvent(bool flag=true);
+  bool EndOfAnEvent();
   void UTime( int time ){ Time = time; };
 };
 
 EventAnalysisRawAll::EventAnalysisRawAll()
   : EventTemp()
 {
-  is_TDCcalib = true;
 }
 
 EventAnalysisRawAll::~EventAnalysisRawAll()
@@ -85,13 +83,13 @@ void EventAnalysisRawAll::Initialize( ConfMan *conf )
     scaend[i]=0;
   }
   header = new EventHeader();
-  if( header==NULL ){ std::cerr << "!!!! object of EventHeader is NULL " << std::endl; return; }
+  if( header==NULL ){ std::cerr << "!!!!" << std::endl; return; }
   cdsMan = new CDSHitMan();
-  if( cdsMan==NULL ){ std::cerr << "!!!! object of cdsMan is NULL" << std::endl; return; }
+  if( cdsMan==NULL ){ std::cerr << "!!!!" << std::endl; return; }
   blMan = new BeamLineHitMan();
-  if( blMan ==NULL ){ std::cerr << "!!!! object of BeamLineHitMan is NULL" << std::endl; return; }
+  if( blMan ==NULL ){ std::cerr << "!!!!" << std::endl; return; }
   scaMan = new ScalerMan();
-  if( scaMan==NULL ){ std::cerr << "!!!! object of ScalerMan is NULL" << std::endl; return; }
+  if( scaMan==NULL ){ std::cerr << "!!!!" << std::endl; return; }
 
 }
 
@@ -142,10 +140,10 @@ bool EventAnalysisRawAll::UAna( TKOHitCollection *tko )
   std::cout << " Enter EventAnalysisRawAll::UAna " << std::endl;
 #endif
   Event_Number++;
-  //???? what's going ? (asano memo)
   { int status = confMan->CheckEvNum( Event_Number, Block_Event_Number );
-    if( status==1 ) return EndOfAnEvent();
-    if( status==2 ) return EndOfAnEvent(false);}
+    if( status==1 ) return true;
+    if( status==2 ) return false; }
+
   if( Event_Number%5000==0 )
     std::cout << " Event# : " << Event_Number << "  BlockEvent# : " << Block_Event_Number <<"  " <<Time<<"  "<<scaend[10]<<std::endl;
 
@@ -159,9 +157,7 @@ bool EventAnalysisRawAll::UAna( TKOHitCollection *tko )
     {
       TKOHit *tkohit=tko->hit(ntko);
       Tools::H1(Form("TKOc%ds%d",tkohit->cr(),tkohit->sl() ),tkohit->ch(), 32, -0.5,31.5 );
-      Tools::SetXTitleH1(Form("TKOc%ds%d",tkohit->cr(),tkohit->sl() ),"TKO ch.");
       Tools::H1(Form("TKOc%ds%da%d",tkohit->cr(),tkohit->sl(),tkohit->ch() ) , tkohit->data(), 4196,-0.5,4195.5 );
-      Tools::SetXTitleH1(Form("TKOc%ds%da%d",tkohit->cr(),tkohit->sl(),tkohit->ch() ) , "TKO ch.");
     }
 #endif 
 //#########
@@ -182,13 +178,13 @@ bool EventAnalysisRawAll::UAna( TKOHitCollection *tko )
     }
   }
 
-  //??
+
   for(int i=0;i<20;i++)
     if(header->trigmode(i))  Tools::H1("TrigMode",i, 21,-0.5,20.5); 
 
   int DAQFLAG=0;
   for(int i=0;i<20;i++)
-    if(header->trigmode2(i)) //??
+    if(header->trigmode2(i)) 
       {
 	Tools::H1("DAQMode",i,21,-0.5,20.5); 
 	DAQFLAG++;
@@ -207,13 +203,11 @@ bool EventAnalysisRawAll::UAna( TKOHitCollection *tko )
       CDCHit *hit = cdsMan->CDC(layer,i);
       int wire = hit->wire();
       int tdc = hit->tdc();
-      if(is_TDCcalib){
-        double dt = hit->dt();
-        Tools::H1( Form("dTCDC_%d",layer) , dt , 6000, -1500, 1500,"drift time [nsec.]" );
-      }
-      Tools::H1( Form("TCDC_%d",layer) , tdc, 2048,-0.6, 2047.5,"TDC Ch.");
-      Tools::H1( Form("TCDC_%d_%d",layer,wire) , tdc , 2048,-0.6, 2047.5,"TDC Ch.");
-      Tools::H1( Form("HitPatCDC_%d",layer) , wire , nwire, 0.5, nwire+0.5,"wire#" );
+      //      double dt = hit->dt();
+      Tools::H1( Form("TCDC_%d",layer) , tdc, 2048,-0.6, 2047.5);
+      //      Tools::H1( Form("dTCDC_%d",layer) , dt , 2000,0,2000);
+      Tools::H1( Form("TCDC_%d_%d",layer,wire) , tdc , 2048,-0.6, 2047.5);
+      Tools::H1( Form("HitPatCDC_%d",layer) , wire , nwire, 0.5, nwire+0.5 );
     }
   }
   
@@ -233,27 +227,20 @@ bool EventAnalysisRawAll::UAna( TKOHitCollection *tko )
       int nwire = confMan->GetBLDCWireMapManager()->GetNWire( cid, layer );
       int tmpmul=blMan->nBLDC(cid,layer);
       Tools::H1( Form("Mul%s_%d",name,layer),tmpmul, nwire+1, -0.5, nwire+0.5 ); 
-      Tools::SetXTitleH1( Form("Mul%s_%d",name,layer),"Multiplicity" ); 
       for( int i=0; i<tmpmul; i++ ){
 	ChamberLikeHit *hit = blMan->BLDC(cid,layer,i);
 	int wire = hit->wire();
 	int tdc = hit->tdc();
-	Tools::H1( Form("T%s_%d",name,layer) , tdc ,2048,-0.5,2047.5,"TDC Ch.");
-	Tools::H1( Form("T%s_%d_%d",name,layer,wire) , tdc  ,2048,-0.5,2047.5,"TDC Ch.");
-	Tools::H1( Form("HitPat%s_%d",name,layer) , wire , nwire, 0.5, nwire+0.5,"wire#");
-  if(is_TDCcalib){
-    double dt = hit->dt();
-    Tools::H1( Form("d%s_%d_%d",name,layer,wire) , dt , 6000, -1500,1500, "drift time [nsec.]" );
-  }
+	Tools::H1( Form("T%s_%d",name,layer) , tdc ,2048,-0.5,2047.5);
+	Tools::H1( Form("T%s_%d_%d",name,layer,wire) , tdc  ,2048,-0.5,2047.5);
+	Tools::H1( Form("HitPat%s_%d",name,layer) , wire , nwire, 0.5, nwire+0.5 );
 	if(layer%2==1)
 	  {
-	    for( int i2=0; i2< (blMan->nBLDC(cid,layer+1)); i2++ ){
+	    for( int i2=0; i2<blMan->nBLDC(cid,layer+1); i2++ ){
 	      ChamberLikeHit *hit2 = blMan->BLDC(cid,layer+1,i2);
 	      int wire2 = hit2->wire();
 	      //	      int tdc2 = hit2->tdc();
 	      Tools::H2( Form("WirePat%s_%d",name,layer), wire,wire2, nwire, 0.5, nwire+0.5, nwire, 0.5, nwire+0.5 );
-	      Tools::SetXTitleH2( Form("WirePat%s_%d",name,layer), Form("Layer%d wire#",layer));
-	      Tools::SetYTitleH2( Form("WirePat%s_%d",name,layer), Form("Layer%d wire#",layer+1));
 	    }
 	  }
       }
@@ -293,25 +280,23 @@ bool EventAnalysisRawAll::UAna( TKOHitCollection *tko )
       int au = hit->adc(0), ad = hit->adc(1);
       int tu = hit->tdc(0), td = hit->tdc(1);
 
-      Tools::H1( Form("A%sU%d",name,seg) , au , nbin, lbin, ubin, "ADC Ch.");
-      Tools::H1( Form("A%sD%d",name,seg) , ad , nbin, lbin, ubin,"ADC Ch.");
-      Tools::H1( Form("T%sU%d",name,seg) , tu , nbin, lbin, ubin, "TDC Ch.");
-      Tools::H1( Form("T%sD%d",name,seg) , td , nbin, lbin, ubin, "TDC Ch.");
+      Tools::H1( Form("A%sU%d",name,seg) , au , nbin, lbin, ubin);
+      Tools::H1( Form("A%sD%d",name,seg) , ad , nbin, lbin, ubin);
+      Tools::H1( Form("T%sU%d",name,seg) , tu , nbin, lbin, ubin);
+      Tools::H1( Form("T%sD%d",name,seg) , td , nbin, lbin, ubin);
 #if ENERGY
       double eu = hit->eu(), ed = hit->ed();
       Tools::H1( Form("E%sU%d",name,seg) , eu , enbin, elbin, eubin);
       Tools::H1( Form("E%sD%d",name,seg) , ed , enbin, elbin, eubin);
       if(tu>0&&tu<4095)
-	Tools::H1( Form("EwT2%sU%d",name,seg) , eu , enbin, elbin, eubin, "Energy [MeV]");
+	Tools::H1( Form("EwT2%sU%d",name,seg) , eu , enbin, elbin, eubin);
       if(td>0&&td<4095)
-	Tools::H1( Form("EwT2%sD%d",name,seg) , ed , enbin, elbin, eubin, "Energy [MeV]");
+	Tools::H1( Form("EwT2%sD%d",name,seg) , ed , enbin, elbin, eubin);
 #endif
-      if(tu>0&&tu<4095){
-        Tools::H1( Form("AwT2%sU%d",name,seg) , au , nbin, lbin, ubin,"ADC Ch." );
-      }
-      if(td>0&&td<4095){
-        Tools::H1( Form("AwT2%sD%d",name,seg) , ad , nbin, lbin, ubin, "ADC Ch.");
-      }
+      if(tu>0&&tu<4095)
+	Tools::H1( Form("AwT2%sU%d",name,seg) , au , nbin, lbin, ubin);
+      if(td>0&&td<4095)
+	Tools::H1( Form("AwT2%sD%d",name,seg) , ad , nbin, lbin, ubin);
       if(
 #if RUN43
 	 cid==CID_BVC
@@ -322,60 +307,45 @@ bool EventAnalysisRawAll::UAna( TKOHitCollection *tko )
 #endif
 	 ){
 	if( tu>0 ){
-	  Tools::H1( Form("AwT%sU%d",name,seg) , au , nbin, lbin, ubin,"ADC Ch.");
+	  Tools::H1( Form("AwT%sU%d",name,seg) , au , nbin, lbin, ubin);
 	  Tools::H2( Form("AT%sU%d",name,seg) , tu, au , nbin2, lbin, ubin, nbin2, lbin, ubin);
-	  Tools::SetXTitleH2( Form("AT%sU%d",name,seg) , "ADC Ch.");
-	  Tools::SetYTitleH2( Form("AT%sU%d",name,seg) , "TDC Ch.");
 	  nHodo++;
 	}else{
-	  Tools::H1( Form("AwoT%sU%d",name,seg) , au , nbin, lbin, ubin,"ADC Ch.");
+	  Tools::H1( Form("AwoT%sU%d",name,seg) , au , nbin, lbin, ubin);
 	}
       }else{      
 	if( hit->CheckRange() ){
-	  Tools::H1( Form("AwT%sU%d",name,seg) , au , nbin, lbin, ubin, "ADC Ch.");
-	  Tools::H1( Form("AwT%sD%d",name,seg) , ad , nbin, lbin, ubin, "ADC Ch.");
+	  Tools::H1( Form("AwT%sU%d",name,seg) , au , nbin, lbin, ubin);
+	  Tools::H1( Form("AwT%sD%d",name,seg) , ad , nbin, lbin, ubin);
 	  Tools::H2( Form("AT%sU%d",name,seg) , tu, au , nbin2, lbin, ubin, nbin2, lbin, ubin);
-	  Tools::SetXTitleH2( Form("AT%sU%d",name,seg) , "TDC Ch.");
-	  Tools::SetYTitleH2( Form("AT%sU%d",name,seg) , "ADC Ch.");
 	  Tools::H2( Form("AT%sD%d",name,seg) , td, ad , nbin2, lbin, ubin, nbin2, lbin, ubin);
-	  Tools::SetXTitleH2( Form("AT%sD%d",name,seg) , "TDC Ch.");
-	  Tools::SetYTitleH2( Form("AT%sD%d",name,seg) , "ADC Ch.");
 #if ENERGY
 	  Tools::H1( Form("EwT%sU%d",name,seg) , eu , enbin, elbin, eubin);
 	  Tools::H1( Form("EwT%sD%d",name,seg) , ed , enbin, elbin, eubin);
 #endif
-	  Tools::H1( Form("HitPat%s",name) , seg , nsegs, 0.5, nsegs+0.5, "segment #"  );
+	  Tools::H1( Form("HitPat%s",name) , seg , nsegs, 0.5, nsegs+0.5 );
 	  int tmpseg=-999;
 	  if(cid ==CID_BD)   tmpseg=-12+2*seg;
 	  if(cid ==CID_PC)   tmpseg= 27+seg;
 	  if(cid ==CID_CVC)  tmpseg=seg;
 	  if(cid ==CID_CVC)  CVC=true;
 	  if(tmpseg>-100){
-	    Tools::H1( "HitPatCharged" , tmpseg , 74+1, -10, 64+1, "segment #"  );
+	    Tools::H1( "HitPatCharged" , tmpseg , 74+1, -10, 64+1 );
 	    Tools::H2( "Event_HitPatCharged" , Event_Number, tmpseg , 1000,0,1000000,74+1, -10, 64+1 );
 	  }
 	  nHodo++;
 	  if(cid==CID_NC){
-	    //int layer=-1;
-	    //int sseg=-1;
-	    int layer=(seg-1)/16+1;
-	    int sseg=(seg-16*layer+16)%16+1;
-	    if( CVC ){ 
-         Tools::H2( "HitPatNC2DwC", sseg,layer, 16, 0.5, 16.5,7,0.5,7.5 );
-         Tools::SetXTitleH2( "HitPatNC2DwC", "seg" );
-         Tools::SetYTitleH2( "HitPatNC2DwC", "layer" );
-	    }else{
-        Tools::H2( "HitPatNC2DwoC", sseg,layer , 16, 0.5, 16.5,7,0.5,7.5 );
-        Tools::SetXTitleH2( "HitPatNC2DwoC", "seg" );
-        Tools::SetYTitleH2( "HitPatNC2DwoC", "layer" );
-      }
+	    int layer=-1;
+	    int sseg=-1;
+	    layer=(seg-1)/16+1;
+	    sseg=(seg-16*layer+16)%16+1;
+	    if( CVC ) Tools::H2( "HitPatNC2DwC", sseg,layer, 16, 0.5, 16.5,7,0.5,7.5 );
+	    else  Tools::H2( "HitPatNC2DwoC", sseg,layer , 16, 0.5, 16.5,7,0.5,7.5 );
 	    Tools::H2( "HitPatNC2D" , sseg, layer, 16, 0.5, 16.5,7,0.5,7.5 );
-	    Tools::SetXTitleH2( "HitPatNC2D" , "seg");
-	    Tools::SetYTitleH2( "HitPatNC2D" , "layer");
 	  }
 	}else{
-	  Tools::H1( Form("AwoT%sU%d",name,seg) , au , nbin, lbin, ubin, "ADC Ch.");
-	  Tools::H1( Form("AwoT%sD%d",name,seg) , ad , nbin, lbin, ubin, "ADC Ch.");
+	  Tools::H1( Form("AwoT%sU%d",name,seg) , au , nbin, lbin, ubin);
+	  Tools::H1( Form("AwoT%sD%d",name,seg) , ad , nbin, lbin, ubin);
 #if ENERGY
 	  Tools::H1( Form("EwoT%sU%d",name,seg) , eu , enbin, elbin, eubin);
 	  Tools::H1( Form("EwoT%sD%d",name,seg) , ed , enbin, elbin, eubin);
@@ -383,7 +353,7 @@ bool EventAnalysisRawAll::UAna( TKOHitCollection *tko )
 	}
       }
     }
-    Tools::H1( Form("Mul%s",name) , nHodo , nsegs+1, -0.5, nsegs+0.5, "segment #"  );
+    Tools::H1( Form("Mul%s",name) , nHodo , nsegs+1, -0.5, nsegs+0.5 );
   }
   
   for( int i=0; i<blMan->nHodo(CID_T0pre); i++ ){
@@ -428,33 +398,22 @@ bool EventAnalysisRawAll::UAna( TKOHitCollection *tko )
       int au = hit->adcu(), ad = hit->adcd();
       int tu = hit->tdcu(), td = hit->tdcd();
       Tools::H1( Form("A%sU%d",name,seg) , au , nbin, lbin, ubin);
-      Tools::SetXTitleH1( Form("A%sU%d",name,seg) , "ADC Ch.");
       Tools::H1( Form("A%sD%d",name,seg) , ad , nbin, lbin, ubin);
-      Tools::SetXTitleH1( Form("A%sD%d",name,seg) , "ADC Ch.");
       Tools::H1( Form("T%sU%d",name,seg) , tu , nbin, lbin, ubin);
-      Tools::SetXTitleH1( Form("T%sU%d",name,seg) , "TDC Ch.");
       Tools::H1( Form("T%sD%d",name,seg) , td , nbin, lbin, ubin);
-      Tools::SetXTitleH1( Form("T%sD%d",name,seg) , "TDC Ch.");
       if( cid!=CID_IH ){
 	if( hit->CheckRange() ){
 	  Tools::H1( Form("AwT%sU%d",name,seg) , au , nbin, lbin, ubin);
-	  Tools::SetXTitleH1( Form("AwT%sU%d",name,seg) , "ADC Ch.");
 	  Tools::H1( Form("AwT%sD%d",name,seg) , ad , nbin, lbin, ubin);
-	  Tools::SetXTitleH1( Form("AwT%sD%d",name,seg) , "ADC Ch.");
 	  Tools::H2( Form("AT%sU%d",name,seg) , tu, au  , nbin2, lbin, ubin, nbin2, lbin, ubin);
-	  Tools::SetXTitleH2( Form("AT%sU%d",name,seg) , "TDC Ch." );
-	  Tools::SetYTitleH2( Form("AT%sU%d",name,seg) , "ADC Ch." );
 	  Tools::H2( Form("AT%sD%d",name,seg) , td, ad  , nbin2, lbin, ubin, nbin2, lbin, ubin);
-	  Tools::SetXTitleH2( Form("AT%sD%d",name,seg) , "TDC Ch.") ;
-	  Tools::SetYTitleH2( Form("AT%sD%d",name,seg) , "ADC Ch.") ;
 	  Tools::H1( Form("HitPat%s",name) , seg , nsegs, 0.5, nsegs+0.5 );
-	  Tools::SetXTitleH1( Form("HitPat%s",name) , "seg." );
 	  nHodo++;
 	}else{
 	  Tools::H1( Form("AwoT%sU%d",name,seg) , au , nbin, lbin, ubin);
 	  Tools::H1( Form("AwoT%sD%d",name,seg) , ad , nbin, lbin, ubin);
 	}
-      }else{ //IF IH, no longer used
+      }else{
 	if( tu>0 && tu<4096 ){
 	  Tools::H1( Form("AwT%sU%d",name,seg) , au , nbin, lbin, ubin);
 	  Tools::H2( Form("AT%sU%d",name,seg) , tu, au , nbin2, lbin, ubin, nbin2, lbin, ubin);
@@ -484,30 +443,19 @@ bool EventAnalysisRawAll::UAna( TKOHitCollection *tko )
 	int a = hit->adc(ich);
 	int t = hit->tdc(ich);
 	Tools::H1( Form("A%s%d",name,ich) , a , nbin, lbin, ubin);
-	Tools::SetXTitleH1( Form("A%s%d",name,ich) , "ADC Ch.");
 	Tools::H1( Form("T%s%d",name,ich) , t , nbin, lbin, ubin);
-	Tools::SetXTitleH1( Form("T%s%d",name,ich) , "TDC Ch.");
 	adcsum+=a;
 	if( hit->CheckRange(1) ){
 	  Tools::H1( Form("AwT%s%d",name,ich) , a , nbin, lbin, ubin);
-	  Tools::SetXTitleH1( Form("AwT%s%d",name,ich) , "ADC Ch.");
 	  Tools::H2( Form("AT%s%d",name,ich) , t, a , nbin2, lbin, ubin, nbin2, lbin, ubin);
-	  Tools::SetXTitleH2( Form("AT%s%d",name,ich) , "TDC Ch.");
-	  Tools::SetYTitleH2( Form("AT%s%d",name,ich) , "ADC Ch.");
 	}else{
 	  Tools::H1( Form("AwoT%s%d",name,ich) , a , nbin, lbin, ubin);
-	  Tools::SetXTitleH1( Form("AwoT%s%d",name,ich) ,"ADC Ch.");
-  }
-      }//for ich
-      Tools::H1( Form("A%sSUM",name) , adcsum ,  nbin, lbin, ubin);
-      Tools::SetXTitleH1( Form("A%sSUM",name) , "ADC Ch.");
-      if(hit->CheckRange(1)){
-        Tools::H1( Form("AwT%sSUM",name),  adcsum , nbin, lbin, ubin);   
-        Tools::SetXTitleH1( Form("AwT%sSUM",name), "ADC Ch.");   
-      }else{                   
-        Tools::H1( Form("AwoT%sSUM",name), adcsum , nbin, lbin, ubin);   
-        Tools::SetXTitleH1( Form("AwoT%sSUM",name), "ADC Ch.");   
+	}
       }
+      Tools::H1( Form("A%sSUM",name) , adcsum ,  nbin, lbin, ubin);
+      if(hit->CheckRange(1)) Tools::H1( Form("AwT%sSUM",name),  adcsum , nbin, lbin, ubin);   
+      else                   Tools::H1( Form("AwoT%sSUM",name), adcsum , nbin, lbin, ubin);   
+      
     }
   }
 
@@ -564,11 +512,11 @@ void EventAnalysisRawAll::Finalize()
   delete header;
 }
 
-bool EventAnalysisRawAll::EndOfAnEvent(bool flag){
+bool EventAnalysisRawAll::EndOfAnEvent(){
   header->Clear();
   blMan->Clear();
   cdsMan->Clear();
-  return flag;
+  return true;
 }
 
 EventTemp *EventAlloc::EventAllocator()

@@ -492,7 +492,7 @@ void Particle::CalcNCMom(const TVector3 &vertex)
 HodoscopeLikeHit* Particle::ncrawseg(const int &seg)
 {
   for( hodoContainer::iterator it=NCrawContainer.begin();
-       it!=NCrawContainer.end(); ++it ){
+       it!=NCrawContainer.end(); it++ ){
     if(it->seg()==seg) return &(*it);
   }
   return 0;

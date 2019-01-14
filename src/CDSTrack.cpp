@@ -101,6 +101,10 @@ bool CDSTrack::GetNthParameters(int n, int &id, double *aparam, TVector3 &vtx)
   return true;
 }
 
+
+//output 
+//lpos : (TVector3) nearest point on the line
+//hpos : (TVector3) nearest point on the helix
 bool CDSTrack::GetVertex(const TVector3 &pos, const TVector3 &dir, TVector3 &lpos, TVector3 &hpos)
 {
   TVector3 tmpvtx;
@@ -213,7 +217,7 @@ bool CDSTrack::SearchHodoHit(CDSHitMan *cdsMan, ConfMan *conf,const double &cdhm
   // will be modified also for straight track
   // global on/off will be selectable
   // anyway CDH hit search algorithm should be totally modified.
-  // -- allow upto neibouring 2 hit 
+  // -- allow up to neighbouring 2 hit 
   // -- hit should be judged by the distance between track at CDH R and CDH hit position considering ctsub
   // -- essentially same algorithm should be also applied to IH hit ( without Z information )
 
@@ -689,14 +693,14 @@ void CDSTrack::CheckCharge()
   //###########Check Charge ##########//	
   //################################//
   double phi_in=MathTools::CalcDeg(Clusterx[0]-CirCenterX,Clustery[0]-CirCenterY);
-  //double phi_mid=MathTools::CalcDeg(Clusterx[3]-CirCenterX,Clustery[3]-CirCenterY);
+  double phi_mid=MathTools::CalcDeg(Clusterx[3]-CirCenterX,Clustery[3]-CirCenterY);
   double phi_out=MathTools::CalcDeg(Clusterx[6]-CirCenterX,Clustery[6]-CirCenterY);
 #if 0
   for(int i=0;i<7;i++)
     std::cout<<i<<"  "<<Clusterx[i]<<"  "<<Clustery[i]<<std::endl;
   std::cout<<"------"<<phi_in<<"  "<<phi_mid<<"  "<<phi_out<<std::endl;
 #endif
-  double phi_mid=phi_out;
+  phi_mid=phi_out;
 
   if(phi_mid>270 && phi_in<90 ) phi_mid-=360;
   else if(phi_in>270 &&phi_mid<90 ) phi_in-=360;

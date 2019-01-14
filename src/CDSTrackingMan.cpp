@@ -7,8 +7,7 @@
 ClassImp(CDSTrackingMan);
 ClassImp(TrackVertex);
 
-//const double Inclradius=20.40,Outclradius=47.78,cellsize=0.845*2.;
-const double cellsize=0.845*2.;
+const double Inclradius=20.40,Outclradius=47.78,cellsize=0.845*2.;
 //const double ResolutionOfCDC=0.02;
 
 CDSTrackingMan::CDSTrackingMan(): TObject()
@@ -952,8 +951,9 @@ TrackVertex CDSTrackingMan::CalcVertex_beam(const int &trackid,LocalTrack *bc,Co
       a2=a2.Unit();
       x2=x2; a2=a2;
       double dis;     
-      if(!MathTools::LineToHelix(x2,a2,param,fitpos2,fitpos1,dis))
-      	std::cout << " line to helix failed " <<std::endl;
+      if(!MathTools::LineToHelix(x2,a2,param,fitpos2,fitpos1,dis)){
+      	std::cout << __FILE__ << " .L" << __LINE__ << " line to helix failed " <<std::endl;
+      }
       Vertextmp->SetVertexPos1(fitpos1);
       Vertextmp->SetVertexPos2(fitpos2);
       if(!cdstrack->GetMomentum(fitpos1,mom1)){

@@ -6,7 +6,7 @@
 #include "TVector2.h"
 #include "TMath.h"
 
-//static const double SpatialResolutionOfBLDC=0.02; // [cm]
+static const double SpatialResolutionOfBLDC=0.02; // [cm]
 
 ClassImp(BeamLineTrackMan);
 
@@ -28,28 +28,28 @@ BeamLineTrackMan::BeamLineTrackMan()
 
 BeamLineTrackMan::BeamLineTrackMan( const BeamLineTrackMan &right )
 {
-  for( BeamLineTrackContainer::const_iterator it=right.BLC1TrackContainer.begin(); it!=right.BLC1TrackContainer.end(); ++it ){
+  for( BeamLineTrackContainer::const_iterator it=right.BLC1TrackContainer.begin(); it!=right.BLC1TrackContainer.end(); it++ ){
     BLC1TrackContainer.push_back( (*it) );
   }
-  for( BeamLineTrackContainer::const_iterator it=right.BLC1aTrackContainer.begin(); it!=right.BLC1aTrackContainer.end(); ++it ){
+  for( BeamLineTrackContainer::const_iterator it=right.BLC1aTrackContainer.begin(); it!=right.BLC1aTrackContainer.end(); it++ ){
     BLC1aTrackContainer.push_back( (*it) );
   }
-  for( BeamLineTrackContainer::const_iterator it=right.BLC1bTrackContainer.begin(); it!=right.BLC1bTrackContainer.end(); ++it ){
+  for( BeamLineTrackContainer::const_iterator it=right.BLC1bTrackContainer.begin(); it!=right.BLC1bTrackContainer.end(); it++ ){
     BLC1bTrackContainer.push_back( (*it) );
   }
-  for( BeamLineTrackContainer::const_iterator it=right.BLC2TrackContainer.begin(); it!=right.BLC2TrackContainer.end(); ++it ){
+  for( BeamLineTrackContainer::const_iterator it=right.BLC2TrackContainer.begin(); it!=right.BLC2TrackContainer.end(); it++ ){
     BLC2TrackContainer.push_back( (*it) );
   }
-  for( BeamLineTrackContainer::const_iterator it=right.BLC2aTrackContainer.begin(); it!=right.BLC2aTrackContainer.end(); ++it ){
+  for( BeamLineTrackContainer::const_iterator it=right.BLC2aTrackContainer.begin(); it!=right.BLC2aTrackContainer.end(); it++ ){
     BLC2aTrackContainer.push_back( (*it) );
   }
-  for( BeamLineTrackContainer::const_iterator it=right.BLC2bTrackContainer.begin(); it!=right.BLC2bTrackContainer.end(); ++it ){
+  for( BeamLineTrackContainer::const_iterator it=right.BLC2bTrackContainer.begin(); it!=right.BLC2bTrackContainer.end(); it++ ){
     BLC2bTrackContainer.push_back( (*it) );
   }
-  for( BeamLineTrackContainer::const_iterator it=right.BPCTrackContainer.begin(); it!=right.BPCTrackContainer.end(); ++it ){
+  for( BeamLineTrackContainer::const_iterator it=right.BPCTrackContainer.begin(); it!=right.BPCTrackContainer.end(); it++ ){
     BPCTrackContainer.push_back( (*it) );
   }
-  for( BeamLineTrackContainer::const_iterator it=right.FDC1TrackContainer.begin(); it!=right.FDC1TrackContainer.end(); ++it ){
+  for( BeamLineTrackContainer::const_iterator it=right.FDC1TrackContainer.begin(); it!=right.FDC1TrackContainer.end(); it++ ){
     FDC1TrackContainer.push_back( (*it) );
   }
   for(int i=0;i<10;i++) STATUS[i]=right.STATUS[i];
@@ -119,49 +119,49 @@ int BeamLineTrackMan::SetStatus(const int &cid, const int &sta){
 void BeamLineTrackMan::DeleteTrackBLC1( const int &i )
 {    
   BeamLineTrackContainer::iterator it=BLC1TrackContainer.begin();
-  for ( int j=0; j<i; j++ ) ++it;
+  for ( int j=0; j<i; j++ ) it++;
   BLC1TrackContainer.erase( it );
 }
 
 void BeamLineTrackMan::DeleteTrackBLC1a( const int &i )
 {    
   BeamLineTrackContainer::iterator it=BLC1aTrackContainer.begin();
-  for ( int j=0; j<i; j++ ) ++it;
+  for ( int j=0; j<i; j++ ) it++;
   BLC1aTrackContainer.erase( it );
 }
 
 void BeamLineTrackMan::DeleteTrackBLC1b( const int &i )
 {    
   BeamLineTrackContainer::iterator it=BLC1bTrackContainer.begin();
-  for ( int j=0; j<i; j++ ) ++it;
+  for ( int j=0; j<i; j++ ) it++;
   BLC1bTrackContainer.erase( it );
 }
 
 void BeamLineTrackMan::DeleteTrackBLC2( const int &i )
 {    
   BeamLineTrackContainer::iterator it=BLC2TrackContainer.begin();
-  for ( int j=0; j<i; j++ ) ++it;
+  for ( int j=0; j<i; j++ ) it++;
   BLC2TrackContainer.erase( it );
 }
 
 void BeamLineTrackMan::DeleteTrackBLC2a( const int &i )
 {    
   BeamLineTrackContainer::iterator it=BLC2aTrackContainer.begin();
-  for ( int j=0; j<i; j++ ) ++it;
+  for ( int j=0; j<i; j++ ) it++;
   BLC2aTrackContainer.erase( it );
 }
 
 void BeamLineTrackMan::DeleteTrackBLC2b( const int &i )
 {    
   BeamLineTrackContainer::iterator it=BLC2bTrackContainer.begin();
-  for ( int j=0; j<i; j++ ) ++it;
+  for ( int j=0; j<i; j++ ) it++;
   BLC2bTrackContainer.erase( it );
 }
 
 void BeamLineTrackMan::DeleteTrackBPC( const int &i )
 {    
   BeamLineTrackContainer::iterator it=BPCTrackContainer.begin();
-  for ( int j=0; j<i; j++ ) ++it;
+  for ( int j=0; j<i; j++ ) it++;
   BPCTrackContainer.erase( it );
 }
 
@@ -520,7 +520,7 @@ int BeamLineTrackMan::LocalTracking( BeamLineHitMan *blMan, ConfMan *conf, const
 #endif
 	}
 	else
-	  ++it;
+	  it++;
 #if ERASE
 	std::cout<<std::endl;
 #endif
@@ -661,7 +661,7 @@ int BeamLineTrackMan::LocalTracking( BeamLineHitMan *blMan, ConfMan *conf, const
 	    TmpTrackContainer3.erase(it);
 	  }
 	  else
-	    ++it;
+	    it++;
 	}
 	delete tmptr;
       }

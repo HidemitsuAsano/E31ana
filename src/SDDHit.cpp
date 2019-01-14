@@ -55,7 +55,7 @@ void SDDHit::Clear()
   VGain=VOffset=VEne=0.;
   PADCl=PADCh=Nsample=-1;
   FBaseHeight=FBaseSlope=-1.;
-  for(int i=0;i<MaxFADCPoint;i++) FADC[i]=-1;
+  for(int i=0;i<64;i++) FADC[i]=-1;
 }
 
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //

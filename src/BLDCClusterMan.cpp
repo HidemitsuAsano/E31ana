@@ -16,16 +16,6 @@ ClassImp(BLDCCluster);
 // class BLDCCluster             //
 // ------------------------------//
 
-BLDCCluster::BLDCCluster():
-ClusterID(-1),
-TimeMean(-999.),
-TimeSub(-999.),
-CTime(-999.)
-{
-
-}
-
-
 BLDCCluster::~BLDCCluster()
 {
   //  this->Clear();

@@ -159,11 +159,17 @@ bool GeomTools::HelixStepToNextVolume(const double param[5],const TVector3 &in,T
   //  std::cout<<length<<std::endl;
   return true;
 }
+
 bool GeomTools::StepToNextVolume(const TVector3 &pos1,const TVector3 &pos2,double &length, TString &newmat)
 {
   TVector3 dir=(pos2-pos1).Unit();
+  
+  //Initialize current point and current direction vector (normalized)
+  //in master reference system
   gGeoManager->InitTrack(pos1.X(),pos1.Y(),pos1.Z(),dir.X(),dir.Y(),dir.Z());
   //  TGeoNode* node=gGeoManager->FindNextBoundaryAndStep();
+  
+  //Compute distance to next boundary within STEPMAX.
   TGeoNode* node=gGeoManager->FindNextBoundaryAndStep();
   length=gGeoManager->GetStep()+1*um;
   if(length>(pos2-pos1).Mag()) return false;
@@ -190,7 +196,7 @@ bool GeomTools::StepToNextVolume(const TVector3 &pos1,const TVector3 &pos2,doubl
   if(newmat=="Concrete"){
     pos1.Print();
     pos2.Print();
-    std::cout<<"Concrete !!!"<<std::endl;
+    std::cout<< __FILE__ << " L." << __LINE__ << " Concrete !!!"<<std::endl;
     return false;
   }
     

@@ -431,6 +431,8 @@ bool XTMapMan::SetParamBL( const int &cid, const int &layer, const int &wire, co
 
     return true;
   }
+
+  return true;
 }
 
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //

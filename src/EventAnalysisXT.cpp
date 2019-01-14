@@ -44,6 +44,8 @@ private:
   int spillinit;
   int spillfini;
   TString tmpname;
+  //flag if there is tdc calibration (i.e) GainMap.param
+  bool is_TDCcalib;
 public:
   void Initialize( ConfMan *conf );
   void USca( int nsca, unsigned int *sca );
@@ -56,6 +58,7 @@ public:
 EventAnalysisXT::EventAnalysisXT()
   : EventTemp()
 {
+  is_TDCcalib = true;
 }
 
 EventAnalysisXT::~EventAnalysisXT()

@@ -252,7 +252,7 @@ void BLDCWireMapMan::PrintMap( const int &Cid, std::ostream &p_out )
   int cid, cid_old=-1;
   
   for( BLDCWireMapContainer::const_iterator i=bldcContainer.begin();
-       i!=bldcContainer.end(); ++i ){
+       i!=bldcContainer.end(); i++ ){
     key = i->first;
     map = i->second;
     cid = ((key>>CSHIFT)&CMASK);

@@ -1,7 +1,3 @@
-//comment: H.Asano (May, 2018)
-//
-//Note: This code is obsolete. You can not compile.
-
 #include "File.h"
 #include "ConfMan.h"
 #include "TKO.h"
@@ -106,11 +102,10 @@ void EventAnalysisBLDC::Initialize( ConfMan *conf )
 #if 1
   std::cout << " Enter EventAnalysisBLDC::Initialize " << std::endl;
 #endif
-  //TODO : avoid hard code (H.Asano)
   name[0]="BLC1a";  name[1]="BLC1b";  name[2]= "BLC2a";  name[3]="BLC2b";  name[4]="BPC";
-  nwire[0]=32;  nwire[1]=32;  nwire[2]=32;  nwire[3]=32;  nwire[4]=32;
+  nwire[0]=32;  nwire[1]=32;  nwire[2]=32;  nwire[3]=32;  nwire[4]=15;
   cid[0]=15;  cid[1]=16;  cid[2]=17;  cid[3]=18;  cid[4]=40;
-  dlmax[0]=0.4;  dlmax[1]=0.4;  dlmax[2]=0.25;  dlmax[3]=0.25; /* dlmax[4]=0.36;*/ dlmax[4]=0.30;
+  dlmax[0]=0.4;  dlmax[1]=0.4;  dlmax[2]=0.25;  dlmax[3]=0.25;  dlmax[4]=0.36;
 
   confMan = conf;
   rtFile = new TFile( confMan->GetOutFileName().c_str(), "recreate" );

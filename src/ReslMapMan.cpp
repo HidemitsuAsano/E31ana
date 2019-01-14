@@ -38,7 +38,7 @@ void ReslMapMan::SetFileName( const std::string & filename )
   FileName = filename;
 }
 
-//const unsigned int KEYMASK  = 0x000F;
+const unsigned int KEYMASK  = 0x000F;
 // |0111|1111|0001|1111|0000|1111|1111|0011|
 const unsigned int WMASK    = 0x00FF;      /* Wire Mask 6 Bits (0-255) */
 const unsigned int LMASK    = 0x001F;      /* Layer Mask 5 Bits (0-31) */

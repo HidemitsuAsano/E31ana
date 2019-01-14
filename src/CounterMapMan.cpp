@@ -58,27 +58,27 @@ CounterMapMan::CounterMapMan( const CounterMapMan &right )
   *this=right;
   FileName = right.FileName;
   for( fCounterMapContainer::const_iterator i=right.fContainer.begin();
-       i!=right.fContainer.end(); ++i ){
+       i!=right.fContainer.end(); i++ ){
     fContainer[i->first] = i->second;
   }
   for( bCounterMapContainer::const_iterator i=right.bContainer.begin();
-       i!=right.bContainer.end(); ++i ){
+       i!=right.bContainer.end(); i++ ){
     bContainer[i->first] = i->second;
   }
   for( fCrateDefContainer::const_iterator i=right.fCrateDef.begin();
-       i!=right.fCrateDef.end(); ++i ){
+       i!=right.fCrateDef.end(); i++ ){
     fCrateDef[i->first] = i->second;
   }
   for( bCrateDefContainer::const_iterator i=right.bCrateDef.begin();
-       i!=right.bCrateDef.end(); ++i ){
+       i!=right.bCrateDef.end(); i++ ){
     bCrateDef[i->first] = i->second;
   }
   for( nameCNAMapContainer::const_iterator i=right.nameCNAContainer.begin();
-       i!=right.nameCNAContainer.end(); ++i ){
+       i!=right.nameCNAContainer.end(); i++ ){
     nameCNAContainer[i->first] = i->second;
   }
   for( nameCounterMapContainer::const_iterator i=right.nameCounterContainer.begin();
-       i!=right.nameCounterContainer.end(); ++i ){
+       i!=right.nameCounterContainer.end(); i++ ){
     nameCounterContainer[i->first] = i->second;
   }
 }

@@ -1,11 +1,12 @@
 //H. Asano
 //This code is originated from: EventAnalysis_pipipnn_sakuma.cpp
+//and modified to analyze k-d->npi+Sigma-, npi-,Sigma+ events
 //----------------------------------------------------------------//
 //----------------------------------------------------------------//
 //  input : raw data, conf-file, & CDC-tracking-file
 //  output: when $(OutFile) is "tmp.root", the following 3 files are generated.
 //     "tmp.root":      histogram file
-//     "tmp_CDC.root": condensed event file from the CDC-tracking-file with p/p/pi selection
+//     "tmp_CDC.root": condensed event file from the CDC-tracking-file with pip/pim selection
 //           <- including class EventHeader and CDSTrackingMan
 //     "tmp_npippim.root": basic information of pi+pi-n event is listed up in TTree
 
@@ -60,7 +61,7 @@ const bool AddQAplots = true;
 // ### obtained from (p_meas[j]-p_gene[j])*(p_meas[k]-p_gene[k])
 // ###  using G4-data with TH1F(Form("cov_%d_%d_%d", i, j, k), 100, -cov_MAX, cov_MAX);
 //   evaluated using "Air" Dora MC
-// 1) TLorentzVector L3_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+
+// 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+
 
 
 
@@ -163,8 +164,8 @@ private:
   double ctmT0;
   
   TMatrixD *covZero;
-  TMatrixD *covParticle_Spmode[7];
-  TMatrixD *covParticle_Smmode[7];
+  TMatrixD *covParticle_Spmode[kin::npart];
+  TMatrixD *covParticle_Smmode[kin::npart];
   TLorentzVector kfSpmode_mom_beam;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
   TLorentzVector kfSpmode_mom_pip;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
   TLorentzVector kfSpmode_mom_pim;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
@@ -219,6 +220,11 @@ void EventAnalysis::Initialize( ConfMan *conf )
   if(DoCDCRetiming) std::cout << " Yes" << std::endl;
   else              std::cout << "  No" << std::endl;
   
+  std::cout << " Kinematic fit ? " ;
+  if(DoKinFit) std::cout << " Yes" << std::endl;
+  else         std::cout << " No"  << std::endl;
+
+
   std::cout << " CDH TDC cuts " << cdscuts::tdc_cdh_max << std::endl;
   std::cout << " CDH multiplicity cut: " << cdscuts::cdhmulti << std::endl;
   std::cout << " CDS # of good tracks cut: " << cdscuts::cds_ngoodtrack << std::endl; 
@@ -959,8 +965,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 	  
     
       //--- KinFitter :: initialization ---//
-      //  = 1) TLorentzVector L3_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+
-      //  = 2) TLorentzVector L3_beam, LVec_pip, (LVec_n+LVec_pim), LVec_nmiss, LVec_n, LVec_pim = for pi+ Sigma-
+      //  = 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+
+      //  = 2) TLorentzVector LVec_beam, LVec_pip, (LVec_n+LVec_pim), LVec_nmiss, LVec_n, LVec_pim = for pi+ Sigma-
       //*** definition of fit particles in cartesian coordinates ***//
       TString str_particle_Spmode[kin::npart] = {"LVec_beam", "LVec_pim", "LVec_Sp", "LVec_mn", "LVec_n", "LVec_pip"};
       TString str_particle_Smmode[kin::npart] = {"LVec_beam", "LVec_pip", "LVec_Sm", "LVec_mn", "LVec_n", "LVec_pim"};

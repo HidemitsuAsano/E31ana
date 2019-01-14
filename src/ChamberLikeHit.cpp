@@ -15,9 +15,7 @@ ChamberLikeHit::ChamberLikeHit():
   HitPos(DEFVECT),
   dXY(-999),LR(-1),
   RotationAngle(-999),
-  GPos(DEFVECT),GDir(DEFVECT),
-  ResolutionTrue(-999.),
-  TimeOffsetTrue(-999.)
+  GPos(DEFVECT),GDir(DEFVECT)
 {
 }
 

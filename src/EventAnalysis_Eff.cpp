@@ -214,7 +214,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 	      cdcpos.SetXYZ(CDC->wx(),CDC->wy(),CDC->wz());
 	      wposp.SetXYZ(CDC->wxp(),CDC->wyp(),CDC->wzp());
 	      double dl=CDC->dl();
-	      double dis=0;
+	      double dis;
 	      if(param[2]!=0)
 		{
 		  if( (1<=layer && layer<=3) || (8<=layer && layer<=9) ||(14<=layer && layer<=15))

@@ -66,6 +66,16 @@ bool ELossTools::CalcHelixElossToNextBoundary(const double param[5],TVector3 &po
   return ELossTools::CalcdE(momin,mass,length,mat,momout,sign,tof);
 }
 
+//asano memo
+//Input: 
+//1. TVector3 &in, vector of the initial point (e.g. T0 position)
+//2. TVector3 &out, vector of the end point (e.g. reaction vertex)
+//3. beam momentum (mag.)
+//4. beam mass
+
+//Output
+//5. momentum out with energy loss correction
+//6. tof of 
 bool ELossTools::CalcElossBeamTGeo(const TVector3 &in, const TVector3 &out, const double &momin, const double &mass, double &momout,double &tof){
 #if DEBUG
   std::cout<<"-- calcelossbeamtgeo --"<<std::endl;
