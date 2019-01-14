@@ -33,18 +33,21 @@
 
 #include "../src/IMPiSigmaAnaPar.h"
 
-#define CM 1
-
 const double pvalcut = 0.005;
+const bool gridon=true;
+const bool staton=true;
 
 //mode 0: Sigma+ ,1: Sigma- 
 void plot_IMpisigma(const char* filename="",const int mode=0)
 {
   std::cout << "p-value cut:" << pvalcut << std::endl; 
-  gROOT->SetStyle("Plain");
-  gStyle->SetOptStat(111111);
+  //gROOT->SetStyle("Plain");
+  if(staton)gStyle->SetOptStat(111111);
+  else gStyle->SetOptStat(0);
   gStyle->SetOptFit(111111);
-  
+  gStyle->SetPadGridX(gridon);
+  gStyle->SetPadGridY(gridon);
+
   std::string outfilename = string(filename);
   outfilename.insert(outfilename.size()-5,"_post");
   std::cout << "outfilename: " << outfilename << std::endl;
@@ -216,7 +219,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     nmom_IMnpipi_woK0_wSid_n[imode]->GetYaxis()->CenterTitle();
   };
 
-  TH2F *KFpvalue_vs = new TH2F("KFpvalue_vs", "KFpvalue_vs", 200, 0, 1, 200, 0, 1 );
+  TH2F *KFpvalue_vs = new TH2F("KFpvalue_vs", "KFpvalue_vs", 500, 0, 1, 500, 0, 1 );
   KFpvalue_vs->SetXTitle("P-value (#Sigma^{+} mode)");
   KFpvalue_vs->SetYTitle("P-value (#Sigma^{-} mode)");
   KFpvalue_vs->GetXaxis()->CenterTitle();
@@ -359,6 +362,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   cKFpvalue_vs->cd();
   TH1D *px = (TH1D*) KFpvalue_vs->ProjectionX();
   px->SetMinimum(1);
+  px->SetXTitle("p-value");
   px->Draw();
   TH1D *py = (TH1D*) KFpvalue_vs->ProjectionY();
   py->SetLineColor(2);
@@ -380,12 +384,15 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   cKFpvalue_vs_cum->cd();
   TH1 *px_cum = px->GetCumulative();
   px_cum->Scale(1./px->GetEntries());
+  px_cum->SetXTitle("p-value cut");
+  px_cum->GetXaxis()->CenterTitle();
+  px_cum->SetTitle("KF pvalue cumulative");
   px_cum->Draw();
   TH1 *py_cum = py->GetCumulative();
   py_cum->SetLineColor(2);
   py_cum->Scale(1./py->GetEntries());
   py_cum->Draw("same");
-  TLegend *legKFpvalue_vs_cum = new TLegend(0.55,0.65,0.76,0.82);
+  TLegend *legKFpvalue_vs_cum = new TLegend(0.55,0.25,0.76,0.42);
   legKFpvalue_vs_cum->AddEntry(px,"#Sigma^{+} mode");
   legKFpvalue_vs_cum->AddEntry(py,"#Sigma^{-} mode");
   legKFpvalue_vs_cum->SetFillColor(0);
@@ -412,7 +419,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   
   TCanvas *cnpimmom = new TCanvas("cnpimmom","cnpimmom");
   cnpimmom->cd();
-  cnpimmom->Draw("");
+  npimmom->Draw("");
   
   TCanvas *c_IMnpipi_woK0_wSid_n = new TCanvas("c_IMnpipi_woK0_wSid_n","c_IMnpipi_woK0_wSid_n"); 
   c_IMnpipi_woK0_wSid_n->cd();
