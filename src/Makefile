@@ -237,7 +237,7 @@ $(ALLSO): $(patsubst %,$(TMPDIR)/%,$(RAWDATA)) $(patsubst %,$(TMPDIR)/%,$(RAWHIT
 $(TMPDIR)/%_Dict.cpp: %.h	
 	@echo ------------------------- Making $@
 	$(ROOTSYS)/bin/rootcint -f $@ -c $(INCLUDE) $(PWD)/$< LinkDef/$(<D)/$*_LinkDef.h
-	@echo ------------------------- Done "\(ToT)/" Done
+	@echo ------------------------- Done "_(:3vU)_" Done
 
 SRCS	= $(wildcard *.cpp)
 -include $(SRCS:%.cpp=%.d)
