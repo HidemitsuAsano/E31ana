@@ -105,12 +105,10 @@ inline bool MathTools::GetHelix(const TVector3 &pos,const TVector3 &mom, int &ch
   double phi= MathTools::CalcHelixPhi(pos.X(),pos.Y(),par);
 
   par[3]=pos.Z()+1./par[2]*par[4]*phi;
-  
 
   /* for(int i=0;i<5;i++) */
   /*   std::cout<<par[i]<<"  "; */
   /* std::cout<<std::endl; */
-  return true;
 }
 
 inline void MathTools::ConvertCDCPointLtoG(const TVector3 &in, TVector3 &out, const double *gpar){

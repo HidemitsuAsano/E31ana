@@ -20,7 +20,7 @@ class BLDCCluster : public TObject
   BLDCHitCluster bldcHitCluster;
 
  public:
-  BLDCCluster();
+  BLDCCluster(){}
   //  BLDCCluster( const BLDCCluster &right );
   ~BLDCCluster();
 

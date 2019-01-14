@@ -10,6 +10,7 @@
 #include "TVector3.h"
 #include "TH1F.h"
 #include "TH2F.h"
+#include "TH3F.h"
 #include "TH2I.h"
 #include "TFile.h"
 #include "GlobalVariables.h"
@@ -20,10 +21,16 @@ namespace Tools
 {
   inline void Fill1D(TString name, double val);
   inline void Fill2D(TString name, double val1,  double val2);
+  inline void Fill3D(TString name, double val1,  double val2 ,double val3);
   inline void newTH1F(TString name,  int nbin, double lbin, double ubin);
+  inline void newTH1F(TString name, TString title, int nbin, double lbin, double ubin);
   inline void newTH2F(TString name, 
 		      int nbinx, double lbinx, double ubinx,
 		      int nbiny, double lbiny, double ubiny);
+  inline void newTH3F(TString name, 
+		      int nbinx, double lbinx, double ubinx,
+		      int nbiny, double lbiny, double ubiny,
+		      int nbinz, double lbinz, double ubinz);
   inline void H1(TString name,  double val,
 		 int nbin, double lbin, double ubin);
   inline void H1(TString name,  double val,
@@ -44,7 +51,6 @@ namespace Tools
   inline void WriteFile(TString afile);
   inline void SaveFile(TString filename);
   
-  //added by H.Asano
   inline void SetXTitleH1(TString histname,TString xtitle);
   inline void SetYTitleH1(TString histname,TString ytitle);
   inline void SetXTitleH2(TString histname,TString xtitle);
@@ -110,10 +116,24 @@ inline void Tools::Fill2D(TString name, double val1, double val2){
   }
 }
 
+inline void Tools::Fill3D(TString name, double val1, double val2, double val3){
+  if( TH3F* h1 = dynamic_cast<TH3F *>(gFile->Get(name.Data())) ){
+    h1->Fill(val1,val2, val3);
+  }else{
+    std::cout<<name<<" does not exist !!!!!"<<std::endl;
+  }
+}
+
 inline void Tools::newTH1F(TString name, 
 			   int nbinx, double lbinx, double ubinx)
 {
   new TH1F(name,name, nbinx,lbinx,ubinx);
+}
+
+inline void Tools::newTH1F(TString name, TString title,
+			   int nbinx, double lbinx, double ubinx)
+{
+  new TH1F(name,title, nbinx,lbinx,ubinx);
 }
 
 inline void Tools::newTH2F(TString name, 
@@ -121,6 +141,14 @@ inline void Tools::newTH2F(TString name,
 			   int nbiny, double lbiny, double ubiny)
 {
   new TH2F(name,name, nbinx,lbinx,ubinx, nbiny,lbiny,ubiny); 
+}
+
+inline void Tools::newTH3F(TString name, 
+			   int nbinx, double lbinx, double ubinx,
+			   int nbiny, double lbiny, double ubiny,
+         int nbinz, double lbinz, double ubinz)
+{
+  new TH3F(name,name, nbinx,lbinx,ubinx, nbiny,lbiny,ubiny, nbinz,lbinz,ubinz); 
 }
 
 
