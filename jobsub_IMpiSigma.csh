@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="9"
+set Version="28"
 set DATADIR="/group/had/knucl/e15/data/Run78/"
 set OUTDIR="/group/had/knucl/e15/asano/Run78/"
 set KWSKDIR="/group/had/knucl/e15/shinngo/Run78/evtracking/"
@@ -20,6 +20,12 @@ endif
 
 set SRCDIR="/gpfs/home/had/hiasano/ana/k18ana/src/"
 cp $SRCDIR/EventAnalysisIMPiSigma.cpp $OUTDIRSUB/
+cp $SRCDIR/IMPiSigmaAnaPar.h $OUTDIRSUB/
+
+cp hadd_IMhist.csh $OUTDIRSUB/
+cp hadd_IMnpippim.csh $OUTDIRSUB/
+ln -s $OUTDIRSUB/evanaIMpisigma_all.root post/evanaIMpisigma_all_v${Version}.root
+ln -s $OUTDIRSUB/evanaIMpisigma_all_npippim.root post/evanaIMpisigma_all_npippim_v${Version}.root
 
 @ i = 100
 while ($i < 812)   
