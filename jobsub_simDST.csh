@@ -18,13 +18,12 @@ if( ! -d $OUTDIRSUB) then
 endif
 
 set SRCDIR="/gpfs/home/had/hiasano/ana/k18ana/src/"
-cp $SRCDIR/UserSimIMPiSigma.cpp $OUTDIRSUB/
+cp $SRCDIR/UserSimDatG4.cpp $OUTDIRSUB/
 
-cp hadd_simIMhist.csh $OUTDIRSUB/
-ln -s $OUTDIRSUB/simIMpisigma_all.root simpost/simIMpisigma_all_v${Version}.root
+#ln -s $OUTDIRSUB/simIMpisigma_all.root simpost/simIMpisigma_all_v${Version}.root
 
 @ i = 0
-while ($i < 100)   
+while ($i < 400)   
 
   set EXEC___="./bin/sim"
   set CONF___="conf/Run78/analyzer_kwsk_sim.conf"

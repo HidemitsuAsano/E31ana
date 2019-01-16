@@ -21,7 +21,7 @@ set CONF___="conf/Run78/analyzer_kwsk.conf"
 set jobnum=`printf  "%03d"  $i`
 
 set INPFILE=${DATADIR}"run78_0${jobnum}.dat"
-set OUTFILE=${OUTDIR}"evanaReadAnapost_noB5BHDcut_v7_0${jobnum}.root"
+set OUTFILE=${OUTDIR}"evanaReadAnapost_noB5BHDcut_v15_0${jobnum}.root"
 set CDSFILE=${KWSKDIR}"run78_0${jobnum}_evtracking.root"
 #set INFOFILE=${OUTDIR}"evanaReadAna_0${jobnum}.root"
 set INFOFILE=${OUTDIR}"evanaDST_0${jobnum}.root"
