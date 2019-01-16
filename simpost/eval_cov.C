@@ -7,7 +7,7 @@ void eval_cov(const char*filename="")
   //gStyle->SetOptStat(111111);
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(1111);
-  gStyle->SetTitleYOffset(1.6);
+  gStyle->SetTitleYOffset(1.8);
 
   TFile *f = new TFile(filename);
   if(!f->IsOpen()){
@@ -24,10 +24,13 @@ void eval_cov(const char*filename="")
   const int num = 6;
 
   TCanvas *can[num];
+  TCanvas *can_vs[num];
   for( int i=0; i<num; i++ ){
     TString str(Form("can%d", i));
     can[i] = new TCanvas(str, "", 800, 800);
     can[i]->Divide(2, 2);
+    can_vs[i] = new TCanvas(Form("can_vs%d",i), "",1000,800);
+    can_vs[i]->Divide(2, 2);
   }
 
   // beam_K(K+), n, p, n from L, pi- from L
@@ -44,23 +47,53 @@ void eval_cov(const char*filename="")
 	if( j==k ){ // only diagonal components
 	  can[i]->cd(j+1);
 	  TH1F *his = (TH1F*)f->Get(Form("cov_%d_%d_%d", i, j, k));
+	  TH2F *his2 = (TH2F*)f->Get(Form("cov_mom_%d_%d_%d", i, j, k));
     if(i==0) his->GetXaxis()->SetRangeUser(-0.02,0.02);
-    if(i==5) his->GetXaxis()->SetRangeUser(-0.04,0.04);
-	  his->Fit("gaus","q","",-0.01,0.01);
+    if(i==1){
+      his->Rebin(2);
+      his->GetXaxis()->SetRangeUser(-0.02,0.02);
+    }
+    if(i==2){
+      his->Rebin(2); 
+      his->GetXaxis()->SetRangeUser(-0.02,0.02);
+    }
+    if(i==3){
+      his->Rebin(2);
+      his->GetXaxis()->SetRangeUser(-0.02,0.02);
+    }
+    if(i==4){
+      if(j<2)his->Rebin(2);
+      his->GetXaxis()->SetRangeUser(-0.02,0.02);
+    }
+    if(i==5) {
+      his->GetXaxis()->SetRangeUser(-0.04,0.04);
+	  }
+    his->Fit("gaus","q","",-0.01,0.01);
 	  his->GetFunction("gaus")->SetLineColor(4);
 	  double pol = his->GetFunction("gaus")->GetParameter(1);
 	  double sigfit = his->GetFunction("gaus")->GetParameter(2);
 	  //his->Fit("gaus","","",pol-3*sig,pol+3*sig);
 	  gaus->SetLineColor(3);
     his->GetXaxis()->CenterTitle();
-    if(k==0){ his->SetTitle("px");his->SetXTitle("[GeV/c]");}
-    if(k==1){ his->SetTitle("py");his->SetXTitle("[GeV/c]");}
-    if(k==2){ his->SetTitle("pz");his->SetXTitle("[GeV/c]");}
-    if(k==3){ his->SetTitle("E");his->SetXTitle("[GeV]");}
+    if(i==0) his->SetTitle("K (beam)");
+    if(i==1) his->SetTitle("#pi (prompt)");
+    if(i==2) his->SetTitle("#Sigma ");
+    if(i==3) his->SetTitle("missing n");
+    if(i==4) his->SetTitle("n from #Sigma");
+    if(i==5) his->SetTitle("#pi from #Sigma");
+    if(k==0){ his->SetXTitle("px (reco.-gen.) [GeV/c]");}
+    if(k==1){ his->SetXTitle("py (reco.-gen.) [GeV/c]");}
+    if(k==2){ his->SetXTitle("pz (reco.-gen.) [GeV/c]");}
+    if(k==3){ his->SetXTitle("E  (reco.-gen.) [GeV]");}
+    his->GetXaxis()->CenterTitle();
+    his->GetYaxis()->CenterTitle();
     
-	  if(k==3 && i==4 ) his->Fit("gaus","q","",pol-1.0*sigfit,pol+1.0*sigfit);
-	  else if( i==5 ) his->Fit("gaus","q","",pol-2.0*sigfit,pol+2.0*sigfit);
+	  if(i==1) his->Fit("gaus","q","",pol-1.5*sigfit,pol+1.5*sigfit); 
+	  else if(k==3 && i==4 ) his->Fit("gaus","q","",pol-1.0*sigfit,pol+1.0*sigfit);
+    else if( i==5 ) his->Fit("gaus","q","",pol-2.0*sigfit,pol+2.0*sigfit);
 	  else     his->Fit("gaus","q","",pol-3*sigfit,pol+3*sigfit);
+    his->Draw("HE");
+    //gaus->Draw("same");
     pol = his->GetFunction("gaus")->GetParameter(1);
 	  sigfit = his->GetFunction("gaus")->GetParameter(2);
     double sig = his->GetRMS();
@@ -70,6 +103,58 @@ void eval_cov(const char*filename="")
 	  sigm[i][j] = sigfit*1000;
 	  pole_e[i][j] = his->GetFunction("gaus")->GetParError(1)*1000;
 	  sigm_e[i][j] = his->GetFunction("gaus")->GetParError(2)*1000;
+    
+    can_vs[i]->cd(j+1);
+    if(i==0) his2->SetTitle("K (beam)");
+    if(i==1) his2->SetTitle("#pi (prompt)");
+    if(i==2) his2->SetTitle("#Sigma ");
+    if(i==3) his2->SetTitle("missing n");
+    if(i==4) his2->SetTitle("n from #Sigma");
+    if(i==5) his2->SetTitle("#pi from #Sigma");
+    if(k==0){ 
+      his2->SetXTitle("px (reco.-gen.) [GeV/c]");
+      his2->SetYTitle("px (gen.) [GeV/c]");
+    }
+    if(k==1){ 
+      his2->SetXTitle("py (reco.-gen.) [GeV/c]");
+      his2->SetYTitle("py (gen.) [GeV/c]");
+    }
+    if(k==2){ 
+      his2->SetXTitle("pz (reco.-gen.) [GeV/c]");
+      his2->SetYTitle("pz (gen.) [GeV/c]");
+    }
+    if(k==3){ 
+      his2->SetXTitle("E (reco.-gen.)  [GeV]");
+      his2->SetYTitle("mom. (gen.) [GeV/c]");
+    }
+    his2->GetXaxis()->CenterTitle();
+    his2->GetYaxis()->CenterTitle();
+    
+    if(i==0){ 
+      his2->GetXaxis()->SetRangeUser(-0.1,0.1);
+      his2->GetYaxis()->SetRangeUser(0,1.2);
+    }
+    if(i==1){ 
+      his2->GetXaxis()->SetRangeUser(-0.2,0.2);
+      his2->GetYaxis()->SetRangeUser(0,1.0);
+    }
+    if(i==2){ 
+      his2->GetXaxis()->SetRangeUser(-0.3,0.3);
+      his2->GetYaxis()->SetRangeUser(0,1.2);
+    }
+    if(i==3){ 
+      his2->GetXaxis()->SetRangeUser(-0.3,0.3);
+      his2->GetYaxis()->SetRangeUser(0,1.2);
+    }
+    if(i==4){ 
+      his2->GetXaxis()->SetRangeUser(-0.2,0.2);
+      his2->GetYaxis()->SetRangeUser(0,1.2);
+    }
+    if(i==5){ 
+      his2->GetXaxis()->SetRangeUser(-0.2,0.2);
+      his2->GetYaxis()->SetRangeUser(0,0.6);
+    }
+    his2->Draw("colz");
 	  n++;
 	}else{
 	  val[i][n] = 0;
