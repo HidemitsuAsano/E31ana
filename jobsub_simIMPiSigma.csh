@@ -1,8 +1,8 @@
 #!/bin/tcsh -f
-set Version="1"
+set Version="28"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim1/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
-set CDSDIRSUB="${CDSDIR}simDST${Version}"
+set CDSDIRSUB="${CDSDIR}simDST1"
 set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simIMPiSigma/"
 
 set logbasedir="/home/had/hiasano/logs/"
@@ -21,9 +21,14 @@ endif
 
 set SRCDIR="/gpfs/home/had/hiasano/ana/k18ana/src/"
 cp $SRCDIR/UserSimIMPiSigma.cpp $OUTDIRSUB/
+cp $SRCDIR/IMPiSigmaAnaPar.h $OUTDIRSUB/
 
+cp hadd_simhist.csh $OUTDIRSUB/
+cp hadd_simhist_pippimn.csh $OUTDIRSUB/
 ln -s $OUTDIRSUB/simIMpisigma_nSppim_all.root simpost/simIMpisigma_nSppim_all_v${Version}.root
 ln -s $OUTDIRSUB/simIMpisigma_nSmpip_all.root simpost/simIMpisigma_nSmpip_all_v${Version}.root
+ln -s $OUTDIRSUB/simIMpisigma_nSppim_pippimn_all.root simpost/simIMpisigma_nSppim_pippimn_all_v${Version}.root
+ln -s $OUTDIRSUB/simIMpisigma_nSmpip_pippimn_all.root simpost/simIMpisigma_nSmpip_pippimn_all_v${Version}.root
 
 @ i = 0
 while ($i < 400)   
