@@ -24,7 +24,7 @@ cp $SRCDIR/UserSimIMPiSigma.cpp $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaAnaPar.h $OUTDIRSUB/
 
 cp hadd_simhist.csh $OUTDIRSUB/
-cp hadd_simhist_pippimn.csh $OUTDIRSUB/
+cp hadd_sim_pippimn.csh $OUTDIRSUB/
 ln -s $OUTDIRSUB/simIMpisigma_nSppim_all.root simpost/simIMpisigma_nSppim_all_v${Version}.root
 ln -s $OUTDIRSUB/simIMpisigma_nSmpip_all.root simpost/simIMpisigma_nSmpip_all_v${Version}.root
 ln -s $OUTDIRSUB/simIMpisigma_nSppim_pippimn_all.root simpost/simIMpisigma_nSppim_pippimn_all_v${Version}.root
