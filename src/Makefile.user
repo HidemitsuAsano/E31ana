@@ -67,7 +67,7 @@ simLpn:$(TMPDIR)/UserSimLpn.o \
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB) $(KFLIB)
 
 
-simIMPiSigma:$(TMPDIR)/UserSimIMPiSigma.o \
+simIMPiSigma:$(TMPDIR)/UserSimIMPiSigma.o  IMPiSigmaAnaPar.h\
 	$(TMPDIR)/SimDataMan.o \
 	$(TMPDIR)/SimDataMan_Dict.o \
 	$(TMPDIR)/KnuclRootData.o \
@@ -75,4 +75,4 @@ simIMPiSigma:$(TMPDIR)/UserSimIMPiSigma.o \
 	$(TMPDIR)/ComCrossSectionTable.o \
 	$(TMPDIR)/ComCrossSectionTable_Dict.o \
 	$(patsubst %,$(TMPDIR)/%,$(OBJS))
-	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB) $(KFLIB)
+	$(CXX) $(CFLAGS) -MMD -o  $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB) $(KFLIB)
