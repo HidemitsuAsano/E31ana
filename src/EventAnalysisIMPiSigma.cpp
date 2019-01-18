@@ -41,7 +41,7 @@
 
 
 #include "IMPiSigmaAnaPar.h"
-
+#include "IMPiSigmaHist.h"
 
 #define KFDEBUG 0 // verbose level of the KinFitter
 // 0: quiet, 1: print result, 2: print iterations, 3: print also matrices
@@ -78,6 +78,7 @@ private:
   bool IsForwardCharge();
   bool IsForwardNeutron();
   void InitKinFitMatrix();
+  int GetCDHNeighboringNHits(std::vector <int> cdhseg,std::vector <int> allcdhhit);
   int CDSChargedAna(LocalTrack *bpc,
                     const TLorentzVector beam,
                     std::vector <int> &cdhseg,
@@ -85,6 +86,7 @@ private:
                     std::vector <int> &pipid,
                     std::vector <int> &kmid,
                     std::vector <int> &protonid);
+  int GetNHitsCDCOuter(TVector3 PosCDH);
 
   TFile *rtFile;// histograms
   TFile *rtFile2;// condensed file
@@ -628,43 +630,32 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
                          vCDHseg.begin(), vCDHseg.end(),
                          std::back_inserter(NeutralCDHseg) );
 
-    if(Verbosity) {
-      if( NeutralCDHseg.size()!=1 ) {
+    if( NeutralCDHseg.size()!=1 ) {
+      if(Verbosity) {
         std::cerr<<" CDH neutral hit is not 1 :: "<<NeutralCDHseg.size()<<std::endl;
-      } else {
-        Tools::Fill1D( Form("CDHNeutralseg"),NeutralCDHseg.at(0));
       }
-      std::cerr<<"# of diff = "<<NeutralCDHseg.size()<<std::endl;
-      std::cerr<<"CDH hits =   ";
-      for( int n=0; n<(int)CDHhit_list.size(); n++ ) {
-        std::cerr<<CDHhit_list[n]<<" ";
-      }
-      std::cerr<<std::endl;
-      std::cerr<<"track hits = ";
-      for( int n=0; n<(int)vCDHseg.size(); n++ ) {
-        std::cerr<<vCDHseg[n]<<" ";
-      }
-      std::cerr<<std::endl;
-      std::cerr<<"diff hits =  ";
-      for( int n=0; n<(int)NeutralCDHseg.size(); n++ ) {
-        std::cerr<<NeutralCDHseg[n]<<" ";
-      }
-      std::cerr<<std::endl;
-    }
-
-    //** isolation cut **//
-    int flag_isolation = 0;
-    for( int ineuseg=0; ineuseg<(int)NeutralCDHseg.size(); ineuseg++ ) {
-      for( int ihit=0; ihit<(int)CDHhit_list.size(); ihit++ ) {
-        if( NeutralCDHseg[ineuseg]-CDHhit_list[ihit] ) {
-          Tools::Fill1D( Form("diff_CDH"), NeutralCDHseg[ineuseg]-CDHhit_list[ihit] );
+      if(Verbosity){
+        std::cerr<<"# of diff = "<<NeutralCDHseg.size()<<std::endl;
+        std::cerr<<"CDH hits =   ";
+        for( int n=0; n<(int)CDHhit_list.size(); n++ ) {
+          std::cerr<<CDHhit_list[n]<<" ";
         }
-        //CDH has 36 segments. Requiring there is no hits on neighboring segments.
-        if( abs(NeutralCDHseg[ineuseg]-CDHhit_list[ihit])==1 || abs(NeutralCDHseg[ineuseg]-CDHhit_list[ihit])==35 )
-          flag_isolation++;
-      }
+        std::cerr<<std::endl;
+        std::cerr<<"track hits = ";
+        for( int n=0; n<(int)vCDHseg.size(); n++ ) {
+          std::cerr<<vCDHseg[n]<<" ";
+        }
+        std::cerr<<std::endl;
+        std::cerr<<"diff hits =  ";
+        for( int n=0; n<(int)NeutralCDHseg.size(); n++ ) {
+          std::cerr<<NeutralCDHseg[n]<<" ";
+        }
+        std::cerr<<std::endl;
+      }//if Verbosity
     }
-
+    
+    //** isolation cut **//
+    int flag_isolation = GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list);
     if( flag_isolation ) {
       if(Verbosity) std::cerr<<"CDH hit candidate is NOT isolated !!!"<<std::endl;
       Clear( nAbort_CDHiso );
@@ -681,35 +672,14 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     }
     HodoscopeLikeHit *ncdhhit = cdsMan->CDH(cdhcan);
 
-    // charge veto using CDC
     TVector3 Pos_CDH;
     confMan->GetGeomMapManager()->GetPos( CID_CDH, ncdhhit->seg(), Pos_CDH );
     if(Verbosity) {
       std::cerr<<"CDH candidate = "<<ncdhhit->seg()<<" -> "<<Pos_CDH.Phi()/TwoPi*360.<<" deg"<<std::endl;
     }
-    const double PhiMin = -15.0/360.*TwoPi; // rad
-    const double PhiMax =  15.0/360.*TwoPi; // rad
-    if(Verbosity) {
-      std::cerr<<"Min/Max = "<<PhiMin/TwoPi*360.<<"/"<<PhiMax/TwoPi*360.<<" deg"<<std::endl;
-    }
-    int nCDCforVeto = 0;
-    for( int ilr=14; ilr<16; ilr++ ) { // charge veto using layer 15, 16
-      for( int icdchit=0; icdchit<cdsMan->nCDC(ilr); icdchit++ ) {
-        CDCHit *cdc=cdsMan->CDC(ilr,icdchit);
-        TVector3 Pos_CDC = cdc->wpos();
-        Pos_CDC.SetZ(0); // only xy pos is used
-        double angle = Pos_CDC.Angle(Pos_CDH); // rad
-        if(Verbosity) {
-          std::cerr<<"CDC "<<ilr<<" "<<icdchit<<" "<<cdc->wire()<<" -> "<<Pos_CDC.Phi()/TwoPi*360.
-                   <<" deg :: diff = "<<angle/TwoPi*360<<" deg"<<std::endl;
-        }
-        Tools::Fill1D( Form("diff_CDH_CDC"), angle/TwoPi*360 );
-        if( PhiMin<angle && angle<PhiMax ) nCDCforVeto++;
-      }//icdchit
-    }//ilr
-    if(Verbosity) {
-      std::cerr<<"# of CDC hits for nCDH candidate = "<<nCDCforVeto<<std::endl;
-    }
+    
+    // charge veto using CDC
+    int nCDCforVeto = GetNHitsCDCOuter(Pos_CDH);
     Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
 
 
@@ -721,16 +691,14 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         if(AddQAplots) Tools::Fill1D(Form("CDHNeutralSeg"),NeutralCDHseg.at(0));
       }
 
-
-      CDSTrack *track_pip = trackMan->Track( pip_ID.at(0) ); // only 1 track
-      CDSTrack *track_pim = trackMan->Track( pim_ID.at(0) ); // only 1 track
+      CDSTrack *track_pip = trackMan->Track( pip_ID.at(0) ); // should be only 1 track
+      CDSTrack *track_pim = trackMan->Track( pim_ID.at(0) ); // should be only 1 track
 
       //deuteron target
-      TVector3 vtx_react;
-      TVector3 vtx_dis;
+      TVector3 vtx_react;//reaction vertex
+      TVector3 vtx_dis;//displaced vertex
       TVector3 vtx_beam_wpip;//vertex(beam-pip) on beam
       TVector3 vtx_pip;//vertex(beam-pip) on beam
-      TVector3 vtx_beam;
       track_pip->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpip, vtx_pip );
       TVector3 vtx_beam_wpim;//vertex(beam-pim) on beam
       TVector3 vtx_pim;//vertex(beam-pim) on beam
@@ -741,6 +709,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
 
       //reaction vertex is determined from beam and nearest vtx
+      TVector3 vtx_beam;
       if(dcapipvtx < dcapimvtx) {
         //follows sakuma/sada's way , avg. of scattered particle ana beam particle [20180829]
         vtx_react = 0.5*(vtx_pip+vtx_beam_wpip);
@@ -753,12 +722,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         else             vtx_dis = vtx_pip;
         vtx_beam = vtx_beam_wpim;
       }
-      //vertex position from pi+/pi-
-      TVector3 vtx1,vtx2;
-      bool vtx_flag=TrackTools::Calc2HelixVertex(track_pip, track_pim, vtx1, vtx2);
-      double dcapippim=-9999.;
-      if(vtx_flag) dcapippim = (vtx2-vtx1).Mag();
-
 
 
       //** beam kaon tof **//
@@ -936,6 +899,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
             Tools::Fill1D( Form("DCA_pip"), dcapipvtx );
             Tools::Fill1D( Form("DCA_pim"), dcapimvtx );
+            //vertex position from pi+/pi-
+            TVector3 vtx1,vtx2;
+            bool vtx_flag=TrackTools::Calc2HelixVertex(track_pip, track_pim, vtx1, vtx2);
+            double dcapippim=-9999.;
+            if(vtx_flag) dcapippim = (vtx2-vtx1).Mag();
             Tools::Fill1D( Form("DCA_pippim"), dcapippim);
           }
 
@@ -1182,9 +1150,6 @@ void EventAnalysis::Finalize()
 void EventAnalysis::InitializeHistogram()
 //**--**--**--**--**--**--**--**--**--**--**--**--**--**//
 {
-  // geneneral informantion **//
-  Tools::newTH1F( Form("Time"), 3000, -0.5, 2999.5 );
-  Tools::newTH1F( Form("nGoodTrack"), 11, -0.5, 10.5 );
   Tools::newTH1F( Form("EventCheck"), 20, 0, 20 );
   // Event Reduction Check memo
   // 1.  # of all events w/o cosmic trigger
@@ -1201,121 +1166,11 @@ void EventAnalysis::InitializeHistogram()
   // 12. filled if Energy loss calculation failed
   // 13. filled if CDSChargedAna is OK.
   // 14. filled if CDH isolation is OK.
+  InitBasicHist();
+  InitIMPiSigmaHist();
 
+  if(AddQAplots) InitAddedQAHist();
 
-  Tools::newTH1F( Form("Scaler"), 41, -0.5, 40.5 );
-
-  // CDC and CDH information from CDC-trackig file **//
-  Tools::newTH1F( Form("mul_CDH"),Form("CDH multiplicity"), 11, -0.5, 10.5 );
-  Tools::newTH1F( Form("mul_CDH_assoc"), 11, -0.5, 10.5 );
-  if(AddQAplots) {
-    Tools::newTH2F( Form("CDHtime"),36,0.5,36.5,4000,0,200);
-    Tools::newTH2F( Form("NeutraltimeEnergy"),500,0,100,200,0,50);
-    //Tools::newTH3F( Form("CDHtimeEnergy"),36,0.5,36.5,4000,0,200,100,0,100);
-    Tools::newTH1F( Form("CDHNeutralSeg"),36, 0.5, 36.5);
-  }
-  Tools::newTH1F( Form("npimangle"),628, 0, 2*3.14);
-  Tools::newTH1F( Form("npipangle"),628, 0, 2*3.14);
-
-  //** beam line **//
-  Tools::newTH1F( Form("mul_BHD"), 12, -0.5, 11.5 );
-  Tools::newTH1F( Form("mul_T0"),   6, -0.5, 5.5 );
-  Tools::newTH1F( Form("tof_T0BHD"), 2000, 20, 40 );
-  Tools::newTH1F( Form("tracktime_BPC"),  1200, -200, 400 );
-  Tools::newTH1F( Form("trackchi2_BPC"),  200, 0, 20 );
-  Tools::newTH1F( Form("ntrack_BPC"),  6, -0.5, 5.5 );
-  Tools::newTH1F( Form("tracktime_BLC1"), 1200, -200, 400 );
-  Tools::newTH1F( Form("tracktime_BLC2"), 1200, -200, 400 );
-  Tools::newTH1F( Form("trackchi2_BLC1"), 200, 0, 20 );
-  Tools::newTH1F( Form("trackchi2_BLC2"), 200, 0, 20 );
-  Tools::newTH1F( Form("ntrack_BLC1"), 6, -0.5, 5.5 );
-  Tools::newTH1F( Form("ntrack_BLC2"), 6, -0.5, 5.5 );
-  Tools::newTH2F( Form("dydx_BLC2BPC"),     130, -1.3, 1.3, 130, -1.3, 1.3 );
-  Tools::newTH2F( Form("dydzdxdz_BLC2BPC"), 175, -0.035, 0.035, 175, -0.035, 0.035 );
-  Tools::newTH1F( Form("trackchi2_beam"), 400, 0, 40 );
-  Tools::newTH1F( Form("momentum_beam"), 180, 0.92, 1.10 );
-  Tools::newTH1F( Form("PID_beam"),5,-1.5,3.5);
-
-  //** CDS **//
-  Tools::newTH1F( Form("trackchi2_CDC"), 1000, 0, 50 );
-  Tools::newTH2F( Form("PID_CDS_beta"), 2000, 0, 10., 1000, -1.2, 1.2 );
-  Tools::newTH2F( Form("PID_CDS"), 1000, -0.6, 5, 1000, -1.2, 1.2 );
-  Tools::newTH1F( Form("ntrack_CDS"), 6, -0.5, 5.5 );
-  Tools::newTH1F( Form("ntrack_pi_plus"), 6, -0.5, 5.5 );
-  Tools::newTH1F( Form("ntrack_proton"), 6, -0.5, 5.5 );
-  //Tools::newTH1F( Form("ntrack_deuteron"), 6, -0.5, 5.5 );
-  Tools::newTH1F( Form("ntrack_pi_minus"), 6, -0.5, 5.5 );
-  Tools::newTH1F( Form("ntrack_K_minus"), 6, -0.5, 5.5 );
-
-  if(AddQAplots) {
-    Tools::newTH2F( Form("Vtx_ZX"),1000,-25,25,500,-12.5,12.5);
-    Tools::newTH2F( Form("Vtx_ZY"),1000,-25,25,500,-12.5,12.5);
-    Tools::newTH2F( Form("Vtx_XY"),500,-12.5,12.5,500,-12.5,12.5);
-
-    Tools::newTH2F( Form("Vtx_ZX_nofid"),1000,-25,25,500,-12.5,12.5);
-    Tools::newTH2F( Form("Vtx_ZY_nofid"),1000,-25,25,500,-12.5,12.5);
-    Tools::newTH2F( Form("Vtx_XY_nofid"),500,-12.5,12.5,500,-12.5,12.5);
-    Tools::newTH2F( Form("Vtx_ZX_fid"),1000,-25,25,500,-12.5,12.5);
-    Tools::newTH2F( Form("Vtx_ZY_fid"),1000,-25,25,500,-12.5,12.5);
-    Tools::newTH2F( Form("Vtx_XY_fid"),500,-12.5,12.5,500,-12.5,12.5);
-  }
-  //** forward counters **//
-  Tools::newTH1F( Form("mul_BVC"), 9, -0.5, 8.5 );
-  Tools::newTH1F( Form("mul_CVC"), 11, -0.5, 10.5 );
-  Tools::newTH1F( Form("mul_PC"), 11, -0.5, 10.5 );
-
-  //** pi+ pi- X event **//
-  Tools::newTH1F( Form("diff_CDH"), 73, -36.5, 36.5 );
-  Tools::newTH1F( Form("diff_CDH_CDC"), 181, 0, 181 );
-  Tools::newTH2F( Form("dE_betainv"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_woK0"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_wK0"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_woK0_n"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_MMom_fid_beta_woK0"), 100, 0, 1.5, 200, 0, 50);
-  Tools::newTH2F( Form("dE_MMass_fid_beta_woK0"), 140, 0.4, 1.8, 200, 0, 50);
-
-  Tools::newTH2F( Form("MMom_MMass"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  Tools::newTH2F( Form("MMom_MMass_fid"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  Tools::newTH2F( Form("MMom_MMass_fid_beta"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  Tools::newTH2F( Form("MMom_MMass_fid_beta_dE"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  Tools::newTH2F( Form("MMom_MMass_fid_beta_dE_woK0"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  Tools::newTH2F( Form("MMom_MMass_fid_beta_dE_woK0_wSid"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  Tools::newTH2F( Form("MMom_MMass_fid_beta_dE_wK0"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  Tools::newTH2F( Form("MMom_MMass_fid_beta_dE_woK0_n"), 140, 0.4, 1.8, 100, 0, 1.5 );
-
-
-
-  Tools::newTH1F( Form("IMpipi_dE"), 200, 0.4, 0.6 );
-  Tools::newTH2F( Form("IMpipi_NMom_dE"),100,0, 1.5, 200, 0.4,0.6);
-
-  Tools::newTH2F( Form("NMom_NMom_fid_beta_dE_woK0_n"), 100, 0, 1.5, 100, 0, 1.5 );
-  Tools::newTH2F( Form("IMnpim_IMnpip_dE_woK0"), 140, 1, 1.7, 140, 1, 1.7 );
-  Tools::newTH2F( Form("IMnpim_IMnpip_dE_woK0_n"), 140, 1, 1.7, 140, 1, 1.7 );
-  Tools::newTH2F( Form("IMmnpim_IMmnpip_woK0_wSid_n"), 70, 1, 1.7, 70, 1, 1.7 );
-  Tools::newTH2F( Form("MMnpip_MMnpim_woK0_wSid_n"), 70, 1, 1.7, 70, 1, 1.7 );
-  Tools::newTH2F( Form("Cosn_IMnpipi_woK0_wSid_n"), 100, 1, 2, 50, -1, 1 );
-  Tools::newTH1F( Form("IMnpipi_n"), 100, 1, 2 );
-  Tools::newTH1F( Form("IMnpipi_wSid_n"), 100, 1, 2 );
-  Tools::newTH1F( Form("IMnpipi_woK0_wSid_n"), 100, 1, 2 );
-  Tools::newTH2F( Form("dE_IMnpipi_woK0_wSid_n"), 100, 1, 2, 200, 0, 50);
-  Tools::newTH2F( Form("MMnmiss_IMnpipi_n"),100,1,2,100,0,1.5);
-  Tools::newTH2F( Form("MMnmiss_IMnpipi_wSid_n"),100,1,2,100,0,1.5);
-  Tools::newTH2F( Form("MMnmiss_IMnpipi_woK0_wSid_n"),100,1,2,100,0,1.5);
-  Tools::newTH2F( Form("nmom_IMnpipi_woK0_wSid_n"),100,1,2,100,0,1.0);
-  Tools::newTH2F( Form("q_IMnpipi_woK0_wSid_n"),100,1,2,300,0,1.5);
-  Tools::newTH1F( Form("DCA_pip"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pim"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pip_SigmaP"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pim_SigmaP"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pip_SigmaM"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pim_SigmaM"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pippim"), 500, 0, 5);
-
-  Tools::newTH2F( Form("KFchi2_vs"),100,0,100,100,0,100);
-  Tools::newTH1F( Form("KF_decision"), 2, -0.5, 1.5 );//TODO implement
   return;
 }
 
@@ -1599,7 +1454,7 @@ int EventAnalysis::CDSChargedAna(LocalTrack* bpctrack,
     }
     if( !CDHflag ) {
       Tools::Fill1D( Form("EventCheck"), 9 );//put here to get event based info.
-      std::cerr << " The CDH segments is used by an another track !!! " << std::endl;
+      if(Verbosity) std::cerr << " The CDH segments is used by an another track !!! " << std::endl;
       CDHsharecheckOK = false;
       continue;//go to next CDStrack
     }
@@ -1805,6 +1660,56 @@ bool EventAnalysis::IsForwardNeutron() {
 
   */
   return true;
+}
+
+//returns # of neighboring hits of CDH segments listed in vector cdhseg
+//used for Isolation cuts of neutral particle candidates
+int EventAnalysis::GetCDHNeighboringNHits(std::vector <int> cdhseg, std::vector <int> allcdhhit  )
+{
+  int NNeighboringHits=0;
+  for( int ineuseg=0; ineuseg<(int)cdhseg.size(); ineuseg++ ) {
+    for( int ihit=0; ihit<(int)allcdhhit.size(); ihit++ ) {
+      if( cdhseg[ineuseg]-allcdhhit[ihit] ) {
+        Tools::Fill1D( Form("diff_CDH"), cdhseg[ineuseg]-allcdhhit[ihit] );
+      }
+      //CDH has 36 segments. Requiring there is no hits on neighboring segments.
+      if( abs(cdhseg[ineuseg]-allcdhhit[ihit])==1 || abs(cdhseg[ineuseg]-allcdhhit[ihit])==35 )
+        NNeighboringHits++;
+    }
+  }
+
+  return NNeighboringHits;
+}
+
+
+//returns # of cdc hits of layer 15 and 16 within -+ 15 degree of the CDH hit
+int EventAnalysis::GetNHitsCDCOuter(TVector3 PosCDH)
+{
+  int nCDChit = 0;
+  const double PhiMin = -15.0/360.*TwoPi; // rad
+  const double PhiMax =  15.0/360.*TwoPi; // rad
+  if(Verbosity>100) {
+    std::cerr<<"Min/Max = "<<PhiMin/TwoPi*360.<<"/"<<PhiMax/TwoPi*360.<<" deg"<<std::endl;
+  }
+  for( int ilr=14; ilr<16; ilr++ ) { // charge veto using layer 15, 16
+    for( int icdchit=0; icdchit<cdsMan->nCDC(ilr); icdchit++ ) {
+      CDCHit *cdc=cdsMan->CDC(ilr,icdchit);
+      TVector3 Pos_CDC = cdc->wpos();
+      Pos_CDC.SetZ(0); // only xy pos is used
+      double angle = Pos_CDC.Angle(PosCDH); // rad
+      if(Verbosity) {
+        std::cerr<<"CDC "<<ilr<<" "<<icdchit<<" "<<cdc->wire()<<" -> "<<Pos_CDC.Phi()/TwoPi*360.
+          <<" deg :: diff = "<<angle/TwoPi*360<<" deg"<<std::endl;
+      }
+      Tools::Fill1D( Form("diff_CDH_CDC"), angle/TwoPi*360 );
+      if( PhiMin<angle && angle<PhiMax ) nCDChit++;
+    }//icdchit
+  }//ilr
+  if(Verbosity) {
+    std::cerr<<"# of CDC hits for nCDH candidate = "<<nCDChit<<std::endl;
+  }
+  
+  return nCDChit;
 }
 
 

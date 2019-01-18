@@ -22,7 +22,7 @@ momentum: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisMomentum.o $
 evlpn_sada: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysis_Lpn_sada.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysis_Lpn_sada.o $(LIBLINK) $(OBJSLIB)
 
-evpisigma: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
+evpisigma: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o IMPiSigmaAnaPar.h IMPiSigmaHist.h $(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o $(LIBLINK) $(OBJSLIB) $(KFLIB)
 
 xt: $(TMPDIR)/UserXT.o $(ALLSO)
@@ -67,7 +67,8 @@ simLpn:$(TMPDIR)/UserSimLpn.o \
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB) $(KFLIB)
 
 
-simIMPiSigma:$(TMPDIR)/UserSimIMPiSigma.o  IMPiSigmaAnaPar.h\
+simIMPiSigma:$(TMPDIR)/UserSimIMPiSigma.o IMPiSigmaAnaPar.h \
+	$(TMPDIR)/IMPiSigmaHist.o \
 	$(TMPDIR)/SimDataMan.o \
 	$(TMPDIR)/SimDataMan_Dict.o \
 	$(TMPDIR)/KnuclRootData.o \
@@ -75,4 +76,4 @@ simIMPiSigma:$(TMPDIR)/UserSimIMPiSigma.o  IMPiSigmaAnaPar.h\
 	$(TMPDIR)/ComCrossSectionTable.o \
 	$(TMPDIR)/ComCrossSectionTable_Dict.o \
 	$(patsubst %,$(TMPDIR)/%,$(OBJS))
-	$(CXX) $(CFLAGS) -MMD -o  $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB) $(KFLIB)
+	$(CXX) $(CFLAGS) -o  $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB) $(KFLIB)

@@ -21,10 +21,15 @@
 #include "SimDataMan.h"
 #include "BeamLineTrackMan.h"
 #include "CDSTrackingMan.h"
+
+#include <TLorentzVector.h>
 #include "TrackTools.h"
 #include "EventHeader.h"
 #include "Tools.h"
 #include "ELossTools.h"
+
+#include "IMPiSigmaAnaPar.h"
+#include "IMPiSigmaHist.h"
 
 #include <TDatabasePDG.h>
 #include <KinFitter/TKinFitter.h>
@@ -33,10 +38,7 @@
 #include <KinFitter/TFitConstraintEp.h>
 #include <Math/ProbFuncMathCore.h>
 
-#include "IMPiSigmaAnaPar.h"
 
-#define VTX_SIGMA 0 // 1: Sigma reconstruction,  vertex = K- & p
-                    // 0: Lambda reconstruction, vertex = K- & pi+
 
 #define KFDEBUG 0 // verbose level of the KinFitter
 // 0: quiet, 1: print result, 2: print iterations, 3: print also matrices
@@ -59,8 +61,8 @@ double PARA_lnL_MAX;
 double PARA_MM_LP_MIN;
 double PARA_MM_LP_MAX;
 
-//const double TDC_CDH_MAX = 999999; //ns (original:20 nsec.)
-const double TDC_CDH_MAX = 25; //ns (original:20 nsec.)
+const double TDC_CDH_MAX = 999999; //ns (original:20 nsec.)
+//const double TDC_CDH_MAX = 25; //ns (original:20 nsec.)
 const double ADC_CDH_MIN = 1;  // MeV
 
 //= = = = pippimn final-sample tree = = = =//
@@ -1390,18 +1392,26 @@ int main( int argc, char** argv )
                           
 
                           double val = (TL_meas[ip][ii] - TL_gene[genID[ip]][jj]);
-                          if(IsncdsMatchOK)Tools::Fill1D(Form("cov_%d_%d_%d", ip, ii, jj), val);
+                          if(IsncdsMatchOK && (1./NeutralBetaCDH < 10) )Tools::Fill1D(Form("cov_%d_%d_%d", ip, ii, jj), val);
                           if(ip==kin::kmbeam) primvtx = mcData->track(ID[ip])->vertex();
                           TVector3 vertex = mcData->track(ID[ip])->vertex();
                           double mcDCA = (vertex.Mag()-primvtx.Mag())/10.0;
                           //double mcDCA = vertex.Mag()-vtx_react.Mag();
                           TVector3 vertexc(vertex.x()/10.,vertex.y()/10.,vertex.z()/10.); 
                           
+                          double momX  = fabs(mcData->track(ID[ip])->momentum().x());
+                          double momY  = fabs(mcData->track(ID[ip])->momentum().y());
+                          double momZ  = fabs(mcData->track(ID[ip])->momentum().z());
                           double mom  = mcData->track(ID[ip])->momentum().Mag();
 
                           //double mcDCAc = vertexc.Mag()-vtx_react.Mag();
                           //Tools::Fill2D(Form("cov_zvtx_%d_%d_%d", ip, ii,jj), val, vertexc.z());
-                          if(IsncdsMatchOK)Tools::Fill2D(Form("cov_mom_%d_%d_%d", ip, ii,jj), val, mom*0.001);
+                          if(IsncdsMatchOK && (1./NeutralBetaCDH < 10) ){
+                            if(ii==0) Tools::Fill2D(Form("cov_mom_%d_%d_%d", ip, ii,jj), val, momX*0.001);
+                            if(ii==1) Tools::Fill2D(Form("cov_mom_%d_%d_%d", ip, ii,jj), val, momY*0.001);
+                            if(ii==2) Tools::Fill2D(Form("cov_mom_%d_%d_%d", ip, ii,jj), val, momZ*0.001);
+                            if(ii==3) Tools::Fill2D(Form("cov_mom_%d_%d_%d", ip, ii,jj), val, mom*0.001);
+                          }
                           if( ii==3 &&  ii==jj && ip==4 ){ 
                             Tools::H1(Form("vtxdiffx"),vertexc.x()-vtx_react.x() ,1000,-2,2);
                             Tools::H1(Form("vtxdiffy"),vertexc.y()-vtx_react.y() ,1000,-2,2);
@@ -1545,117 +1555,15 @@ int main( int argc, char** argv )
 void InitializeHistogram()
 //**--**--**--**--**--**--**--**--**--**--**--**--**--**//
 {
+  
   //** geneneral informantion **//
-  Tools::newTH1F( Form("Time"), 3000, -0.5, 2999.5 );
   Tools::newTH1F( Form("EventCheck"), 20, 0, 20 );
-  Tools::newTH1F( Form("Scaler"), 41, -0.5, 40.5 );
 
   //** CDC and CDH information from CDC-trackig file **//
-  Tools::newTH1F( Form("nGoodTrack"), 11, -0.5, 10.5 );
-  Tools::newTH1F( Form("mul_CDH"),Form("CDH multiplicity"), 11, -0.5, 10.5 );
-  Tools::newTH1F( Form("mul_CDH_assoc"), 11, -0.5, 10.5 );
   Tools::newTH2F( Form("CDHtime"), 36, -0.5, 35.5,1600,0,40);
-  Tools::newTH1F( Form("CDHNeutralSeg"),36,-0.5,35.5);
-  Tools::newTH1F( Form("npimangle"),628,0,2*3.14);
-  Tools::newTH1F( Form("npipangle"),628,0,2*3.14);
-
-  //** beam line **//
-  //Tools::newTH1F( Form("mul_BHD"), 12, -0.5, 11.5 ); //not used so far
-  Tools::newTH1F( Form("mul_T0"),   6, -0.5, 5.5 );
-  //Tools::newTH1F( Form("tof_T0BHD"), 2000, 20, 40 ); //not used so far
-  //Tools::newTH1F( Form("tracktime_BPC"),  1200, -200, 400 ); //not used so far
-  //Tools::newTH1F( Form("trackchi2_BPC"),  200, 0, 20 ); //not used so far
-  Tools::newTH1F( Form("ntrack_BPC"),  6, -0.5, 5.5 );
-  //Tools::newTH1F( Form("tracktime_BLC1"), 1200, -200, 400 ); //not used so far
-  //Tools::newTH1F( Form("tracktime_BLC2"), 1200, -200, 400 ); //not used so far
-  //Tools::newTH1F( Form("trackchi2_BLC1"), 200, 0, 20 ); //not used so far
-  //Tools::newTH1F( Form("trackchi2_BLC2"), 200, 0, 20 ); //not used so far
-  //Tools::newTH1F( Form("ntrack_BLC1"), 6, -0.5, 5.5 ); //not used so far
-  Tools::newTH1F( Form("ntrack_BLC2"), 6, -0.5, 5.5 );
-  Tools::newTH2F( Form("dydx_BLC2BPC"),     130, -1.3, 1.3, 130, -1.3, 1.3 );
-  Tools::newTH2F( Form("dydzdxdz_BLC2BPC"), 175, -0.035, 0.035, 175, -0.035, 0.035 );
-  //Tools::newTH1F( Form("trackchi2_beam"), 400, 0, 40 ); //not used so far
-  Tools::newTH1F( Form("momentum_beam"), 180, 0.92, 1.10 );
-  //Tools::newTH1F( Form("PID_beam"),5,-1.5,3.5); //not used so far
-
-  //** CDS **//
-  Tools::newTH1F( Form("trackchi2_CDC"), 1000, 0, 50 );
-  Tools::newTH2F( Form("PID_CDS_beta"), 2000, 0, 10., 1000, -1.2, 1.2 );
-  Tools::newTH2F( Form("PID_CDS"), 1000, -0.6, 5, 1000, -1.2, 1.2 );
-  Tools::newTH1F( Form("ntrack_CDS"), 6, -0.5, 5.5 );
-  Tools::newTH1F( Form("ntrack_pi_plus"), 6, -0.5, 5.5 );
-  Tools::newTH1F( Form("ntrack_proton"), 6, -0.5, 5.5 );
-  Tools::newTH1F( Form("ntrack_deuteron"), 6, -0.5, 5.5 );
-  Tools::newTH1F( Form("ntrack_pi_minus"), 6, -0.5, 5.5 );
-  Tools::newTH1F( Form("ntrack_K_minus"), 6, -0.5, 5.5 );
-  Tools::newTH2F( Form("Vtx_ZX"),1000,-25,25,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_ZY"),1000,-25,25,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_XY"),500,-12.5,12.5,500,-12.5,12.5);
-
-  Tools::newTH2F( Form("Vtx_ZX_nofid"),1000,-25,25,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_ZY_nofid"),1000,-25,25,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_XY_nofid"),500,-12.5,12.5,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_ZX_fid"),1000,-25,25,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_ZY_fid"),1000,-25,25,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_XY_fid"),500,-12.5,12.5,500,-12.5,12.5);
-  //** forward counters **//
-  Tools::newTH1F( Form("mul_BVC"), 9, -0.5, 8.5 );
-  Tools::newTH1F( Form("mul_CVC"), 11, -0.5, 10.5 );
-  Tools::newTH1F( Form("mul_PC"), 11, -0.5, 10.5 );
-
-  //** pi+ pi- X event **//
-  Tools::newTH1F( Form("diff_CDH"), 73, -36.5, 36.5 );
-  Tools::newTH1F( Form("diff_CDH_CDC"), 181, 0, 181 );
-  Tools::newTH2F( Form("NeutraltimeEnergy"), 500, 0, 100, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_woK0"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_wK0"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_woK0_n"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_MMom_fid_beta_woK0"), 100, 0, 1.5, 200, 0, 50);
-  Tools::newTH2F( Form("dE_MMass_fid_beta_woK0"), 140, 0.4, 1.8, 200, 0, 50);
-  
-  Tools::newTH2F( Form("MMom_MMass"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  Tools::newTH2F( Form("MMom_MMass_fid"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  Tools::newTH2F( Form("MMom_MMass_fid_beta"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  Tools::newTH2F( Form("MMom_MMass_fid_beta_dE"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  Tools::newTH2F( Form("MMom_MMass_fid_beta_dE_woK0"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  Tools::newTH2F( Form("MMom_MMass_fid_beta_dE_woK0_wSid"), 140, 0.4, 1.8, 100, 0, 1.5 );
-  Tools::newTH2F( Form("MMom_MMass_fid_beta_dE_wK0"), 140, 0.4, 1.8, 100, 0, 1.5 ); 
-  Tools::newTH2F( Form("MMom_MMass_fid_beta_dE_woK0_n"), 140, 0.4, 1.8, 100, 0, 1.5 );
- 
-  Tools::newTH1F( Form("IMpipi_dE"), 200, 0.4, 0.6 );
-  Tools::newTH2F( Form("IMpipi_NMom_dE"),100,0, 1.5, 200, 0.4,0.6);
-
-  Tools::newTH2F( Form("NMom_NMom_fid_beta_dE_woK0_n"), 100, 0, 1.5, 100, 0, 1.5 );
-  Tools::newTH2F( Form("IMnpim_IMnpip_dE_woK0"), 140, 1, 1.7, 140, 1, 1.7 );
-  Tools::newTH2F( Form("IMnpim_IMnpip_dE_woK0_n"), 140, 1, 1.7, 140, 1, 1.7 );
-  Tools::newTH2F( Form("IMmnpim_IMmnpip_woK0_wSid_n"), 70, 1, 1.7, 70, 1, 1.7 );
-  Tools::newTH2F( Form("MMnpip_MMnpim_woK0_wSid_n"), 70, 1, 1.7, 70, 1, 1.7 );
-  Tools::newTH2F( Form("Cosn_IMnpipi_woK0_wSid_n"), 100, 1, 2, 50, -1, 1 );
-  Tools::newTH1F( Form("IMnpipi_n"), 100, 1, 2 );
-  Tools::newTH1F( Form("IMnpipi_wSid_n"), 100, 1, 2 );
-  Tools::newTH1F( Form("IMnpipi_woK0_wSid_n"), 100, 1, 2 );
-  Tools::newTH2F( Form("dE_IMnpipi_woK0_wSid_n"), 100, 1, 2, 200, 0, 50);
-  Tools::newTH2F( Form("MMnmiss_IMnpipi_n"),100,1,2,100,0,1.5);
-  Tools::newTH2F( Form("MMnmiss_IMnpipi_wSid_n"),100,1,2,100,0,1.5);
-  Tools::newTH2F( Form("MMnmiss_IMnpipi_woK0_wSid_n"),100,1,2,100,0,1.5);
-  Tools::newTH2F( Form("nmom_IMnpipi_woK0_wSid_n"),100,1,2,100,0,1.0);
-  Tools::newTH2F( Form("q_IMnpipi_woK0_wSid_n"),100,1,2,300,0,1.5);
-  Tools::newTH1F( Form("DCA_pip"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pim"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pip_SigmaP"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pim_SigmaP"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pip_SigmaM"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pim_SigmaM"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pippim"), 500, 0, 5);
    
-  //KF histograms
-  Tools::newTH2F( Form("KFchi2_vs"),100,0,100,100,0,100);
-  Tools::SetXTitleH2(Form("KFchi2_vs"),"chi2/NDF S+");
-  Tools::SetYTitleH2(Form("KFchi2_vs"),"chi2/NDF S-");
-  Tools::newTH1F( Form("KF_decision"), 2, -0.5, 1.5 );
+  //defined in IMPiSigmaHist.hh
+  InitBasicHist();
+  InitIMPiSigmaHist();
   return;
 }
