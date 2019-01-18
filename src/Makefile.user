@@ -22,8 +22,10 @@ momentum: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisMomentum.o $
 evlpn_sada: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysis_Lpn_sada.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysis_Lpn_sada.o $(LIBLINK) $(OBJSLIB)
 
-evpisigma: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o IMPiSigmaAnaPar.h IMPiSigmaHist.h $(patsubst %,$(TMPDIR)/%,$(OBJS))
-	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o $(LIBLINK) $(OBJSLIB) $(KFLIB)
+evpisigma: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o IMPiSigmaAnaPar.h IMPiSigmaHist.h \
+	$(TMPDIR)/IMPiSigmaUtil.o \
+	$(patsubst %,$(TMPDIR)/%,$(OBJS)) 
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o $(TMPDIR)/IMPiSigmaUtil.o $(LIBLINK) $(OBJSLIB) $(KFLIB)
 
 xt: $(TMPDIR)/UserXT.o $(ALLSO)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(TMPDIR)/UserXT.o $(LIBLINK) $(RTLIBDIR)/$(ALLSO)
