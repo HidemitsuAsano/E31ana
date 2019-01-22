@@ -270,3 +270,181 @@ int Util::CDSChargedAna(const bool docdcretiming,
   return pimid.size()+pipid.size()+protonid.size()+kmid.size();
 }
 
+double Util::AnalyzeT0(BeamLineHitMan *blman,ConfMan *confman)
+{
+  //** BHD & T0 **//
+  int nBHD = 0;
+  for( int i=0; i<blman->nBHD(); i++ ) {
+    if( blman->BHD(i)->CheckRange() ) nBHD++;
+  }
+  int nT0 = 0;
+  for( int i=0; i<blman->nT0(); i++ ) {
+    if( blman->T0(i)->CheckRange() ) nT0++;
+  }
+  Tools::Fill1D( Form("mul_BHD"), nBHD );
+  Tools::Fill1D( Form("mul_T0"),  nT0 );
+
+  //** T0 = 1hit selection **//
+  if( nT0!=1 ) { //!! sada-D p.72 !!//
+    return -9999;
+  }
+
+  //** Beam PID by T0-BHD TOF **//
+  TVector3 vtxT0;
+  double ctmt0=0;
+  for( int i=0; i<blman->nT0(); i++ ) {
+    if( blman->T0(i)->CheckRange() ) {
+      ctmt0 = blman->T0(i)->ctmean();
+      confman->GetGeomMapManager()->GetGPos(CID_T0, blman->T0(i)->seg(), vtxT0);
+    }
+  }
+
+  return ctmt0;
+}
+
+int Util::BeamPID(EventHeader *header, const double ctmt0,BeamLineHitMan *blman)
+{
+  //  beamline analysis & event selection
+  double ctmBHD=0;
+  int PIDBeam = -1; // 0:pi 1:K 3:else
+  for( int i=0; i<blman->nBHD(); i++ ) {
+    if( blman->BHD(i)->CheckRange() ) {
+      ctmBHD = blman->BHD(i)->ctmean();
+      double tofBHDT0 = ctmt0-ctmBHD;
+      Tools::Fill1D( Form("tof_T0BHD"), tofBHDT0 );
+      if( header->kaon() && blcuts::beam_tof_k_min <tofBHDT0 && tofBHDT0<blcuts::beam_tof_k_max  )
+        PIDBeam = Beam_Kaon;
+      else if( header->pion() && blcuts::beam_tof_pi_min<tofBHDT0 && tofBHDT0<blcuts::beam_tof_pi_max )
+        PIDBeam = Beam_Pion;
+    }
+  }
+  Tools::Fill1D(Form("PID_beam"), PIDBeam);
+  if( PIDBeam== -1  ) { //** unidentified particle is discarded (other than pi/K) **//
+    return -1;
+  }
+
+  return PIDBeam;
+}
+
+
+//Beam PID + event selection of BLC1,2, BPC
+//TODO: add comment
+int Util::EveSelectBeamline(BeamLineTrackMan *bltrackman,
+                            CDSTrackingMan *trackman,
+                            ConfMan *confman, 
+                            int &blc1id, 
+                            int &blc2id, 
+                            int &bpcid)
+{
+
+  unsigned int nblc1 = 0;
+  unsigned int nblc2 = 0;
+  blc1id = -1;
+  blc2id = -1;
+  //** timing selection of BLC1/BLC2 **//
+  for( int i=0; i<bltrackman->ntrackBLC1(); i++ ) {
+    LocalTrack *blc1 = bltrackman->trackBLC1(i);
+    Tools::Fill1D( Form("tracktime_BLC1"), blc1->GetTrackTime() );
+    Tools::Fill1D( Form("trackchi2_BLC1"), blc1->chi2all() );
+    if( blc1->CheckRange(blcuts::blc1_time_window_min, blcuts::blc1_time_window_max)) {
+      nblc1++;
+      if( blc1->CheckRange(blcuts::blc1_time_min, blcuts::blc1_time_max) &&
+          bltrackman->trackBLC1(i)->chi2all()<blcuts::blc1_chi2_max ) blc1id = i;
+    }
+  }
+  for( int i=0; i<bltrackman->ntrackBLC2(); i++ ) {
+    LocalTrack *blc2 = bltrackman->trackBLC2(i);
+    Tools::Fill1D( Form("tracktime_BLC2"), blc2->GetTrackTime() );
+    Tools::Fill1D( Form("trackchi2_BLC2"), blc2->chi2all() );
+    if( blc2->CheckRange(blcuts::blc2_time_window_min, blcuts::blc2_time_window_max) ) {
+      nblc2++;
+      if( blc2->CheckRange(blcuts::blc2_time_min, blcuts::blc2_time_max) &&
+          bltrackman->trackBLC2(i)->chi2all()<blcuts::blc2_chi2_max ) blc2id = i;
+    }
+  }
+  Tools::Fill1D( Form("ntrack_BLC1"), nblc1 );
+  Tools::Fill1D( Form("ntrack_BLC2"), nblc2 );
+
+  //** single track selection in each BLC **//
+  if( !(nblc1==1 && blc1id!=-1 && nblc2==1 && blc2id!=-1) ) { //** multi-good-beams event is discarded  **//
+    return -16;
+  }
+
+  //** BPC track selection **//
+  int nbpc = 0;
+  bpcid = -1;
+  double chibpc = 999;
+  for( int i=0; i<bltrackman->ntrackBPC(); i++ ) {
+    Tools::Fill1D( Form("tracktime_BPC"), bltrackman->trackBPC(i)->GetTrackTime() );
+    if( bltrackman->trackBPC(i)->CheckRange(blcuts::bpc_time_window_min,blcuts::bpc_time_window_max) ) {
+      nbpc++;
+      bpcid = i;
+      chibpc = bltrackman->trackBPC(i)->chi2all();
+      Tools::Fill1D( Form("trackchi2_BPC"),chibpc);
+    }
+  }
+
+  Tools::Fill1D( Form("ntrack_BPC"), nbpc );
+
+  if( nbpc!=1 ) {
+    return -17;
+  }
+
+  LocalTrack *bpctrack = bltrackman->trackBPC(bpcid);
+  if( !(bpctrack->CheckRange(blcuts::bpc_time_min,blcuts::bpc_time_max))
+      || bpctrack->chi2all()>blcuts::bpc_chi2_max) {
+    return -18;
+  }
+
+  //** vertex calculation by CDS goodtrack and BPC tracks**/
+  for( int it1=0; it1<trackman->nGoodTrack(); it1++ ) {
+    trackman->CalcVertex_beam( trackman->GoodTrackID(it1), bltrackman, confman );
+  }
+
+  //** BLC2-BPC track matching **//
+  bool fblc2bpc = false;
+  for( int ii=0; ii<bltrackman->ntrackBLC2(); ii++ ) {
+    if( ii!=blc2id ) continue;
+    LocalTrack *blc2 = bltrackman->trackBLC2(ii);
+    double xblc2bpc[2]= {0,0};
+    double yblc2bpc[2]= {0,0};
+    double xpos[2]= {0,0};
+    double ypos[2]= {0,0};
+
+    TVector3 Pos_BPC, Pos_BLC2, rot;
+    confman->GetBLDCWireMapManager()->GetGParam( CID_BPC, Pos_BPC, rot );
+    confman->GetBLDCWireMapManager()->GetGParam( CID_BLC2a, Pos_BLC2, rot );
+    double zPos_BPC = Pos_BPC.Z();
+    double zPos_BLC2 = Pos_BLC2.Z();
+    double zPos_BPC_BLC2 = (Pos_BPC.Z()+Pos_BLC2.Z())/2;
+
+    bpctrack->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[0], yblc2bpc[0] );
+    bpctrack->XYPosatZ( zPos_BPC, xpos[0], ypos[0] );
+    blc2->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[1], yblc2bpc[1]);
+    blc2->XYPosatZ( zPos_BLC2, xpos[1], ypos[1]);
+    double dxdz[2], dydz[2];
+    dxdz[0] = (xpos[0]-xblc2bpc[0]) / (zPos_BPC-zPos_BPC_BLC2);
+    dxdz[1] = (xpos[1]-xblc2bpc[1]) / (zPos_BLC2-zPos_BPC_BLC2);
+    dydz[0] = (ypos[0]-yblc2bpc[0]) / (zPos_BPC-zPos_BPC_BLC2);
+    dydz[1] = (ypos[1]-yblc2bpc[1]) / (zPos_BLC2-zPos_BPC_BLC2);
+
+    if( (xblc2bpc[1]-xblc2bpc[0])< blcuts::blc2bpc_x_min ||
+        (xblc2bpc[1]-xblc2bpc[0])> blcuts::blc2bpc_x_max ) fblc2bpc = false;
+    else if( (yblc2bpc[1]-yblc2bpc[0])<blcuts::blc2bpc_y_min ||
+             (yblc2bpc[1]-yblc2bpc[0])>blcuts::blc2bpc_y_max ) fblc2bpc = false;
+    else if( (dxdz[1]-dxdz[0])<blcuts::blc2bpc_dx_min ||
+             (dxdz[1]-dxdz[0])>blcuts::blc2bpc_dx_max ) fblc2bpc = false;
+    else if( (dydz[1]-dydz[0])<blcuts::blc2bpc_dy_min ||
+             (dydz[1]-dydz[0])>blcuts::blc2bpc_dy_max ) fblc2bpc = false;
+    else fblc2bpc = true;
+
+    Tools::Fill2D( Form("dydx_BLC2BPC"), xblc2bpc[1]-xblc2bpc[0], yblc2bpc[1]-yblc2bpc[0] );
+    Tools::Fill2D( Form("dydzdxdz_BLC2BPC"), dxdz[1]-dxdz[0], dydz[1]-dydz[0] );
+  }
+  if( !fblc2bpc ) {
+    return -19;
+  }
+
+  return 0;
+}
+
