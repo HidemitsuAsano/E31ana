@@ -72,8 +72,6 @@ public:
   ~EventAnalysis();
 private:
   void ResetCounters();
-  double AnalyzeT0(BeamLineHitMan *blman, ConfMan *confman);
-  int EveSelectBeamline(const double ctmt0, BeamLineHitMan *blman, ConfMan *confman);
   void InitKinFitMatrix();
   TFile *rtFile;// histograms
   TFile *rtFile2;// condensed file
@@ -100,29 +98,26 @@ private:
   BeamLineTrackMan *bltrackMan;
   int t0,t1;
 
-  int ncheckev;
-  int checkrun[26];
-  int checkev[26];
-
   double scainit[40];
   double scaend[40];
   bool INIT;
   bool SCAOVERFLOW[40];
 
 
-  int AllGoodTrack;
-  int nTrack;
-  int CDC_Event_Number;
+  int AllGoodTrack;//
+  int nTrack;//
+  int CDC_Event_Number;//
   std::ofstream ofs;
-  int blc1GoodTrackID;
-  int blc2GoodTrackID;
-  int bpcGoodTrackID;
+  int blc1GoodTrackID;//event by event
+  int blc2GoodTrackID;//event by event
+  int bpcGoodTrackID;// event by event
 
   //** counters for filling **//
   int nFill_pippim;
   int nFill_npippim;
   //** counters for event abort **//
   int nAbort_nGoodTrack;
+  int nAbort_CDSPID;
   int nAbort_nCDH;
   int nAbort_nT0;
   int nAbort_pid_beam;
@@ -269,7 +264,7 @@ void EventAnalysis::Initialize( ConfMan *conf )
   evTree = new TTree( "EventTree", "EventTree" );
   header = new EventHeader();
   if( header==NULL ) {
-    std::cerr << "!!!!" << std::endl;
+    std::cerr << "!!!! EventHeader not found"   << std::endl;
     return;
   }
   evTree->Branch( "EventHeader", &header );
@@ -314,27 +309,27 @@ void EventAnalysis::Initialize( ConfMan *conf )
 
   trackMan = new CDSTrackingMan(); //** = dE correction is performed in this code **//
   if( trackMan==NULL ) {
-    std::cerr << "!!!!" << std::endl;
+    std::cerr << "!!!! Can not find CDSTrackingMan" << std::endl;
     return;
   }
   cdsMan = new CDSHitMan();
   if( cdsMan==NULL ) {
-    std::cerr << "!!!!" << std::endl;
+    std::cerr << "!!!! Can not find CDSHitMan" << std::endl;
     return;
   }
   blMan = new BeamLineHitMan();
   if( blMan==NULL ) {
-    std::cerr << "!!!!" << std::endl;
+    std::cerr << "!!!! Can not find BeamLineHitMan" << std::endl;
     return;
   }
   bltrackMan = new BeamLineTrackMan();
   if( bltrackMan==NULL ) {
-    std::cerr << "!!!!" << std::endl;
+    std::cerr << "!!!! Can not find BeamLineTrackMan" << std::endl;
     return;
   }
   scaMan = new ScalerMan();
   if( scaMan==NULL ) {
-    std::cerr << "!!!!" << std::endl;
+    std::cerr << "!!!! Can not find ScalerMan" << std::endl;
     return;
   }
 
@@ -361,6 +356,7 @@ void EventAnalysis::ResetCounters()
   nFill_npippim  = 0;
 
   nAbort_nGoodTrack = 0;
+  nAbort_CDSPID = 0;
   nAbort_nCDH = 0;
   nAbort_nT0 = 0;
   nAbort_pid_beam = 0;
@@ -523,50 +519,49 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   //** BLDC tracking **//
   bltrackMan->DoTracking(blMan,confMan,true,true);
   //Get T0
-  ctmT0 = AnalyzeT0(blMan,confMan);
+  ctmT0 = Util::AnalyzeT0(blMan,confMan);
   if(ctmT0<-9000){
     Clear( nAbort_nT0 );
+    Tools::Fill1D( Form("EventCheck"), 15 );
     return true;
   }
-  Tools::Fill1D( Form("EventCheck"), 15 );
-
-  int blstatus = EveSelectBeamline(ctmT0,blMan,confMan);
-  if(blstatus == -16){
+  
+  //PID beam
+  const int beamPID = Util::BeamPID(header, ctmT0, blMan);
+  if(beamPID!=Beam_Kaon){
     Clear( nAbort_pid_beam );
     return true;
   }
-  Tools::Fill1D( Form("EventCheck"), 16 );
-  
-  if(blstatus == -17){
-    Clear( nAbort_singleBLtrack );
-    return true;
-  }
-  Tools::Fill1D( Form("EventCheck"), 17 );
-  
-  if(blstatus == -18){
-    Clear( nAbort_nbpc );
-    return true;
-  }
-  Tools::Fill1D( Form("EventCheck"), 18 );
-  
-  if(blstatus == -19){
-    Clear( nAbort_bpctrack );
-    return true;
-  }
-  Tools::Fill1D( Form("EventCheck"), 19 );
-  
-  if(blstatus == -20){
-    Clear( nAbort_fblc2bpc );
-    return true;
-  }
-  Tools::Fill1D( Form("EventCheck"), 20 );
-  
-  
   Tools::Fill1D( Form("EventCheck"), 4 );
 
-  //PID beam
-  if(blstatus!=Beam_Kaon) return true;
+  const int blstatus = Util::EveSelectBeamline(bltrackMan,trackMan,confMan,blc1GoodTrackID,blc2GoodTrackID,bpcGoodTrackID);
+  
+  if(blstatus == -16){
+    Clear( nAbort_singleBLtrack );
+    Tools::Fill1D( Form("EventCheck"), 16 );
+    return true;
+  }
+  
+  if(blstatus == -17){
+    Clear( nAbort_nbpc );
+    Tools::Fill1D( Form("EventCheck"), 17 );
+    return true;
+  }
+  
+  if(blstatus == -18){
+    Clear( nAbort_bpctrack );
+    Tools::Fill1D( Form("EventCheck"), 18 );
+    return true;
+  }
+  
+  if(blstatus == -19){
+    Clear( nAbort_fblc2bpc );
+    Tools::Fill1D( Form("EventCheck"), 19 );
+    return true;
+  }
+  
   Tools::Fill1D( Form("EventCheck"), 5 );
+
 
   //BLC1-D5-BLC2 analysis and chi2 selection
   double beammom = Util::AnaBeamSpec(confMan,bltrackMan,blc1GoodTrackID,blc2GoodTrackID);
@@ -626,7 +621,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
   std::vector <int> vCDHseg;
   // PID of CDS tracks //
-  int nIDedTrack = Util::CDSChargedAna(
+  const int nIDedTrack = Util::CDSChargedAna(
   DoCDCRetiming,
   bpctrack, cdsMan, trackMan, confMan, 
   LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID);
@@ -636,8 +631,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   if(nIDedTrack==-10) Tools::Fill1D( Form("EventCheck"), 10 );
   if(nIDedTrack==-11) Tools::Fill1D( Form("EventCheck"), 11 );
   if(nIDedTrack==-12) Tools::Fill1D( Form("EventCheck"), 12 );
-  if(nIDedTrack<0) return true;
-  
+  if(nIDedTrack<0){
+    Clear(nAbort_CDSPID);
+    return true;
+  }
   Tools::Fill1D( Form("EventCheck"),13);
   Tools::Fill1D( Form("ntrack_CDS"), nIDedTrack );
   Tools::Fill1D( Form("ntrack_pi_plus"),  pip_ID.size() );
@@ -700,7 +697,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     }
     
     //** isolation cut **//
-    int flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list);
+    const int flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list);
     if( flag_isolation ) {
       if(Verbosity) std::cerr<<"CDH hit candidate is NOT isolated !!!"<<std::endl;
       Clear( nAbort_CDHiso );
@@ -724,7 +721,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     }
     
     // charge veto using CDC
-    int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan);
+    const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan);
     Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
 
 
@@ -749,8 +746,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       TVector3 vtx_pim;//vertex(beam-pim) on beam
       track_pim->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpim, vtx_pim );
 
-      double dcapipvtx =  (vtx_pip-vtx_beam_wpip).Mag();
-      double dcapimvtx =  (vtx_pim-vtx_beam_wpim).Mag();
+      const double dcapipvtx =  (vtx_pip-vtx_beam_wpip).Mag();
+      const double dcapimvtx =  (vtx_pim-vtx_beam_wpim).Mag();
 
 
       //reaction vertex is determined from beam and nearest vtx
@@ -779,8 +776,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), vtx_react,
                                      LVec_beambf.Vect().Mag(), kpMass, momout, beamtof );
       LVec_beam.SetVectM( momout*LVec_beambf.Vect().Unit(), kpMass );
-      double ntof = ncdhhit->ctmean()-ctmT0-beamtof;
-      double nlen = (Pos_CDH-vtx_react).Mag();
+      const double ntof = ncdhhit->ctmean()-ctmT0-beamtof;
+      const double nlen = (Pos_CDH-vtx_react).Mag();
       if(Verbosity>10) std::cout << "L." << __LINE__ << " flight length " << nlen << std::endl;
       NeutralBetaCDH = nlen/ntof/(Const*100.);
       double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0;
@@ -811,18 +808,18 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       LVec_pip.SetVectM( P_pip, piMass );
       LVec_n.SetVectM(   P_n,   nMass );//CDS n
 
-      double cdhphi = Pos_CDH.Phi();
-      double pimphi = P_pim.Phi();
-      double pipphi = P_pip.Phi();
+      const double cdhphi = Pos_CDH.Phi();
+      const double pimphi = P_pim.Phi();
+      const double pipphi = P_pip.Phi();
       Tools::Fill1D(Form("npimangle"),pimphi-cdhphi);
       Tools::Fill1D(Form("npipangle"),pipphi-cdhphi);
 
-      double mm_mass   = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).M();
-      TVector3 P_missn = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).Vect();
+      const double mm_mass   = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).M();
+      const TVector3 P_missn = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).Vect();
       LVec_nmiss.SetVectM( P_missn, nMass );
       if(Verbosity>10)std::cerr<<"  missing mass = "<<mm_mass<<std::endl;
 
-      TVector3 boost = (LVec_target+LVec_beam).BoostVector();
+      const TVector3 boost = (LVec_target+LVec_beam).BoostVector();
       TLorentzVector LVec_nmiss_CM = LVec_nmiss;
       TLorentzVector LVec_beam_CM = LVec_beam;
       LVec_nmiss_CM.Boost(-boost);
@@ -998,17 +995,17 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             //These partcile IDs are defined in pythia6
             //see http://home.fnal.gov/~mrenna/lutp0613man2/node44.html
             //                    K-    pi-  S+     n     n     pi+
-            int PDG_Spmode[kin::npart] = {-321, -211, 3222, 2112, 2112,  211}; // pi-Sigma+
+            const int PDG_Spmode[kin::npart] = {-321, -211, 3222, 2112, 2112,  211}; // pi-Sigma+
             //                    K-    pi+  S-     n     n     pi-
-            int PDG_Smmode[kin::npart] = {-321,  211, 3112, 2112, 2112, -211}; // pi+Sigma-
+            const int PDG_Smmode[kin::npart] = {-321,  211, 3112, 2112, 2112, -211}; // pi+Sigma-
 
 
             //--- KinFitter :: initialization ---//
             //  = 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+
             //  = 2) TLorentzVector LVec_beam, LVec_pip, (LVec_n+LVec_pim), LVec_nmiss, LVec_n, LVec_pim = for pi+ Sigma-
             //*** definition of fit particles in cartesian coordinates ***//
-            TString str_particle_Spmode[kin::npart] = {"LVec_beam", "LVec_pim", "LVec_Sp", "LVec_mn", "LVec_n", "LVec_pip"};
-            TString str_particle_Smmode[kin::npart] = {"LVec_beam", "LVec_pip", "LVec_Sm", "LVec_mn", "LVec_n", "LVec_pim"};
+            const TString str_particle_Spmode[kin::npart] = {"LVec_beam", "LVec_pim", "LVec_Sp", "LVec_mn", "LVec_n", "LVec_pip"};
+            const TString str_particle_Smmode[kin::npart] = {"LVec_beam", "LVec_pip", "LVec_Sm", "LVec_mn", "LVec_n", "LVec_pim"};
             //asano memo
             //TFitParticlePxPyPz this is KinFitter class
             TFitParticlePxPyPz ParticleTgt = TFitParticlePxPyPz("target", "target", &TV_target,
@@ -1166,6 +1163,7 @@ void EventAnalysis::Finalize()
 
   std::cout<<"====== Abort counter ========="<<std::endl;
   std::cout<<" nAbort_nGoodTrack    = "<<nAbort_nGoodTrack<<std::endl;
+  std::cout<<" nAbort_CDSPID        = "<<nAbort_CDSPID<<std::endl;
   std::cout<<" nAbort_nCDH          = "<<nAbort_nCDH<<std::endl;
   std::cout<<" nAbort_nT0           = "<<nAbort_nT0<<std::endl;
   std::cout<<" nAbort_pid_beam      = "<<nAbort_pid_beam<<std::endl;
@@ -1200,8 +1198,8 @@ void EventAnalysis::InitializeHistogram()
   // 1.  # of all events w/o cosmic trigger
   // 2.  after CDH cuts
   // 3.  after the # of CDS good tracks cut
-  // 4.  after beam line analysis
-  // 5.  after beam PID (kaon)
+  // 4.  after beam PID (kaon)
+  // 5.  after beam line analysis
   // 6.  after BLC1-D5-BLC2 analysis
   // 7.  filled if CDS chi2 is bad
   // 8.  filled if a CDC track have no CDH hits
@@ -1211,7 +1209,11 @@ void EventAnalysis::InitializeHistogram()
   // 12. filled if Energy loss calculation failed
   // 13. filled if CDSChargedAna is OK.
   // 14. filled if CDH isolation is OK.
-  // 15. T0 multiplicity is 1
+  // 15. T0 multiplicity is NOT 1
+  // 16. # of BLC1-BLC2 tracks is NOT 1
+  // 17. # of BPC tracks is NOT 1
+  // 18. BPC timing and track chi2 is NOT good
+  // 19. BLC2-BPC track is not matched
   InitBasicHist();
   InitIMPiSigmaHist();
 
@@ -1220,174 +1222,7 @@ void EventAnalysis::InitializeHistogram()
   return;
 }
 
-double EventAnalysis::AnalyzeT0(BeamLineHitMan *blman,ConfMan *confman)
-{
-  //** BHD & T0 **//
-  int nBHD = 0;
-  for( int i=0; i<blman->nBHD(); i++ ) {
-    if( blman->BHD(i)->CheckRange() ) nBHD++;
-  }
-  int nT0 = 0;
-  for( int i=0; i<blman->nT0(); i++ ) {
-    if( blman->T0(i)->CheckRange() ) nT0++;
-  }
-  Tools::Fill1D( Form("mul_BHD"), nBHD );
-  Tools::Fill1D( Form("mul_T0"),  nT0 );
 
-  //** T0 = 1hit selection **//
-  if( nT0!=1 ) { //!! sada-D p.72 !!//
-    return -9999;
-  }
-
-  //** Beam PID by T0-BHD TOF **//
-  TVector3 vtxT0;
-  double ctmt0=0;
-  for( int i=0; i<blman->nT0(); i++ ) {
-    if( blman->T0(i)->CheckRange() ) {
-      ctmt0 = blman->T0(i)->ctmean();
-      confman->GetGeomMapManager()->GetGPos(CID_T0, blman->T0(i)->seg(), vtxT0);
-    }
-  }
-
-  return ctmt0;
-}
-
-
-
-
-//Beam PID + event selection of BLC1,2, BPC
-//TODO: add comment
-int EventAnalysis::EveSelectBeamline(const double ctmt0, BeamLineHitMan *blman, ConfMan *confman)
-{
-  //  beamline analysis & event selection
-  double ctmBHD=0;
-  int PIDBeam = -1; // 0:pi 1:K 3:else
-  for( int i=0; i<blman->nBHD(); i++ ) {
-    if( blman->BHD(i)->CheckRange() ) {
-      ctmBHD = blman->BHD(i)->ctmean();
-      double tofBHDT0 = ctmt0-ctmBHD;
-      Tools::Fill1D( Form("tof_T0BHD"), tofBHDT0 );
-      if( header->kaon() && blcuts::beam_tof_k_min <tofBHDT0 && tofBHDT0<blcuts::beam_tof_k_max  )
-        PIDBeam = Beam_Kaon;
-      else if( header->pion() && blcuts::beam_tof_pi_min<tofBHDT0 && tofBHDT0<blcuts::beam_tof_pi_max )
-        PIDBeam = Beam_Pion;
-    }
-  }
-  Tools::Fill1D(Form("PID_beam"), PIDBeam);
-  if( PIDBeam== -1  ) { //** unidentified particle is discarded (other than pi/K) **//
-    return -16;
-  }
-
-  unsigned int nblc1 = 0;
-  unsigned int nblc2 = 0;
-  blc1GoodTrackID = -1;
-  blc2GoodTrackID = -1;
-  //** timing selection of BLC1/BLC2 **//
-  for( int i=0; i<bltrackMan->ntrackBLC1(); i++ ) {
-    LocalTrack *blc1 = bltrackMan->trackBLC1(i);
-    Tools::Fill1D( Form("tracktime_BLC1"), blc1->GetTrackTime() );
-    Tools::Fill1D( Form("trackchi2_BLC1"), blc1->chi2all() );
-    if( blc1->CheckRange(blcuts::blc1_time_window_min, blcuts::blc1_time_window_max)) {
-      nblc1++;
-      if( blc1->CheckRange(blcuts::blc1_time_min, blcuts::blc1_time_max) &&
-          bltrackMan->trackBLC1(i)->chi2all()<blcuts::blc1_chi2_max ) blc1GoodTrackID = i;
-    }
-  }
-  for( int i=0; i<bltrackMan->ntrackBLC2(); i++ ) {
-    LocalTrack *blc2 = bltrackMan->trackBLC2(i);
-    Tools::Fill1D( Form("tracktime_BLC2"), blc2->GetTrackTime() );
-    Tools::Fill1D( Form("trackchi2_BLC2"), blc2->chi2all() );
-    if( blc2->CheckRange(blcuts::blc2_time_window_min, blcuts::blc2_time_window_max) ) {
-      nblc2++;
-      if( blc2->CheckRange(blcuts::blc2_time_min, blcuts::blc2_time_max) &&
-          bltrackMan->trackBLC2(i)->chi2all()<blcuts::blc2_chi2_max ) blc2GoodTrackID = i;
-    }
-  }
-  Tools::Fill1D( Form("ntrack_BLC1"), nblc1 );
-  Tools::Fill1D( Form("ntrack_BLC2"), nblc2 );
-
-  //** single track selection in each BLC **//
-  if( !(nblc1==1 && blc1GoodTrackID!=-1 && nblc2==1 && blc2GoodTrackID!=-1) ) { //** multi-good-beams event is discarded  **//
-    return -17;
-  }
-
-  //** BPC track selection **//
-  int nbpc = 0;
-  bpcGoodTrackID = -1;
-  double chibpc = 999;
-  for( int i=0; i<bltrackMan->ntrackBPC(); i++ ) {
-    Tools::Fill1D( Form("tracktime_BPC"), bltrackMan->trackBPC(i)->GetTrackTime() );
-    if( bltrackMan->trackBPC(i)->CheckRange(blcuts::bpc_time_window_min,blcuts::bpc_time_window_max) ) {
-      nbpc++;
-      bpcGoodTrackID = i;
-      chibpc = bltrackMan->trackBPC(i)->chi2all();
-      Tools::Fill1D( Form("trackchi2_BPC"),chibpc);
-    }
-  }
-
-  Tools::Fill1D( Form("ntrack_BPC"), nbpc );
-
-  if( nbpc!=1 ) {
-    return -18;
-  }
-
-  LocalTrack *bpctrack = bltrackMan->trackBPC(bpcGoodTrackID);
-  if( !(bpctrack->CheckRange(blcuts::bpc_time_min,blcuts::bpc_time_max))
-      || bpctrack->chi2all()>blcuts::bpc_chi2_max) {
-    return -19;
-  }
-
-  //** vertex calculation by CDS goodtrack and BPC tracks**/
-  for( int it1=0; it1<trackMan->nGoodTrack(); it1++ ) {
-    trackMan->CalcVertex_beam( trackMan->GoodTrackID(it1), bltrackMan, confman );
-  }
-
-  //** BLC2-BPC track matching **//
-  bool fblc2bpc = false;
-  for( int ii=0; ii<bltrackMan->ntrackBLC2(); ii++ ) {
-    if( ii!=blc2GoodTrackID ) continue;
-    LocalTrack *blc2 = bltrackMan->trackBLC2(ii);
-    double xblc2bpc[2]= {0,0};
-    double yblc2bpc[2]= {0,0};
-    double xpos[2]= {0,0};
-    double ypos[2]= {0,0};
-
-    TVector3 Pos_BPC, Pos_BLC2, rot;
-    confman->GetBLDCWireMapManager()->GetGParam( CID_BPC, Pos_BPC, rot );
-    confman->GetBLDCWireMapManager()->GetGParam( CID_BLC2a, Pos_BLC2, rot );
-    double zPos_BPC = Pos_BPC.Z();
-    double zPos_BLC2 = Pos_BLC2.Z();
-    double zPos_BPC_BLC2 = (Pos_BPC.Z()+Pos_BLC2.Z())/2;
-
-    bpctrack->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[0], yblc2bpc[0] );
-    bpctrack->XYPosatZ( zPos_BPC, xpos[0], ypos[0] );
-    blc2->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[1], yblc2bpc[1]);
-    blc2->XYPosatZ( zPos_BLC2, xpos[1], ypos[1]);
-    double dxdz[2], dydz[2];
-    dxdz[0] = (xpos[0]-xblc2bpc[0]) / (zPos_BPC-zPos_BPC_BLC2);
-    dxdz[1] = (xpos[1]-xblc2bpc[1]) / (zPos_BLC2-zPos_BPC_BLC2);
-    dydz[0] = (ypos[0]-yblc2bpc[0]) / (zPos_BPC-zPos_BPC_BLC2);
-    dydz[1] = (ypos[1]-yblc2bpc[1]) / (zPos_BLC2-zPos_BPC_BLC2);
-
-    if( (xblc2bpc[1]-xblc2bpc[0])< blcuts::blc2bpc_x_min ||
-        (xblc2bpc[1]-xblc2bpc[0])> blcuts::blc2bpc_x_max ) fblc2bpc = false;
-    else if( (yblc2bpc[1]-yblc2bpc[0])<blcuts::blc2bpc_y_min ||
-             (yblc2bpc[1]-yblc2bpc[0])>blcuts::blc2bpc_y_max ) fblc2bpc = false;
-    else if( (dxdz[1]-dxdz[0])<blcuts::blc2bpc_dx_min ||
-             (dxdz[1]-dxdz[0])>blcuts::blc2bpc_dx_max ) fblc2bpc = false;
-    else if( (dydz[1]-dydz[0])<blcuts::blc2bpc_dy_min ||
-             (dydz[1]-dydz[0])>blcuts::blc2bpc_dy_max ) fblc2bpc = false;
-    else fblc2bpc = true;
-
-    Tools::Fill2D( Form("dydx_BLC2BPC"), xblc2bpc[1]-xblc2bpc[0], yblc2bpc[1]-yblc2bpc[0] );
-    Tools::Fill2D( Form("dydzdxdz_BLC2BPC"), dxdz[1]-dxdz[0], dydz[1]-dydz[0] );
-  }
-  if( !fblc2bpc ) {
-    return -20;
-  }
-
-  return PIDBeam;
-}
 
 
 void EventAnalysis::InitKinFitMatrix()
@@ -1445,6 +1280,7 @@ void EventAnalysis::Clear( int &nAbort)
   //CDS
   NeutralBetaCDH=9999.;
   dE=-9999.;
+  vtx_reaction.SetXYZ(-9999,-9999,-9999);
 
   return;
 }
