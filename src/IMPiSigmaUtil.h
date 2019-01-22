@@ -6,6 +6,7 @@
 #include "HitMan.h"
 #include "CDSHitMan.h"
 #include "LocalTrack.h"
+#include "EventHeader.h"
 #include "BeamLineHitMan.h"
 #include "BeamLineTrackMan.h"
 #include "BeamSpectrometer.h"
@@ -34,7 +35,14 @@ namespace Util
                     std::vector <int> &kmid,
                     std::vector <int> &protonid
                     );
-
+  double AnalyzeT0(BeamLineHitMan *blman, ConfMan *confman);
+  int BeamPID(EventHeader *header, const double ctmt0, BeamLineHitMan *blman); 
+  int EveSelectBeamline(BeamLineTrackMan *bltrackman, 
+                        CDSTrackingMan *trackman,
+                        ConfMan *confman,
+                        int &blc1id, 
+                        int &blc2id, 
+                        int &bpcid);
 };
 
 #endif
