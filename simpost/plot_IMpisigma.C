@@ -34,19 +34,21 @@
 #include "../src/IMPiSigmaAnaPar.h"
 
 
-const double pvalcut = 0.005;
+const double pvalcut = 1.0e-30;
 const bool gridon=true;
 const bool staton=true;
 
 //mode 0: Sigma+ ,1: Sigma- 
 void plot_IMpisigma(const char* filename="",const int mode=0)
 {
+  std::cout << "p-value cut:" << pvalcut << std::endl; 
   gROOT->SetStyle("Plain");
   if(staton)gStyle->SetOptStat(111111);
   else gStyle->SetOptStat(0);
   gStyle->SetOptFit(111111);
   gStyle->SetPadGridX(gridon);
   gStyle->SetPadGridY(gridon);
+  gStyle->SetTitleYOffset(1.6);
   
   std::string outfilename = string(filename);
   outfilename.insert(outfilename.size()-5,"_post");
@@ -338,11 +340,11 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     
     // calc missing n //
     TLorentzVector LVec_n_miss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n;
-    double nmiss_mass = LVec_n_miss.M();
-    double nmiss_mom = LVec_n_miss.P();
+    const double nmiss_mass = LVec_n_miss.M();
+    const double nmiss_mom = LVec_n_miss.P();
 
     // calc cos(theta) of missing n //
-    TVector3 boost = (*LVec_target+*LVec_beam).BoostVector();
+    const TVector3 boost = (*LVec_target+*LVec_beam).BoostVector();
     TLorentzVector LVec_n_miss_CM = LVec_n_miss;
     TLorentzVector LVec_beam_CM = *LVec_beam;
     LVec_n_miss_CM.Boost(-boost);
@@ -428,7 +430,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     }
     
     // w/ kinfit
-    if( -1<kf_flag && 0.01<pvalue && K0rejectFlag ){
+    if( -1<kf_flag && pvalcut<pvalue && K0rejectFlag ){
       nmom_kin->Fill((*LVec_n).P());
       mnmom_kin->Fill(nmiss_mom);
       npipmom_kin->Fill(LVec_pip_n.P());
@@ -443,8 +445,6 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
         if(NBetaOK && NdEOK){
           MMom_MMass_fid_beta_dE_woK0_kin[0]->Fill(LVec_n_miss.M(),LVec_n_miss.P());
           IMnpim_IMnpip_dE_woK0_kin[0]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-        }
-        if(NBetaOK && NdEOK && MissNFlag){
           IMnpim_IMnpip_dE_woK0_n_kin[0]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
           MMnpip_MMnpim_woK0_wSid_n_kin[0]->Fill(LVec_pim_n_miss.M(),LVec_pip_n_miss.M());
           dE_IMnpipi_woK0_wSid_n_kin[0]->Fill(LVec_pip_pim_n.M(),dE);
@@ -463,8 +463,6 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
         if(NBetaOK && NdEOK){
           MMom_MMass_fid_beta_dE_woK0_kin[1]->Fill(LVec_n_miss.M(),LVec_n_miss.P());
           IMnpim_IMnpip_dE_woK0_kin[1]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-        }
-        if(NBetaOK && NdEOK && MissNFlag){
           IMnpim_IMnpip_dE_woK0_n_kin[1]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
           MMnpip_MMnpim_woK0_wSid_n_kin[1]->Fill(LVec_pim_n_miss.M(),LVec_pip_n_miss.M());
           dE_IMnpipi_woK0_wSid_n_kin[1]->Fill(LVec_pip_pim_n.M(),dE);
@@ -541,9 +539,9 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH1D *pxSm = q_IMnpipi_woK0_wSid_n_kin[1]->ProjectionX();
   pxSm->SetLineColor(2);
   pxSm->Rebin(2);
-  pxSm->Draw("HE");
   pxSp->Rebin(2);
-  pxSp->Draw("HEsame");
+  pxSp->Draw("HE");
+  pxSm->Draw("HEsame");
 
   TCanvas *cdE_betainv_fid = new TCanvas("cdE_betainv_fid","cdE_betainv_fid");
   cdE_betainv_fid->cd();
