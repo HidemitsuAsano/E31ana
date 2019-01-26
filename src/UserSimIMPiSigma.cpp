@@ -30,6 +30,7 @@
 
 #include "IMPiSigmaAnaPar.h"
 #include "IMPiSigmaHist.h"
+#include "IMPiSigmaUtil.h"
 
 #include <TDatabasePDG.h>
 #include <KinFitter/TKinFitter.h>
@@ -43,7 +44,7 @@
 #define KFDEBUG 0 // verbose level of the KinFitter
 // 0: quiet, 1: print result, 2: print iterations, 3: print also matrices
 int Verbosity_ = 0;
-
+const bool DoCDCRetiming = false;
 const double MOM_RES = 2.0; // MeV/c
 // momentum resolution of the beam-line spectrometer
 // was evaluated to be 2.0 +/- 0.5 MeV/c (Hashimoto-D p.58)
@@ -61,8 +62,8 @@ double PARA_lnL_MAX;
 double PARA_MM_LP_MIN;
 double PARA_MM_LP_MAX;
 
-const double TDC_CDH_MAX = 999999; //ns (original:20 nsec.)
-//const double TDC_CDH_MAX = 25; //ns (original:20 nsec.)
+//const double cdscuts::tdc_cdh_max = 9999; //ns (original:20 nsec.)
+//const double cdscuts::tdc_cdh_max = 25; //ns (original:20 nsec.)
 const double ADC_CDH_MIN = 1;  // MeV
 
 //= = = = pippimn final-sample tree = = = =//
@@ -113,7 +114,7 @@ int main( int argc, char** argv )
   
 
   std::cout <<"L." << __LINE__ << "MOM_RES beam line: " << MOM_RES << std::endl;
-  std::cout <<"L." << __LINE__ << "TDC_CDH_MAX: " << TDC_CDH_MAX << std::endl;
+  std::cout <<"L." << __LINE__ << "TDC_CDH_MAX: " << cdscuts::tdc_cdh_max << std::endl;
 
 
   TDatabasePDG *pdg = new TDatabasePDG();
@@ -223,39 +224,39 @@ int main( int argc, char** argv )
   std::cout<<"pippimn file "<<outfile2_name<<std::endl;
   TFile *outfile2 = new TFile( outfile2_name.c_str(), "recreate" );
   outfile2->cd();
-  TTree *pippimnTree = new TTree( "EventTree", "EventTree" );
-  pippimnTree->Branch( "mom_beam",   &mom_beam );
-  pippimnTree->Branch( "mom_target", &mom_target );
-  pippimnTree->Branch( "mom_pip", &mom_pip );
-  pippimnTree->Branch( "mom_pim", &mom_pim );
-  pippimnTree->Branch( "mom_n", &mom_n );
-  pippimnTree->Branch( "beta", &NeutralBetaCDH );
-  pippimnTree->Branch( "dE", &dE );
-  pippimnTree->Branch( "vtx_reaction", &vtx_reaction );
-  pippimnTree->Branch( "run_num", &run_num );
-  pippimnTree->Branch( "event_num", &event_num );
-  pippimnTree->Branch( "block_num", &block_num );
-  pippimnTree->Branch( "mcmom_beam",   &mcmom_beam );
-  pippimnTree->Branch( "mcmom_pip", &mcmom_pip );
-  pippimnTree->Branch( "mcmom_pim", &mcmom_pim );
-  pippimnTree->Branch( "mcmom_ncds", &mcmom_ncds );
-  pippimnTree->Branch( "kfMomBeamSpmode",   &kfMomBeamSpmode );
-  pippimnTree->Branch( "kfMom_pip_Spmode", &kfMom_pip_Spmode );
-  pippimnTree->Branch( "kfMom_pim_Spmode", &kfMom_pim_Spmode );
-  pippimnTree->Branch( "kfMom_n_Spmode", &kfMom_n_Spmode );
-  pippimnTree->Branch( "kf_chi2_Spmode", &kf_chi2_Spmode );
-  pippimnTree->Branch( "kf_NDF_Spmode", &kf_NDF_Spmode );
-  pippimnTree->Branch( "kf_status_Spmode", &kf_status_Spmode );
-  pippimnTree->Branch( "kf_pvalue_Spmode", &kf_pvalue_Spmode );
-  pippimnTree->Branch( "kfMomBeamSmmode",   &kfMomBeamSmmode );
-  pippimnTree->Branch( "kfMom_pip_Smmode", &kfMom_pip_Smmode );
-  pippimnTree->Branch( "kfMom_pim_Smmode", &kfMom_pim_Smmode );
-  pippimnTree->Branch( "kfMom_n_Smmode", &kfMom_n_Smmode );
-  pippimnTree->Branch( "kf_chi2_Smmode", &kf_chi2_Smmode );
-  pippimnTree->Branch( "kf_NDF_Smmode", &kf_NDF_Smmode );
-  pippimnTree->Branch( "kf_status_Smmode", &kf_status_Smmode );
-  pippimnTree->Branch( "kf_pvalue_Smmode", &kf_pvalue_Smmode );
-  pippimnTree->Branch( "kf_flag", &kf_flag );
+  TTree *npippimTree = new TTree( "EventTree", "EventTree" );
+  npippimTree->Branch( "mom_beam",   &mom_beam );
+  npippimTree->Branch( "mom_target", &mom_target );
+  npippimTree->Branch( "mom_pip", &mom_pip );
+  npippimTree->Branch( "mom_pim", &mom_pim );
+  npippimTree->Branch( "mom_n", &mom_n );
+  npippimTree->Branch( "beta", &NeutralBetaCDH );
+  npippimTree->Branch( "dE", &dE );
+  npippimTree->Branch( "vtx_reaction", &vtx_reaction );
+  npippimTree->Branch( "run_num", &run_num );
+  npippimTree->Branch( "event_num", &event_num );
+  npippimTree->Branch( "block_num", &block_num );
+  npippimTree->Branch( "mcmom_beam",   &mcmom_beam );
+  npippimTree->Branch( "mcmom_pip", &mcmom_pip );
+  npippimTree->Branch( "mcmom_pim", &mcmom_pim );
+  npippimTree->Branch( "mcmom_ncds", &mcmom_ncds );
+  npippimTree->Branch( "kfMomBeamSpmode",   &kfMomBeamSpmode );
+  npippimTree->Branch( "kfMom_pip_Spmode", &kfMom_pip_Spmode );
+  npippimTree->Branch( "kfMom_pim_Spmode", &kfMom_pim_Spmode );
+  npippimTree->Branch( "kfMom_n_Spmode", &kfMom_n_Spmode );
+  npippimTree->Branch( "kf_chi2_Spmode", &kf_chi2_Spmode );
+  npippimTree->Branch( "kf_NDF_Spmode", &kf_NDF_Spmode );
+  npippimTree->Branch( "kf_status_Spmode", &kf_status_Spmode );
+  npippimTree->Branch( "kf_pvalue_Spmode", &kf_pvalue_Spmode );
+  npippimTree->Branch( "kfMomBeamSmmode",   &kfMomBeamSmmode );
+  npippimTree->Branch( "kfMom_pip_Smmode", &kfMom_pip_Smmode );
+  npippimTree->Branch( "kfMom_pim_Smmode", &kfMom_pim_Smmode );
+  npippimTree->Branch( "kfMom_n_Smmode", &kfMom_n_Smmode );
+  npippimTree->Branch( "kf_chi2_Smmode", &kf_chi2_Smmode );
+  npippimTree->Branch( "kf_NDF_Smmode", &kf_NDF_Smmode );
+  npippimTree->Branch( "kf_status_Smmode", &kf_status_Smmode );
+  npippimTree->Branch( "kf_pvalue_Smmode", &kf_pvalue_Smmode );
+  npippimTree->Branch( "kf_flag", &kf_flag );
   outfile->cd();
 
 
@@ -322,6 +323,7 @@ int main( int argc, char** argv )
   int nG4Event_piSigma   = 0;
 
   int nAbort_nGoodTrack = 0;
+  int nAbort_CDSPID = 0;
   int nAbort_nCDH = 0;
   int nAbort_nT0 = 0;
   int nAbort_nbpc = 0;
@@ -396,15 +398,15 @@ int main( int argc, char** argv )
       }
     }
 
-    int reactionID = reacData->ReactionID();
+    const int reactionID = reacData->ReactionID();
     //These partcile IDs are defined in pythia6
     //see http://home.fnal.gov/~mrenna/lutp0613man2/node44.html
     //
     //Here, K+ is used as beam particle because every particle is emitted from the target volume in GEANT simulation
     //                             K+    pi-  S+  nmiss  ncds    pi+  //
-    int PDG_Spmode[kin::npart] = {321, -211, 3222, 2112, 2112,  211}; // pi-Sigma+
+    const int PDG_Spmode[kin::npart] = {321, -211, 3222, 2112, 2112,  211}; // pi-Sigma+
     //                             K+    pi+  S-  nmiss  ncds    pi-
-    int PDG_Smmode[kin::npart] = {321,  211, 3112, 2112, 2112, -211}; // pi+Sigma-
+    const int PDG_Smmode[kin::npart] = {321,  211, 3112, 2112, 2112, -211}; // pi+Sigma-
     int PDG[kin::npart] = {0, 0, 0, 0, 0, 0};
     for( int i=0; i<kin::npart; i++ ){
       if( reactionID==gen::reactionID_Spmode ){
@@ -417,7 +419,7 @@ int main( int argc, char** argv )
       }
     }
     //        beam_K(K-), pi, nmiss, n from Sigma, pi from Sigma
-    //       0: init. val. for prompt particles , -1:init. val. for decay partcle            
+    //       0: init. val. for prompt particles , -1:init. val. for decay particles            
     int parentID[kin::npart] = {0, 0, 0, 0, -1, -1}; 
     // IDs defined by imctrk
     int ID[kin::npart]       = {-1, -1, -1, -1, -1, -1}; 
@@ -433,13 +435,13 @@ int main( int argc, char** argv )
 
     for( int imctrk=0; imctrk<mcData->trackSize(); imctrk++ ){
       //pdg ID
-      int pdgcode = mcData->track(imctrk)->pdgID();
+      const int pdgcode = mcData->track(imctrk)->pdgID();
       //parent track ID, if it is primary particle, 0
-      int parent  = mcData->track(imctrk)->parentTrackID();
+      const int parent  = mcData->track(imctrk)->parentTrackID();
       //track ID
-      int track   = mcData->track(imctrk)->trackID();
-      double mom  = mcData->track(imctrk)->momentum().Mag();
-      TVector3 vec_vertex = mcData->track(imctrk)->vertex();
+      const int track   = mcData->track(imctrk)->trackID();
+      const double mom  = mcData->track(imctrk)->momentum().Mag();
+      const TVector3 vec_vertex = mcData->track(imctrk)->vertex();
       //This is flight length which is calcuted only when the track reaches to the CDH 
       double flightlength = mcData->track(imctrk)->FlightLength();
       if(Verbosity_){
@@ -518,8 +520,9 @@ int main( int argc, char** argv )
     }//flagG4Decay
 
     //determine whether pi-Sigma is detected in the CDS
+    //actually, not used so far (Jan.22,2019 asano)
     //pim_g1 = pip_g1 pip_g2 = pim_g2
-    //not working right now, needs to change GEANT ADC thres.
+    //not working right now.
     if( nCDHhit[kin::pim_g1] && nCDHhit[kin::ncds] && nCDHhit[kin::pip_g2] ){ 
       //std::cout << "allmatch " << std::endl;
       piSigma_detect = true;
@@ -540,55 +543,34 @@ int main( int argc, char** argv )
     //##########################//
 
 
-    int nGoodTrack = cdstrackMan->nGoodTrack();
-    int nallTrack  = cdstrackMan->nTrack();
+    const int nGoodTrack = cdstrackMan->nGoodTrack();
+    const int nallTrack  = cdstrackMan->nTrack();
     AllGoodTrack += nGoodTrack;
     nTrack += nallTrack;
     Tools::Fill1D( Form("nGoodTrack"), nGoodTrack );
+    
+    
+    if( Util::GetCDHMul(cdsMan)!=cdscuts::cdhmulti ){
+      nAbort_nCDH++;
+      if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nCDH" << std::endl;
+      continue;
+    }
 
     if( nGoodTrack!=cdscuts::cds_ngoodtrack ){ // dedicated for pi+ pi- event
       nAbort_nGoodTrack++;
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nGoodTrack" << std::endl;
       continue;
     }
-
-    //** # of CDH-hits cut **// 
-    int nCDH = 0;
-    for( int i=0; i<cdsMan->nCDH(); i++ ){
-      //if( cdsMan->CDH(i)->CheckRange() )
-      Tools::Fill2D(Form("CDHtime"),cdsMan->CDH(i)->seg(),cdsMan->CDH(i)->ctmean());
-      if( cdsMan->CDH(i)->CheckRange() && cdsMan->CDH(i)->ctmean()<TDC_CDH_MAX ){
-	nCDH++;
-      }
-    }
-    Tools::Fill1D( Form("mul_CDH"), nCDH );
-    if( nCDH!=cdscuts::cdhmulti ){ //** only 3 hits events **// pi+, pi-, neutron from Sigma
-      nAbort_nCDH++;
-      if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nCDH" << std::endl;
-      continue;
-    }
+    
+    //beam line analysis and event selection
 
     //** T0 = 1hit selection **//
-    int nT0 = 0;
-    for( int i=0; i<blMan->nT0(); i++ ){
-      HodoscopeLikeHit *hit = blMan->T0(i);
-      if( hit->CheckRange() ) nT0++;
-    }
-    Tools::Fill1D( Form("mul_T0"),  nT0 );
-    if( nT0!=1 ){ 
+    const double ctmT0 = Util::AnalyzeT0(blMan,confMan);
+    if(ctmT0<-9000){
       nAbort_nT0++;
-      if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nT0" << std::endl;
+      Tools::Fill1D( Form("EventCheck"), 15 );
       continue;
     }
-
-    //** Beam PID **//
-    double ctmT0 = 0;
-    for( int i=0; i<blMan->nT0(); i++ ){
-      if( blMan->T0(i)->CheckRange() ){
-        ctmT0 = blMan->T0(i)->ctmean();
-      }
-    }
-    int pid_beam = 0; //0:K 1:pi 3:else
 
     //** BPC track selection **//
     int nbpc = 0;
@@ -620,7 +602,7 @@ int main( int argc, char** argv )
     std::vector <int> pim_ID;
     std::vector <int> km_ID;
     std::vector <int> p_ID;
-    std::vector <int> d_ID;
+    //std::vector <int> d_ID;
     
     std::vector <int> vCDHseg;
 
@@ -642,6 +624,7 @@ int main( int argc, char** argv )
     }
 
     //### BLC2-BPC position matching
+    //TODO : not tuned yet
     bool fblc2bpc = false;
     for( int iblc2trk=0; iblc2trk<bltrackMan->ntrackBLC2(); iblc2trk++ ){
       if( iblc2trk!=blc2id ) continue;
@@ -652,9 +635,9 @@ int main( int argc, char** argv )
       TVector3 Pos_BPC, Pos_BLC2, tmp;
       confMan->GetBLDCWireMapManager()->GetGParam( CID_BPC, Pos_BPC, tmp );
       confMan->GetBLDCWireMapManager()->GetGParam( CID_BLC2a, Pos_BLC2, tmp );
-      double zPos_BPC = Pos_BPC.Z();
-      double zPos_BLC2 = Pos_BLC2.Z();
-      double zPos_BPC_BLC2 = (Pos_BPC.Z()+Pos_BLC2.Z())/2;
+      const double zPos_BPC = Pos_BPC.Z();
+      const double zPos_BLC2 = Pos_BLC2.Z();
+      const double zPos_BPC_BLC2 = (Pos_BPC.Z()+Pos_BLC2.Z())/2;
 
       bpctrack->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[0], yblc2bpc[0] );
       bpctrack->XYPosatZ( zPos_BPC, xmom[0], ymom[0] );
@@ -696,15 +679,18 @@ int main( int argc, char** argv )
     TLorentzVector LVec_targetCM;  // 4-Momentum(He3-target) in CM
     TLorentzVector LVec_targetPCM; // 4-Momentum(p-target) in CM
 
-    TVector3 Pos_T0;
-    confMan->GetGeomMapManager()->GetPos( CID_T0, 0, Pos_T0 );
-    double zPos_T0 = Pos_T0.Z();
 
+    //std::cout << "test" << std::endl;
+    //std::cout << "bpctrack->GetPosatZ(0)" << std::endl;
+    //std::cout << bpctrack->GetPosatZ(0).X() << "  " <<  bpctrack->GetPosatZ(0).Y()  << "  " << bpctrack->GetPosatZ(0).Z()  << std::endl;
+    //std::cout << zPos_T0 << std::endl;
+    //std::cout << bpctrack->GetPosatZ(zPos_T0 ).X() << "  " <<  bpctrack->GetPosatZ(zPos_T0).Y()  << "  " << bpctrack->GetPosatZ(zPos_T0).Z()  << std::endl;
     double beammom = 0;
     for( int imctrk=0; imctrk<mcData->trackSize(); imctrk++ ){
-      int pdgcode = mcData->track(imctrk)->pdgID();
-      int parent  = mcData->track(imctrk)->parentTrackID();
+      const int pdgcode = mcData->track(imctrk)->pdgID();
+      const int parent  = mcData->track(imctrk)->parentTrackID();
       //beam K (K+) to -Z direction 
+      //beam momentum is fixed in GEANT simulation. It is smeared here by gaussian.
       if( pdgcode==321 && parent==0 ){
         beammom = (mcData->track(imctrk)->momentum().Mag()+gRandom->Gaus(0,MOM_RES))/1000.0;
         if(Verbosity_>100){
@@ -715,7 +701,7 @@ int main( int argc, char** argv )
     }
 
     double x1, y1, x2, y2;
-    double z1 = 0, z2 = 20;//what is this 20 ?
+    const double z1 = 0, z2 = 20;//TODO: what is this 20 ?
     bpctrack->XYPosatZ(z1, x1, y1);
     bpctrack->XYPosatZ(z2, x2, y2);
     TVector3 ls;
@@ -730,7 +716,7 @@ int main( int argc, char** argv )
     LVec_targetP.SetVectM(Pp_target, pMass);
     LVec_beam = LVec_beambf;
     //Lorentz boost Vector
-    TVector3 boost = (LVec_target+LVec_beam).BoostVector();
+    const TVector3 boost = (LVec_target+LVec_beam).BoostVector();
     LVec_beambfCM = LVec_beam;
     LVec_targetCM = LVec_target;
     LVec_targetPCM = LVec_targetP;
@@ -738,7 +724,8 @@ int main( int argc, char** argv )
     LVec_targetCM.Boost(-1.*boost);
     LVec_targetPCM.Boost(-1.*boost);
     flagbmom = true;
-
+    
+    //always OK, because this is simulation
     if( !flagbmom ){
       nAbort_flagbmom++;
       continue;
@@ -748,10 +735,29 @@ int main( int argc, char** argv )
     //** + + + + + + + + + + + + **//
     //**  PID in CDS             **//
     //** + + + + + + + + + + + + **//
-
+    
+    ///*
+    const int nIDedTrack = Util::CDSChargedAna(
+        DoCDCRetiming,
+        bpctrack, cdsMan, cdstrackMan, confMan, 
+        LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,true);
+    if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
+    if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );
+    if(nIDedTrack==-9) Tools::Fill1D( Form("EventCheck"), 9 );
+    if(nIDedTrack==-10) Tools::Fill1D( Form("EventCheck"), 10 );
+    if(nIDedTrack==-11) Tools::Fill1D( Form("EventCheck"), 11 );
+    if(nIDedTrack==-12) Tools::Fill1D( Form("EventCheck"), 12 );
+    if(nIDedTrack<0){
+      nAbort_CDSPID++;
+      continue;
+    }
+    if(vCDHseg.size()!=3){
+      std::cout << "vCDHseg.size() " << vCDHseg.size() << std::endl;
+    }
+    //*/
+    /*
     int CDHseg=0;
-
-    //** PID of CDS tracks **//
+    // PID of CDS tracks //
     for( int icdstrk=0; icdstrk<cdstrackMan->nGoodTrack(); icdstrk++ ){
       CDSTrack *cdstrack = cdstrackMan->Track(cdstrackMan->GoodTrackID(icdstrk));
 
@@ -762,12 +768,15 @@ int main( int argc, char** argv )
 
       double mom = cdstrack->Momentum();
       TVector3 vtxbline, vtxbhelix, vtxb;
+      TVector3 Pos_T0;
+      confMan->GetGeomMapManager()->GetPos( CID_T0, 0, Pos_T0 );
+      const double zPos_T0 = Pos_T0.Z();
       cdstrack->GetVertex( bpctrack->GetPosatZ(zPos_T0), bpctrack->GetMomDir(), vtxbline, vtxbhelix );
       cdstrack->SetPID(-1);
       vtxb = (vtxbline+vtxbhelix)*0.5;
-      Tools::Fill2D(Form("Vtx_ZX"),vtxbline.Z(),vtxbline.X());
-      Tools::Fill2D(Form("Vtx_ZY"),vtxbline.Z(),vtxbline.Y());
-      Tools::Fill2D(Form("Vtx_XY"),vtxbline.X(),vtxbline.Y());
+      Tools::Fill2D(Form("Vtx_ZX"),vtxb.Z(),vtxb.X());
+      Tools::Fill2D(Form("Vtx_ZY"),vtxb.Z(),vtxb.Y());
+      Tools::Fill2D(Form("Vtx_XY"),vtxb.X(),vtxb.Y());
 
       double tof = 999.;
       double mass2 = -999.;
@@ -775,15 +784,14 @@ int main( int argc, char** argv )
         HodoscopeLikeHit *cdhhit = cdstrack->CDHHit(cdsMan,icdhhit);
         double tmptof = cdhhit->ctmean() - ctmT0;      
         //cout<<icdh<<": "<<cdhhit->ctmean()<<" - "<<ctmT0<<" = "<<tmptof<<std::endl;
-        if( tmptof<tof || tof==999. ){ //*** apply minimum TOF hit ***//
+        if( tmptof<tof || tof==999. ){ // apply minimum TOF hit //
           tof = tmptof;
           CDHseg = cdhhit->seg();
         }
       }//icdh
-      //*************************************
+      //
       // In a CDH hit-shared event, only some one track is adopted and the others are discarded
-      //*************************************
-
+      //
       bool CDHflag = true;
       for( int icdhseg=0; icdhseg<(int)vCDHseg.size(); icdhseg++ ){
         if( CDHseg==vCDHseg[icdhseg] ) CDHflag = false;
@@ -793,20 +801,19 @@ int main( int argc, char** argv )
         continue;
       }
       vCDHseg.push_back(CDHseg);
-
-      //** calculation of beta and squared-mass **//
+      // calculation of beta and squared-mass //
       double tmptof, beta_calc;
       if( !TrackTools::FindMass2( cdstrack, bpctrack, tof, LVec_beam.Vect().Mag(),
-				  pid_beam, beta_calc, mass2, tmptof ) ){
+				  Beam_Kaon, beta_calc, mass2, tmptof ) ){
         std::cout<<" !!! failure in PID_CDS [FindMass2()] !!! "<<std::endl;
         continue;
       }
-      int pid = TrackTools::PIDcorr(mom,mass2);      
+      int pid = TrackTools::PIDcorr_wide(mom,mass2);      
       cdstrack->SetPID(pid);
       Tools::Fill2D( "PID_CDS_beta", 1./beta_calc, mom );
       Tools::Fill2D( "PID_CDS", mass2, mom );
 
-      //** energy loss calculation **//
+      // energy loss calculation //
       double tmpl;
       TVector3 vtx_beam, vtx_cds;
       if( !cdstrack->CalcVertexTimeLength(bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), cdstrack->Mass(),
@@ -828,16 +835,15 @@ int main( int argc, char** argv )
       
       if( pid<7 ) nTrack_PID++;
 
-      //cout<<"    pid = "<<pid<<", tof = "<<tmptof<<", beta = "<<beta_calc
-      //<<", mom = "<<mom<<", mass = "<<sqrt(fabs(mass2))<<std::endl;
 
     }// for icdstrk
-    //** end of PID **//
-
-    Tools::Fill1D( Form("ntrack_CDS"), pip_ID.size()+p_ID.size()+d_ID.size()+pim_ID.size()+km_ID.size() );
+    // end of PID 
+    */
+    //Tools::Fill1D( Form("ntrack_CDS"), pip_ID.size()+p_ID.size()+d_ID.size()+pim_ID.size()+km_ID.size() );
+    Tools::Fill1D( Form("ntrack_CDS"), pip_ID.size()+p_ID.size()+pim_ID.size()+km_ID.size() );
     Tools::Fill1D( Form("ntrack_pi_plus"),  pip_ID.size() );
     Tools::Fill1D( Form("ntrack_proton"),   p_ID.size() );
-    Tools::Fill1D( Form("ntrack_deuteron"), d_ID.size() );
+    //Tools::Fill1D( Form("ntrack_deuteron"), d_ID.size() );
     Tools::Fill1D( Form("ntrack_pi_minus"), pim_ID.size() );
     Tools::Fill1D( Form("ntrack_K_minus"),  km_ID.size() );
 
@@ -875,7 +881,7 @@ int main( int argc, char** argv )
       std::vector <int> nCDHseg;
       std::vector <int> CDHhit_list;
       for( int icdhhit=0; icdhhit<cdsMan->nCDH(); icdhhit++ ){
-        if( cdsMan->CDH(icdhhit)->CheckRange() && cdsMan->CDH(icdhhit)->ctmean()<TDC_CDH_MAX )
+        if( cdsMan->CDH(icdhhit)->CheckRange() && cdsMan->CDH(icdhhit)->ctmean()<cdscuts::tdc_cdh_max )
           CDHhit_list.push_back( cdsMan->CDH(icdhhit)->seg() );
       }
       std::sort(vCDHseg.begin(), vCDHseg.end());
@@ -886,6 +892,8 @@ int main( int argc, char** argv )
 
       if( nCDHseg.size()!=1 ){
         std::cout<< "L." << __LINE__ << " CDH neutral hit is not 1 :: "<<nCDHseg.size()<<std::endl;
+        std::cout << "vCDHseg " << vCDHseg.size() << std::endl;
+        std::cout << "CDHhit_list " << CDHhit_list.size() << std::endl;
       }
       
       if(Verbosity_){
@@ -1392,7 +1400,7 @@ int main( int argc, char** argv )
                           
 
                           double val = (TL_meas[ip][ii] - TL_gene[genID[ip]][jj]);
-                          if(IsncdsMatchOK && (1./NeutralBetaCDH < 10) )Tools::Fill1D(Form("cov_%d_%d_%d", ip, ii, jj), val);
+                          if(IsncdsMatchOK  )Tools::Fill1D(Form("cov_%d_%d_%d", ip, ii, jj), val);
                           if(ip==kin::kmbeam) primvtx = mcData->track(ID[ip])->vertex();
                           TVector3 vertex = mcData->track(ID[ip])->vertex();
                           double mcDCA = (vertex.Mag()-primvtx.Mag())/10.0;
@@ -1406,7 +1414,7 @@ int main( int argc, char** argv )
 
                           //double mcDCAc = vertexc.Mag()-vtx_react.Mag();
                           //Tools::Fill2D(Form("cov_zvtx_%d_%d_%d", ip, ii,jj), val, vertexc.z());
-                          if(IsncdsMatchOK && (1./NeutralBetaCDH < 10) ){
+                          if(IsncdsMatchOK ){
                             if(ii==0) Tools::Fill2D(Form("cov_mom_%d_%d_%d", ip, ii,jj), val, momX*0.001);
                             if(ii==1) Tools::Fill2D(Form("cov_mom_%d_%d_%d", ip, ii,jj), val, momY*0.001);
                             if(ii==2) Tools::Fill2D(Form("cov_mom_%d_%d_%d", ip, ii,jj), val, momZ*0.001);
@@ -1475,7 +1483,7 @@ int main( int argc, char** argv )
           outfile2->cd();
           //if(IsGoodEvent && piSigma_detect){
           if(IsGoodEvent ){
-            pippimnTree->Fill();
+            npippimTree->Fill();
             nFill_pippimn++;
           }
           outfile->cd();
@@ -1559,9 +1567,6 @@ void InitializeHistogram()
   //** geneneral informantion **//
   Tools::newTH1F( Form("EventCheck"), 20, 0, 20 );
 
-  //** CDC and CDH information from CDC-trackig file **//
-  Tools::newTH2F( Form("CDHtime"), 36, -0.5, 35.5,1600,0,40);
-   
   //defined in IMPiSigmaHist.hh
   InitBasicHist();
   InitIMPiSigmaHist();
