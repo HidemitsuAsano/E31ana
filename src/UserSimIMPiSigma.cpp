@@ -769,7 +769,7 @@ int main( int argc, char** argv )
       nFill_pippim++;
       
       //** find CDH hit from neutral particles **//
-      std::vector <int> nCDHseg;
+      std::vector <int> NeutralCDHseg;
       std::vector <int> CDHhit_list;
       for( int icdhhit=0; icdhhit<cdsMan->nCDH(); icdhhit++ ){
         if( cdsMan->CDH(icdhhit)->CheckRange() && cdsMan->CDH(icdhhit)->ctmean()<cdscuts::tdc_cdh_max )
@@ -779,16 +779,16 @@ int main( int argc, char** argv )
       std::sort(CDHhit_list.begin(), CDHhit_list.end());
       std::set_difference( CDHhit_list.begin(), CDHhit_list.end(),
 			   vCDHseg.begin(), vCDHseg.end(),
-			   std::back_inserter(nCDHseg) );
+			   std::back_inserter(NeutralCDHseg) );
 
-      if( nCDHseg.size()!=1 ){
-        std::cout<< "L." << __LINE__ << " CDH neutral hit is not 1 :: "<<nCDHseg.size()<<std::endl;
+      if( NeutralCDHseg.size()!=1 ){
+        std::cout<< "L." << __LINE__ << " CDH neutral hit is not 1 :: "<<NeutralCDHseg.size()<<std::endl;
         std::cout << "vCDHseg " << vCDHseg.size() << std::endl;
         std::cout << "CDHhit_list " << CDHhit_list.size() << std::endl;
       }
       
       if(Verbosity_){
-        std::cout<<"# of diff = "<<nCDHseg.size()<<std::endl;
+        std::cout<<"# of diff = "<<NeutralCDHseg.size()<<std::endl;
         std::cout<<"CDH hits =   ";
         for( int n=0; n<(int)CDHhit_list.size(); n++ ){
           std::cout<<CDHhit_list[n]<<" ";
@@ -798,21 +798,13 @@ int main( int argc, char** argv )
           std::cout<<vCDHseg[n]<<" ";
         } std::cout<<std::endl;
         std::cout<<"diff hits =  ";
-        for( int n=0; n<(int)nCDHseg.size(); n++ ){
-          std::cout<<nCDHseg[n]<<" ";
+        for( int n=0; n<(int)NeutralCDHseg.size(); n++ ){
+          std::cout<<NeutralCDHseg[n]<<" ";
         } std::cout<<std::endl;
       }
 
       //** isolation cut **//
-      int flag_isolation = 0;
-      for( int l=0; l<(int)nCDHseg.size(); l++ ){
-        for( int m=0; m<(int)CDHhit_list.size(); m++ ){
-          if( nCDHseg[l]-CDHhit_list[m] ) Tools::Fill1D( Form("diff_CDH"), nCDHseg[l]-CDHhit_list[m] );
-          if( abs(nCDHseg[l]-CDHhit_list[m])==1 || abs(nCDHseg[l]-CDHhit_list[m])==35 ){
-            flag_isolation++;
-          }
-        }
-      }
+      int flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list);
       if( flag_isolation ){
         std::cout<< "L."<< __LINE__ << " Event Number: " <<iev <<  " CDH hit candidate is NOT isolated !!!"<<std::endl;
         nAbort_CDHiso++;
@@ -822,7 +814,7 @@ int main( int argc, char** argv )
       //** copy neutral CDH hit candidate **//
       int icdh = -1;
       for( int icdhhit=0; icdhhit<cdsMan->nCDH(); icdhhit++ ){
-        if( cdsMan->CDH(icdhhit)->seg()==nCDHseg[0] ) icdh = icdhhit;
+        if( cdsMan->CDH(icdhhit)->seg()==NeutralCDHseg[0] ) icdh = icdhhit;
       }
       HodoscopeLikeHit *ncdhhit = cdsMan->CDH(icdh);
       
@@ -831,25 +823,8 @@ int main( int argc, char** argv )
       confMan->GetGeomMapManager()->GetPos( CID_CDH, ncdhhit->seg(), Pos_CDH );
       if(Verbosity_) std::cout<<"CDH candidate seg = "<<ncdhhit->seg()<<" -> "<<Pos_CDH.Phi()/TwoPi*360<<" deg"<<std::endl;
       
-      const double PhiMin = -15.0/360.*TwoPi; // rad
-      const double PhiMax =  15.0/360.*TwoPi; // rad
-      //std::cout<<"Min/Max = "<<PhiMin/TwoPi*360<<"/"<<PhiMax/TwoPi*360<<" deg"<<std::endl;
-      
-      int nCDC = 0;
-      for( int ilr=14; ilr<16; ilr++ ){ // charge veto using layer 14, 15
-        for( int icdhhit=0; icdhhit<cdsMan->nCDC(ilr); icdhhit++ ){
-          CDCHit *cdc=cdsMan->CDC(ilr,icdhhit);
-          TVector3 Pos_CDC = cdc->wpos();
-          Pos_CDC.SetZ(0); // only xy pos is used
-          double angle = Pos_CDC.Angle(Pos_CDH); // rad
-          //std::cout<<"CDC "<<l<<" "<<m<<" "<<cdc->wire()<<" -> "<<Pos_CDC.Phi()/TwoPi*360
-          //<<" deg :: diff = "<<angle/TwoPi*360<<" deg"<<std::endl;
-          Tools::Fill1D( Form("diff_CDH_CDC"), angle/TwoPi*360 );
-          if( PhiMin<angle && angle<PhiMax ) nCDC++;
-        }
-      }
-      //std::cout<<"# of CDC hits for nCDH candidate = "<<nCDC<<std::endl;
-      
+
+      const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan);
       //Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is wrong in SIM [20170925]
       Pos_CDH.SetZ(ncdhhit->hitpos());
       
@@ -861,7 +836,7 @@ int main( int argc, char** argv )
         std::cout<<"L."<<__LINE__ << "CDH costheta " << Pos_CDH.CosTheta() <<std::endl;
       }
       //** neutral particle in CDH **//
-      if( !nCDC ){
+      if( !nCDCforVeto ){
         CDSTrack *track_pip = cdstrackMan->Track( pip_ID[0] ); // only 1 track
         CDSTrack *track_pim = cdstrackMan->Track( pim_ID[0] ); // only 1 track
 	       
