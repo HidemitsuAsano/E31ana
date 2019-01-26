@@ -22,6 +22,9 @@ endif
 set SRCDIR="/gpfs/home/had/hiasano/ana/k18ana/src/"
 cp $SRCDIR/UserSimIMPiSigma.cpp $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaAnaPar.h $OUTDIRSUB/
+cp $SRCDIR/IMPiSigmaHist.h $OUTDIRSUB/
+cp $SRCDIR/IMPiSigmaUtil.h $OUTDIRSUB/
+cp $SRCDIR/IMPiSigmaUtil.cpp $OUTDIRSUB/
 
 cp hadd_simhist.csh $OUTDIRSUB/
 cp hadd_sim_pippimn.csh $OUTDIRSUB/
