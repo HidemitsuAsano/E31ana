@@ -1,9 +1,18 @@
+//author: Hidemitsu Asano
+//email : hidemitsu.asano@riken.jp
+//
+//These are helper functions for EventAnalysisIMPiSigma.cpp and UserSimIMPiSigma.cpp to avoid many duplications of codes.
+//All functions are defined in the namespace::Util
+
+
 #include "IMPiSigmaUtil.h"
 #include "Tools.h"
 #include "TrackTools.h"
 
+
+
 //analyze # of CDH hits within the time range and judge if it is cdscuts::cdhmulti defined in IMPiSigmaAnaPar.h
-bool Util::EveSelectCDHMul(CDSHitMan *cdsman)
+int Util::GetCDHMul(CDSHitMan *cdsman)
 {
   //** # of CDH-hits cut **//
   int nCDH = 0;
@@ -15,11 +24,8 @@ bool Util::EveSelectCDHMul(CDSHitMan *cdsman)
     }
   }
   Tools::Fill1D( Form("mul_CDH"), nCDH );
-  if( nCDH != cdscuts::cdhmulti  ) {
-    return false;
-  }
 
-  return true;
+  return nCDH;
 }
 
 bool Util::IsForwardCharge(BeamLineHitMan *blman)
@@ -76,7 +82,7 @@ int Util::GetNHitsCDCOuter(const TVector3 PosCDH, CDSHitMan *cdsman)
       CDCHit *cdc=cdsman->CDC(ilr,icdchit);
       TVector3 Pos_CDC = cdc->wpos();
       Pos_CDC.SetZ(0); // only xy pos is used
-      double angle = Pos_CDC.Angle(PosCDH); // rad
+      const double angle = Pos_CDC.Angle(PosCDH); // rad
       //  std::cerr<<"CDC "<<ilr<<" "<<icdchit<<" "<<cdc->wire()<<" -> "<<Pos_CDC.Phi()/TwoPi*360.
       //    <<" deg :: diff = "<<angle/TwoPi*360<<" deg"<<std::endl;
       //
@@ -96,8 +102,8 @@ double Util::AnaBeamSpec(ConfMan *confman, BeamLineTrackMan *bltrackman,const in
   LocalTrack *blc1 = bltrackman->trackBLC1(blc1id);
   LocalTrack *blc2 = bltrackman->trackBLC2(blc2id);
   beamsp->TMinuitFit( blc1, blc2, confman );
-  double beammom = beamsp->mom();
-  double bchi = beamsp->chisquare();
+  const double beammom = beamsp->mom();
+  const double bchi = beamsp->chisquare();
   delete beamsp;
 
   Tools::Fill1D( Form("trackchi2_beam"), bchi );
@@ -122,7 +128,8 @@ int Util::CDSChargedAna(const bool docdcretiming,
                         std::vector <int> &pimid,
                         std::vector <int> &pipid,
                         std::vector <int> &kmid,
-                        std::vector <int> &protonid)
+                        std::vector <int> &protonid,
+                        const bool MCFlag)
 {
   int CDHseg=-1;
   bool chi2OK = true;
@@ -131,6 +138,22 @@ int Util::CDSChargedAna(const bool docdcretiming,
   bool FindMass2OK1 = true;
   bool FindMass2OK2 = true;
   bool EnergyLossOK = true;
+  
+  if(cdhseg.size()!=0 ){
+    std::cout << __FILE__ << "input cdhseg size " << cdhseg.size() << std::endl;
+  }
+  if(pimid.size()!=0 ){
+    std::cout << __FILE__ << "input pimid size " << pimid.size() << std::endl;
+  }
+  if(pipid.size()!=0 ){
+    std::cout << __FILE__ << "input pipid size " << pipid.size() << std::endl;
+  }
+  if(kmid.size()!=0 ){
+    std::cout << __FILE__ << "input kmid size " << kmid.size() << std::endl;
+  }
+  if(protonid.size()!=0 ){
+    std::cout << __FILE__ << "input proton size " << protonid.size() << std::endl;
+  }
 
   for( int it=0; it<trackman->nGoodTrack(); it++ ) {
     CDSTrack *track = trackman->Track( trackman->GoodTrackID(it) );
@@ -146,13 +169,23 @@ int Util::CDSChargedAna(const bool docdcretiming,
       CDHseg1hitOK = false;
     }
     double mom = track->Momentum();
-    TVector3 vtxbline, vtxbhelix; //,vtxb;
-    track->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtxbline, vtxbhelix );
+    TVector3 vtxbline, vtxbhelix ,vtxb; //,vtxb;
+    
+
+    //TODO: why using different bpc track origin btw mc and real data ?
+    if(MCFlag){
+      TVector3 Pos_T0;
+      confman->GetGeomMapManager()->GetPos( CID_T0, 0, Pos_T0 );
+      const double zPos_T0 = Pos_T0.Z();
+      track->GetVertex( bpctrack->GetPosatZ(zPos_T0), bpctrack->GetMomDir(), vtxbline, vtxbhelix );
+    }else{
+      track->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtxbline, vtxbhelix );
+    }
     track->SetPID(-1);
-    Tools::Fill2D(Form("Vtx_ZX"),vtxbline.Z(),vtxbline.X());
-    Tools::Fill2D(Form("Vtx_ZY"),vtxbline.Z(),vtxbline.Y());
-    Tools::Fill2D(Form("Vtx_XY"),vtxbline.X(),vtxbline.Y());
-    //vtxb = (vtxbline+vtxbhelix)*0.5;//not used, so far
+    vtxb = 0.5*(vtxbline+vtxbhelix);
+    Tools::Fill2D(Form("Vtx_ZX"),vtxb.Z(),vtxb.X());
+    Tools::Fill2D(Form("Vtx_ZY"),vtxb.Z(),vtxb.Y());
+    Tools::Fill2D(Form("Vtx_XY"),vtxb.X(),vtxb.Y());
 
     double tof = 999.;
     double mass2 = -999.;
@@ -161,6 +194,7 @@ int Util::CDSChargedAna(const bool docdcretiming,
     if(nCDHass>1) {
       CDHseg1hitOK = false;
     }
+
     for( int icdh=0; icdh<track->nCDHHit(); icdh++ ) {
       HodoscopeLikeHit *cdhhit = track->CDHHit( cdsman, icdh );
       double tmptof = cdhhit->ctmean()-ctmt0;
@@ -213,8 +247,7 @@ int Util::CDSChargedAna(const bool docdcretiming,
       continue;
     }
 
-    int pid = -1;
-    pid = TrackTools::PIDcorr_wide(mom,mass2);
+    const int pid = TrackTools::PIDcorr_wide(mom,mass2);
 
     track->SetPID( pid );
     Tools::Fill2D( "PID_CDS_beta", 1/beta_calc, mom );
@@ -414,9 +447,9 @@ int Util::EveSelectBeamline(BeamLineTrackMan *bltrackman,
     TVector3 Pos_BPC, Pos_BLC2, rot;
     confman->GetBLDCWireMapManager()->GetGParam( CID_BPC, Pos_BPC, rot );
     confman->GetBLDCWireMapManager()->GetGParam( CID_BLC2a, Pos_BLC2, rot );
-    double zPos_BPC = Pos_BPC.Z();
-    double zPos_BLC2 = Pos_BLC2.Z();
-    double zPos_BPC_BLC2 = (Pos_BPC.Z()+Pos_BLC2.Z())/2;
+    const double zPos_BPC = Pos_BPC.Z();
+    const double zPos_BLC2 = Pos_BLC2.Z();
+    const double zPos_BPC_BLC2 = (Pos_BPC.Z()+Pos_BLC2.Z())/2;
 
     bpctrack->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[0], yblc2bpc[0] );
     bpctrack->XYPosatZ( zPos_BPC, xpos[0], ypos[0] );

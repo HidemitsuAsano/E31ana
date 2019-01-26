@@ -17,7 +17,7 @@
 namespace Util
 { 
 
-  bool EveSelectCDHMul(CDSHitMan *cdsman);
+  int GetCDHMul(CDSHitMan *cdsman);
   bool IsForwardCharge(BeamLineHitMan *blman);
   int GetCDHNeighboringNHits(const std::vector <int> seg, const std::vector <int> allhit);
   int GetNHitsCDCOuter(const TVector3 PosCDH, CDSHitMan *cdsman);
@@ -33,7 +33,8 @@ namespace Util
                     std::vector <int> &pimid,
                     std::vector <int> &pipid,
                     std::vector <int> &kmid,
-                    std::vector <int> &protonid
+                    std::vector <int> &protonid,
+                    const bool MCFlag=false
                     );
   double AnalyzeT0(BeamLineHitMan *blman, ConfMan *confman);
   int BeamPID(EventHeader *header, const double ctmt0, BeamLineHitMan *blman); 

@@ -81,12 +81,6 @@ private:
   TTree *evTree;
   TTree *npippimTree;
 
-  Float_t tlogprob1;
-  Float_t tlogprob2;
-
-  Float_t twoimprob1;
-  Float_t twoimprob2;
-
   const EventHeader *header_CDC; // original in CDC-tracking-file
   CDSTrackingMan *trackMan_CDC; // original in CDC-tracking-file
 
@@ -107,7 +101,6 @@ private:
   int AllGoodTrack;//
   int nTrack;//
   int CDC_Event_Number;//
-  std::ofstream ofs;
   int blc1GoodTrackID;//event by event
   int blc2GoodTrackID;//event by event
   int bpcGoodTrackID;// event by event
@@ -492,8 +485,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   blMan->Convert( tko, confMan );
   trackMan->Calc( cdsMan, confMan, true);
 
-  int nGoodTrack = trackMan->nGoodTrack();
-  int nallTrack = trackMan->nTrack();
+  const int nGoodTrack = trackMan->nGoodTrack();
+  const int nallTrack = trackMan->nTrack();
   AllGoodTrack += nGoodTrack;
   nTrack += nallTrack;
   Tools::Fill1D( Form("nGoodTrack"), nGoodTrack );
@@ -501,7 +494,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   Tools::Fill1D( Form("EventCheck"), 1 );
 
   //CDH-hits cut
-  if(!Util::EveSelectCDHMul(cdsMan)){
+  if( Util::GetCDHMul(cdsMan)!=cdscuts::cdhmulti){
     Clear( nAbort_nCDH );
     return true;
   }
@@ -564,17 +557,16 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
 
   //BLC1-D5-BLC2 analysis and chi2 selection
-  double beammom = Util::AnaBeamSpec(confMan,bltrackMan,blc1GoodTrackID,blc2GoodTrackID);
+  const double beammom = Util::AnaBeamSpec(confMan,bltrackMan,blc1GoodTrackID,blc2GoodTrackID);
   if(beammom <-100){
     Clear( nAbort_flagbmom );
     return true;//chi2 cut
   }
-
   Tools::Fill1D( Form("EventCheck"), 6 );
 
   //** beam momentum calculation **//
-  TVector3 Pp_target;
-  Pp_target.SetXYZ( 0, 0, 0 );
+  TVector3 Pp_target(0,0,0);
+  //Pp_target.SetXYZ( 0, 0, 0 );
   TLorentzVector LVec_beambf;  // 4-Momentum(beam) in LAB
   TLorentzVector LVec_beam;    // 4-Momentum(beam) in LAB with dE correcion
   TLorentzVector LVec_target;  // 4-Momentum(deuteron-target) in LAB
@@ -587,7 +579,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   //TLorentzVector LVec_targetPCM; // 4-Momentum(p-target) in CM
 
   double x1, y1, x2, y2;
-  double z1 = 0, z2 = 20;
+  const double z1 = 0, z2 = 20;
   LocalTrack *bpctrack = bltrackMan->trackBPC(bpcGoodTrackID);
   bpctrack->XYPosatZ( z1, x1, y1 );
   bpctrack->XYPosatZ( z2, x2, y2 );
@@ -596,18 +588,17 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   TVector3 ls;
   ls.SetXYZ( x2-x1, y2-y1, z2-z1);
   ls = ls.Unit();
-  TVector3 Pp_beam = beammom*ls;
+  const TVector3 Pp_beam = beammom*ls;
 
   LVec_beambf.SetVectM( Pp_beam, kpMass );
   LVec_beam = LVec_beambf;
-  TVector3 boost = (LVec_target+LVec_beam).BoostVector();
+  const TVector3 boost = (LVec_target+LVec_beam).BoostVector();
   LVec_beambfCM = LVec_beam;
   LVec_targetCM = LVec_target;
   //LVec_targetPCM = LVec_targetP;
   //boost to CM frame
   LVec_beambfCM.Boost( -1*boost );
   LVec_targetCM.Boost( -1*boost );
-  //LVec_targetPCM.Boost( -1*boost );
 
 
   //** + + + + + + + + + + + + **//
@@ -622,9 +613,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   std::vector <int> vCDHseg;
   // PID of CDS tracks //
   const int nIDedTrack = Util::CDSChargedAna(
-  DoCDCRetiming,
-  bpctrack, cdsMan, trackMan, confMan, 
-  LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID);
+    DoCDCRetiming,
+    bpctrack, cdsMan, trackMan, confMan, 
+    LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID);
   if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
   if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );
   if(nIDedTrack==-9) Tools::Fill1D( Form("EventCheck"), 9 );
@@ -741,6 +732,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       TVector3 vtx_dis;//displaced vertex
       TVector3 vtx_beam_wpip;//vertex(beam-pip) on beam
       TVector3 vtx_pip;//vertex(beam-pip) on beam
+
+
       track_pip->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpip, vtx_pip );
       TVector3 vtx_beam_wpim;//vertex(beam-pim) on beam
       TVector3 vtx_pim;//vertex(beam-pim) on beam
@@ -771,7 +764,13 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       confMan->GetGeomMapManager()->GetPos( CID_T0, 0, Pos_T0 );
       double beamtof=0;
       double momout=0;
-      double z_pos = Pos_T0.Z();;
+      const double z_pos = Pos_T0.Z();;
+      //const double zPos_T0 = Pos_T0.Z();
+      //std::cout << "test" << std::endl;
+      //std::cout << "bpctrack->GetPosatZ(0)" << std::endl;
+      //std::cout << bpctrack->GetPosatZ(0).X() << "  " <<  bpctrack->GetPosatZ(0).Y()  << "  " << bpctrack->GetPosatZ(0).Z()  << std::endl;
+      //std::cout << zPos_T0 << std::endl;
+      //std::cout << bpctrack->GetPosatZ(zPos_T0 ).X() << "  " <<  bpctrack->GetPosatZ(zPos_T0).Y()  << "  " << bpctrack->GetPosatZ(zPos_T0).Z()  << std::endl;
       //dE correction of beam
       ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), vtx_react,
                                      LVec_beambf.Vect().Mag(), kpMass, momout, beamtof );
@@ -780,7 +779,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       const double nlen = (Pos_CDH-vtx_react).Mag();
       if(Verbosity>10) std::cout << "L." << __LINE__ << " flight length " << nlen << std::endl;
       NeutralBetaCDH = nlen/ntof/(Const*100.);
-      double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0;
+      const double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0;
       if(Verbosity) {
         std::cerr<<"L. " << __LINE__ ;
         std::cerr<<" NeutralBetaCDH = "<<NeutralBetaCDH<<" mom_n = "<<tmp_mom<<std::endl; //" "<<1/sqrt(1+nMass*nMass)<<std::endl;
@@ -788,7 +787,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       //** reconstructoin of missing neutorn **//
       TVector3 P_pim; // Momentum(pi-)
       TVector3 P_pip; // Momentum(pi+)
-      TVector3 P_n;   // Momentum(n) (CDS)
 
       TLorentzVector LVec_pim; // 4-Momentum(pi-)
       TLorentzVector LVec_pip; // 4-Momentum(pi+)
@@ -802,7 +800,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       if( !track_pim->GetMomentum( vtx_pim, P_pim, true, true ) ) {
         std::cerr<<"L." << __LINE__ << " !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
       }
-      P_n = tmp_mom*((Pos_CDH-vtx_react).Unit());
+      //Momentum (n CDS)
+      const TVector3 P_n = tmp_mom*((Pos_CDH-vtx_react).Unit());
 
       LVec_pim.SetVectM( P_pim, piMass );
       LVec_pip.SetVectM( P_pip, piMass );
@@ -825,7 +824,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       LVec_nmiss_CM.Boost(-boost);
       LVec_beam_CM.Boost(-boost);
       //cos in CM frame
-      double cos_n = LVec_nmiss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_nmiss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
+      const double cos_n = LVec_nmiss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_nmiss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
       if(Verbosity>10)std::cerr<<"  missing mom | cos_CM = "<<cos_n<<std::endl;
 
 
@@ -844,16 +843,16 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
 
       if(AddQAplots) {
-        Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_beam.Z(),vtx_beam.X());
-        Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_beam.Z(),vtx_beam.Y());
-        Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_beam.X(),vtx_beam.Y());
+        Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_react.Z(),vtx_react.X());
+        Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_react.Z(),vtx_react.Y());
+        Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_react.X(),vtx_react.Y());
       }
       //Fiducial cuts OK
-      if( GeomTools::GetID(vtx_beam)==CID_Fiducial ) {
+      if( GeomTools::GetID(vtx_react)==CID_Fiducial ) {
         if(AddQAplots) {
-          Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_beam.Z(),vtx_beam.X());
-          Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_beam.Z(),vtx_beam.Y());
-          Tools::Fill2D(Form("Vtx_XY_fid"),vtx_beam.X(),vtx_beam.Y());
+          Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_react.Z(),vtx_react.X());
+          Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_react.Z(),vtx_react.Y());
+          Tools::Fill2D(Form("Vtx_XY_fid"),vtx_react.X(),vtx_react.Y());
           Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
         }
         Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
@@ -1027,8 +1026,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             // constraint :: 4-momentum conservation
             TFitConstraintEp ConstEp_Spmode[4];
             TFitConstraintEp ConstEp_Smmode[4];
-            TString str_constEp_Spmode[4]  = {"Px", "Py", "Pz", "E"};
-            TString str_constEp_Smmode[4]  = {"Px", "Py", "Pz", "E"};
+            const TString str_constEp_Spmode[4]  = {"Px", "Py", "Pz", "E"};
+            const TString str_constEp_Smmode[4]  = {"Px", "Py", "Pz", "E"};
             for( int i=0; i<4; i++ ) {
               ConstEp_Spmode[i] = TFitConstraintEp(str_constEp_Spmode[i], str_constEp_Spmode[i], 0, TFitConstraintEp::component(i), 0);
               ConstEp_Smmode[i] = TFitConstraintEp(str_constEp_Smmode[i], str_constEp_Smmode[i], 0, TFitConstraintEp::component(i), 0);
