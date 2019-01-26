@@ -751,94 +751,6 @@ int main( int argc, char** argv )
       nAbort_CDSPID++;
       continue;
     }
-    if(vCDHseg.size()!=3){
-      std::cout << "vCDHseg.size() " << vCDHseg.size() << std::endl;
-    }
-    //*/
-    /*
-    int CDHseg=0;
-    // PID of CDS tracks //
-    for( int icdstrk=0; icdstrk<cdstrackMan->nGoodTrack(); icdstrk++ ){
-      CDSTrack *cdstrack = cdstrackMan->Track(cdstrackMan->GoodTrackID(icdstrk));
-
-      Tools::Fill1D( Form("trackchi2_CDC"), cdstrack->Chi() );
-
-      if( cdstrack->Chi()>cdscuts::cds_chi2_max) continue; 
-      if( !cdstrack->CDHFlag() ) continue;
-
-      double mom = cdstrack->Momentum();
-      TVector3 vtxbline, vtxbhelix, vtxb;
-      TVector3 Pos_T0;
-      confMan->GetGeomMapManager()->GetPos( CID_T0, 0, Pos_T0 );
-      const double zPos_T0 = Pos_T0.Z();
-      cdstrack->GetVertex( bpctrack->GetPosatZ(zPos_T0), bpctrack->GetMomDir(), vtxbline, vtxbhelix );
-      cdstrack->SetPID(-1);
-      vtxb = (vtxbline+vtxbhelix)*0.5;
-      Tools::Fill2D(Form("Vtx_ZX"),vtxb.Z(),vtxb.X());
-      Tools::Fill2D(Form("Vtx_ZY"),vtxb.Z(),vtxb.Y());
-      Tools::Fill2D(Form("Vtx_XY"),vtxb.X(),vtxb.Y());
-
-      double tof = 999.;
-      double mass2 = -999.;
-      for( int icdhhit=0; icdhhit<cdstrack->nCDHHit(); icdhhit++ ){
-        HodoscopeLikeHit *cdhhit = cdstrack->CDHHit(cdsMan,icdhhit);
-        double tmptof = cdhhit->ctmean() - ctmT0;      
-        //cout<<icdh<<": "<<cdhhit->ctmean()<<" - "<<ctmT0<<" = "<<tmptof<<std::endl;
-        if( tmptof<tof || tof==999. ){ // apply minimum TOF hit //
-          tof = tmptof;
-          CDHseg = cdhhit->seg();
-        }
-      }//icdh
-      //
-      // In a CDH hit-shared event, only some one track is adopted and the others are discarded
-      //
-      bool CDHflag = true;
-      for( int icdhseg=0; icdhseg<(int)vCDHseg.size(); icdhseg++ ){
-        if( CDHseg==vCDHseg[icdhseg] ) CDHflag = false;
-      }
-      if( !CDHflag ){
-        nTrack_CDHshare++;
-        continue;
-      }
-      vCDHseg.push_back(CDHseg);
-      // calculation of beta and squared-mass //
-      double tmptof, beta_calc;
-      if( !TrackTools::FindMass2( cdstrack, bpctrack, tof, LVec_beam.Vect().Mag(),
-				  Beam_Kaon, beta_calc, mass2, tmptof ) ){
-        std::cout<<" !!! failure in PID_CDS [FindMass2()] !!! "<<std::endl;
-        continue;
-      }
-      int pid = TrackTools::PIDcorr_wide(mom,mass2);      
-      cdstrack->SetPID(pid);
-      Tools::Fill2D( "PID_CDS_beta", 1./beta_calc, mom );
-      Tools::Fill2D( "PID_CDS", mass2, mom );
-
-      // energy loss calculation //
-      double tmpl;
-      TVector3 vtx_beam, vtx_cds;
-      if( !cdstrack->CalcVertexTimeLength(bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), cdstrack->Mass(),
-				       vtx_beam, vtx_cds, tmptof, tmpl, true) ){
-        std::cout<<" !!! failure in energy loss calculation [CalcVertexTimeLength()] !!! "<<std::endl;
-        continue;
-      }
-
-      if( pid==CDS_PiMinus )
-        pim_ID.push_back(cdstrackMan->GoodTrackID(icdstrk));
-      else if( pid==CDS_PiPlus )
-        pip_ID.push_back(cdstrackMan->GoodTrackID(icdstrk));
-      else if( pid==CDS_Proton )
-        p_ID.push_back(cdstrackMan->GoodTrackID(icdstrk));
-      else if( pid==CDS_Deuteron )
-        d_ID.push_back(cdstrackMan->GoodTrackID(icdstrk));
-      else if( pid==CDS_Kaon )
-        km_ID.push_back(cdstrackMan->GoodTrackID(icdstrk));
-      
-      if( pid<7 ) nTrack_PID++;
-
-
-    }// for icdstrk
-    // end of PID 
-    */
     //Tools::Fill1D( Form("ntrack_CDS"), pip_ID.size()+p_ID.size()+d_ID.size()+pim_ID.size()+km_ID.size() );
     Tools::Fill1D( Form("ntrack_CDS"), pip_ID.size()+p_ID.size()+pim_ID.size()+km_ID.size() );
     Tools::Fill1D( Form("ntrack_pi_plus"),  pip_ID.size() );
@@ -847,28 +759,7 @@ int main( int argc, char** argv )
     Tools::Fill1D( Form("ntrack_pi_minus"), pim_ID.size() );
     Tools::Fill1D( Form("ntrack_K_minus"),  km_ID.size() );
 
-
-    //** charge veto with BVC, CVC (TOF=CVC), & PC **//
-    int nBVC = 0;
-    int nCVC = 0;
-    int nPC  = 0;
-    for( int i=0; i<blMan->nBVC(); i++ ){
-      if( blMan->BVC(i)->CheckRange() ) nBVC++;
-    }
-    for( int i=0; i<blMan->nTOF(); i++ ){
-      if( blMan->TOF(i)->CheckRange() ) nCVC++;
-    }
-    for( int i=0; i<blMan->nPC(); i++ ){
-      if( blMan->PC(i)->CheckRange() ) nPC++;
-    }
-    Tools::Fill1D( Form("mul_BVC"), nBVC );
-    Tools::Fill1D( Form("mul_CVC"), nCVC );
-    Tools::Fill1D( Form("mul_PC"),  nPC );
-    bool chargedhit = false;
-    if( nBVC || nCVC || nPC ) chargedhit = true;
-    if(Verbosity_){
-      std::cout << "L." << __LINE__ <<  " charge veto!!" << std::endl;
-    }
+    bool chargedhit= Util::IsForwardCharge(blMan); 
 
     // + + + + + + + + + + + //
     //  pi+ pi- X event  //
