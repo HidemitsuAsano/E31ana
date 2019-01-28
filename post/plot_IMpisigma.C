@@ -1,7 +1,6 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 #include <string>
 
 #include <TROOT.h>
@@ -12,20 +11,11 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TF1.h>
-#include <TH1F.h>
-#include <TH2F.h>
-#include <TH3F.h>
-#include <TRint.h>
+#include <TH1.h>
+#include <TH2.h>
 #include <TVector3.h>
 #include <TLorentzVector.h>
-#include <TGraphErrors.h> 
-#include <TDatabasePDG.h>
-#include <TLatex.h>
 #include <TLegend.h>
-#include <TLine.h>
-#include <TColor.h>
-#include <TProfile.h>
-#include <TPaletteAxis.h>
 
 #include "../src/IMPiSigmaAnaPar.h"
 
@@ -63,6 +53,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   double NeutralBetaCDH; // veracity of neutral particle on CDH
   double dE;   // energy deposit on CDH
   TVector3 *vtx_reaction = nullptr; // vertex(reaction)
+  TVector3 *vtx_pip = nullptr; // vertex (pip)
+  TVector3 *vtx_pim = nullptr; // vertex (pim)
   int run_num;   // run number
   int event_num; // event number
   int block_num; // block number
@@ -83,6 +75,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   double kfSmmode_status; // status of kinematical refit -> details can be found in this code
   double kfSmmode_pvalue; // p-value of kinematical refit
   int kf_flag; // flag of correct pair reconstruction, etc
+
   //= = = = pipipnn final-sample tree = = = =//
   
   TFile *f = new TFile(filename);
@@ -103,7 +96,9 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   tree->SetBranchAddress( "NeutralBetaCDH", &NeutralBetaCDH );
   tree->SetBranchAddress( "dE", &dE );
   tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
-  tree->SetBranchAddress( "run_num", &run_num );
+  tree->SetBranchAddress( "vtx_pip",&vtx_pip);
+  tree->SetBranchAddress( "vtx_pim",&vtx_pim);
+  //tree->SetBranchAddress( "run_num", &run_num );
   tree->SetBranchAddress( "event_num", &event_num );
   //tree->SetBranchAddress( "block_num", &block_num );
   tree->SetBranchAddress( "kfSpmode_mom_beam",   &kfSpmode_mom_beam );
