@@ -138,6 +138,8 @@ private:
   int event_num; // event number
   int block_num; // block number
   double ctmT0;
+  TVector3 Vtxpip;
+  TVector3 Vtxpim;
 
   TMatrixD *covZero;
   TMatrixD *covParticle_Spmode[kin::npart];
@@ -174,7 +176,14 @@ public:
 
 //**--**--**--**--**--**--**--**--**--**--**--**--**--**//
 EventAnalysis::EventAnalysis()
-  : EventTemp()
+  : EventTemp(),
+  rtFile(nullptr),
+  rtFile2(nullptr),
+  rtFile3(nullptr),
+  cdcFile(nullptr),
+  cdcTree(nullptr),
+  evTree(nullptr),
+  npippimTree(nullptr)
 //**--**--**--**--**--**--**--**--**--**--**--**--**--**//
 {
 }
@@ -238,8 +247,8 @@ void EventAnalysis::Initialize( ConfMan *conf )
 
   //** Getting CDSTracking info. from CDCfile **//
   cdcTree = (TTree*)cdcFile->Get( "EventTree" );
-  header_CDC = 0;
-  trackMan_CDC = 0;
+  header_CDC = nullptr;
+  trackMan_CDC = nullptr;
   cdcTree->SetBranchAddress( "CDSTrackingMan", &trackMan_CDC );
   cdcTree->SetBranchAddress( "EventHeader",&header_CDC );
 
@@ -279,6 +288,8 @@ void EventAnalysis::Initialize( ConfMan *conf )
   npippimTree->Branch( "NeutralBetaCDH", &NeutralBetaCDH );
   npippimTree->Branch( "dE", &dE );
   npippimTree->Branch( "vtx_reaction", &vtx_reaction );
+  npippimTree->Branch( "vtx_pip",&Vtxpip);
+  npippimTree->Branch( "vtx_pim",&Vtxpim);
   npippimTree->Branch( "run_num", &run_num );
   npippimTree->Branch( "event_num", &event_num );
   //npippimTree->Branch( "block_num", &block_num );
@@ -741,6 +752,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
       const double dcapipvtx =  (vtx_pip-vtx_beam_wpip).Mag();
       const double dcapimvtx =  (vtx_pim-vtx_beam_wpim).Mag();
+      const TVector3 vtxpip_mean = 0.5*(vtx_pip+vtx_beam_wpip);
+      const TVector3 vtxpim_mean = 0.5*(vtx_pim+vtx_beam_wpim);
 
 
       //reaction vertex is determined from beam and nearest vtx
@@ -1116,6 +1129,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         dE = ncdhhit->emean();
         // beta is already filled
         vtx_reaction = vtx_react; // vertex(reaction)
+        Vtxpip = vtxpip_mean;
+        Vtxpim = vtxpim_mean;
         run_num   = confMan->GetRunNumber(); // run number
         event_num = Event_Number;            // event number
         block_num = Block_Event_Number;      // block number
@@ -1276,10 +1291,13 @@ void EventAnalysis::Clear( int &nAbort)
   blc2GoodTrackID=-1;
   bpcGoodTrackID=-1;
   ctmT0 = 0;
+
   //CDS
   NeutralBetaCDH=9999.;
   dE=-9999.;
   vtx_reaction.SetXYZ(-9999,-9999,-9999);
+  Vtxpip.SetXYZ(-9999,-9999,-9999);
+  Vtxpim.SetXYZ(-9999,-9999,-9999);
 
   return;
 }
