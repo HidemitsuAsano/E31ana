@@ -53,7 +53,7 @@ bool Util::IsForwardCharge(BeamLineHitMan *blman)
 
 //returns # of neighboring hits of CDH segments listed in vector cdhseg
 //used for Isolation cuts of neutral particle candidates
-int Util::GetCDHNeighboringNHits(const std::vector <int> seg, const std::vector <int> allhit  )
+int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector <int> &allhit )
 {
   int NNeighboringHits=0;
   for( int ineuseg=0; ineuseg<(int)seg.size(); ineuseg++ ) {
@@ -116,6 +116,18 @@ double Util::AnaBeamSpec(ConfMan *confman, BeamLineTrackMan *bltrackman,const in
 }
 
 
+//CDSChargedAna 
+//a function for general analysis of charged particle in CDS. It is not allowded that two good CDC tracks share a CDH segment.
+//beta and squared-mass is calculated and PID is done by TrackTools::PIDcorr_wide().
+//
+//input 
+//bpctrack, CDSinfo(CDSHitMan & CDSTrackingMan), ConfMan, 
+//TLorenzVector of beam (const), T0 hit time (const)
+//
+//output
+//1. cdhseg: vector of CDH segment # which is used for charged particle analysys
+//2. pimid,pipid, kmid, protonid : vector of track ID which is IDed to pi-,pii+,K-,proton respectively 
+//
 
 int Util::CDSChargedAna(const bool docdcretiming, 
                         LocalTrack* bpctrack,
@@ -259,7 +271,8 @@ int Util::CDSChargedAna(const bool docdcretiming,
     TVector3 vtx_beam, vtx_cds;
     if( !track->CalcVertexTimeLength( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), track->Mass(),
                                       vtx_beam, vtx_cds, tmptof, tmpl, true ) ) {
-      std::cerr<<" !!! failure in energy loss calculation [CalcVertexTimeLength()] !!! "<<std::endl;
+      std::cerr<< __FILE__ << " L. "<<  __LINE__ << 
+      " !!! failure in energy loss calculation [CalcVertexTimeLength()] !!! "<<std::endl;
       EnergyLossOK = false;
       continue;
     }

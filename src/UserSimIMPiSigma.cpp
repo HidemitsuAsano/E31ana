@@ -75,6 +75,8 @@ TLorentzVector mom_n;      // 4-momentum(neutron)
 double NeutralBetaCDH; // veracity of neutral particle on CDH
 double dE;   // energy deposit on CDH
 TVector3 vtx_reaction; // vertex(reaction)
+TVector3 Vtxpip; // vertex(pip)
+TVector3 Vtxpim; // vertex(pim)
 int run_num;   // run number
 int event_num; // event number
 int block_num; // block number
@@ -233,6 +235,8 @@ int main( int argc, char** argv )
   npippimTree->Branch( "beta", &NeutralBetaCDH );
   npippimTree->Branch( "dE", &dE );
   npippimTree->Branch( "vtx_reaction", &vtx_reaction );
+  npippimTree->Branch( "vtx_pip",&Vtxpip);
+  npippimTree->Branch( "vtx_pim",&Vtxpim);
   npippimTree->Branch( "run_num", &run_num );
   npippimTree->Branch( "event_num", &event_num );
   npippimTree->Branch( "block_num", &block_num );
@@ -743,7 +747,10 @@ int main( int argc, char** argv )
         LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,true);
     if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
     if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );
-    if(nIDedTrack==-9) Tools::Fill1D( Form("EventCheck"), 9 );
+    if(nIDedTrack==-9){
+      nTrack_CDHshare++;
+      Tools::Fill1D( Form("EventCheck"), 9 );
+    }
     if(nIDedTrack==-10) Tools::Fill1D( Form("EventCheck"), 10 );
     if(nIDedTrack==-11) Tools::Fill1D( Form("EventCheck"), 11 );
     if(nIDedTrack==-12) Tools::Fill1D( Form("EventCheck"), 12 );
@@ -751,7 +758,9 @@ int main( int argc, char** argv )
       nAbort_CDSPID++;
       continue;
     }
+
     //Tools::Fill1D( Form("ntrack_CDS"), pip_ID.size()+p_ID.size()+d_ID.size()+pim_ID.size()+km_ID.size() );
+    if(nIDedTrack>0) nTrack_PID =+ nIDedTrack;
     Tools::Fill1D( Form("ntrack_CDS"), pip_ID.size()+p_ID.size()+pim_ID.size()+km_ID.size() );
     Tools::Fill1D( Form("ntrack_pi_plus"),  pip_ID.size() );
     Tools::Fill1D( Form("ntrack_proton"),   p_ID.size() );
@@ -845,16 +854,19 @@ int main( int argc, char** argv )
         TVector3 vtx_p; // Vertex(baem-particle)_on_particle
         //track_p->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_b, vtx_p );
         TVector3 vtx_beam_wpip;//vertex(beam-pip) on beam
-        TVector3 vtx_pip;//vertex(beam-pip) on beam
+        TVector3 vtx_pip;//vertex(beam-pip) on particle
+        TVector3 vtx_pip_mean;//vertex(beam-pip) on beam
         TVector3 vtx_beam;
         track_pip->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpip, vtx_pip ); 
         TVector3 vtx_beam_wpim;//vertex(beam-pim) on beam
-        TVector3 vtx_pim;//vertex(beam-pim) on beam
+        TVector3 vtx_pim;//vertex(beam-pim) on particle
+        TVector3 vtx_pim_mean;//vertex(beam-pim) on beam
         track_pim->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpim, vtx_pim ); 
       
         double dcapipvtx =  (vtx_pip-vtx_beam_wpip).Mag();
         double dcapimvtx =  (vtx_pim-vtx_beam_wpim).Mag();
-
+        vtx_pip_mean = 0.5*(vtx_pip+vtx_beam_wpip);
+        vtx_pim_mean = 0.5*(vtx_pim+vtx_beam_wpim);
         
         //reaction vertex is determined from beam and nearest vtx 
         if(dcapipvtx <= dcapimvtx){
@@ -1338,6 +1350,8 @@ int main( int argc, char** argv )
           dE = ncdhhit->emean();
           // beta is already filled
           vtx_reaction = vtx_react; // vertex(reaction)
+          Vtxpip = vtx_pip_mean;
+          Vtxpim = vtx_pim_mean;
           run_num   = confMan->GetRunNumber(); // run number
           event_num = iev;     // event number
           block_num = 0;      // block number (temp)

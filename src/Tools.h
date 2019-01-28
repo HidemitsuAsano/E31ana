@@ -7,22 +7,22 @@
 #include <iostream>
 #include <cmath>
 
-#include "TVector3.h"
-#include "TH1F.h"
-#include "TH2F.h"
-#include "TH3F.h"
-#include "TH2I.h"
-#include "TFile.h"
+#include <TVector3.h>
+#include <TH1F.h>
+#include <TH2F.h>
+#include <TH3F.h>
+#include <TH2I.h>
+#include <TFile.h>
 #include "GlobalVariables.h"
-#include "TMacro.h"
-#include "TSystem.h"
+#include <TMacro.h>
+#include <TSystem.h>
 
 namespace Tools
 {
   inline void Fill1D(TString name, double val);
   inline void Fill2D(TString name, double val1,  double val2);
   inline void Fill3D(TString name, double val1,  double val2 ,double val3);
-  inline void newTH1F(TString name,  int nbin, double lbin, double ubin);
+  inline void newTH1F(TString name,  int nbinx, double lbinx, double ubinx);
   inline void newTH1F(TString name, TString title, int nbin, double lbin, double ubin);
   inline void newTH2F(TString name, 
 		      int nbinx, double lbinx, double ubinx,
