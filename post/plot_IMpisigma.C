@@ -1,4 +1,3 @@
-#include <fstream>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -20,14 +19,16 @@
 #include "../src/IMPiSigmaAnaPar.h"
 
 const double pvalcut = 0.005;
+const double dEcut = 2.0;
 //const double pvalcut = 1.0e-5;
 const bool gridon=true;
-const bool staton=true;
+const bool staton=false;
 
 //mode 0: Sigma+ ,1: Sigma- 
 void plot_IMpisigma(const char* filename="",const int mode=0)
 {
   std::cout << "p-value cut:" << pvalcut << std::endl; 
+  std::cout << "dE cut:" << dEcut << std::endl; 
   //gROOT->SetStyle("Plain");
   if(staton)gStyle->SetOptStat(111111);
   else gStyle->SetOptStat(0);
@@ -55,9 +56,9 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TVector3 *vtx_reaction = nullptr; // vertex(reaction)
   TVector3 *vtx_pip = nullptr; // vertex (pip)
   TVector3 *vtx_pim = nullptr; // vertex (pim)
-  int run_num;   // run number
-  int event_num; // event number
-  int block_num; // block number
+  //int run_num;   // run number
+  //int event_num; // event number
+  //int block_num; // block number
   TLorentzVector *kfSpmode_mom_beam=nullptr;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
   TLorentzVector *kfSpmode_mom_pip=nullptr;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
   TLorentzVector *kfSpmode_mom_pim=nullptr;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
@@ -87,9 +88,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   }
 
   tree->SetBranchAddress( "mom_beam",   &LVec_beam );
-  
   tree->SetBranchAddress( "mom_target", &LVec_target );
-  
   tree->SetBranchAddress( "mom_pip", &LVec_pip );
   tree->SetBranchAddress( "mom_pim", &LVec_pim );
   tree->SetBranchAddress( "mom_n", &LVec_n );
@@ -99,22 +98,22 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   tree->SetBranchAddress( "vtx_pip",&vtx_pip);
   tree->SetBranchAddress( "vtx_pim",&vtx_pim);
   //tree->SetBranchAddress( "run_num", &run_num );
-  tree->SetBranchAddress( "event_num", &event_num );
+  //tree->SetBranchAddress( "event_num", &event_num );
   //tree->SetBranchAddress( "block_num", &block_num );
-  tree->SetBranchAddress( "kfSpmode_mom_beam",   &kfSpmode_mom_beam );
-  tree->SetBranchAddress( "kfSpmode_mom_pip", &kfSpmode_mom_pip );
-  tree->SetBranchAddress( "kfSpmode_mom_pim", &kfSpmode_mom_pim );
-  tree->SetBranchAddress( "kfSpmode_mom_n", &kfSpmode_mom_n );
-  tree->SetBranchAddress( "kfSpmode_chi2", &kfSpmode_chi2 );
-  tree->SetBranchAddress( "kfSpmode_NDF", &kfSpmode_NDF );
+  //tree->SetBranchAddress( "kfSpmode_mom_beam",   &kfSpmode_mom_beam );
+  //tree->SetBranchAddress( "kfSpmode_mom_pip", &kfSpmode_mom_pip );
+  //tree->SetBranchAddress( "kfSpmode_mom_pim", &kfSpmode_mom_pim );
+  //tree->SetBranchAddress( "kfSpmode_mom_n", &kfSpmode_mom_n );
+  //tree->SetBranchAddress( "kfSpmode_chi2", &kfSpmode_chi2 );
+  //tree->SetBranchAddress( "kfSpmode_NDF", &kfSpmode_NDF );
   tree->SetBranchAddress( "kfSpmode_status", &kfSpmode_status );
   tree->SetBranchAddress( "kfSpmode_pvalue", &kfSpmode_pvalue );
-  tree->SetBranchAddress( "kfSmmode_mom_beam",   &kfSmmode_mom_beam );
-  tree->SetBranchAddress( "kfSmmode_mom_pip", &kfSmmode_mom_pip );
-  tree->SetBranchAddress( "kfSmmode_mom_pim", &kfSmmode_mom_pim );
-  tree->SetBranchAddress( "kfSmmode_mom_n", &kfSmmode_mom_n );
-  tree->SetBranchAddress( "kfSmmode_chi2", &kfSmmode_chi2 );
-  tree->SetBranchAddress( "kfSmmode_NDF", &kfSmmode_NDF );
+  //tree->SetBranchAddress( "kfSmmode_mom_beam",   &kfSmmode_mom_beam );
+  //tree->SetBranchAddress( "kfSmmode_mom_pip", &kfSmmode_mom_pip );
+  //tree->SetBranchAddress( "kfSmmode_mom_pim", &kfSmmode_mom_pim );
+  //tree->SetBranchAddress( "kfSmmode_mom_n", &kfSmmode_mom_n );
+  //tree->SetBranchAddress( "kfSmmode_chi2", &kfSmmode_chi2 );
+  //tree->SetBranchAddress( "kfSmmode_NDF", &kfSmmode_NDF );
   tree->SetBranchAddress( "kfSmmode_status", &kfSmmode_status );
   tree->SetBranchAddress( "kfSmmode_pvalue", &kfSmmode_pvalue );
   tree->SetBranchAddress( "kf_flag", &kf_flag );
@@ -125,6 +124,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH2F* dE_MMom_fid_beta_woK0;
   TH2F* dE_MMass_fid_beta_woK0;
   TH2F* MMom_MMass_fid_beta_dE_woK0;
+  TH2F* MMom_MMass_fid_beta_dE_woK0_wSid;
   TH2F* IMnpim_IMnpip_dE_woK0;
   TH2F* IMnpim_IMnpip_dE_woK0_n;
   TH2F* MMnpip_MMnpim_woK0_wSid_n;
@@ -171,6 +171,16 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   MMom_MMass_fid_beta_dE_woK0->SetYTitle("Missing Mom. [GeV/c]");
   MMom_MMass_fid_beta_dE_woK0->GetXaxis()->CenterTitle();
   MMom_MMass_fid_beta_dE_woK0->GetYaxis()->CenterTitle();
+
+
+  MMom_MMass_fid_beta_dE_woK0_wSid = new TH2F(Form("MMom_MMass_fid_beta_dE_woK0_wSid"),Form("MMom_MMass_fid_beta_dE_woK0_wSid"), 140, 0.4, 1.8, 100, 0, 1.5);
+  MMom_MMass_fid_beta_dE_woK0_wSid->SetXTitle("Missing Mass [GeV/c^{2}]");
+  MMom_MMass_fid_beta_dE_woK0_wSid->SetYTitle("Missing Mom. [GeV/c]");
+  MMom_MMass_fid_beta_dE_woK0_wSid->GetXaxis()->CenterTitle();
+  MMom_MMass_fid_beta_dE_woK0_wSid->GetYaxis()->CenterTitle();
+
+
+
   
   IMnpim_IMnpip_dE_woK0 = new TH2F(Form("IMnpim_IMnpip_dE_woK0"), Form("IMnpim_IMnpip_dE_woK0"),200, 1, 2.0, 200, 1, 2.0);
   IMnpim_IMnpip_dE_woK0->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
@@ -397,7 +407,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     //-- neutron-ID, K0 and missing neutron selection --//
 
     if(NeutralBetaCDH<anacuts::beta_MAX) NBetaOK=true;
-    if(anacuts::dE_MIN<dE) NdEOK=true;
+    //if(anacuts::dE_MIN<dE) NdEOK=true;
+    if(dEcut<dE) NdEOK=true;
    
     //Sigma+ production in CDS
     if( (anacuts::Sigmap_MIN<(*LVec_n+*LVec_pip).M() && (*LVec_n+*LVec_pip).M()<anacuts::Sigmap_MAX)) SigmaPFlag=true;
@@ -426,6 +437,9 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
         mnmom->Fill(nmiss_mom);
         npipmom->Fill(LVec_pip_n.P());
         npimmom->Fill(LVec_pim_n.P());
+        if(SigmaPFlag || SigmaMFlag){
+          MMom_MMass_fid_beta_dE_woK0_wSid->Fill(LVec_n_miss.M(),LVec_n_miss.P());
+        }
       }
       if(NBetaOK && NdEOK && MissNFlag){
         IMnpim_IMnpip_dE_woK0_n->Fill(LVec_pip_n.M(),LVec_pim_n.M());
@@ -588,19 +602,57 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   cIMnpim_IMnpip_dE_woK0->cd();
   IMnpim_IMnpip_dE_woK0->Draw("colz");
   cIMnpim_IMnpip_dE_woK0->Print(pdfname);
+  
+  TCanvas  *cIMnpim_IMnpip_dE_woK0_px = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_px"),"");
+  cIMnpim_IMnpip_dE_woK0_px->cd();
+  TH1D* IMnpim_IMnpip_dE_woK0_px = IMnpim_IMnpip_dE_woK0->ProjectionX();
+  IMnpim_IMnpip_dE_woK0_px->Draw("");
+  cIMnpim_IMnpip_dE_woK0_px->Print(pdfname);
+  
+  TCanvas  *cIMnpim_IMnpip_dE_woK0_py = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_py"),"");
+  cIMnpim_IMnpip_dE_woK0_py->cd();
+  TH1D* IMnpim_IMnpip_dE_woK0_py = IMnpim_IMnpip_dE_woK0->ProjectionY();
+  IMnpim_IMnpip_dE_woK0_py->Draw("");
+  cIMnpim_IMnpip_dE_woK0_py->Print(pdfname);
+  
+  TCanvas *cnmom_IMnpipi_woK0_wSid_n = new TCanvas(Form("cnmom_IMnpipi_woK0_wSid_n"),"");
+  cnmom_IMnpipi_woK0_wSid_n->cd();
+  nmom_IMnpipi_woK0_wSid_n->Draw("colz");
+  cnmom_IMnpipi_woK0_wSid_n->Print(pdfname);
+
+  
+  TCanvas *cnmom_IMnpipi_woK0_wSid_n_py = new TCanvas(Form("cnmom_IMnpipi_woK0_wSid_n_py"),"");
+  cnmom_IMnpipi_woK0_wSid_n_py->cd();
+  TH1D* nmom_IMnpipi_woK0_wSid_n_py = nmom_IMnpipi_woK0_wSid_n->ProjectionY();
+  nmom_IMnpipi_woK0_wSid_n_py->Draw();
+  cnmom_IMnpipi_woK0_wSid_n_py->Print(pdfname);
+
+  TCanvas *cMMnmiss_IMnpipi_woK0_wSid_n = new TCanvas(Form("cMMnmiss_IMnpipi_woK0_wSid_n"),"");
+  cMMnmiss_IMnpipi_woK0_wSid_n->cd();
+  MMnmiss_IMnpipi_woK0_wSid_n->Draw("colz");
+  cMMnmiss_IMnpipi_woK0_wSid_n->Print(pdfname);
 
 
   TCanvas *cdE_betainv_fid_kin[2];//           
   TCanvas *cdE_MMom_fid_beta_woK0_kin[2];      
   TCanvas *cdE_MMass_fid_beta_woK0_kin[2];     
   TCanvas *cMMom_MMass_fid_beta_dE_woK0_kin[2];
+  TCanvas *cMMom_MMass_fid_beta_dE_woK0_kin_px[2];
+  TH1D *MMom_MMass_fid_beta_dE_woK0_kin_px[2];
+  TCanvas *cMMom_MMass_fid_beta_dE_woK0_kin_py[2];
+  TH1D *MMom_MMass_fid_beta_dE_woK0_kin_py[2];
   TCanvas *cIMnpim_IMnpip_dE_woK0_kin[2]; 
+  TCanvas *cIMnpim_IMnpip_dE_woK0_kin_px[2];
+  TH1D *IMnpim_IMnpip_dE_woK0_kin_px[2];
+  TCanvas *cIMnpim_IMnpip_dE_woK0_kin_py[2]; 
+  TH1D *IMnpim_IMnpip_dE_woK0_kin_py[2];
+
   TCanvas *cMMnpip_MMnpim_woK0_kin[2];  
   TCanvas *cdE_IMnpipi_woK0_kin[2];     
   TCanvas *cCosn_IMnpipi_n_kin[2];   
   TCanvas *cMMnmiss_IMnpipi_woK0_kin[2];
   TCanvas *cq_IMnpipi_woK0_kin[2];      
-  TCanvas *cnmom_IMnpipi_woK0_kin[2];      
+  TCanvas *cnmom_IMnpipi_woK0_kin[2];     
 
   for(int imode=0;imode<2;imode++){
     cdE_betainv_fid_kin[imode] = new TCanvas(Form("cdE_betainv_fid_kin_%s",smode[imode]), "");
@@ -623,11 +675,36 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     cMMom_MMass_fid_beta_dE_woK0_kin[imode]->cd();
     MMom_MMass_fid_beta_dE_woK0_kin[imode]->Draw("colz");
     cMMom_MMass_fid_beta_dE_woK0_kin[imode]->Print(pdfname);
+
+    cMMom_MMass_fid_beta_dE_woK0_kin_px[imode] = new TCanvas(Form("cMMom_MMass_fid_beta_dE_woK0_kin_px_%s",smode[imode]),"");
+    cMMom_MMass_fid_beta_dE_woK0_kin_px[imode]->cd();
+    MMom_MMass_fid_beta_dE_woK0_kin_px[imode] = MMom_MMass_fid_beta_dE_woK0_kin[imode]->ProjectionX();
+    MMom_MMass_fid_beta_dE_woK0_kin_px[imode]->Draw();
+    cMMom_MMass_fid_beta_dE_woK0_kin_px[imode]->Print(pdfname);
+
+    cMMom_MMass_fid_beta_dE_woK0_kin_py[imode] = new TCanvas(Form("cMMom_MMass_fid_beta_dE_woK0_kin_py_%s",smode[imode]),"");
+    cMMom_MMass_fid_beta_dE_woK0_kin_py[imode]->cd();
+    MMom_MMass_fid_beta_dE_woK0_kin_py[imode] = MMom_MMass_fid_beta_dE_woK0_kin[imode]->ProjectionY();
+    MMom_MMass_fid_beta_dE_woK0_kin_py[imode]->Draw();
+    cMMom_MMass_fid_beta_dE_woK0_kin_py[imode]->Print(pdfname);
     
+
     cIMnpim_IMnpip_dE_woK0_kin[imode] = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_kin_%s",smode[imode]),"");
     cIMnpim_IMnpip_dE_woK0_kin[imode]->cd();
     IMnpim_IMnpip_dE_woK0_kin[imode]->Draw("colz");
     cIMnpim_IMnpip_dE_woK0_kin[imode]->Print(pdfname);
+    
+    cIMnpim_IMnpip_dE_woK0_kin_px[imode] = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_kin_px_%s",smode[imode]),"");
+    cIMnpim_IMnpip_dE_woK0_kin_px[imode]->cd();
+    IMnpim_IMnpip_dE_woK0_kin_px[imode] = IMnpim_IMnpip_dE_woK0_kin[imode]->ProjectionX();
+    IMnpim_IMnpip_dE_woK0_kin_px[imode]->Draw();
+    cIMnpim_IMnpip_dE_woK0_kin_px[imode]->Print(pdfname);
+    
+    cIMnpim_IMnpip_dE_woK0_kin_py[imode] = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_kin_py_%s",smode[imode]),"");
+    cIMnpim_IMnpip_dE_woK0_kin_py[imode]->cd();
+    IMnpim_IMnpip_dE_woK0_kin_py[imode] = IMnpim_IMnpip_dE_woK0_kin[imode]->ProjectionY();
+    IMnpim_IMnpip_dE_woK0_kin_py[imode]->Draw();
+    cIMnpim_IMnpip_dE_woK0_kin_py[imode]->Print(pdfname);
     
     cMMnpip_MMnpim_woK0_kin[imode] = new TCanvas(Form("cMMnpip_MMnpim_woK0_kin_%s",smode[imode]),"");
     cMMnpip_MMnpim_woK0_kin[imode]->cd();
@@ -661,11 +738,91 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     nmom_IMnpipi_woK0_kin[imode]->RebinX(2);
     //nmom_IMnpipi_woK0_kin[imode]->RebinY(6);
     nmom_IMnpipi_woK0_kin[imode]->Draw("colz");
-    if(imode==0)cnmom_IMnpipi_woK0_kin[imode]->Print(pdfname);
-    if(imode==1)cnmom_IMnpipi_woK0_kin[imode]->Print(pdfname+")");
+    //if(imode==0)cnmom_IMnpipi_woK0_kin[imode]->Print(pdfname);
+    //if(imode==1)cnmom_IMnpipi_woK0_kin[imode]->Print(pdfname+")");
+    cnmom_IMnpipi_woK0_kin[imode]->Print(pdfname);
   }
+
+  //TCanvas *cMMnpip_MMnpim_woK0_wSid_n = new TCanvas(Form("cMMnpip_MMnpim_woK0_wSid_n"),"");
+  //cMMnpip_MMnpim_woK0_wSid_n->cd();
+  //MMnpip_MMnpim_woK0_wSid_n->Draw("colz");
+  //cMMnpip_MMnpim_woK0_wSid_n->Print(pdfname);
   
+  TCanvas *cMMom_MMass_fid_beta_dE_woK0  = new TCanvas(Form("cMMom_MMass_fid_beta_dE_woK0"),"");
+  cMMom_MMass_fid_beta_dE_woK0->cd();
+  MMom_MMass_fid_beta_dE_woK0->Draw("colz");
+  cMMom_MMass_fid_beta_dE_woK0->Print(pdfname);
   
+  TCanvas *cMMom_MMass_fid_beta_dE_woK0_px = new TCanvas(Form("cMMom_MMass_fid_beta_dE_woK0_px"),"");
+  TH1D *MMom_MMass_fid_beta_dE_woK0_px = MMom_MMass_fid_beta_dE_woK0->ProjectionX();
+  MMom_MMass_fid_beta_dE_woK0_px->Draw("");
+  
+  TCanvas *cMMom_MMass_fid_beta_dE_woK0_wSid  = new TCanvas(Form("cMMom_MMass_fid_beta_dE_woK0_wSid"),"");
+  cMMom_MMass_fid_beta_dE_woK0_wSid->cd();
+  MMom_MMass_fid_beta_dE_woK0_wSid->Draw("colz");
+  cMMom_MMass_fid_beta_dE_woK0_wSid->Print(pdfname);
+  
+
+  TCanvas *cMMom_MMass_fid_beta_dE_woK0_wSid_px  = new TCanvas(Form("cMMom_MMass_fid_beta_dE_woK0_wSid_px"),"");
+  cMMom_MMass_fid_beta_dE_woK0_wSid_px->cd();
+  TH1D *MMom_MMass_fid_beta_dE_woK0_wSid_px = MMom_MMass_fid_beta_dE_woK0_wSid->ProjectionX();
+  MMom_MMass_fid_beta_dE_woK0_wSid_px->Draw("");
+  cMMom_MMass_fid_beta_dE_woK0_wSid_px->Print(pdfname);
+
+
+  TCanvas *cMMom_MMass_fid_beta_dE_woK0_wSid_py  = new TCanvas(Form("cMMom_MMass_fid_beta_dE_woK0_wSid_py"),"");
+  cMMom_MMass_fid_beta_dE_woK0_wSid_py->cd();
+  TH1D *MMom_MMass_fid_beta_dE_woK0_wSid_py = MMom_MMass_fid_beta_dE_woK0_wSid->ProjectionY();
+  MMom_MMass_fid_beta_dE_woK0_wSid_py->Draw("");
+  cMMom_MMass_fid_beta_dE_woK0_wSid_py->Print(pdfname);
+   
+
+  TCanvas *cMMom_MMass_fid_beta_dE_woK0_px_sup = new TCanvas("cMMom_MMass_fid_beta_dE_woK0_px_sup","");
+  cMMom_MMass_fid_beta_dE_woK0_px_sup->cd();
+  MMom_MMass_fid_beta_dE_woK0_px->Draw();
+  MMom_MMass_fid_beta_dE_woK0_kin_px[0]->SetLineColor(2);
+  MMom_MMass_fid_beta_dE_woK0_kin_px[0]->Draw("same");
+  MMom_MMass_fid_beta_dE_woK0_kin_px[1]->SetLineColor(3);
+  MMom_MMass_fid_beta_dE_woK0_kin_px[1]->Draw("same");
+  cMMom_MMass_fid_beta_dE_woK0_px_sup->Print(pdfname);
+
+  TCanvas *cMMom_MMass_fid_beta_dE_woK0_py = new TCanvas("cMMom_MMass_fid_beta_dE_woK0_py","");
+  cMMom_MMass_fid_beta_dE_woK0_py->cd();
+  TH1D *MMom_MMass_fid_beta_dE_woK0_py = MMom_MMass_fid_beta_dE_woK0->ProjectionY();
+  MMom_MMass_fid_beta_dE_woK0_py->Draw();
+  MMom_MMass_fid_beta_dE_woK0_kin_py[0]->SetLineColor(2);
+  MMom_MMass_fid_beta_dE_woK0_kin_py[0]->Draw("same");
+  MMom_MMass_fid_beta_dE_woK0_kin_py[1]->SetLineColor(3);
+  MMom_MMass_fid_beta_dE_woK0_kin_py[1]->Draw("same");
+  cMMom_MMass_fid_beta_dE_woK0_py->Print(pdfname);
+
+
+  
+  TCanvas *cIMnpim_IMnpip_dE_woK0_n = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_n"),"");
+  cIMnpim_IMnpip_dE_woK0_n->cd();
+  IMnpim_IMnpip_dE_woK0_n->Draw("colz");
+  cIMnpim_IMnpip_dE_woK0_n->Print(pdfname);
+
+  TCanvas *cIMnpim_IMnpip_dE_woK0_n_px = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_n_px"),"");
+  cIMnpim_IMnpip_dE_woK0_n_px->cd();
+  TH1D *IMnpim_IMnpip_dE_woK0_n_px = IMnpim_IMnpip_dE_woK0_n->ProjectionX();
+  IMnpim_IMnpip_dE_woK0_n_px->Draw();
+  IMnpim_IMnpip_dE_woK0_kin_px[0]->SetLineColor(2);
+  IMnpim_IMnpip_dE_woK0_kin_px[0]->Draw("same");
+  IMnpim_IMnpip_dE_woK0_kin_px[1]->SetLineColor(3);
+  IMnpim_IMnpip_dE_woK0_kin_px[1]->Draw("same");
+  //TH1D * IMnpim_IMnpip_dE_woK0_n_px_sum =(TH1D*) IMnpim_IMnpip_dE_woK0_kin_px[0]->Clone();
+  cIMnpim_IMnpip_dE_woK0_n_px->Print(pdfname);
+  
+  TCanvas *cIMnpim_IMnpip_dE_woK0_n_py = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_n_py"),"");
+  cIMnpim_IMnpip_dE_woK0_n_py->cd();
+  TH1D *IMnpim_IMnpip_dE_woK0_n_py = IMnpim_IMnpip_dE_woK0_n->ProjectionY();
+  IMnpim_IMnpip_dE_woK0_n_py->Draw();
+  IMnpim_IMnpip_dE_woK0_kin_py[0]->SetLineColor(2);
+  IMnpim_IMnpip_dE_woK0_kin_py[0]->Draw("same");
+  IMnpim_IMnpip_dE_woK0_kin_py[1]->SetLineColor(3);
+  IMnpim_IMnpip_dE_woK0_kin_py[1]->Draw("same");
+  cIMnpim_IMnpip_dE_woK0_n_py->Print(pdfname+")");
 
 
   TFile *fout = new TFile(outfilename.c_str(),"RECREATE");
@@ -682,13 +839,25 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     MMnmiss_IMnpipi_woK0_kin[imode]->Write();
     q_IMnpipi_woK0_kin[imode]->Write();
     nmom_IMnpipi_woK0_kin[imode]->Write();
-    nmom->Write();
-    mnmom->Write();
-    npipmom->Write();
-    npimmom->Write();
   };
 
+  q_IMnpipi_woK0_wSid_n->Write();
+  nmom->Write();
+  mnmom->Write();
+  npipmom->Write();
+  npimmom->Write();
   
-  fout->Close();
+  TCanvas *c=nullptr;
+  TIter next(gROOT->GetListOfCanvases());
+  while((c= (TCanvas*)next())){
+    c->Print(pdfname);
+  }
+  c->Print(pdfname+")");
+  //TList *clist = (TList*) gROOT->GetListOfCanvases();
+  //const int ncanvas = clist->GetSize();
+  
+
+
+  //fout->Close();
   
 }
