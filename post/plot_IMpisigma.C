@@ -15,6 +15,7 @@
 #include <TVector3.h>
 #include <TLorentzVector.h>
 #include <TLegend.h>
+#include <TPDF.h>
 
 #include "../src/IMPiSigmaAnaPar.h"
 
@@ -593,6 +594,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   cIMnpim_IMnpip_dE_woK0->cd();
   IMnpim_IMnpip_dE_woK0->Draw("colz");
   
+  /*
   TCanvas  *cIMnpim_IMnpip_dE_woK0_px = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_px"),"");
   cIMnpim_IMnpip_dE_woK0_px->cd();
   TH1D* IMnpim_IMnpip_dE_woK0_px = IMnpim_IMnpip_dE_woK0->ProjectionX();
@@ -603,10 +605,10 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH1D* IMnpim_IMnpip_dE_woK0_py = IMnpim_IMnpip_dE_woK0->ProjectionY();
   IMnpim_IMnpip_dE_woK0_py->Draw("");
   
+  */
   TCanvas *cnmom_IMnpipi_woK0_wSid_n = new TCanvas(Form("cnmom_IMnpipi_woK0_wSid_n"),"");
   cnmom_IMnpipi_woK0_wSid_n->cd();
   nmom_IMnpipi_woK0_wSid_n->Draw("colz");
-
   
   TCanvas *cnmom_IMnpipi_woK0_wSid_n_py = new TCanvas(Form("cnmom_IMnpipi_woK0_wSid_n_py"),"");
   cnmom_IMnpipi_woK0_wSid_n_py->cd();
@@ -743,6 +745,9 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TCanvas *cMMom_MMass_fid_beta_dE_woK0_px_sup = new TCanvas("cMMom_MMass_fid_beta_dE_woK0_px_sup","");
   cMMom_MMass_fid_beta_dE_woK0_px_sup->cd();
   MMom_MMass_fid_beta_dE_woK0_px->Draw();
+  MMom_MMass_fid_beta_dE_woK0_wSid_px->SetLineColor(4);
+  cMMom_MMass_fid_beta_dE_woK0_px_sup->cd();
+  MMom_MMass_fid_beta_dE_woK0_wSid_px->Draw("same");
   MMom_MMass_fid_beta_dE_woK0_kin_px[0]->SetLineColor(2);
   MMom_MMass_fid_beta_dE_woK0_kin_px[0]->Draw("same");
   MMom_MMass_fid_beta_dE_woK0_kin_px[1]->SetLineColor(3);
@@ -752,6 +757,11 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   cMMom_MMass_fid_beta_dE_woK0_py->cd();
   TH1D *MMom_MMass_fid_beta_dE_woK0_py = MMom_MMass_fid_beta_dE_woK0->ProjectionY();
   MMom_MMass_fid_beta_dE_woK0_py->Draw();
+  //test
+  MMom_MMass_fid_beta_dE_woK0_wSid_py->SetLineColor(4);
+  cMMom_MMass_fid_beta_dE_woK0_py->cd();
+  MMom_MMass_fid_beta_dE_woK0_wSid_py->Draw("same");
+
   MMom_MMass_fid_beta_dE_woK0_kin_py[0]->SetLineColor(2);
   MMom_MMass_fid_beta_dE_woK0_kin_py[0]->Draw("same");
   MMom_MMass_fid_beta_dE_woK0_kin_py[1]->SetLineColor(3);
@@ -762,6 +772,17 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TCanvas *cIMnpim_IMnpip_dE_woK0_n = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_n"),"");
   cIMnpim_IMnpip_dE_woK0_n->cd();
   IMnpim_IMnpip_dE_woK0_n->Draw("colz");
+  
+  TCanvas *cIMnpim_IMnpip_dE_woK0_px = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_px"),"");
+  cIMnpim_IMnpip_dE_woK0_px->cd();
+  TH1D *IMnpim_IMnpip_dE_woK0_px = IMnpim_IMnpip_dE_woK0->ProjectionX();
+  IMnpim_IMnpip_dE_woK0_px->Draw();
+  //TH1D * IMnpim_IMnpip_dE_woK0_n_px_sum =(TH1D*) IMnpim_IMnpip_dE_woK0_kin_px[0]->Clone();
+  
+  TCanvas *cIMnpim_IMnpip_dE_woK0_py = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_py"),"");
+  cIMnpim_IMnpip_dE_woK0_py->cd();
+  TH1D *IMnpim_IMnpip_dE_woK0_py = IMnpim_IMnpip_dE_woK0->ProjectionY();
+  IMnpim_IMnpip_dE_woK0_py->Draw();
 
   TCanvas *cIMnpim_IMnpip_dE_woK0_n_px = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_n_px"),"");
   cIMnpim_IMnpip_dE_woK0_n_px->cd();
@@ -806,14 +827,16 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   npimmom->Write();
   
   TCanvas *c=nullptr;
-  c->Print(pdfname+"(");
+  //c->Print(pdfname+"(");
+  TPDF *pdf = new TPDF(pdfname);
   TIter next(gROOT->GetListOfCanvases());
   while((c= (TCanvas*)next())){
-    c->Print(pdfname);
-    
+    pdf->NewPage();
+    c->Draw();
   }
+  pdf->Close();
   std::cout << "closing pdf " << std::endl;
-  c->Print(pdfname+")");
+  //c->Print(pdfname+")");
   
 
 
