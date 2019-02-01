@@ -1,23 +1,32 @@
 const bool gridon=false;
 const bool staton=false;
 
-namespace anacuts{
-  const double beta_MAX = 0.728786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
-  const double dE_MIN = 0.0; // 8.0MeVee * 3cm / 5cm;
 
-  const double pipi_MIN = 0.485;
-  const double pipi_MAX = 0.510;
-  const double ppi_MIN = 1.1075;
-  const double ppi_MAX = 1.1225;
+#include <iostream>
+#include <vector>
+#include <string>
 
-  const double neutron_MIN = 0.85;
-  const double neutron_MAX = 1.03;
+#include <TROOT.h>
+#include <TStyle.h>
+#include <TCanvas.h>
+#include <TString.h>
+#include <TSystem.h>
+#include <TFile.h>
+#include <TTree.h>
+#include <TF1.h>
+#include <TH1.h>
+#include <TH2.h>
+#include <TVector3.h>
+#include <TLorentzVector.h>
+#include <TLegend.h>
 
-  const double Sigmap_MIN = 1.17;
-  const double Sigmap_MAX = 1.21;
-  const double Sigmam_MIN = 1.18;
-  const double Sigmam_MAX = 1.22;
-}
+
+#include "../src/IMPiSigmaAnaPar.h"
+
+void QAbeamline(const char *filename);
+void QACDS(const char *filename);
+void QAForward(const char *filename);
+void PhysicsPlots(const char *filename);
 
 void plothists(const char *filename="evanaIMpisigma_all_v23.root")
 {
@@ -35,13 +44,13 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   
   TCanvas *cEventCheck = new TCanvas("cEventCheck","cEventCheck");
   cEventCheck->cd();
-  TF1 *h1_EventCheck = f->Get("EventCheck");
+  TF1 *h1_EventCheck = (TF1*)f->Get("EventCheck");
   h1_EventCheck->Draw();
   
-  //QAbeamline(filename);
+  QAbeamline(filename);
    
   //CDS QA 
-  //QACDS(filename);
+  QACDS(filename);
 
   //Forward QA
   //QAForward(filename);
@@ -49,7 +58,7 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   if(staton)gStyle->SetOptStat("emruo");
   else      gStyle->SetOptStat(0);
   
-  PhysicsPlots(filename);
+  //PhysicsPlots(filename);
 
   return;
 }
@@ -67,7 +76,7 @@ void QAForward(const char* filename){
   
   TCanvas *cNC_overbeta_dE = new TCanvas("NC_overbeta_dE","NC_overbeta_dE");
   cNC_overbeta_dE->cd();
-  TH2F* h2_NC_overbeta_dE = f->Get("NC_overbeta_dE");
+  TH2F* h2_NC_overbeta_dE = (TH2F*) f->Get("NC_overbeta_dE");
   gPad->SetLogz();
   h2_NC_overbeta_dE->SetXTitle("1/#beta");
   h2_NC_overbeta_dE->GetXaxis()->CenterTitle();
@@ -100,7 +109,7 @@ void QACDS(const char *filename){
   //CDH time distribution
   TCanvas *cCDHtime = new TCanvas("cCDHtime","CDHtime");
   cCDHtime->cd();
-  TH2F* h2_CDHtime = f->Get("CDHtime");
+  TH2F* h2_CDHtime = (TH2F*)f->Get("CDHtime");
   h2_CDHtime->SetXTitle("CDH seg#");
   h2_CDHtime->GetXaxis()->CenterTitle();
   h2_CDHtime->SetYTitle("time [nsec]");
@@ -109,7 +118,7 @@ void QACDS(const char *filename){
 
   TCanvas *cCDHNeutralSeg = new TCanvas("cCDHNeutralSeg","cCDHNeutralSeg");
   cCDHNeutralSeg->cd();
-  TH1F* h1_CDHNeutralSeg = f->Get("CDHNeutralSeg");
+  TH1F* h1_CDHNeutralSeg = (TH1F*)f->Get("CDHNeutralSeg");
   h1_CDHNeutralSeg->SetXTitle("CDH seg#");
   h1_CDHNeutralSeg->GetXaxis()->CenterTitle();
   h1_CDHNeutralSeg->Draw();
@@ -117,30 +126,30 @@ void QACDS(const char *filename){
   
   //CDC track chi2 distribution
   TCanvas *ctrackchi2_CDC = new TCanvas("ctrackchi2_CDC","ctrackchi2_CDC");
-  TH1F* h1_trackchi2_CDC = f->Get("trackchi2_CDC");
+  TH1F* h1_trackchi2_CDC = (TH1F*)f->Get("trackchi2_CDC");
   h1_trackchi2_CDC->SetXTitle("CDC track chi2/ndf");
   h1_trackchi2_CDC->GetXaxis()->CenterTitle();
   h1_trackchi2_CDC->Draw();
 
 
   TCanvas *cntrack = new TCanvas("cntrac","cntrack");
-  TH1F* h1_ntrack_CDS = f->Get("ntrack_CDS");
+  TH1F* h1_ntrack_CDS = (TH1F*)f->Get("ntrack_CDS");
   //h1_ntrack_CDS->SetXTitle("# of tracks");
   //h1_ntrack_CDS->GetXaxis()->CenterTitle();
   //h1_ntrack_CDS->Draw();
-  TH1F* h1_ntrack_pi_plus = f->Get("ntrack_pi_plus");
+  TH1F* h1_ntrack_pi_plus = (TH1F*) f->Get("ntrack_pi_plus");
   h1_ntrack_pi_plus->SetTitle("");
   h1_ntrack_pi_plus->SetLineColor(1);
   h1_ntrack_pi_plus->SetXTitle("# of tracks per event");
   h1_ntrack_pi_plus->GetXaxis()->CenterTitle();
   h1_ntrack_pi_plus->Draw("");
-  TH1F* h1_ntrack_pi_minus = f->Get("ntrack_pi_minus");
+  TH1F* h1_ntrack_pi_minus = (TH1F*)f->Get("ntrack_pi_minus");
   h1_ntrack_pi_minus->SetLineColor(2);
   h1_ntrack_pi_minus->Draw("same");
-  TH1F* h1_ntrack_proton = f->Get("ntrack_proton");
+  TH1F* h1_ntrack_proton = (TH1F*)f->Get("ntrack_proton");
   h1_ntrack_proton->SetLineColor(3);
   h1_ntrack_proton->Draw("same");
-  TH1F* h1_ntrack_K_minus = f->Get("ntrack_K_minus");
+  TH1F* h1_ntrack_K_minus = (TH1F*)f->Get("ntrack_K_minus");
   h1_ntrack_K_minus->SetLineColor(4);
   h1_ntrack_K_minus->Draw("same");
   
@@ -155,7 +164,7 @@ void QACDS(const char *filename){
 
 
   TCanvas *cCDS_mom_betainv  = new TCanvas("CDS_mom_betainv","CDS_mom_betainv");
-  TH2F *h2_CDS_mom_betainv = f->Get("PID_CDS_beta");
+  TH2F *h2_CDS_mom_betainv = (TH2F*)f->Get("PID_CDS_beta");
   //h2_CDS_mom_betainv->GetXaxis()->SetRangeUser(-0.3,1.5);
   h2_CDS_mom_betainv->GetXaxis()->SetTitle("mass^{2} [(GeV/c^{2})^{2}]");
   h2_CDS_mom_betainv->GetXaxis()->CenterTitle();
@@ -170,7 +179,7 @@ void QACDS(const char *filename){
 
    
   TCanvas *cCDS_mass2_mom  = new TCanvas("CDS_mass2_mom","CDS_mass2_mom");
-  TH2F *h2_CDS_mass2_mom = f->Get("PID_CDS");
+  TH2F *h2_CDS_mass2_mom = (TH2F*)f->Get("PID_CDS");
   h2_CDS_mass2_mom->GetXaxis()->SetRangeUser(-0.3,1.5);
   h2_CDS_mass2_mom->GetXaxis()->SetTitle("mass^{2} [(GeV/c^{2})^{2}]");
   h2_CDS_mass2_mom->GetXaxis()->CenterTitle();
@@ -185,7 +194,7 @@ void QACDS(const char *filename){
   
   
   TCanvas *cVtx_ZX  = new TCanvas("Vtx_ZX","Vtx_ZX");
-  TH2F *h2_Vtx_ZX = f->Get("Vtx_ZX");
+  TH2F *h2_Vtx_ZX = (TH2F*)f->Get("Vtx_ZX");
   h2_Vtx_ZX->SetTitle("CDS Vertex");
   h2_Vtx_ZX->GetXaxis()->SetTitle("Z Vertex [cm]");
   h2_Vtx_ZX->GetXaxis()->CenterTitle();
@@ -195,7 +204,7 @@ void QACDS(const char *filename){
   double maxZX = h2_Vtx_ZX->GetMaximum();
 
   TCanvas *cVtx_ZY  = new TCanvas("Vtx_ZY","Vtx_ZY");
-  TH2F *h2_Vtx_ZY = f->Get("Vtx_ZY");
+  TH2F *h2_Vtx_ZY = (TH2F*)f->Get("Vtx_ZY");
   h2_Vtx_ZY->SetTitle("CDS Vertex");
   h2_Vtx_ZY->GetXaxis()->SetTitle("Z Vertex [cm]");
   h2_Vtx_ZY->GetXaxis()->CenterTitle();
@@ -205,7 +214,7 @@ void QACDS(const char *filename){
   double maxZY = h2_Vtx_ZY->GetMaximum();
   
   TCanvas *cVtx_XY  = new TCanvas("Vtx_XY","Vtx_XY");
-  TH2F *h2_Vtx_XY = f->Get("Vtx_XY");
+  TH2F *h2_Vtx_XY = (TH2F*)f->Get("Vtx_XY");
   h2_Vtx_XY->SetTitle("CDS Vertex");
   h2_Vtx_XY->GetXaxis()->SetTitle("X Vertex [cm]");
   h2_Vtx_XY->GetXaxis()->CenterTitle();
@@ -216,7 +225,7 @@ void QACDS(const char *filename){
     
   //fiducial cuts
   TCanvas *cVtx_ZX_fid  = new TCanvas("Vtx_ZX_fid","Vtx_ZX_fid");
-  TH2F *h2_Vtx_ZX_fid = f->Get("Vtx_ZX_fid");
+  TH2F *h2_Vtx_ZX_fid = (TH2F*)f->Get("Vtx_ZX_fid");
   h2_Vtx_ZX_fid->SetTitle("CDS Vertex");
   h2_Vtx_ZX_fid->GetXaxis()->SetTitle("Z Vertex [cm]");
   h2_Vtx_ZX_fid->GetXaxis()->CenterTitle();
@@ -226,7 +235,7 @@ void QACDS(const char *filename){
   h2_Vtx_ZX_fid->Draw("colz");
   
   TCanvas *cVtx_ZY_fid  = new TCanvas("Vtx_ZY_fid","Vtx_ZY_fid");
-  TH2F *h2_Vtx_ZY_fid = f->Get("Vtx_ZY_fid");
+  TH2F *h2_Vtx_ZY_fid = (TH2F*)f->Get("Vtx_ZY_fid");
   h2_Vtx_ZY_fid->SetTitle("CDS Vertex");
   h2_Vtx_ZY_fid->GetXaxis()->SetTitle("Z Vertex [cm]");
   h2_Vtx_ZY_fid->GetXaxis()->CenterTitle();
@@ -236,7 +245,7 @@ void QACDS(const char *filename){
   h2_Vtx_ZY_fid->Draw("colz");
   
   TCanvas *cVtx_XY_fid  = new TCanvas("Vtx_XY_fid","Vtx_XY_fid");
-  TH2F *h2_Vtx_XY_fid = f->Get("Vtx_XY_fid");
+  TH2F *h2_Vtx_XY_fid = (TH2F*) f->Get("Vtx_XY_fid");
   h2_Vtx_XY_fid->SetTitle("CDS Vertex");
   h2_Vtx_XY_fid->GetXaxis()->SetTitle("X Vertex [cm]");
   h2_Vtx_XY_fid->GetXaxis()->CenterTitle();
@@ -267,7 +276,7 @@ void QACDS(const char *filename){
   */
 
   TCanvas *cmul_CDH = new TCanvas("cmul_CDH","cmul_CDH");
-  TH1F* h1_mul_CDH = f->Get("mul_CDH");
+  TH1F* h1_mul_CDH = (TH1F*)f->Get("mul_CDH");
   h1_mul_CDH->SetTitle("CDH multiplicity");
   h1_mul_CDH->SetXTitle("# of CDH segment");
   h1_mul_CDH->GetXaxis()->CenterTitle();
@@ -278,26 +287,26 @@ void QACDS(const char *filename){
   h1_mul_CDH_clone->Draw("same");
 
   TCanvas *cmul_CDH_assoc = new TCanvas("cmul_CDH_assoc","cmul_CDH_assoc");
-  TH1F* h1_mul_CDH_assoc = f->Get("mul_CDH_assoc");
+  TH1F* h1_mul_CDH_assoc = (TH1F*)f->Get("mul_CDH_assoc");
   h1_mul_CDH_assoc->SetTitle("# CDH seg. associated with CDC track");
   h1_mul_CDH_assoc->SetXTitle("# of CDH segment");
   h1_mul_CDH_assoc->GetXaxis()->CenterTitle();
   h1_mul_CDH_assoc->Draw();
 
   TCanvas *cdiff_CDH = new TCanvas("cdiff_CDH","cdiff_CDH");
-  TH1F* h1_diff_CDH = f->Get("diff_CDH");
+  TH1F* h1_diff_CDH = (TH1F*)f->Get("diff_CDH");
   h1_diff_CDH->SetTitle("Not used CDH segment # - CDH seg# used for charged");
   h1_diff_CDH->SetXTitle("diff of CDH seg#");
   h1_diff_CDH->Draw();
   
   TCanvas *cdiff_CDH_CDC = new TCanvas("cdiff_CDH_CDC","cdiff_CDH_CDC");
-  TH1F* h1_cdiff_CDH_CDC = f->Get("diff_CDH_CDC");
+  TH1F* h1_cdiff_CDH_CDC = (TH1F*)f->Get("diff_CDH_CDC");
   h1_cdiff_CDH_CDC->SetXTitle("angle [deg]");
   h1_cdiff_CDH_CDC->GetXaxis()->CenterTitle();
   h1_cdiff_CDH_CDC->Draw();
 
   TCanvas *cdE_betainv_fiducial = new TCanvas("cdE_betainv_fiducial","cdE_betainv_fiducial");
-  TH2F* h2_dE_betainv = f->Get("dE_betainv_fid");
+  TH2F* h2_dE_betainv = (TH2F*)f->Get("dE_betainv_fid");
   h2_dE_betainv->SetXTitle("1/#beta");
   h2_dE_betainv->GetXaxis()->CenterTitle();
   h2_dE_betainv->SetYTitle("dE [MeV]");
@@ -323,7 +332,7 @@ void QACDS(const char *filename){
   h1_6mevcut->Draw("same");
   
   TCanvas *c_dE_fiducial = new TCanvas("c_dE_fiducial","c_dE_fiducial");
-  TH2F* h2_dE_betainv_fid_beta = f->Get("dE_betainv_fid_beta");
+  TH2F* h2_dE_betainv_fid_beta = (TH2F*)f->Get("dE_betainv_fid_beta");
   TH1D* h1_dE_beta = h2_dE_betainv_fid_beta->ProjectionY("py");
   h1_dE_beta->Draw();
 
@@ -337,7 +346,7 @@ void PhysicsPlots(const char *filename){
   //physics plots
   //IM pi+pi- when nCDH==3, fudicial OK,
   TCanvas *c_IMpipi = new TCanvas("c_IMpipi","c_IMpipi");
-  TH1F* h1_IMpipi = f->Get("IMpipi_dE");
+  TH1F* h1_IMpipi = (TH1F*)f->Get("IMpipi_dE");
   c_IMpipi->cd();
   gPad->SetLeftMargin(0.13);
   gPad->SetRightMargin(0.03);
@@ -348,14 +357,14 @@ void PhysicsPlots(const char *filename){
   h1_IMpipi->GetYaxis()->CenterTitle() ;
   h1_IMpipi->GetYaxis()->SetTitleOffset(1.4);
   h1_IMpipi->Draw();
-  TH1F* h1_IMpipi_clone = h1_IMpipi->Clone();
+  TH1F* h1_IMpipi_clone = (TH1F*) h1_IMpipi->Clone();
   h1_IMpipi_clone->SetFillColor(2);
   h1_IMpipi_clone->GetXaxis()->SetRangeUser(anacuts::pipi_MIN,anacuts::pipi_MAX);
   h1_IMpipi_clone->Draw("same");
   
 
   TCanvas *cMMom_MMass_fid_beta_dE = new TCanvas("cMMom_MMass_fid_beta_dE","cMMom_MMass_fid_beta_dE");
-  TH2F* h2_MMom_MMass_fid_beta_dE = f->Get("MMom_MMass_fid_beta_dE");
+  TH2F* h2_MMom_MMass_fid_beta_dE = (TH2F*) f->Get("MMom_MMass_fid_beta_dE");
   h2_MMom_MMass_fid_beta_dE->SetXTitle("missing mass [GeV/c^{2}]");
   h2_MMom_MMass_fid_beta_dE->GetXaxis()->CenterTitle();
   h2_MMom_MMass_fid_beta_dE->SetYTitle("missing momentum [GeV/c]");
@@ -367,7 +376,7 @@ void PhysicsPlots(const char *filename){
   proMMass->Draw();
   
   TCanvas *cMMom_MMass_fid_beta = new TCanvas("cMMom_MMass_fid_beta","cMMom_MMass_fid_beta");
-  TH2F* h2_MMom_MMass_fid_beta = f->Get("MMom_MMass_fid_beta_dE");
+  TH2F* h2_MMom_MMass_fid_beta = (TH2F*)f->Get("MMom_MMass_fid_beta_dE");
   h2_MMom_MMass_fid_beta->SetXTitle("missing mass [GeV/c^{2}]");
   h2_MMom_MMass_fid_beta->GetXaxis()->CenterTitle();
   h2_MMom_MMass_fid_beta->SetYTitle("missing momentum [GeV/c]");
@@ -380,7 +389,7 @@ void PhysicsPlots(const char *filename){
 
  
   TCanvas *cMMom_MMass_fid_beta_wSid = new TCanvas("cMMom_MMass_fid_beta_wSid","cMMom_MMass_fid_beta_wSid");
-  TH2F* h2_MMom_MMass_fid_beta_wSid = f->Get("MMom_MMass_fid_beta_dE_woK0_wSid");
+  TH2F* h2_MMom_MMass_fid_beta_wSid = (TH2F*) f->Get("MMom_MMass_fid_beta_dE_woK0_wSid");
   h2_MMom_MMass_fid_beta_wSid->SetXTitle("missing mass [GeV/c^{2}]");
   h2_MMom_MMass_fid_beta_wSid->GetXaxis()->CenterTitle();
   h2_MMom_MMass_fid_beta_wSid->SetYTitle("missing momentum [GeV/c]");
@@ -396,7 +405,7 @@ void PhysicsPlots(const char *filename){
   
   // Sigma+/- selection w/o missing N ID after removing K0
   TCanvas *cIMnpim_IMnpip = new TCanvas("cIMnpim_IMnpip_dE_woK0","cIMnpim_IMnpip_dE_woK0");
-  TH2F* h2_IMnpim_IMnpip_dE_woK0 = f->Get("IMnpim_IMnpip_dE_woK0");
+  TH2F* h2_IMnpim_IMnpip_dE_woK0 = (TH2F*)f->Get("IMnpim_IMnpip_dE_woK0");
   h2_IMnpim_IMnpip_dE_woK0->SetXTitle("IM(#pi^{+}n) [GeV/c^{2}]");
   h2_IMnpim_IMnpip_dE_woK0->GetXaxis()->CenterTitle();
   h2_IMnpim_IMnpip_dE_woK0->SetYTitle("IM(#pi^{-}n) [GeV/c^{2}]");
@@ -407,7 +416,7 @@ void PhysicsPlots(const char *filename){
   TCanvas *cIMnpim_IMnpip_px = new TCanvas("cIMnpim_IMnpip_dE_woK0_px","cIMnpim_IMnpip_dE_woK0_px");
   TH1D* h2_IMnpim_IMnpip_dE_woK0_px = h2_IMnpim_IMnpip_dE_woK0->ProjectionX();
   h2_IMnpim_IMnpip_dE_woK0_px->Draw();
-  TH1D* h2_IMnpim_IMnpip_dE_woK0_px_clone = h2_IMnpim_IMnpip_dE_woK0_px->Clone();
+  TH1D* h2_IMnpim_IMnpip_dE_woK0_px_clone = (TH1D*)h2_IMnpim_IMnpip_dE_woK0_px->Clone();
   h2_IMnpim_IMnpip_dE_woK0_px_clone->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
   h2_IMnpim_IMnpip_dE_woK0_px_clone->SetFillColor(3);
   h2_IMnpim_IMnpip_dE_woK0_px_clone->Draw("same");
@@ -415,7 +424,7 @@ void PhysicsPlots(const char *filename){
   TCanvas *cIMnpim_IMnpip_py = new TCanvas("cIMnpim_IMnpip_dE_woK0_py","cIMnpim_IMnpip_dE_woK0_py");
   TH1D* h2_IMnpim_IMnpip_dE_woK0_py = h2_IMnpim_IMnpip_dE_woK0->ProjectionY();
   h2_IMnpim_IMnpip_dE_woK0_py->Draw();
-  TH1D* h2_IMnpim_IMnpip_dE_woK0_py_clone = h2_IMnpim_IMnpip_dE_woK0_py->Clone();
+  TH1D* h2_IMnpim_IMnpip_dE_woK0_py_clone = (TH1D*)h2_IMnpim_IMnpip_dE_woK0_py->Clone();
   h2_IMnpim_IMnpip_dE_woK0_py_clone->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
   h2_IMnpim_IMnpip_dE_woK0_py_clone->SetFillColor(4);
   h2_IMnpim_IMnpip_dE_woK0_py_clone->Draw("same");
@@ -519,7 +528,7 @@ void PhysicsPlots(const char *filename){
   h2_MMnmiss_IMnpipi_woK0_wSid->Draw("colz");
   */ 
   TCanvas *cCosn_IMnpipi = new TCanvas("cCosn_IMnpipi","cCosn_IMnpipi");
-  TH2F* h2_cCosn_IMnpipi = f->Get("Cosn_IMnpipi_woK0_wSid_n");
+  TH2F* h2_cCosn_IMnpipi = (TH2F*) f->Get("Cosn_IMnpipi_woK0_wSid_n");
   h2_cCosn_IMnpipi->SetXTitle("IM(n#pi^{-}#pi^{+}) [GeV/c^{2}]");
   h2_cCosn_IMnpipi->GetXaxis()->CenterTitle();
   h2_cCosn_IMnpipi->SetYTitle("cos#theta_{CM}");
@@ -527,7 +536,7 @@ void PhysicsPlots(const char *filename){
   h2_cCosn_IMnpipi->Draw("colz");
   
   TCanvas *cq_IMnpipi_woK0_wSid = new TCanvas("cq_IMnpipi_woK0_wSid","cq_IMnpipi_woK0_wSid");
-  TH2F* h2_q_IMnpipi_woK0_wSid_n = f->Get("q_IMnpipi_woK0_wSid_n");
+  TH2F* h2_q_IMnpipi_woK0_wSid_n = (TH2F*)f->Get("q_IMnpipi_woK0_wSid_n");
   h2_q_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{-}#pi^{+}) [GeV/c^{2}]");
   h2_q_IMnpipi_woK0_wSid_n->SetYTitle("mom. transfer [GeV/c]");
   h2_q_IMnpipi_woK0_wSid_n->GetXaxis()->CenterTitle();
@@ -598,17 +607,17 @@ void QAbeamline(const char *filename){
   gStyle->SetStatBorderSize(1);
 
   //QA plots
-  TH1F *h1_nBHD = f->Get("mul_BHD");
+  TH1F *h1_nBHD = (TH1F*) f->Get("mul_BHD");
   TCanvas *cnBHD =  new TCanvas("nBHD","nBHD");
   cnBHD->cd();
   h1_nBHD->Draw();
   
-  TH1F *h1_nT0 = f->Get("mul_T0");
+  TH1F *h1_nT0 = (TH1F*) f->Get("mul_T0");
   TCanvas *cnT0 =  new TCanvas("nT0","nT0");
   cnT0->cd();
   h1_nT0->Draw();
 
-  TH1F *h1_T0BHDtof = f->Get("tof_T0BHD");
+  TH1F *h1_T0BHDtof = (TH1F*)f->Get("tof_T0BHD");
   TCanvas *ctof = new TCanvas("tof","tof");
   ctof->cd();
   h1_T0BHDtof->GetXaxis()->SetRangeUser(24,38);
@@ -619,74 +628,74 @@ void QAbeamline(const char *filename){
   h1_T0BHDtof_cut->Draw("same");
 
   //BLC1
-  TH1F *h1_nBLC1 = f->Get("ntrack_BLC1");
+  TH1F *h1_nBLC1 = (TH1F*) f->Get("ntrack_BLC1");
   TCanvas *cnBLC1 = new TCanvas("nBLC1","nBLC1");
   cnBLC1->cd();
   h1_nBLC1->Draw();
   
-  TH1F *h1_BLC1time = f->Get("tracktime_BLC1");
+  TH1F *h1_BLC1time = (TH1F*) f->Get("tracktime_BLC1");
   TCanvas *cBLC1time = new TCanvas("BLC1time","BLC1time");
   cBLC1time->cd();
   h1_BLC1time->Draw();
 
-  TH1F *h1_BLC1chi2 = f->Get("trackchi2_BLC1");
+  TH1F *h1_BLC1chi2 = (TH1F*)f->Get("trackchi2_BLC1");
   TCanvas *cBLC1chi2 = new TCanvas("BLC1chi2","BLC1chi2");
   cBLC1chi2->cd();
   h1_BLC1chi2->Draw();
 
 
   //BLC2
-  TH1F *h1_nBLC2 = f->Get("ntrack_BLC2");
+  TH1F *h1_nBLC2 = (TH1F*)f->Get("ntrack_BLC2");
   TCanvas *cnBLC2 = new TCanvas("nBLC2","nBLC2");
   cnBLC2->cd();
   h1_nBLC2->Draw();
 
-  TH1F *h1_BLC2time = f->Get("tracktime_BLC2");
+  TH1F *h1_BLC2time = (TH1F*)f->Get("tracktime_BLC2");
   TCanvas *cBLC2time = new TCanvas("BLC2time","BLC2time");
   cBLC2time->cd();
   h1_BLC2time->Draw();
 
-  TH1F *h1_BLC2chi2 = f->Get("trackchi2_BLC2");
+  TH1F *h1_BLC2chi2 = (TH1F*)f->Get("trackchi2_BLC2");
   TCanvas *cBLC2chi2 = new TCanvas("BLC2chi2","BLC2chi2");
   cBLC2chi2->cd();
   h1_BLC2chi2->Draw();
 
   //BPC
-  TH1F *h1_nBPC = f->Get("ntrack_BPC");
+  TH1F *h1_nBPC = (TH1F*)f->Get("ntrack_BPC");
   TCanvas *cnBPC = new TCanvas("nBPC","nBPC");
   cnBPC->cd();
   h1_nBPC->Draw();
 
-  TH1F *h1_BPCtime = f->Get("tracktime_BPC");
+  TH1F *h1_BPCtime = (TH1F*)f->Get("tracktime_BPC");
   TCanvas *cBPCtime = new TCanvas("BPCtime","BPCtime");
   cBPCtime->cd();
   h1_BPCtime->Draw();
 
-  TH1F *h1_BPCchi2 = f->Get("trackchi2_BPC");
+  TH1F *h1_BPCchi2 = (TH1F*)f->Get("trackchi2_BPC");
   TCanvas *cBPCchi2 = new TCanvas("BPCchi2","BPCchi2");
   cBPCchi2->cd();
   h1_BPCchi2->Draw();
   
   //D5
-  TH1F *h1_D5chi2 = f->Get("trackchi2_beam");
+  TH1F *h1_D5chi2 = (TH1F*)f->Get("trackchi2_beam");
   TCanvas *cD5chi2 = new TCanvas("D5chi2","D5chi2");
   cD5chi2->cd();
   h1_D5chi2->Draw();
 
-  TH1F *h1_D5mom = f->Get("momentum_beam");
+  TH1F *h1_D5mom = (TH1F*)f->Get("momentum_beam");
   TCanvas *cDmom = new TCanvas("D5mom","D5mom");
   cDmom->cd();
   h1_D5mom->Draw();
   
   //BLC2-BPD matching
-  TH2F* h2_BLC2_BPC_posdiff = f->Get("dydx_BLC2BPC");
+  TH2F* h2_BLC2_BPC_posdiff = (TH2F*)f->Get("dydx_BLC2BPC");
   TCanvas *cBLC2_BPC_posdiff = new TCanvas("cBLC2_BPC_posdiff","cBLC2_BPC_posdiff");
   gPad->SetLeftMargin(0.13);
   gPad->SetRightMargin(0.03);
   cBLC2_BPC_posdiff->cd();
   h2_BLC2_BPC_posdiff->Draw("colz");
 
-  TH2F* h2_BLC2_BPC_dirdiff = f->Get("dydzdxdz_BLC2BPC");
+  TH2F* h2_BLC2_BPC_dirdiff = (TH2F*)f->Get("dydzdxdz_BLC2BPC");
   TCanvas *cBLC2_BPC_dirdiff = new TCanvas("cBLC2_BPC_dirdiff","cBLC2_BPC_dirdiff");
   cBLC2_BPC_dirdiff->cd();
   h2_BLC2_BPC_dirdiff->Draw("colz");
