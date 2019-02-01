@@ -16,6 +16,7 @@
 #include <TLorentzVector.h>
 #include <TLegend.h>
 #include <TPDF.h>
+#include <TPaveText.h>
 
 #include "../src/IMPiSigmaAnaPar.h"
 
@@ -187,7 +188,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   IMnpim_IMnpip_dE_woK0->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_woK0->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_woK0->GetXaxis()->CenterTitle();
-  IMnpim_IMnpip_dE_woK0->GetXaxis()->CenterTitle();
+  IMnpim_IMnpip_dE_woK0->GetYaxis()->CenterTitle();
     
   IMnpim_IMnpip_dE_woK0_n = new TH2F(Form("IMnpim_IMnpip_dE_woK0_n"),Form("IMnpim_IMnpip_dE_woK0_n"),200, 1, 2.0, 200, 1, 2.0);
   IMnpim_IMnpip_dE_woK0_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
@@ -503,9 +504,6 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     
 	}//for ievt
    
-  TCanvas *cKFpvalue = new TCanvas(Form("cKFpvalue"),"KFpvalue");
-  KFpvalue_vs->Draw("colz");
-
 
   TCanvas *cKFpvalue_vs = new TCanvas(Form("cKFpvalue_vs"),"KFpvalue_vs");
   cKFpvalue_vs->cd();
@@ -547,6 +545,11 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   legKFpvalue_vs_cum->AddEntry(py,"#Sigma^{-} mode");
   legKFpvalue_vs_cum->SetFillColor(0);
   legKFpvalue_vs_cum->Draw();
+
+  TCanvas *cKFpvalue = new TCanvas(Form("cKFpvalue"),"KFpvalue");
+  KFpvalue_vs->RebinX(5);
+  KFpvalue_vs->RebinY(5);
+  KFpvalue_vs->Draw("colz");
 
 
   TCanvas *cnmom = new TCanvas("cnmom","cnmom");
@@ -745,27 +748,34 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TCanvas *cMMom_MMass_fid_beta_dE_woK0_px_sup = new TCanvas("cMMom_MMass_fid_beta_dE_woK0_px_sup","");
   cMMom_MMass_fid_beta_dE_woK0_px_sup->cd();
   MMom_MMass_fid_beta_dE_woK0_px->Draw();
-  MMom_MMass_fid_beta_dE_woK0_wSid_px->SetLineColor(4);
+  TH1D *MMom_MMass_fid_beta_dE_woK0_wSid_px_clone = (TH1D*)MMom_MMass_fid_beta_dE_woK0_wSid_px->Clone(); 
+  MMom_MMass_fid_beta_dE_woK0_wSid_px_clone->SetLineColor(4);
   cMMom_MMass_fid_beta_dE_woK0_px_sup->cd();
-  MMom_MMass_fid_beta_dE_woK0_wSid_px->Draw("same");
-  MMom_MMass_fid_beta_dE_woK0_kin_px[0]->SetLineColor(2);
-  MMom_MMass_fid_beta_dE_woK0_kin_px[0]->Draw("same");
-  MMom_MMass_fid_beta_dE_woK0_kin_px[1]->SetLineColor(3);
-  MMom_MMass_fid_beta_dE_woK0_kin_px[1]->Draw("same");
+  MMom_MMass_fid_beta_dE_woK0_wSid_px_clone->Draw("same");
+  TH1D *MMom_MMass_fid_beta_dE_woK0_kin_px_clone[2];
+  MMom_MMass_fid_beta_dE_woK0_kin_px_clone[0] = (TH1D*)MMom_MMass_fid_beta_dE_woK0_kin_px[0]->Clone();
+  MMom_MMass_fid_beta_dE_woK0_kin_px_clone[0]->SetLineColor(2);
+  MMom_MMass_fid_beta_dE_woK0_kin_px_clone[0]->Draw("same");
+  MMom_MMass_fid_beta_dE_woK0_kin_px_clone[1] = (TH1D*)MMom_MMass_fid_beta_dE_woK0_kin_px[1]->Clone();
+  MMom_MMass_fid_beta_dE_woK0_kin_px_clone[1]->SetLineColor(3);
+  MMom_MMass_fid_beta_dE_woK0_kin_px_clone[1]->Draw("same");
 
   TCanvas *cMMom_MMass_fid_beta_dE_woK0_py = new TCanvas("cMMom_MMass_fid_beta_dE_woK0_py","");
   cMMom_MMass_fid_beta_dE_woK0_py->cd();
   TH1D *MMom_MMass_fid_beta_dE_woK0_py = MMom_MMass_fid_beta_dE_woK0->ProjectionY();
   MMom_MMass_fid_beta_dE_woK0_py->Draw();
   //test
-  MMom_MMass_fid_beta_dE_woK0_wSid_py->SetLineColor(4);
+  TH1D *MMom_MMass_fid_beta_dE_woK0_wSid_py_clone = (TH1D*)MMom_MMass_fid_beta_dE_woK0_wSid_py->Clone();
+  MMom_MMass_fid_beta_dE_woK0_wSid_py_clone->SetLineColor(4);
   cMMom_MMass_fid_beta_dE_woK0_py->cd();
-  MMom_MMass_fid_beta_dE_woK0_wSid_py->Draw("same");
-
-  MMom_MMass_fid_beta_dE_woK0_kin_py[0]->SetLineColor(2);
-  MMom_MMass_fid_beta_dE_woK0_kin_py[0]->Draw("same");
-  MMom_MMass_fid_beta_dE_woK0_kin_py[1]->SetLineColor(3);
-  MMom_MMass_fid_beta_dE_woK0_kin_py[1]->Draw("same");
+  MMom_MMass_fid_beta_dE_woK0_wSid_py_clone->Draw("same");
+  TH1D* MMom_MMass_fid_beta_dE_woK0_kin_py_clone[2];
+  MMom_MMass_fid_beta_dE_woK0_kin_py_clone[0] = (TH1D*) MMom_MMass_fid_beta_dE_woK0_kin_py[0]->Clone();
+  MMom_MMass_fid_beta_dE_woK0_kin_py_clone[0]->SetLineColor(2);
+  MMom_MMass_fid_beta_dE_woK0_kin_py_clone[0]->Draw("same");
+  MMom_MMass_fid_beta_dE_woK0_kin_py_clone[1] = (TH1D*) MMom_MMass_fid_beta_dE_woK0_kin_py[1]->Clone();
+  MMom_MMass_fid_beta_dE_woK0_kin_py_clone[1]->SetLineColor(3);
+  MMom_MMass_fid_beta_dE_woK0_kin_py_clone[1]->Draw("same");
 
 
   
@@ -788,20 +798,26 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   cIMnpim_IMnpip_dE_woK0_n_px->cd();
   TH1D *IMnpim_IMnpip_dE_woK0_n_px = IMnpim_IMnpip_dE_woK0_n->ProjectionX();
   IMnpim_IMnpip_dE_woK0_n_px->Draw();
-  IMnpim_IMnpip_dE_woK0_kin_px[0]->SetLineColor(2);
-  IMnpim_IMnpip_dE_woK0_kin_px[0]->Draw("same");
-  IMnpim_IMnpip_dE_woK0_kin_px[1]->SetLineColor(3);
-  IMnpim_IMnpip_dE_woK0_kin_px[1]->Draw("same");
+  TH1D* IMnpim_IMnpip_dE_woK0_kin_px_clone[2];
+  IMnpim_IMnpip_dE_woK0_kin_px_clone[0] = (TH1D*) IMnpim_IMnpip_dE_woK0_kin_px[0]->Clone();
+  IMnpim_IMnpip_dE_woK0_kin_px_clone[0]->SetLineColor(2);
+  IMnpim_IMnpip_dE_woK0_kin_px_clone[0]->Draw("same");
+  IMnpim_IMnpip_dE_woK0_kin_px_clone[1] = (TH1D*) IMnpim_IMnpip_dE_woK0_kin_px[1]->Clone();
+  IMnpim_IMnpip_dE_woK0_kin_px_clone[1]->SetLineColor(3);
+  IMnpim_IMnpip_dE_woK0_kin_px_clone[1]->Draw("same");
   //TH1D * IMnpim_IMnpip_dE_woK0_n_px_sum =(TH1D*) IMnpim_IMnpip_dE_woK0_kin_px[0]->Clone();
   
   TCanvas *cIMnpim_IMnpip_dE_woK0_n_py = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_n_py"),"");
   cIMnpim_IMnpip_dE_woK0_n_py->cd();
   TH1D *IMnpim_IMnpip_dE_woK0_n_py = IMnpim_IMnpip_dE_woK0_n->ProjectionY();
   IMnpim_IMnpip_dE_woK0_n_py->Draw();
-  IMnpim_IMnpip_dE_woK0_kin_py[0]->SetLineColor(2);
-  IMnpim_IMnpip_dE_woK0_kin_py[0]->Draw("same");
-  IMnpim_IMnpip_dE_woK0_kin_py[1]->SetLineColor(3);
-  IMnpim_IMnpip_dE_woK0_kin_py[1]->Draw("same");
+  TH1D *IMnpim_IMnpip_dE_woK0_kin_py_clone[2];
+  IMnpim_IMnpip_dE_woK0_kin_py_clone[0] = (TH1D*)IMnpim_IMnpip_dE_woK0_kin_py[0]->Clone();
+  IMnpim_IMnpip_dE_woK0_kin_py_clone[0]->SetLineColor(2);
+  IMnpim_IMnpip_dE_woK0_kin_py_clone[0]->Draw("same");
+  IMnpim_IMnpip_dE_woK0_kin_py_clone[1] = (TH1D*)IMnpim_IMnpip_dE_woK0_kin_py[1]->Clone();
+  IMnpim_IMnpip_dE_woK0_kin_py_clone[1]->SetLineColor(3);
+  IMnpim_IMnpip_dE_woK0_kin_py_clone[1]->Draw("same");
 
 
   TFile *fout = new TFile(outfilename.c_str(),"RECREATE");
@@ -827,19 +843,23 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   npimmom->Write();
   
   TCanvas *c=nullptr;
-  //c->Print(pdfname+"(");
   TPDF *pdf = new TPDF(pdfname);
   TIter next(gROOT->GetListOfCanvases());
   while((c= (TCanvas*)next())){
     pdf->NewPage();
     c->Draw();
+    c->cd();
+    TPaveText *pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
+    pt->AddText("real data");
+    pt->SetFillColor(7);
+    pt->SetBorderSize(1);
+    pt->Draw();
+    c->Modified();
+    c->Update();
   }
   pdf->Close();
   std::cout << "closing pdf " << std::endl;
-  //c->Print(pdfname+")");
   
-
-
-  //fout->Close();
+  fout->Close();
   
 }
