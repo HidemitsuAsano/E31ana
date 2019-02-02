@@ -35,7 +35,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TPaveText *pt = new TPaveText(.05,.05,.95,.7);
   pt->AddText(Form("p-value cut: %f ",pvalcut));
   pt->AddText(Form("dE cut: %f " ,dEcut));
-  pt->AddText(Form("1/beta : %f ",1./anacuts::beta_MAX));
+  pt->AddText(Form("1/beta min.: %f ",1./anacuts::beta_MAX));
   pt->Draw(); 
 
   //gROOT->SetStyle("Plain");
@@ -829,6 +829,9 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
 
   TFile *fout = new TFile(outfilename.c_str(),"RECREATE");
   fout->cd();
+
+  TH1*
+  /*
   for(int imode=0;imode<2;imode++){
     dE_betainv_fid_kin[imode]->Write();
     dE_MMom_fid_beta_woK0_kin[imode]->Write();
@@ -847,7 +850,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   nmom->Write();
   mnmom->Write();
   npipmom->Write();
-  npimmom->Write();
+  npimmom->Write();*/
   
   TCanvas *c=nullptr;
   TPDF *pdf = new TPDF(pdfname);
@@ -857,8 +860,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     c->Draw();
     c->cd();
     TPaveText *pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
-    pt->AddText("real data");
-    pt->SetFillColor(7);
+    pt->AddText("Real Data");
+    pt->SetFillColor(kCyan-9);
     pt->SetBorderSize(1);
     pt->Draw();
     c->Modified();
