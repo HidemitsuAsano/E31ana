@@ -31,6 +31,13 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
 {
   std::cout << "p-value cut:" << pvalcut << std::endl; 
   std::cout << "dE cut:" << dEcut << std::endl; 
+  TCanvas *ctext = new TCanvas("ctext","ctext");
+  TPaveText *pt = new TPaveText(.05,.05,.95,.7);
+  pt->AddText(Form("p-value cut: %f ",pvalcut));
+  pt->AddText(Form("dE cut: %f " ,dEcut));
+  pt->AddText(Form("1/beta : %f ",1./anacuts::beta_MAX));
+  pt->Draw(); 
+
   //gROOT->SetStyle("Plain");
   if(staton)gStyle->SetOptStat(111111);
   else gStyle->SetOptStat(0);
@@ -106,16 +113,16 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   //tree->SetBranchAddress( "kfSpmode_mom_pip", &kfSpmode_mom_pip );
   //tree->SetBranchAddress( "kfSpmode_mom_pim", &kfSpmode_mom_pim );
   //tree->SetBranchAddress( "kfSpmode_mom_n", &kfSpmode_mom_n );
-  //tree->SetBranchAddress( "kfSpmode_chi2", &kfSpmode_chi2 );
-  //tree->SetBranchAddress( "kfSpmode_NDF", &kfSpmode_NDF );
+  tree->SetBranchAddress( "kfSpmode_chi2", &kfSpmode_chi2 );
+  tree->SetBranchAddress( "kfSpmode_NDF", &kfSpmode_NDF );
   tree->SetBranchAddress( "kfSpmode_status", &kfSpmode_status );
   tree->SetBranchAddress( "kfSpmode_pvalue", &kfSpmode_pvalue );
   //tree->SetBranchAddress( "kfSmmode_mom_beam",   &kfSmmode_mom_beam );
   //tree->SetBranchAddress( "kfSmmode_mom_pip", &kfSmmode_mom_pip );
   //tree->SetBranchAddress( "kfSmmode_mom_pim", &kfSmmode_mom_pim );
   //tree->SetBranchAddress( "kfSmmode_mom_n", &kfSmmode_mom_n );
-  //tree->SetBranchAddress( "kfSmmode_chi2", &kfSmmode_chi2 );
-  //tree->SetBranchAddress( "kfSmmode_NDF", &kfSmmode_NDF );
+  tree->SetBranchAddress( "kfSmmode_chi2", &kfSmmode_chi2 );
+  tree->SetBranchAddress( "kfSmmode_NDF", &kfSmmode_NDF );
   tree->SetBranchAddress( "kfSmmode_status", &kfSmmode_status );
   tree->SetBranchAddress( "kfSmmode_pvalue", &kfSmmode_pvalue );
   tree->SetBranchAddress( "kf_flag", &kf_flag );
