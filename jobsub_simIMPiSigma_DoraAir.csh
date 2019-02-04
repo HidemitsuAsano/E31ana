@@ -14,7 +14,7 @@ if( ! -d $logdir) then
   mkdir -p  $logdir
 endif 
 
-set OUTDIRSUB="${OUTDIR}_DoraAir_v${Version}"
+set OUTDIRSUB="${OUTDIR}DoraAir_v${Version}"
 if( ! -d $OUTDIRSUB) then 
  mkdir -p $OUTDIRSUB
 endif
