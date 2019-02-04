@@ -137,6 +137,10 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH2F* IMnpim_IMnpip_dE_woK0;
   TH2F* IMnpim_IMnpip_dE_woK0_n;
   TH2F* MMnpip_MMnpim_woK0_wSid_n;
+  TH2F* dE_IMnpim_woK0;
+  TH2F* dE_IMnpim_woK0_n;
+  TH2F* dE_IMnpip_woK0;
+  TH2F* dE_IMnpip_woK0_n;
   TH2F* dE_IMnpipi_woK0_wSid_n;
   TH2F* Cosn_IMnpipi_woK0_wSid_n;
   TH2F* MMnmiss_IMnpipi_woK0_wSid_n;
@@ -160,204 +164,182 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   dE_betainv_fid = new TH2F(Form("dE_betainv_fid"),Form("dE_betainv_fid"),1000, 0, 50, 200, 0, 50);
   dE_betainv_fid->SetXTitle("1/#beta");
   dE_betainv_fid->SetYTitle("dE [MeVee]");
-  dE_betainv_fid->GetXaxis()->CenterTitle();
-  dE_betainv_fid->GetYaxis()->CenterTitle();
   
   dE_MMom_fid_beta_woK0 = new TH2F(Form("dE_MMom_fid_beta_woK0"),Form("dE_MMom_fid_beta_woK0"),100, 0, 1.5, 200, 0, 50);
   dE_MMom_fid_beta_woK0->SetXTitle("Missing Mom. [GeV/c]");
   dE_MMom_fid_beta_woK0->SetYTitle("dE [MeVee]");
-  dE_MMom_fid_beta_woK0->GetXaxis()->CenterTitle();
-  dE_MMom_fid_beta_woK0->GetYaxis()->CenterTitle();
 
   dE_MMass_fid_beta_woK0 = new TH2F(Form("dE_MMass_fid_beta_woK0"),Form("dE_MMass_fid_beta_woK0"), 140, 0.4, 1.8, 200, 0, 50);
   dE_MMass_fid_beta_woK0->SetXTitle("Missing mass [GeV/c^{2}]");
   dE_MMass_fid_beta_woK0->SetYTitle("dE [MeVee]");
-  dE_MMass_fid_beta_woK0->GetXaxis()->CenterTitle();
-  dE_MMass_fid_beta_woK0->GetYaxis()->CenterTitle();
 
   MMom_MMass_fid_beta_dE_woK0 = new TH2F(Form("MMom_MMass_fid_beta_dE_woK0"),Form("MMom_MMass_fid_beta_dE_woK0"), 140, 0.4, 1.8, 100, 0, 1.5);
   MMom_MMass_fid_beta_dE_woK0->SetXTitle("Missing Mass [GeV/c^{2}]");
   MMom_MMass_fid_beta_dE_woK0->SetYTitle("Missing Mom. [GeV/c]");
-  MMom_MMass_fid_beta_dE_woK0->GetXaxis()->CenterTitle();
-  MMom_MMass_fid_beta_dE_woK0->GetYaxis()->CenterTitle();
 
 
   MMom_MMass_fid_beta_dE_woK0_wSid = new TH2F(Form("MMom_MMass_fid_beta_dE_woK0_wSid"),Form("MMom_MMass_fid_beta_dE_woK0_wSid"), 140, 0.4, 1.8, 100, 0, 1.5);
   MMom_MMass_fid_beta_dE_woK0_wSid->SetXTitle("Missing Mass [GeV/c^{2}]");
   MMom_MMass_fid_beta_dE_woK0_wSid->SetYTitle("Missing Mom. [GeV/c]");
-  MMom_MMass_fid_beta_dE_woK0_wSid->GetXaxis()->CenterTitle();
-  MMom_MMass_fid_beta_dE_woK0_wSid->GetYaxis()->CenterTitle();
-
-
 
   
   IMnpim_IMnpip_dE_woK0 = new TH2F(Form("IMnpim_IMnpip_dE_woK0"), Form("IMnpim_IMnpip_dE_woK0"),200, 1, 2.0, 200, 1, 2.0);
   IMnpim_IMnpip_dE_woK0->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_woK0->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
-  IMnpim_IMnpip_dE_woK0->GetXaxis()->CenterTitle();
-  IMnpim_IMnpip_dE_woK0->GetYaxis()->CenterTitle();
     
   IMnpim_IMnpip_dE_woK0_n = new TH2F(Form("IMnpim_IMnpip_dE_woK0_n"),Form("IMnpim_IMnpip_dE_woK0_n"),200, 1, 2.0, 200, 1, 2.0);
   IMnpim_IMnpip_dE_woK0_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_woK0_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
-  IMnpim_IMnpip_dE_woK0_n->GetXaxis()->CenterTitle();
-  IMnpim_IMnpip_dE_woK0_n->GetYaxis()->CenterTitle();
     
   MMnpip_MMnpim_woK0_wSid_n = new TH2F(Form("MMnpip_MMnpim_woK0_wSid_n"),Form("MMnpip_MMnpim_woK0_wSid_n"),70, 1, 1.7, 70, 1, 1.7);
   MMnpip_MMnpim_woK0_wSid_n->SetXTitle("Miss. Mass(n#pi^{+}) [GeV/c^{2}]");
   MMnpip_MMnpim_woK0_wSid_n->SetYTitle("Miss. Mass(n#pi^{-}) [GeV/c^{2}]");
-  MMnpip_MMnpim_woK0_wSid_n->GetXaxis()->CenterTitle();
-  MMnpip_MMnpim_woK0_wSid_n->GetYaxis()->CenterTitle();
   
+  dE_IMnpim_woK0 = new TH2F(Form("dE_IMnpim_woK0"),Form("dE_IMnpim_woK0"), 200, 1.0, 2.0, 200, 0, 50.);
+  dE_IMnpim_woK0->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  dE_IMnpim_woK0->SetYTitle("dE [MeVee]");
+  
+  dE_IMnpim_woK0_n = new TH2F(Form("dE_IMnpim_woK0_n"),Form("dE_IMnpim_woK0_n"), 200, 1.0, 2.0, 200, 0, 50.);
+  dE_IMnpim_woK0_n->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  dE_IMnpim_woK0_n->SetYTitle("dE [MeVee]");
+
+  dE_IMnpip_woK0 = new TH2F(Form("dE_IMnpip_woK0"),Form("dE_IMnpip_woK0"), 200, 1.0, 2.0, 200, 0, 50.);
+  dE_IMnpip_woK0->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  dE_IMnpip_woK0->SetYTitle("dE [MeVee]");
+  
+  dE_IMnpip_woK0_n = new TH2F(Form("dE_IMnpip_woK0_n"),Form("dE_IMnpip_woK0_n"), 200, 1.0, 2.0, 200, 0, 50.);
+  dE_IMnpip_woK0_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  dE_IMnpip_woK0_n->SetYTitle("dE [MeVee]");
+
   dE_IMnpipi_woK0_wSid_n = new TH2F(Form("dE_IMnpipi_woK0_wSid_n"),Form("dE_IMnpipi_woK0_wSid_n"),100, 1, 2, 200, 0, 50);
   dE_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   dE_IMnpipi_woK0_wSid_n->SetYTitle("dE [MeVee]");
-  dE_IMnpipi_woK0_wSid_n->GetXaxis()->CenterTitle();
-  dE_IMnpipi_woK0_wSid_n->GetYaxis()->CenterTitle();
     
   Cosn_IMnpipi_woK0_wSid_n = new TH2F(Form("Cosn_IMnpipi_woK0_wSid_n"),Form("dE_Cosn_IMnpipi_woK0_wSid_n"),100, 1, 2, 50, -1, 1);
   Cosn_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   Cosn_IMnpipi_woK0_wSid_n->SetYTitle("cos#theta_{n} (CM)");
-  Cosn_IMnpipi_woK0_wSid_n->GetXaxis()->CenterTitle();
-  Cosn_IMnpipi_woK0_wSid_n->GetYaxis()->CenterTitle();
     
   MMnmiss_IMnpipi_woK0_wSid_n = new TH2F(Form("MMnmiss_IMnpipi_woK0_wSid_n"),Form("MMnmiss_IMnpipi_woK0_wSid_n"),100,1,2,100,0,1.5);
   MMnmiss_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMnpipi_woK0_wSid_n->SetYTitle("Miss Mass. [GeV/c^{2}]");
-  MMnmiss_IMnpipi_woK0_wSid_n->GetXaxis()->CenterTitle();
-  MMnmiss_IMnpipi_woK0_wSid_n->GetYaxis()->CenterTitle();
     
   q_IMnpipi_woK0_wSid_n = new TH2F(Form("q_IMnpipi_woK0_wSid_n"),Form("q_IMnpipi_woK0_wSid_n"),100,1,2,300,0,1.5);
   q_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_woK0_wSid_n->SetYTitle("Mom. Transfer [GeV/c]");
-  q_IMnpipi_woK0_wSid_n->GetXaxis()->CenterTitle();
-  q_IMnpipi_woK0_wSid_n->GetYaxis()->CenterTitle();
   
   nmom_IMnpipi_woK0_wSid_n = new TH2F(Form("nmom_IMnpipi_woK0_wSid_n"),Form("nmom_IMnpipi_woK0_wSid_n"),100,1,2,100,0,1.0);
   nmom_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   nmom_IMnpipi_woK0_wSid_n->SetYTitle("nmom  [GeV/c]");
-  nmom_IMnpipi_woK0_wSid_n->GetXaxis()->CenterTitle();
-  nmom_IMnpipi_woK0_wSid_n->GetYaxis()->CenterTitle();
     
 
   for(int imode=0;imode<2;imode++){
     dE_betainv_fid_kin[imode] = new TH2F(Form("dE_betainv_fid_kin_%s",smode[imode]),Form("dE_betainv_fid_kin_%s",smode[imode]),200, 0, 10, 200, 0, 50);
     dE_betainv_fid_kin[imode]->SetXTitle("1/#beta");
     dE_betainv_fid_kin[imode]->SetYTitle("dE [MeVee]");
-    dE_betainv_fid_kin[imode]->GetXaxis()->CenterTitle();
-    dE_betainv_fid_kin[imode]->GetYaxis()->CenterTitle();
 
     
     dE_MMom_fid_beta_woK0_kin[imode] = new TH2F(Form("dE_MMom_fid_beta_woK0_kin_%s",smode[imode]),Form("dE_MMom_fid_beta_woK0_kin_%s",smode[imode]),100, 0, 1.5, 200, 0, 50);
     dE_MMom_fid_beta_woK0_kin[imode]->SetXTitle("Missing Mom. [GeV/c]");
     dE_MMom_fid_beta_woK0_kin[imode]->SetYTitle("dE [MeVee]");
-    dE_MMom_fid_beta_woK0_kin[imode]->GetXaxis()->CenterTitle();
-    dE_MMom_fid_beta_woK0_kin[imode]->GetYaxis()->CenterTitle();
 
 
     dE_MMass_fid_beta_woK0_kin[imode] = new TH2F(Form("dE_MMass_fid_beta_woK0_kin_%s",smode[imode]),Form("dE_MMass_fid_beta_woK0_kin_%s",smode[imode]), 140, 0.4, 1.8, 200, 0, 50);
     dE_MMass_fid_beta_woK0_kin[imode]->SetXTitle("Missing mass [GeV/c^{2}]");
     dE_MMass_fid_beta_woK0_kin[imode]->SetYTitle("dE [MeVee]");
-    dE_MMass_fid_beta_woK0_kin[imode]->GetXaxis()->CenterTitle();
-    dE_MMass_fid_beta_woK0_kin[imode]->GetYaxis()->CenterTitle();
   
 
     MMom_MMass_fid_beta_dE_woK0_kin[imode] = new TH2F(Form("MMom_MMass_fid_beta_dE_woK0_kin_%s",smode[imode]),Form("MMom_MMass_fid_beta_dE_woK0_kin_%s",smode[imode]), 140, 0.4, 1.8, 100, 0, 1.5);
     MMom_MMass_fid_beta_dE_woK0_kin[imode]->SetXTitle("Missing Mass [GeV/c^{2}]");
     MMom_MMass_fid_beta_dE_woK0_kin[imode]->SetYTitle("Missing Mom. [GeV/c]");
-    MMom_MMass_fid_beta_dE_woK0_kin[imode]->GetXaxis()->CenterTitle();
-    MMom_MMass_fid_beta_dE_woK0_kin[imode]->GetYaxis()->CenterTitle();
     
 
     IMnpim_IMnpip_dE_woK0_kin[imode] = new TH2F(Form("IMnpim_IMnpip_dE_woK0_kin_%s",smode[imode]), Form("IMnpim_IMnpip_dE_woK0_kin_%s",smode[imode]),200, 1, 2.0, 200, 1, 2.0);
     IMnpim_IMnpip_dE_woK0_kin[imode]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
     IMnpim_IMnpip_dE_woK0_kin[imode]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
-    IMnpim_IMnpip_dE_woK0_kin[imode]->GetXaxis()->CenterTitle();
-    IMnpim_IMnpip_dE_woK0_kin[imode]->GetXaxis()->CenterTitle();
   
 
     MMnpip_MMnpim_woK0_kin[imode] = new TH2F(Form("MMnpip_MMnpim_woK0_kin_%s",smode[imode]),Form("MMnpip_MMnpim_woK0_kin_%s",smode[imode]),70, 1, 1.7, 70, 1, 1.7);
     MMnpip_MMnpim_woK0_kin[imode]->SetXTitle("Miss. Mass(n#pi^{+}) [GeV/c^{2}]");
     MMnpip_MMnpim_woK0_kin[imode]->SetYTitle("Miss. Mass(n#pi^{-}) [GeV/c^{2}]");
-    MMnpip_MMnpim_woK0_kin[imode]->GetXaxis()->CenterTitle();
-    MMnpip_MMnpim_woK0_kin[imode]->GetYaxis()->CenterTitle();
 
  
     dE_IMnpipi_woK0_kin[imode] = new TH2F(Form("dE_IMnpipi_woK0_kin_%s",smode[imode]),Form("dE_IMnpipi_woK0_kin_%s",smode[imode]),100, 1, 2, 200, 0, 50);
     dE_IMnpipi_woK0_kin[imode]->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
     dE_IMnpipi_woK0_kin[imode]->SetYTitle("dE [MeVee]");
-    dE_IMnpipi_woK0_kin[imode]->GetXaxis()->CenterTitle();
-    dE_IMnpipi_woK0_kin[imode]->GetYaxis()->CenterTitle();
 
   
     Cosn_IMnpipi_woK0_kin[imode] = new TH2F(Form("Cosn_IMnpipi_woK0_kin_%s",smode[imode]),Form("dE_Cosn_IMnpipi_woK0_kin_%s",smode[imode]),100, 1, 2, 50, -1, 1);
     Cosn_IMnpipi_woK0_kin[imode]->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
     Cosn_IMnpipi_woK0_kin[imode]->SetYTitle("cos#theta_{n} (CM)");
-    Cosn_IMnpipi_woK0_kin[imode]->GetXaxis()->CenterTitle();
-    Cosn_IMnpipi_woK0_kin[imode]->GetYaxis()->CenterTitle();
   
 
     MMnmiss_IMnpipi_woK0_kin[imode] = new TH2F(Form("MMnmiss_IMnpipi_woK0_kin_%s",smode[imode]),Form("MMnmiss_IMnpipi_woK0_kin_%s",smode[imode]),100,1,2,100,0,1.5);
     MMnmiss_IMnpipi_woK0_kin[imode]->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
     MMnmiss_IMnpipi_woK0_kin[imode]->SetYTitle("Miss Mass. [GeV/c^{2}]");
-    MMnmiss_IMnpipi_woK0_kin[imode]->GetXaxis()->CenterTitle();
-    MMnmiss_IMnpipi_woK0_kin[imode]->GetYaxis()->CenterTitle();
 
     
     q_IMnpipi_woK0_kin[imode] = new TH2F(Form("q_IMnpipi_woK0_kin_%s",smode[imode]),Form("q_IMnpipi_woK0_kin_%s",smode[imode]),100,1,2,300,0,1.5);
     q_IMnpipi_woK0_kin[imode]->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
     q_IMnpipi_woK0_kin[imode]->SetYTitle("Mom. Transfer [GeV/c]");
-    q_IMnpipi_woK0_kin[imode]->GetXaxis()->CenterTitle();
-    q_IMnpipi_woK0_kin[imode]->GetYaxis()->CenterTitle();
 
 
     nmom_IMnpipi_woK0_kin[imode] = new TH2F(Form("nmom_IMnpipi_woK0_kin_%s",smode[imode]),Form("nmom_IMnpipi_woK0_kin_%s",smode[imode]),100,1,2,100,0,1.0);
     nmom_IMnpipi_woK0_kin[imode]->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
     nmom_IMnpipi_woK0_kin[imode]->SetYTitle("nmom  [GeV/c]");
-    nmom_IMnpipi_woK0_kin[imode]->GetXaxis()->CenterTitle();
-    nmom_IMnpipi_woK0_kin[imode]->GetYaxis()->CenterTitle();
   };
 
   TH2F *KFpvalue_vs = new TH2F("KFpvalue_vs", "KFpvalue_vs", 500, 0, 1, 500, 0, 1 );
   KFpvalue_vs->SetXTitle("P-value (#Sigma^{+} mode)");
   KFpvalue_vs->SetYTitle("P-value (#Sigma^{-} mode)");
-  KFpvalue_vs->GetXaxis()->CenterTitle();
-  KFpvalue_vs->GetYaxis()->CenterTitle();
 
   TH1F *nmom = new TH1F("nmom", "nmom", 50, 0, 1.0);
   nmom->SetXTitle("mom. [GeV/c]");
-  nmom->GetXaxis()->CenterTitle();
+  
   TH1F *nmom_kin = new TH1F("nmom_kin", "nmom_kin", 50, 0, 1.0);
   nmom_kin->SetXTitle("mom. [GeV/c]");
-  nmom_kin->GetXaxis()->CenterTitle();
+  
   TH2F *dE_nmom = new TH2F("dE_nmom", "dE_nmom", 50, 0, 1.0, 200 , 0, 50);
   dE_nmom->SetXTitle("mom. [GeV/c]");
   dE_nmom->SetYTitle("dE. [MeVee]");
-  dE_nmom->GetXaxis()->CenterTitle();
-  dE_nmom->GetYaxis()->CenterTitle();
+  
   TH2F *dE_nmom_kin = new TH2F("dE_nmom_kin", "dE_nmom_kin", 50, 0, 1.0, 200 , 0, 50);
   dE_nmom_kin->SetXTitle("mom. [GeV/c]");
   dE_nmom_kin->SetYTitle("dE. [MeVee]");
-  dE_nmom_kin->GetXaxis()->CenterTitle();
-  dE_nmom_kin->GetYaxis()->CenterTitle();
+  
   TH1F *mnmom = new TH1F("mnmom", "mnmom", 100, 0, 2.0);
   mnmom->SetXTitle("mom. [GeV/c]");
-  mnmom->GetXaxis()->CenterTitle();
+  
   TH1F *mnmom_kin = new TH1F("mnmom_kin", "mnmom_kin", 100, 0, 2.0);
   mnmom_kin->SetXTitle("mom. [GeV/c]");
-  mnmom_kin->GetXaxis()->CenterTitle();
+  
   TH1F *npipmom = new TH1F("npipmom", "npipmom", 150, 0, 3.0);
   npipmom->SetXTitle("mom. [GeV/c]");
-  npipmom->GetXaxis()->CenterTitle();
+  
   TH1F *npipmom_kin = new TH1F("npipmom_kin", "npipmom_kin", 150, 0, 3.0);
   npipmom_kin->SetXTitle("mom. [GeV/c]");
-  npipmom_kin->GetXaxis()->CenterTitle();
+  
   TH1F *npimmom = new TH1F("npimmom", "npimmom", 150, 0, 3.0);
   npimmom->SetXTitle("mom. [GeV/c]");
-  npimmom->GetXaxis()->CenterTitle();
+  
   TH1F *npimmom_kin = new TH1F("npimmom_kin", "npimmom_kin", 150, 0, 3.0);
   npimmom_kin->SetXTitle("mom. [GeV/c]");
-  npimmom_kin->GetXaxis()->CenterTitle();
+  
+  //centering title of all histograms 
+  TIter nexthist(gDirectory->GetList());
+  TH1F *h1 = nullptr;
+  TH2F *h2 = nullptr;
+  TObject *obj = nullptr;
+  while( (obj = (TObject*)nexthist())!=nullptr  ){
+    if(obj->InheritsFrom("TH1")){
+      h1 = (TH1F*) obj;
+      h1->GetXaxis()->CenterTitle();
+    }
+    if(obj->InheritsFrom("TH2")){
+      h2 = (TH2F*) obj;
+      h2->GetXaxis()->CenterTitle();
+      h2->GetYaxis()->CenterTitle();
+    }
+  }
 
   Int_t nevent = tree->GetEntries();
   std::cerr<<"# of events = "<<nevent<<std::endl;
@@ -437,6 +419,12 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
       if(NBetaOK){
         dE_MMom_fid_beta_woK0->Fill(LVec_n_miss.P(),dE);
         dE_MMass_fid_beta_woK0->Fill(LVec_n_miss.M(),dE);
+        dE_IMnpim_woK0->Fill(LVec_pim_n.M(),dE);
+        dE_IMnpip_woK0->Fill(LVec_pip_n.M(),dE);
+        if(MissNFlag){
+          dE_IMnpim_woK0_n->Fill(LVec_pim_n.M(),dE);
+          dE_IMnpip_woK0_n->Fill(LVec_pip_n.M(),dE);
+        }
       }
       if(NBetaOK && NdEOK){
         MMom_MMass_fid_beta_dE_woK0->Fill(LVec_n_miss.M(),LVec_n_miss.P());
@@ -628,6 +616,13 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TCanvas *cMMnmiss_IMnpipi_woK0_wSid_n = new TCanvas(Form("cMMnmiss_IMnpipi_woK0_wSid_n"),"");
   cMMnmiss_IMnpipi_woK0_wSid_n->cd();
   MMnmiss_IMnpipi_woK0_wSid_n->Draw("colz");
+
+  TCanvas *cMMnmiss_IMnpipi_woK0_wSid_n_px = new TCanvas(Form("cMMnmiss_IMnpipi_woK0_wSid_n_px"),""); 
+  cMMnmiss_IMnpipi_woK0_wSid_n_px->cd();
+  MMnmiss_IMnpipi_woK0_wSid_n->ProjectionX()->Draw("");
+  TCanvas *cMMnmiss_IMnpipi_woK0_wSid_n_py = new TCanvas(Form("cMMnmiss_IMnpipi_woK0_wSid_n_py"),""); 
+  cMMnmiss_IMnpipi_woK0_wSid_n_py->cd();
+  MMnmiss_IMnpipi_woK0_wSid_n->ProjectionY()->Draw("");
 
 
   TCanvas *cdE_betainv_fid_kin[2];//           
@@ -830,7 +825,6 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TFile *fout = new TFile(outfilename.c_str(),"RECREATE");
   fout->cd();
 
-  TH1*
   /*
   for(int imode=0;imode<2;imode++){
     dE_betainv_fid_kin[imode]->Write();
@@ -852,7 +846,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   npipmom->Write();
   npimmom->Write();*/
   
-  TCanvas *c=nullptr;
+  TCanvas *c = nullptr;
   TPDF *pdf = new TPDF(pdfname);
   TIter next(gROOT->GetListOfCanvases());
   while((c= (TCanvas*)next())){
