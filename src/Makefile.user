@@ -71,6 +71,7 @@ simLpn:$(TMPDIR)/UserSimLpn.o \
 
 simIMPiSigma:$(TMPDIR)/UserSimIMPiSigma.o IMPiSigmaAnaPar.h \
 	$(TMPDIR)/IMPiSigmaHist.o \
+	$(TMPDIR)/IMPiSigmaUtil.o \
 	$(TMPDIR)/SimDataMan.o \
 	$(TMPDIR)/SimDataMan_Dict.o \
 	$(TMPDIR)/KnuclRootData.o \
