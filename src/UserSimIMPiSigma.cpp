@@ -232,7 +232,7 @@ int main( int argc, char** argv )
   npippimTree->Branch( "mom_pip", &mom_pip );
   npippimTree->Branch( "mom_pim", &mom_pim );
   npippimTree->Branch( "mom_n", &mom_n );
-  npippimTree->Branch( "beta", &NeutralBetaCDH );
+  npippimTree->Branch( "NeutralBetaCDH", &NeutralBetaCDH );
   npippimTree->Branch( "dE", &dE );
   npippimTree->Branch( "vtx_reaction", &vtx_reaction );
   npippimTree->Branch( "vtx_pip",&Vtxpip);
@@ -244,22 +244,22 @@ int main( int argc, char** argv )
   npippimTree->Branch( "mcmom_pip", &mcmom_pip );
   npippimTree->Branch( "mcmom_pim", &mcmom_pim );
   npippimTree->Branch( "mcmom_ncds", &mcmom_ncds );
-  npippimTree->Branch( "kfMomBeamSpmode",   &kfMomBeamSpmode );
-  npippimTree->Branch( "kfMom_pip_Spmode", &kfMom_pip_Spmode );
-  npippimTree->Branch( "kfMom_pim_Spmode", &kfMom_pim_Spmode );
-  npippimTree->Branch( "kfMom_n_Spmode", &kfMom_n_Spmode );
-  npippimTree->Branch( "kf_chi2_Spmode", &kf_chi2_Spmode );
-  npippimTree->Branch( "kf_NDF_Spmode", &kf_NDF_Spmode );
-  npippimTree->Branch( "kf_status_Spmode", &kf_status_Spmode );
-  npippimTree->Branch( "kf_pvalue_Spmode", &kf_pvalue_Spmode );
-  npippimTree->Branch( "kfMomBeamSmmode",   &kfMomBeamSmmode );
-  npippimTree->Branch( "kfMom_pip_Smmode", &kfMom_pip_Smmode );
-  npippimTree->Branch( "kfMom_pim_Smmode", &kfMom_pim_Smmode );
-  npippimTree->Branch( "kfMom_n_Smmode", &kfMom_n_Smmode );
-  npippimTree->Branch( "kf_chi2_Smmode", &kf_chi2_Smmode );
-  npippimTree->Branch( "kf_NDF_Smmode", &kf_NDF_Smmode );
-  npippimTree->Branch( "kf_status_Smmode", &kf_status_Smmode );
-  npippimTree->Branch( "kf_pvalue_Smmode", &kf_pvalue_Smmode );
+  npippimTree->Branch( "kfSpmode_mom_beam",   &kfMomBeamSpmode );
+  npippimTree->Branch( "kfSpmode_mom_pip", &kfMom_pip_Spmode );
+  npippimTree->Branch( "kfSpmode_mom_pim", &kfMom_pim_Spmode );
+  npippimTree->Branch( "kfSpmode_mom_n", &kfMom_n_Spmode );
+  npippimTree->Branch( "kfSpmode_chi2", &kf_chi2_Spmode );
+  npippimTree->Branch( "kfSpmode_NDF", &kf_NDF_Spmode );
+  npippimTree->Branch( "kfSpmode_status", &kf_status_Spmode );
+  npippimTree->Branch( "kfSpmode_pvalue", &kf_pvalue_Spmode );
+  npippimTree->Branch( "kfSmmode_mom_beam",   &kfMomBeamSmmode );
+  npippimTree->Branch( "kfSmmode_mom_pip", &kfMom_pip_Smmode );
+  npippimTree->Branch( "kfSmmode_mom_pim", &kfMom_pim_Smmode );
+  npippimTree->Branch( "kfSmmode_mom_n", &kfMom_n_Smmode );
+  npippimTree->Branch( "kfSmmode_chi2", &kf_chi2_Smmode );
+  npippimTree->Branch( "kfSmmode_NDF", &kf_NDF_Smmode );
+  npippimTree->Branch( "kfSmmode_status", &kf_status_Smmode );
+  npippimTree->Branch( "kfSmmode_pvalue", &kf_pvalue_Smmode );
   npippimTree->Branch( "kf_flag", &kf_flag );
   outfile->cd();
 
@@ -1261,14 +1261,14 @@ int main( int argc, char** argv )
                     TVector3 primvtx;
                     bool IsncdsMatchOK=true;
                     //16.041, 16.0446, 7.08828 [MeV]
-                    double valpx = TL_meas[kin::ncds][0] - TL_gene[genID[kin::ncds]][0];  
-                    double valpy = TL_meas[kin::ncds][1] - TL_gene[genID[kin::ncds]][1];  
-                    double valpz = TL_meas[kin::ncds][2] - TL_gene[genID[kin::ncds]][2];  
-                    if(  !( -3.* 16.041/1000.  < valpx && valpx < 3.* 16.041/1000.)
-                      || !( -3.* 16.045/1000.  < valpy && valpy < 3.* 16.045/1000.) 
-                      || !( -3.* 7.0883/1000.  < valpz && valpz < 3.* 7.0883/1000.) ){
-                      IsncdsMatchOK=false;
-                    }
+                    //double valpx = TL_meas[kin::ncds][0] - TL_gene[genID[kin::ncds]][0];  
+                    //double valpy = TL_meas[kin::ncds][1] - TL_gene[genID[kin::ncds]][1];  
+                    //double valpz = TL_meas[kin::ncds][2] - TL_gene[genID[kin::ncds]][2];  
+                    //if(  !( -3.* 16.041/1000.  < valpx && valpx < 3.* 16.041/1000.)
+                    //  || !( -3.* 16.045/1000.  < valpy && valpy < 3.* 16.045/1000.) 
+                    //  || !( -3.* 7.0883/1000.  < valpz && valpz < 3.* 7.0883/1000.) ){
+                    //  IsncdsMatchOK=false;
+                    //}
 
 
                     for( int ip=0; ip<kin::npart; ip++ ){
