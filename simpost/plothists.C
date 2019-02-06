@@ -93,15 +93,18 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   TCanvas *c = nullptr;
   TPDF *pdf = new TPDF(pdfname);
   TIter next(gROOT->GetListOfCanvases());
+  
+  bool Spmode = (std::string(filename).find("Sp")!= std::string::npos);
   while((c= (TCanvas*)next())){
     pdf->NewPage();
     c->Draw();
     c->cd();
     //inside the canvas
-    //TPaveText *pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
-    TPaveText *pt = new TPaveText(.82,0.90,0.98,0.99,"NDC");
-    pt->AddText("MC sim");
-    pt->SetFillColor(kBlue-9);
+    //TPaveText *pt = new TPaveText(.72,.81,0.9,0.90,"NDC");
+    TPaveText *pt = new TPaveText(.80,0.90,0.98,0.99,"NDC");
+    if(Spmode) pt->AddText("MC #Sigma+ mode");
+    else pt->AddText("MC #Sigma- mode");
+    pt->SetFillColor(kAzure-4);
     pt->SetBorderSize(1);
     pt->Draw();
     c->Modified();
