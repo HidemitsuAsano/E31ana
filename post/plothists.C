@@ -29,7 +29,7 @@ void PhysicsPlots(TFile *f);
 
 void plothists(const char *filename="evanaIMpisigma_all_v23.root")
 {
-  cout << "filename " << filename << endl;
+  std::cout << "filename " << filename << std::endl;
   gStyle->SetPadGridX(gridon);
   gStyle->SetPadGridY(gridon);
   gStyle->SetTitleYOffset(1.6);
@@ -52,7 +52,6 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   h1_EventCheck->SetXTitle("Event tag"); 
   h1_EventCheck->Draw();
 
-  //QAbeamline(filename);
   QAbeamline(f);
    
   //CDS QA 
@@ -69,13 +68,19 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   //centering title of all histograms 
   TIter nexthist(gDirectory->GetList());
   TH1F *h1 = nullptr;
+  TH1D *h1d = nullptr;
   TH2F *h2 = nullptr;
   TObject *obj = nullptr;
   while( (obj = (TObject*)nexthist())!=nullptr  ){
-    if(obj->InheritsFrom("TH1")){
+    if(obj->InheritsFrom("TH1F")){
       h1 = (TH1F*) obj;
       h1->SetFillStyle(3004);
       h1->GetXaxis()->CenterTitle();
+    }
+    if(obj->InheritsFrom("TH1D")){
+      h1d = (TH1D*) obj;
+      h1d->SetFillStyle(3004);
+      h1d->GetXaxis()->CenterTitle();
     }
     if(obj->InheritsFrom("TH2")){
       h2 = (TH2F*) obj;
@@ -686,6 +691,7 @@ void QAbeamline(TFile *f){
   cBPCtime->cd();
   cBPCtime->SetLogy();
   h1_BPCtime->GetXaxis()->SetTitle("BPC track time [nsec.]");
+  h1_BPCtime->GetXaxis()->SetRangeUser(-30,30);
   h1_BPCtime->Draw();
   TH1F *h1_BPCtime_cut = (TH1F*)h1_BPCtime->Clone();
   h1_BPCtime_cut->GetXaxis()->SetRangeUser(blcuts::bpc_time_min,blcuts::bpc_time_max);
@@ -708,44 +714,74 @@ void QAbeamline(TFile *f){
   TH1F *h1_D5chi2 = (TH1F*)f->Get("trackchi2_beam");
   TCanvas *cD5chi2 = new TCanvas("D5chi2","D5chi2");
   cD5chi2->cd();
+  cD5chi2->SetLogy();
+  h1_D5chi2->GetXaxis()->SetTitle("D5 chi2/ndf");
   h1_D5chi2->Draw();
+  TH1F *h1_D5chi2_cut = (TH1F*)h1_D5chi2->Clone();
+  h1_D5chi2_cut->GetXaxis()->SetRangeUser(0,blcuts::d5_chi2_max);
+  h1_D5chi2_cut->SetFillColor(kGreen);
+  h1_D5chi2_cut->Draw("same");
 
   TH1F *h1_D5mom = (TH1F*)f->Get("momentum_beam");
   TCanvas *cDmom = new TCanvas("D5mom","D5mom");
   cDmom->cd();
+  h1_D5mom->GetXaxis()->SetTitle("beam mom. [GeV/c]");
   h1_D5mom->Draw();
   
-  //BLC2-BPD matching
+  //BLC2-BPC matching
   TH2F* h2_BLC2_BPC_posdiff = (TH2F*)f->Get("dydx_BLC2BPC");
   TCanvas *cBLC2_BPC_posdiff = new TCanvas("cBLC2_BPC_posdiff","cBLC2_BPC_posdiff");
-  gPad->SetLeftMargin(0.13);
-  gPad->SetRightMargin(0.03);
+  h2_BLC2_BPC_posdiff->SetXTitle("BLC2BPC track dx [cm]");
+  h2_BLC2_BPC_posdiff->SetYTitle("BLC2BPC track dy [cm]");
+  //gPad->SetLeftMargin(0.13);
+  //gPad->SetRightMargin(0.03);
+  cBLC2_BPC_posdiff->SetLeftMargin(0.13);   
+  cBLC2_BPC_posdiff->SetRightMargin(0.03);  
   cBLC2_BPC_posdiff->cd();
   h2_BLC2_BPC_posdiff->Draw("colz");
+
+  TCanvas *cBLC2_BPC_posdiff_px = new TCanvas("cBLC2_BPC_posdiff_px","cBLC2_BPC_posdiff_px");
+  TH1D* h2_BLC2_BPC_posdiff_px =  h2_BLC2_BPC_posdiff->ProjectionX();
+  h2_BLC2_BPC_posdiff_px->Draw();
+  TH1D* h2_BLC2_BPC_posdiff_px_cut = (TH1D*) h2_BLC2_BPC_posdiff_px->Clone();
+  h2_BLC2_BPC_posdiff_px_cut->GetXaxis()->SetRangeUser(blcuts::blc2bpc_x_min,blcuts::blc2bpc_x_max);
+  h2_BLC2_BPC_posdiff_px_cut->SetFillColor(kGreen);
+  h2_BLC2_BPC_posdiff_px_cut->Draw("same");
+
+  TCanvas *cBLC2_BPC_posdiff_py = new TCanvas("cBLC2_BPC_posdiff_py","cBLC2_BPC_posdiff_py");
+  TH1D* h2_BLC2_BPC_posdiff_py =  h2_BLC2_BPC_posdiff->ProjectionY();
+  h2_BLC2_BPC_posdiff_py->Draw();
+  TH1D* h2_BLC2_BPC_posdiff_py_cut = (TH1D*) h2_BLC2_BPC_posdiff_py->Clone();
+  h2_BLC2_BPC_posdiff_py_cut->GetXaxis()->SetRangeUser(blcuts::blc2bpc_y_min,blcuts::blc2bpc_y_max);
+  h2_BLC2_BPC_posdiff_py_cut->SetFillColor(kGreen);
+  h2_BLC2_BPC_posdiff_py_cut->Draw("same");
+
+
 
   TH2F* h2_BLC2_BPC_dirdiff = (TH2F*)f->Get("dydzdxdz_BLC2BPC");
   TCanvas *cBLC2_BPC_dirdiff = new TCanvas("cBLC2_BPC_dirdiff","cBLC2_BPC_dirdiff");
   cBLC2_BPC_dirdiff->cd();
+  h2_BLC2_BPC_dirdiff->SetXTitle("BCL2BPC track dx/dz");
+  h2_BLC2_BPC_dirdiff->SetYTitle("BCL2BPC track dy/dz");
   h2_BLC2_BPC_dirdiff->Draw("colz");
+   
+  TCanvas *cBLC2_BPC_dirdiff_px = new TCanvas("cBLC2_BPC_dirdiff_px","cBLC2_BPC_dirdiff_px");
+  cBLC2_BPC_dirdiff_px->cd();
+  TH1D* h2_BLC2_BPC_dirdiff_px = h2_BLC2_BPC_dirdiff->ProjectionX();
+  h2_BLC2_BPC_dirdiff_px->Draw();
+  TH1D* h2_BLC2_BPC_dirdiff_px_cut = (TH1D*) h2_BLC2_BPC_dirdiff_px->Clone();
+  h2_BLC2_BPC_dirdiff_px_cut->GetXaxis()->SetRangeUser(blcuts::blc2bpc_dx_min,blcuts::blc2bpc_dx_max);
+  h2_BLC2_BPC_dirdiff_px_cut->SetFillColor(kGreen);
+  h2_BLC2_BPC_dirdiff_px_cut->Draw("same");
   
-  
-  TIter nexthist(gDirectory->GetList());
-  TH1F *h1 = nullptr;
-  TH2F *h2 = nullptr;
-  TObject *obj = nullptr;
-  while( (obj = (TObject*)nexthist())!=nullptr  ){
-    if(obj->InheritsFrom("TH1")){
-      h1 = (TH1F*) obj;
-      h1->SetFillStyle(3002);
-      h1->GetXaxis()->CenterTitle();
-    }
-    if(obj->InheritsFrom("TH2")){
-      h2 = (TH2F*) obj;
-      h2->GetXaxis()->CenterTitle();
-      h2->GetYaxis()->CenterTitle();
-    }
-  }
-
+  TCanvas *cBLC2_BPC_dirdiff_py = new TCanvas("cBLC2_BPC_dirdiff_py","cBLC2_BPC_dirdiff_py");
+  cBLC2_BPC_dirdiff_py->cd();
+  TH1D* h2_BLC2_BPC_dirdiff_py = h2_BLC2_BPC_dirdiff->ProjectionY();
+  h2_BLC2_BPC_dirdiff_py->Draw();
+  TH1D* h2_BLC2_BPC_dirdiff_py_cut = (TH1D*) h2_BLC2_BPC_dirdiff_py->Clone();
+  h2_BLC2_BPC_dirdiff_py_cut->GetXaxis()->SetRangeUser(blcuts::blc2bpc_dy_min,blcuts::blc2bpc_dy_max);
+  h2_BLC2_BPC_dirdiff_py_cut->SetFillColor(kGreen);
+  h2_BLC2_BPC_dirdiff_py_cut->Draw("same");
 
   return;
 }
