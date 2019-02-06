@@ -1,8 +1,8 @@
 #!/bin/tcsh -f
-set Version="29"
-set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim1/"
+set Version="31"
+set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim2/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
-set CDSDIRSUB="${CDSDIR}simDST1"
+set CDSDIRSUB="${CDSDIR}simDST2"
 set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simIMPiSigma/"
 
 set logbasedir="/home/had/hiasano/logs/"
