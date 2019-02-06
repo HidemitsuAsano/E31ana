@@ -53,6 +53,9 @@ void InitBasicHist()
   Tools::newTH2F( Form("Vtx_ZX"),1000,-25,25,500,-12.5,12.5);
   Tools::newTH2F( Form("Vtx_ZY"),1000,-25,25,500,-12.5,12.5);
   Tools::newTH2F( Form("Vtx_XY"),500,-12.5,12.5,500,-12.5,12.5);
+  Tools::newTH2F( Form("Vtx_ZX_fid"),1000,-25,25,500,-12.5,12.5);
+  Tools::newTH2F( Form("Vtx_ZY_fid"),1000,-25,25,500,-12.5,12.5);
+  Tools::newTH2F( Form("Vtx_XY_fid"),500,-12.5,12.5,500,-12.5,12.5);
 }
 
 void InitIMPiSigmaHist()
@@ -65,13 +68,13 @@ void InitIMPiSigmaHist()
   Tools::newTH1F( Form("diff_CDH_CDC"), 181, 0, 181 );
   
   //pi+ pi- X event Neutron ID
-  Tools::newTH2F( Form("dE_betainv"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_woK0"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_wK0"), 200, 0, 10, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_woK0_n"), 200, 0, 10, 200, 0, 50);
+  Tools::newTH2F( Form("dE_betainv"), 1000, 0, 50, 200, 0, 50);
+  Tools::newTH2F( Form("dE_betainv_fid"), 1000, 0, 50, 200, 0, 50);
+  Tools::newTH2F( Form("dE_betainv_fid_beta"), 1000, 0, 50, 200, 0, 50);
+  Tools::newTH2F( Form("dE_betainv_fid_beta_dE"), 1000, 0, 50, 200, 0, 50);
+  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_woK0"), 1000, 0, 50, 200, 0, 50);
+  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_wK0"), 1000, 0, 50, 200, 0, 50);
+  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_woK0_n"), 1000, 0, 50, 200, 0, 50);
   Tools::newTH2F( Form("dE_MMom_fid_beta_woK0"), 100, 0, 1.5, 200, 0, 50);
   Tools::newTH2F( Form("dE_MMass_fid_beta_woK0"), 140, 0.4, 1.8, 200, 0, 50);
   
@@ -124,9 +127,6 @@ void InitAddedQAHist()
   Tools::newTH2F( Form("Vtx_ZX_nofid"),1000,-25,25,500,-12.5,12.5);
   Tools::newTH2F( Form("Vtx_ZY_nofid"),1000,-25,25,500,-12.5,12.5);
   Tools::newTH2F( Form("Vtx_XY_nofid"),500,-12.5,12.5,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_ZX_fid"),1000,-25,25,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_ZY_fid"),1000,-25,25,500,-12.5,12.5);
-  Tools::newTH2F( Form("Vtx_XY_fid"),500,-12.5,12.5,500,-12.5,12.5);
 }
 
 
