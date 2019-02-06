@@ -1,6 +1,6 @@
 const bool gridon=true;
 const bool staton=true;
-
+const bool labelon=true;
 
 #include <iostream>
 #include <vector>
@@ -95,7 +95,7 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   TIter next(gROOT->GetListOfCanvases());
   
   bool Spmode = (std::string(filename).find("Sp")!= std::string::npos);
-  while((c= (TCanvas*)next())){
+  while(((c= (TCanvas*)next()) && labelon)){
     pdf->NewPage();
     c->Draw();
     c->cd();
@@ -261,28 +261,29 @@ void QACDS(TFile *f){
   //fiducial cuts
   TCanvas *cVtx_ZX_fid  = new TCanvas("Vtx_ZX_fid","Vtx_ZX_fid");
   TH2F *h2_Vtx_ZX_fid = (TH2F*)f->Get("Vtx_ZX_fid");
-  h2_Vtx_ZX_fid->SetTitle("CDS Vertex");
-  h2_Vtx_ZX_fid->GetXaxis()->SetTitle("Z Vertex [cm]");
-  h2_Vtx_ZX_fid->GetYaxis()->SetTitle("X Vertex [cm]");
-  h2_Vtx_ZX_fid->SetMaximum(maxZX);
-  h2_Vtx_ZX_fid->Draw("colz");
+  if(h2_Vtx_ZX_fid !=nullptr){
+    h2_Vtx_ZX_fid->SetTitle("CDS Vertex");
+    h2_Vtx_ZX_fid->GetXaxis()->SetTitle("Z Vertex [cm]");
+    h2_Vtx_ZX_fid->GetYaxis()->SetTitle("X Vertex [cm]");
+    h2_Vtx_ZX_fid->SetMaximum(maxZX);
+    h2_Vtx_ZX_fid->Draw("colz");
   
-  TCanvas *cVtx_ZY_fid  = new TCanvas("Vtx_ZY_fid","Vtx_ZY_fid");
-  TH2F *h2_Vtx_ZY_fid = (TH2F*)f->Get("Vtx_ZY_fid");
-  h2_Vtx_ZY_fid->SetTitle("CDS Vertex");
-  h2_Vtx_ZY_fid->GetXaxis()->SetTitle("Z Vertex [cm]");
-  h2_Vtx_ZY_fid->GetYaxis()->SetTitle("Y Vertex [cm]");
-  h2_Vtx_ZY_fid->SetMaximum(maxZY);
-  h2_Vtx_ZY_fid->Draw("colz");
-  
-  TCanvas *cVtx_XY_fid  = new TCanvas("Vtx_XY_fid","Vtx_XY_fid");
-  TH2F *h2_Vtx_XY_fid = (TH2F*) f->Get("Vtx_XY_fid");
-  h2_Vtx_XY_fid->SetTitle("CDS Vertex");
-  h2_Vtx_XY_fid->GetXaxis()->SetTitle("X Vertex [cm]");
-  h2_Vtx_XY_fid->GetYaxis()->SetTitle("Y Vertex [cm]");
-  h2_Vtx_XY_fid->SetMaximum(maxXY);
-  h2_Vtx_XY_fid->Draw("colz");
-  
+    TCanvas *cVtx_ZY_fid  = new TCanvas("Vtx_ZY_fid","Vtx_ZY_fid");
+    TH2F *h2_Vtx_ZY_fid = (TH2F*)f->Get("Vtx_ZY_fid");
+    h2_Vtx_ZY_fid->SetTitle("CDS Vertex");
+    h2_Vtx_ZY_fid->GetXaxis()->SetTitle("Z Vertex [cm]");
+    h2_Vtx_ZY_fid->GetYaxis()->SetTitle("Y Vertex [cm]");
+    h2_Vtx_ZY_fid->SetMaximum(maxZY);
+    h2_Vtx_ZY_fid->Draw("colz");
+
+    TCanvas *cVtx_XY_fid  = new TCanvas("Vtx_XY_fid","Vtx_XY_fid");
+    TH2F *h2_Vtx_XY_fid = (TH2F*) f->Get("Vtx_XY_fid");
+    h2_Vtx_XY_fid->SetTitle("CDS Vertex");
+    h2_Vtx_XY_fid->GetXaxis()->SetTitle("X Vertex [cm]");
+    h2_Vtx_XY_fid->GetYaxis()->SetTitle("Y Vertex [cm]");
+    h2_Vtx_XY_fid->SetMaximum(maxXY);
+    h2_Vtx_XY_fid->Draw("colz");
+  }
   /*
   TCanvas *cVtx_X_center  = new TCanvas("Vtx_X_center","Vtx_X_center");
   TH1F *h1_Vtx_X_center = f->Get("Vtx_X_center");
