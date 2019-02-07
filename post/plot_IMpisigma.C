@@ -295,7 +295,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   KFpvalue_vs->SetXTitle("P-value (#Sigma^{+} mode)");
   KFpvalue_vs->SetYTitle("P-value (#Sigma^{-} mode)");
   
-  TH2F *KFchi2ndf_vs = new TH2F("KFchi2ndf_vs", "KFchi2ndf_vs", 100, 0, 100, 100, 0, 100 );
+  TH2F *KFchi2ndf_vs = new TH2F("KFchi2ndf_vs", "KFchi2ndf_vs", 300, 0, 300, 300, 0, 300 );
   KFchi2ndf_vs->SetXTitle("chi2/NDF (#Sigma^{+} mode kin. fit)");
   KFchi2ndf_vs->SetYTitle("chi2/NDF (#Sigma^{-} mode kin. fit)");
 
