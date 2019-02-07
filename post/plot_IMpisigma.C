@@ -233,7 +233,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     
 
   for(int imode=0;imode<2;imode++){
-    dE_betainv_fid_kin[imode] = new TH2F(Form("dE_betainv_fid_kin_%s",smode[imode]),Form("dE_betainv_fid_kin_%s",smode[imode]),200, 0, 10, 200, 0, 50);
+    dE_betainv_fid_kin[imode] = new TH2F(Form("dE_betainv_fid_kin_%s",smode[imode]),Form("dE_betainv_fid_kin_%s",smode[imode]),1000, 0, 50, 200, 0, 50);
     dE_betainv_fid_kin[imode]->SetXTitle("1/#beta");
     dE_betainv_fid_kin[imode]->SetYTitle("dE [MeVee]");
 
@@ -291,6 +291,10 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH2F *KFpvalue_vs = new TH2F("KFpvalue_vs", "KFpvalue_vs", 500, 0, 1, 500, 0, 1 );
   KFpvalue_vs->SetXTitle("P-value (#Sigma^{+} mode)");
   KFpvalue_vs->SetYTitle("P-value (#Sigma^{-} mode)");
+  
+  TH2F *KFchi2ndf_vs = new TH2F("KFchi2ndf_vs", "KFchi2ndf_vs", 100, 0, 100, 100, 0, 100 );
+  KFchi2ndf_vs->SetXTitle("chi2/NDF (#Sigma^{+} mode)");
+  KFchi2ndf_vs->SetYTitle("chi2/NDF (#Sigma^{-} mode)");
 
   TH1F *nmom = new TH1F("nmom", "nmom", 50, 0, 1.0);
   nmom->SetXTitle("mom. [GeV/c]");
@@ -348,7 +352,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   //------------------------//
   for ( Int_t i=0; i<nevent; i++ ) {
     tree->GetEvent(i);
-    //if(i%1000==0) std::cout << "Event# " << i << std::endl; 
+    if(i%10000==0) std::cout << "Event# " << i << std::endl; 
     
     // calc missing n //
     TLorentzVector LVec_n_miss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n;
@@ -412,7 +416,10 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     //K0 rejection using original momentum
     if( (LVec_pip_pim.M()<anacuts::pipi_MIN || anacuts::pipi_MAX<LVec_pip_pim.M())) K0rejectFlag=true;
        
-    if(K0rejectFlag && NBetaOK && NdEOK) KFpvalue_vs->Fill(kfSpmode_pvalue,kfSmmode_pvalue);
+    if(K0rejectFlag && NBetaOK && NdEOK){
+      KFpvalue_vs->Fill(kfSpmode_pvalue,kfSmmode_pvalue);
+      KFchi2ndf_vs->Fill(kfSpmode_chi2/kfSpmode_NDF, kfSmmode_chi2/kfSmmode_NDF);
+    }
     //w/o kinfit
     if(K0rejectFlag ){
       dE_betainv_fid->Fill(1./NeutralBetaCDH,dE);
