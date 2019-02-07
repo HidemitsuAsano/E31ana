@@ -44,6 +44,9 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   gStyle->SetOptFit(111111);
   gStyle->SetPadGridX(gridon);
   gStyle->SetPadGridY(gridon);
+  gStyle->SetStatX(0.98);     
+  gStyle->SetStatY(0.9);      
+  gStyle->SetStatBorderSize(1);
   std::cout << "infile " << filename <<std::endl;
   std::string outfilename = std::string(filename);
   outfilename.insert(outfilename.size()-5,"_post");
@@ -293,8 +296,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   KFpvalue_vs->SetYTitle("P-value (#Sigma^{-} mode)");
   
   TH2F *KFchi2ndf_vs = new TH2F("KFchi2ndf_vs", "KFchi2ndf_vs", 100, 0, 100, 100, 0, 100 );
-  KFchi2ndf_vs->SetXTitle("chi2/NDF (#Sigma^{+} mode)");
-  KFchi2ndf_vs->SetYTitle("chi2/NDF (#Sigma^{-} mode)");
+  KFchi2ndf_vs->SetXTitle("chi2/NDF (#Sigma^{+} mode kin. fit)");
+  KFchi2ndf_vs->SetYTitle("chi2/NDF (#Sigma^{-} mode kin. fit)");
 
   TH1F *nmom = new TH1F("nmom", "nmom", 50, 0, 1.0);
   nmom->SetXTitle("mom. [GeV/c]");
@@ -552,6 +555,51 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   KFpvalue_vs->RebinX(5);
   KFpvalue_vs->RebinY(5);
   KFpvalue_vs->Draw("colz");
+  //chi2/ndf                                                                              
+  TCanvas *cKFchi2ndf_vs = new TCanvas(Form("cKFchi2ndf_vs"),"KFchi2ndf_vs");             
+  cKFchi2ndf_vs->cd();                                                                    
+  cKFchi2ndf_vs->SetLogy();                                                               
+  TH1D *KFchi2ndf_vs_px = (TH1D*) KFchi2ndf_vs->ProjectionX();                            
+  KFchi2ndf_vs_px->SetMinimum(1);                                                         
+  KFchi2ndf_vs_px->GetXaxis()->SetTitle("chi2/ndf");                                      
+  KFchi2ndf_vs_px->Draw();                                                                
+  TH1D *KFchi2ndf_vs_py = (TH1D*) KFchi2ndf_vs->ProjectionY();                             
+  KFchi2ndf_vs_py->SetLineColor(2);                                                       
+  KFchi2ndf_vs_py->Draw("same");                                                          
+  TLegend *legKFchi2ndf_vs = new TLegend(0.55,0.65,0.76,0.82);                            
+  legKFchi2ndf_vs->AddEntry(px,"#Sigma^{+} mode");                                        
+  legKFchi2ndf_vs->AddEntry(py,"#Sigma^{-} mode");                                        
+  legKFchi2ndf_vs->SetFillColor(0);                                                       
+  legKFchi2ndf_vs->Draw();                                                                
+
+  //int spbin = KFchi2ndf_vs_px->FindBin(chi2cut);                                        
+  //int smbin = KFchi2ndf_vs_py->FindBin(chi2cut);                                        
+  //std::cout << "Sp mode rejection ratio:" << KFchi2ndf_vs_px->Integral(0,spbin)/(KFchi2n
+  //std::cout << "Sm mode rejection ratio:" << KFchi2ndf_vs_py->Integral(0,smbin)/(KFchi2n
+
+  //cumulative dist. of prob.                                                             
+  TCanvas *cKFchi2ndf_vs_cum = new TCanvas(Form("cKFchi2ndf_vs_cum"),"KFchi2ndf_vs_cum"); 
+  cKFchi2ndf_vs_cum->cd();                                                                
+  TH1 *KFchi2ndf_vs_cum_px = KFchi2ndf_vs_px->GetCumulative();                            
+  KFchi2ndf_vs_cum_px->Scale(1./px->GetEntries());                                        
+  KFchi2ndf_vs_cum_px->SetXTitle("chi2ndf cut");                                          
+  KFchi2ndf_vs_cum_px->GetXaxis()->CenterTitle();                                         
+  KFchi2ndf_vs_cum_px->SetTitle("KF chi2ndf cumulative");                                 
+  KFchi2ndf_vs_cum_px->Draw();                                                            
+  TH1 *KFchi2ndf_vs_cum_py = KFchi2ndf_vs_py->GetCumulative();                            
+  KFchi2ndf_vs_cum_py->SetLineColor(2);                                                   
+  KFchi2ndf_vs_cum_py->Scale(1./py->GetEntries());                                        
+  KFchi2ndf_vs_cum_py->Draw("same");                                                      
+  TLegend *legKFchi2ndf_vs_cum = new TLegend(0.55,0.25,0.76,0.42);                        
+  legKFchi2ndf_vs_cum->AddEntry(px,"#Sigma^{+} mode");                                    
+  legKFchi2ndf_vs_cum->AddEntry(py,"#Sigma^{-} mode");                                    
+  legKFchi2ndf_vs_cum->SetFillColor(0);                                                   
+  legKFchi2ndf_vs_cum->Draw();                                                            
+
+  TCanvas *cKFchi2ndf = new TCanvas(Form("cKFchi2ndf"),"KFchi2ndf");                      
+  KFchi2ndf_vs->RebinX(5);                                                                
+  KFchi2ndf_vs->RebinY(5);                                                                
+  KFchi2ndf_vs->Draw("colz");                                                             
 
 
   TCanvas *cnmom = new TCanvas("cnmom","cnmom");
