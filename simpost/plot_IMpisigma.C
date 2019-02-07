@@ -39,7 +39,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   pt->Draw(); 
 
   //gROOT->SetStyle("Plain");
-  if(staton)gStyle->SetOptStat(111111);
+  if(staton)gStyle->SetOptStat("emruo");
   else gStyle->SetOptStat(0);
   gStyle->SetOptFit(111111);
   gStyle->SetPadGridX(gridon);
@@ -56,7 +56,12 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   pdfname.Replace(outfilename.size()-4,5,"pdf");
   std::cout << "pdfname: " << pdfname << std::endl;
 
-  //--- color style ---//
+  bool Spmode = (std::string(filename).find("Sp")!= std::string::npos);
+  if(Spmode){
+    std::cout << "This is Sigma+ mode sim." << std::endl;
+  }else{
+    std::cout << "This is Sigma- mode sim." << std::endl;
+  }
   
   //= = = = pipipnn final-sample tree = = = =//
   TLorentzVector *LVec_beam=nullptr;   // 4-momentum(beam)
@@ -238,7 +243,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     
 
   for(int imode=0;imode<2;imode++){
-    dE_betainv_fid_kin[imode] = new TH2F(Form("dE_betainv_fid_kin_%s",smode[imode]),Form("dE_betainv_fid_kin_%s",smode[imode]),200, 0, 10, 200, 0, 50);
+    dE_betainv_fid_kin[imode] = new TH2F(Form("dE_betainv_fid_kin_%s",smode[imode]),Form("dE_betainv_fid_kin_%s",smode[imode]),1000, 0, 50, 200, 0, 50);
     dE_betainv_fid_kin[imode]->SetXTitle("1/#beta");
     dE_betainv_fid_kin[imode]->SetYTitle("dE [MeVee]");
 
@@ -297,7 +302,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   KFpvalue_vs->SetXTitle("P-value (#Sigma^{+} mode)");
   KFpvalue_vs->SetYTitle("P-value (#Sigma^{-} mode)");
   
-  TH2F *KFchi2ndf_vs = new TH2F("KFchi2ndf_vs", "KFchi2ndf_vs", 100, 0, 100, 100, 0, 100 );
+  TH2F *KFchi2ndf_vs = new TH2F("KFchi2ndf_vs", "KFchi2ndf_vs", 300, 0, 300, 300, 0, 300 );
   KFchi2ndf_vs->SetXTitle("chi2/NDF (#Sigma^{+} mode kin. fit)");
   KFchi2ndf_vs->SetYTitle("chi2/NDF (#Sigma^{-} mode kin. fit)");
 
@@ -338,7 +343,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH1F *h1 = nullptr;
   TH2F *h2 = nullptr;
   TObject *obj = nullptr;
-  while( (obj = (TObject*)nexthist())!=nullptr  ){
+  while( (obj = (TObject*)nexthist())!=nullptr ){
     if(obj->InheritsFrom("TH1")){
       h1 = (TH1F*) obj;
       h1->GetXaxis()->CenterTitle();
@@ -357,7 +362,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   //------------------------//
   for ( Int_t i=0; i<nevent; i++ ) {
     tree->GetEvent(i);
-    if(i%10000==0) std::cout << "Event# " << i << std::endl; 
+    if(i%50000==0) std::cout << "Event# " << i << std::endl; 
     
     // calc missing n //
     TLorentzVector LVec_n_miss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n;
@@ -514,42 +519,53 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
 
   TCanvas *cKFpvalue_vs = new TCanvas(Form("cKFpvalue_vs"),"KFpvalue_vs");
   cKFpvalue_vs->cd();
-  TH1D *px = (TH1D*) KFpvalue_vs->ProjectionX();
-  px->SetMinimum(1);
-  px->SetXTitle("p-value");
-  px->Draw();
-  TH1D *py = (TH1D*) KFpvalue_vs->ProjectionY();
-  py->SetLineColor(2);
-  py->Draw("same");
+  cKFpvalue_vs->SetLogy();
+  TH1D *KFpvalue_vs_px = (TH1D*) KFpvalue_vs->ProjectionX();
+  KFpvalue_vs_px->SetMinimum(1);
+  KFpvalue_vs_px->SetXTitle("p-value");
+  TH1D *KFpvalue_vs_py = (TH1D*) KFpvalue_vs->ProjectionY();
+  KFpvalue_vs_py->SetLineColor(2);
+  if(Spmode){
+    KFpvalue_vs_px->Draw();
+    KFpvalue_vs_py->Draw("same");
+  }else{
+    KFpvalue_vs_py->Draw("");
+    KFpvalue_vs_px->Draw("same");
+  }
   TLegend *legKFpvalue_vs = new TLegend(0.55,0.65,0.76,0.82);
-  legKFpvalue_vs->AddEntry(px,"#Sigma^{+} mode");
-  legKFpvalue_vs->AddEntry(py,"#Sigma^{-} mode");
+  legKFpvalue_vs->AddEntry(KFpvalue_vs_px,"#Sigma^{+} mode");
+  legKFpvalue_vs->AddEntry(KFpvalue_vs_py,"#Sigma^{-} mode");
   legKFpvalue_vs->SetFillColor(0);
   legKFpvalue_vs->Draw();
-  gPad->SetLogy();
 
-  int spbin = px->FindBin(pvalcut);
+  int spbin = KFpvalue_vs_px->FindBin(pvalcut);
   //std::cout << spbin << std::endl;
-  int smbin = py->FindBin(pvalcut);
-  std::cout << "Sp mode rejection ratio:" << px->Integral(0,spbin)/(px->Integral(0,201)) << std::endl;
-  std::cout << "Sm mode rejection ratio:" << py->Integral(0,smbin)/(py->Integral(0,201)) << std::endl;
+  int smbin = KFpvalue_vs_py->FindBin(pvalcut);
+  std::cout << "Sp mode rejection ratio:" << KFpvalue_vs_px->Integral(0,spbin)/(KFpvalue_vs_px->Integral(0,201)) << std::endl;
+  std::cout << "Sm mode rejection ratio:" << KFpvalue_vs_py->Integral(0,smbin)/(KFpvalue_vs_py->Integral(0,201)) << std::endl;
 
   //cumulative dist. of prob.
   TCanvas *cKFpvalue_vs_cum = new TCanvas(Form("cKFpvalue_vs_cum"),"KFpvalue_vs_cum");
   cKFpvalue_vs_cum->cd();
-  TH1 *px_cum = px->GetCumulative();
-  px_cum->Scale(1./px->GetEntries());
-  px_cum->SetXTitle("p-value cut");
-  px_cum->GetXaxis()->CenterTitle();
-  px_cum->SetTitle("KF pvalue cumulative");
-  px_cum->Draw();
-  TH1 *py_cum = py->GetCumulative();
-  py_cum->SetLineColor(2);
-  py_cum->Scale(1./py->GetEntries());
-  py_cum->Draw("same");
+  TH1 *KFpvalue_vs_px_cum = KFpvalue_vs_px->GetCumulative();
+  KFpvalue_vs_px_cum->Scale(1./KFpvalue_vs_px->GetEntries());
+  KFpvalue_vs_px_cum->SetXTitle("p-value cut");
+  KFpvalue_vs_px_cum->GetXaxis()->CenterTitle();
+  KFpvalue_vs_px_cum->SetTitle("KF pvalue cumulative");
+  TH1 *KFpvalue_vs_py_cum = KFpvalue_vs_py->GetCumulative();
+  KFpvalue_vs_py_cum->SetLineColor(2);
+  KFpvalue_vs_py_cum->Scale(1./KFpvalue_vs_py->GetEntries());
+  if(Spmode){
+    KFpvalue_vs_px_cum->Draw();
+    KFpvalue_vs_py_cum->Draw("same");
+  }else{
+    KFpvalue_vs_py_cum->Draw("");
+    KFpvalue_vs_px_cum->Draw("same");
+  }
+
   TLegend *legKFpvalue_vs_cum = new TLegend(0.55,0.25,0.76,0.42);
-  legKFpvalue_vs_cum->AddEntry(px,"#Sigma^{+} mode");
-  legKFpvalue_vs_cum->AddEntry(py,"#Sigma^{-} mode");
+  legKFpvalue_vs_cum->AddEntry(KFpvalue_vs_px_cum,"#Sigma^{+} mode");
+  legKFpvalue_vs_cum->AddEntry(KFpvalue_vs_py_cum,"#Sigma^{-} mode");
   legKFpvalue_vs_cum->SetFillColor(0);
   legKFpvalue_vs_cum->Draw();
 
@@ -561,17 +577,24 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   //chi2/ndf
   TCanvas *cKFchi2ndf_vs = new TCanvas(Form("cKFchi2ndf_vs"),"KFchi2ndf_vs");
   cKFchi2ndf_vs->cd();
-  cKFchi2ndf_vs->SetLogy();
+  //cKFchi2ndf_vs->SetLogy();
   TH1D *KFchi2ndf_vs_px = (TH1D*) KFchi2ndf_vs->ProjectionX();
   KFchi2ndf_vs_px->SetMinimum(1);
   KFchi2ndf_vs_px->GetXaxis()->SetTitle("chi2/ndf");
-  KFchi2ndf_vs_px->Draw();
   TH1D *KFchi2ndf_vs_py = (TH1D*) KFchi2ndf_vs->ProjectionY();
   KFchi2ndf_vs_py->SetLineColor(2);
-  KFchi2ndf_vs_py->Draw("same");
+  KFchi2ndf_vs_py->GetXaxis()->SetTitle("chi2/ndf");
+  if(Spmode){
+    KFchi2ndf_vs_px->Draw();
+    KFchi2ndf_vs_py->Draw("same");
+  }else{
+    KFchi2ndf_vs_py->Draw();
+    KFchi2ndf_vs_px->Draw("same");
+  }
+
   TLegend *legKFchi2ndf_vs = new TLegend(0.55,0.65,0.76,0.82);
-  legKFchi2ndf_vs->AddEntry(px,"#Sigma^{+} mode");
-  legKFchi2ndf_vs->AddEntry(py,"#Sigma^{-} mode");
+  legKFchi2ndf_vs->AddEntry(KFchi2ndf_vs_px,"#Sigma^{+} mode");
+  legKFchi2ndf_vs->AddEntry(KFchi2ndf_vs_py,"#Sigma^{-} mode");
   legKFchi2ndf_vs->SetFillColor(0);
   legKFchi2ndf_vs->Draw();
 
@@ -584,18 +607,28 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TCanvas *cKFchi2ndf_vs_cum = new TCanvas(Form("cKFchi2ndf_vs_cum"),"KFchi2ndf_vs_cum");
   cKFchi2ndf_vs_cum->cd();
   TH1 *KFchi2ndf_vs_cum_px = KFchi2ndf_vs_px->GetCumulative();
-  KFchi2ndf_vs_cum_px->Scale(1./px->GetEntries());
+  KFchi2ndf_vs_cum_px->Scale(1./KFchi2ndf_vs_px->GetEntries());
   KFchi2ndf_vs_cum_px->SetXTitle("chi2ndf cut");
   KFchi2ndf_vs_cum_px->GetXaxis()->CenterTitle();
   KFchi2ndf_vs_cum_px->SetTitle("KF chi2ndf cumulative");
-  KFchi2ndf_vs_cum_px->Draw();
   TH1 *KFchi2ndf_vs_cum_py = KFchi2ndf_vs_py->GetCumulative();
   KFchi2ndf_vs_cum_py->SetLineColor(2);
-  KFchi2ndf_vs_cum_py->Scale(1./py->GetEntries());
-  KFchi2ndf_vs_cum_py->Draw("same");
+  KFchi2ndf_vs_cum_py->Scale(1./KFchi2ndf_vs_py->GetEntries());
+  KFchi2ndf_vs_cum_py->SetXTitle("chi2ndf cut");
+  KFchi2ndf_vs_cum_py->SetTitle("KF chi2ndf cumulative");
+  if(Spmode){
+    KFchi2ndf_vs_cum_px->Draw();
+    KFchi2ndf_vs_cum_py->Draw("same");
+  }else{
+    KFchi2ndf_vs_cum_py->Draw();
+    KFchi2ndf_vs_cum_px->Draw("same");
+  }
+
+
+
   TLegend *legKFchi2ndf_vs_cum = new TLegend(0.55,0.25,0.76,0.42);
-  legKFchi2ndf_vs_cum->AddEntry(px,"#Sigma^{+} mode");
-  legKFchi2ndf_vs_cum->AddEntry(py,"#Sigma^{-} mode");
+  legKFchi2ndf_vs_cum->AddEntry(KFchi2ndf_vs_px,"#Sigma^{+} mode");
+  legKFchi2ndf_vs_cum->AddEntry(KFchi2ndf_vs_py,"#Sigma^{-} mode");
   legKFchi2ndf_vs_cum->SetFillColor(0);
   legKFchi2ndf_vs_cum->Draw();
 
@@ -907,7 +940,6 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TCanvas *c = nullptr;
   TPDF *pdf = new TPDF(pdfname);
   TIter next(gROOT->GetListOfCanvases());
-  bool Spmode = (std::string(filename).find("Sp")!= std::string::npos);
   while((c= (TCanvas*)next())){
     pdf->NewPage();
     c->Draw();
