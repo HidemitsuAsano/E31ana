@@ -63,6 +63,7 @@ void InitIMPiSigmaHist()
   
   //CDH
   Tools::newTH2F( Form("CDHtime"),36,0.5,36.5,4000,0,200);
+  Tools::newTH2F( Form("dE_CDHtime"),500,0.,100,200,0,50);
   Tools::newTH2F( Form("NeutraltimeEnergy"),500,0,100,200,0,50);
   Tools::newTH1F( Form("diff_CDH"), 73, -36.5, 36.5 );
   Tools::newTH1F( Form("diff_CDH_CDC"), 181, 0, 181 );
