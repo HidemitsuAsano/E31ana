@@ -63,6 +63,7 @@ void SimDataMan::Convert(DetectorData *detectorData, ConfMan *confMan, BeamLineH
 	}
       }
       double lv=DBL_MIN; TVector3 gpos;
+      confMan-> GetGeomMapManager()-> GetLightVelocity(cid, channel+1, lv); // added F.Sakuma [20190204]
       confMan-> GetGeomMapManager()-> GetGPos(cid, channel+1, lv, gpos);
       double hitpos;
       if( cid==CID_CDH || cid==CID_IH ) hitpos=pos.Z()/10.;
