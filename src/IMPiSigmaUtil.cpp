@@ -18,6 +18,7 @@ int Util::GetCDHMul(CDSHitMan *cdsman)
   int nCDH = 0;
   for( int i=0; i<cdsman->nCDH(); i++ ) {
     Tools::Fill2D(Form("CDHtime"),cdsman->CDH(i)->seg(),cdsman->CDH(i)->ctmean());
+    Tools::Fill2D(Form("dE_CDHtime"), cdsman->CDH(i)->ctmean(), ncdhhit->emean());
     //if( cdsman->CDH(i)->CheckRange() ) nCDH++; //** only requirement of TDC **//
     if( cdsman->CDH(i)->CheckRange() && cdsman->CDH(i)->ctmean()<cdscuts::tdc_cdh_max ) {
       nCDH++;
