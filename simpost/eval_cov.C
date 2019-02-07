@@ -73,7 +73,8 @@ void eval_cov(const char*filename="")
 	  double pol = his->GetFunction("gaus")->GetParameter(1);
 	  double sigfit = his->GetFunction("gaus")->GetParameter(2);
 	  //his->Fit("gaus","","",pol-3*sig,pol+3*sig);
-	  gaus->SetLineColor(3);
+	  TF1* gaus = (TF1*) his->GetFunction("gaus");
+    gaus->SetLineColor(3);
     his->GetXaxis()->CenterTitle();
     if(i==0) his->SetTitle("K (beam)");
     if(i==1) his->SetTitle("#pi (prompt)");
@@ -105,6 +106,8 @@ void eval_cov(const char*filename="")
 	  sigm_e[i][j] = his->GetFunction("gaus")->GetParError(2)*1000;
     
     can_vs[i]->cd(j+1);
+    his2->RebinX(5);
+    his2->RebinY(5);
     if(i==0) his2->SetTitle("K (beam)");
     if(i==1) his2->SetTitle("#pi (prompt)");
     if(i==2) his2->SetTitle("#Sigma ");
@@ -205,7 +208,7 @@ void eval_cov(const char*filename="")
 
   TLegend *leg;
 
-  char *com[num] = {"beam K", "#pi^{#mp}", "#Sigma^{#pm}", "n_{missing}", "n from #Sigma", "#pi^{#pm} from #Sigma"};
+  TString com[num] = {"beam K", "#pi^{#mp}", "#Sigma^{#pm}", "n_{missing}", "n from #Sigma", "#pi^{#pm} from #Sigma"};
 
   TCanvas *u1;
   u1 = new TCanvas("u1", "", 600, 600);
@@ -244,6 +247,5 @@ void eval_cov(const char*filename="")
   gPad->SetRightMargin(0.03);
   u2->Print(outfilename+")");
 
-#endif
 
 }

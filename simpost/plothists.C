@@ -71,7 +71,7 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   TH1D *h1d = nullptr;
   TH2F *h2 = nullptr;
   TObject *obj = nullptr;
-  while( (obj = (TObject*)nexthist())!=nullptr  ){
+  while( ((obj = (TObject*)nexthist())!=nullptr) && labelon  ){
     if(obj->InheritsFrom("TH1F")){
       h1 = (TH1F*) obj;
       //h1->SetFillStyle(3004);

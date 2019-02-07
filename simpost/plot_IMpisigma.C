@@ -566,7 +566,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   KFchi2ndf_vs_px->SetMinimum(1);
   KFchi2ndf_vs_px->GetXaxis()->SetTitle("chi2/ndf");
   KFchi2ndf_vs_px->Draw();
-  TH1D *KFchi2ndf_vs_py = (TH1D*) KFpvalue_vs->ProjectionY();
+  TH1D *KFchi2ndf_vs_py = (TH1D*) KFchi2ndf_vs->ProjectionY();
   KFchi2ndf_vs_py->SetLineColor(2);
   KFchi2ndf_vs_py->Draw("same");
   TLegend *legKFchi2ndf_vs = new TLegend(0.55,0.65,0.76,0.82);
