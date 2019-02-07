@@ -84,6 +84,7 @@ TLorentzVector mcmom_beam;   // generated 4-momentum(beam)
 TLorentzVector mcmom_pip;    // generated 4-momentum(pi+)
 TLorentzVector mcmom_pim;    // generated 4-momentum(pi-)
 TLorentzVector mcmom_ncds;      // generated 4-momentum(neutron)
+TLorentzVector mcmom_nmiss;      // generated 4-momentum(neutron)
 TLorentzVector kfMomBeamSpmode;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
 TLorentzVector kfMom_pip_Spmode;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
 TLorentzVector kfMom_pim_Spmode;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
@@ -244,6 +245,7 @@ int main( int argc, char** argv )
   npippimTree->Branch( "mcmom_pip", &mcmom_pip );
   npippimTree->Branch( "mcmom_pim", &mcmom_pim );
   npippimTree->Branch( "mcmom_ncds", &mcmom_ncds );
+  npippimTree->Branch( "mcmom_nmiss", &mcmom_nmiss );
   npippimTree->Branch( "kfSpmode_mom_beam",   &kfMomBeamSpmode );
   npippimTree->Branch( "kfSpmode_mom_pip", &kfMom_pip_Spmode );
   npippimTree->Branch( "kfSpmode_mom_pim", &kfMom_pim_Spmode );
@@ -1096,7 +1098,8 @@ int main( int argc, char** argv )
               }
               if(Verbosity_)std::cout<< "L." << __LINE__ << " val = "<<val1<<" "<<val2<<" -> "<< genID[kin::nmiss] <<" "<< genID[kin::ncds] << std::endl;
               mcmom_beam = TL_gene[kin::kmbeam];
-              mcmom_ncds    = TL_gene[genID[kin::ncds]];
+              mcmom_ncds = TL_gene[genID[kin::ncds]];
+              mcmom_nmiss = TL_gene[genID[kin::nmiss]];
               if( reactionID==gen::reactionID_Spmode ){
                 mcmom_pip  = TL_gene[kin::pip_g2];
                 mcmom_pim  = TL_gene[kin::pim_g1];
