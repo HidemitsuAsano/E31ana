@@ -117,7 +117,7 @@ int main( int argc, char** argv )
   
 
   std::cout <<"L." << __LINE__ << " MOM_RES beam line: " << MOM_RES << std::endl;
-  std::cout <<"L." << __LINE__ << " TDC_CDH_MAX: " << cdscuts::tdc_cdh_max << std::endl;
+  std::cout <<"L." << __LINE__ << " TDC_CDH_MAX: " << cdscuts::tdc_cdh_max+cdscuts::tdc_simoffset << std::endl;
 
 
   TDatabasePDG *pdg = new TDatabasePDG();
@@ -556,7 +556,7 @@ int main( int argc, char** argv )
     Tools::Fill1D( Form("nGoodTrack"), nGoodTrack );
     
     
-    if( Util::GetCDHMul(cdsMan,nGoodTrack)!=cdscuts::cdhmulti ){
+    if( Util::GetCDHMul(cdsMan,nGoodTrack,true)!=cdscuts::cdhmulti ){
       nAbort_nCDH++;
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nCDH" << std::endl;
       continue;
@@ -783,7 +783,7 @@ int main( int argc, char** argv )
       std::vector <int> NeutralCDHseg;
       std::vector <int> CDHhit_list;
       for( int icdhhit=0; icdhhit<cdsMan->nCDH(); icdhhit++ ){
-        if( cdsMan->CDH(icdhhit)->CheckRange() && cdsMan->CDH(icdhhit)->ctmean()<cdscuts::tdc_cdh_max )
+        if( cdsMan->CDH(icdhhit)->CheckRange() && cdsMan->CDH(icdhhit)->ctmean()<(cdscuts::tdc_cdh_max+cdscuts::tdc_simoffset) )
           CDHhit_list.push_back( cdsMan->CDH(icdhhit)->seg() );
       }
       std::sort(vCDHseg.begin(), vCDHseg.end());

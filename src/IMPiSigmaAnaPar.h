@@ -58,7 +58,8 @@ namespace cdscuts {
   const int cds_ngoodtrack = 2;
   const int cdhmulti = 3;
   //const double tdc_cdh_max = 40; // ns v25
-  const double tdc_cdh_max = 9999; // ns v26
+  const double tdc_cdh_max = 50; // ns v32
+  const double tdc_simoffset = -18;
   const double cds_chi2_max = 30;
   const bool useclosestpi = false;
 }

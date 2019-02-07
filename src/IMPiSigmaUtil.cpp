@@ -12,7 +12,7 @@
 
 
 //analyze # of CDH hits within the time range and judge if it is cdscuts::cdhmulti defined in IMPiSigmaAnaPar.h
-int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack)
+int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack, const bool MCFlag)
 {
   //** # of CDH-hits cut **//
   int nCDH = 0;
@@ -23,8 +23,10 @@ int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack)
       Tools::Fill2D(Form("dE_CDHtime_2track"), cdsman->CDH(i)->ctmean(), cdsman->CDH(i)->emean());
     }
     //if( cdsman->CDH(i)->CheckRange() ) nCDH++; //** only requirement of TDC **//
-    if( cdsman->CDH(i)->CheckRange() && cdsman->CDH(i)->ctmean()<cdscuts::tdc_cdh_max ) {
-      nCDH++;
+    if(MCFlag){
+      if( cdsman->CDH(i)->CheckRange() && cdsman->CDH(i)->ctmean()<(cdscuts::tdc_cdh_max+cdscuts::tdc_simoffset) ) nCDH++;
+    }else{
+      if( cdsman->CDH(i)->CheckRange() && cdsman->CDH(i)->ctmean()<cdscuts::tdc_cdh_max ) nCDH++;
     }
   }
   Tools::Fill1D( Form("mul_CDH"), nCDH );
