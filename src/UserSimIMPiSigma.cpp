@@ -46,6 +46,7 @@
 int Verbosity_ = 0;
 const bool DoCDCRetiming = false;
 const double MOM_RES = 2.0; // MeV/c
+const bool AddQAplots = true;
 // momentum resolution of the beam-line spectrometer
 // was evaluated to be 2.0 +/- 0.5 MeV/c (Hashimoto-D p.58)
 
@@ -846,6 +847,12 @@ int main( int argc, char** argv )
       }
       //** neutral particle in CDH **//
       if( !nCDCforVeto ){
+        if(NeutralCDHseg.size()!=1) {
+          std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
+        } else {
+          if(AddQAplots) Tools::Fill1D(Form("CDHNeutralSeg"),NeutralCDHseg.at(0));
+        }
+
         CDSTrack *track_pip = cdstrackMan->Track( pip_ID[0] ); // only 1 track
         CDSTrack *track_pim = cdstrackMan->Track( pim_ID[0] ); // only 1 track
 	       
@@ -953,11 +960,11 @@ int main( int argc, char** argv )
         //Tools::Fill2D( Form("dE_time"),  , ncdhhit->ctmean() );
         Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
       
-        //if(AddQAplots){
-        //Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_beam.Z(),vtx_beam.X());
-        //Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_beam.Z(),vtx_beam.Y());
-        //Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_beam.X(),vtx_beam.Y());
-        //}
+        if(AddQAplots){
+          Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_beam.Z(),vtx_beam.X());
+          Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_beam.Z(),vtx_beam.Y());
+          Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_beam.X(),vtx_beam.Y());
+        }
         //Fiducial cuts OK
         if( GeomTools::GetID(vtx_beam)==CID_Fiducial ){
           Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_beam.Z(),vtx_beam.X());
