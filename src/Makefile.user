@@ -69,7 +69,7 @@ simLpn:$(TMPDIR)/UserSimLpn.o \
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB) $(KFLIB)
 
 
-simIMPiSigma:$(TMPDIR)/UserSimIMPiSigma.o IMPiSigmaAnaPar.h \
+simIMPiSigma:$(TMPDIR)/UserSimIMPiSigma.o IMPiSigmaAnaPar.h  \
 	$(TMPDIR)/IMPiSigmaHist.o \
 	$(TMPDIR)/IMPiSigmaUtil.o \
 	$(TMPDIR)/SimDataMan.o \
