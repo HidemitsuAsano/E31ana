@@ -22,10 +22,14 @@ momentum: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisMomentum.o $
 evlpn_sada: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysis_Lpn_sada.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysis_Lpn_sada.o $(LIBLINK) $(OBJSLIB)
 
-evpisigma: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o IMPiSigmaAnaPar.h IMPiSigmaHist.h\
+evpisigma: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o IMPiSigmaAnaPar.h \
+	$(TMPDIR)/IMPiSigmaHist.o \
 	$(TMPDIR)/IMPiSigmaUtil.o \
 	$(patsubst %,$(TMPDIR)/%,$(OBJS)) 
-	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o  $(TMPDIR)/IMPiSigmaUtil.o $(LIBLINK) $(OBJSLIB) $(KFLIB)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o  $(TMPDIR)/IMPiSigmaHist.o $(TMPDIR)/IMPiSigmaUtil.o $(LIBLINK) $(OBJSLIB) $(KFLIB)
+
+evclean:
+	rm -rf $(BINDIR)/evpisigma $(TMPDIR)/IMPiSigma* $(TMPDIR)/EventAnalysisIMPiSigma.*
 
 xt: $(TMPDIR)/UserXT.o $(ALLSO)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(TMPDIR)/UserXT.o $(LIBLINK) $(RTLIBDIR)/$(ALLSO)
@@ -69,7 +73,7 @@ simLpn:$(TMPDIR)/UserSimLpn.o \
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB) $(KFLIB)
 
 
-simIMPiSigma:$(TMPDIR)/UserSimIMPiSigma.o IMPiSigmaAnaPar.h  \
+simIMPiSigma:$(TMPDIR)/UserSimIMPiSigma.o IMPiSigmaAnaPar.h\
 	$(TMPDIR)/IMPiSigmaHist.o \
 	$(TMPDIR)/IMPiSigmaUtil.o \
 	$(TMPDIR)/SimDataMan.o \
@@ -80,3 +84,6 @@ simIMPiSigma:$(TMPDIR)/UserSimIMPiSigma.o IMPiSigmaAnaPar.h  \
 	$(TMPDIR)/ComCrossSectionTable_Dict.o \
 	$(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o  $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB) $(KFLIB)
+
+simclean:
+	rm -rf $(BINDIR)/simIMPiSigma $(TMPDIR)/IMPiSigma* $(TMPDIR)/UserSimIMPiSigma.*

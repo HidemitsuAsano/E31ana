@@ -46,7 +46,6 @@
 int Verbosity_ = 0;
 const bool DoCDCRetiming = false;
 const double MOM_RES = 2.0; // MeV/c
-const bool AddQAplots = true;
 // momentum resolution of the beam-line spectrometer
 // was evaluated to be 2.0 +/- 0.5 MeV/c (Hashimoto-D p.58)
 
@@ -116,8 +115,8 @@ int main( int argc, char** argv )
   }
   
 
-  std::cout <<"L." << __LINE__ << "MOM_RES beam line: " << MOM_RES << std::endl;
-  std::cout <<"L." << __LINE__ << "TDC_CDH_MAX: " << cdscuts::tdc_cdh_max << std::endl;
+  std::cout <<"L." << __LINE__ << " MOM_RES beam line: " << MOM_RES << std::endl;
+  std::cout <<"L." << __LINE__ << " TDC_CDH_MAX: " << cdscuts::tdc_cdh_max << std::endl;
 
 
   TDatabasePDG *pdg = new TDatabasePDG();
@@ -131,7 +130,7 @@ int main( int argc, char** argv )
   // ###  and evaluated using "Air" Dora MC
   // 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+
   
-  std::cout << "L." << __LINE__ << "cov. matrix for S+ mode" << std::endl;
+  std::cout << "L." << __LINE__ << " cov. matrix for S+ mode" << std::endl;
   for(int ip=0;ip<kin::npart;ip++){
     for(int im=0;im<16;im++){
       std::cout << kin::covValSpmode[ip][im] << " ";
@@ -141,7 +140,7 @@ int main( int argc, char** argv )
     }
     std::cout << std::endl;
   }
-  std::cout << "L." << __LINE__ << "cov. matrix for S- mode" << std::endl;
+  std::cout << "L." << __LINE__ << " cov. matrix for S- mode" << std::endl;
   for(int ip=0;ip<kin::npart;ip++){
     for(int im=0;im<16;im++){
       std::cout << kin::covValSmmode[ip][im] << " ";
@@ -555,7 +554,7 @@ int main( int argc, char** argv )
     Tools::Fill1D( Form("nGoodTrack"), nGoodTrack );
     
     
-    if( Util::GetCDHMul(cdsMan)!=cdscuts::cdhmulti ){
+    if( Util::GetCDHMul(cdsMan,nGoodTrack)!=cdscuts::cdhmulti ){
       nAbort_nCDH++;
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nCDH" << std::endl;
       continue;
@@ -850,7 +849,7 @@ int main( int argc, char** argv )
         if(NeutralCDHseg.size()!=1) {
           std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
         } else {
-          if(AddQAplots) Tools::Fill1D(Form("CDHNeutralSeg"),NeutralCDHseg.at(0));
+          Tools::Fill1D(Form("CDHNeutralSeg"),NeutralCDHseg.at(0));
         }
 
         CDSTrack *track_pip = cdstrackMan->Track( pip_ID[0] ); // only 1 track
@@ -960,11 +959,10 @@ int main( int argc, char** argv )
         //Tools::Fill2D( Form("dE_time"),  , ncdhhit->ctmean() );
         Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
       
-        if(AddQAplots){
-          Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_beam.Z(),vtx_beam.X());
-          Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_beam.Z(),vtx_beam.Y());
-          Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_beam.X(),vtx_beam.Y());
-        }
+        Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_beam.Z(),vtx_beam.X());
+        Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_beam.Z(),vtx_beam.Y());
+        Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_beam.X(),vtx_beam.Y());
+        
         //Fiducial cuts OK
         if( GeomTools::GetID(vtx_beam)==CID_Fiducial ){
           Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_beam.Z(),vtx_beam.X());
@@ -1276,14 +1274,10 @@ int main( int argc, char** argv )
                     //  || !( -3.* 7.0883/1000.  < valpz && valpz < 3.* 7.0883/1000.) ){
                     //  IsncdsMatchOK=false;
                     //}
-
-
                     for( int ip=0; ip<kin::npart; ip++ ){
                       for( int ii=0; ii<4; ii++ ){
                         for( int jj=0; jj<4; jj++ ){
                           //only ncds and nmiss 
-                          
-
                           double val = (TL_meas[ip][ii] - TL_gene[genID[ip]][jj]);
                           if(IsncdsMatchOK  )Tools::Fill1D(Form("cov_%d_%d_%d", ip, ii, jj), val);
                           if(ip==kin::kmbeam) primvtx = mcData->track(ID[ip])->vertex();

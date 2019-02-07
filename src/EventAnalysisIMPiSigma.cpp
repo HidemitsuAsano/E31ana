@@ -54,7 +54,6 @@ const int MaxTreeSize = 1000000000;
 const int Verbosity = 0;
 const bool DoCDCRetiming = false;
 const bool DoKinFit = true;
-const bool AddQAplots = true;
 
 //-----------------------------------------//
 //--- covariance matrices for KinFitter ---//
@@ -466,7 +465,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   }
 
 
-  if( Event_Number%1000==1 ) {
+  if( Event_Number%5000==1 ) {
     t1=clock();
     std::cout << "Run " << confMan->GetRunNumber()
               << " Event# : " << Event_Number
@@ -503,9 +502,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   Tools::Fill1D( Form("nGoodTrack"), nGoodTrack );
 
   Tools::Fill1D( Form("EventCheck"), 1 );
+  
 
   //CDH-hits cut
-  if( Util::GetCDHMul(cdsMan)!=cdscuts::cdhmulti){
+  if( Util::GetCDHMul(cdsMan,nGoodTrack)!=cdscuts::cdhmulti){
     Clear( nAbort_nCDH );
     return true;
   }
@@ -517,6 +517,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     return true;
   }
   Tools::Fill1D( Form("EventCheck"), 3 );
+
 
   //beam line analysis and event selection
   
@@ -732,7 +733,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       if(NeutralCDHseg.size()!=1) {
         std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
       } else {
-        if(AddQAplots) Tools::Fill1D(Form("CDHNeutralSeg"),NeutralCDHseg.at(0));
+        Tools::Fill1D(Form("CDHNeutralSeg"),NeutralCDHseg.at(0));
       }
 
       CDSTrack *track_pip = trackMan->Track( pip_ID.at(0) ); // should be only 1 track
@@ -855,19 +856,15 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       Tools::Fill2D( Form("dE_betainv"), 1./NeutralBetaCDH, ncdhhit->emean() );
       Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
 
-      if(AddQAplots) {
-        Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_react.Z(),vtx_react.X());
-        Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_react.Z(),vtx_react.Y());
-        Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_react.X(),vtx_react.Y());
-      }
+      Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_react.Z(),vtx_react.X());
+      Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_react.Z(),vtx_react.Y());
+      Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_react.X(),vtx_react.Y());
       //Fiducial cuts OK
       if( GeomTools::GetID(vtx_react)==CID_Fiducial ) {
-        if(AddQAplots) {
-          Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_react.Z(),vtx_react.X());
-          Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_react.Z(),vtx_react.Y());
-          Tools::Fill2D(Form("Vtx_XY_fid"),vtx_react.X(),vtx_react.Y());
-          Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
-        }
+        Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_react.Z(),vtx_react.X());
+        Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_react.Z(),vtx_react.Y());
+        Tools::Fill2D(Form("Vtx_XY_fid"),vtx_react.X(),vtx_react.Y());
+        Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
         Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
         Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
 
@@ -1231,7 +1228,6 @@ void EventAnalysis::InitializeHistogram()
   InitBasicHist();
   InitIMPiSigmaHist();
 
-  if(AddQAplots) InitAddedQAHist();
 
   return;
 }
