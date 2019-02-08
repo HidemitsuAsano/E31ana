@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="32"
+set Version="34"
 set DATADIR="/group/had/knucl/e15/data/Run78/"
 set OUTDIR="/group/had/knucl/e15/asano/Run78/"
 set KWSKDIR="/group/had/knucl/e15/shinngo/Run78/evtracking/"
@@ -50,3 +50,16 @@ while ($i < 812)
     @ i ++
 end
 
+while (1)
+  if ( (`bjobs | wc -l`) < 1 ) then 
+    echo "all bjob finished"
+    cd $OUTDIRSUB
+    tcsh hadd_IMhist.csh
+    tcsh hadd_IMnpippim.csh
+    break
+  endif
+  echo "running" 
+  sleep 30
+end
+
+echo "aggrigation is finished"

@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="33"
+set Version="34"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim2/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 set CDSDIRSUB="${CDSDIR}simDST2"
@@ -65,3 +65,16 @@ while ($i < 400)
     @ i ++
 end
 
+while (1)
+  if ( (`bjobs | wc -l`) < 1 ) then 
+    echo "all bjob finished"
+    cd $OUTDIRSUB
+    tcsh hadd_simhist.csh
+    tcsh hadd_sim_pippimn.csh
+    break
+  endif
+  echo "running" 
+  sleep 10
+end
+
+echo "aggrigation is finished"
