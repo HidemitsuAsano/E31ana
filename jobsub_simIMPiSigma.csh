@@ -74,7 +74,7 @@ while (1)
     break
   endif
   echo "running" 
-  sleep 10
+  sleep 30
 end
 
 echo "aggrigation is finished"
