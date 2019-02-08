@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="2"
+set Version="4"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim3/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 set CDSDIRSUB="${CDSDIR}simDST3"
@@ -7,7 +7,7 @@ set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simIMPiSigma/"
 
 set logbasedir="/home/had/hiasano/logs/"
 set date=`date +%Y%m%d_%H%M`
-set logdir="${logbasedir}${date}_simIMPiSigma_DoraAir"
+set logdir="${logbasedir}${date}_simIMPiSigma_DoraAir_${Version}"
 echo "log files  ${logdir}"
 
 if( ! -d $logdir) then 
