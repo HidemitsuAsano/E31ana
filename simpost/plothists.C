@@ -91,12 +91,16 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   }
 
   TCanvas *c = nullptr;
-  TPDF *pdf = new TPDF(pdfname);
-  TIter next(gROOT->GetListOfCanvases());
-  
+  TSeqCollection *SCol = gROOT->GetListOfCanvases();
+  //TPDF *pdf = new TPDF(pdfname);
+  int size = SCol->GetSize();
+  TIter next(SCol);
+  //TIter next(gROOT->GetListOfCanvases());
   bool Spmode = (std::string(filename).find("Sp")!= std::string::npos);
-  while(((c= (TCanvas*)next()) && labelon)){
-    pdf->NewPage();
+  //while(((c= (TCanvas*)next()) && labelon)){
+  for(int i=0;i<size;i++){
+    c= (TCanvas*)next();
+    //pdf->NewPage();
     c->Draw();
     c->cd();
     //inside the canvas
@@ -109,9 +113,12 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
     pt->Draw();
     c->Modified();
     c->Update();
+    if(i==0) c->Print(pdfname+"(",Form("Title:%s",c->GetTitle()));
+    else if(i==size-1)c->Print(pdfname+")",Form("Title:%s",c->GetTitle())); 
+    else c->Print(pdfname,Form("Title:%s",c->GetTitle())); 
   }
-  pdf->Close();
-  std::cout << "closing pdf " << std::endl;
+  //pdf->Close();
+  //std::cout << "closing pdf " << std::endl;
 
 
   return;
@@ -168,6 +175,8 @@ void QACDS(TFile *f){
   //TH1F* h1_CDHNeutralSeg = (TH1F*)f->Get("CDHNeutralSeg");
   //h1_CDHNeutralSeg->SetXTitle("CDH seg#");
   //h1_CDHNeutralSeg->Draw();
+  TCanvas *cdE_CDHtime_2track = new TCanvas(
+
 
   
   //CDC track chi2 distribution
