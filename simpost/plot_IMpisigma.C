@@ -69,6 +69,11 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TLorentzVector *LVec_pip=nullptr;    // 4-momentum(pi+)
   TLorentzVector *LVec_pim=nullptr;    // 4-momentum(pi-)
   TLorentzVector *LVec_n=nullptr;      // 4-momentum(neutron)
+  TLorentzVector mcmom_beam;   // generated 4-momentum(beam)
+  TLorentzVector mcmom_pip;    // generated 4-momentum(pi+)
+  TLorentzVector mcmom_pim;    // generated 4-momentum(pi-)
+  TLorentzVector mcmom_ncds;      // generated 4-momentum(neutron)
+  TLorentzVector mcmom_miss;      // generated 4-momentum(neutron)
   double NeutralBetaCDH; // veracity of neutral particle on CDH
   double dE;   // energy deposit on CDH
   TVector3 *vtx_reaction = nullptr; // vertex(reaction)
@@ -938,10 +943,15 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   npimmom->Write();*/
   
   TCanvas *c = nullptr;
-  TPDF *pdf = new TPDF(pdfname);
-  TIter next(gROOT->GetListOfCanvases());
-  while((c= (TCanvas*)next())){
-    pdf->NewPage();
+  //TPDF *pdf = new TPDF(pdfname);
+  //TIter next(gROOT->GetListOfCanvases());
+  TSeqCollection *SCol = gROOT->GetListOfCanvases();
+  int size = SCol->GetSize();
+  TIter next(SCol);
+  //while((c= (TCanvas*)next())){
+  for(int i=0;i<size;i++){
+    //pdf->NewPage();
+    c= (TCanvas*)next();
     c->Draw();
     c->cd();
     //TPaveText *pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
@@ -953,9 +963,12 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     pt->Draw();
     c->Modified();
     c->Update();
+    if(i==0) c->Print(pdfname+"(",Form("Title:%s",c->GetTitle()));
+    else if(i==size-1)c->Print(pdfname+")",Form("Title:%s",c->GetTitle())); 
+    else c->Print(pdfname,Form("Title:%s",c->GetTitle())); 
   }
-  pdf->Close();
-  std::cout << "closing pdf " << std::endl;
+  //pdf->Close();
+  //std::cout << "closing pdf " << std::endl;
   
   fout->Close();
   
