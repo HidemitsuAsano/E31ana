@@ -861,6 +861,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_react.X(),vtx_react.Y());
       //Fiducial cuts OK
       if( GeomTools::GetID(vtx_react)==CID_Fiducial ) {
+        for( int i=0; i<cdsMan->nCDH(); i++ ) {
+          Tools::Fill2D(Form("dE_CDHtime_pippimn"), cdsMan->CDH(i)->ctmean(), cdsMan->CDH(i)->emean());
+        }
         Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_react.Z(),vtx_react.X());
         Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_react.Z(),vtx_react.Y());
         Tools::Fill2D(Form("Vtx_XY_fid"),vtx_react.X(),vtx_react.Y());
