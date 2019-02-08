@@ -290,7 +290,7 @@ int main( int argc, char** argv )
           //cov_MAX = 0.1;
           cov_MAX = 0.4;
         Tools::newTH1F(Form("cov_%d_%d_%d", ip, j, k), BIN, -cov_MAX, cov_MAX);
-        Tools::newTH2F(Form("cov_mom_%d_%d_%d", ip, j, k), BIN/4., -cov_MAX, cov_MAX,200,0,2.0);
+        Tools::newTH2F(Form("cov_mom_%d_%d_%d", ip, j, k), 500., -cov_MAX, cov_MAX,200,0,2.0);
         //Tools::newTH2F(Form("cov_CDH_%d_%d_%d", ip, j, k), BIN, -cov_MAX, cov_MAX,36,0.5,36.5);
       }
     }
@@ -817,7 +817,7 @@ int main( int argc, char** argv )
       //** isolation cut **//
       int flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list);
       if( flag_isolation ){
-        std::cout<< "L."<< __LINE__ << " Event Number: " <<iev <<  " CDH hit candidate is NOT isolated !!!"<<std::endl;
+        if(Verbosity_)std::cout<< "L."<< __LINE__ << " Event Number: " <<iev <<  " CDH hit candidate is NOT isolated !!!"<<std::endl;
         nAbort_CDHiso++;
         continue;
       }
@@ -967,6 +967,12 @@ int main( int argc, char** argv )
         
         //Fiducial cuts OK
         if( GeomTools::GetID(vtx_beam)==CID_Fiducial ){
+           
+          for( int i=0; i<cdsMan->nCDH(); i++ ) {
+            Tools::Fill2D(Form("dE_CDHtime_pippimn"), cdsMan->CDH(i)->ctmean(), cdsMan->CDH(i)->emean());
+          }
+
+           
           Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_beam.Z(),vtx_beam.X());
           Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_beam.Z(),vtx_beam.Y());
           Tools::Fill2D(Form("Vtx_XY_fid"),vtx_beam.X(),vtx_beam.Y());
@@ -1260,9 +1266,7 @@ int main( int argc, char** argv )
 
 
             //--- for the covariance matrix evaluation ---//
-              //if( flagG4Decay && IsGoodEvent && piSigma_detect ){
               if( flagG4Decay && IsGoodEvent ){
-               // if (MissNFlag && K0rejectFlag && (SigmaPFlag || SigmaMFlag)){
                 if (MissNFlag && K0rejectFlag ){
                   if( ((reactionID==gen::reactionID_Spmode)&&SigmaPFlag)
                   ||  ((reactionID==gen::reactionID_Smmode)&&SigmaMFlag)){
@@ -1365,7 +1369,7 @@ int main( int argc, char** argv )
             <<iev<<" , "<<" ---, "<<ev_cdc<<std::endl;
           }
           outfile2->cd();
-          //if(IsGoodEvent && piSigma_detect){
+          //if(IsGoodEvent && piSigma_detect)
           if(IsGoodEvent ){
             npippimTree->Fill();
             nFill_pippimn++;
@@ -1374,7 +1378,7 @@ int main( int argc, char** argv )
           //** fill tree **//
 	  
         } // if( GeomTools::GetID(vtx_react)==CID_Fiducial )
-      } // if( !nCDC )
+      } // if( !nCDCforVeto )
     }else{  //if pi+ pi- X event  
       nAbort_pippim++;
     }

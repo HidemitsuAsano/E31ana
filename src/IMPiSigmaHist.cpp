@@ -64,20 +64,22 @@ void InitIMPiSigmaHist()
   
   //CDH
   Tools::newTH2F( Form("CDHtime"),36,0.5,36.5,4000,0,200);
-  Tools::newTH2F( Form("dE_CDHtime"),500,0.,100,200,0,50);
-  Tools::newTH2F( Form("dE_CDHtime_2track"),500,0.,100,200,0,50);
-  Tools::newTH2F( Form("NeutraltimeEnergy"),500,0,100,200,0,50);
+  Tools::newTH2F( Form("dE_CDHtime"),200,0.,100,200,0,50);
+  Tools::newTH2F( Form("dE_CDHtime_2track"),200,0.,100,200,0,50);
+  Tools::newTH2F( Form("dE_CDHtime_pippimn"),200,0.,100,200,0,50);
+
+  Tools::newTH2F( Form("NeutraltimeEnergy"),200,0,100,200,0,50);
   Tools::newTH1F( Form("diff_CDH"), 73, -36.5, 36.5 );
   Tools::newTH1F( Form("diff_CDH_CDC"), 181, 0, 181 );
   
   //pi+ pi- X event Neutron ID
-  Tools::newTH2F( Form("dE_betainv"), 1000, 0, 50, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid"), 1000, 0, 50, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta"), 1000, 0, 50, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE"), 1000, 0, 50, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_woK0"), 1000, 0, 50, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_wK0"), 1000, 0, 50, 200, 0, 50);
-  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_woK0_n"), 1000, 0, 50, 200, 0, 50);
+  Tools::newTH2F( Form("dE_betainv"), 500, 0, 50, 200, 0, 50);
+  Tools::newTH2F( Form("dE_betainv_fid"), 500, 0, 50, 200, 0, 50);
+  Tools::newTH2F( Form("dE_betainv_fid_beta"), 500, 0, 50, 200, 0, 50);
+  Tools::newTH2F( Form("dE_betainv_fid_beta_dE"), 500, 0, 50, 200, 0, 50);
+  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_woK0"), 500, 0, 50, 200, 0, 50);
+  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_wK0"), 500, 0, 50, 200, 0, 50);
+  Tools::newTH2F( Form("dE_betainv_fid_beta_dE_woK0_n"), 500, 0, 50, 200, 0, 50);
   Tools::newTH2F( Form("dE_MMom_fid_beta_woK0"), 100, 0, 1.5, 200, 0, 50);
   Tools::newTH2F( Form("dE_MMass_fid_beta_woK0"), 140, 0.4, 1.8, 200, 0, 50);
   
