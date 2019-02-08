@@ -46,7 +46,7 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   pdfname.Replace(std::string(filename).size()-4,5,"pdf");
   std::cout << "pdfname: " << pdfname << std::endl;
   
-  TCanvas *cEventCheck = new TCanvas("cEventCheck","cEventCheck");
+  TCanvas *cEventCheck = new TCanvas("cEventCheck","EventCheck");
   cEventCheck->cd();
   TH1F *h1_EventCheck = (TH1F*)f->Get("EventCheck");
   h1_EventCheck->SetXTitle("Event tag"); 
@@ -91,10 +91,14 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   }
 
   TCanvas *c = nullptr;
-  TPDF *pdf = new TPDF(pdfname);
-  TIter next(gROOT->GetListOfCanvases());
-  while((c= (TCanvas*)next())){
-    pdf->NewPage();
+  //TPDF *pdf = new TPDF(pdfname);
+  TSeqCollection *SCol = gROOT->GetListOfCanvases();
+  int size = SCol->GetSize();
+  TIter next(SCol);
+  // while((c= (TCanvas*)next())){
+  for(int i=0;i<size;i++){
+    //pdf->NewPage();
+    c= (TCanvas*)next();
     c->Draw();
     c->cd();
     //inside the canvas
@@ -106,9 +110,12 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
     pt->Draw();
     c->Modified();
     c->Update();
+    if(i==0) c->Print(pdfname+"(",Form("Title:%s",c->GetTitle()));
+    else if(i==size-1)c->Print(pdfname+")",Form("Title:%s",c->GetTitle())); 
+    else c->Print(pdfname,Form("Title:%s",c->GetTitle())); 
   }
-  pdf->Close();
-  std::cout << "closing pdf " << std::endl;
+  //pdf->Close();
+  //std::cout << "closing pdf " << std::endl;
 
 
   return;
@@ -160,21 +167,23 @@ void QACDS(TFile *f){
   h2_CDHtime->SetYTitle("time [nsec]");
   h2_CDHtime->Draw("colz");
 
-  TCanvas *cCDHNeutralSeg = new TCanvas("cCDHNeutralSeg","cCDHNeutralSeg");
+  TCanvas *cCDHNeutralSeg = new TCanvas("cCDHNeutralSeg","CDHNeutralSeg");
   cCDHNeutralSeg->cd();
   TH1F* h1_CDHNeutralSeg = (TH1F*)f->Get("CDHNeutralSeg");
   h1_CDHNeutralSeg->SetXTitle("CDH seg#");
   h1_CDHNeutralSeg->Draw();
 
+  //TCanvas *cdE_CDHtime_2track = new TCanvas("cdE_CDHtime_2track","cdE_CDHtime_2track");
+  //TH1F* dE_CDHtime_2track = 
   
   //CDC track chi2 distribution
-  TCanvas *ctrackchi2_CDC = new TCanvas("ctrackchi2_CDC","ctrackchi2_CDC");
+  TCanvas *ctrackchi2_CDC = new TCanvas("ctrackchi2_CDC","trackchi2_CDC");
   TH1F* h1_trackchi2_CDC = (TH1F*)f->Get("trackchi2_CDC");
   h1_trackchi2_CDC->SetXTitle("CDC track chi2/ndf");
   h1_trackchi2_CDC->Draw();
 
 
-  TCanvas *cntrack = new TCanvas("cntrac","cntrack");
+  TCanvas *cntrack = new TCanvas("cntrack_CDS","ntrack_CDS");
   TH1F* h1_ntrack_CDS = (TH1F*)f->Get("ntrack_CDS");
   //h1_ntrack_CDS->SetXTitle("# of tracks");
   //h1_ntrack_CDS->Draw();
@@ -297,7 +306,7 @@ void QACDS(TFile *f){
   h1_Vtx_Z_center->Draw("");
   */
 
-  TCanvas *cmul_CDH = new TCanvas("cmul_CDH","cmul_CDH");
+  TCanvas *cmul_CDH = new TCanvas("cmul_CDH","mul_CDH");
   TH1F* h1_mul_CDH = (TH1F*)f->Get("mul_CDH");
   h1_mul_CDH->SetTitle("CDH multiplicity");
   h1_mul_CDH->SetXTitle("# of CDH segment");
@@ -307,30 +316,30 @@ void QACDS(TFile *f){
   h1_mul_CDH_clone->SetFillColor(2);
   h1_mul_CDH_clone->Draw("same");
 
-  TCanvas *cmul_CDH_assoc = new TCanvas("cmul_CDH_assoc","cmul_CDH_assoc");
+  TCanvas *cmul_CDH_assoc = new TCanvas("cmul_CDH_assoc","mul_CDH_assoc");
   TH1F* h1_mul_CDH_assoc = (TH1F*)f->Get("mul_CDH_assoc");
   h1_mul_CDH_assoc->SetTitle("# CDH seg. associated with CDC track");
   h1_mul_CDH_assoc->SetXTitle("# of CDH segment");
   h1_mul_CDH_assoc->Draw();
 
-  TCanvas *cdiff_CDH = new TCanvas("cdiff_CDH","cdiff_CDH");
+  TCanvas *cdiff_CDH = new TCanvas("cdiff_CDH","diff_CDH");
   TH1F* h1_diff_CDH = (TH1F*)f->Get("diff_CDH");
   h1_diff_CDH->SetTitle("Not used CDH segment # - CDH seg# used for charged");
   h1_diff_CDH->SetXTitle("diff of CDH seg#");
   h1_diff_CDH->Draw();
   
-  TCanvas *cdiff_CDH_CDC = new TCanvas("cdiff_CDH_CDC","cdiff_CDH_CDC");
+  TCanvas *cdiff_CDH_CDC = new TCanvas("cdiff_CDH_CDC","diff_CDH_CDC");
   TH1F* h1_cdiff_CDH_CDC = (TH1F*)f->Get("diff_CDH_CDC");
   h1_cdiff_CDH_CDC->SetXTitle("angle [deg]");
   h1_cdiff_CDH_CDC->Draw();
 
-  TCanvas *cdE_betainv_fiducial = new TCanvas("cdE_betainv_fiducial","cdE_betainv_fiducial");
+  TCanvas *cdE_betainv_fiducial = new TCanvas("cdE_betainv_fiducial","dE_betainv_fid");
   TH2F* h2_dE_betainv = (TH2F*)f->Get("dE_betainv_fid");
   h2_dE_betainv->SetXTitle("1/#beta");
   h2_dE_betainv->SetYTitle("dE [MeV]");
   h2_dE_betainv->Draw("colz");
 
-  TCanvas *c_betainv_fiducial = new TCanvas("c_betainv_fiducial","c_betainv_fiducial");
+  TCanvas *cdE_betainv_fiducial_px = new TCanvas("cdE_betainv_fiducial_px","dE_betainv_fiducial_px");
   int bin2mev = h2_dE_betainv->GetYaxis()->FindBin(2.0);
   int bin4mev = h2_dE_betainv->GetYaxis()->FindBin(4.0);
   int bin6mev = h2_dE_betainv->GetYaxis()->FindBin(6.0);
@@ -348,7 +357,7 @@ void QACDS(TFile *f){
   h1_6mevcut->SetLineColor(4);
   h1_6mevcut->Draw("same");
   
-  TCanvas *c_dE_fiducial = new TCanvas("c_dE_fiducial","c_dE_fiducial");
+  TCanvas *c_dE_fiducial = new TCanvas("c_dE_fiducial","dE_betainv_fid_beta");
   TH2F* h2_dE_betainv_fid_beta = (TH2F*)f->Get("dE_betainv_fid_beta");
   TH1D* h1_dE_beta = h2_dE_betainv_fid_beta->ProjectionY("py");
   h1_dE_beta->Draw();
@@ -579,9 +588,6 @@ void PhysicsPlots(TFile *f){
   h2_q_IMnpipi_woK0_wSid_n_py2->SetLineColor(3);
   h2_q_IMnpipi_woK0_wSid_n_py2->Draw("Esame");
 
-
-
-
 }
 
 
@@ -595,18 +601,18 @@ void QAbeamline(TFile *f){
 
   //QA plots
   TH1F *h1_nBHD = (TH1F*) f->Get("mul_BHD");
-  TCanvas *cnBHD =  new TCanvas("nBHD","nBHD");
+  TCanvas *cnBHD =  new TCanvas("nBHD","mul_BHD");
   cnBHD->cd();
   h1_nBHD->GetXaxis()->SetTitle("BHD multiplicity");
   h1_nBHD->Draw();
   TH1F *h1_nT0 = (TH1F*) f->Get("mul_T0");
-  TCanvas *cnT0 =  new TCanvas("nT0","nT0");
+  TCanvas *cnT0 =  new TCanvas("nT0","mul_T0");
   cnT0->cd();
   h1_nT0->GetXaxis()->SetTitle("T0 multiplicity");
   h1_nT0->Draw();
 
   TH1F *h1_T0BHDtof = (TH1F*)f->Get("tof_T0BHD");
-  TCanvas *ctof = new TCanvas("tof","tof");
+  TCanvas *ctof = new TCanvas("tof","tof_T0BHD");
   ctof->cd();
   h1_T0BHDtof->GetXaxis()->SetRangeUser(24,38);
   h1_T0BHDtof->GetXaxis()->SetTitle("T0-BHD tof [nsec.]");
@@ -619,13 +625,13 @@ void QAbeamline(TFile *f){
 
   //BLC1
   TH1F *h1_nBLC1 = (TH1F*) f->Get("ntrack_BLC1");
-  TCanvas *cnBLC1 = new TCanvas("nBLC1","nBLC1");
+  TCanvas *cnBLC1 = new TCanvas("nBLC1","ntrack_BLC1");
   cnBLC1->cd();
   h1_nBLC1->GetXaxis()->SetTitle("BLC1 # of tracks");
   h1_nBLC1->Draw();
   
   TH1F *h1_BLC1time = (TH1F*) f->Get("tracktime_BLC1");
-  TCanvas *cBLC1time = new TCanvas("BLC1time","BLC1time");
+  TCanvas *cBLC1time = new TCanvas("BLC1time","tracktime_BLC1");
   cBLC1time->cd();
   cBLC1time->SetLogy();
   h1_BLC1time->GetXaxis()->SetRangeUser(-50,50);
@@ -637,7 +643,7 @@ void QAbeamline(TFile *f){
   h1_BLC1time_cut->Draw("same");
 
   TH1F *h1_BLC1chi2 = (TH1F*)f->Get("trackchi2_BLC1");
-  TCanvas *cBLC1chi2 = new TCanvas("BLC1chi2","BLC1chi2");
+  TCanvas *cBLC1chi2 = new TCanvas("BLC1chi2","trackchi2_BLC1");
   cBLC1chi2->cd();
   cBLC1chi2->SetLogy();
   h1_BLC1chi2->GetXaxis()->SetTitle("BLC1 chi2/ndf");
@@ -650,13 +656,13 @@ void QAbeamline(TFile *f){
 
   //BLC2
   TH1F *h1_nBLC2 = (TH1F*)f->Get("ntrack_BLC2");
-  TCanvas *cnBLC2 = new TCanvas("nBLC2","nBLC2");
+  TCanvas *cnBLC2 = new TCanvas("nBLC2","ntrack_BLC2");
   cnBLC2->cd();
   h1_nBLC2->GetXaxis()->SetTitle("BLC2 # of tracks");
   h1_nBLC2->Draw();
 
   TH1F *h1_BLC2time = (TH1F*)f->Get("tracktime_BLC2");
-  TCanvas *cBLC2time = new TCanvas("BLC2time","BLC2time");
+  TCanvas *cBLC2time = new TCanvas("BLC2time","tracktime_BLC2");
   cBLC2time->cd();
   cBLC2time->SetLogy();
   h1_BLC2time->GetXaxis()->SetTitle("BLC2 track time [nsec.]");
@@ -668,7 +674,7 @@ void QAbeamline(TFile *f){
   h1_BLC2time_cut->Draw("same");
 
   TH1F *h1_BLC2chi2 = (TH1F*)f->Get("trackchi2_BLC2");
-  TCanvas *cBLC2chi2 = new TCanvas("BLC2chi2","BLC2chi2");
+  TCanvas *cBLC2chi2 = new TCanvas("BLC2chi2","trackchi2_BLC2");
   cBLC2chi2->cd();
   cBLC2chi2->SetLogy();
   h1_BLC2chi2->GetXaxis()->SetTitle("BLC2 chi2/ndf");
@@ -682,13 +688,13 @@ void QAbeamline(TFile *f){
 
   //BPC
   TH1F *h1_nBPC = (TH1F*)f->Get("ntrack_BPC");
-  TCanvas *cnBPC = new TCanvas("nBPC","nBPC");
+  TCanvas *cnBPC = new TCanvas("nBPC","ntrack_BPC");
   cnBPC->cd();
   h1_nBPC->GetXaxis()->SetTitle("BPC # of tracks");
   h1_nBPC->Draw();
 
   TH1F *h1_BPCtime = (TH1F*)f->Get("tracktime_BPC");
-  TCanvas *cBPCtime = new TCanvas("BPCtime","BPCtime");
+  TCanvas *cBPCtime = new TCanvas("BPCtime","tracktime_BPC");
   cBPCtime->cd();
   cBPCtime->SetLogy();
   h1_BPCtime->GetXaxis()->SetTitle("BPC track time [nsec.]");
@@ -700,7 +706,7 @@ void QAbeamline(TFile *f){
   h1_BPCtime_cut->Draw("same");
 
   TH1F *h1_BPCchi2 = (TH1F*)f->Get("trackchi2_BPC");
-  TCanvas *cBPCchi2 = new TCanvas("BPCchi2","BPCchi2");
+  TCanvas *cBPCchi2 = new TCanvas("BPCchi2","trackchi2_BPC");
   cBPCchi2->cd();
   cBPCchi2->SetLogy();
   h1_BPCchi2->GetXaxis()->SetTitle("BPC chi2/ndf");
@@ -713,7 +719,7 @@ void QAbeamline(TFile *f){
 
   //D5
   TH1F *h1_D5chi2 = (TH1F*)f->Get("trackchi2_beam");
-  TCanvas *cD5chi2 = new TCanvas("D5chi2","D5chi2");
+  TCanvas *cD5chi2 = new TCanvas("D5chi2","trackchi2_beam");
   cD5chi2->cd();
   cD5chi2->SetLogy();
   h1_D5chi2->GetXaxis()->SetTitle("D5 chi2/ndf");
@@ -724,14 +730,14 @@ void QAbeamline(TFile *f){
   h1_D5chi2_cut->Draw("same");
 
   TH1F *h1_D5mom = (TH1F*)f->Get("momentum_beam");
-  TCanvas *cDmom = new TCanvas("D5mom","D5mom");
+  TCanvas *cDmom = new TCanvas("D5mom","momentum_beam");
   cDmom->cd();
   h1_D5mom->GetXaxis()->SetTitle("beam mom. [GeV/c]");
   h1_D5mom->Draw();
   
   //BLC2-BPC matching
   TH2F* h2_BLC2_BPC_posdiff = (TH2F*)f->Get("dydx_BLC2BPC");
-  TCanvas *cBLC2_BPC_posdiff = new TCanvas("cBLC2_BPC_posdiff","cBLC2_BPC_posdiff");
+  TCanvas *cBLC2_BPC_posdiff = new TCanvas("cdydx_BLC2BPC","dydx_BLC2BPC");
   h2_BLC2_BPC_posdiff->SetXTitle("BLC2BPC track dx [cm]");
   h2_BLC2_BPC_posdiff->SetYTitle("BLC2BPC track dy [cm]");
   //gPad->SetLeftMargin(0.13);
@@ -741,7 +747,7 @@ void QAbeamline(TFile *f){
   cBLC2_BPC_posdiff->cd();
   h2_BLC2_BPC_posdiff->Draw("colz");
 
-  TCanvas *cBLC2_BPC_posdiff_px = new TCanvas("cBLC2_BPC_posdiff_px","cBLC2_BPC_posdiff_px");
+  TCanvas *cBLC2_BPC_posdiff_px = new TCanvas("cBLC2_BPC_posdiff_px","BLC2_BPC_posdiff_px");
   TH1D* h2_BLC2_BPC_posdiff_px =  h2_BLC2_BPC_posdiff->ProjectionX();
   h2_BLC2_BPC_posdiff_px->Draw();
   TH1D* h2_BLC2_BPC_posdiff_px_cut = (TH1D*) h2_BLC2_BPC_posdiff_px->Clone();
@@ -749,7 +755,7 @@ void QAbeamline(TFile *f){
   h2_BLC2_BPC_posdiff_px_cut->SetFillColor(kGreen);
   h2_BLC2_BPC_posdiff_px_cut->Draw("same");
 
-  TCanvas *cBLC2_BPC_posdiff_py = new TCanvas("cBLC2_BPC_posdiff_py","cBLC2_BPC_posdiff_py");
+  TCanvas *cBLC2_BPC_posdiff_py = new TCanvas("cBLC2_BPC_posdiff_py","BLC2_BPC_posdiff_py");
   TH1D* h2_BLC2_BPC_posdiff_py =  h2_BLC2_BPC_posdiff->ProjectionY();
   h2_BLC2_BPC_posdiff_py->Draw();
   TH1D* h2_BLC2_BPC_posdiff_py_cut = (TH1D*) h2_BLC2_BPC_posdiff_py->Clone();
@@ -760,13 +766,13 @@ void QAbeamline(TFile *f){
 
 
   TH2F* h2_BLC2_BPC_dirdiff = (TH2F*)f->Get("dydzdxdz_BLC2BPC");
-  TCanvas *cBLC2_BPC_dirdiff = new TCanvas("cBLC2_BPC_dirdiff","cBLC2_BPC_dirdiff");
+  TCanvas *cBLC2_BPC_dirdiff = new TCanvas("cBLC2_BPC_dirdiff","BLC2_BPC_dirdiff");
   cBLC2_BPC_dirdiff->cd();
   h2_BLC2_BPC_dirdiff->SetXTitle("BCL2BPC track dx/dz");
   h2_BLC2_BPC_dirdiff->SetYTitle("BCL2BPC track dy/dz");
   h2_BLC2_BPC_dirdiff->Draw("colz");
    
-  TCanvas *cBLC2_BPC_dirdiff_px = new TCanvas("cBLC2_BPC_dirdiff_px","cBLC2_BPC_dirdiff_px");
+  TCanvas *cBLC2_BPC_dirdiff_px = new TCanvas("cBLC2_BPC_dirdiff_px","BLC2_BPC_dirdiff_px");
   cBLC2_BPC_dirdiff_px->cd();
   TH1D* h2_BLC2_BPC_dirdiff_px = h2_BLC2_BPC_dirdiff->ProjectionX();
   h2_BLC2_BPC_dirdiff_px->Draw();
@@ -775,7 +781,7 @@ void QAbeamline(TFile *f){
   h2_BLC2_BPC_dirdiff_px_cut->SetFillColor(kGreen);
   h2_BLC2_BPC_dirdiff_px_cut->Draw("same");
   
-  TCanvas *cBLC2_BPC_dirdiff_py = new TCanvas("cBLC2_BPC_dirdiff_py","cBLC2_BPC_dirdiff_py");
+  TCanvas *cBLC2_BPC_dirdiff_py = new TCanvas("cBLC2_BPC_dirdiff_py","BLC2_BPC_dirdiff_py");
   cBLC2_BPC_dirdiff_py->cd();
   TH1D* h2_BLC2_BPC_dirdiff_py = h2_BLC2_BPC_dirdiff->ProjectionY();
   h2_BLC2_BPC_dirdiff_py->Draw();

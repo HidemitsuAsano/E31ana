@@ -902,10 +902,15 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   npimmom->Write();*/
   
   TCanvas *c = nullptr;
-  TPDF *pdf = new TPDF(pdfname);
-  TIter next(gROOT->GetListOfCanvases());
-  while((c= (TCanvas*)next())){
-    pdf->NewPage();
+  //TPDF *pdf = new TPDF(pdfname);
+  TSeqCollection *SCol = gROOT->GetListOfCanvases();
+  int size = SCol->GetSize();
+  //TIter next(gROOT->GetListOfCanvases());
+  TIter next(SCol);
+  for(int i=0;i<size;i++){
+  //while((c= (TCanvas*)next())){
+    //pdf->NewPage();
+    c= (TCanvas*)next();
     c->Draw();
     c->cd();
     TPaveText *pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
@@ -915,9 +920,12 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     pt->Draw();
     c->Modified();
     c->Update();
+    if(i==0) c->Print(pdfname+"(",Form("Title:%s",c->GetTitle()));
+    else if(i==size-1)c->Print(pdfname+")",Form("Title:%s",c->GetTitle())); 
+    else c->Print(pdfname,Form("Title:%s",c->GetTitle())); 
   }
-  pdf->Close();
-  std::cout << "closing pdf " << std::endl;
+  //pdf->Close();
+  //std::cout << "closing pdf " << std::endl;
   
   fout->Close();
   
