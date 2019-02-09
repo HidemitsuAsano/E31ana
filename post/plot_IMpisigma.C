@@ -51,8 +51,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   std::string outfilename = std::string(filename);
   outfilename.insert(outfilename.size()-5,"_post");
   std::cout << "outfilename: " << outfilename << std::endl;
-  TString pdfname = outfilename;
-  pdfname.Replace(outfilename.size()-4,5,"pdf");
+  TString pdfname = std::string(filename);
+  pdfname.Replace(std::string(filename).size()-4,5,"pdf");
   std::cout << "pdfname: " << pdfname << std::endl;
 
   //--- color style ---//
@@ -355,7 +355,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   //------------------------//
   for ( Int_t i=0; i<nevent; i++ ) {
     tree->GetEvent(i);
-    if(i%10000==0) std::cout << "Event# " << i << std::endl; 
+    if(i%50000==0) std::cout << "Event# " << i << std::endl; 
     
     // calc missing n //
     TLorentzVector LVec_n_miss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n;
@@ -902,15 +902,15 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   npimmom->Write();*/
   
   TCanvas *c = nullptr;
-  //TPDF *pdf = new TPDF(pdfname);
-  TSeqCollection *SCol = gROOT->GetListOfCanvases();
-  int size = SCol->GetSize();
-  //TIter next(gROOT->GetListOfCanvases());
-  TIter next(SCol);
-  for(int i=0;i<size;i++){
-  //while((c= (TCanvas*)next())){
-    //pdf->NewPage();
-    c= (TCanvas*)next();
+  TPDF *pdf = new TPDF(pdfname);
+  //TSeqCollection *SCol = gROOT->GetListOfCanvases();
+  //int size = SCol->GetSize();
+  TIter next(gROOT->GetListOfCanvases());
+  //TIter next(SCol);
+  //for(int i=0;i<size;i++){
+  while((c= (TCanvas*)next())){
+    pdf->NewPage();
+    //c= (TCanvas*)next();
     c->Draw();
     c->cd();
     TPaveText *pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
@@ -920,12 +920,12 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     pt->Draw();
     c->Modified();
     c->Update();
-    if(i==0) c->Print(pdfname+"(",Form("Title:%s",c->GetTitle()));
-    else if(i==size-1)c->Print(pdfname+")",Form("Title:%s",c->GetTitle())); 
-    else c->Print(pdfname,Form("Title:%s",c->GetTitle())); 
+    //if(i==0) c->Print(pdfname+"(",Form("Title:%s",c->GetTitle()));
+    //else if(i==size-1)c->Print(pdfname+")",Form("Title:%s",c->GetTitle())); 
+    //else c->Print(pdfname,Form("Title:%s",c->GetTitle())); 
   }
-  //pdf->Close();
-  //std::cout << "closing pdf " << std::endl;
+  pdf->Close();
+  std::cout << "closing pdf " << std::endl;
   
   fout->Close();
   
