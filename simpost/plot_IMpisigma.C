@@ -27,7 +27,7 @@ const bool gridon=true;
 const bool staton=true;
 
 //mode 0: Sigma+ ,1: Sigma- 
-void plot_IMpisigma(const char* filename="",const int mode=0)
+void plot_IMpisigma(const char* filename="")
 {
   std::cout << "p-value cut:" << pvalcut << std::endl; 
   std::cout << "dE cut:" << dEcut << std::endl; 
@@ -52,8 +52,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   std::string outfilename = std::string(filename);
   outfilename.insert(outfilename.size()-5,"_post");
   std::cout << "outfilename: " << outfilename << std::endl;
-  TString pdfname = outfilename;
-  pdfname.Replace(outfilename.size()-4,5,"pdf");
+  TString pdfname = std::string(filename);
+  pdfname.Replace(std::string(filename).size()-4,5,"pdf");
   std::cout << "pdfname: " << pdfname << std::endl;
 
   bool Spmode = (std::string(filename).find("Sp")!= std::string::npos);
@@ -115,8 +115,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   tree->SetBranchAddress( "mom_pip", &LVec_pip );
   tree->SetBranchAddress( "mom_pim", &LVec_pim );
   tree->SetBranchAddress( "mom_n", &LVec_n );
-  //tree->SetBranchAddress( "NeutralBetaCDH", &NeutralBetaCDH );<- from v32.
-  tree->SetBranchAddress( "beta", &NeutralBetaCDH );
+  tree->SetBranchAddress( "NeutralBetaCDH", &NeutralBetaCDH );<- from v32.
+  //tree->SetBranchAddress( "beta", &NeutralBetaCDH );
   tree->SetBranchAddress( "dE", &dE );
   tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
   tree->SetBranchAddress( "vtx_pip",&vtx_pip);
@@ -124,22 +124,22 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   //tree->SetBranchAddress( "run_num", &run_num );
   //tree->SetBranchAddress( "event_num", &event_num );
   //tree->SetBranchAddress( "block_num", &block_num );
-  //tree->SetBranchAddress( "kfSpmode_mom_beam",   &kfSpmode_mom_beam );
-  //tree->SetBranchAddress( "kfSpmode_mom_pip", &kfSpmode_mom_pip );
-  //tree->SetBranchAddress( "kfSpmode_mom_pim", &kfSpmode_mom_pim );
-  //tree->SetBranchAddress( "kfSpmode_mom_n", &kfSpmode_mom_n );
-  tree->SetBranchAddress( "kf_chi2_Spmode", &kfSpmode_chi2 );
-  tree->SetBranchAddress( "kf_NDF_Spmode", &kfSpmode_NDF );
-  tree->SetBranchAddress( "kf_status_Spmode", &kfSpmode_status );
-  tree->SetBranchAddress( "kf_pvalue_Spmode", &kfSpmode_pvalue );
-  //tree->SetBranchAddress( "kfSmmode_mom_beam",   &kfSmmode_mom_beam );
-  //tree->SetBranchAddress( "kfSmmode_mom_pip", &kfSmmode_mom_pip );
-  //tree->SetBranchAddress( "kfSmmode_mom_pim", &kfSmmode_mom_pim );
-  //tree->SetBranchAddress( "kfSmmode_mom_n", &kfSmmode_mom_n );
-  tree->SetBranchAddress( "kf_chi2_Smmode", &kfSmmode_chi2 );
-  tree->SetBranchAddress( "kf_NDF_Smmode", &kfSmmode_NDF );
-  tree->SetBranchAddress( "kf_status_Smmode", &kfSmmode_status );
-  tree->SetBranchAddress( "kf_pvalue_Smmode", &kfSmmode_pvalue );
+  tree->SetBranchAddress( "kfSpmode_mom_beam",   &kfSpmode_mom_beam );
+  tree->SetBranchAddress( "kfSpmode_mom_pip", &kfSpmode_mom_pip );
+  tree->SetBranchAddress( "kfSpmode_mom_pim", &kfSpmode_mom_pim );
+  tree->SetBranchAddress( "kfSpmode_mom_n", &kfSpmode_mom_n );
+  //tree->SetBranchAddress( "kf_chi2_Spmode", &kfSpmode_chi2 );
+  //tree->SetBranchAddress( "kf_NDF_Spmode", &kfSpmode_NDF );
+  //tree->SetBranchAddress( "kf_status_Spmode", &kfSpmode_status );
+  //tree->SetBranchAddress( "kf_pvalue_Spmode", &kfSpmode_pvalue );
+  tree->SetBranchAddress( "kfSmmode_mom_beam",   &kfSmmode_mom_beam );
+  tree->SetBranchAddress( "kfSmmode_mom_pip", &kfSmmode_mom_pip );
+  tree->SetBranchAddress( "kfSmmode_mom_pim", &kfSmmode_mom_pim );
+  tree->SetBranchAddress( "kfSmmode_mom_n", &kfSmmode_mom_n );
+  //tree->SetBranchAddress( "kf_chi2_Smmode", &kfSmmode_chi2 );
+  //tree->SetBranchAddress( "kf_NDF_Smmode", &kfSmmode_NDF );
+  //tree->SetBranchAddress( "kf_status_Smmode", &kfSmmode_status );
+  //tree->SetBranchAddress( "kf_pvalue_Smmode", &kfSmmode_pvalue );
   tree->SetBranchAddress( "kf_flag", &kf_flag );
   
   
@@ -943,15 +943,15 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   npimmom->Write();*/
   
   TCanvas *c = nullptr;
-  //TPDF *pdf = new TPDF(pdfname);
-  //TIter next(gROOT->GetListOfCanvases());
-  TSeqCollection *SCol = gROOT->GetListOfCanvases();
-  int size = SCol->GetSize();
-  TIter next(SCol);
-  //while((c= (TCanvas*)next())){
-  for(int i=0;i<size;i++){
-    //pdf->NewPage();
-    c= (TCanvas*)next();
+  TPDF *pdf = new TPDF(pdfname);
+  TIter next(gROOT->GetListOfCanvases());
+  //TSeqCollection *SCol = gROOT->GetListOfCanvases();
+  //int size = SCol->GetSize();
+  //TIter next(SCol);
+  while((c= (TCanvas*)next())){
+  //for(int i=0;i<size;i++){
+    pdf->NewPage();
+    //c= (TCanvas*)next();
     c->Draw();
     c->cd();
     //TPaveText *pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
@@ -963,11 +963,11 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     pt->Draw();
     c->Modified();
     c->Update();
-    if(i==0) c->Print(pdfname+"(",Form("Title:%s",c->GetTitle()));
-    else if(i==size-1)c->Print(pdfname+")",Form("Title:%s",c->GetTitle())); 
-    else c->Print(pdfname,Form("Title:%s",c->GetTitle())); 
+    //if(i==0) c->Print(pdfname+"(",Form("Title:%s",c->GetTitle()));
+    //else if(i==size-1)c->Print(pdfname+")",Form("Title:%s",c->GetTitle())); 
+    //else c->Print(pdfname,Form("Title:%s",c->GetTitle())); 
   }
-  //pdf->Close();
+  pdf->Close();
   //std::cout << "closing pdf " << std::endl;
   
   fout->Close();
