@@ -28,10 +28,10 @@ cp $SRCDIR/IMPiSigmaUtil.cpp $OUTDIRSUB/
 
 cp hadd_simhist.csh $OUTDIRSUB/
 cp hadd_sim_pippimn.csh $OUTDIRSUB/
-ln -s $OUTDIRSUB/simIMpisigma_nSppim_all.root simpost/simIMpisigma_nSppim_all_DoraAir_v${Version}.root
-ln -s $OUTDIRSUB/simIMpisigma_nSmpip_all.root simpost/simIMpisigma_nSmpip_all_DoraAir_v${Version}.root
-ln -s $OUTDIRSUB/simIMpisigma_nSppim_pippimn_all.root simpost/simIMpisigma_nSppim_pippimn_all_DoraAir_v${Version}.root
-ln -s $OUTDIRSUB/simIMpisigma_nSmpip_pippimn_all.root simpost/simIMpisigma_nSmpip_pippimn_all_DoraAir_v${Version}.root
+ln -s $OUTDIRSUB/simIMpisigma_nSppim_all.root simpost/simIMpisigma_nSppim_DoraAir_v${Version}.root
+ln -s $OUTDIRSUB/simIMpisigma_nSmpip_all.root simpost/simIMpisigma_nSmpip_DoraAir_v${Version}.root
+ln -s $OUTDIRSUB/simIMpisigma_nSppim_pippimn_all.root simpost/simIMpisigma_nSppim_pippimn_DoraAir_v${Version}.root
+ln -s $OUTDIRSUB/simIMpisigma_nSmpip_pippimn_all.root simpost/simIMpisigma_nSmpip_pippimn_DoraAir_v${Version}.root
 
 @ i = 0
 while ($i < 400)   

@@ -27,8 +27,8 @@ cp $SRCDIR/IMPiSigmaUtil.cpp $OUTDIRSUB/
 
 cp hadd_IMhist.csh $OUTDIRSUB/
 cp hadd_IMnpippim.csh $OUTDIRSUB/
-ln -s $OUTDIRSUB/evanaIMpisigma_all.root post/evanaIMpisigma_all_v${Version}.root
-ln -s $OUTDIRSUB/evanaIMpisigma_all_npippim.root post/evanaIMpisigma_all_npippim_v${Version}.root
+ln -s $OUTDIRSUB/evanaIMpisigma_all.root post/evanaIMpisigma_v${Version}.root
+ln -s $OUTDIRSUB/evanaIMpisigma_all_npippim.root post/evanaIMpisigma_npippim_v${Version}.root
 
 @ i = 100
 while ($i < 812)   
