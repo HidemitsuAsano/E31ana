@@ -153,8 +153,8 @@ int Util::CDSChargedAna(const bool docdcretiming,
   bool chi2OK = true;
   bool CDHseg1hitOK = true;
   bool CDHsharecheckOK = true;
-  bool FindMass2OK1 = true;
-  bool FindMass2OK2 = true;
+  bool FindMass2OK1 = true;//before CDC retiming 
+  bool FindMass2OK2 = true;//after CDC retiming
   bool EnergyLossOK = true;
   
   if(cdhseg.size()!=0 ){
@@ -205,7 +205,7 @@ int Util::CDSChargedAna(const bool docdcretiming,
     Tools::Fill2D(Form("Vtx_ZY"),vtxb.Z(),vtxb.Y());
     Tools::Fill2D(Form("Vtx_XY"),vtxb.X(),vtxb.Y());
 
-    double tof = 999.;
+    double tof = 999.;//cdh-T0
     double mass2 = -999.;
     int nCDHass = track->nCDHHit();
     Tools::Fill1D(Form("mul_CDH_assoc"),nCDHass);
@@ -281,6 +281,17 @@ int Util::CDSChargedAna(const bool docdcretiming,
       " !!! failure in energy loss calculation [CalcVertexTimeLength()] !!! "<<std::endl;
       EnergyLossOK = false;
       continue;
+    }
+
+    if(MCFlag &&  
+       chi2OK && 
+       CDHseg1hitOK && 
+       CDHsharecheckOK && 
+       FindMass2OK1 && 
+       FindMass2OK2 && 
+       EnergyLossOK && 
+      ((pid==CDS_PiMinus) || (pid==CDS_PiPlus))){
+      Util::AnaCDHHitPos(tof,beta_calc,bpctrack,LVecbeam,track,cdsman,confman);
     }
 
     if( pid==CDS_PiMinus ) {
@@ -500,3 +511,59 @@ int Util::EveSelectBeamline(BeamLineTrackMan *bltrackman,
   return 0;
 }
 
+//usage: use in the loop of CDSTrack
+//
+//input
+//1.meas_tof (T0toCDH)
+//2.beta_cal (beta of CDS track) 
+//3.bpc track
+//4.TLorenzVector of beam
+//5.CDS track
+//6.ConfMan *confman, 
+//
+//
+//output:
+//histograms 
+void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc, 
+                 LocalTrack *bpc,
+                 const TLorentzVector LVecbeam,
+                 CDSTrack *track, 
+                 CDSHitMan *cdsman,
+                 ConfMan *confman)
+{
+  //projected position of the track at the CDH segment at the surface (r=54.4 cm)
+  TVector3 track_pos = track->CDHVertex();
+  TVector3 hit_pos;
+  if( track->nCDHHit()!=1 ){
+    std::cerr<<" #of CDH hit / track is not 1 !!! continue;"<<std::endl;
+    return;
+  }
+  for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
+    HodoscopeLikeHit *cdhhit=track->CDHHit(cdsman,icdh);
+    confman->GetGeomMapManager()->GetPos( CID_CDH, cdhhit->seg(), hit_pos );
+    hit_pos.SetZ(cdhhit->hitpos());//works in MC. 
+  }
+  TVector3 diff = track_pos-hit_pos;
+  Tools::Fill2D( Form("CDH_mom_diffpos_pi_phi"), (track_pos.Phi()-hit_pos.Phi())/TwoPi*360., track->Momentum() );
+  Tools::Fill2D( Form("CDH_mom_diffpos_pi_z"), diff.Z(), track->Momentum() );
+
+  TVector3 Pos_T0;
+  confman->GetGeomMapManager()->GetPos( CID_T0, 0, Pos_T0 );
+  double beamtof=0;// T0-VTX
+  double momout=0;
+  double z_pos = Pos_T0.Z();
+  TVector3 vtxb1,vtxb2,vtxb;
+  track->GetVertex( bpc->GetPosatZ(z_pos), bpc->GetMomDir(), vtxb1, vtxb2 );
+  vtxb = (vtxb1+vtxb2)*0.5;
+  ELossTools::CalcElossBeamTGeo( bpc->GetPosatZ(z_pos), vtxb,
+				     LVecbeam.Vect().Mag(), kpMass, momout, beamtof );
+  double beam_len = (bpc->GetPosatZ(z_pos)-vtxb).Mag();//T0toVTX
+  double beam_mom = momout;
+  double part_tof = meas_tof-beamtof; // VTX-CDH, scattered particle tof
+  double part_len = part_tof*(Const*100.)*beta_calc; //
+  double part_mom = track->Momentum(); // from CDC
+  double part_beta = sqrt(part_mom*part_mom/(part_mom*part_mom+piMass*piMass));
+  double beam_beta = sqrt(beam_mom*beam_mom/(beam_mom*beam_mom+kpMass*kpMass));
+  double calc_tof = beam_len/(Const*100.)/beam_beta+part_len/(Const*100.)/part_beta; // T0-VTX part is measured value
+	Tools::Fill2D( Form("CDH_mom_TOF_pi"), meas_tof-calc_tof, track->Momentum() );
+}

@@ -44,6 +44,14 @@ namespace Util
                         int &blc1id, 
                         int &blc2id, 
                         int &bpcid);
+
+  void AnaCDHHitPos(const double meas_tof, const double beta_calc, 
+                 LocalTrack *bpc,
+                 const TLorentzVector LVec_beambf,
+                 CDSTrack *track,
+                 CDSHitMan *cdsman,
+                 ConfMan *confman);
+
 };
 
 #endif

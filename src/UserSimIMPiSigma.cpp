@@ -62,8 +62,6 @@ double PARA_lnL_MAX;
 double PARA_MM_LP_MIN;
 double PARA_MM_LP_MAX;
 
-//const double cdscuts::tdc_cdh_max = 9999; //ns (original:20 nsec.)
-//const double cdscuts::tdc_cdh_max = 25; //ns (original:20 nsec.)
 const double ADC_CDH_MIN = 1;  // MeV
 
 //= = = = pippimn final-sample tree = = = =//
@@ -85,6 +83,7 @@ TLorentzVector mcmom_pip;    // generated 4-momentum(pi+)
 TLorentzVector mcmom_pim;    // generated 4-momentum(pi-)
 TLorentzVector mcmom_ncds;      // generated 4-momentum(neutron)
 TLorentzVector mcmom_nmiss;      // generated 4-momentum(neutron)
+TVector3 mc_vtx;
 TLorentzVector kfMomBeamSpmode;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
 TLorentzVector kfMom_pip_Spmode;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
 TLorentzVector kfMom_pim_Spmode;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
@@ -246,6 +245,7 @@ int main( int argc, char** argv )
   npippimTree->Branch( "mcmom_pim", &mcmom_pim );
   npippimTree->Branch( "mcmom_ncds", &mcmom_ncds );
   npippimTree->Branch( "mcmom_nmiss", &mcmom_nmiss );
+  npippimTree->Branch( "mc_vtx", &mc_vtx );
   npippimTree->Branch( "kfSpmode_mom_beam",   &kfMomBeamSpmode );
   npippimTree->Branch( "kfSpmode_mom_pip", &kfMom_pip_Spmode );
   npippimTree->Branch( "kfSpmode_mom_pim", &kfMom_pim_Spmode );
@@ -281,17 +281,11 @@ int main( int argc, char** argv )
   const int BIN = 4000;
   double cov_MAX;
   for( int ip=0; ip<kin::npart; ip++ ){
-    for( int j=0; j<4; j++ ){
-      for( int k=0; k<4; k++ ){
-       // if( ip==kin::kmbeam || ip==kin::pim_g1 || ip==kin::pip_g2 ) // K-, pi, pi
-          //cov_MAX = 0.02;
-       //   cov_MAX = 0.08;
-       // else // Sigma, p, n_miss, n
-          //cov_MAX = 0.1;
+    for( int ii=0; ii <4; ii++ ){
+      for( int jj=0; jj<4; jj++ ){
           cov_MAX = 0.4;
-        Tools::newTH1F(Form("cov_%d_%d_%d", ip, j, k), BIN, -cov_MAX, cov_MAX);
-        Tools::newTH2F(Form("cov_mom_%d_%d_%d", ip, j, k), 500., -cov_MAX, cov_MAX,200,0,2.0);
-        //Tools::newTH2F(Form("cov_CDH_%d_%d_%d", ip, j, k), BIN, -cov_MAX, cov_MAX,36,0.5,36.5);
+        Tools::newTH1F(Form("cov_%d_%d_%d", ip, ii, jj), BIN, -cov_MAX, cov_MAX);
+        Tools::newTH2F(Form("cov_mom_%d_%d_%d", ip, ii, jj), 500., -cov_MAX, cov_MAX,200,0,2.0);
       }
     }
   }//for ip
@@ -424,11 +418,13 @@ int main( int argc, char** argv )
         if(Verbosity_)std::cout << "L." << __LINE__ << " This is Sigma- mode sim. " << std::endl;
       }
     }
-    //        beam_K(K-), pi, nmiss, n from Sigma, pi from Sigma
-    //       0: init. val. for prompt particles , -1:init. val. for decay particles            
+
+    //  beam_K(K-), pi, nmiss, n from Sigma, pi from Sigma
+    //  0: init. val. for prompt particles , -1:init. val. for decay particles            
     int parentID[kin::npart] = {0, 0, 0, 0, -1, -1}; 
-    // IDs defined by imctrk
+    // IDs defined by imctrk which is the serial number in mcData class
     int ID[kin::npart]       = {-1, -1, -1, -1, -1, -1}; 
+    // track ID assigned in mcData class
     int trackID[kin::npart]  = {-1, -1, -1, -1, -1, -1}; 
     int nparticle = 0;
     
@@ -488,7 +484,10 @@ int main( int argc, char** argv )
     if( nparticle==kin::npart ) { 
       flagG4Decay = true;
       if(Verbosity_) std::cout << "L." << __LINE__ << " flagG4Decay OK " << std::endl;
+    }else{
+      if(Verbosity_) std::cout << "L." <<  __LINE__ << " nparticle " << nparticle << std::endl;
     }
+
     
 
     //actually not used ?
@@ -598,7 +597,7 @@ int main( int argc, char** argv )
       continue;
     }
 
-    //** vertex calculation **//
+    // vertex calculation //
     for( int it1=0; it1<cdstrackMan->nGoodTrack(); it1++ ){
       cdstrackMan->CalcVertex_beam(cdstrackMan->GoodTrackID(it1), bltrackMan, confMan);
     }
@@ -610,7 +609,6 @@ int main( int argc, char** argv )
     std::vector <int> p_ID;
     //std::vector <int> d_ID;
     
-    std::vector <int> vCDHseg;
 
     bool flagbmom = false;
     TVector3 vtx_react;
@@ -742,7 +740,7 @@ int main( int argc, char** argv )
     //**  PID in CDS             **//
     //** + + + + + + + + + + + + **//
     
-    ///*
+    std::vector <int> vCDHseg;
     const int nIDedTrack = Util::CDSChargedAna(
         DoCDCRetiming,
         bpctrack, cdsMan, cdstrackMan, confMan, 
@@ -770,18 +768,23 @@ int main( int argc, char** argv )
     Tools::Fill1D( Form("ntrack_pi_minus"), pim_ID.size() );
     Tools::Fill1D( Form("ntrack_K_minus"),  km_ID.size() );
 
-    bool chargedhit= Util::IsForwardCharge(blMan); 
+    bool forwardcharge= Util::IsForwardCharge(blMan); 
 
     // + + + + + + + + + + + //
     //  pi+ pi- X event  //
     // + + + + + + + + + + + //
-    if( flagbmom && pim_ID.size()==1 && pip_ID.size()==1 && cdstrackMan->nGoodTrack()==cdscuts::cds_ngoodtrack && !chargedhit ){
+    if( flagbmom && 
+        (pim_ID.size()==1) && 
+        (pip_ID.size()==1) && 
+        (cdstrackMan->nGoodTrack()==cdscuts::cds_ngoodtrack) &&
+        !forwardcharge ){
       
       nFill_pippim++;
       
       //** find CDH hit from neutral particles **//
       std::vector <int> NeutralCDHseg;
       std::vector <int> CDHhit_list;
+      
       for( int icdhhit=0; icdhhit<cdsMan->nCDH(); icdhhit++ ){
         if( cdsMan->CDH(icdhhit)->CheckRange() && cdsMan->CDH(icdhhit)->ctmean()<(cdscuts::tdc_cdh_max+cdscuts::tdc_simoffset) )
           CDHhit_list.push_back( cdsMan->CDH(icdhhit)->seg() );
@@ -813,8 +816,8 @@ int main( int argc, char** argv )
           std::cout<<NeutralCDHseg[n]<<" ";
         } std::cout<<std::endl;
       }
-
-      //** isolation cut **//
+      
+      // isolation cut //
       int flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list);
       if( flag_isolation ){
         if(Verbosity_)std::cout<< "L."<< __LINE__ << " Event Number: " <<iev <<  " CDH hit candidate is NOT isolated !!!"<<std::endl;
@@ -846,6 +849,7 @@ int main( int argc, char** argv )
         std::cout<<"L."<<__LINE__ << "CDH phi " << Pos_CDH.Phi()/TwoPi*360. <<std::endl;
         std::cout<<"L."<<__LINE__ << "CDH costheta " << Pos_CDH.CosTheta() <<std::endl;
       }
+
       //** neutral particle in CDH **//
       if( !nCDCforVeto ){
         if(NeutralCDHseg.size()!=1) {
@@ -857,10 +861,8 @@ int main( int argc, char** argv )
         CDSTrack *track_pip = cdstrackMan->Track( pip_ID[0] ); // only 1 track
         CDSTrack *track_pim = cdstrackMan->Track( pim_ID[0] ); // only 1 track
 	       
-        //TODO : fix vertex RECONSTRUCTION !
-        TVector3 vtx_b; // Vertex(baem-particle)_on_beam
-        TVector3 vtx_p; // Vertex(baem-particle)_on_particle
-        //track_p->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_b, vtx_p );
+        //TODO : vertex RECONSTRUCTION iteratively ?
+        //TVector3 vtx_b; // Vertex(baem-particle)_on_beam
         TVector3 vtx_beam_wpip;//vertex(beam-pip) on beam
         TVector3 vtx_pip;//vertex(beam-pip) on particle
         TVector3 vtx_pip_mean;//vertex(beam-pip) on beam
@@ -873,6 +875,7 @@ int main( int argc, char** argv )
       
         double dcapipvtx =  (vtx_pip-vtx_beam_wpip).Mag();
         double dcapimvtx =  (vtx_pim-vtx_beam_wpim).Mag();
+        double dcapippim =  (vtx_pip-vtx_pim).Mag();
         vtx_pip_mean = 0.5*(vtx_pip+vtx_beam_wpip);
         vtx_pim_mean = 0.5*(vtx_pim+vtx_beam_wpim);
         
@@ -916,12 +919,10 @@ int main( int argc, char** argv )
         TLorentzVector LVec_n;   // 4-Momentum(n)
         TLorentzVector LVec_nmiss; // 4-Momentum(n_miss)
 
-        track_pip->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_b, vtx_p );
-        if( !track_pip->GetMomentum( vtx_p, P_pip, true, true ) ){
+        if( !track_pip->GetMomentum( vtx_pip, P_pip, true, true ) ){
           std::cout<<" !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
         }
-        track_pim->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_b, vtx_p );
-        if( !track_pim->GetMomentum( vtx_p, P_pim, true, true ) ){
+        if( !track_pim->GetMomentum( vtx_pim, P_pim, true, true ) ){
           std::cout<<" !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
         }
         P_ncds = tmp_mom*((Pos_CDH-vtx_react).Unit());
@@ -958,24 +959,23 @@ int main( int argc, char** argv )
         bool NdEOK=false;
 
         Tools::Fill2D( Form("dE_betainv"), 1./NeutralBetaCDH, ncdhhit->emean() );
-        //Tools::Fill2D( Form("dE_time"),  , ncdhhit->ctmean() );
         Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
       
-        Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_beam.Z(),vtx_beam.X());
-        Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_beam.Z(),vtx_beam.Y());
-        Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_beam.X(),vtx_beam.Y());
+        Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_react.Z(),vtx_react.X());
+        Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_react.Z(),vtx_react.Y());
+        Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_react.X(),vtx_react.Y());
         
         //Fiducial cuts OK
-        if( GeomTools::GetID(vtx_beam)==CID_Fiducial ){
+        if( GeomTools::GetID(vtx_react)==CID_Fiducial ){
            
           for( int i=0; i<cdsMan->nCDH(); i++ ) {
             Tools::Fill2D(Form("dE_CDHtime_pippimn"), cdsMan->CDH(i)->ctmean(), cdsMan->CDH(i)->emean());
           }
 
            
-          Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_beam.Z(),vtx_beam.X());
-          Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_beam.Z(),vtx_beam.Y());
-          Tools::Fill2D(Form("Vtx_XY_fid"),vtx_beam.X(),vtx_beam.Y());
+          Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_react.Z(),vtx_react.X());
+          Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_react.Z(),vtx_react.Y());
+          Tools::Fill2D(Form("Vtx_XY_fid"),vtx_react.X(),vtx_react.Y());
           Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
           Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
           Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
@@ -1061,7 +1061,10 @@ int main( int argc, char** argv )
 
               Tools::Fill1D( Form("DCA_pip"), dcapipvtx );
               Tools::Fill1D( Form("DCA_pim"), dcapimvtx );
-              //Tools::Fill1D( Form("DCA_pippim"), dcapippim);
+              Tools::Fill1D( Form("DCA_pippim"), dcapippim);
+              Tools::Fill1D( Form("vertex_diff_X"), vtx_react.X()-mcData->track(ID[kin::kmbeam])->vertex().X() );
+              Tools::Fill1D( Form("vertex_diff_Y"), vtx_react.Y()-mcData->track(ID[kin::kmbeam])->vertex().Y() );
+              Tools::Fill1D( Form("vertex_diff_Z"), vtx_react.Z()-mcData->track(ID[kin::kmbeam])->vertex().Z() );
 
               if(Verbosity_){
                 std::cout << "L."<< __LINE__ <<" Kinematical Fit using KinFitter" << std::endl;
@@ -1355,6 +1358,7 @@ int main( int argc, char** argv )
           mom_pip = LVec_pip;        // 4-momentum(pi+)
           mom_pim = LVec_pim;        // 4-momentum(pi-)
           mom_n = LVec_n;            // 4-momentum(neutron)
+          mc_vtx = mcData->track(kin::kmbeam)->vertex();
           dE = ncdhhit->emean();
           // beta is already filled
           vtx_reaction = vtx_react; // vertex(reaction)
@@ -1456,7 +1460,7 @@ void InitializeHistogram()
   Tools::newTH1F( Form("EventCheck"), 20, 0, 20 );
 
   //defined in IMPiSigmaHist.hh
-  InitBasicHist();
+  InitBasicHist(true);
   InitIMPiSigmaHist();
   return;
 }

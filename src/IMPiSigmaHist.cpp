@@ -1,7 +1,7 @@
 #include "IMPiSigmaHist.h"
 #include "Tools.h"
 
-void InitBasicHist()
+void InitBasicHist(const bool MCFlag)
 {
   // geneneral informantion **//
   Tools::newTH1F( Form("Time"), 3000, -0.5, 2999.5 );
@@ -13,6 +13,18 @@ void InitBasicHist()
   Tools::newTH1F( Form("mul_CDH_assoc"), 11, -0.5, 10.5 );
   Tools::newTH1F( Form("npimangle"),628, 0, 2*3.14);
   Tools::newTH1F( Form("npipangle"),628, 0, 2*3.14);
+
+  if(MCFlag){
+    //vertex reso//
+    Tools::newTH1F( Form("vertex_diff_X"), 100, -50, 50 );
+    Tools::newTH1F( Form("vertex_diff_Y"), 100, -50, 50 );
+    Tools::newTH1F( Form("vertex_diff_Z"), 100, -50, 50 );
+
+    //===== CDH hit pos study =====//
+    Tools::newTH2F( Form("CDH_mom_diffpos_pi_phi"), 100, -10, 10, 100, 0, 1.0 );
+    Tools::newTH2F( Form("CDH_mom_diffpos_pi_z"), 100, -10, 10, 100, 0, 1.0 );
+    Tools::newTH2F( Form("CDH_mom_TOF_pi"),       100, -2, 2, 100, 0, 1.0 );
+  }
   //** beam line **//
   Tools::newTH1F( Form("mul_BHD"), 12, -0.5, 11.5 );
   Tools::newTH1F( Form("mul_T0"),   6, -0.5, 5.5 );
