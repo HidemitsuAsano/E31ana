@@ -1358,7 +1358,9 @@ int main( int argc, char** argv )
           mom_pip = LVec_pip;        // 4-momentum(pi+)
           mom_pim = LVec_pim;        // 4-momentum(pi-)
           mom_n = LVec_n;            // 4-momentum(neutron)
-          mc_vtx = mcData->track(kin::kmbeam)->vertex();
+          TVector3 mcvertex = mcData->track(kin::kmbeam)->vertex();
+          TVector3 mcvertexc(mcvertex.x()/10.,mcvertex.y()/10.,mcvertex.z()/10.); 
+          mc_vtx = mcvertexc;
           dE = ncdhhit->emean();
           // beta is already filled
           vtx_reaction = vtx_react; // vertex(reaction)
