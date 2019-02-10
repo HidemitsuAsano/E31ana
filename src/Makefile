@@ -2,7 +2,7 @@ CC=gcc
 CXX=g++
 #CXX=clang
 lCOPT=-DOFFLINE -DDEBUG -DNT -DRAW
-CXXOPT = $(COPT) -Wall #-Werror
+CXXOPT = $(COPT) -Wall -Wextra#-Werror
 
 CONFIGS	= -DUSE_ROOT #-DDEBUG
 
