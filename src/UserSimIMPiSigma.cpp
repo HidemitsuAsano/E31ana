@@ -46,6 +46,7 @@
 int Verbosity_ = 0;
 const bool DoCDCRetiming = false;
 const double MOM_RES = 2.0; // MeV/c
+const bool IsVtxDoubleCheck = false;
 // momentum resolution of the beam-line spectrometer
 // was evaluated to be 2.0 +/- 0.5 MeV/c (Hashimoto-D p.58)
 
@@ -117,7 +118,9 @@ int main( int argc, char** argv )
 
   std::cout <<"L." << __LINE__ << " MOM_RES beam line: " << MOM_RES << std::endl;
   std::cout <<"L." << __LINE__ << " TDC_CDH_MAX: " << cdscuts::tdc_cdh_max+cdscuts::tdc_simoffset << std::endl;
-
+  std::cout << " Double Check VTX fid cut ? " ;
+  if(IsVtxDoubleCheck) std::cout << " Yes" << std::endl;
+  else         std::cout << " No"  << std::endl;
 
   TDatabasePDG *pdg = new TDatabasePDG();
   pdg->ReadPDGTable("pdg_table.txt");
@@ -960,22 +963,42 @@ int main( int argc, char** argv )
 
         Tools::Fill2D( Form("dE_betainv"), 1./NeutralBetaCDH, ncdhhit->emean() );
         Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
-      
-        Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_react.Z(),vtx_react.X());
-        Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_react.Z(),vtx_react.Y());
-        Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_react.X(),vtx_react.Y());
         
+        if(IsVtxDoubleCheck){
+          Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_pip_mean.Z(),vtx_pip_mean.X());
+          Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_pip_mean.Z(),vtx_pip_mean.Y());
+          Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_pip_mean.X(),vtx_pip_mean.Y());
+          Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_pim_mean.Z(),vtx_pim_mean.X());
+          Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_pim_mean.Z(),vtx_pim_mean.Y());
+          Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_pim_mean.X(),vtx_pim_mean.Y());
+        }else{  
+          Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_react.Z(),vtx_react.X());
+          Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_react.Z(),vtx_react.Y());
+          Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_react.X(),vtx_react.Y());
+        }
         //Fiducial cuts OK
-        if( GeomTools::GetID(vtx_react)==CID_Fiducial ){
+        if( (!IsVtxDoubleCheck && (GeomTools::GetID(vtx_react)==CID_Fiducial)) || 
+            ( IsVtxDoubleCheck && 
+            (GeomTools::GetID(vtx_pim_mean)==CID_Fiducial) &&
+            (GeomTools::GetID(vtx_pip_mean)==CID_Fiducial)))  {
            
           for( int i=0; i<cdsMan->nCDH(); i++ ) {
             Tools::Fill2D(Form("dE_CDHtime_pippimn"), cdsMan->CDH(i)->ctmean(), cdsMan->CDH(i)->emean());
           }
 
            
-          Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_react.Z(),vtx_react.X());
-          Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_react.Z(),vtx_react.Y());
-          Tools::Fill2D(Form("Vtx_XY_fid"),vtx_react.X(),vtx_react.Y());
+          if(IsVtxDoubleCheck){
+            Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_pip_mean.Z(),vtx_pip_mean.X());
+            Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_pip_mean.Z(),vtx_pip_mean.Y());
+            Tools::Fill2D(Form("Vtx_XY_fid"),vtx_pip_mean.X(),vtx_pip_mean.Y());
+            Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_pim_mean.Z(),vtx_pim_mean.X());
+            Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_pim_mean.Z(),vtx_pim_mean.Y());
+            Tools::Fill2D(Form("Vtx_XY_fid"),vtx_pim_mean.X(),vtx_pim_mean.Y());
+          }else{  
+            Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_react.Z(),vtx_react.X());
+            Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_react.Z(),vtx_react.Y());
+            Tools::Fill2D(Form("Vtx_XY_fid"),vtx_react.X(),vtx_react.Y());
+          }
           Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
           Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
           Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
