@@ -964,18 +964,12 @@ int main( int argc, char** argv )
         Tools::Fill2D( Form("dE_betainv"), 1./NeutralBetaCDH, ncdhhit->emean() );
         Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
         
-        if(IsVtxDoubleCheck){
-          Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_pip_mean.Z(),vtx_pip_mean.X());
-          Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_pip_mean.Z(),vtx_pip_mean.Y());
-          Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_pip_mean.X(),vtx_pip_mean.Y());
-          Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_pim_mean.Z(),vtx_pim_mean.X());
-          Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_pim_mean.Z(),vtx_pim_mean.Y());
-          Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_pim_mean.X(),vtx_pim_mean.Y());
-        }else{  
-          Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_react.Z(),vtx_react.X());
-          Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_react.Z(),vtx_react.Y());
-          Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_react.X(),vtx_react.Y());
-        }
+        Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_pip_mean.Z(),vtx_pip_mean.X());
+        Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_pip_mean.Z(),vtx_pip_mean.Y());
+        Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_pip_mean.X(),vtx_pip_mean.Y());
+        Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_pim_mean.Z(),vtx_pim_mean.X());
+        Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_pim_mean.Z(),vtx_pim_mean.Y());
+        Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_pim_mean.X(),vtx_pim_mean.Y());
         //Fiducial cuts OK
         if( (!IsVtxDoubleCheck && (GeomTools::GetID(vtx_react)==CID_Fiducial)) || 
             ( IsVtxDoubleCheck && 
@@ -987,18 +981,12 @@ int main( int argc, char** argv )
           }
 
            
-          if(IsVtxDoubleCheck){
-            Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_pip_mean.Z(),vtx_pip_mean.X());
-            Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_pip_mean.Z(),vtx_pip_mean.Y());
-            Tools::Fill2D(Form("Vtx_XY_fid"),vtx_pip_mean.X(),vtx_pip_mean.Y());
-            Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_pim_mean.Z(),vtx_pim_mean.X());
-            Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_pim_mean.Z(),vtx_pim_mean.Y());
-            Tools::Fill2D(Form("Vtx_XY_fid"),vtx_pim_mean.X(),vtx_pim_mean.Y());
-          }else{  
-            Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_react.Z(),vtx_react.X());
-            Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_react.Z(),vtx_react.Y());
-            Tools::Fill2D(Form("Vtx_XY_fid"),vtx_react.X(),vtx_react.Y());
-          }
+          Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_pip_mean.Z(),vtx_pip_mean.X());
+          Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_pip_mean.Z(),vtx_pip_mean.Y());
+          Tools::Fill2D(Form("Vtx_XY_fid"),vtx_pip_mean.X(),vtx_pip_mean.Y());
+          Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_pim_mean.Z(),vtx_pim_mean.X());
+          Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_pim_mean.Z(),vtx_pim_mean.Y());
+          Tools::Fill2D(Form("Vtx_XY_fid"),vtx_pim_mean.X(),vtx_pim_mean.Y());
           Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
           Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
           Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
