@@ -54,7 +54,7 @@ const int MaxTreeSize = 1000000000;
 const int Verbosity = 0;
 const bool DoCDCRetiming = false;
 const bool DoKinFit = true;
-
+const bool IsVtxDoubleCheck = true;
 //-----------------------------------------//
 //--- covariance matrices for KinFitter ---//
 //-----------------------------------------//
@@ -207,7 +207,10 @@ void EventAnalysis::Initialize( ConfMan *conf )
   std::cout << " Kinematic fit ? " ;
   if(DoKinFit) std::cout << " Yes" << std::endl;
   else         std::cout << " No"  << std::endl;
-
+  
+  std::cout << "Double Check VTX fid cut ? " ;
+  if(IsVtxDoubleCheck) std::cout << " Yes" << std::endl;
+  else         std::cout << " No"  << std::endl;
 
   std::cout << " CDH TDC cuts " << cdscuts::tdc_cdh_max << std::endl;
   std::cout << " CDH multiplicity cut: " << cdscuts::cdhmulti << std::endl;
@@ -855,18 +858,44 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
       Tools::Fill2D( Form("dE_betainv"), 1./NeutralBetaCDH, ncdhhit->emean() );
       Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
-
-      Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_react.Z(),vtx_react.X());
-      Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_react.Z(),vtx_react.Y());
-      Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_react.X(),vtx_react.Y());
+      
+      if(IsVtxDoubleCheck){
+        Tools::Fill2D(Form("Vtx_ZX_nofid"),vtxpip_mean.Z(),vtxpip_mean.X());
+        Tools::Fill2D(Form("Vtx_ZY_nofid"),vtxpip_mean.Z(),vtxpip_mean.Y());
+        Tools::Fill2D(Form("Vtx_XY_nofid"),vtxpip_mean.X(),vtxpip_mean.Y());
+        Tools::Fill2D(Form("Vtx_ZX_nofid"),vtxpim_mean.Z(),vtxpim_mean.X());
+        Tools::Fill2D(Form("Vtx_ZY_nofid"),vtxpim_mean.Z(),vtxpim_mean.Y());
+        Tools::Fill2D(Form("Vtx_XY_nofid"),vtxpim_mean.X(),vtxpim_mean.Y());
+      }else{  
+        Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_react.Z(),vtx_react.X());
+        Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_react.Z(),vtx_react.Y());
+        Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_react.X(),vtx_react.Y());
+      }
       //Fiducial cuts OK
-      if( GeomTools::GetID(vtx_react)==CID_Fiducial ) {
+      if( (!IsVtxDoubleCheck && (GeomTools::GetID(vtx_react)==CID_Fiducial)) || 
+          ( IsVtxDoubleCheck && 
+           (GeomTools::GetID(vtxpim_mean)==CID_Fiducial) &&
+           (GeomTools::GetID(vtxpip_mean)==CID_Fiducial)))  {
+        
+        
         for( int i=0; i<cdsMan->nCDH(); i++ ) {
           Tools::Fill2D(Form("dE_CDHtime_pippimn"), cdsMan->CDH(i)->ctmean(), cdsMan->CDH(i)->emean());
         }
-        Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_react.Z(),vtx_react.X());
-        Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_react.Z(),vtx_react.Y());
-        Tools::Fill2D(Form("Vtx_XY_fid"),vtx_react.X(),vtx_react.Y());
+
+        if(IsVtxDoubleCheck){
+          Tools::Fill2D(Form("Vtx_ZX_fid"),vtxpip_mean.Z(),vtxpip_mean.X());
+          Tools::Fill2D(Form("Vtx_ZY_fid"),vtxpip_mean.Z(),vtxpip_mean.Y());
+          Tools::Fill2D(Form("Vtx_XY_fid"),vtxpip_mean.X(),vtxpip_mean.Y());
+          Tools::Fill2D(Form("Vtx_ZX_fid"),vtxpim_mean.Z(),vtxpim_mean.X());
+          Tools::Fill2D(Form("Vtx_ZY_fid"),vtxpim_mean.Z(),vtxpim_mean.Y());
+          Tools::Fill2D(Form("Vtx_XY_fid"),vtxpim_mean.X(),vtxpim_mean.Y());
+        }else{  
+          Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_react.Z(),vtx_react.X());
+          Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_react.Z(),vtx_react.Y());
+          Tools::Fill2D(Form("Vtx_XY_fid"),vtx_react.X(),vtx_react.Y());
+        }
+
+
         Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
         Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
         Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
