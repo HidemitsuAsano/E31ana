@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="34"
+set Version="35"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim2/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 set CDSDIRSUB="${CDSDIR}simDST2"
@@ -71,6 +71,7 @@ while (1)
     cd $OUTDIRSUB
     tcsh hadd_simhist.csh
     tcsh hadd_sim_pippimn.csh
+    cd -
     break
   endif
   echo "running" 

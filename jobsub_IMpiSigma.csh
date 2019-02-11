@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="34"
+set Version="35"
 set DATADIR="/group/had/knucl/e15/data/Run78/"
 set OUTDIR="/group/had/knucl/e15/asano/Run78/"
 set KWSKDIR="/group/had/knucl/e15/shinngo/Run78/evtracking/"
@@ -56,6 +56,7 @@ while (1)
     cd $OUTDIRSUB
     tcsh hadd_IMhist.csh
     tcsh hadd_IMnpippim.csh
+    cd - 
     break
   endif
   echo "running" 
