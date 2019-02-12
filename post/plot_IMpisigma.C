@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-
 #include <TROOT.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -29,14 +28,6 @@ const bool staton=false;
 //mode 0: Sigma+ ,1: Sigma- 
 void plot_IMpisigma(const char* filename="",const int mode=0)
 {
-  std::cout << "p-value cut:" << pvalcut << std::endl; 
-  std::cout << "dE cut:" << dEcut << std::endl; 
-  TCanvas *ctext = new TCanvas("ctext","ctext");
-  TPaveText *pt = new TPaveText(.05,.05,.95,.7);
-  pt->AddText(Form("p-value cut: %f ",pvalcut));
-  pt->AddText(Form("dE cut: %f " ,dEcut));
-  pt->AddText(Form("1/beta min.: %f ",1./anacuts::beta_MAX));
-  pt->Draw(); 
 
   //gROOT->SetStyle("Plain");
   if(staton)gStyle->SetOptStat(111111);
@@ -48,9 +39,9 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   gStyle->SetStatY(0.9);      
   gStyle->SetStatBorderSize(1);
   std::cout << "infile " << filename <<std::endl;
-  std::string outfilename = std::string(filename);
-  outfilename.insert(outfilename.size()-5,"_post");
-  std::cout << "outfilename: " << outfilename << std::endl;
+  //std::string outfilename = std::string(filename);
+  //outfilename.insert(outfilename.size()-5,"_post");
+  //std::cout << "outfilename: " << outfilename << std::endl;
   TString pdfname = std::string(filename);
   pdfname.Replace(std::string(filename).size()-4,5,"pdf");
   std::cout << "pdfname: " << pdfname << std::endl;
@@ -98,7 +89,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     std::cout << "EventTree is not found " << std::endl;
     return ;
   }
-
+  
   tree->SetBranchAddress( "mom_beam",   &LVec_beam );
   tree->SetBranchAddress( "mom_target", &LVec_target );
   tree->SetBranchAddress( "mom_pip", &LVec_pip );
@@ -350,6 +341,15 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
 
   Int_t nevent = tree->GetEntries();
   std::cerr<<"# of events = "<<nevent<<std::endl;
+  
+  std::cout << "p-value cut:" << pvalcut << std::endl; 
+  std::cout << "dE cut:" << dEcut << std::endl; 
+  TCanvas *cinfo = new TCanvas("cinfo","cinfo");
+  TPaveText *pt = new TPaveText(.05,.05,.95,.7);
+  pt->AddText(Form("p-value cut: %f ",pvalcut));
+  pt->AddText(Form("dE cut: %f " ,dEcut));
+  pt->AddText(Form("1/beta min.: %f ",1./anacuts::beta_MAX));
+  pt->Draw(); 
   //------------------------//
   //--- event roop start ---//
   //------------------------//
@@ -877,8 +877,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   IMnpim_IMnpip_dE_woK0_kin_py_clone[1]->Draw("same");
 
 
-  TFile *fout = new TFile(outfilename.c_str(),"RECREATE");
-  fout->cd();
+  //TFile *fout = new TFile(outfilename.c_str(),"RECREATE");
+  //fout->cd();
 
   /*
   for(int imode=0;imode<2;imode++){
@@ -927,6 +927,6 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   pdf->Close();
   std::cout << "closing pdf " << std::endl;
   
-  fout->Close();
+  //fout->Close();
   
 }
