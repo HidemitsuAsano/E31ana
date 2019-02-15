@@ -173,15 +173,31 @@ void QACDS(TFile *f){
   h1_CDHNeutralSeg->SetXTitle("CDH seg#");
   h1_CDHNeutralSeg->Draw();
 
-  //TCanvas *cdE_CDHtime_2track = new TCanvas("cdE_CDHtime_2track","cdE_CDHtime_2track");
-  //TH1F* dE_CDHtime_2track = 
+  TCanvas *cdE_CDHtime_2track = new TCanvas("cdE_CDHtime_2track","cdE_CDHtime_2track");
+  cdE_CDHtime_2track->SetLogz();
+  TH2F* dE_CDHtime_2track = (TH2F*)f->Get("dE_CDHtime_2track");
+  dE_CDHtime_2track->SetXTitle("CDH time [nsec]");
+  dE_CDHtime_2track->SetYTitle("dE [MeVee]");
+  dE_CDHtime_2track->Draw("colz");
+  
+  
+  TCanvas *cdE_CDHtime_pippimn = new TCanvas("cdE_CDHtime_pippimn","cdE_CDHtime_pippimn");
+  cdE_CDHtime_pippimn->SetLogz();
+  TH2F* dE_CDHtime_pippimn = (TH2F*)f->Get("dE_CDHtime_pippimn");
+  dE_CDHtime_pippimn->SetXTitle("CDH time [nsec]");
+  dE_CDHtime_pippimn->SetYTitle("dE [MeVee]");
+  dE_CDHtime_pippimn->Draw("colz");
   
   //CDC track chi2 distribution
   TCanvas *ctrackchi2_CDC = new TCanvas("ctrackchi2_CDC","trackchi2_CDC");
+  ctrackchi2_CDC->SetLogy();
   TH1F* h1_trackchi2_CDC = (TH1F*)f->Get("trackchi2_CDC");
   h1_trackchi2_CDC->SetXTitle("CDC track chi2/ndf");
   h1_trackchi2_CDC->Draw();
-
+  TH1F* h1_trackchi2_CDC_clone = (TH1F*) h1_trackchi2_CDC->Clone();
+  h1_trackchi2_CDC_clone->GetXaxis()->SetRangeUser(0,cdscuts::cds_chi2_max);
+  h1_trackchi2_CDC_clone->SetFillColor(kGreen);
+  h1_trackchi2_CDC_clone->Draw("same");
 
   TCanvas *cntrack = new TCanvas("cntrack_CDS","ntrack_CDS");
   TH1F* h1_ntrack_CDS = (TH1F*)f->Get("ntrack_CDS");
@@ -247,6 +263,11 @@ void QACDS(TFile *f){
   h2_Vtx_ZX->GetYaxis()->SetTitle("X Vertex [cm]");
   h2_Vtx_ZX->Draw("colz");
   double maxZX = h2_Vtx_ZX->GetMaximum();
+  TH2F *h2_Vtx_ZX_fid = (TH2F*)f->Get("Vtx_ZX_fid");
+  h2_Vtx_ZX_fid->RebinX(10);
+  h2_Vtx_ZX_fid->RebinY(10);
+  h2_Vtx_ZX_fid->SetMaximum(maxZX);
+  h2_Vtx_ZX_fid->Draw("box same");
 
   TCanvas *cVtx_ZY  = new TCanvas("Vtx_ZY","Vtx_ZY");
   TH2F *h2_Vtx_ZY = (TH2F*)f->Get("Vtx_ZY");
@@ -255,6 +276,11 @@ void QACDS(TFile *f){
   h2_Vtx_ZY->GetYaxis()->SetTitle("Y Vertex [cm]");
   h2_Vtx_ZY->Draw("colz");
   double maxZY = h2_Vtx_ZY->GetMaximum();
+  TH2F *h2_Vtx_ZY_fid = (TH2F*)f->Get("Vtx_ZY_fid");
+  h2_Vtx_ZY_fid->SetMaximum(maxZY);
+  h2_Vtx_ZY_fid->RebinX(10);
+  h2_Vtx_ZY_fid->RebinY(10);
+  h2_Vtx_ZY_fid->Draw("box same");
   
   TCanvas *cVtx_XY  = new TCanvas("Vtx_XY","Vtx_XY");
   TH2F *h2_Vtx_XY = (TH2F*)f->Get("Vtx_XY");
@@ -263,7 +289,13 @@ void QACDS(TFile *f){
   h2_Vtx_XY->GetYaxis()->SetTitle("Y Vertex [cm]");
   h2_Vtx_XY->Draw("colz");
   double maxXY = h2_Vtx_XY->GetMaximum();
+  TH2F *h2_Vtx_XY_fid = (TH2F*) f->Get("Vtx_XY_fid");
+  h2_Vtx_XY_fid->SetMaximum(maxXY);
+  h2_Vtx_XY_fid->RebinX(10);
+  h2_Vtx_XY_fid->RebinY(10);
+  h2_Vtx_XY_fid->Draw("box same");
     
+  /*
   //fiducial cuts
   TCanvas *cVtx_ZX_fid  = new TCanvas("Vtx_ZX_fid","Vtx_ZX_fid");
   TH2F *h2_Vtx_ZX_fid = (TH2F*)f->Get("Vtx_ZX_fid");
@@ -288,7 +320,8 @@ void QACDS(TFile *f){
   h2_Vtx_XY_fid->GetYaxis()->SetTitle("Y Vertex [cm]");
   h2_Vtx_XY_fid->SetMaximum(maxXY);
   h2_Vtx_XY_fid->Draw("colz");
-  
+  */
+
   /*
   TCanvas *cVtx_X_center  = new TCanvas("Vtx_X_center","Vtx_X_center");
   TH1F *h1_Vtx_X_center = f->Get("Vtx_X_center");
@@ -332,7 +365,8 @@ void QACDS(TFile *f){
   TH1F* h1_cdiff_CDH_CDC = (TH1F*)f->Get("diff_CDH_CDC");
   h1_cdiff_CDH_CDC->SetXTitle("angle [deg]");
   h1_cdiff_CDH_CDC->Draw();
-
+  
+  
   TCanvas *cdE_betainv_fiducial = new TCanvas("cdE_betainv_fiducial","dE_betainv_fid");
   TH2F* h2_dE_betainv = (TH2F*)f->Get("dE_betainv_fid");
   h2_dE_betainv->SetXTitle("1/#beta");
@@ -361,6 +395,7 @@ void QACDS(TFile *f){
   TH2F* h2_dE_betainv_fid_beta = (TH2F*)f->Get("dE_betainv_fid_beta");
   TH1D* h1_dE_beta = h2_dE_betainv_fid_beta->ProjectionY("py");
   h1_dE_beta->Draw();
+
 
 
   return;
