@@ -46,7 +46,7 @@
 int Verbosity_ = 0;
 const bool DoCDCRetiming = false;
 const double MOM_RES = 2.0; // MeV/c
-const bool IsVtxDoubleCheck = false;
+const bool IsVtxDoubleCheck = true;
 // momentum resolution of the beam-line spectrometer
 // was evaluated to be 2.0 +/- 0.5 MeV/c (Hashimoto-D p.58)
 
@@ -79,6 +79,7 @@ TVector3 Vtxpim; // vertex(pim)
 int run_num;   // run number
 int event_num; // event number
 int block_num; // block number
+int mc_nparticle;
 TLorentzVector mcmom_beam;   // generated 4-momentum(beam)
 TLorentzVector mcmom_pip;    // generated 4-momentum(pi+)
 TLorentzVector mcmom_pim;    // generated 4-momentum(pi-)
@@ -243,6 +244,7 @@ int main( int argc, char** argv )
   npippimTree->Branch( "run_num", &run_num );
   npippimTree->Branch( "event_num", &event_num );
   npippimTree->Branch( "block_num", &block_num );
+  npippimTree->Branch( "mc_nparticle",   &mc_nparticle );
   npippimTree->Branch( "mcmom_beam",   &mcmom_beam );
   npippimTree->Branch( "mcmom_pip", &mcmom_pip );
   npippimTree->Branch( "mcmom_pim", &mcmom_pim );
@@ -486,6 +488,7 @@ int main( int argc, char** argv )
 
     if( nparticle==kin::npart ) { 
       flagG4Decay = true;
+    
       if(Verbosity_) std::cout << "L." << __LINE__ << " flagG4Decay OK " << std::endl;
     }else{
       if(Verbosity_) std::cout << "L." <<  __LINE__ << " nparticle " << nparticle << std::endl;
@@ -545,6 +548,11 @@ int main( int argc, char** argv )
     for( int ip=0; ip<kin::npart; ip++ ){
       if( ip ) TL_gene[ip].SetVectM(mcData->track(ID[ip])->momentum()*0.001,  pdg->GetParticle(PDG[ip])->Mass()); // GeV
       else    TL_gene[ip].SetVectM(mcData->track(ID[ip])->momentum()*-0.001, pdg->GetParticle(PDG[ip])->Mass()); // GeV
+    }
+    if(flagG4Decay){
+      double q = (TL_gene[kin::kmbeam].Vect()-TL_gene[kin::nmiss].Vect()).Mag();
+      TLorentzVector TL_piSigma = TL_gene[kin::ncds]+TL_gene[kin::pip_g2];
+      Tools::H2("q_IMpiSigma_gen",TL_piSigma.M(), q,100,1,2,300,0,1.5);
     }
     //##########################//
     //### get G4 information ###//
@@ -1300,7 +1308,13 @@ int main( int argc, char** argv )
                         for( int jj=0; jj<4; jj++ ){
                           //only ncds and nmiss 
                           double val = (TL_meas[ip][ii] - TL_gene[genID[ip]][jj]);
-                          if(IsncdsMatchOK  )Tools::Fill1D(Form("cov_%d_%d_%d", ip, ii, jj), val);
+                          //Sigma should be suffered energy loss in the target
+                          //Use Lorentz vector ncds + decay pion
+                          if(ip==kin::Sp || ip==kin::Sm ){
+                            TLorentzVector TL_S = TL_gene[kin::ncds]+TL_gene[kin::pip_g2];
+                            val = TL_meas[ip][ii] - TL_S[jj];
+                          }
+                          if(IsncdsMatchOK  ) Tools::Fill1D(Form("cov_%d_%d_%d", ip, ii, jj), val);
                           if(ip==kin::kmbeam) primvtx = mcData->track(ID[ip])->vertex();
                           TVector3 vertex = mcData->track(ID[ip])->vertex();
                           double mcDCA = (vertex.Mag()-primvtx.Mag())/10.0;
@@ -1327,7 +1341,6 @@ int main( int argc, char** argv )
                             if(Verbosity_){
                               TLorentzVector TL_S = TL_gene[kin::ncds]+TL_gene[kin::pip_g2];
                               TLorentzVector TL_Sreco = TL_meas[kin::ncds]+TL_meas[kin::pip_g2];
-                              
                               std::cout << __LINE__ << std::endl;
                               std::cout << "Mass gen n+pi " << TL_S.M() << std::endl;
                               std::cout << "Mass reco n+pi " << TL_Sreco.M() << std::endl;
@@ -1364,6 +1377,7 @@ int main( int argc, char** argv )
           } // if( NBetaOK && NdEOK )
 
           //** fill tree **//
+          mc_nparticle = nparticle;
           mom_beam   = LVec_beam;   // 4-momentum(beam)
           mom_target = LVec_target; // 4-momentum(target)
           mom_pip = LVec_pip;        // 4-momentum(pi+)
