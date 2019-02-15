@@ -184,7 +184,7 @@ void plot_IMpisigma(const char* filename="")
    
   //correlation plots again
   const int BIN = 4000;
-  double cov_MAX=0.4;
+  const double cov_MAX=0.4;
   TH1F* cov[kin::npart][4][4];
   TH2F* cov_mom[kin::npart][4][4];
   for( int ip=0; ip<kin::npart; ip++ ){
@@ -520,10 +520,6 @@ void plot_IMpisigma(const char* filename="")
       }
     }
 
-    
-
-
-
     // w/ kinfit
     if( (-1<kf_flag) && (pvalcut < pvalue) && K0rejectFlag ){
       nmom_kin->Fill((*LVec_n).P());
@@ -733,12 +729,12 @@ void plot_IMpisigma(const char* filename="")
   //q_IMnpipi_wSid_n_px->Rebin(2);
   q_IMnpipi_wSid_n_px->SetLineColor(5);
   q_IMnpipi_wSid_n_px->Draw("HEsame");
-  q_IMnpipi_woK0_kin_1_px->SetLineColor(2);
+  q_IMnpipi_woK0_kin_0_px->SetLineColor(2);
   //q_IMnpipi_woK0_kin_1_px->Rebin(2);
-  q_IMnpipi_woK0_kin_1_px->Draw("HEsame");
-  //q_IMnpipi_woK0_kin_0_px->Rebin(2);
-  q_IMnpipi_woK0_kin_0_px->SetLineColor(3);
   q_IMnpipi_woK0_kin_0_px->Draw("HEsame");
+  //q_IMnpipi_woK0_kin_0_px->Rebin(2);
+  q_IMnpipi_woK0_kin_1_px->SetLineColor(3);
+  q_IMnpipi_woK0_kin_1_px->Draw("HEsame");
   TH1D *pxSum = (TH1D*) q_IMnpipi_woK0_kin_0_px->Clone();
   pxSum->Add(q_IMnpipi_woK0_kin_1_px);
   pxSum->SetLineColor(4);
@@ -777,7 +773,6 @@ void plot_IMpisigma(const char* filename="")
   q_IMnpipi_woK0_wSid_n->RebinX(2);
   q_IMnpipi_woK0_wSid_n->RebinY(6);
   q_IMnpipi_woK0_wSid_n->Draw("colz");
-
 
 
   TCanvas *cdE_betainv_fid = new TCanvas(Form("cdE_betainv_fid"), "dE_betainv_fid");
