@@ -1,14 +1,14 @@
 //----------------------------------------//
 // from Iwasaki-san slide on 2019, Jan.30 //
 //----------------------------------------//
-#include "TF1.h"
-#include "Math/WrappedTF1.h"
-#include "Math/BrentRootFinder.h"
+#include <TF1.h>
+#include <Math/WrappedTF1.h>
+#include <Math/BrentRootFinder.h>
 
 #include <TDatabasePDG.h>
 
 #if 1
-const double He3_mass  = 2.80839;
+const double d_mass  = 1.87561;
 const double K_mass    = 0.493677;
 const double n_mass    = 0.939565;
 const double piSp_mass = 2.26721;
@@ -17,19 +17,25 @@ const double piSp_mass = 2.26721;
 const double pK = 1.05; //GeV/c = maximum ~ 1.018*1.025
 const double EK = sqrt(K_mass*K_mass+pK*pK);
 
+double func_EM(double *x, double *par);
+double func_cq(double *x, double *par);
+double func_C(double *x, double *par);
+double func_S2(double *x, double *par);
+double func(double *x, double *par);
+
 int NumericalRootFinder()
 {
 #if 0
   TDatabasePDG *pdg = new TDatabasePDG();
   pdg->ReadPDGTable("./pdg_table.txt");
-  double He3_mass = pdg->GetParticle("He3")->Mass();
+  double d_mass = pdg->GetParticle("He3")->Mass();
   double K_mass   = pdg->GetParticle("K-")->Mass();
   double n_mass   = pdg->GetParticle("neutron")->Mass();
   double piSp_mass = pdg->GetParticle("pi-")->Mass()+pdg->GetParticle("Sigma+")->Mass()+pdg->GetParticle("proton")->Mass();
-  cerr<<He3_mass<<" "<<K_mass<<" "<<n_mass<<" "<<piSp_mass<<endl;
+  cerr<<d_mass<<" "<<K_mass<<" "<<n_mass<<" "<<piSp_mass<<endl;
 #endif
   
-  double target_mass = He3_mass;
+  double target_mass = d_mass;
   TVector3 target_mom(0.0, 0.0, 0.0);
   TLorentzVector target(target_mom, sqrt(target_mom.Mag2()+target_mass*target_mass));
   
@@ -132,7 +138,7 @@ double func_cq(double *x, double *par)
 // par[0] = m
 {
   double q = x[0];
-  double f = (n_mass*n_mass+pK*pK+q*q-TMath::Power(EK+He3_mass-func_EM(x,par),2))/(2*q*pK);
+  double f = (n_mass*n_mass+pK*pK+q*q-TMath::Power(EK+d_mass-func_EM(x,par),2))/(2*q*pK);
   return f;
 }
 
@@ -141,7 +147,7 @@ double func_C(double *x, double *par)
 // par[0] = m
 {
   double q = x[0];
-  double f = (EK+He3_mass)*(pK-q*func_cq(x,par))-pK*(EK+He3_mass-func_EM(x,par));
+  double f = (EK+d_mass)*(pK-q*func_cq(x,par))-pK*(EK+d_mass-func_EM(x,par));
   return f;
 }
 
@@ -150,7 +156,7 @@ double func_S2(double *x, double *par)
 // par[0] = m
 {
   double q = x[0];
-  double f = q*q*(1-func_cq(x,par)*func_cq(x,par))*(He3_mass*He3_mass+2*He3_mass*EK+K_mass*K_mass);
+  double f = q*q*(1-func_cq(x,par)*func_cq(x,par))*(d_mass*d_mass+2*d_mass*EK+K_mass*K_mass);
   return f;
 }
 
