@@ -14,7 +14,8 @@ const double n_mass    = 0.939565;
 const double piSp_mass = 1.18937+0.13957;
 #endif
 
-const double pK = 1.05; //GeV/c = maximum ~ 1.018*1.025
+//const double pK = 1.05; //GeV/c = maximum ~ 1.018*1.025
+const double pK = 1.00; //GeV/c = maximum ~ 1.018*1.025
 const double EK = sqrt(K_mass*K_mass+pK*pK);
 
 double func_EM(double *x, double *par);
@@ -47,11 +48,11 @@ int NumericalRootFinder()
 
   const double COS_MIN = -1;
   const double COS_MAX = 1;
-  const int    COS_BIN = 10;
+  const int    COS_BIN = 5;
 
   const double M_MIN = piSp_mass;
-  const double M_MAX = sys.M()-n_mass+0.0001;
-  const int    M_BIN = 1000;
+  const double M_MAX = sys.M()-n_mass+0.00001;
+  const int    M_BIN = 10000;
   cerr<<M_MIN<<" "<<M_MAX<<endl;
   
   double value[2][COS_BIN+1][M_BIN]; //[m,q][][]
@@ -98,15 +99,21 @@ int NumericalRootFinder()
     gr[i] = new TGraph(M_BIN, value[0][i], value[1][i]);
     sprintf(com, "gr_%d", i);
     gr[i]->SetName(com);
+    gr[i]->SetLineColor(2);
+    gr[i]->SetLineWidth(4);
+    gr[i]->SetLineStyle(10);
   }
 
   TGraph *gr_th;
   gr_th = new TGraph(2, value_th[0], value_th[1]);
   gr_th->SetName("th");
+  gr_th->SetLineColor(2);
+  gr_th->SetLineWidth(4);
+  gr_th->SetLineStyle(10);
   
   TCanvas *c1;
   c1 = new TCanvas("c1", "", 600, 600);
-  TH2F *his = new TH2F("his","his",100,1,2,100,0,2);
+  TH2F *his = new TH2F("his","his",100,1,2,120,-0.2,2);
   his->Draw();
   for( int i=0; i<COS_BIN+1; i++ ){
     gr[i]->Draw("same");
@@ -120,7 +127,6 @@ int NumericalRootFinder()
   gr_th->Write();
   out->Close();
 
-  
   return 0;
 }
 
