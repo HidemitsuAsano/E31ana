@@ -19,7 +19,6 @@ void eval_cov(const char*filename="")
   outfilename.Insert(outfilename.Sizeof()-6,"_eval");
   outfilename.Replace(outfilename.Sizeof()-5,5,"pdf");
   std::cout << outfilename << std::endl;
-  //TFile *f = new TFile("simdata012_ana00/sim_0000.root");
 
   const int num = 6;
 
@@ -47,6 +46,10 @@ void eval_cov(const char*filename="")
 	if( j==k ){ // only diagonal components
 	  can[i]->cd(j+1);
 	  TH1F *his = (TH1F*)f->Get(Form("cov_%d_%d_%d", i, j, k));
+    if(his == nullptr) {
+      std::cout << "NOT found " << std::endl;
+      return;
+    }
 	  TH2F *his2 = (TH2F*)f->Get(Form("cov_mom_%d_%d_%d", i, j, k));
     if(i==0) his->GetXaxis()->SetRangeUser(-0.02,0.02);
     if(i==1){
@@ -106,8 +109,8 @@ void eval_cov(const char*filename="")
 	  sigm_e[i][j] = his->GetFunction("gaus")->GetParError(2)*1000;
     
     can_vs[i]->cd(j+1);
-    his2->RebinX(5);
-    his2->RebinY(5);
+    his2->RebinX(2);
+    his2->RebinY(2);
     if(i==0) his2->SetTitle("K (beam)");
     if(i==1) his2->SetTitle("#pi (prompt)");
     if(i==2) his2->SetTitle("#Sigma ");
@@ -212,11 +215,17 @@ void eval_cov(const char*filename="")
 
   TCanvas *u1;
   u1 = new TCanvas("u1", "", 600, 600);
-  TH2F *h1 = new TH2F("h1", "h1", 4, 0.5, 4.5, 100, -20, 20);
+  TH2F *h1 = new TH2F("h1", "h1", 4, 0.5, 4.5, 100, -8, 8);
   h1->Draw();
+  h1->SetNdivisions(4);
   h1->SetStats(0);
-  h1->SetXTitle("px,py,pz,E");
+  //h1->SetXTitle("px,py,pz,E");
+  h1->GetXaxis()->ChangeLabel(1,-1,0.04,-1,-1,-1,"px");
+  h1->GetXaxis()->ChangeLabel(2,-1,0.04,-1,-1,-1,"py");
+  h1->GetXaxis()->ChangeLabel(3,-1,0.04,-1,-1,-1,"pz");
+  h1->GetXaxis()->ChangeLabel(4,-1,0.04,-1,-1,-1,"E");
   h1->SetYTitle("measured-generated center [MeV]");
+  h1->GetYaxis()->CenterTitle();
   leg = new TLegend(0.6, 0.6, 0.9, 0.9);
   for( int i=0; i<num; i++ ){
     gr1[i]->Draw("same");
@@ -234,8 +243,14 @@ void eval_cov(const char*filename="")
   TH2F *h2 = new TH2F("h2", "h2", 4, 0.5, 4.5, 100, 0, 40);
   h2->Draw();
   h2->SetStats(0);
-  h2->SetXTitle("px,py,pz,E");
+  //h2->SetXTitle("px,py,pz,E");
+  h2->SetNdivisions(4);
+  h2->GetXaxis()->ChangeLabel(1,-1,0.04,-1,-1,-1,"px");
+  h2->GetXaxis()->ChangeLabel(2,-1,0.04,-1,-1,-1,"py");
+  h2->GetXaxis()->ChangeLabel(3,-1,0.04,-1,-1,-1,"pz");
+  h2->GetXaxis()->ChangeLabel(4,-1,0.04,-1,-1,-1,"E");
   h2->SetYTitle("measured-generated sigma [MeV]");
+  h1->GetYaxis()->CenterTitle();
   leg = new TLegend(0.6, 0.6, 0.9, 0.9);
   for( int i=0; i<num; i++ ){
     gr2[i]->Draw("same");
