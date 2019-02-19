@@ -12,10 +12,11 @@ const double d_mass  = 1.87561;
 const double K_mass    = 0.493677;
 const double n_mass    = 0.939565;
 const double piSp_mass = 1.18937+0.13957;
+const double piSm_mass = 1.197449+0.13957;
 #endif
 
 //const double pK = 1.05; //GeV/c = maximum ~ 1.018*1.025
-const double pK = 1.00; //GeV/c = maximum ~ 1.018*1.025
+const double pK = 1.00; //default value of simulation
 const double EK = sqrt(K_mass*K_mass+pK*pK);
 
 double func_EM(double *x, double *par);
@@ -26,16 +27,6 @@ double func(double *x, double *par);
 
 int NumericalRootFinder()
 {
-#if 0
-  TDatabasePDG *pdg = new TDatabasePDG();
-  pdg->ReadPDGTable("./pdg_table.txt");
-  double d_mass = pdg->GetParticle("He3")->Mass();
-  double K_mass   = pdg->GetParticle("K-")->Mass();
-  double n_mass   = pdg->GetParticle("neutron")->Mass();
-  double piSp_mass = pdg->GetParticle("pi-")->Mass()+pdg->GetParticle("Sigma+")->Mass()+pdg->GetParticle("proton")->Mass();
-  cerr<<d_mass<<" "<<K_mass<<" "<<n_mass<<" "<<piSp_mass<<endl;
-#endif
-  
   double target_mass = d_mass;
   TVector3 target_mom(0.0, 0.0, 0.0);
   TLorentzVector target(target_mom, sqrt(target_mom.Mag2()+target_mass*target_mass));
@@ -50,7 +41,7 @@ int NumericalRootFinder()
   const double COS_MAX = 1;
   const int    COS_BIN = 5;
 
-  const double M_MIN = piSp_mass;
+  const double M_MIN = piSm_mass;
   const double M_MAX = sys.M()-n_mass+0.00001;
   const int    M_BIN = 10000;
   cerr<<M_MIN<<" "<<M_MAX<<endl;
@@ -95,6 +86,7 @@ int NumericalRootFinder()
 
   char com[64];
   TGraph *gr[COS_BIN+1];
+  TMultiGraph *mg = new TMultiGraph("mg","kinematic limits");
   for( int i=0; i<COS_BIN+1; i++ ){
     gr[i] = new TGraph(M_BIN, value[0][i], value[1][i]);
     sprintf(com, "gr_%d", i);
@@ -102,6 +94,7 @@ int NumericalRootFinder()
     gr[i]->SetLineColor(2);
     gr[i]->SetLineWidth(4);
     gr[i]->SetLineStyle(10);
+    mg->Add(gr[i]);
   }
 
   TGraph *gr_th;
@@ -110,7 +103,7 @@ int NumericalRootFinder()
   gr_th->SetLineColor(2);
   gr_th->SetLineWidth(4);
   gr_th->SetLineStyle(10);
-  
+  mg->Add(gr_th);
   TCanvas *c1;
   c1 = new TCanvas("c1", "", 600, 600);
   TH2F *his = new TH2F("his","his",100,1,2,120,-0.2,2);
@@ -125,6 +118,7 @@ int NumericalRootFinder()
     gr[i]->Write();
   }
   gr_th->Write();
+  mg->Write();
   out->Close();
 
   return 0;
