@@ -1,5 +1,5 @@
 const bool gridon=true;
-const bool staton=true;
+const bool staton=false;
 const bool labelon=true;
 
 #include <iostream>
@@ -38,7 +38,7 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   gStyle->SetStatX(0.98);
   gStyle->SetStatY(0.9);
   gStyle->SetStatBorderSize(1);
-  //gStyle->SetPalette(56);
+  gStyle->SetPalette(56);
   TFile *f = new TFile(filename,"READ"); 
   
   std::cout << "infile " << filename <<std::endl;
@@ -254,7 +254,6 @@ void QACDS(TFile *f){
   gStyle->SetOptStat(0);
   cCDS_mass2_mom->Update();
   cCDS_mass2_mom->Modified();
-  
   
   TCanvas *cVtx_ZX  = new TCanvas("Vtx_ZX","Vtx_ZX");
   TH2F *h2_Vtx_ZX = (TH2F*)f->Get("Vtx_ZX");
