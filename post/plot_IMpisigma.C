@@ -908,7 +908,13 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   MMom_MMass_woK0_kin_py_clone[1]->SetLineColor(3);
   MMom_MMass_woK0_kin_py_clone[1]->Draw("same");
 
+  TCanvas *cdE_IMnpim_woK0_n = new TCanvas("cdE_IMnpim_woK0_n","dE_IMnpim_woK0_n");
+  cdE_IMnpim_woK0_n->cd();
+  dE_IMnpim_woK0_n->Draw("colz");
 
+  TCanvas *cdE_IMnpip_woK0_n = new TCanvas("cdE_IMnpip_woK0_n","dE_IMnpip_woK0_n");
+  cdE_IMnpip_woK0_n->cd();
+  dE_IMnpip_woK0_n->Draw("colz");
   
   TCanvas *cIMnpim_IMnpip_dE_woK0_n = new TCanvas("cIMnpim_IMnpip_dE_woK0_n","IMnpim_IMnpip_dE_woK0_n");
   cIMnpim_IMnpip_dE_woK0_n->cd();
