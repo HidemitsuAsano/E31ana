@@ -54,7 +54,7 @@ const int MaxTreeSize = 1000000000;
 const int Verbosity = 0;
 const bool DoCDCRetiming = false;
 const bool DoKinFit = true;
-const bool IsVtxDoubleCheck = true;
+const bool IsVtxDoubleCheck = false;
 //-----------------------------------------//
 //--- covariance matrices for KinFitter ---//
 //-----------------------------------------//
@@ -758,6 +758,14 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       const double dcapimvtx =  (vtx_pim-vtx_beam_wpim).Mag();
       const TVector3 vtxpip_mean = 0.5*(vtx_pip+vtx_beam_wpip);
       const TVector3 vtxpim_mean = 0.5*(vtx_pim+vtx_beam_wpim);
+      Tools::Fill1D( Form("DCA_pip"), dcapipvtx );
+      Tools::Fill1D( Form("DCA_pim"), dcapimvtx );
+
+      TVector3 vtx1,vtx2;
+      bool vtx_flag=TrackTools::Calc2HelixVertex(track_pip, track_pim, vtx1, vtx2);
+      double dcapippim=-9999.;
+      if(vtx_flag) dcapippim = (vtx2-vtx1).Mag();
+      Tools::Fill1D( Form("DCA_pippim"), dcapippim);
 
 
       //reaction vertex is determined from beam and nearest vtx
@@ -928,7 +936,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             // K0 selection
             Tools::Fill2D( Form("dE_betainv_fid_beta_dE_wK0"), 1./NeutralBetaCDH, ncdhhit->emean() );
             Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_wK0"), mm_mass, P_missn.Mag() );
-          }
+          }//K0 rejection
 
           if(K0rejectFlag && MissNFlag) {
             Tools::Fill2D( Form("dE_betainv_fid_beta_dE_woK0_n"), 1./NeutralBetaCDH, ncdhhit->emean() );
@@ -968,16 +976,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             //momentum transfer
             Tools::Fill2D( Form("q_IMnpipi_woK0_wSid_n"),(LVec_n+LVec_pim+LVec_pip).M(), (LVec_beam.Vect()-LVec_nmiss.Vect()).Mag());
 
-            Tools::Fill1D( Form("DCA_pip"), dcapipvtx );
-            Tools::Fill1D( Form("DCA_pim"), dcapimvtx );
             //vertex position from pi+/pi-
-            TVector3 vtx1,vtx2;
-            bool vtx_flag=TrackTools::Calc2HelixVertex(track_pip, track_pim, vtx1, vtx2);
-            double dcapippim=-9999.;
-            if(vtx_flag) dcapippim = (vtx2-vtx1).Mag();
-            Tools::Fill1D( Form("DCA_pippim"), dcapippim);
-          }
-
+          }//MissNFlag && K0rejectFlag && (SigmaPFlag || SigmaMFlag)
+          
           if(K0rejectFlag && MissNFlag && SigmaPFlag) {
             Tools::Fill1D( Form("DCA_pip_SigmaP"),dcapipvtx);
             Tools::Fill1D( Form("DCA_pim_SigmaP"),dcapimvtx);

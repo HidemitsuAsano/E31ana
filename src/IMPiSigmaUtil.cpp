@@ -16,7 +16,7 @@ int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack, const bool MCFlag)
 {
   //** # of CDH-hits cut **//
   int nCDH = 0;
-  for( int i=0; i<cdsman->nCDH(); i++ ) {
+  for( int i=0; i<cdsman->nCDH(); i++ ){
     Tools::Fill2D(Form("CDHtime"),cdsman->CDH(i)->seg(),cdsman->CDH(i)->ctmean());
     Tools::Fill2D(Form("dE_CDHtime"), cdsman->CDH(i)->ctmean(), cdsman->CDH(i)->emean());
     if(ntrack == cdscuts::cds_ngoodtrack){
@@ -24,9 +24,12 @@ int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack, const bool MCFlag)
     }
     //if( cdsman->CDH(i)->CheckRange() ) nCDH++; //** only requirement of TDC **//
     if(MCFlag){
-      if( cdsman->CDH(i)->CheckRange() && cdsman->CDH(i)->ctmean()<(cdscuts::tdc_cdh_max+cdscuts::tdc_simoffset) ) nCDH++;
+      if((cdsman->CDH(i)->CheckRange()) && (cdsman->CDH(i)->ctmean()<(cdscuts::tdc_cdh_max+cdscuts::tdc_simoffset))) nCDH++;
     }else{
-      if( cdsman->CDH(i)->CheckRange() && cdsman->CDH(i)->ctmean()<cdscuts::tdc_cdh_max ) nCDH++;
+      if((cdsman->CDH(i)->CheckRange()) && (cdsman->CDH(i)->ctmean()<cdscuts::tdc_cdh_max)){
+        //std::cout << cdsman->CDH(i)->ctmean() << std::endl;
+        nCDH++;
+      }
     }
   }
   Tools::Fill1D( Form("mul_CDH"), nCDH );
@@ -68,7 +71,7 @@ int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector
         Tools::Fill1D( Form("diff_CDH"), seg[ineuseg]-allhit[ihit] );
       }
       //CDH has 36 segments. Requiring there is no hits on neighboring segments.
-      if( abs(seg[ineuseg]-allhit[ihit])==1 || abs(seg[ineuseg]-allhit[ihit])==35 )
+      if( (abs(seg[ineuseg]-allhit[ihit])==1) || (abs(seg[ineuseg]-allhit[ihit])==35) )
         NNeighboringHits++;
     }
   }
@@ -123,7 +126,7 @@ double Util::AnaBeamSpec(ConfMan *confman, BeamLineTrackMan *bltrackman,const in
 
 
 //CDSChargedAna 
-//a function for general analysis of charged particle in CDS. It is not allowded that two good CDC tracks share a CDH segment.
+//a function for general analysis of charged particle in CDS. It is not allowded that two good CDC tracks share one CDH segment.
 //beta and squared-mass is calculated and PID is done by TrackTools::PIDcorr_wide().
 //
 //input 
@@ -375,9 +378,9 @@ int Util::BeamPID(EventHeader *header, const double ctmt0,BeamLineHitMan *blman)
       ctmBHD = blman->BHD(i)->ctmean();
       double tofBHDT0 = ctmt0-ctmBHD;
       Tools::Fill1D( Form("tof_T0BHD"), tofBHDT0 );
-      if( header->kaon() && blcuts::beam_tof_k_min <tofBHDT0 && tofBHDT0<blcuts::beam_tof_k_max  )
+      if( header->kaon() && (blcuts::beam_tof_k_min <tofBHDT0) && (tofBHDT0<blcuts::beam_tof_k_max)  )
         PIDBeam = Beam_Kaon;
-      else if( header->pion() && blcuts::beam_tof_pi_min<tofBHDT0 && tofBHDT0<blcuts::beam_tof_pi_max )
+      else if( header->pion() && (blcuts::beam_tof_pi_min<tofBHDT0) && (tofBHDT0<blcuts::beam_tof_pi_max) )
         PIDBeam = Beam_Pion;
     }
   }

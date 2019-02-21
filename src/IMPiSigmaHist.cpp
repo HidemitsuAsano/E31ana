@@ -75,12 +75,12 @@ void InitIMPiSigmaHist()
 {
   
   //CDH
-  Tools::newTH2F( Form("CDHtime"),36,0.5,36.5,4000,0,200);
-  Tools::newTH2F( Form("dE_CDHtime"),200,0.,100,200,0,50);
-  Tools::newTH2F( Form("dE_CDHtime_2track"),200,0.,100,200,0,50);
-  Tools::newTH2F( Form("dE_CDHtime_pippimn"),200,0.,100,200,0,50);
+  Tools::newTH2F( Form("CDHtime"),36,0.5,36.5,400,0,200);
+  Tools::newTH2F( Form("dE_CDHtime"),100,0.,100,100,0,50);
+  Tools::newTH2F( Form("dE_CDHtime_2track"),100,0.,100,100,0,50);
+  Tools::newTH2F( Form("dE_CDHtime_pippimn"),100,0.,100,100,0,50);
 
-  Tools::newTH2F( Form("NeutraltimeEnergy"),200,0,100,200,0,50);
+  Tools::newTH2F( Form("NeutraltimeEnergy"),100,0,100,200,0,50);
   Tools::newTH1F( Form("diff_CDH"), 73, -36.5, 36.5 );
   Tools::newTH1F( Form("diff_CDH_CDC"), 181, 0, 181 );
   
@@ -122,13 +122,13 @@ void InitIMPiSigmaHist()
   Tools::newTH2F( Form("MMnmiss_IMnpipi_woK0_wSid_n"),100,1,2,100,0,1.5);
   Tools::newTH2F( Form("nmom_IMnpipi_woK0_wSid_n"),100,1,2,100,0,1.0);
   Tools::newTH2F( Form("q_IMnpipi_woK0_wSid_n"),100,1,2,300,0,1.5);
-  Tools::newTH1F( Form("DCA_pip"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pim"), 500, 0, 5 );
+  Tools::newTH1F( Form("DCA_pip"), 3000, 0, 30 );
+  Tools::newTH1F( Form("DCA_pim"), 3000, 0, 30 );
   Tools::newTH1F( Form("DCA_pip_SigmaP"), 500, 0, 5 );
   Tools::newTH1F( Form("DCA_pim_SigmaP"), 500, 0, 5 );
   Tools::newTH1F( Form("DCA_pip_SigmaM"), 500, 0, 5 );
   Tools::newTH1F( Form("DCA_pim_SigmaM"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pippim"), 500, 0, 5);
+  Tools::newTH1F( Form("DCA_pippim"), 3000, 0, 30);
 
   Tools::newTH2F( Form("KFchi2_vs"),100,0,100,100,0,100);
   Tools::SetXTitleH2(Form("KFchi2_vs"),"chi2/NDF S+");

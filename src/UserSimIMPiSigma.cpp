@@ -375,7 +375,7 @@ int main( int argc, char** argv )
     //### CDH ADC cut ###//
     DetectorData *detData2  = new DetectorData();
     for( int i=0; i<detData->detectorHitSize(); i++ ){
-      if( !(detData->detectorHit(i)->detectorID()==CID_CDH && detData->detectorHit(i)->adc()<ADC_CDH_MIN) ){
+      if( !((detData->detectorHit(i)->detectorID()==CID_CDH) && (detData->detectorHit(i)->adc()<ADC_CDH_MIN)) ){
         detData2->setDetectorHit(*detData->detectorHit(i));
       }
     }
@@ -551,9 +551,29 @@ int main( int argc, char** argv )
     }
     if(flagG4Decay){
       double q = (TL_gene[kin::kmbeam].Vect()-TL_gene[kin::nmiss].Vect()).Mag();
-      TLorentzVector TL_piSigma = TL_gene[kin::ncds]+TL_gene[kin::pip_g2];
-      Tools::H2("q_IMpiSigma_gen",TL_piSigma.M(), q,100,1,2,300,0,1.5);
+      TLorentzVector TL_Sigma_cor;// define to evaluate energy loss effect of Sigma
+      TLorentzVector TL_piSigma;// 
+      TLorentzVector TL_piSigma_cor;//
+      if(reactionID == gen::reactionID_Spmode){
+        TL_Sigma_cor = TL_gene[kin::ncds]+TL_gene[kin::pip_g2]; 
+        TL_piSigma = TL_gene[kin::Sp]+TL_gene[kin::pim_g1];
+        TL_piSigma_cor = TL_Sigma_cor + TL_gene[kin::pim_g1];
+        Tools::H2("q_IMpin_gen",TL_Sigma_cor.M(), q,100,1,2,300,0,1.5);
+        Tools::H1("IMpiSigma_gen",TL_piSigma.M(), 1000,1,2);
+        Tools::H2("q_IMpiSigma_cor_gen",TL_piSigma_cor.M(), q,100,1,2,300,0,1.5);
+      }else if(reactionID == gen::reactionID_Smmode){
+        TL_Sigma_cor = TL_gene[kin::ncds]+TL_gene[kin::pim_g2];
+        TL_piSigma = TL_gene[kin::Sm]+TL_gene[kin::pip_g1];
+        TL_piSigma_cor = TL_Sigma_cor + TL_gene[kin::pip_g1];
+        Tools::H2("q_IMpin_gen",TL_Sigma_cor.M(), q,100,1,2,300,0,1.5);
+        Tools::H1("IMpiSigma_gen",TL_piSigma.M(), 1000,1,2);
+        Tools::H2("q_IMpiSigma_cor_gen",TL_piSigma_cor.M(), q,100,1,2,300,0,1.5);
+      }else{
+        std::cout << "L." << __LINE__ << " input file must be wrong ! " << std::endl;
+        std::cout << "reactionID " <<  reactionID << std::endl;
+      }
     }
+
     //##########################//
     //### get G4 information ###//
     //##########################//
@@ -876,19 +896,25 @@ int main( int argc, char** argv )
         //TVector3 vtx_b; // Vertex(baem-particle)_on_beam
         TVector3 vtx_beam_wpip;//vertex(beam-pip) on beam
         TVector3 vtx_pip;//vertex(beam-pip) on particle
-        TVector3 vtx_pip_mean;//vertex(beam-pip) on beam
         TVector3 vtx_beam;
         track_pip->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpip, vtx_pip ); 
         TVector3 vtx_beam_wpim;//vertex(beam-pim) on beam
         TVector3 vtx_pim;//vertex(beam-pim) on particle
-        TVector3 vtx_pim_mean;//vertex(beam-pim) on beam
         track_pim->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpim, vtx_pim ); 
       
         double dcapipvtx =  (vtx_pip-vtx_beam_wpip).Mag();
         double dcapimvtx =  (vtx_pim-vtx_beam_wpim).Mag();
-        double dcapippim =  (vtx_pip-vtx_pim).Mag();
-        vtx_pip_mean = 0.5*(vtx_pip+vtx_beam_wpip);
-        vtx_pim_mean = 0.5*(vtx_pim+vtx_beam_wpim);
+        const TVector3 vtx_pip_mean = 0.5*(vtx_pip+vtx_beam_wpip);
+        const TVector3 vtx_pim_mean = 0.5*(vtx_pim+vtx_beam_wpim);
+        Tools::Fill1D( Form("DCA_pip"), dcapipvtx );
+        Tools::Fill1D( Form("DCA_pim"), dcapimvtx );
+        
+        TVector3 vtx1,vtx2;
+        bool vtx_flag=TrackTools::Calc2HelixVertex(track_pip, track_pim, vtx1, vtx2);
+        double dcapippim=-9999.;
+        //double dcapippim =  (vtx_pip-vtx_pim).Mag();
+        if(vtx_flag) dcapippim = (vtx2-vtx1).Mag();
+        Tools::Fill1D( Form("DCA_pippim"), dcapippim);
         
         //reaction vertex is determined from beam and nearest vtx 
         if(dcapipvtx <= dcapimvtx){
@@ -1078,9 +1104,6 @@ int main( int argc, char** argv )
               //momentum transfer 
               Tools::Fill2D( Form("q_IMnpipi_woK0_wSid_n"),(LVec_n+LVec_pim+LVec_pip).M(), (LVec_beam.Vect()-LVec_nmiss.Vect()).Mag());
 
-              Tools::Fill1D( Form("DCA_pip"), dcapipvtx );
-              Tools::Fill1D( Form("DCA_pim"), dcapimvtx );
-              Tools::Fill1D( Form("DCA_pippim"), dcapippim);
               Tools::Fill1D( Form("vertex_diff_X"), vtx_react.X()-mcData->track(ID[kin::kmbeam])->vertex().X() );
               Tools::Fill1D( Form("vertex_diff_Y"), vtx_react.Y()-mcData->track(ID[kin::kmbeam])->vertex().Y() );
               Tools::Fill1D( Form("vertex_diff_Z"), vtx_react.Z()-mcData->track(ID[kin::kmbeam])->vertex().Z() );
