@@ -396,6 +396,11 @@ void QACDS(TFile *f){
   TH1D* h1_dE_beta = h2_dE_betainv_fid_beta->ProjectionY("py");
   h1_dE_beta->Draw();
 
+  TCanvas *cDCA_pippim = new TCanvas("cDCA_pippim","DCA_pippim");
+  TH1F* h1_DCA_pippim = new (TH2F*)f->Get("DCA_pippim");
+  h1_DCA_pipim->Draw();
+
+
 
 
   return;
