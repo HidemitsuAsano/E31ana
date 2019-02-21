@@ -129,9 +129,9 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH2F* MMom_MMass_woK0;
   TH2F* MMom_MMass_woK0_wSid;
   TH2F* IMnpim_IMnpip_dE_woK0;
+  TH2F* IMnpim_IMnpip_dE_woK0_n;
   TH2F* MMnmiss_IMnpip_dE_woK0;
   TH2F* MMnmiss_IMnpim_dE_woK0;
-  TH2F* IMnpim_IMnpip_dE_woK0_n;
   TH2F* MMnpip_MMnpim_woK0_wSid_n;
   TH2F* dE_IMnpim_woK0;
   TH2F* dE_IMnpim_woK0_n;
@@ -472,7 +472,6 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
       npimmom->Fill(LVec_pim_n.P());
       MMnmiss_IMnpip_dE_woK0->Fill(LVec_pip_n.M(),nmiss_mass);
       MMnmiss_IMnpim_dE_woK0->Fill(LVec_pim_n.M(),nmiss_mass);
-
       if(SigmaPFlag || SigmaMFlag){
         MMom_MMass_woK0_wSid->Fill(LVec_n_miss.M(),LVec_n_miss.P());
       }
@@ -666,9 +665,17 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   npimmom->Draw("");
 
   TCanvas *cMMnmiss_IMnpip_dE_woK0 = new TCanvas("cMMnmiss_IMnpip_dE_woK0","MMnmiss_IMnpip_dE_woK0");
+  MMnmiss_IMnpip_dE_woK0->RebinX(2);
+  MMnmiss_IMnpip_dE_woK0->RebinY(2);
+  MMnmiss_IMnpip_dE_woK0->GetXaxis()->SetRangeUser(1.05,1.5);
+  MMnmiss_IMnpip_dE_woK0->GetYaxis()->SetRangeUser(0.6,1.5);
   MMnmiss_IMnpip_dE_woK0->Draw("colz");
 
   TCanvas *cMMnmiss_IMnpim_dE_woK0 = new TCanvas("cMMnmiss_IMnpim_dE_woK0","MMnmiss_IMnpim_dE_woK0");
+  MMnmiss_IMnpim_dE_woK0->RebinX(2);
+  MMnmiss_IMnpim_dE_woK0->RebinY(2);
+  MMnmiss_IMnpim_dE_woK0->GetXaxis()->SetRangeUser(1.05,1.5);
+  MMnmiss_IMnpim_dE_woK0->GetYaxis()->SetRangeUser(0.6,1.5);
   MMnmiss_IMnpim_dE_woK0->Draw("colz");
 
   
@@ -957,15 +964,15 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
 
 
   TCanvas *c = nullptr;
-  TPDF *pdf = new TPDF(pdfname);
-  //TSeqCollection *SCol = gROOT->GetListOfCanvases();
-  //int size = SCol->GetSize();
-  TIter next(gROOT->GetListOfCanvases());
-  //TIter next(SCol);
-  //for(int i=0;i<size;i++){
-  while((c= (TCanvas*)next())){
-    pdf->NewPage();
-    //c= (TCanvas*)next();
+  //TPDF *pdf = new TPDF(pdfname);
+  TSeqCollection *SCol = gROOT->GetListOfCanvases();
+  int size = SCol->GetSize();
+  //TIter next(gROOT->GetListOfCanvases());
+  TIter next(SCol);
+  for(int i=0;i<size;i++){
+  //while((c= (TCanvas*)next())){
+    //pdf->NewPage();
+    c= (TCanvas*)next();
     c->Draw();
     c->cd();
     TPaveText *pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
@@ -975,11 +982,11 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     pt->Draw();
     c->Modified();
     c->Update();
-    //if(i==0) c->Print(pdfname+"(",Form("Title:%s",c->GetTitle()));
-    //else if(i==size-1)c->Print(pdfname+")",Form("Title:%s",c->GetTitle())); 
-    //else c->Print(pdfname,Form("Title:%s",c->GetTitle())); 
+    if(i==0) c->Print(pdfname+"(",Form("Title:%s",c->GetTitle()));
+    else if(i==size-1)c->Print(pdfname+")",Form("Title:%s",c->GetTitle())); 
+    else c->Print(pdfname,Form("Title:%s",c->GetTitle())); 
   }
-  pdf->Close();
+ // pdf->Close();
   std::cout << "closing pdf " << std::endl;
   
   //fout->Close();

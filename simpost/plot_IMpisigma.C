@@ -156,6 +156,8 @@ void plot_IMpisigma(const char* filename="")
   TH2F* MMom_MMass_fid_beta_dE_woK0_wSid;
   TH2F* IMnpim_IMnpip_dE_woK0;
   TH2F* IMnpim_IMnpip_dE_woK0_n;
+  TH2F* MMnmiss_IMnpip_dE_woK0;
+  TH2F* MMnmiss_IMnpim_dE_woK0;
   TH2F* MMnpip_MMnpim_woK0_wSid_n;
   TH2F* dE_IMnpim_woK0;
   TH2F* dE_IMnpim_woK0_n;
@@ -182,6 +184,7 @@ void plot_IMpisigma(const char* filename="")
   TH2F* nmom_IMnpipi_woK0_kin[2];
   const char smode[][4]={"Sp","Sm"};
    
+  /*
   //correlation plots again
   const int BIN = 4000;
   const double cov_MAX=0.4;
@@ -195,7 +198,8 @@ void plot_IMpisigma(const char* filename="")
       }
     }
   }//for ip
-  
+  */ 
+
   dE_betainv_fid = new TH2F(Form("dE_betainv_fid"),Form("dE_betainv_fid"),1000, 0, 50, 200, 0, 50);
   dE_betainv_fid->SetXTitle("1/#beta");
   dE_betainv_fid->SetYTitle("dE [MeVee]");
@@ -217,6 +221,13 @@ void plot_IMpisigma(const char* filename="")
   MMom_MMass_fid_beta_dE_woK0_wSid->SetXTitle("Missing Mass [GeV/c^{2}]");
   MMom_MMass_fid_beta_dE_woK0_wSid->SetYTitle("Missing Mom. [GeV/c]");
 
+  MMnmiss_IMnpip_dE_woK0 = new TH2F("MMnmiss_IMnpip_dE_woK0", "MMnmiss_IMnpip_dE_woK0",200,1.,2.0,100,0,1.5);
+  MMnmiss_IMnpip_dE_woK0->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  MMnmiss_IMnpip_dE_woK0->SetYTitle("Miss Mass. [GeV/c^{2}]");
+
+  MMnmiss_IMnpim_dE_woK0 = new TH2F("MMnmiss_IMnpim_dE_woK0", "MMnmiss_IMnpim_dE_woK0",200,1.,2.0,100,0,1.5);
+  MMnmiss_IMnpim_dE_woK0->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  MMnmiss_IMnpim_dE_woK0->SetYTitle("Miss Mass. [GeV/c^{2}]");
   
   IMnpim_IMnpip_dE_woK0 = new TH2F(Form("IMnpim_IMnpip_dE_woK0"), Form("IMnpim_IMnpip_dE_woK0"),200, 1, 2.0, 200, 1, 2.0);
   IMnpim_IMnpip_dE_woK0->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
@@ -497,6 +508,8 @@ void plot_IMpisigma(const char* filename="")
       mnmom->Fill(nmiss_mom);
       npipmom->Fill(LVec_pip_n.P());
       npimmom->Fill(LVec_pim_n.P());
+      MMnmiss_IMnpip_dE_woK0->Fill(LVec_pip_n.M(),nmiss_mass);
+      MMnmiss_IMnpim_dE_woK0->Fill(LVec_pim_n.M(),nmiss_mass);
       if(SigmaPFlag || SigmaMFlag){
         MMom_MMass_fid_beta_dE_woK0_wSid->Fill(LVec_n_miss.M(),LVec_n_miss.P());
       }
@@ -717,7 +730,22 @@ void plot_IMpisigma(const char* filename="")
   TCanvas *cnpimmom = new TCanvas("cnpimmom","npimmom");
   cnpimmom->cd();
   npimmom->Draw("");
-  
+
+  TCanvas *cMMnmiss_IMnpip_dE_woK0 = new TCanvas("cMMnmiss_IMnpip_dE_woK0","MMnmiss_IMnpip_dE_woK0");
+  MMnmiss_IMnpip_dE_woK0->RebinX(2);
+  MMnmiss_IMnpip_dE_woK0->RebinY(2);
+  MMnmiss_IMnpip_dE_woK0->GetXaxis()->SetRangeUser(1.05,1.5);
+  MMnmiss_IMnpip_dE_woK0->GetYaxis()->SetRangeUser(0.6,1.5);
+  MMnmiss_IMnpip_dE_woK0->Draw("colz");
+
+  TCanvas *cMMnmiss_IMnpim_dE_woK0 = new TCanvas("cMMnmiss_IMnpim_dE_woK0","MMnmiss_IMnpim_dE_woK0");
+  MMnmiss_IMnpim_dE_woK0->RebinX(2);
+  MMnmiss_IMnpim_dE_woK0->RebinY(2);
+  MMnmiss_IMnpim_dE_woK0->GetXaxis()->SetRangeUser(1.05,1.5);
+  MMnmiss_IMnpim_dE_woK0->GetYaxis()->SetRangeUser(0.6,1.5);
+  MMnmiss_IMnpim_dE_woK0->Draw("colz");
+
+
   TCanvas *cq_IMnpipi_woK0_wSid_n_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_px","q_IMnpipi_woK0_wSid_n_px"); 
   cq_IMnpipi_woK0_wSid_n_px->cd();
   TH1D *q_IMnpipi_wSid_n_px = q_IMnpipi_wSid_n->ProjectionX();
