@@ -1,10 +1,11 @@
 #!/bin/tcsh -f
-set Version="6"
+set Version="14"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim3/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 set CDSDIRSUB="${CDSDIR}simDST3"
 set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simIMPiSigma/"
 
+set starttime=`date '+%y/%m/%d %H:%M:%S'`
 set logbasedir="/home/had/hiasano/logs/"
 set date=`date +%Y%m%d_%H%M`
 set logdir="${logbasedir}${date}_simIMPiSigma_DoraAir_${Version}"
@@ -79,3 +80,5 @@ while (1)
 end
 
 echo "aggrigation is finished"
+echo ${starttime}
+echo `date '+%y/%m/%d %H:%M:%S'`

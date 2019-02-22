@@ -1,9 +1,10 @@
 #!/bin/tcsh -f
-set Version="35"
+set Version="43"
 set DATADIR="/group/had/knucl/e15/data/Run78/"
 set OUTDIR="/group/had/knucl/e15/asano/Run78/"
 set KWSKDIR="/group/had/knucl/e15/shinngo/Run78/evtracking/"
 
+set starttime=`date '+%y/%m/%d %H:%M:%S'`
 set logbasedir="/home/had/hiasano/logs/"
 set date=`date +%Y%m%d_%H%M`
 set logdir="${logbasedir}${date}_IMpisigma_${Version}"
@@ -64,3 +65,5 @@ while (1)
 end
 
 echo "aggrigation is finished"
+echo ${starttime}
+echo `date '+%y/%m/%d %H:%M:%S'`
