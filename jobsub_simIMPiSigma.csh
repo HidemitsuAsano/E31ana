@@ -67,18 +67,19 @@ while ($i < 400)
 end
 
 while (1)
-  if ( (`bjobs | wc -l`) < 1 ) then 
-    echo "all bjob finished"
+  @ njob=`bjobs | wc -l`
+  if ( $njob < 1 ) then 
+    echo "all jobs finished"
     cd $OUTDIRSUB
     tcsh hadd_simhist.csh
     tcsh hadd_sim_pippimn.csh
     cd -
     break
   endif
-  echo "running" 
-  sleep 30
+  echo "$njob jobs running" 
+  sleep 60
 end
 
 echo "aggrigation is finished"
-echo ${starttime}
-echo `date '+%y/%m/%d %H:%M:%S'`
+echo "start time ${starttime}"
+echo "end time `date '+%y/%m/%d %H:%M:%S'`"
