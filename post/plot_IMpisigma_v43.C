@@ -50,22 +50,15 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   
   //= = = = pipipnn final-sample tree = = = =//
   TLorentzVector *LVec_beam=nullptr;   // 4-momentum(beam)
-  TLorentzVector *LVec_beam_Sp=nullptr;   // 4-momentum(beam),Sp mode
-  TLorentzVector *LVec_beam_Sm=nullptr;   // 4-momentum(beam),Sm mode
   TLorentzVector *LVec_target=nullptr; // 4-momentum(target)
   TLorentzVector *LVec_pip=nullptr;    // 4-momentum(pi+)
   TLorentzVector *LVec_pim=nullptr;    // 4-momentum(pi-)
   TLorentzVector *LVec_n=nullptr;      // 4-momentum(neutron)
-  TLorentzVector *LVec_n_Sp=nullptr;      // 4-momentum(neutron),Sp mode
-  TLorentzVector *LVec_n_Sm=nullptr;      // 4-momentum(neutron),Sm mode
-  double NeutralBetaCDH; // velocity of neutral particle on CDH
-  double NeutralBetaCDH_vtx[2]; // velocity of neutral particle on CDH
+  double NeutralBetaCDH; // veracity of neutral particle on CDH
   double dE;   // energy deposit on CDH
   TVector3 *vtx_reaction = nullptr; // vertex(reaction)
-  TVector3 *vtx_pip_beam = nullptr; // vertex (pip)
-  TVector3 *vtx_pim_beam = nullptr; // vertex (pim)
-  TVector3 *vtx_pip_cdc = nullptr;//
-  TVector3 *vtx_pim_cdc = nullptr;//
+  TVector3 *vtx_pip = nullptr; // vertex (pip)
+  TVector3 *vtx_pim = nullptr; // vertex (pim)
   //int run_num;   // run number
   //int event_num; // event number
   //int block_num; // block number
@@ -98,22 +91,15 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   }
   
   tree->SetBranchAddress( "mom_beam",   &LVec_beam );
-  tree->SetBranchAddress( "mom_beam_Sp",   &LVec_beam_Sp );
-  tree->SetBranchAddress( "mom_beam_Sm",   &LVec_beam_Sm );
   tree->SetBranchAddress( "mom_target", &LVec_target );
   tree->SetBranchAddress( "mom_pip", &LVec_pip );
   tree->SetBranchAddress( "mom_pim", &LVec_pim );
   tree->SetBranchAddress( "mom_n", &LVec_n );
-  tree->SetBranchAddress( "mom_n_Sp", &LVec_n_Sp );
-  tree->SetBranchAddress( "mom_n_Sm", &LVec_n_Sm );
   tree->SetBranchAddress( "NeutralBetaCDH", &NeutralBetaCDH );
-  tree->SetBranchAddress( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
   tree->SetBranchAddress( "dE", &dE );
-  tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
-  tree->SetBranchAddress( "vtx_pip_beam",&vtx_pip_beam);
-  tree->SetBranchAddress( "vtx_pim_beam",&vtx_pim_beam);
-  tree->SetBranchAddress( "vtx_pip_cdc",&vtx_pip_cdc);
-  tree->SetBranchAddress( "vtx_pim_cdc",&vtx_pim_cdc);
+  tree->SetBranchAddress( "vtx_reaction", vtx_reaction );
+  tree->SetBranchAddress( "vtx_pip",&vtx_pip);
+  tree->SetBranchAddress( "vtx_pim",&vtx_pim);
   //tree->SetBranchAddress( "run_num", &run_num );
   //tree->SetBranchAddress( "event_num", &event_num );
   //tree->SetBranchAddress( "block_num", &block_num );
@@ -157,7 +143,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH2F* q_IMnpipi_wSid_n;
   TH2F* q_IMnpipi_woK0_wSid_n;
   TH2F* nmom_IMnpipi_woK0_wSid_n;
-  TH2F* q_pippim_n;
+  TH2F* q_K0_n;
   // w/ kinematic fit
   TH2F* dE_betainv_fid_kin[2];//
   TH2F* dE_MMom_fid_beta_woK0_kin[2];
@@ -257,10 +243,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   nmom_IMnpipi_woK0_wSid_n = new TH2F(Form("nmom_IMnpipi_woK0_wSid_n"),Form("nmom_IMnpipi_woK0_wSid_n"),100,1,2,100,0,1.0);
   nmom_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   nmom_IMnpipi_woK0_wSid_n->SetYTitle("nmom  [GeV/c]");
-   
-  q_pippim_n = new TH2F("q_pippim_n","q_pippim_n",200,0,1, 100,0,1.5);
-  q_pippim_n->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
-  q_pippim_n->SetYTitle("Mom. Transfer [GeV/c]");
+    
 
   for(int imode=0;imode<2;imode++){
     dE_betainv_fid_kin[imode] = new TH2F(Form("dE_betainv_fid_kin_%s",smode[imode]),Form("dE_betainv_fid_kin_%s",smode[imode]),1000, 0, 50, 200, 0, 50);
@@ -401,47 +384,34 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     
     // calc missing n //
     TLorentzVector LVec_n_miss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n;
-    TLorentzVector LVec_n_miss_vtx[2];
-    LVec_n_miss_vtx[0] = *LVec_target+*LVec_beam_Sp-*LVec_pip-*LVec_pim-*LVec_n_Sp;
-    LVec_n_miss_vtx[1] = *LVec_target+*LVec_beam_Sm-*LVec_pip-*LVec_pim-*LVec_n_Sm;
-
     double nmiss_mass = LVec_n_miss.M();
-    double nmiss_mass_vtx[2]={LVec_n_miss_vtx[0].M(),LVec_n_miss_vtx[1].M()};
     double nmiss_mom = LVec_n_miss.P();
-    double nmiss_mom_vtx[2] = {LVec_n_miss_vtx[0].P(),LVec_n_miss_vtx[1].P()};
 
     // calc cos(theta) of missing n //
     TVector3 boost = (*LVec_target+*LVec_beam).BoostVector();
-    TVector3 boost_vtx[2] = {(*LVec_target+*LVec_beam_Sp).BoostVector(),(*LVec_target+*LVec_beam_Sm).BoostVector()} ;
     TLorentzVector LVec_n_miss_CM = LVec_n_miss;
     TLorentzVector LVec_beam_CM = *LVec_beam;
     LVec_n_miss_CM.Boost(-boost);
     LVec_beam_CM.Boost(-boost);
     double cos_n = LVec_n_miss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_n_miss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
     TLorentzVector qkn = *LVec_beam-LVec_n_miss;
-    TLorentzVector qkn_vtx[2] = {*LVec_beam_Sp-LVec_n_miss_vtx[0],*LVec_beam_Sm-LVec_n_miss_vtx[1]};
    
     // calc pi+pi- //
     TLorentzVector LVec_pip_pim = *LVec_pip+*LVec_pim;
 
     // calc pi+n //
     TLorentzVector LVec_pip_n = *LVec_pip+*LVec_n;
-    TLorentzVector LVec_pip_n_vtx[2] = {*LVec_pip+*LVec_n_Sp,*LVec_pip+*LVec_n_Sm};
     // calc pi-n //
     TLorentzVector LVec_pim_n = *LVec_pim+*LVec_n;
-    TLorentzVector LVec_pim_n_vtx[2] = {*LVec_pim+*LVec_n_Sp,*LVec_pim+*LVec_n_Sm};
 
     // calc missing Sp //
     TLorentzVector LVec_pip_n_miss = *LVec_target+*LVec_beam-*LVec_pim-*LVec_n;
-    TLorentzVector LVec_pip_n_miss_vtx[2] = {*LVec_target+*LVec_beam_Sp-*LVec_pim-*LVec_n_Sp,                            
-                                             *LVec_target+*LVec_beam_Sm-*LVec_pim-*LVec_n_Sm};
+    
     // calc missing Sm //
     TLorentzVector LVec_pim_n_miss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_n;
-    TLorentzVector LVec_pim_n_miss_vtx[2] = {*LVec_target+*LVec_beam_Sp-*LVec_pip-*LVec_n_Sp,
-                                             *LVec_target+*LVec_beam_Sm-*LVec_pip-*LVec_n_Sm};   
+
     // calc pi+pi-n //
     TLorentzVector LVec_pip_pim_n = *LVec_pip+*LVec_pim+*LVec_n;
-    TLorentzVector LVec_pip_pim_n_vtx[2] = {*LVec_pip+*LVec_pim+*LVec_n_Sp,*LVec_pip+*LVec_pim+*LVec_n_Sm};
     TLorentzVector LVec_pip_pim_n_CM = LVec_pip_pim_n;
     LVec_pip_pim_n_CM.Boost(-boost);
     double cos_X = LVec_pip_pim_n_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pip_pim_n_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
@@ -520,66 +490,65 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     
     //including K0 
     if(NBetaOK && NdEOK && MissNFlag){
-      q_pippim_n->Fill(LVec_pip_pim.M(),qkn.P());
       if(SigmaPFlag || SigmaMFlag){
         q_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),qkn.P());
       }
     }
 
     // w/ kinfit
-    if( (-1<kf_flag) && (pvalcut < pvalue) && K0rejectFlag){
+    if( -1<kf_flag && pvalcut <pvalue && K0rejectFlag ){
       nmom_kin->Fill((*LVec_n).P());
       mnmom_kin->Fill(nmiss_mom);
       npipmom_kin->Fill(LVec_pip_n.P());
       npimmom_kin->Fill(LVec_pim_n.P());
 
-      if( (kfSmmode_pvalue<kfSpmode_pvalue) && kfSpmode_status==0 ){
-        dE_betainv_fid_kin[0]->Fill(1./NeutralBetaCDH_vtx[0],dE);
+      if( kfSmmode_pvalue<kfSpmode_pvalue ){
+        dE_betainv_fid_kin[0]->Fill(1./NeutralBetaCDH,dE);
         if(NBetaOK){
-          dE_MMom_fid_beta_woK0_kin[0]->Fill(LVec_n_miss_vtx[0].P(),dE);
-          dE_MMass_fid_beta_woK0_kin[0]->Fill(LVec_n_miss_vtx[0].M(),dE);
+          dE_MMom_fid_beta_woK0_kin[0]->Fill(LVec_n_miss.P(),dE);
+          dE_MMass_fid_beta_woK0_kin[0]->Fill(LVec_n_miss.M(),dE);
         }
         if(NBetaOK && NdEOK){
-          MMom_MMass_woK0_kin[0]->Fill(LVec_n_miss_vtx[0].M(),LVec_n_miss_vtx[0].P());
-          IMnpim_IMnpip_dE_woK0_kin[0]->Fill(LVec_pip_n_vtx[0].M(),LVec_pim_n_vtx[0].M());
+          MMom_MMass_woK0_kin[0]->Fill(LVec_n_miss.M(),LVec_n_miss.P());
+          IMnpim_IMnpip_dE_woK0_kin[0]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
         }
-        if(NBetaOK && NdEOK){
-          MMnpip_MMnpim_woK0_kin[0]->Fill(LVec_pim_n_miss_vtx[0].M(),LVec_pip_n_miss_vtx[0].M());
-          dE_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n_vtx[0].M(),dE);
-          Cosn_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n_vtx[0].M(),cos_n);
-          MMnmiss_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n_vtx[0].M(), nmiss_mass_vtx[0]);
-          q_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n_vtx[0].M(),qkn_vtx[0].P());
-          nmom_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n_vtx[0].M(),(*LVec_n_Sp).P());
+        if(NBetaOK && NdEOK){// && MissNFlag)
+          MMnpip_MMnpim_woK0_kin[0]->Fill(LVec_pim_n_miss.M(),LVec_pip_n_miss.M());
+          dE_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n.M(),dE);
+          Cosn_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n.M(),cos_n);
+          MMnmiss_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n.M(), nmiss_mass);
+          q_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n.M(),qkn.P());
+          nmom_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n.M(),(*LVec_n).P());
         }
-      }else if( (kfSpmode_pvalue<kfSmmode_pvalue) && kfSmmode_status==0 ){//S- mode
-        dE_betainv_fid_kin[1]->Fill(1./NeutralBetaCDH_vtx[1],dE);
+      }else{//S- mode
+        dE_betainv_fid_kin[1]->Fill(1./NeutralBetaCDH,dE);
         if(NBetaOK){
-          dE_MMom_fid_beta_woK0_kin[1]->Fill(LVec_n_miss_vtx[1].P(),dE);
-          dE_MMass_fid_beta_woK0_kin[1]->Fill(LVec_n_miss_vtx[1].M(),dE);
+          dE_MMom_fid_beta_woK0_kin[1]->Fill(LVec_n_miss.P(),dE);
+          dE_MMass_fid_beta_woK0_kin[1]->Fill(LVec_n_miss.M(),dE);
         }
         if(NBetaOK && NdEOK){
-          MMom_MMass_woK0_kin[1]->Fill(LVec_n_miss_vtx[1].M(),LVec_n_miss_vtx[1].P());
-          IMnpim_IMnpip_dE_woK0_kin[1]->Fill(LVec_pip_n_vtx[1].M(),LVec_pim_n_vtx[1].M());
+          MMom_MMass_woK0_kin[1]->Fill(LVec_n_miss.M(),LVec_n_miss.P());
+          IMnpim_IMnpip_dE_woK0_kin[1]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
         }
         if(NBetaOK && NdEOK){ //&& MissNFlag)
-          MMnpip_MMnpim_woK0_kin[1]->Fill(LVec_pim_n_miss_vtx[1].M(),LVec_pip_n_miss_vtx[1].M());
-          dE_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n_vtx[1].M(),dE);
-          Cosn_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n_vtx[1].M(),cos_n);
-          MMnmiss_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n_vtx[1].M(), nmiss_mass_vtx[1]);
-          q_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n_vtx[1].M(),qkn_vtx[1].P());
-          nmom_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n_vtx[1].M(),(*LVec_n_Sm).P());
+          MMnpip_MMnpim_woK0_kin[1]->Fill(LVec_pim_n_miss.M(),LVec_pip_n_miss.M());
+          dE_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n.M(),dE);
+          Cosn_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n.M(),cos_n);
+          MMnmiss_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n.M(), nmiss_mass);
+          q_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n.M(),qkn.P());
+          nmom_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n.M(),(*LVec_n).P());
         }
       }
     }//pval cut && Korejectflag
     
     if( (-1<kf_flag) && (pvalcut < pvalue) ){
-      if( (kfSmmode_pvalue<kfSpmode_pvalue) && (kfSmmode_status==0) ){
+      if( kfSmmode_pvalue<kfSpmode_pvalue ){
         if(NBetaOK && NdEOK){ //&& MissNFlag)
-          q_IMnpipi_kin[0]->Fill(LVec_pip_pim_n_vtx[0].M(),qkn_vtx[0].P());
+          q_IMnpipi_kin[0]->Fill(LVec_pip_pim_n.M(),qkn.P());
         }
-      }else if( (kfSpmode_pvalue<kfSmmode_pvalue) && (kfSmmode_status==0) ){//S- mode
+      }else{
         if(NBetaOK && NdEOK){ //&& MissNFlag)
-          q_IMnpipi_kin[1]->Fill(LVec_pip_pim_n_vtx[1].M(),qkn_vtx[1].P());
+          q_IMnpipi_kin[1]->Fill(LVec_pip_pim_n.M(),qkn.P());
         }
       }
     }   
