@@ -173,6 +173,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH2F* q_IMnpipi_kin[2];
   TH2F* q_IMnpipi_woK0_kin[2];
   TH2F* nmom_IMnpipi_woK0_kin[2];
+  TH2F* q_pippim_n_kin[2];
   const char smode[][4]={"Sp","Sm"};
   
   
@@ -258,7 +259,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   nmom_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   nmom_IMnpipi_woK0_wSid_n->SetYTitle("nmom  [GeV/c]");
    
-  q_pippim_n = new TH2F("q_pippim_n","q_pippim_n",200,0,1, 100,0,1.5);
+  q_pippim_n = new TH2F("q_pippim_n","q_pippim_n",500,0,1, 100,0,1.5);
   q_pippim_n->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_pippim_n->SetYTitle("Mom. Transfer [GeV/c]");
 
@@ -560,8 +561,6 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
         if(NBetaOK && NdEOK){
           MMom_MMass_woK0_kin[1]->Fill(LVec_n_miss_vtx[1].M(),LVec_n_miss_vtx[1].P());
           IMnpim_IMnpip_dE_woK0_kin[1]->Fill(LVec_pip_n_vtx[1].M(),LVec_pim_n_vtx[1].M());
-        }
-        if(NBetaOK && NdEOK){ //&& MissNFlag)
           MMnpip_MMnpim_woK0_kin[1]->Fill(LVec_pim_n_miss_vtx[1].M(),LVec_pip_n_miss_vtx[1].M());
           dE_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n_vtx[1].M(),dE);
           Cosn_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n_vtx[1].M(),cos_n);
@@ -790,6 +789,16 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TCanvas *cMMnmiss_IMnpipi_woK0_wSid_n_py = new TCanvas("cMMnmiss_IMnpipi_woK0_wSid_n_py","MMnmiss_IMnpipi_woK0_wSid_n_py"); 
   cMMnmiss_IMnpipi_woK0_wSid_n_py->cd();
   MMnmiss_IMnpipi_woK0_wSid_n->ProjectionY()->Draw("");
+  
+  TCanvas *cq_pippim_n = new TCanvas("cq_pippim_n","q_pippim_n");
+  cq_pippim_n->cd();
+  q_pippim_n->Draw("colz");
+  
+  TCanvas *cq_pippim_n_px = new TCanvas("cq_pippim_n_px","q_pippim_n_px");
+  cq_pippim_n_px->cd();
+  TH1D* q_pippim_n_px = q_pippim_n->ProjectionX();
+  q_pippim_n_px->GetXaxis()->SetRangeUser(0.4,0.6);
+  q_pippim_n_px->Draw();
 
 
   TCanvas *cdE_betainv_fid_kin[2];//           
@@ -916,35 +925,42 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
 
   TCanvas *cMMom_MMass_woK0_px_sup = new TCanvas("cMMom_MMass_woK0_px_sup","MMom_MMass_woK0_px_sup");
   cMMom_MMass_woK0_px_sup->cd();
-  MMom_MMass_woK0_px->Draw();
+  //MMom_MMass_woK0_px->Draw();
   TH1D *MMom_MMass_woK0_wSid_px_clone = (TH1D*)MMom_MMass_woK0_wSid_px->Clone(); 
-  MMom_MMass_woK0_wSid_px_clone->SetLineColor(4);
+  //MMom_MMass_woK0_wSid_px_clone->SetLineColor(4);
   cMMom_MMass_woK0_px_sup->cd();
   MMom_MMass_woK0_wSid_px_clone->Draw("same");
-  TH1D *MMom_MMass_woK0_kin_px_clone[2];
+  TH1D *MMom_MMass_woK0_kin_px_clone[3];
   MMom_MMass_woK0_kin_px_clone[0] = (TH1D*)MMom_MMass_woK0_kin_px[0]->Clone();
   MMom_MMass_woK0_kin_px_clone[0]->SetLineColor(2);
   MMom_MMass_woK0_kin_px_clone[0]->Draw("same");
   MMom_MMass_woK0_kin_px_clone[1] = (TH1D*)MMom_MMass_woK0_kin_px[1]->Clone();
   MMom_MMass_woK0_kin_px_clone[1]->SetLineColor(3);
   MMom_MMass_woK0_kin_px_clone[1]->Draw("same");
+  MMom_MMass_woK0_kin_px_clone[2] = (TH1D*)MMom_MMass_woK0_kin_px[0]->Clone();
+  MMom_MMass_woK0_kin_px_clone[2]->Add(MMom_MMass_woK0_kin_px_clone[1]);
+  MMom_MMass_woK0_kin_px_clone[2]->SetLineColor(4);
+  MMom_MMass_woK0_kin_px_clone[2]->Draw("same");
 
   TCanvas *cMMom_MMass_woK0_py = new TCanvas("cMMom_MMass_woK0_py","MMom_MMass_woK0_py");
   cMMom_MMass_woK0_py->cd();
   TH1D *MMom_MMass_woK0_py = MMom_MMass_woK0->ProjectionY();
-  MMom_MMass_woK0_py->Draw();
-  //test
+  //MMom_MMass_woK0_py->Draw();
   TH1D *MMom_MMass_woK0_wSid_py_clone = (TH1D*)MMom_MMass_woK0_wSid_py->Clone();
-  MMom_MMass_woK0_wSid_py_clone->SetLineColor(4);
+  //MMom_MMass_woK0_wSid_py_clone->SetLineColor(4);
   cMMom_MMass_woK0_py->cd();
-  MMom_MMass_woK0_wSid_py_clone->Draw("same");
-  TH1D* MMom_MMass_woK0_kin_py_clone[2];
+  MMom_MMass_woK0_wSid_py_clone->Draw("");
+  TH1D* MMom_MMass_woK0_kin_py_clone[3];
   MMom_MMass_woK0_kin_py_clone[0] = (TH1D*) MMom_MMass_woK0_kin_py[0]->Clone();
   MMom_MMass_woK0_kin_py_clone[0]->SetLineColor(2);
   MMom_MMass_woK0_kin_py_clone[0]->Draw("same");
   MMom_MMass_woK0_kin_py_clone[1] = (TH1D*) MMom_MMass_woK0_kin_py[1]->Clone();
   MMom_MMass_woK0_kin_py_clone[1]->SetLineColor(3);
   MMom_MMass_woK0_kin_py_clone[1]->Draw("same");
+  MMom_MMass_woK0_kin_py_clone[2] = (TH1D*) MMom_MMass_woK0_kin_py[0]->Clone(); 
+  MMom_MMass_woK0_kin_py_clone[2]->Add(MMom_MMass_woK0_kin_py_clone[1]);
+  MMom_MMass_woK0_kin_py_clone[2]->SetLineColor(4);
+  MMom_MMass_woK0_kin_py_clone[2]->Draw("same");
 
   TCanvas *cdE_IMnpim_woK0_n = new TCanvas("cdE_IMnpim_woK0_n","dE_IMnpim_woK0_n");
   cdE_IMnpim_woK0_n->cd();
