@@ -38,7 +38,7 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   gStyle->SetStatX(0.98);
   gStyle->SetStatY(0.9);
   gStyle->SetStatBorderSize(1);
-  gStyle->SetPalette(56);
+  //gStyle->SetPalette(56);
   TFile *f = new TFile(filename,"READ"); 
   
   std::cout << "infile " << filename <<std::endl;
@@ -396,8 +396,8 @@ void QACDS(TFile *f){
   h1_dE_beta->Draw();
 
   TCanvas *cDCA_pippim = new TCanvas("cDCA_pippim","DCA_pippim");
-  TH1F* h1_DCA_pippim = new (TH2F*)f->Get("DCA_pippim");
-  h1_DCA_pipim->Draw();
+  TH1F* h1_DCA_pippim = (TH1F*)f->Get("DCA_pippim");
+  h1_DCA_pippim->Draw();
 
 
 
