@@ -17,10 +17,30 @@
 #include <TPDF.h>
 #include <TPaveText.h>
 
-#include "../src/IMPiSigmaAnaPar.h"
+namespace anacuts {
+  const double beta_MAX = 0.728786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
+  const double dE_MIN = 2.0;
+
+  const double pipi_MIN = 0.485;
+  const double pipi_MAX = 0.510;
+  //const double neutron_MIN = 0.85;
+  //const double neutron_MAX = 1.03;
+  const double neutron_MIN = 0.938161-2.5*0.0308562;
+  const double neutron_MAX = 0.939161+2.5*0.0308562;
+  
+  //const double Sigmap_MIN = 1.17;
+  //const double Sigmap_MAX = 1.21;
+  //const double Sigmam_MIN = 1.18;
+  //const double Sigmam_MAX = 1.22;
+  const double Sigmap_MIN = 1.18911-2.0*0.00540844;   
+  const double Sigmap_MAX = 1.18911+2.0*0.00540844;   
+  const double Sigmam_MIN = 1.19723-2.0*0.00601265;
+  const double Sigmam_MAX = 1.19723+2.0*0.00601265;  
+
+  const double qvalcut = 0.35; 
+}
 
 const double pvalcut = 0.005;
-const double dEcut = 2.0;
 //const double pvalcut = 1.0e-5;
 const bool gridon=true;
 const bool staton=false;
@@ -383,15 +403,16 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   std::cerr<<"# of events = "<<nevent<<std::endl;
   
   std::cout << "p-value cut:" << pvalcut << std::endl; 
-  std::cout << "dE cut:" << dEcut << std::endl; 
-  TCanvas *cinfo = new TCanvas("cinfo","cinfo");
+  std::cout << "dE cut:" << anacuts::dE_MIN << std::endl; 
+  TCanvas *cinfo = new TCanvas("cinfo","info");
   TPaveText *pt = new TPaveText(.05,.05,.95,.7);
   pt->AddText(Form("p-value cut: %f ",pvalcut));
-  pt->AddText(Form("dE cut: %f " ,dEcut));
+  pt->AddText(Form("dE cut: %f " ,anacuts::dE_MIN));
   pt->AddText(Form("1/beta min.: %f ",1./anacuts::beta_MAX));
   pt->AddText(Form("K^{0} window : %0.3f - %0.3f",anacuts::pipi_MIN,anacuts::pipi_MAX )); 
   pt->AddText(Form("#Sigma^{+} window : %0.3f - %0.3f",anacuts::Sigmap_MIN,anacuts::Sigmap_MAX )); 
   pt->AddText(Form("#Sigma^{-} window : %0.3f - %0.3f",anacuts::Sigmam_MIN,anacuts::Sigmam_MAX )); 
+  pt->AddText(Form("miss. n window : %0.3f - %0.3f",anacuts::neutron_MIN,anacuts::neutron_MAX )); 
   pt->Draw(); 
   //------------------------//
   //--- event roop start ---//
@@ -399,7 +420,11 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   for ( Int_t i=0; i<nevent; i++ ) {
     tree->GetEvent(i);
     if(i%50000==0) std::cout << "Event# " << i << std::endl; 
-    
+    TVector3 vtx_pip = *vtx_pip_cdc ;
+    TVector3 vtx_pim = *vtx_pim_cdc ;
+    //double dcapippim = (vtx_pip-vtx_pim).Mag();
+    //double dcapippim = sqrt( pow((vtx_pip-vtx_pim).x(),2) + pow((vtx_pip-vtx_pim).y(),2));
+    //std::cout << dcapippim << std::endl;
     // calc missing n //
     TLorentzVector LVec_n_miss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n;
     TLorentzVector LVec_n_miss_vtx[2];
@@ -421,7 +446,6 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     double cos_n = LVec_n_miss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_n_miss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
     TLorentzVector qkn = *LVec_beam-LVec_n_miss;
     TLorentzVector qkn_vtx[2] = {*LVec_beam_Sp-LVec_n_miss_vtx[0],*LVec_beam_Sm-LVec_n_miss_vtx[1]};
-   
     // calc pi+pi- //
     TLorentzVector LVec_pip_pim = *LVec_pip+*LVec_pim;
 
@@ -448,9 +472,11 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     double cos_X = LVec_pip_pim_n_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pip_pim_n_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
 
 
+   // if(qkn.P() > anacuts::qvalcut) continue;
+    //if(dcapippim < 1) continue;
     double chi2 = kfSpmode_chi2<kfSmmode_chi2 ? kfSpmode_chi2:kfSmmode_chi2;
     double pvalue = kfSmmode_pvalue<kfSpmode_pvalue ? kfSpmode_pvalue:kfSmmode_pvalue;
-    
+    if(LVec_pip_pim_n.M() < 1.6) continue;
 
     bool K0rejectFlag=false;
     bool MissNFlag=false;
@@ -461,8 +487,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     //-- neutron-ID, K0 and missing neutron selection --//
 
     if(NeutralBetaCDH<anacuts::beta_MAX) NBetaOK=true;
-    //if(anacuts::dE_MIN<dE) NdEOK=true;
-    if(dEcut<dE) NdEOK=true;
+    if(anacuts::dE_MIN<dE) NdEOK=true;
    
     //Sigma+ production in CDS
     if( (anacuts::Sigmap_MIN<(*LVec_n+*LVec_pip).M() && (*LVec_n+*LVec_pip).M()<anacuts::Sigmap_MAX)) SigmaPFlag=true;
@@ -733,15 +758,15 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH1D *q_IMnpipi_woK0_wSid_n_py = q_IMnpipi_woK0_wSid_n->ProjectionY();
   TH1D *q_IMnpipi_woK0_kin_0_py = q_IMnpipi_woK0_kin[0]->ProjectionY();
   TH1D *q_IMnpipi_woK0_kin_1_py = q_IMnpipi_woK0_kin[1]->ProjectionY();
-  //q_IMnpipi_woK0_wSid_n_py->Rebin(2);
+  q_IMnpipi_woK0_wSid_n_py->Rebin(2);
   q_IMnpipi_woK0_wSid_n_py->Draw("HE");
-  //q_IMnpipi_wSid_n_py->Rebin(2);
+  q_IMnpipi_wSid_n_py->Rebin(2);
   q_IMnpipi_wSid_n_py->SetLineColor(5);
   q_IMnpipi_wSid_n_py->Draw("HEsame");
   q_IMnpipi_woK0_kin_1_py->SetLineColor(2);
-  //q_IMnpipi_woK0_kin_1_py->Rebin(2);
+  q_IMnpipi_woK0_kin_1_py->Rebin(2);
   q_IMnpipi_woK0_kin_1_py->Draw("HEsame");
-  //q_IMnpipi_woK0_kin_0_py->Rebin(2);
+  q_IMnpipi_woK0_kin_0_py->Rebin(2);
   q_IMnpipi_woK0_kin_0_py->SetLineColor(3);
   q_IMnpipi_woK0_kin_0_py->Draw("HEsame");
   TH1D *pySum = (TH1D*) q_IMnpipi_woK0_kin_0_py->Clone();
@@ -897,6 +922,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TCanvas *cMMnpip_MMnpim_woK0_wSid_n = new TCanvas("cMMnpip_MMnpim_woK0_wSid_n","MMnpip_MMnpim_woK0_wSid_n");
   cMMnpip_MMnpim_woK0_wSid_n->cd();
   MMnpip_MMnpim_woK0_wSid_n->Draw("colz");
+
+  
   
   TCanvas *cMMom_MMass_woK0  = new TCanvas("cMMom_MMass_woK0","MMom_MMass_woK0");
   cMMom_MMass_woK0->cd();
@@ -941,6 +968,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   MMom_MMass_woK0_kin_px_clone[2]->Add(MMom_MMass_woK0_kin_px_clone[1]);
   MMom_MMass_woK0_kin_px_clone[2]->SetLineColor(4);
   MMom_MMass_woK0_kin_px_clone[2]->Draw("same");
+  std::cout << "miss n mean " << MMom_MMass_woK0_kin_px_clone[2]->GetMean() << std::endl;
+  std::cout << "miss n rms " << MMom_MMass_woK0_kin_px_clone[2]->GetRMS() << std::endl;
 
   TCanvas *cMMom_MMass_woK0_py = new TCanvas("cMMom_MMass_woK0_py","MMom_MMass_woK0_py");
   cMMom_MMass_woK0_py->cd();
@@ -993,6 +1022,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   IMnpim_IMnpip_dE_woK0_kin_px_clone[0] = (TH1D*) IMnpim_IMnpip_dE_woK0_kin_px[0]->Clone();
   IMnpim_IMnpip_dE_woK0_kin_px_clone[0]->SetLineColor(2);
   IMnpim_IMnpip_dE_woK0_kin_px_clone[0]->Draw("same");
+  std::cout << "IMpip " << IMnpim_IMnpip_dE_woK0_kin_px_clone[0]->GetMean() << std::endl;
+  std::cout << "IMpip " << IMnpim_IMnpip_dE_woK0_kin_px_clone[0]->GetRMS() << std::endl;
   IMnpim_IMnpip_dE_woK0_kin_px_clone[1] = (TH1D*) IMnpim_IMnpip_dE_woK0_kin_px[1]->Clone();
   IMnpim_IMnpip_dE_woK0_kin_px_clone[1]->SetLineColor(3);
   IMnpim_IMnpip_dE_woK0_kin_px_clone[1]->Draw("same");
@@ -1008,7 +1039,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   IMnpim_IMnpip_dE_woK0_kin_py_clone[1] = (TH1D*)IMnpim_IMnpip_dE_woK0_kin_py[1]->Clone();
   IMnpim_IMnpip_dE_woK0_kin_py_clone[1]->SetLineColor(3);
   IMnpim_IMnpip_dE_woK0_kin_py_clone[1]->Draw("same");
-
+  std::cout << "IMpim " << IMnpim_IMnpip_dE_woK0_kin_py_clone[1]->GetMean() << std::endl;
+  std::cout << "IMpim " << IMnpim_IMnpip_dE_woK0_kin_py_clone[1]->GetRMS() << std::endl;
 
   TCanvas *c = nullptr;
   //TPDF *pdf = new TPDF(pdfname);
