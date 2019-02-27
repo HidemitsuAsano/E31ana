@@ -20,7 +20,7 @@
 #include "../src/IMPiSigmaAnaPar.h"
 
 const double pvalcut = 0.005;
-const double dEcut = 1.8;
+const double dEcut = 2.0;
 //const double pvalcut = 1.0e-5;
 const bool gridon=true;
 const bool staton=true;
