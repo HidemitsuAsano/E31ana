@@ -24,7 +24,7 @@ namespace Util
   int GetCDHTwoSegAwayNHits(const std::vector <int> &seg, const std::vector <int> &allhit);
   
   
-  int GetNHitsCDCOuter(const TVector3 PosCDH, CDSHitMan *cdsman);
+  int GetNHitsCDCOuter(const TVector3 PosCDH, CDSHitMan *cdsman, const double rangedeg=15.0);
   double AnaBeamSpec(ConfMan *confman,BeamLineTrackMan *bltrackman,const int blc1id, const int blc2id);
   int CDSChargedAna(const bool docdcretiming,
                     LocalTrack *bpctrack,

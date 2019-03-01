@@ -761,7 +761,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     }
     
     // charge veto using CDC
-    const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan);
+    const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,20.0);
     Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
 
 

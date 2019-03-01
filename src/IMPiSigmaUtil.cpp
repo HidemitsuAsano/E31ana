@@ -96,11 +96,16 @@ int Util::GetCDHTwoSegAwayNHits(const std::vector <int> &seg, const std::vector 
 
 
 //returns # of cdc hits of layer 15 and 16 within -+ 15 degree of the CDH hit
-int Util::GetNHitsCDCOuter(const TVector3 PosCDH, CDSHitMan *cdsman)
+int Util::GetNHitsCDCOuter(const TVector3 PosCDH, CDSHitMan *cdsman, const double rangedeg)
 {
   int nCDChit = 0;
-  const double PhiMin = -15.0/360.*TwoPi; // rad
-  const double PhiMax =  15.0/360.*TwoPi; // rad
+  static bool state=false;
+  if(!state){
+    std::cout << __FILE__ << " L." << __LINE__ << " CDC charge veto angle +/- " << rangedeg << std::endl; 
+    state = true;
+  }
+  const double PhiMin = -rangedeg/360.*TwoPi; // rad
+  const double PhiMax =  rangedeg/360.*TwoPi; // rad
   for( int ilr=14; ilr<16; ilr++ ) { // charge veto using layer 15, 16
     for( int icdchit=0; icdchit<cdsman->nCDC(ilr); icdchit++ ) {
       CDCHit *cdc=cdsman->CDC(ilr,icdchit);
