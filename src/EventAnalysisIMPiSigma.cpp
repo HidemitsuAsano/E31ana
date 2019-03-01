@@ -51,10 +51,12 @@
 
 const int MaxTreeSize = 1000000000;
 
-const int Verbosity = 0;
+const unsigned int Verbosity = 0;
 const bool DoCDCRetiming = false;
 const bool DoKinFit = true;
 const bool IsVtxDoubleCheck = false;
+const bool UseDecayVtx = true;
+const bool IsolationCutTwoSeg = true;
 //-----------------------------------------//
 //--- covariance matrices for KinFitter ---//
 //-----------------------------------------//
@@ -123,22 +125,32 @@ private:
   int nAbort_pipi;
   int nAbort_end;
 
-  //= = = = npippim final-sample tree = = = =//
-  TLorentzVector mom_beam;   // 4-momentum(beam)
+  // npippim final-sample tree Branch //
+  
+  // 4-momentum(beam) (reaction vtx determined by DCA)
+  TLorentzVector mom_beam;   
+  // 4-momentum(beam) (reaction vtx Sp mode assumption)
+  TLorentzVector mom_beam_Sp;  
+  // 4-momentum(beam) (reaction vtx Sm mode assumption)
+  TLorentzVector mom_beam_Sm;
   TLorentzVector mom_target; // 4-momentum(target)
   TLorentzVector mom_pip;    // 4-momentum(pi+)
   TLorentzVector mom_pim;    // 4-momentum(pi-)
-  TLorentzVector mom_p;      // 4-momentum(proton)
   TLorentzVector mom_n;      // 4-momentum(neutron)
-  double NeutralBetaCDH; // veracity of neutral particle on CDH
-  double dE;   // energy deposit on CDH
-  TVector3 vtx_reaction; // vertex(reaction)
+  TLorentzVector mom_n_Sp;  // 4-momentum(neutron),Sp mode assumption
+  TLorentzVector mom_n_Sm;  // 4-momentum(neutron),Sm mode assumption
+  double NeutralBetaCDH; // velocity of neutral particle on CDH from decay vtx 
+  double NeutralBetaCDH_vtx[2];//1:pip_vtx,2:pim_vtx  
+  double dE;   // energy deposit on CDH [MeVee]
+  TVector3 vtx_reaction; // 
+  TVector3 vtx_pip_beam; // 
+  TVector3 vtx_pim_beam; // 
+  TVector3 vtx_pip_cdc;//
+  TVector3 vtx_pim_cdc;//
   int run_num;   // run number
   int event_num; // event number
   int block_num; // block number
   double ctmT0;
-  TVector3 Vtxpip;
-  TVector3 Vtxpim;
 
   TMatrixD *covZero;
   TMatrixD *covParticle_Spmode[kin::npart];
@@ -149,7 +161,7 @@ private:
   TLorentzVector kfSpmode_mom_n;      // 4-momentum(neutron) after kinematical refit for pi- Sigma+
   double kfSpmode_chi2;   // chi2 of kinematical refit
   double kfSpmode_NDF;    // NDF of kinematical refit
-  double kfSpmode_status; // status of kinematical refit -> details can be found in this code
+  double kfSpmode_status; // status of kinematical refit, 0 :converged 1: not converged
   double kfSpmode_pvalue; // p-value of kinematical refit
   TLorentzVector kfSmmode_mom_beam;   // 4-momentum(beam) after kinematical refit for pi+ Sigma-
   TLorentzVector kfSmmode_mom_pip;    // 4-momentum(pi+) after kinematical refit for pi+ Sigma-
@@ -157,7 +169,7 @@ private:
   TLorentzVector kfSmmode_mom_n;      // 4-momentum(neutron) after kinematical refit for pi+ Sigma-
   double kfSmmode_chi2;   // chi2 of kinematical refit
   double kfSmmode_NDF;    // NDF of kinematical refit
-  double kfSmmode_status; // status of kinematical refit -> details can be found in this code
+  double kfSmmode_status; // status of kinematical refit, 0 : convergetd ,1:not converged
   double kfSmmode_pvalue; // p-value of kinematical refit
   int kf_flag; // flag of correct pair reconstruction, etc
   //= = = = npippim final-sample tree = = = =//
@@ -211,6 +223,11 @@ void EventAnalysis::Initialize( ConfMan *conf )
   std::cout << "Double Check VTX fid cut ? " ;
   if(IsVtxDoubleCheck) std::cout << " Yes" << std::endl;
   else         std::cout << " No"  << std::endl;
+  
+  std::cout << "Use Decay VTX for neutron ? " ;
+  if(UseDecayVtx) std::cout << " Yes" << std::endl;
+  else         std::cout << " No"  << std::endl;
+
 
   std::cout << " CDH TDC cuts " << cdscuts::tdc_cdh_max << std::endl;
   std::cout << " CDH multiplicity cut: " << cdscuts::cdhmulti << std::endl;
@@ -282,18 +299,24 @@ void EventAnalysis::Initialize( ConfMan *conf )
   rtFile3->cd();
   npippimTree = new TTree( "EventTree", "EventTree" );
   npippimTree->Branch( "mom_beam",   &mom_beam );
+  npippimTree->Branch( "mom_beam_Sp",   &mom_beam_Sp  );
+  npippimTree->Branch( "mom_beam_Sm",   &mom_beam_Sm  );
   npippimTree->Branch( "mom_target", &mom_target );
   npippimTree->Branch( "mom_pip", &mom_pip );
   npippimTree->Branch( "mom_pim", &mom_pim );
-  npippimTree->Branch( "mom_p", &mom_p );
   npippimTree->Branch( "mom_n", &mom_n );
+  npippimTree->Branch( "mom_n_Sp", &mom_n_Sp );
+  npippimTree->Branch( "mom_n_Sm", &mom_n_Sm );
   npippimTree->Branch( "NeutralBetaCDH", &NeutralBetaCDH );
+  npippimTree->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
   npippimTree->Branch( "dE", &dE );
   npippimTree->Branch( "vtx_reaction", &vtx_reaction );
-  npippimTree->Branch( "vtx_pip",&Vtxpip);
-  npippimTree->Branch( "vtx_pim",&Vtxpim);
-  npippimTree->Branch( "run_num", &run_num );
-  npippimTree->Branch( "event_num", &event_num );
+  npippimTree->Branch( "vtx_pip_beam", &vtx_pip_beam );
+  npippimTree->Branch( "vtx_pim_beam", &vtx_pim_beam );
+  npippimTree->Branch( "vtx_pip_cdc", &vtx_pip_cdc );
+  npippimTree->Branch( "vtx_pim_cdc", &vtx_pim_cdc );
+  //npippimTree->Branch( "run_num", &run_num );
+  //npippimTree->Branch( "event_num", &event_num );
   //npippimTree->Branch( "block_num", &block_num );
   npippimTree->Branch( "kfSpmode_mom_beam",   &kfSpmode_mom_beam );
   npippimTree->Branch( "kfSpmode_mom_pip", &kfSpmode_mom_pip );
@@ -584,6 +607,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   //Pp_target.SetXYZ( 0, 0, 0 );
   TLorentzVector LVec_beambf;  // 4-Momentum(beam) in LAB
   TLorentzVector LVec_beam;    // 4-Momentum(beam) in LAB with dE correcion
+  TLorentzVector LVec_beam_vtx[2];    // 4-Momentum(beam) in LAB with dE correcion
   TLorentzVector LVec_target;  // 4-Momentum(deuteron-target) in LAB
   LVec_target.SetVectM( Pp_target, dMass );//deuteron target
   TLorentzVector LVec_targetP; // 4-Momentum(p-target) in LAB
@@ -607,6 +631,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
   LVec_beambf.SetVectM( Pp_beam, kpMass );
   LVec_beam = LVec_beambf;
+  LVec_beam_vtx[0] = LVec_beambf;
+  LVec_beam_vtx[1] = LVec_beambf;
   const TVector3 boost = (LVec_target+LVec_beam).BoostVector();
   LVec_beambfCM = LVec_beam;
   LVec_targetCM = LVec_target;
@@ -653,7 +679,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   bool pimpipFlag = false;
   if( pim_ID.size()==1 && pip_ID.size()==1) pimpipFlag = true;
   if( pimpipFlag &&
-      trackMan->nGoodTrack()==cdscuts::cds_ngoodtrack && !Util::IsForwardCharge(blMan) ) {
+      (trackMan->nGoodTrack()==cdscuts::cds_ngoodtrack) && !Util::IsForwardCharge(blMan)){
     //=== condense pi+ pi- X candidates ===//
     rtFile2->cd();
     evTree->Fill();
@@ -703,9 +729,17 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     }
     
     //** isolation cut **//
-    const int flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list);
+    int flag_isolation = 0;
+    if(IsolationCutTwoSeg){
+      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list);
+      flag_isolation+= Util::GetCDHTwoSegAwayNHits(NeutralCDHseg,CDHhit_list);
+    }else{
+      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list);
+    }
+
     if( flag_isolation ) {
-      if(Verbosity) std::cerr<<"CDH hit candidate is NOT isolated !!!"<<std::endl;
+      //if(Verbosity) std::cerr<<"CDH hit candidate is NOT isolated !!!"<<std::endl;
+      //if(Verbosity) std::cerr<<"CDH hit candidate is NOT isolated !!!"<<std::endl;
       Clear( nAbort_CDHiso );
       return true;
     } else {
@@ -745,15 +779,16 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       //deuteron target
       TVector3 vtx_react;//reaction vertex
       TVector3 vtx_dis;//displaced vertex
+      
+      
       TVector3 vtx_beam_wpip;//vertex(beam-pip) on beam
       TVector3 vtx_pip;//vertex(beam-pip) on beam
-
-
       track_pip->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpip, vtx_pip );
+      
       TVector3 vtx_beam_wpim;//vertex(beam-pim) on beam
       TVector3 vtx_pim;//vertex(beam-pim) on beam
       track_pim->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpim, vtx_pim );
-
+      
       const double dcapipvtx =  (vtx_pip-vtx_beam_wpip).Mag();
       const double dcapimvtx =  (vtx_pim-vtx_beam_wpim).Mag();
       const TVector3 vtxpip_mean = 0.5*(vtx_pip+vtx_beam_wpip);
@@ -796,19 +831,45 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       //std::cout << bpctrack->GetPosatZ(0).X() << "  " <<  bpctrack->GetPosatZ(0).Y()  << "  " << bpctrack->GetPosatZ(0).Z()  << std::endl;
       //std::cout << zPos_T0 << std::endl;
       //std::cout << bpctrack->GetPosatZ(zPos_T0 ).X() << "  " <<  bpctrack->GetPosatZ(zPos_T0).Y()  << "  " << bpctrack->GetPosatZ(zPos_T0).Z()  << std::endl;
-      //dE correction of beam
+      //Energy loss correction of beam
       ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), vtx_react,
                                      LVec_beambf.Vect().Mag(), kpMass, momout, beamtof );
       LVec_beam.SetVectM( momout*LVec_beambf.Vect().Unit(), kpMass );
+      double beamtof_vtx[2];
+      double momout_vtx[2];
+      //Sp mode assumption
+      ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), 0.5*(vtx_pim+vtx_beam_wpim),
+                                     LVec_beambf.Vect().Mag(), kpMass, momout_vtx[0], beamtof_vtx[0] );
+      LVec_beam_vtx[0].SetVectM( momout_vtx[0]*LVec_beambf.Vect().Unit(), kpMass );
+      //Sm mode assumption
+      ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), 0.5*(vtx_pip+vtx_beam_wpip),
+                                     LVec_beambf.Vect().Mag(), kpMass, momout_vtx[1], beamtof_vtx[1] );
+      LVec_beam_vtx[1].SetVectM( momout_vtx[1]*LVec_beambf.Vect().Unit(), kpMass );
+      
       const double ntof = ncdhhit->ctmean()-ctmT0-beamtof;
-      const double nlen = (Pos_CDH-vtx_react).Mag();
+      const double ntof_vtx[2] = {ncdhhit->ctmean()-ctmT0-beamtof_vtx[0], ncdhhit->ctmean()-ctmT0-beamtof_vtx[1]};
+
+      double nlen;
+      double nlen_vtx[2];
+      if(UseDecayVtx) nlen = (Pos_CDH-vtx_dis).Mag();  
+      else nlen = (Pos_CDH-vtx_react).Mag();
+      nlen_vtx[0] = (Pos_CDH-vtx_pip).Mag();
+      nlen_vtx[1] = (Pos_CDH-vtx_pim).Mag();
       if(Verbosity>10) std::cout << "L." << __LINE__ << " flight length " << nlen << std::endl;
       NeutralBetaCDH = nlen/ntof/(Const*100.);
-      const double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0;
+      for(int ivtx=0;ivtx<2;ivtx++){
+        NeutralBetaCDH_vtx[ivtx] = nlen_vtx[ivtx]/ntof_vtx[ivtx]/(Const*100.);
+      }
+      double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0;
+      double tmp_mom_vtx[2];
+      for(int ivtx=0;ivtx<2;ivtx++){
+       tmp_mom_vtx[ivtx] = NeutralBetaCDH_vtx[ivtx]<1. ? nMass*NeutralBetaCDH_vtx[ivtx]/sqrt(1.-NeutralBetaCDH_vtx[ivtx]*NeutralBetaCDH_vtx[ivtx]) : 0;
+      }
       if(Verbosity) {
         std::cerr<<"L. " << __LINE__ ;
         std::cerr<<" NeutralBetaCDH = "<<NeutralBetaCDH<<" mom_n = "<<tmp_mom<<std::endl; //" "<<1/sqrt(1+nMass*nMass)<<std::endl;
       }
+
       //** reconstructoin of missing neutorn **//
       TVector3 P_pim; // Momentum(pi-)
       TVector3 P_pip; // Momentum(pi+)
@@ -816,8 +877,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       TLorentzVector LVec_pim; // 4-Momentum(pi-)
       TLorentzVector LVec_pip; // 4-Momentum(pi+)
       TLorentzVector LVec_n;   // 4-Momentum(n) (CDS)
+      TLorentzVector LVec_n_vtx[2];   // 4-Momentum(n) (CDS) //decay vertex 0: pip (Spmode), 1:pim (Smmode)
       TLorentzVector LVec_nmiss; // 4-Momentum(n_miss)
-
+      TLorentzVector LVec_nmiss_vtx[2]; // 4-Momentum(n_miss)
+      
+      //energy loss correction and momentum correction using vertex info
       if( !track_pip->GetMomentum( vtx_pip, P_pip, true, true ) ) {
         std::cerr<<"L." << __LINE__ << " !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
       }
@@ -825,12 +889,35 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       if( !track_pim->GetMomentum( vtx_pim, P_pim, true, true ) ) {
         std::cerr<<"L." << __LINE__ << " !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
       }
+
       //Momentum (n CDS)
-      const TVector3 P_n = tmp_mom*((Pos_CDH-vtx_react).Unit());
+      TVector3 P_n;
+      if(UseDecayVtx){
+        P_n = tmp_mom*((Pos_CDH-vtx_dis).Unit());
+      }else{
+        P_n = tmp_mom*((Pos_CDH-vtx_react).Unit());
+      }
+      TVector3 P_n_vtx[2];
+      P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-vtx_pip).Unit());
+      P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-vtx_pim).Unit());
 
       LVec_pim.SetVectM( P_pim, piMass );
       LVec_pip.SetVectM( P_pip, piMass );
       LVec_n.SetVectM(   P_n,   nMass );//CDS n
+      for(int ivtx=0;ivtx<2;ivtx++){
+        LVec_n_vtx[ivtx].SetVectM(  P_n_vtx[ivtx],   nMass );//CDS n
+      }
+      
+      /*
+      std::cout << "NeutralBetaCDH " << NeutralBetaCDH << std::endl;
+      std::cout << "NeutralBetaCDH_vtx[0] " << NeutralBetaCDH_vtx[0] << std::endl;
+      std::cout << "NeutralBetaCDH_vtx[1] " << NeutralBetaCDH_vtx[1] << std::endl;
+      std::cout << "mom:" << tmp_mom << std::endl;
+      std::cout << "pip-n mom:" << tmp_mom_vtx[0] << std::endl;
+      std::cout << "pim-n mom:" << tmp_mom_vtx[1] << std::endl;
+      std::cout << "Lvec0 " << LVec_n_vtx[0].P() << std::endl;
+      std::cout << "Lvec1 " << LVec_n_vtx[1].P() << std::endl;
+      */
 
       const double cdhphi = Pos_CDH.Phi();
       const double pimphi = P_pim.Phi();
@@ -839,8 +926,22 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       Tools::Fill1D(Form("npipangle"),pipphi-cdhphi);
 
       const double mm_mass   = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).M();
+      double mm_mass_vtx[2];
+      for(int ivtx=0;ivtx<2;ivtx++){
+        mm_mass_vtx[ivtx]= (LVec_target+LVec_beam_vtx[ivtx]-LVec_pim-LVec_pip-LVec_n_vtx[ivtx]).M();       
+      }
+
       const TVector3 P_missn = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).Vect();
+      TVector3 P_missn_vtx[2];
+      for(int ivtx=0;ivtx<2;ivtx++){
+        P_missn_vtx[ivtx] = (LVec_target+LVec_beam_vtx[ivtx]-LVec_pim-LVec_pip-LVec_n_vtx[ivtx]).Vect();  
+      }
+
       LVec_nmiss.SetVectM( P_missn, nMass );
+      for(int ivtx=0;ivtx<2;ivtx++){
+        LVec_nmiss_vtx[ivtx].SetVectM( P_missn_vtx[ivtx], nMass );
+      }
+
       if(Verbosity>10)std::cerr<<"  missing mass = "<<mm_mass<<std::endl;
 
       const TVector3 boost = (LVec_target+LVec_beam).BoostVector();
@@ -976,17 +1077,20 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             //momentum transfer
             Tools::Fill2D( Form("q_IMnpipi_woK0_wSid_n"),(LVec_n+LVec_pim+LVec_pip).M(), (LVec_beam.Vect()-LVec_nmiss.Vect()).Mag());
 
+            Tools::Fill1D( Form("DCA_pippim_SigmaPM"),dcapippim);
             //vertex position from pi+/pi-
           }//MissNFlag && K0rejectFlag && (SigmaPFlag || SigmaMFlag)
           
           if(K0rejectFlag && MissNFlag && SigmaPFlag) {
             Tools::Fill1D( Form("DCA_pip_SigmaP"),dcapipvtx);
             Tools::Fill1D( Form("DCA_pim_SigmaP"),dcapimvtx);
+            Tools::Fill1D( Form("DCA_pippim_SigmaP"),dcapippim);
           }
 
           if(K0rejectFlag && MissNFlag && SigmaMFlag) {
             Tools::Fill1D( Form("DCA_pip_SigmaM"),dcapipvtx);
             Tools::Fill1D( Form("DCA_pim_SigmaM"),dcapimvtx);
+            Tools::Fill1D( Form("DCA_pippim_SigmaM"),dcapippim);
           }
 
           if(DoKinFit) {
@@ -997,19 +1101,27 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             // beam_K(K+), pi-/+, Sigma+/-,  missn, n from S, pi+/- from S
             //  = 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+
             TLorentzVector TL_meas_Spmode[kin::npart]; // measured
-            TL_meas_Spmode[kin::kmbeam] = LVec_beam;
+            //TL_meas_Spmode[kin::kmbeam] = LVec_beam;
+            TL_meas_Spmode[kin::kmbeam] = LVec_beam_vtx[0];
             TL_meas_Spmode[kin::pim_g1] = LVec_pim;
-            TL_meas_Spmode[kin::Sp] = (LVec_n+LVec_pip);
-            TL_meas_Spmode[kin::nmiss] = LVec_nmiss;
-            TL_meas_Spmode[kin::ncds] = LVec_n;
+            //TL_meas_Spmode[kin::Sp] = (LVec_n+LVec_pip);
+            TL_meas_Spmode[kin::Sp] = (LVec_n_vtx[0]+LVec_pip);
+            //TL_meas_Spmode[kin::nmiss] = LVec_nmiss;
+            TL_meas_Spmode[kin::nmiss] = LVec_nmiss_vtx[0];
+            //TL_meas_Spmode[kin::ncds] = LVec_n;
+            TL_meas_Spmode[kin::ncds] = LVec_n_vtx[0];
             TL_meas_Spmode[kin::pip_g2] = LVec_pip;
             //  = 2) TLorentzVector LVec_beam, LVec_pip, (LVec_n+LVec_pim), LVec_nmiss, LVec_n, LVec_pim = for pi+ Sigma-
             TLorentzVector TL_meas_Smmode[kin::npart]; // measured
-            TL_meas_Smmode[kin::kmbeam] = LVec_beam;
+            //TL_meas_Smmode[kin::kmbeam] = LVec_beam;
+            TL_meas_Smmode[kin::kmbeam] = LVec_beam_vtx[1];
             TL_meas_Smmode[kin::pip_g1] = LVec_pip;
-            TL_meas_Smmode[kin::Sm] = (LVec_n+LVec_pim);
-            TL_meas_Smmode[kin::nmiss] = LVec_nmiss;
-            TL_meas_Smmode[kin::ncds] = LVec_n;
+            //TL_meas_Smmode[kin::Sm] = (LVec_n+LVec_pim);
+            TL_meas_Smmode[kin::Sm] = (LVec_n_vtx[1]+LVec_pim);
+            //TL_meas_Smmode[kin::nmiss] = LVec_nmiss;
+            TL_meas_Smmode[kin::nmiss] = LVec_nmiss_vtx[1];
+            //TL_meas_Smmode[kin::ncds] = LVec_n;
+            TL_meas_Smmode[kin::ncds] = LVec_n_vtx[1];
             TL_meas_Smmode[kin::pim_g2] = LVec_pim;
             TLorentzVector TL_kfit_Spmode[kin::npart]; // kinematical fitted
             TLorentzVector TL_kfit_Smmode[kin::npart]; // kinematical fitted
@@ -1140,15 +1252,21 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         } // if( dE_MIN<ncdhhit->emean() )
 
         mom_beam   = LVec_beam;   // 4-momentum(beam)
+        mom_beam_Sp = LVec_beam_vtx[0];
+        mom_beam_Sm = LVec_beam_vtx[1];
         mom_target = LVec_target; // 4-momentum(target)
         mom_pip = LVec_pip;        // 4-momentum(pi+)
         mom_pim = LVec_pim;        // 4-momentum(pi-)
         mom_n = LVec_n;            // 4-momentum(neutron)
+        mom_n_Sp = LVec_n_vtx[0];
+        mom_n_Sm = LVec_n_vtx[1];
         dE = ncdhhit->emean();
         // beta is already filled
         vtx_reaction = vtx_react; // vertex(reaction)
-        Vtxpip = vtxpip_mean;
-        Vtxpim = vtxpim_mean;
+        vtx_pip_beam = vtx_beam_wpip;
+        vtx_pim_beam = vtx_beam_wpim;
+        vtx_pip_cdc = vtx_pip;
+        vtx_pim_cdc = vtx_pim;
         run_num   = confMan->GetRunNumber(); // run number
         event_num = Event_Number;            // event number
         block_num = Block_Event_Number;      // block number
@@ -1310,12 +1428,17 @@ void EventAnalysis::Clear( int &nAbort)
   ctmT0 = 0;
 
   //CDS
-  NeutralBetaCDH=9999.;
-  dE=-9999.;
-  vtx_reaction.SetXYZ(-9999,-9999,-9999);
-  Vtxpip.SetXYZ(-9999,-9999,-9999);
-  Vtxpim.SetXYZ(-9999,-9999,-9999);
+  NeutralBetaCDH=-9999.;
+  NeutralBetaCDH_vtx[0]=-9999.;
+  NeutralBetaCDH_vtx[1]=-9999.;
 
+  dE=-9999.;
+  vtx_reaction.SetXYZ(-9999.,-9999.,-9999.);
+  vtx_pip_beam.SetXYZ(-9999.,-9999.,-9999.);
+  vtx_pim_beam.SetXYZ(-9999.,-9999.,-9999.);
+  vtx_pip_cdc.SetXYZ(-9999.,-9999.,-9999.);
+  vtx_pim_cdc.SetXYZ(-9999.,-9999.,-9999.);
+  
   return;
 }
 

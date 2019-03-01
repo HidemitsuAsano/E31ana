@@ -20,6 +20,10 @@ namespace Util
   int GetCDHMul(CDSHitMan *cdsman,const int ntrack=0, const bool MCFlag=false);
   bool IsForwardCharge(BeamLineHitMan *blman);
   int GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector <int> &allhit);
+  
+  int GetCDHTwoSegAwayNHits(const std::vector <int> &seg, const std::vector <int> &allhit);
+  
+  
   int GetNHitsCDCOuter(const TVector3 PosCDH, CDSHitMan *cdsman);
   double AnaBeamSpec(ConfMan *confman,BeamLineTrackMan *bltrackman,const int blc1id, const int blc2id);
   int CDSChargedAna(const bool docdcretiming,

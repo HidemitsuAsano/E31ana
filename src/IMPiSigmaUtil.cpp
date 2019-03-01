@@ -10,8 +10,7 @@
 #include "TrackTools.h"
 
 
-
-//analyze # of CDH hits within the time range and judge if it is cdscuts::cdhmulti defined in IMPiSigmaAnaPar.h
+//analyzes # of CDH hits within the TDC range and returns the CDH muliplicity
 int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack, const bool MCFlag)
 {
   //** # of CDH-hits cut **//
@@ -59,7 +58,6 @@ bool Util::IsForwardCharge(BeamLineHitMan *blman)
 }
 
 
-
 //returns # of neighboring hits of CDH segments listed in vector cdhseg
 //used for Isolation cuts of neutral particle candidates
 int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector <int> &allhit )
@@ -70,13 +68,30 @@ int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector
       if( seg[ineuseg]-allhit[ihit] ) {
         Tools::Fill1D( Form("diff_CDH"), seg[ineuseg]-allhit[ihit] );
       }
-      //CDH has 36 segments. Requiring there is no hits on neighboring segments.
+      //CDH has 36 segments. # of hits on neghiboring cdh segments
       if( (abs(seg[ineuseg]-allhit[ihit])==1) || (abs(seg[ineuseg]-allhit[ihit])==35) )
         NNeighboringHits++;
     }
   }
 
   return NNeighboringHits;
+}
+
+//returns # of CDH hits which is 2 segment away from 
+//CDH segments listed in vector cdhseg
+//used for Isolation cuts of neutral particle candidates
+int Util::GetCDHTwoSegAwayNHits(const std::vector <int> &seg, const std::vector <int> &allhit )
+{
+  int NTwoSegAwayHits=0;
+  for( int ineuseg=0; ineuseg<(int)seg.size(); ineuseg++ ) {
+    for( int ihit=0; ihit<(int)allhit.size(); ihit++ ) {
+      //CDH has 36 segments. 
+      if( (abs(seg[ineuseg]-allhit[ihit])==2) || (abs(seg[ineuseg]-allhit[ihit])==34) )
+        NTwoSegAwayHits++;
+    }
+  }
+  //std::cout << "two seg" << NTwoSegAwayHits << std::endl;
+  return NTwoSegAwayHits;
 }
 
 

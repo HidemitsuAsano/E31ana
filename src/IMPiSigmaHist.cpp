@@ -124,11 +124,14 @@ void InitIMPiSigmaHist()
   Tools::newTH2F( Form("q_IMnpipi_woK0_wSid_n"),100,1,2,300,0,1.5);
   Tools::newTH1F( Form("DCA_pip"), 3000, 0, 30 );
   Tools::newTH1F( Form("DCA_pim"), 3000, 0, 30 );
-  Tools::newTH1F( Form("DCA_pip_SigmaP"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pim_SigmaP"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pip_SigmaM"), 500, 0, 5 );
-  Tools::newTH1F( Form("DCA_pim_SigmaM"), 500, 0, 5 );
+  Tools::newTH1F( Form("DCA_pip_SigmaP"), 3000, 0, 30 );
+  Tools::newTH1F( Form("DCA_pim_SigmaP"), 3000, 0, 30 );
+  Tools::newTH1F( Form("DCA_pippim_SigmaP"), 3000, 0, 30 );
+  Tools::newTH1F( Form("DCA_pip_SigmaM"), 3000, 0, 30 );
+  Tools::newTH1F( Form("DCA_pim_SigmaM"), 3000, 0, 30 );
+  Tools::newTH1F( Form("DCA_pippim_SigmaM"), 3000, 0, 30 );
   Tools::newTH1F( Form("DCA_pippim"), 3000, 0, 30);
+  Tools::newTH1F( Form("DCA_pippim_SigmaPM"), 3000, 0, 30);
 
   Tools::newTH2F( Form("KFchi2_vs"),100,0,100,100,0,100);
   Tools::SetXTitleH2(Form("KFchi2_vs"),"chi2/NDF S+");
