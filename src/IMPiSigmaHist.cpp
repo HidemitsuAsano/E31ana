@@ -58,6 +58,7 @@ void InitBasicHist(const bool MCFlag)
   Tools::newTH1F( Form("mul_BVC"), 9, -0.5, 8.5 );
   Tools::newTH1F( Form("mul_CVC"), 11, -0.5, 10.5 );
   Tools::newTH1F( Form("mul_PC"), 11, -0.5, 10.5 );
+  Tools::newTH1F( Form("mul_NC"), 11, -0.5, 10.5 );
   //target fiducial 
   Tools::newTH2F( Form("Vtx_ZX"),1000,-25,25,500,-12.5,12.5);
   Tools::newTH2F( Form("Vtx_ZY"),1000,-25,25,500,-12.5,12.5);
