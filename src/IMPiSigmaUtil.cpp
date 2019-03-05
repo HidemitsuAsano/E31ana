@@ -41,6 +41,7 @@ bool Util::IsForwardCharge(BeamLineHitMan *blman)
   int nBVC = 0;
   int nCVC = 0;
   int nPC  = 0;
+  int nNC  = 0;
   for( int i=0; i<blman->nBVC(); i++ ) {
     if( blman->BVC(i)->CheckRange() ) nBVC++;
   }
@@ -51,7 +52,7 @@ bool Util::IsForwardCharge(BeamLineHitMan *blman)
     if( blman->PC(i)->CheckRange() ) nPC++;
   }
   for( int i=0; i<blman->nNC(); i++ ) {
-    if( blman->NC(i)->CheckRange() ) nPC++;
+    if( blman->NC(i)->CheckRange() ) nNC++;
   }
   Tools::Fill1D( Form("mul_BVC"), nBVC );
   Tools::Fill1D( Form("mul_CVC"), nCVC );

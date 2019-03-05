@@ -56,7 +56,7 @@ const bool DoCDCRetiming = false;
 const bool DoKinFit = true;
 const bool IsVtxDoubleCheck = false;
 const bool UseDecayVtx = true;
-const bool IsolationCutTwoSeg = true;
+const bool IsolationCutTwoSeg = false;
 //-----------------------------------------//
 //--- covariance matrices for KinFitter ---//
 //-----------------------------------------//
@@ -147,6 +147,8 @@ private:
   TVector3 vtx_pim_beam; // 
   TVector3 vtx_pip_cdc;//
   TVector3 vtx_pim_cdc;//
+  TVector3 CA_pip;
+  TVector3 CA_pim;
   int run_num;   // run number
   int event_num; // event number
   int block_num; // block number
@@ -227,6 +229,10 @@ void EventAnalysis::Initialize( ConfMan *conf )
   std::cout << "Use Decay VTX for neutron ? " ;
   if(UseDecayVtx) std::cout << " Yes" << std::endl;
   else         std::cout << " No"  << std::endl;
+  
+  std::cout << "Isolation cut range ? " ;
+  if(IsolationCutTwoSeg) std::cout << "2 segment" << std::endl;
+  else         std::cout << "1 segment"  << std::endl;
 
 
   std::cout << " CDH TDC cuts " << cdscuts::tdc_cdh_max << std::endl;
@@ -315,6 +321,8 @@ void EventAnalysis::Initialize( ConfMan *conf )
   npippimTree->Branch( "vtx_pim_beam", &vtx_pim_beam );
   npippimTree->Branch( "vtx_pip_cdc", &vtx_pip_cdc );
   npippimTree->Branch( "vtx_pim_cdc", &vtx_pim_cdc );
+  npippimTree->Branch( "CA_pip",&CA_pip);
+  npippimTree->Branch( "CA_pim",&CA_pim);
   //npippimTree->Branch( "run_num", &run_num );
   //npippimTree->Branch( "event_num", &event_num );
   //npippimTree->Branch( "block_num", &block_num );
@@ -761,7 +769,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     }
     
     // charge veto using CDC
-    const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,20.0);
+    const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,15.0);
     Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
 
 
@@ -796,10 +804,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       Tools::Fill1D( Form("DCA_pip"), dcapipvtx );
       Tools::Fill1D( Form("DCA_pim"), dcapimvtx );
 
-      TVector3 vtx1,vtx2;
-      bool vtx_flag=TrackTools::Calc2HelixVertex(track_pip, track_pim, vtx1, vtx2);
+      TVector3 CA_pip_pippim,CA_pim_pippim;
+      bool vtx_flag=TrackTools::Calc2HelixVertex(track_pip, track_pim, CA_pip_pippim, CA_pim_pippim);
       double dcapippim=-9999.;
-      if(vtx_flag) dcapippim = (vtx2-vtx1).Mag();
+      if(vtx_flag) dcapippim = (CA_pim_pippim-CA_pip_pippim).Mag();
       Tools::Fill1D( Form("DCA_pippim"), dcapippim);
 
 
@@ -1077,6 +1085,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             //momentum transfer
             Tools::Fill2D( Form("q_IMnpipi_woK0_wSid_n"),(LVec_n+LVec_pim+LVec_pip).M(), (LVec_beam.Vect()-LVec_nmiss.Vect()).Mag());
 
+            Tools::Fill1D( Form("DCA_pip_SigmaPM"),dcapipvtx);
+            Tools::Fill1D( Form("DCA_pim_SigmaPM"),dcapimvtx);
             Tools::Fill1D( Form("DCA_pippim_SigmaPM"),dcapippim);
             //vertex position from pi+/pi-
           }//MissNFlag && K0rejectFlag && (SigmaPFlag || SigmaMFlag)
@@ -1267,6 +1277,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         vtx_pim_beam = vtx_beam_wpim;
         vtx_pip_cdc = vtx_pip;
         vtx_pim_cdc = vtx_pim;
+        CA_pip = CA_pip_pippim;
+        CA_pim = CA_pim_pippim;
         run_num   = confMan->GetRunNumber(); // run number
         event_num = Event_Number;            // event number
         block_num = Block_Event_Number;      // block number

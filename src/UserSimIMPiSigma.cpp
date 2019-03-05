@@ -48,7 +48,7 @@ const bool DoCDCRetiming = false;
 const double MOM_RES = 2.0; // MeV/c
 const bool IsVtxDoubleCheck = false;
 const bool UseDecayVtx = true;
-const bool IsolationCutTwoSeg = true;
+const bool IsolationCutTwoSeg = false;
 // momentum resolution of the beam-line spectrometer
 // was evaluated to be 2.0 +/- 0.5 MeV/c (Hashimoto-D p.58)
 
@@ -85,6 +85,8 @@ TVector3 vtx_pip_beam; //
 TVector3 vtx_pim_beam; //   
 TVector3 vtx_pip_cdc;
 TVector3 vtx_pim_cdc;
+TVector3 CA_pip;
+TVector3 CA_pim;
 int run_num;   // run number
 int event_num; // event number
 int block_num; // block number
@@ -131,6 +133,10 @@ int main( int argc, char** argv )
   std::cout << " Double Check VTX fid cut ? " ;
   if(IsVtxDoubleCheck) std::cout << " Yes" << std::endl;
   else         std::cout << " No"  << std::endl;
+  
+  std::cout << "Isolation cut range ? " ;
+  if(IsolationCutTwoSeg) std::cout << "2 segment" << std::endl;
+  else         std::cout << "1 segment"  << std::endl;
 
   TDatabasePDG *pdg = new TDatabasePDG();
   pdg->ReadPDGTable("pdg_table.txt");
@@ -257,6 +263,8 @@ int main( int argc, char** argv )
   npippimTree->Branch( "vtx_pim_beam", &vtx_pim_beam );
   npippimTree->Branch( "vtx_pip_cdc", &vtx_pip_cdc );
   npippimTree->Branch( "vtx_pim_cdc", &vtx_pim_cdc );
+  npippimTree->Branch( "CA_pip",&CA_pip);
+  npippimTree->Branch( "CA_pim",&CA_pim);
   //npippimTree->Branch( "run_num", &run_num );
   //npippimTree->Branch( "event_num", &event_num );
   //npippimTree->Branch( "block_num", &block_num );
@@ -898,7 +906,7 @@ int main( int argc, char** argv )
       if(Verbosity_) std::cout<<"CDH candidate seg = "<<ncdhhit->seg()<<" -> "<<Pos_CDH.Phi()/TwoPi*360<<" deg"<<std::endl;
       
 
-      const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan);
+      const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,20);
       //Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is wrong in SIM [20170925]
       Pos_CDH.SetZ(ncdhhit->hitpos());
       
@@ -940,11 +948,10 @@ int main( int argc, char** argv )
         Tools::Fill1D( Form("DCA_pip"), dcapipvtx );
         Tools::Fill1D( Form("DCA_pim"), dcapimvtx );
         
-        TVector3 vtx1,vtx2;
-        bool vtx_flag=TrackTools::Calc2HelixVertex(track_pip, track_pim, vtx1, vtx2);
+        TVector3 CA_pip_pippim,CA_pim_pippim;
+        bool vtx_flag=TrackTools::Calc2HelixVertex(track_pip, track_pim, CA_pip_pippim, CA_pim_pippim);
         double dcapippim=-9999.;
-        //double dcapippim =  (vtx_pip-vtx_pim).Mag();
-        if(vtx_flag) dcapippim = (vtx2-vtx1).Mag();
+        if(vtx_flag) dcapippim = (CA_pim_pippim-CA_pip_pippim).Mag();
         Tools::Fill1D( Form("DCA_pippim"), dcapippim);
         
         //reaction vertex is determined from beam and nearest vtx 
@@ -1186,7 +1193,10 @@ int main( int argc, char** argv )
               Tools::Fill1D( Form("vertex_diff_X"), vtx_react.X()-mcData->track(ID[kin::kmbeam])->vertex().X() );
               Tools::Fill1D( Form("vertex_diff_Y"), vtx_react.Y()-mcData->track(ID[kin::kmbeam])->vertex().Y() );
               Tools::Fill1D( Form("vertex_diff_Z"), vtx_react.Z()-mcData->track(ID[kin::kmbeam])->vertex().Z() );
+              
 
+              Tools::Fill1D( Form("DCA_pip_SigmaPM"),dcapipvtx);
+              Tools::Fill1D( Form("DCA_pim_SigmaPM"),dcapimvtx);
               Tools::Fill1D( Form("DCA_pippim_SigmaPM"),dcapippim);
               if(Verbosity_){
                 std::cout << "L."<< __LINE__ <<" Kinematical Fit using KinFitter" << std::endl;
@@ -1540,6 +1550,8 @@ int main( int argc, char** argv )
           vtx_pim_beam = vtx_beam_wpim;
           vtx_pip_cdc = vtx_pip;
           vtx_pim_cdc = vtx_pim;
+          CA_pip = CA_pip_pippim;
+          CA_pim = CA_pim_pippim;
           run_num   = confMan->GetRunNumber(); // run number
           event_num = iev;     // event number
           block_num = 0;      // block number (temp)

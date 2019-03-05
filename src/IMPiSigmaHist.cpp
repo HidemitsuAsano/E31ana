@@ -132,6 +132,8 @@ void InitIMPiSigmaHist()
   Tools::newTH1F( Form("DCA_pim_SigmaM"), 3000, 0, 30 );
   Tools::newTH1F( Form("DCA_pippim_SigmaM"), 3000, 0, 30 );
   Tools::newTH1F( Form("DCA_pippim"), 3000, 0, 30);
+  Tools::newTH1F( Form("DCA_pip_SigmaPM"), 3000, 0, 30);
+  Tools::newTH1F( Form("DCA_pim_SigmaPM"), 3000, 0, 30);
   Tools::newTH1F( Form("DCA_pippim_SigmaPM"), 3000, 0, 30);
 
   Tools::newTH2F( Form("KFchi2_vs"),100,0,100,100,0,100);
