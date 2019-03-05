@@ -22,6 +22,7 @@
 
 namespace anacuts {
   const double beta_MAX = 0.728786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
+  const double beta_MIN = 0.000000001;
   const double dE_MIN = 2.0;
 
   const double pipi_MIN = 0.485;
@@ -47,7 +48,7 @@ const double pvalcut = 0.005;
 //const double pvalcut = 1.0e-5;
 const bool gridon=true;
 const bool staton=false;
-const bool UseKinFitVal = true;
+const bool UseKinFitVal = false;
 
 //mode 0: Sigma+ ,1: Sigma- 
 void plot_IMpisigma(const char* filename="",const int mode=0)
@@ -78,22 +79,24 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   
   //= = = = pipipnn final-sample tree = = = =//
   TLorentzVector *LVec_beam=nullptr;   // 4-momentum(beam)
-  TLorentzVector *LVec_beam_Sp=nullptr;   // 4-momentum(beam),Sp mode
-  TLorentzVector *LVec_beam_Sm=nullptr;   // 4-momentum(beam),Sm mode
+  TLorentzVector *LVec_beam_Sp=nullptr;   // 4-momentum(beam),Sp mode assumption
+  TLorentzVector *LVec_beam_Sm=nullptr;   // 4-momentum(beam),Sm mode assumption
   TLorentzVector *LVec_target=nullptr; // 4-momentum(target)
   TLorentzVector *LVec_pip=nullptr;    // 4-momentum(pi+)
   TLorentzVector *LVec_pim=nullptr;    // 4-momentum(pi-)
   TLorentzVector *LVec_n=nullptr;      // 4-momentum(neutron)
-  TLorentzVector *LVec_n_Sp=nullptr;      // 4-momentum(neutron),Sp mode
-  TLorentzVector *LVec_n_Sm=nullptr;      // 4-momentum(neutron),Sm mode
+  TLorentzVector *LVec_n_Sp=nullptr;      // 4-momentum(neutron),Sp mode assumption
+  TLorentzVector *LVec_n_Sm=nullptr;      // 4-momentum(neutron),Sm mode assumption
   double NeutralBetaCDH; // velocity of neutral particle on CDH
-  double NeutralBetaCDH_vtx[2]; // velocity of neutral particle on CDH
+  double NeutralBetaCDH_vtx[2]; // velocity of neutral particle on CDH,0: Spmode 1:Smmode
   double dE;   // energy deposit on CDH
-  TVector3 *vtx_reaction = nullptr; // vertex(reaction)
-  TVector3 *vtx_pip_beam = nullptr; // vertex (pip)
-  TVector3 *vtx_pim_beam = nullptr; // vertex (pim)
-  TVector3 *vtx_pip_cdc = nullptr;//
-  TVector3 *vtx_pim_cdc = nullptr;//
+  TVector3 *vtx_reaction = nullptr; // vertex(reaction) 
+  TVector3 *vtx_pip_beam = nullptr; //C.A.P of pip-beam beam side
+  TVector3 *vtx_pim_beam = nullptr; //C.A.P of pim-beam beam side
+  TVector3 *vtx_pip_cdc = nullptr;//C.A.P of pip-beam pip side
+  TVector3 *vtx_pim_cdc = nullptr;//C.A.P of pim-beam pim side
+  TVector3 *CA_pip = nullptr;//C.A.P of pip-pim pip side
+  TVector3 *CA_pim = nullptr;//C.A.P of pip-pim pim side
   //int run_num;   // run number
   //int event_num; // event number
   //int block_num; // block number
@@ -142,6 +145,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   tree->SetBranchAddress( "vtx_pim_beam",&vtx_pim_beam);
   tree->SetBranchAddress( "vtx_pip_cdc",&vtx_pip_cdc);
   tree->SetBranchAddress( "vtx_pim_cdc",&vtx_pim_cdc);
+  tree->SetBranchAddress( "CA_pip",&CA_pip);
+  tree->SetBranchAddress( "CA_pim",&CA_pim);
   //tree->SetBranchAddress( "run_num", &run_num );
   //tree->SetBranchAddress( "event_num", &event_num );
   //tree->SetBranchAddress( "block_num", &block_num );
@@ -416,6 +421,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   pt->AddText(Form("p-value cut: %f ",pvalcut));
   pt->AddText(Form("dE cut: %f " ,anacuts::dE_MIN));
   pt->AddText(Form("1/beta min.: %f ",1./anacuts::beta_MAX));
+  pt->AddText(Form("1/beta max : %f ",1./anacuts::beta_MIN));
   pt->AddText(Form("K^{0} window : %0.3f - %0.3f",anacuts::pipi_MIN,anacuts::pipi_MAX )); 
   pt->AddText(Form("#Sigma^{+} window : %0.3f - %0.3f",anacuts::Sigmap_MIN,anacuts::Sigmap_MAX )); 
   pt->AddText(Form("#Sigma^{-} window : %0.3f - %0.3f",anacuts::Sigmam_MIN,anacuts::Sigmam_MAX )); 
@@ -529,7 +535,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     double cos_X = LVec_pip_pim_n_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pip_pim_n_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
 
 
-    if(qkn.P() < anacuts::qvalcut) continue;
+    //if(qkn.P() < anacuts::qvalcut) continue;
     //if(dcapippim < 1) continue;
     //if(LVec_pip_pim_n.M()<1.45 ) continue;
     double chi2 = kfSpmode_chi2<kfSmmode_chi2 ? kfSpmode_chi2:kfSmmode_chi2;
@@ -543,7 +549,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     bool SigmaMFlag=false;
     //-- neutron-ID, K0 and missing neutron selection --//
 
-    if(NeutralBetaCDH<anacuts::beta_MAX) NBetaOK=true;
+    if(anacuts::beta_MIN<NeutralBetaCDH &&  NeutralBetaCDH<anacuts::beta_MAX  ) NBetaOK=true;
     if(anacuts::dE_MIN<dE) NdEOK=true;
    
     //Sigma+ production in CDS
