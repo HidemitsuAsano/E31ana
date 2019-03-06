@@ -191,6 +191,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH2F* q_IMnpipi_woK0_wSid_n;
   TH2F* nmom_IMnpipi_woK0_wSid_n;
   TH2F* q_pippim_n;
+
   // w/ kinematic fit
   TH2F* dE_betainv_fid_kin[2];//
   TH2F* dE_MMom_fid_beta_woK0_kin[2];
@@ -394,6 +395,25 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH1F *npimmom_kin = new TH1F("npimmom_kin", "npimmom_kin", 150, 0, 3.0);
   npimmom_kin->SetXTitle("mom. [GeV/c]");
   
+  TH1F* DCA_pip_beam = new TH1F("DCA_pip_beam","DCA_pip_beam",3000,0,30);
+  DCA_pip_beam->SetXTitle("DCA [cm]");
+  TH1F* DCA_pim_beam = new TH1F("DCA_pim_beam","DCA_pim_beam",3000,0,30);
+  DCA_pim_beam->SetXTitle("DCA [cm]");
+  TH1F* DCA_pip_pim = new TH1F("DCA_pip_pim","DCA_pip_pim",3000,0,30);
+  DCA_pip_pim->SetXTitle("DCA [cm]");
+  TH1F* DCA_pip_beam_kin[2];
+  TH1F* DCA_pim_beam_kin[2];
+  TH1F* DCA_pip_pim_kin[2];
+  for(int imode=0;imode<2;imode++){
+    DCA_pip_beam_kin[imode] = new TH1F(Form("DCA_pip_beam_kin_%s",smode[imode]),Form("DCA_pip_beam_kin_%s",smode[imode]),3000,0,30);
+    DCA_pip_beam_kin[imode]->SetXTitle("DCA [cm]");
+    DCA_pim_beam_kin[imode] = new TH1F(Form("DCA_pim_beam_kin_%s",smode[imode]),Form("DCA_pim_beam_kin_%s",smode[imode]),3000,0,30);
+    DCA_pim_beam_kin[imode]->SetXTitle("DCA [cm]");
+    DCA_pip_pim_kin[imode] = new TH1F(Form("DCA_pip_pim_kin_%s",smode[imode]),Form("DCA_pip_pim_kin_%s",smode[imode]),3000,0,30);
+    DCA_pip_pim_kin[imode]->SetXTitle("DCA [cm]");
+  }
+
+
   //centering title of all histograms 
   TIter nexthist(gDirectory->GetList());
   TH1F *h1 = nullptr;
@@ -593,6 +613,12 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
       MMnmiss_IMnpim_dE_woK0->Fill(LVec_pim_n.M(),nmiss_mass);
       if(SigmaPFlag || SigmaMFlag){
         MMom_MMass_woK0_wSid->Fill(LVec_n_miss.M(),LVec_n_miss.P());
+        double dca_pip_beam = (*vtx_pip_beam-*vtx_pip_cdc).Mag();
+        DCA_pip_beam->Fill( dca_pip_beam);
+        double dca_pim_beam = (*vtx_pim_beam-*vtx_pim_cdc).Mag();
+        DCA_pim_beam->Fill( dca_pim_beam );
+        double dca_pip_pim =(*CA_pip-*CA_pim).Mag();
+        DCA_pip_pim->Fill(dca_pip_pim);
       }
       MMnmiss_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(), nmiss_mass);
     }
@@ -640,6 +666,9 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
           MMnmiss_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n_vtx[0].M(), nmiss_mass_vtx[0]);
           q_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n_vtx[0].M(),qkn_vtx[0].P());
           nmom_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n_vtx[0].M(),(*LVec_n_Sp).P());
+          DCA_pip_beam_kin[0]->Fill( (*vtx_pip_beam-*vtx_pip_cdc).Mag());
+          DCA_pim_beam_kin[0]->Fill( (*vtx_pim_beam-*vtx_pim_cdc).Mag());
+          DCA_pip_pim_kin[0]->Fill( (*CA_pip-*CA_pim).Mag());
         }
       }else if( (kfSpmode_pvalue<kfSmmode_pvalue) && kfSmmode_status==0 ){//S- mode
         dE_betainv_fid_kin[1]->Fill(1./NeutralBetaCDH_vtx[1],dE);
@@ -656,6 +685,9 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
           MMnmiss_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n_vtx[1].M(), nmiss_mass_vtx[1]);
           q_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n_vtx[1].M(),qkn_vtx[1].P());
           nmom_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n_vtx[1].M(),(*LVec_n_Sm).P());
+          DCA_pip_beam_kin[1]->Fill( (*vtx_pip_beam-*vtx_pip_cdc).Mag());
+          DCA_pim_beam_kin[1]->Fill( (*vtx_pim_beam-*vtx_pim_cdc).Mag());
+          DCA_pip_pim_kin[1]->Fill( (*CA_pip-*CA_pim).Mag());
         }
       }
     }//pval cut && Korejectflag
@@ -1146,6 +1178,41 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   IMnpim_IMnpip_dE_woK0_kin_py_clone[1]->Draw("same");
   std::cout << "IMpim " << IMnpim_IMnpip_dE_woK0_kin_py_clone[1]->GetMean() << std::endl;
   std::cout << "IMpim " << IMnpim_IMnpip_dE_woK0_kin_py_clone[1]->GetRMS() << std::endl;
+  
+  TCanvas *c_DCA = new TCanvas("c_DCA","c_DCA");
+  c_DCA->cd();
+  DCA_pip_beam->Draw("");
+  std::cout << DCA_pip_beam->Integral() << std::endl;
+  DCA_pim_beam->SetLineColor(2);
+  DCA_pim_beam->Draw("same");
+  std::cout << DCA_pim_beam->Integral() << std::endl;
+  DCA_pip_pim->SetLineColor(3);
+  DCA_pip_pim->Draw("same");
+  std::cout << DCA_pip_pim->Integral() << std::endl;
+  
+  
+  TCanvas *c_DCA_Sp = new TCanvas("c_DCA_Sp","c_DCA_Sp");
+  c_DCA_Sp->cd();
+  DCA_pip_beam_kin[0]->Draw("");
+  DCA_pim_beam_kin[0]->SetLineColor(2);
+  DCA_pim_beam_kin[0]->Draw("same");
+  DCA_pip_pim_kin[0]->SetLineColor(3);
+  DCA_pip_pim_kin[0]->Draw("same");
+  std::cout << DCA_pip_beam_kin[0]->Integral() << std::endl;
+  std::cout << DCA_pim_beam_kin[0]->Integral() << std::endl;
+  std::cout << DCA_pip_pim_kin[0]->Integral() << std::endl;
+  
+  TCanvas *c_DCA_Sm = new TCanvas("c_DCA_Sm","c_DCA_Sm");
+  c_DCA_Sm->cd();
+  DCA_pip_beam_kin[1]->Draw("");
+  DCA_pim_beam_kin[1]->SetLineColor(2);
+  DCA_pim_beam_kin[1]->Draw("same");
+  DCA_pip_pim_kin[1]->SetLineColor(3);
+  DCA_pip_pim_kin[1]->Draw("same");
+  std::cout << DCA_pip_beam_kin[1]->Integral() << std::endl;
+  std::cout << DCA_pim_beam_kin[1]->Integral() << std::endl;
+  std::cout << DCA_pip_pim_kin[1]->Integral() << std::endl;
+
 
   TCanvas *c = nullptr;
   //TPDF *pdf = new TPDF(pdfname);
