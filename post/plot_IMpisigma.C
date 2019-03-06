@@ -1114,8 +1114,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
 
   TCanvas *cIMnpim_IMnpip_dE_woK0_n = new TCanvas("cIMnpim_IMnpip_dE_woK0_n","IMnpim_IMnpip_dE_woK0_n");
   cIMnpim_IMnpip_dE_woK0_n->cd();
-  IMnpim_IMnpip_dE_woK0_n->RebinX(2);
-  IMnpim_IMnpip_dE_woK0_n->RebinY(2);
+  //IMnpim_IMnpip_dE_woK0_n->RebinX(2);
+  //IMnpim_IMnpip_dE_woK0_n->RebinY(2);
   IMnpim_IMnpip_dE_woK0_n->Draw("colz");
   
   
