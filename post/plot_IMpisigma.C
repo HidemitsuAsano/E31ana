@@ -613,12 +613,6 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
       MMnmiss_IMnpim_dE_woK0->Fill(LVec_pim_n.M(),nmiss_mass);
       if(SigmaPFlag || SigmaMFlag){
         MMom_MMass_woK0_wSid->Fill(LVec_n_miss.M(),LVec_n_miss.P());
-        double dca_pip_beam = (*vtx_pip_beam-*vtx_pip_cdc).Mag();
-        DCA_pip_beam->Fill( dca_pip_beam);
-        double dca_pim_beam = (*vtx_pim_beam-*vtx_pim_cdc).Mag();
-        DCA_pim_beam->Fill( dca_pim_beam );
-        double dca_pip_pim =(*CA_pip-*CA_pim).Mag();
-        DCA_pip_pim->Fill(dca_pip_pim);
       }
       MMnmiss_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(), nmiss_mass);
     }
@@ -631,6 +625,12 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
         //MMnmiss_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(), nmiss_mass);
         q_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),qkn.P());
         nmom_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P());
+        double dca_pip_beam = (*vtx_pip_beam-*vtx_pip_cdc).Mag();
+        DCA_pip_beam->Fill( dca_pip_beam);
+        double dca_pim_beam = (*vtx_pim_beam-*vtx_pim_cdc).Mag();
+        DCA_pim_beam->Fill( dca_pim_beam );
+        double dca_pip_pim =(*CA_pip-*CA_pim).Mag();
+        DCA_pip_pim->Fill(dca_pip_pim);
       }
     }
     
