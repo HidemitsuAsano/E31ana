@@ -66,7 +66,7 @@ bool Util::IsForwardCharge(BeamLineHitMan *blman)
 
 //returns # of neighboring hits of CDH segments listed in vector cdhseg
 //used for Isolation cuts of neutral particle candidates
-int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector <int> &allhit )
+int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector <int> &allhit, const std::vector <int> &pippimhit )
 {
   int NNeighboringHits=0;
   for( int ineuseg=0; ineuseg<(int)seg.size(); ineuseg++ ) {
@@ -77,6 +77,12 @@ int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector
       //CDH has 36 segments. # of hits on neghiboring cdh segments
       if( (abs(seg[ineuseg]-allhit[ihit])==1) || (abs(seg[ineuseg]-allhit[ihit])==35) )
         NNeighboringHits++;
+    }
+  }
+  
+  for( int ineuseg=0; ineuseg<(int)seg.size(); ineuseg++ ) {
+    for( int ihit=0; ihit<(int)pippimhit.size(); ihit++ ) {
+      Tools::Fill1D( Form("diff_CDH_pippim"), seg[ineuseg]-pippimhit[ihit]);
     }
   }
 
@@ -112,7 +118,7 @@ int Util::GetNHitsCDCOuter(const TVector3 PosCDH, CDSHitMan *cdsman, const doubl
   }
   const double PhiMin = -rangedeg/360.*TwoPi; // rad
   const double PhiMax =  rangedeg/360.*TwoPi; // rad
-  for( int ilr=14; ilr<16; ilr++ ) { // charge veto using layer 15, 16
+  for( int ilr=14; ilr<16; ilr++ ) { // charge veto using layer 14, 15
     for( int icdchit=0; icdchit<cdsman->nCDC(ilr); icdchit++ ) {
       CDCHit *cdc=cdsman->CDC(ilr,icdchit);
       TVector3 Pos_CDC = cdc->wpos();
@@ -128,6 +134,56 @@ int Util::GetNHitsCDCOuter(const TVector3 PosCDH, CDSHitMan *cdsman, const doubl
   
   return nCDChit;
 }
+
+void Util::AnaPipPimCDCCDH(const TVector3 PosCDH,const std::vector <int> &seg, const int pip_ID, const int pim_ID, CDSHitMan *cdsman,CDSTrackingMan *trackman)
+{
+  CDSTrack *track_pip = trackman->Track( pip_ID ); // only 1 track
+  CDSTrack *track_pim = trackman->Track( pim_ID ); // only 1 track
+  HodoscopeLikeHit *cdhhit_pip = track_pip->CDHHit( cdsman, 0 );
+  HodoscopeLikeHit *cdhhit_pim = track_pim->CDHHit( cdsman, 0 );
+  int CDHseg_pip = cdhhit_pip->seg();
+  int CDHseg_pim = cdhhit_pim->seg();
+  Tools::Fill1D( Form("diff_CDH_pip"), seg.at(0)-CDHseg_pip);
+  Tools::Fill1D( Form("diff_CDH_pim"), seg.at(0)-CDHseg_pim);
+
+  const int cdchitpipL14 = track_pip->nTrackHit(14);
+  const int cdchitpipL15 = track_pip->nTrackHit(15);
+  for(int ipip14=0;ipip14<cdchitpipL14;ipip14++){
+    CDCHit *cdc = track_pip->hit(cdsman,14,ipip14);
+    TVector3 Pos_CDC = cdc->wpos();
+    Pos_CDC.SetZ(0);
+    const double angle = Pos_CDC.Angle(PosCDH);
+    Tools::Fill1D( Form("diff_CDH_CDC_pip"), angle/TwoPi*360. );
+  }
+  for(int ipip15=0;ipip15<cdchitpipL15;ipip15++){
+    CDCHit *cdc = track_pip->hit(cdsman,15,ipip15);
+    TVector3 Pos_CDC = cdc->wpos();
+    Pos_CDC.SetZ(0);
+    const double angle = Pos_CDC.Angle(PosCDH);
+    Tools::Fill1D( Form("diff_CDH_CDC_pip"), angle/TwoPi*360. );
+  }
+
+
+  const int cdchitpimL14 = track_pim->nTrackHit(14);
+  const int cdchitpimL15 = track_pim->nTrackHit(15);
+  for(int ipim14=0;ipim14<cdchitpimL14;ipim14++){
+    CDCHit *cdc = track_pim->hit(cdsman,14,ipim14);
+    TVector3 Pos_CDC = cdc->wpos();
+    Pos_CDC.SetZ(0);
+    const double angle = Pos_CDC.Angle(PosCDH);
+    Tools::Fill1D( Form("diff_CDH_CDC_pim"), angle/TwoPi*360. );
+  }
+  for(int ipim15=0;ipim15<cdchitpimL15;ipim15++){
+    CDCHit *cdc = track_pim->hit(cdsman,15,ipim15);
+    TVector3 Pos_CDC = cdc->wpos();
+    Pos_CDC.SetZ(0);
+    const double angle = Pos_CDC.Angle(PosCDH);
+    Tools::Fill1D( Form("diff_CDH_CDC_pim"), angle/TwoPi*360. );
+  }
+
+  return;
+}
+
 
 
 //BLC1-D5-BLC2 momentum analysis
