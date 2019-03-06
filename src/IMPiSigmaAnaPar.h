@@ -63,11 +63,12 @@ namespace cdscuts {
   const double tdc_simoffset = -18;
   const double cds_chi2_max = 30;
   const bool useclosestpi = false;
+  const double chargevetoangle = 15.0;
 }
 
 namespace anacuts {
   const double beta_MAX = 0.728786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
-  const double dE_MIN = 1.8;
+  const double dE_MIN = 2.0;
 
   const double pipi_MIN = 0.485;
   const double pipi_MAX = 0.510;

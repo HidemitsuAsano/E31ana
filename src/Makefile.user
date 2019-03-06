@@ -28,6 +28,12 @@ evpisigma: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o
 	$(patsubst %,$(TMPDIR)/%,$(OBJS)) 
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o  $(TMPDIR)/IMPiSigmaHist.o $(TMPDIR)/IMPiSigmaUtil.o $(LIBLINK) $(OBJSLIB) $(KFLIB)
 
+evkpn: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysiskpn.o IMPiSigmaAnaPar.h \
+	$(TMPDIR)/IMPiSigmaHist.o \
+	$(TMPDIR)/IMPiSigmaUtil.o \
+	$(patsubst %,$(TMPDIR)/%,$(OBJS)) 
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysiskpn.o  $(TMPDIR)/IMPiSigmaHist.o $(TMPDIR)/IMPiSigmaUtil.o $(LIBLINK) $(OBJSLIB) $(KFLIB)
+
 evclean:
 	rm -rf $(BINDIR)/evpisigma $(TMPDIR)/IMPiSigma* $(TMPDIR)/EventAnalysisIMPiSigma.*
 
