@@ -56,7 +56,7 @@ const bool DoCDCRetiming = false;
 const bool DoKinFit = true;
 const bool IsVtxDoubleCheck = false;
 const bool UseDecayVtx = true;
-const bool IsolationCutTwoSeg = false;
+const unsigned int IsolationCutFlag = 1;
 //-----------------------------------------//
 //--- covariance matrices for KinFitter ---//
 //-----------------------------------------//
@@ -231,8 +231,7 @@ void EventAnalysis::Initialize( ConfMan *conf )
   else         std::cout << " No"  << std::endl;
   
   std::cout << "Isolation cut range ? " ;
-  if(IsolationCutTwoSeg) std::cout << "2 segment" << std::endl;
-  else         std::cout << "1 segment"  << std::endl;
+  std::cout << IsolationCutFlag << "  segments" << std::endl;
 
 
   std::cout << " CDH TDC cuts " << cdscuts::tdc_cdh_max << std::endl;
@@ -713,10 +712,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
                          std::back_inserter(NeutralCDHseg) );
 
     if( NeutralCDHseg.size()!=1 ) {
-      if(Verbosity) {
+      //if(Verbosity) {
         std::cerr<<" CDH neutral hit is not 1 :: "<<NeutralCDHseg.size()<<std::endl;
-      }
-      if(Verbosity){
+      //}
+      //if(Verbosity){
         std::cerr<<"# of diff = "<<NeutralCDHseg.size()<<std::endl;
         std::cerr<<"CDH hits =   ";
         for( int n=0; n<(int)CDHhit_list.size(); n++ ) {
@@ -733,21 +732,24 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
           std::cerr<<NeutralCDHseg[n]<<" ";
         }
         std::cerr<<std::endl;
-      }//if Verbosity
+      //}//if Verbosity
     }
     
     //** isolation cut **//
     int flag_isolation = 0;
-    if(IsolationCutTwoSeg){
-      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list);
+    if(IsolationCutFlag==2){
+      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg);
       flag_isolation+= Util::GetCDHTwoSegAwayNHits(NeutralCDHseg,CDHhit_list);
+    }else if(IsolationCutFlag==1){
+      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg);
     }else{
-      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list);
+      //check cdh hit position anyway, but don't apply isolation cuts 
+      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg);
+      flag_isolation = 0;
     }
 
     if( flag_isolation ) {
-      //if(Verbosity) std::cerr<<"CDH hit candidate is NOT isolated !!!"<<std::endl;
-      //if(Verbosity) std::cerr<<"CDH hit candidate is NOT isolated !!!"<<std::endl;
+      //if(Verbosity) std::cerr<<"CDH neutral hit candidate is NOT isolated !!!"<<std::endl;
       Clear( nAbort_CDHiso );
       return true;
     } else {
@@ -769,7 +771,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     }
     
     // charge veto using CDC
-    const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,15.0);
+    const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
+    Util::AnaPipPimCDCCDH(Pos_CDH,NeutralCDHseg,pip_ID[0],pim_ID[0],cdsMan,trackMan);
+    
     Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
 
 
@@ -816,13 +820,15 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       if(dcapipvtx < dcapimvtx) {
         //follows sakuma/sada's way , avg. of scattered particle ana beam particle [20180829]
         vtx_react = 0.5*(vtx_pip+vtx_beam_wpip);
-        if(cdscuts::useclosestpi) vtx_dis  = vtx_pip;
-        else              vtx_dis  = vtx_pim;
+        //if(cdscuts::useclosestpi) vtx_dis  = vtx_pip;
+        //else              vtx_dis  = vtx_pim;
+        vtx_dis = CA_pim_pippim;
         vtx_beam = vtx_beam_wpip;
       } else {
         vtx_react = 0.5*(vtx_pim+vtx_beam_wpim);
-        if(cdscuts::useclosestpi) vtx_dis = vtx_pim;
-        else             vtx_dis = vtx_pip;
+        //if(cdscuts::useclosestpi) vtx_dis = vtx_pim;
+        //else             vtx_dis = vtx_pip;
+        vtx_dis = CA_pip_pippim;
         vtx_beam = vtx_beam_wpim;
       }
 
@@ -854,6 +860,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
                                      LVec_beambf.Vect().Mag(), kpMass, momout_vtx[1], beamtof_vtx[1] );
       LVec_beam_vtx[1].SetVectM( momout_vtx[1]*LVec_beambf.Vect().Unit(), kpMass );
       
+      //here flight time of Sigma is ignored.
       const double ntof = ncdhhit->ctmean()-ctmT0-beamtof;
       const double ntof_vtx[2] = {ncdhhit->ctmean()-ctmT0-beamtof_vtx[0], ncdhhit->ctmean()-ctmT0-beamtof_vtx[1]};
 
@@ -861,8 +868,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       double nlen_vtx[2];
       if(UseDecayVtx) nlen = (Pos_CDH-vtx_dis).Mag();  
       else nlen = (Pos_CDH-vtx_react).Mag();
-      nlen_vtx[0] = (Pos_CDH-vtx_pip).Mag();
-      nlen_vtx[1] = (Pos_CDH-vtx_pim).Mag();
+      //nlen_vtx[0] = (Pos_CDH-vtx_pip).Mag();
+      //nlen_vtx[1] = (Pos_CDH-vtx_pim).Mag();
+      
+      nlen_vtx[0] = (Pos_CDH-CA_pip_pippim).Mag();
+      nlen_vtx[1] = (Pos_CDH-CA_pim_pippim).Mag();
       if(Verbosity>10) std::cout << "L." << __LINE__ << " flight length " << nlen << std::endl;
       NeutralBetaCDH = nlen/ntof/(Const*100.);
       for(int ivtx=0;ivtx<2;ivtx++){
@@ -871,7 +881,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0;
       double tmp_mom_vtx[2];
       for(int ivtx=0;ivtx<2;ivtx++){
-       tmp_mom_vtx[ivtx] = NeutralBetaCDH_vtx[ivtx]<1. ? nMass*NeutralBetaCDH_vtx[ivtx]/sqrt(1.-NeutralBetaCDH_vtx[ivtx]*NeutralBetaCDH_vtx[ivtx]) : 0;
+        tmp_mom_vtx[ivtx] = NeutralBetaCDH_vtx[ivtx]<1. ? nMass*NeutralBetaCDH_vtx[ivtx]/sqrt(1.-NeutralBetaCDH_vtx[ivtx]*NeutralBetaCDH_vtx[ivtx]) : 0;
       }
       if(Verbosity) {
         std::cerr<<"L. " << __LINE__ ;
@@ -906,8 +916,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         P_n = tmp_mom*((Pos_CDH-vtx_react).Unit());
       }
       TVector3 P_n_vtx[2];
-      P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-vtx_pip).Unit());
-      P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-vtx_pim).Unit());
+      //P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-vtx_pip).Unit());
+      //P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-vtx_pim).Unit());
+      P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-CA_pip_pippim).Unit());
+      P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-CA_pim_pippim).Unit());
 
       LVec_pim.SetVectM( P_pim, piMass );
       LVec_pip.SetVectM( P_pip, piMass );
