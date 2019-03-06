@@ -17,13 +17,37 @@
 #include <TLegend.h>
 #include <TPaveText.h>
 
-#include "../src/IMPiSigmaAnaPar.h"
+namespace anacuts {
+  const double beta_MAX = 0.728786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
+  const double dE_MIN = 2.0;
+
+  const double pipi_MIN = 0.485;
+  const double pipi_MAX = 0.510;
+  //const double neutron_MIN = 0.85;
+  //const double neutron_MAX = 1.03;
+  const double neutron_MIN = 0.938161-2.5*0.0308562;
+  const double neutron_MAX = 0.939161+2.5*0.0308562;
+  
+  //const double Sigmap_MIN = 1.17;
+  //const double Sigmap_MAX = 1.21;
+  //const double Sigmam_MIN = 1.18;
+  //const double Sigmam_MAX = 1.22;
+
+  //sigma is determined by the result of kinematic fit
+  const double Sigmap_MIN = 1.18911-2.0*0.00540844;   
+  const double Sigmap_MAX = 1.18911+2.0*0.00540844;   
+  const double Sigmam_MIN = 1.19723-2.0*0.00601265;
+  const double Sigmam_MAX = 1.19723+2.0*0.00601265;  
+
+  const double qvalcut = 0.35; 
+}
 
 const double pvalcut = 0.005;
 const double dEcut = 2.0;
 //const double pvalcut = 1.0e-5;
 const bool gridon=true;
 const bool staton=true;
+const bool UseKinFitVal = true;
 
 //mode 0: Sigma+ ,1: Sigma- 
 void plot_IMpisigma(const char* filename="")
@@ -57,23 +81,29 @@ void plot_IMpisigma(const char* filename="")
   
   //= = = = pipipnn final-sample tree = = = =//
   TLorentzVector *LVec_beam=nullptr;   // 4-momentum(beam)
+  TLorentzVector *LVec_beam_Sp=nullptr;   // 4-momentum(beam),Sp mode
+  TLorentzVector *LVec_beam_Sm=nullptr;   // 4-momentum(beam),Sm mode
   TLorentzVector *LVec_target=nullptr; // 4-momentum(target)
   TLorentzVector *LVec_pip=nullptr;    // 4-momentum(pi+)
   TLorentzVector *LVec_pim=nullptr;    // 4-momentum(pi-)
   TLorentzVector *LVec_n=nullptr;      // 4-momentum(neutron)
+  TLorentzVector *LVec_n_Sp=nullptr;      // 4-momentum(neutron),Sp mode
+  TLorentzVector *LVec_n_Sm=nullptr;      // 4-momentum(neutron),Sm mode
   TLorentzVector *mcmom_beam=nullptr;   // generated 4-momentum(beam)
   TLorentzVector *mcmom_pip=nullptr;    // generated 4-momentum(pi+)
   TLorentzVector *mcmom_pim=nullptr;    // generated 4-momentum(pi-)
   TLorentzVector *mcmom_ncds=nullptr;      // generated 4-momentum(neutron)
   TLorentzVector *mcmom_nmiss=nullptr;      // generated 4-momentum(neutron)
   double NeutralBetaCDH; // veracity of neutral particle on CDH
+  double NeutralBetaCDH_vtx[2]; // veracity of neutral particle on CDH
   double dE;   // energy deposit on CDH
   TVector3 *vtx_reaction = nullptr; // vertex(reaction)
-  TVector3 *vtx_pip = nullptr; // vertex (pip)
-  TVector3 *vtx_pim = nullptr; // vertex (pim)
-  //int run_num;   // run number
-  //int event_num; // event number
-  //int block_num; // block number
+  TVector3 *vtx_pip_beam = nullptr; // vertex (pip)
+  TVector3 *vtx_pim_beam = nullptr; // vertex (pim)
+  TVector3 *vtx_pip_cdc = nullptr;//
+  TVector3 *vtx_pim_cdc = nullptr;//
+  TVector3 *CA_pip = nullptr;//C.A.P of pip-pim pip side
+  TVector3 *CA_pim = nullptr;//C.A.P of pip-pim pim side
   TLorentzVector *kfSpmode_mom_beam=nullptr;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
   TLorentzVector *kfSpmode_mom_pip=nullptr;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
   TLorentzVector *kfSpmode_mom_pim=nullptr;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
@@ -103,16 +133,24 @@ void plot_IMpisigma(const char* filename="")
   }
 
   tree->SetBranchAddress( "mom_beam",   &LVec_beam );
+  tree->SetBranchAddress( "mom_beam_Sp",   &LVec_beam_Sp );
+  tree->SetBranchAddress( "mom_beam_Sm",   &LVec_beam_Sm );
   tree->SetBranchAddress( "mom_target", &LVec_target );
   tree->SetBranchAddress( "mom_pip", &LVec_pip );
   tree->SetBranchAddress( "mom_pim", &LVec_pim );
   tree->SetBranchAddress( "mom_n", &LVec_n );
+  tree->SetBranchAddress( "mom_n_Sp", &LVec_n_Sp );
+  tree->SetBranchAddress( "mom_n_Sm", &LVec_n_Sm );
   tree->SetBranchAddress( "NeutralBetaCDH", &NeutralBetaCDH );//<- from v32.
-  //tree->SetBranchAddress( "beta", &NeutralBetaCDH );
+  tree->SetBranchAddress( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
   tree->SetBranchAddress( "dE", &dE );
   tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
-  tree->SetBranchAddress( "vtx_pip",&vtx_pip);
-  tree->SetBranchAddress( "vtx_pim",&vtx_pim);
+  tree->SetBranchAddress( "vtx_pip_beam",&vtx_pip_beam);
+  tree->SetBranchAddress( "vtx_pim_beam",&vtx_pim_beam);
+  tree->SetBranchAddress( "vtx_pip_cdc",&vtx_pip_cdc);
+  tree->SetBranchAddress( "vtx_pim_cdc",&vtx_pim_cdc);
+  tree->SetBranchAddress( "CA_pip",&CA_pip);
+  tree->SetBranchAddress( "CA_pim",&CA_pim);
   //tree->SetBranchAddress( "run_num", &run_num );
   //tree->SetBranchAddress( "event_num", &event_num );
   //tree->SetBranchAddress( "block_num", &block_num );
@@ -125,10 +163,6 @@ void plot_IMpisigma(const char* filename="")
   tree->SetBranchAddress( "kfSpmode_mom_pip", &kfSpmode_mom_pip );
   tree->SetBranchAddress( "kfSpmode_mom_pim", &kfSpmode_mom_pim );
   tree->SetBranchAddress( "kfSpmode_mom_n", &kfSpmode_mom_n );
-  //tree->SetBranchAddress( "kf_chi2_Spmode", &kfSpmode_chi2 );     
-  //tree->SetBranchAddress( "kf_NDF_Spmode", &kfSpmode_NDF );       
-  //tree->SetBranchAddress( "kf_status_Spmode", &kfSpmode_status ); 
-  //tree->SetBranchAddress( "kf_pvalue_Spmode", &kfSpmode_pvalue ); 
   tree->SetBranchAddress( "kfSpmode_chi2", &kfSpmode_chi2 );
   tree->SetBranchAddress( "kfSpmode_NDF", &kfSpmode_NDF );
   tree->SetBranchAddress( "kfSpmode_status", &kfSpmode_status );
@@ -137,10 +171,6 @@ void plot_IMpisigma(const char* filename="")
   tree->SetBranchAddress( "kfSmmode_mom_pip", &kfSmmode_mom_pip );
   tree->SetBranchAddress( "kfSmmode_mom_pim", &kfSmmode_mom_pim );
   tree->SetBranchAddress( "kfSmmode_mom_n", &kfSmmode_mom_n );
-  //tree->SetBranchAddress( "kf_chi2_Smmode", &kfSmmode_chi2 );       
-  //tree->SetBranchAddress( "kf_NDF_Smmode", &kfSmmode_NDF );         
-  //tree->SetBranchAddress( "kf_status_Smmode", &kfSmmode_status );   
-  //tree->SetBranchAddress( "kf_pvalue_Smmode", &kfSmmode_pvalue );   
   tree->SetBranchAddress( "kfSmmode_chi2", &kfSmmode_chi2 );
   tree->SetBranchAddress( "kfSmmode_NDF", &kfSmmode_NDF );
   tree->SetBranchAddress( "kfSmmode_status", &kfSmmode_status );
@@ -381,6 +411,25 @@ void plot_IMpisigma(const char* filename="")
   TH1F *npimmom_kin = new TH1F("npimmom_kin", "npimmom_kin", 150, 0, 3.0);
   npimmom_kin->SetXTitle("mom. [GeV/c]");
   
+  TH1F* DCA_pip_beam = new TH1F("DCA_pip_beam","DCA_pip_beam",3000,0,30);
+  DCA_pip_beam->SetXTitle("DCA [cm]");
+  TH1F* DCA_pim_beam = new TH1F("DCA_pim_beam","DCA_pim_beam",3000,0,30);
+  DCA_pim_beam->SetXTitle("DCA [cm]");
+  TH1F* DCA_pip_pim = new TH1F("DCA_pip_pim","DCA_pip_pim",3000,0,30);
+  DCA_pip_pim->SetXTitle("DCA [cm]");
+  TH1F* DCA_pip_beam_kin[2];
+  TH1F* DCA_pim_beam_kin[2];
+  TH1F* DCA_pip_pim_kin[2];
+  for(int imode=0;imode<2;imode++){
+    DCA_pip_beam_kin[imode] = new TH1F(Form("DCA_pip_beam_kin_%s",smode[imode]),Form("DCA_pip_beam_kin_%s",smode[imode]),3000,0,30);
+    DCA_pip_beam_kin[imode]->SetXTitle("DCA [cm]");
+    DCA_pim_beam_kin[imode] = new TH1F(Form("DCA_pim_beam_kin_%s",smode[imode]),Form("DCA_pim_beam_kin_%s",smode[imode]),3000,0,30);
+    DCA_pim_beam_kin[imode]->SetXTitle("DCA [cm]");
+    DCA_pip_pim_kin[imode] = new TH1F(Form("DCA_pip_pim_kin_%s",smode[imode]),Form("DCA_pip_pim_kin_%s",smode[imode]),3000,0,30);
+    DCA_pip_pim_kin[imode]->SetXTitle("DCA [cm]");
+  }
+
+
   //centering title of all histograms 
   TIter nexthist(gDirectory->GetList());
   TH1F *h1 = nullptr;
@@ -422,6 +471,14 @@ void plot_IMpisigma(const char* filename="")
     
     // calc missing n //
     TLorentzVector LVec_n_miss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n;
+    TLorentzVector LVec_n_miss_vtx[2];
+    if(!UseKinFitVal){
+      LVec_n_miss_vtx[0] = *LVec_target+*LVec_beam_Sp-*LVec_pip-*LVec_pim-*LVec_n_Sp;
+      LVec_n_miss_vtx[1] = *LVec_target+*LVec_beam_Sm-*LVec_pip-*LVec_pim-*LVec_n_Sm;
+    }else{
+      LVec_n_miss_vtx[0] = *LVec_target+*LVec_beam_Sp-*LVec_pip-*LVec_pim-*LVec_n_Sp;
+      LVec_n_miss_vtx[1] = *LVec_target+*LVec_beam_Sm-*LVec_pip-*LVec_pim-*LVec_n_Sm;
+    }
     double nmiss_mass = LVec_n_miss.M();
     double nmiss_mom = LVec_n_miss.P();
 
@@ -523,6 +580,12 @@ void plot_IMpisigma(const char* filename="")
         MMnmiss_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(), nmiss_mass);
         q_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),qkn.P());
         nmom_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P());
+        double dca_pip_beam = (*vtx_pip_beam-*vtx_pip_cdc).Mag();
+        DCA_pip_beam->Fill( dca_pip_beam);
+        double dca_pim_beam = (*vtx_pim_beam-*vtx_pim_cdc).Mag();
+        DCA_pim_beam->Fill( dca_pim_beam );
+        double dca_pip_pim =(*CA_pip-*CA_pim).Mag();
+        DCA_pip_pim->Fill(dca_pip_pim);
       }
     }
     
@@ -557,6 +620,9 @@ void plot_IMpisigma(const char* filename="")
           MMnmiss_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n.M(), nmiss_mass);
           q_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n.M(),qkn.P());
           nmom_IMnpipi_woK0_kin[0]->Fill(LVec_pip_pim_n.M(),(*LVec_n).P());
+          DCA_pip_beam_kin[0]->Fill( (*vtx_pip_beam-*vtx_pip_cdc).Mag());
+          DCA_pim_beam_kin[0]->Fill( (*vtx_pim_beam-*vtx_pim_cdc).Mag());
+          DCA_pip_pim_kin[0]->Fill( (*CA_pip-*CA_pim).Mag());
         }
       }else{//S- mode
         dE_betainv_fid_kin[1]->Fill(1./NeutralBetaCDH,dE);
@@ -575,6 +641,9 @@ void plot_IMpisigma(const char* filename="")
           MMnmiss_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n.M(), nmiss_mass);
           q_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n.M(),qkn.P());
           nmom_IMnpipi_woK0_kin[1]->Fill(LVec_pip_pim_n.M(),(*LVec_n).P());
+          DCA_pip_beam_kin[1]->Fill( (*vtx_pip_beam-*vtx_pip_cdc).Mag());
+          DCA_pim_beam_kin[1]->Fill( (*vtx_pim_beam-*vtx_pim_cdc).Mag());
+          DCA_pip_pim_kin[1]->Fill( (*CA_pip-*CA_pim).Mag());
         }
       }
     }//pvalcut && K0rejectflag
@@ -1052,6 +1121,39 @@ void plot_IMpisigma(const char* filename="")
   mnmom->Write();
   npipmom->Write();
   npimmom->Write();*/
+  TCanvas *c_DCA = new TCanvas("c_DCA","c_DCA");
+  c_DCA->cd();
+  DCA_pip_beam->Draw("");
+  std::cout << DCA_pip_beam->Integral() << std::endl;
+  DCA_pim_beam->SetLineColor(2);
+  DCA_pim_beam->Draw("same");
+  std::cout << DCA_pim_beam->Integral() << std::endl;
+  DCA_pip_pim->SetLineColor(3);
+  DCA_pip_pim->Draw("same");
+  std::cout << DCA_pip_pim->Integral() << std::endl;
+  
+  
+  TCanvas *c_DCA_Sp = new TCanvas("c_DCA_Sp","c_DCA_Sp");
+  c_DCA_Sp->cd();
+  DCA_pip_beam_kin[0]->Draw("");
+  DCA_pim_beam_kin[0]->SetLineColor(2);
+  DCA_pim_beam_kin[0]->Draw("same");
+  DCA_pip_pim_kin[0]->SetLineColor(3);
+  DCA_pip_pim_kin[0]->Draw("same");
+  std::cout << DCA_pip_beam_kin[0]->Integral() << std::endl;
+  std::cout << DCA_pim_beam_kin[0]->Integral() << std::endl;
+  std::cout << DCA_pip_pim_kin[0]->Integral() << std::endl;
+  
+  TCanvas *c_DCA_Sm = new TCanvas("c_DCA_Sm","c_DCA_Sm");
+  c_DCA_Sm->cd();
+  DCA_pip_beam_kin[1]->Draw("");
+  DCA_pim_beam_kin[1]->SetLineColor(2);
+  DCA_pim_beam_kin[1]->Draw("same");
+  DCA_pip_pim_kin[1]->SetLineColor(3);
+  DCA_pip_pim_kin[1]->Draw("same");
+  std::cout << DCA_pip_beam_kin[1]->Integral() << std::endl;
+  std::cout << DCA_pim_beam_kin[1]->Integral() << std::endl;
+  std::cout << DCA_pip_pim_kin[1]->Integral() << std::endl;
 
 
   TCanvas *c = nullptr;
