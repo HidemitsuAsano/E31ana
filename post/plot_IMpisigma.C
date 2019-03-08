@@ -40,6 +40,16 @@ namespace anacuts {
   const double Sigmap_MAX = 1.18911+2.0*0.00540844;   
   const double Sigmam_MIN = 1.19723-2.0*0.00601265;
   const double Sigmam_MAX = 1.19723+2.0*0.00601265;  
+  
+  const double Sigmap_sidelow_MIN = 1.18911-5.0*0.00540844;   
+  const double Sigmap_sidelow_MAX = 1.18911-3.0*0.00540844;   
+  const double Sigmap_sidehigh_MIN = 1.18911+3.0*0.00540844;   
+  const double Sigmap_sidehigh_MAX = 1.18911+5.0*0.00540844;   
+  
+  const double Sigmam_sidelow_MIN = 1.19723-5.0*0.00601265;
+  const double Sigmam_sidelow_MAX = 1.19723-3.0*0.00601265;  
+  const double Sigmam_sidehigh_MIN = 1.19723+3.0*0.00601265;
+  const double Sigmam_sidehigh_MAX = 1.19723+5.0*0.00601265;  
 
   const double qvalcut = 0.35; 
 }
@@ -189,6 +199,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH2F* MMnmiss_IMnpipi_woK0_wSid_n;
   TH2F* q_IMnpipi_wSid_n;
   TH2F* q_IMnpipi_woK0_wSid_n;
+  TH2F* q_IMnpipi_wSid_n_side;
+  TH2F* q_IMnpipi_woK0_wSid_n_side;
   TH2F* nmom_IMnpipi_woK0_wSid_n;
   TH2F* q_pippim_n;
 
@@ -227,11 +239,9 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   MMom_MMass_woK0->SetXTitle("Missing Mass [GeV/c^{2}]");
   MMom_MMass_woK0->SetYTitle("Missing Mom. [GeV/c]");
 
-
   MMom_MMass_woK0_wSid = new TH2F(Form("MMom_MMass_woK0_wSid"),Form("MMom_MMass_woK0_wSid"), 140, 0.4, 1.8, 100, 0, 1.5);
   MMom_MMass_woK0_wSid->SetXTitle("Missing Mass [GeV/c^{2}]");
   MMom_MMass_woK0_wSid->SetYTitle("Missing Mom. [GeV/c]");
-
   
   IMnpim_IMnpip_dE_woK0 = new TH2F(Form("IMnpim_IMnpip_dE_woK0"), Form("IMnpim_IMnpip_dE_woK0"),200, 1, 2.0, 200, 1, 2.0);
   IMnpim_IMnpip_dE_woK0->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
@@ -288,6 +298,14 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   q_IMnpipi_woK0_wSid_n = new TH2F(Form("q_IMnpipi_woK0_wSid_n"),Form("q_IMnpipi_woK0_wSid_n"),100,1,2,300,0,1.5);
   q_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_woK0_wSid_n->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMnpipi_wSid_n_side = new TH2F(Form("q_IMnpipi_wSid_n_side"),Form("q_IMnpipi_wSid_n_side"),100,1,2,300,0,1.5);
+  q_IMnpipi_wSid_n_side->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMnpipi_wSid_n_side->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMnpipi_woK0_wSid_n_side = new TH2F(Form("q_IMnpipi_woK0_wSid_n_side"),Form("q_IMnpipi_woK0_wSid_n_side"),100,1,2,300,0,1.5);
+  q_IMnpipi_woK0_wSid_n_side->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMnpipi_woK0_wSid_n_side->SetYTitle("Mom. Transfer [GeV/c]");
   
   nmom_IMnpipi_woK0_wSid_n = new TH2F(Form("nmom_IMnpipi_woK0_wSid_n"),Form("nmom_IMnpipi_woK0_wSid_n"),100,1,2,100,0,1.0);
   nmom_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -567,8 +585,13 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     bool NdEOK=false;
     bool SigmaPFlag=false;
     bool SigmaMFlag=false;
+    bool SigmaPsideFlag=false;
+    bool SigmaMsideFlag=false;
     //-- neutron-ID, K0 and missing neutron selection --//
 
+    double dca_pip_beam = (*vtx_pip_beam-*vtx_pip_cdc).Mag();
+    double dca_pim_beam = (*vtx_pim_beam-*vtx_pim_cdc).Mag();
+    double dca_pip_pim =(*CA_pip-*CA_pim).Mag();
     if(anacuts::beta_MIN<NeutralBetaCDH &&  NeutralBetaCDH<anacuts::beta_MAX  ) NBetaOK=true;
     if(anacuts::dE_MIN<dE) NdEOK=true;
    
@@ -577,7 +600,24 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
         
     //Sigma- production in CDS
     if( (anacuts::Sigmam_MIN<(*LVec_n+*LVec_pim).M() && (*LVec_n+*LVec_pim).M()<anacuts::Sigmam_MAX)) SigmaMFlag=true;
+      
+    //Sigma+ production side band low mass side
+    if( ((anacuts::Sigmap_sidelow_MIN<(*LVec_n+*LVec_pip).M()) && 
+         ((*LVec_n+*LVec_pip).M() < anacuts::Sigmap_sidelow_MAX))) SigmaPsideFlag=true;
     
+    //Sigma+ production side band high mass side
+    if( ((anacuts::Sigmap_sidehigh_MIN<(*LVec_n+*LVec_pip).M()) && 
+         ((*LVec_n+*LVec_pip).M() < anacuts::Sigmap_sidehigh_MAX))) SigmaPsideFlag=true;
+    
+    //Sigma- production side band low mass side
+    if( ((anacuts::Sigmam_sidelow_MIN<(*LVec_n+*LVec_pim).M()) && 
+         ((*LVec_n+*LVec_pim).M() <  anacuts::Sigmam_sidelow_MAX))) SigmaMsideFlag=true;
+    
+    //Sigma- production side band high mass side
+    if( ((anacuts::Sigmam_sidehigh_MIN<(*LVec_n+*LVec_pim).M()) && 
+         ((*LVec_n+*LVec_pim).M() <  anacuts::Sigmam_sidehigh_MAX))) SigmaMsideFlag=true;
+   
+
     if(anacuts::neutron_MIN<nmiss_mass && nmiss_mass<anacuts::neutron_MAX ) MissNFlag=true;
     
     //K0 rejection using original momentum
@@ -625,14 +665,17 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
         //MMnmiss_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(), nmiss_mass);
         q_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),qkn.P());
         nmom_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P());
-        double dca_pip_beam = (*vtx_pip_beam-*vtx_pip_cdc).Mag();
         DCA_pip_beam->Fill( dca_pip_beam);
-        double dca_pim_beam = (*vtx_pim_beam-*vtx_pim_cdc).Mag();
         DCA_pim_beam->Fill( dca_pim_beam );
-        double dca_pip_pim =(*CA_pip-*CA_pim).Mag();
         DCA_pip_pim->Fill(dca_pip_pim);
       }
     }
+    if(K0rejectFlag && NBetaOK && NdEOK && MissNFlag){
+      if(!SigmaPFlag && !SigmaMFlag && (SigmaPsideFlag || SigmaMsideFlag)){
+        q_IMnpipi_woK0_wSid_n_side->Fill(LVec_pip_pim_n.M(),qkn.P());
+      }
+    }
+
     
     //including K0 
     if(NBetaOK && NdEOK && MissNFlag){
@@ -828,7 +871,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   MMnmiss_IMnpim_dE_woK0->GetXaxis()->SetRangeUser(1.05,1.5);
   MMnmiss_IMnpim_dE_woK0->GetYaxis()->SetRangeUser(0.6,1.5);
   MMnmiss_IMnpim_dE_woK0->Draw("colz");
-  
+   
+
   
 
   
@@ -849,7 +893,21 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   pxSum->Add(q_IMnpipi_woK0_kin_1_n_px);
   pxSum->SetLineColor(4);
   pxSum->Draw("HEsame");
+  
+  TCanvas *cq_IMnpipi_woK0_wSid_n_px_side = new TCanvas("cq_IMnpipi_woK0_wSid_n_px_side","q_IMnpipi_woK0_wSid_n_px_side"); 
+  q_IMnpipi_woK0_wSid_n_px->Draw("HE");
+  TH1D *q_IMnpipi_wSid_n_px  = q_IMnpipi_wSid_n->ProjectionX();
+  q_IMnpipi_wSid_n_px->SetLineColor(5);
+  q_IMnpipi_wSid_n_px->Rebin(2);
+  q_IMnpipi_wSid_n_px->Draw("same");
+  TH1D *q_IMnpipi_woK0_wSid_n_side_px = q_IMnpipi_woK0_wSid_n_side->ProjectionX(); 
+  q_IMnpipi_woK0_wSid_n_side_px->Rebin(2);
+  q_IMnpipi_woK0_wSid_n_side_px->SetLineColor(2);
+  q_IMnpipi_woK0_wSid_n_side_px->Scale(q_IMnpipi_woK0_wSid_n_px->Integral()/q_IMnpipi_woK0_wSid_n_side_px->Integral());
+  q_IMnpipi_woK0_wSid_n_side_px->Draw("HEsame");
 
+  
+  
   TCanvas *cq_IMnpipi_woK0_wSid_n_py = new TCanvas("cq_IMnpipi_woK0_wSid_n_py","q_IMnpipi_woK0_wSid_n_py"); 
   cq_IMnpipi_woK0_wSid_n_py->cd();
   TH1D *q_IMnpipi_wSid_n_py = q_IMnpipi_wSid_n->ProjectionY();
@@ -884,7 +942,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   q_IMnpipi_woK0_wSid_n->RebinX(2);
   q_IMnpipi_woK0_wSid_n->RebinY(6);
   q_IMnpipi_woK0_wSid_n->Draw("colz");
-
+  
   //TCanvas *ctest = new TCanvas("ctest","ctezst");
   const double Kp_mass = pMass + kpMass;  
   //TF1 *fkp = new TF1("f", "sqrt(((x*x-4*[0]*[0]-[1]*[1])/(4*[0]))*((x*x-4*[0]*[0]-[1]*[1])/(4*[0]))-[1]*[1])",Kp_mass,2);
@@ -902,6 +960,12 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   tex->DrawLatex( 2.92, 1.05, "M_{F}(q)" );
   tex->SetTextAngle(0);
 
+  TCanvas *cq_IMnpipi_woK0_wSid_n_side = new TCanvas("cq_IMnpipi_woK0_wSid_n_side","q_IMnpipi_woK0_wSid_n_side");
+  cq_IMnpipi_woK0_wSid_n_side->cd();
+  q_IMnpipi_woK0_wSid_n_side->RebinX(2);
+  q_IMnpipi_woK0_wSid_n_side->RebinY(6);
+  q_IMnpipi_woK0_wSid_n_side->Draw("colz");
+  
 
   TCanvas *cq_IMnpipi_woK0_kin_sum = new TCanvas("cq_IMnpipi_woK0_kin_sum","q_IMnpipi_woK0_kin_sum");
   cq_IMnpipi_woK0_kin_sum->cd();
