@@ -153,8 +153,9 @@ bool HodoscopeLikeHit::Calc( ConfMan *conf )
   if( conf->GetGeomMapManager() ){
     //    conf->GetGeomMapManager()->GetGPos( CounterID, Seg, -CTSub , HitPos);
     conf->GetGeomMapManager()->GetGPos( CounterID, Seg , HitPos);
-    if(conf->GetGeomMapManager()->GetLightVelocity( CounterID, Seg, lv))
+    if(conf->GetGeomMapManager()->GetLightVelocity( CounterID, Seg, lv)){
       HitPosition = -CTSub*lv;
+    }
   }
 
   return true;

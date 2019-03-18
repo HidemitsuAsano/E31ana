@@ -87,6 +87,7 @@ TVector3 vtx_pip_cdc;
 TVector3 vtx_pim_cdc;
 TVector3 CA_pip;
 TVector3 CA_pim;
+TVector3 CDH_Pos;
 int run_num;   // run number
 int event_num; // event number
 int block_num; // block number
@@ -212,6 +213,7 @@ int main( int argc, char** argv )
   tree2->SetBranchAddress("RunHeaderMC", &runHeader);
   if( tree2->GetEntries()==1 ) std::cout<<"  !!! tree2 entries==1 !!!"<<std::endl;
   else tree2->GetEntry(0);
+  Tools::H1("Seed",runHeader->seed(),10000,0,10000);
 
   TTree *tree=(TTree*)simfile->Get("tree");
   EventHeaderMC *evHeaderMC = new EventHeaderMC();
@@ -264,6 +266,7 @@ int main( int argc, char** argv )
   npippimTree->Branch( "vtx_pim_cdc", &vtx_pim_cdc );
   npippimTree->Branch( "CA_pip",&CA_pip);
   npippimTree->Branch( "CA_pim",&CA_pim);
+  npippimTree->Branch( "CDH_Pos",&CDH_Pos);
   //npippimTree->Branch( "run_num", &run_num );
   //npippimTree->Branch( "event_num", &event_num );
   //npippimTree->Branch( "block_num", &block_num );
@@ -1122,6 +1125,7 @@ int main( int argc, char** argv )
           Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_pim_mean.Z(),vtx_pim_mean.Y());
           Tools::Fill2D(Form("Vtx_XY_fid"),vtx_pim_mean.X(),vtx_pim_mean.Y());
           Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
+          Tools::Fill2D(Form("CDHzNeutraltime"),Pos_CDH.z(),ncdhhit->ctmean()-ctmT0-beamtof);
           Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
           Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
          
@@ -1158,9 +1162,14 @@ int main( int argc, char** argv )
               Tools::Fill2D( Form("dE_betainv_fid_beta_dE_woK0"), 1./NeutralBetaCDH, ncdhhit->emean() );
               Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_woK0"), mm_mass, P_missn.Mag() );
 
+              Tools::Fill2D(Form("CDHseg_MMass_fid_beta_dE_woK0"),ncdhhit->seg(),mm_mass);
+              Tools::Fill2D(Form("CDHz_MMass_fid_beta_dE_woK0"),Pos_CDH.z(),mm_mass);
+              Tools::Fill2D(Form("zVTX_MMass_fid_beta_dE_woK0"),vtx_react.z(),mm_mass);
               Tools::Fill2D( Form("IMnpim_IMnpip_dE_woK0"), (LVec_n+LVec_pip).M(), (LVec_n+LVec_pim).M() );
               Tools::Fill2D( Form("dE_MMom_fid_beta_woK0"), P_missn.Mag() , ncdhhit->emean() );
               Tools::Fill2D( Form("dE_MMass_fid_beta_woK0"), mm_mass , ncdhhit->emean() );
+              Tools::Fill2D( Form("CDHz_IMnpip_fid_beta_dE_woK0_n"),Pos_CDH.z(),(LVec_n+LVec_pip).M());
+              Tools::Fill2D( Form("CDHz_IMnpim_fid_beta_dE_woK0_n"),Pos_CDH.z(),(LVec_n+LVec_pim).M());
             }else{
               // K0 selection
               Tools::Fill2D( Form("dE_betainv_fid_beta_dE_wK0"), 1./NeutralBetaCDH, ncdhhit->emean() );
@@ -1566,6 +1575,7 @@ int main( int argc, char** argv )
           vtx_pim_cdc = vtx_pim;
           CA_pip = CA_pip_pippim;
           CA_pim = CA_pim_pippim;
+          CDH_Pos = Pos_CDH;
           run_num   = confMan->GetRunNumber(); // run number
           event_num = iev;     // event number
           block_num = 0;      // block number (temp)
