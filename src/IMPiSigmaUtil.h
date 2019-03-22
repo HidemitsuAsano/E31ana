@@ -13,6 +13,8 @@
 #include "CDSTrackingMan.h"
 #include "IMPiSigmaAnaPar.h"
 #include <TLorentzVector.h>
+#include <TDatabasePDG.h>
+#include "KnuclRootData.h"
 
 namespace Util
 { 
@@ -57,8 +59,11 @@ namespace Util
                  const TLorentzVector LVec_beambf,
                  CDSTrack *track,
                  CDSHitMan *cdsman,
-                 ConfMan *confman);
-
+                 ConfMan *confman,
+                 const bool MCFlag=false
+                 );
+   void CorrectCDHz(CDSHitMan *cdsman);
+   void AnaReactionData(ReactionData *reactionData, TDatabasePDG *pdg);
 };
 
 #endif

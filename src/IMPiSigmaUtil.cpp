@@ -368,7 +368,7 @@ int Util::CDSChargedAna(const bool docdcretiming,
       continue;
     }
 
-    if(MCFlag &&  
+    if(
        chi2OK && 
        CDHseg1hitOK && 
        CDHsharecheckOK && 
@@ -376,7 +376,7 @@ int Util::CDSChargedAna(const bool docdcretiming,
        FindMass2OK2 && 
        EnergyLossOK && 
       ((pid==CDS_PiMinus) || (pid==CDS_PiPlus))){
-      Util::AnaCDHHitPos(tof,beta_calc,bpctrack,LVecbeam,track,cdsman,confman);
+      Util::AnaCDHHitPos(tof,beta_calc,bpctrack,LVecbeam,track,cdsman,confman,MCFlag);
     }
 
     if( pid==CDS_PiMinus ) {
@@ -614,7 +614,9 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
                  const TLorentzVector LVecbeam,
                  CDSTrack *track, 
                  CDSHitMan *cdsman,
-                 ConfMan *confman)
+                 ConfMan *confman,
+                 const bool MCFlag
+                 )
 {
   //projected position of the track at the CDH segment at the surface (r=54.4 cm)
   TVector3 track_pos = track->CDHVertex();
@@ -626,11 +628,21 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
   for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
     HodoscopeLikeHit *cdhhit=track->CDHHit(cdsman,icdh);
     confman->GetGeomMapManager()->GetPos( CID_CDH, cdhhit->seg(), hit_pos );
-    hit_pos.SetZ(cdhhit->hitpos());//works in MC. 
+    if(MCFlag)hit_pos.SetZ(cdhhit->hitpos());//works in MC. 
+    else   hit_pos.SetZ(-1*cdhhit->hitpos());
   }
   TVector3 diff = track_pos-hit_pos;
   Tools::Fill2D( Form("CDH_mom_diffpos_pi_phi"), (track_pos.Phi()-hit_pos.Phi())/TwoPi*360., track->Momentum() );
   Tools::Fill2D( Form("CDH_mom_diffpos_pi_z"), diff.Z(), track->Momentum() );
+  if(-1 < track_pos.Z() && track_pos.Z() <1 ){
+    for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
+      HodoscopeLikeHit *cdhhit=track->CDHHit(cdsman,icdh);
+      //Tools::H1(Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),1000,-50,50);
+      Tools::H1(Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),400,-20,20);
+      Tools::H1( Form("CTMean%d",cdhhit->seg()), cdhhit->ctmean(), 2000,-50,150 );
+      Tools::H1( Form("CTSub%d",cdhhit->seg()), cdhhit->ctsub(), 2000,-50,150 );
+    }
+  }
 
   TVector3 Pos_T0;
   confman->GetGeomMapManager()->GetPos( CID_T0, 0, Pos_T0 );
@@ -652,3 +664,124 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
   double calc_tof = beam_len/(Const*100.)/beam_beta+part_len/(Const*100.)/part_beta; // T0-VTX part is measured value
 	Tools::Fill2D( Form("CDH_mom_TOF_pi"), meas_tof-calc_tof, track->Momentum() );
 }
+
+void Util::CorrectCDHz(CDSHitMan *cdsman){
+   for(int i=0;i<cdsman->nCDH();i++){
+     double HitPosition = cdsman->CDH(i)->hitpos();
+     int CDHSeg = cdsman->CDH(i)->seg();
+    {
+      //CDCz <10
+      if(CDHSeg==1) HitPosition -= 16.639714;
+      else if(CDHSeg==2) HitPosition -= 14.798649;
+      else if(CDHSeg==3) HitPosition -= 5.953724;
+      else if(CDHSeg==4) HitPosition -= 12.213804;
+      else if(CDHSeg==5) HitPosition -= 8.428154;
+      else if(CDHSeg==6) HitPosition -= 15.883103;
+      else if(CDHSeg==7) HitPosition -= 12.115939;
+      else if(CDHSeg==8) HitPosition -= 16.009665;
+      else if(CDHSeg==9) HitPosition -= 14.164350;
+      else if(CDHSeg==10) HitPosition -= 13.751159;
+      else if(CDHSeg==11) HitPosition -= 16.320796;
+      else if(CDHSeg==12) HitPosition -= -17.983675;
+      else if(CDHSeg==13) HitPosition -= 0.183959;
+      else if(CDHSeg==14) HitPosition -= 6.421490;
+      else if(CDHSeg==15) HitPosition -= 10.357269;
+      else if(CDHSeg==16) HitPosition -= 4.211167;
+      else if(CDHSeg==17) HitPosition -= 12.573929;
+      else if(CDHSeg==18) HitPosition -= 13.799147;
+      else if(CDHSeg==19) HitPosition -= 8.857060;
+      else if(CDHSeg==20) HitPosition -= -11.439437;
+      else if(CDHSeg==21) HitPosition -= 14.573345;
+      else if(CDHSeg==22) HitPosition -= 15.119745;
+      else if(CDHSeg==23) HitPosition -= 9.142359;
+      else if(CDHSeg==24) HitPosition -= 12.666169;
+      else if(CDHSeg==25) HitPosition -= 13.793150;
+      else if(CDHSeg==26) HitPosition -= 0.132931;
+      else if(CDHSeg==27) HitPosition -= 11.586085;
+      else if(CDHSeg==28) HitPosition -= 25.751971;
+      else if(CDHSeg==29) HitPosition -= 8.215086;
+      else if(CDHSeg==30) HitPosition -= 7.648705;
+      else if(CDHSeg==31) HitPosition -= 0.085094;
+      else if(CDHSeg==32) HitPosition -= -0.417300;
+      else if(CDHSeg==33) HitPosition -= -5.000405;
+      else if(CDHSeg==34) HitPosition -= -11.931577;
+      else if(CDHSeg==35) HitPosition -= -7.746246;
+      else if(CDHSeg==36) HitPosition -= -9.454847;
+      //CDCz <1 cm correction
+      if(CDHSeg==1) HitPosition -= 0.044796;
+      else if(CDHSeg==2) HitPosition -= 0.050329;
+      else if(CDHSeg==3) HitPosition -= 0.047539;
+      else if(CDHSeg==4) HitPosition -= 0.011800;
+      else if(CDHSeg==5) HitPosition -= 0.025058;
+      else if(CDHSeg==6) HitPosition -= 0.066763;
+      else if(CDHSeg==7) HitPosition -= 0.048025;
+      else if(CDHSeg==8) HitPosition -= 0.053559;
+      else if(CDHSeg==9) HitPosition -= 0.041002;
+      else if(CDHSeg==10) HitPosition -= 0.043818;
+      else if(CDHSeg==11) HitPosition -= 0.016847;
+      else if(CDHSeg==12) HitPosition -= 0.060654;
+      else if(CDHSeg==13) HitPosition -= 0.021380;
+      else if(CDHSeg==14) HitPosition -= 0.054790;
+      else if(CDHSeg==15) HitPosition -= 0.027565;
+      else if(CDHSeg==16) HitPosition -= 0.012008;
+      else if(CDHSeg==17) HitPosition -= 0.047283;
+      else if(CDHSeg==18) HitPosition -= 0.038955;
+      else if(CDHSeg==19) HitPosition -= 0.028200;
+      else if(CDHSeg==20) HitPosition -= 0.033359;
+      else if(CDHSeg==21) HitPosition -= 0.055034;
+      else if(CDHSeg==22) HitPosition -= -0.006987;
+      else if(CDHSeg==23) HitPosition -= 0.024364;
+      else if(CDHSeg==24) HitPosition -= 0.013297;
+      else if(CDHSeg==25) HitPosition -= 0.014870;
+      else if(CDHSeg==26) HitPosition -= 0.050980;
+      else if(CDHSeg==27) HitPosition -= 0.020656;
+      else if(CDHSeg==28) HitPosition -= 0.047146;
+      else if(CDHSeg==29) HitPosition -= 0.064573;
+      else if(CDHSeg==30) HitPosition -= 0.020890;
+      else if(CDHSeg==31) HitPosition -= 0.026834;
+      else if(CDHSeg==32) HitPosition -= 0.022567;
+      else if(CDHSeg==33) HitPosition -= 0.064572;
+      else if(CDHSeg==34) HitPosition -= -0.070272;
+      else if(CDHSeg==35) HitPosition -= 0.015730;
+      else if(CDHSeg==36) HitPosition -= 0.056956;
+    }
+
+     cdsman->CDH(i)->SetHitPosition(HitPosition);
+
+   }
+}
+
+
+
+void Util::AnaReactionData(ReactionData *reactionData, TDatabasePDG *pdg){
+  int ndecay    = reactionData->NParticle(0);
+  int nspec     = reactionData->NParticle(1);
+  int nparticle = ndecay+nspec;
+  
+  for(Int_t ipart=0;ipart<nparticle;ipart++){
+    std::string sname;
+    //0: neutron
+    //1: Sigma
+    //2: pi
+    sname = pdg->GetParticle(reactionData->PDG(ipart))->GetName();  
+    //std::cout << sname << std::endl;
+    double coscm = reactionData->GetCMParticle(ipart).CosTheta();
+    Tools::H1(Form("ReactCosCM_%d",ipart),coscm, 100,-1.0,1.0);
+    double cosl = reactionData->GetParticle(ipart).CosTheta();
+    Tools::H1(Form("ReactCos_%d",ipart),cosl, 100,-1.0,1.0);
+    double momcm = (reactionData->GetCMParticle(ipart).P())/1000.;
+    Tools::H1(Form("Reactmomcm_%d",ipart),momcm, 150,0,1.5);
+    double moml = (reactionData->GetParticle(ipart).P())/1000.;
+    Tools::H1(Form("Reactmom_%d",ipart),moml, 150,0,1.5);
+  }
+  TVector3 beammom(0,0,1000);//1 GeV/c 
+  TLorentzVector TL_beam;
+  TL_beam.SetVectM(beammom, 493.677);
+  TLorentzVector TL_nmiss = reactionData->GetParticle(0);
+  double q = (TL_beam.Vect()-TL_nmiss.Vect()).Mag()/1000.;
+  TLorentzVector TL_Sigma = reactionData->GetParticle(1);
+  TLorentzVector TL_piSigma = TL_Sigma + reactionData->GetParticle(2);
+  double mass = TL_piSigma.M()/1000.;
+  Tools::H2(Form("React_q_IMPiSigma"),mass,q,500,1,2,300,0,1.5);
+}
+

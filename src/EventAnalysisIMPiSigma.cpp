@@ -538,6 +538,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
   Tools::Fill1D( Form("EventCheck"), 1 );
   
+  //temporary fix of the cdhz position
+  Util::CorrectCDHz(cdsMan);
 
   //CDH-hits cut
   if( Util::GetCDHMul(cdsMan,nGoodTrack)!=cdscuts::cdhmulti){
@@ -689,14 +691,13 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   if( pim_ID.size()==1 && pip_ID.size()==1) pimpipFlag = true;
   if( pimpipFlag &&
       (trackMan->nGoodTrack()==cdscuts::cds_ngoodtrack) && !Util::IsForwardCharge(blMan)){
-    //=== condense pi+ pi- X candidates ===//
+    //=== pi+ pi- X candidates ===//
     rtFile2->cd();
     evTree->Fill();
     rtFile->cd();
     if(Verbosity) std::cout<<"### filled: Event_Number, Block_Event_Number, CDC_Event_Number = "
                              <<Event_Number<<" , "<<Block_Event_Number<<" , "<<CDC_Event_Number<<std::endl;
     nFill_pippim++;
-    //=== condense pi+ pi- X event ===//
 
     //** find CDH hit from neutral particles **//
     std::vector <int> NeutralCDHseg;//CDHhits - CDHhits used for charged particle tracking
@@ -779,84 +780,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
     Util::AnaPipPimCDCCDH(Pos_CDH,NeutralCDHseg,pip_ID[0],pim_ID[0],cdsMan,trackMan);
     
-    double HitPosition = ncdhhit->hitpos();
-    {
-      //CDCz <10
-      if(CDHSeg==1) HitPosition -= 16.639714;
-      else if(CDHSeg==2) HitPosition -= 14.798649;
-      else if(CDHSeg==3) HitPosition -= 5.953724;
-      else if(CDHSeg==4) HitPosition -= 12.213804;
-      else if(CDHSeg==5) HitPosition -= 8.428154;
-      else if(CDHSeg==6) HitPosition -= 15.883103;
-      else if(CDHSeg==7) HitPosition -= 12.115939;
-      else if(CDHSeg==8) HitPosition -= 16.009665;
-      else if(CDHSeg==9) HitPosition -= 14.164350;
-      else if(CDHSeg==10) HitPosition -= 13.751159;
-      else if(CDHSeg==11) HitPosition -= 16.320796;
-      else if(CDHSeg==12) HitPosition -= -17.983675;
-      else if(CDHSeg==13) HitPosition -= 0.183959;
-      else if(CDHSeg==14) HitPosition -= 6.421490;
-      else if(CDHSeg==15) HitPosition -= 10.357269;
-      else if(CDHSeg==16) HitPosition -= 4.211167;
-      else if(CDHSeg==17) HitPosition -= 12.573929;
-      else if(CDHSeg==18) HitPosition -= 13.799147;
-      else if(CDHSeg==19) HitPosition -= 8.857060;
-      else if(CDHSeg==20) HitPosition -= -11.439437;
-      else if(CDHSeg==21) HitPosition -= 14.573345;
-      else if(CDHSeg==22) HitPosition -= 15.119745;
-      else if(CDHSeg==23) HitPosition -= 9.142359;
-      else if(CDHSeg==24) HitPosition -= 12.666169;
-      else if(CDHSeg==25) HitPosition -= 13.793150;
-      else if(CDHSeg==26) HitPosition -= 0.132931;
-      else if(CDHSeg==27) HitPosition -= 11.586085;
-      else if(CDHSeg==28) HitPosition -= 25.751971;
-      else if(CDHSeg==29) HitPosition -= 8.215086;
-      else if(CDHSeg==30) HitPosition -= 7.648705;
-      else if(CDHSeg==31) HitPosition -= 0.085094;
-      else if(CDHSeg==32) HitPosition -= -0.417300;
-      else if(CDHSeg==33) HitPosition -= -5.000405;
-      else if(CDHSeg==34) HitPosition -= -11.931577;
-      else if(CDHSeg==35) HitPosition -= -7.746246;
-      else if(CDHSeg==36) HitPosition -= -9.454847;
-      //CDCz <1 cm correction
-      if(CDHSeg==1) HitPosition -= 0.044796;
-      else if(CDHSeg==2) HitPosition -= 0.050329;
-      else if(CDHSeg==3) HitPosition -= 0.047539;
-      else if(CDHSeg==4) HitPosition -= 0.011800;
-      else if(CDHSeg==5) HitPosition -= 0.025058;
-      else if(CDHSeg==6) HitPosition -= 0.066763;
-      else if(CDHSeg==7) HitPosition -= 0.048025;
-      else if(CDHSeg==8) HitPosition -= 0.053559;
-      else if(CDHSeg==9) HitPosition -= 0.041002;
-      else if(CDHSeg==10) HitPosition -= 0.043818;
-      else if(CDHSeg==11) HitPosition -= 0.016847;
-      else if(CDHSeg==12) HitPosition -= 0.060654;
-      else if(CDHSeg==13) HitPosition -= 0.021380;
-      else if(CDHSeg==14) HitPosition -= 0.054790;
-      else if(CDHSeg==15) HitPosition -= 0.027565;
-      else if(CDHSeg==16) HitPosition -= 0.012008;
-      else if(CDHSeg==17) HitPosition -= 0.047283;
-      else if(CDHSeg==18) HitPosition -= 0.038955;
-      else if(CDHSeg==19) HitPosition -= 0.028200;
-      else if(CDHSeg==20) HitPosition -= 0.033359;
-      else if(CDHSeg==21) HitPosition -= 0.055034;
-      else if(CDHSeg==22) HitPosition -= -0.006987;
-      else if(CDHSeg==23) HitPosition -= 0.024364;
-      else if(CDHSeg==24) HitPosition -= 0.013297;
-      else if(CDHSeg==25) HitPosition -= 0.014870;
-      else if(CDHSeg==26) HitPosition -= 0.050980;
-      else if(CDHSeg==27) HitPosition -= 0.020656;
-      else if(CDHSeg==28) HitPosition -= 0.047146;
-      else if(CDHSeg==29) HitPosition -= 0.064573;
-      else if(CDHSeg==30) HitPosition -= 0.020890;
-      else if(CDHSeg==31) HitPosition -= 0.026834;
-      else if(CDHSeg==32) HitPosition -= 0.022567;
-      else if(CDHSeg==33) HitPosition -= 0.064572;
-      else if(CDHSeg==34) HitPosition -= -0.070272;
-      else if(CDHSeg==35) HitPosition -= 0.015730;
-      else if(CDHSeg==36) HitPosition -= 0.056956;
-    }
-    Pos_CDH.SetZ(-1.*HitPosition); // (-1*) is correct in data analysis [20170926]
+    Pos_CDH.SetZ(-1.*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
 
 
     //** neutral particle in CDH **//
@@ -1132,9 +1056,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             // K0 rejection
             Tools::Fill2D( Form("dE_betainv_fid_beta_dE_woK0"), 1./NeutralBetaCDH, ncdhhit->emean() );
             Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_woK0"), mm_mass, P_missn.Mag() );
-            Tools::Fill2D(Form("CDHseg_MMass_fid_beta_dE_woK0"),ncdhhit->seg(),mm_mass);
-            Tools::Fill2D(Form("CDHz_MMass_fid_beta_dE_woK0"),Pos_CDH.z(),mm_mass);
-            Tools::Fill2D(Form("zVTX_MMass_fid_beta_dE_woK0"),vtx_react.z(),mm_mass);
+            Tools::Fill2D( Form("CDHseg_MMass_fid_beta_dE_woK0"),ncdhhit->seg(),mm_mass);
+            Tools::Fill2D( Form("CDHz_MMass_fid_beta_dE_woK0"),Pos_CDH.z(),mm_mass);
+            //Tools::Fill2D(Form("zVTX_MMass_fid_beta_dE_woK0"),vtx_react.z(),mm_mass);
 
             Tools::Fill2D( Form("IMnpim_IMnpip_dE_woK0"), (LVec_n+LVec_pip).M(), (LVec_n+LVec_pim).M() );
             Tools::Fill2D( Form("dE_MMom_fid_beta_woK0"), P_missn.Mag(), ncdhhit->emean() );

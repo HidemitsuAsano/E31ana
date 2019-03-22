@@ -211,9 +211,6 @@ int main( int argc, char** argv )
   TTree *tree2 = (TTree*)simfile->Get("tree2");
   RunHeaderMC *runHeader=0;
   tree2->SetBranchAddress("RunHeaderMC", &runHeader);
-  if( tree2->GetEntries()==1 ) std::cout<<"  !!! tree2 entries==1 !!!"<<std::endl;
-  else tree2->GetEntry(0);
-  Tools::H1("Seed",runHeader->seed(),10000,0,10000);
 
   TTree *tree=(TTree*)simfile->Get("tree");
   EventHeaderMC *evHeaderMC = new EventHeaderMC();
@@ -239,6 +236,13 @@ int main( int argc, char** argv )
   //** output file 1 : histograms **//
   TFile *outfile = new TFile(argv[2], "recreate");
   outfile->cd();
+  //check seed distribution
+  if( tree2->GetEntries()==1 ){
+    std::cout<<"  !!! tree2 entries==1 !!!"<<std::endl;
+    tree2->GetEntry(0);
+    std::cout << runHeader->seed() << std::endl;
+    Tools::H1("Seed",runHeader->seed(),10000,0,10000);
+  }
 
   //** output file 2 : pippimn final-sample tree **// 
   std::string outfile2_name = string(argv[2]);
@@ -422,12 +426,16 @@ int main( int argc, char** argv )
     if(Verbosity_){
       std::cout<<"======================"<<std::endl;
       std::cout<<std::endl;
+      std::cout<<"particle size :" <<   reacData->ParticleSize() << std::endl;
       for( int ip=0; ip<reacData->ParticleSize(); ip++ ){
         std::cout<< "L." << __LINE__ << " " 
-        << ip<<" pdg code:"<<reacData->PDG(ip)<<" mom:"<<reacData->GetParticle(ip).P()
-        <<std::endl;
+          << ip<<" pdg code:"<<reacData->PDG(ip)<<" mom:"<<reacData->GetParticle(ip).P()
+          <<std::endl;
       }
     }
+    //reaction data
+    Util::AnaReactionData(reacData,pdg);
+
 
     const int reactionID = reacData->ReactionID();
     //These partcile IDs are defined in pythia6
@@ -1164,7 +1172,7 @@ int main( int argc, char** argv )
 
               Tools::Fill2D(Form("CDHseg_MMass_fid_beta_dE_woK0"),ncdhhit->seg(),mm_mass);
               Tools::Fill2D(Form("CDHz_MMass_fid_beta_dE_woK0"),Pos_CDH.z(),mm_mass);
-              Tools::Fill2D(Form("zVTX_MMass_fid_beta_dE_woK0"),vtx_react.z(),mm_mass);
+              //Tools::Fill2D(Form("zVTX_MMass_fid_beta_dE_woK0"),vtx_react.z(),mm_mass);
               Tools::Fill2D( Form("IMnpim_IMnpip_dE_woK0"), (LVec_n+LVec_pip).M(), (LVec_n+LVec_pim).M() );
               Tools::Fill2D( Form("dE_MMom_fid_beta_woK0"), P_missn.Mag() , ncdhhit->emean() );
               Tools::Fill2D( Form("dE_MMass_fid_beta_woK0"), mm_mass , ncdhhit->emean() );
