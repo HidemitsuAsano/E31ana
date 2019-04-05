@@ -772,6 +772,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     //Util::AnaPipPimCDCCDH(Pos_CDH,NeutralCDHseg,pip_ID[0],pim_ID[0],cdsMan,trackMan);
     
     Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
+    //Pos_CDH.SetZ(ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
 
 
     //** neutral particle in CDH **//
@@ -820,6 +821,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       const double ntof = ncdhhit->ctmean()-ctmT0-beamtof;
       double nlen;
       nlen = (Pos_CDH-vtx_react).Mag();
+
+      //std::cout << "nlen "  << nlen << std::endl;
+      //std::cout << "Pos_CDH x" << Pos_CDH.x() << std::endl;
+      //std::cout << "Pos_CDH y" << Pos_CDH.y() << std::endl;
+      //std::cout << "Pos_CDH z" << Pos_CDH.z() << std::endl;
+
       NeutralBetaCDH = nlen/ntof/(Const*100.);
       double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0;
       if(Verbosity) {
@@ -842,14 +849,14 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
       //Momentum (n CDS)
       TVector3 P_n;
-      P_n = tmp_mom*((Pos_CDH-vtx_react).Unit());
+      P_n = tmp_mom*(Pos_CDH-vtx_react).Unit();
 
       LVec_km.SetVectM( P_km, kpMass );
       LVec_n.SetVectM(   P_n,   nMass );//CDS n
       
       const double mm_mass   = (LVec_target+LVec_beam-LVec_km-LVec_n).M();
       const TVector3 P_missp = (LVec_target+LVec_beam-LVec_km-LVec_n).Vect();
-      LVec_pmiss.SetVectM( P_missp, nMass );
+      LVec_pmiss.SetVectM( P_missp, pMass );
 
       //** + + + + + + + + + + + + + **//
       //**  fill histograms & tree   **//
@@ -874,6 +881,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
 
         Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
+        Tools::Fill2D(Form("CDHzNeutraltime"),Pos_CDH.z(),ncdhhit->ctmean()-ctmT0-beamtof);
         Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
         Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missp.Mag() );
 
@@ -894,10 +902,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         if( anacuts::neutron_MIN<mm_mass && mm_mass<anacuts::neutron_MAX ) MissPFlag=true;
 
         if( NBetaOK && NdEOK ) {
-          //K0rejection
           Tools::Fill2D( Form("dE_betainv_fid_beta_dE_woK0"), 1./NeutralBetaCDH, ncdhhit->emean() );
           Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_woK0"), mm_mass, P_missp.Mag() );
-
+          Tools::Fill2D(Form("CDHseg_MMass_fid_beta_dE_woK0"),ncdhhit->seg(),mm_mass);
+          Tools::Fill2D(Form("CDHz_MMass_fid_beta_dE_woK0"),-1*ncdhhit->hitpos(),mm_mass);
+          //Tools::Fill2D(Form("zVTX_MMass_fid_beta_dE_woK0"),vtx_react.z(),mm_mass);
           Tools::Fill2D( Form("dE_MMom_fid_beta_woK0"), P_missp.Mag(), ncdhhit->emean() );
           Tools::Fill2D( Form("dE_MMass_fid_beta_woK0"), mm_mass, ncdhhit->emean() );
 

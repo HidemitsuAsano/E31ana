@@ -41,7 +41,7 @@ EventAnalysisT0CDH::~EventAnalysisT0CDH()
 {
 }
 
-const int MaxTreeSize = 1900000000000;
+const long MaxTreeSize = 1900000000000;
 void EventAnalysisT0CDH::Initialize( ConfMan *conf )
 {
 #if 1
@@ -287,6 +287,7 @@ void EventAnalysisT0CDH::InitializeHistogram()
   new TH1F( "Pattern", "Trigger Pattern", 10, 0, 10 );
 
   // T0
+  const int NumOfT0Segments = 5 ;
   std::cout << "Define Histgram for T0" << std::endl;
   new TH1F( "MulT0", "Multiplicity T0", NumOfT0Segments+1, 0, NumOfT0Segments+1 );
   new TH1F( "HitPatT0", "Hit Pattern T0", NumOfT0Segments+1, 0, NumOfT0Segments+1 );
@@ -301,9 +302,10 @@ void EventAnalysisT0CDH::InitializeHistogram()
     new TH2F( Form("ATT0D%d",seg),   Form("ADC TDC corr. T0D%d",seg),     200,    0, 4000,  200,    0, 4000 );
   }
   // CDH
+  const int NumOfCDHSegments = 36;
   std::cout << "Define Histgram for CDH" << std::endl;
-  new TH1F( "MulCDH", "Multiplicity CDH", NumOfCDHSegments+1, 0, NumOfCDHSegments+1 );
-  new TH1F( "HitPatCDH", "Hit Pattern CDH", NumOfCDHSegments+1, 0, NumOfCDHSegments+1 );
+  new TH1F( "MulCDH", "Multiplicity CDH", NumOfCDHSegments, 0.5, NumOfCDHSegments+0.5 );
+  new TH1F( "HitPatCDH", "Hit Pattern CDH", NumOfCDHSegments, 0.5, NumOfCDHSegments+0.5 );
   for( int seg=1; seg<=NumOfCDHSegments; seg++ ){
     new TH1F( Form("ACDHU%d",seg),   Form("ADC CDHU%d",seg),    1000,    0, 4000 );
     new TH1F( Form("ACDHD%d",seg),   Form("ADC CDHD%d",seg),    1000,    0, 4000 );
