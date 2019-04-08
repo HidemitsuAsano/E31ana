@@ -134,22 +134,16 @@ private:
   // 4-momentum(beam) (reaction vtx Sm mode assumption)
   TLorentzVector mom_beam_Sm;
   TLorentzVector mom_target; // 4-momentum(target)
-  TLorentzVector mom_pip;    // 4-momentum(pi+)
-  TLorentzVector mom_pim;    // 4-momentum(pi-)
-  TLorentzVector mom_n;      // 4-momentum(neutron)
-  TLorentzVector mom_n_Sp;  // 4-momentum(neutron),Sp mode assumption
-  TLorentzVector mom_n_Sm;  // 4-momentum(neutron),Sm mode assumption
-  double NeutralBetaCDH; // velocity of neutral particle on CDH from decay vtx 
-  double NeutralBetaCDH_vtx[2];//1:pip_vtx,2:pim_vtx  
-  double dE;   // energy deposit on CDH [MeVee]
+  TLorentzVector mom_pim1;    // 4-momentum(pi+)
+  TLorentzVector mom_pim2;    // 4-momentum(pi-)
+  TLorentzVector mom_p;      // 4-momentum(neutron)
   TVector3 vtx_reaction; // 
-  TVector3 vtx_pip_beam; // 
-  TVector3 vtx_pim_beam; // 
-  TVector3 vtx_pip_cdc;//
-  TVector3 vtx_pim_cdc;//
-  TVector3 CA_pip;
-  TVector3 CA_pim;
-  TVector3 CDH_Pos;
+  TVector3 vtx_pim1_beam; // 
+  TVector3 vtx_pim2_beam; // 
+  TVector3 vtx_pim1_cdc;//
+  TVector3 vtx_pim2_cdc;//
+  TVector3 CA_pim1;
+  TVector3 CA_pim2;
   int run_num;   // run number
   int event_num; // event number
   int block_num; // block number
@@ -907,7 +901,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             //--- KinFitter :: initialization ---//
             //  = 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+
             //  = 2) TLorentzVector LVec_beam, LVec_pip, (LVec_n+LVec_pim), LVec_nmiss, LVec_n, LVec_pim = for pi+ Sigma-
-            //*** definition of fit particles in cartesian coordinates ***//
+            //definition of fit particles in cartesian coordinates //
             const TString str_particle_Spmode[kin::npart] = {"LVec_beam", "LVec_pim", "LVec_Sp", "LVec_mn", "LVec_n", "LVec_pip"};
             const TString str_particle_Smmode[kin::npart] = {"LVec_beam", "LVec_pip", "LVec_Sm", "LVec_mn", "LVec_n", "LVec_pim"};
             //asano memo
@@ -922,7 +916,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
               Particle_Smmode[i] = TFitParticlePxPyPz(str_particle_Smmode[i], str_particle_Smmode[i], &TV_meas_Smmode[i],
                                                       pdg->GetParticle(PDG_Smmode[i])->Mass(), covParticle_Smmode[i]);
             }//for i
-            //*** definition of constraints ***//
+            // definition of constraints //
             // constraint :: mass of Sigma
             TFitConstraintM ConstMS_Spmode = TFitConstraintM("M_Sp", "M_Sp", 0, 0, pdg->GetParticle(PDG_Spmode[kin::Sp])->Mass());
             TFitConstraintM ConstMS_Smmode = TFitConstraintM("M_Sm", "M_Sm", 0, 0, pdg->GetParticle(PDG_Smmode[kin::Sm])->Mass());
@@ -944,7 +938,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             }//for
 
             //--- KinFitter :: execution ---//
-            //*** definition of the fitter ***//
+            // definition of the fitter //
             TKinFitter kinfitter_Spmode;
             TKinFitter kinfitter_Smmode;
             // add measured particles
@@ -960,7 +954,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
               kinfitter_Smmode.addConstraint(&ConstEp_Smmode[i]); // 4-momentum conservation
             }
 
-            //*** perform the fit ***//
+            // perform the fit //
             kinfitter_Spmode.setMaxNbIter(kin::maxitr);       // max number of iterations
             kinfitter_Smmode.setMaxNbIter(kin::maxitr);       // max number of iterations
             kinfitter_Spmode.setMaxDeltaS(kin::maxdchi2);     // max delta chi2
@@ -971,7 +965,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             kinfitter_Smmode.setVerbosity(KFDEBUG);  // verbosity level
             kinfitter_Spmode.fit();
             kinfitter_Smmode.fit();
-            //*** copy fit results ***//
+            // copy fit results //
             for( int i=0; i<kin::npart; i++ ) {
               TL_kfit_Spmode[i] = (*Particle_Spmode[i].getCurr4Vec());
               TL_kfit_Smmode[i] = (*Particle_Smmode[i].getCurr4Vec());
@@ -988,7 +982,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
               std::cerr<<"pi+ S- : status = "<<kinfitter_Smmode.getStatus()<<", chi2/NDF = "<<kinfitter_Smmode.getS()<<"/"<<kinfitter_Smmode.getNDF()<<std::endl;
             }
 
-            //** fill tree **//
+            // fill tree //
             kfSpmode_mom_beam   = TL_kfit_Spmode[kin::kmbeam];
             kfSpmode_mom_pip    = TL_kfit_Spmode[kin::pip_g2];
             kfSpmode_mom_pim    = TL_kfit_Spmode[kin::pim_g1];
@@ -1014,24 +1008,19 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
        */
 
         mom_beam   = LVec_beam;   // 4-momentum(beam)
-        mom_beam_Sp = LVec_beam_vtx[0];
-        mom_beam_Sm = LVec_beam_vtx[1];
+        //mom_beam_Sp = LVec_beam_vtx[0];
+        //mom_beam_Sm = LVec_beam_vtx[1];
         mom_target = LVec_target; // 4-momentum(target)
-        mom_pip = LVec_pip;        // 4-momentum(pi+)
-        mom_pim = LVec_pim;        // 4-momentum(pi-)
-        mom_n = LVec_n;            // 4-momentum(neutron)
-        mom_n_Sp = LVec_n_vtx[0];
-        mom_n_Sm = LVec_n_vtx[1];
-        dE = ncdhhit->emean();
-        // beta is already filled
+        mom_pim1 = LVec_pim1;        // 4-momentum(pi+)
+        mom_pim2 = LVec_pim2;        // 4-momentum(pi-)
+        mom_p = LVec_p;            // 4-momentum(neutron)
         vtx_reaction = vtx_react; // vertex(reaction)
-        vtx_pip_beam = vtx_beam_wpip;
-        vtx_pim_beam = vtx_beam_wpim;
-        vtx_pip_cdc = vtx_pip;
-        vtx_pim_cdc = vtx_pim;
-        CA_pip = CA_pip_pippim;
-        CA_pim = CA_pim_pippim;
-        CDH_Pos = Pos_CDH;
+        vtx_pim1_beam = vtx_beam_wpim1;
+        vtx_pim2_beam = vtx_beam_wpim2;
+        vtx_pim1_cdc = vtx_pim1;
+        vtx_pim2_cdc = vtx_pim2;
+        CA_pim1 = CA_pim1_pippim;
+        CA_pim2 = CA_pim2_pippim;
         run_num   = confMan->GetRunNumber(); // run number
         event_num = Event_Number;            // event number
         block_num = Block_Event_Number;      // block number
