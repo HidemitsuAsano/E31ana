@@ -16,6 +16,9 @@ evtracking: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysis_Tracking.
 ev1: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysis1.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysis1.o $(LIBLINK) $(OBJSLIB)
 
+evt0cdh: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisT0CDH.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisT0CDH.o $(LIBLINK) $(OBJSLIB)
+
 momentum: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisMomentum.o $(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisMomentum.o $(LIBLINK) $(OBJSLIB)
 
@@ -27,6 +30,12 @@ evpisigma: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o
 	$(TMPDIR)/IMPiSigmaUtil.o \
 	$(patsubst %,$(TMPDIR)/%,$(OBJS)) 
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMPiSigma.o  $(TMPDIR)/IMPiSigmaHist.o $(TMPDIR)/IMPiSigmaUtil.o $(LIBLINK) $(OBJSLIB) $(KFLIB)
+
+evlpim: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMLambdaPim.o IMPiSigmaAnaPar.h \
+	$(TMPDIR)/IMPiSigmaHist.o \
+	$(TMPDIR)/IMPiSigmaUtil.o \
+	$(patsubst %,$(TMPDIR)/%,$(OBJS)) 
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMLambdaPim.o  $(TMPDIR)/IMPiSigmaHist.o $(TMPDIR)/IMPiSigmaUtil.o $(LIBLINK) $(OBJSLIB) $(KFLIB)
 
 evkpn: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysiskpn.o IMPiSigmaAnaPar.h \
 	$(TMPDIR)/IMPiSigmaHist.o \
