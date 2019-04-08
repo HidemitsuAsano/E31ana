@@ -66,6 +66,18 @@ namespace cdscuts {
   const double chargevetoangle = 15.0;
 }
 
+namespace cdscuts_lpim{
+  const int cds_ngoodtrack = 3;
+  const int cdhmulti = 3;
+  //const double tdc_cdh_max = 40; // ns v25
+  const double tdc_cdh_max = 50; // ns v32-v40
+  //const double tdc_cdh_max = 9999; // ns v32-v40
+  const double tdc_simoffset = -18;
+  const double cds_chi2_max = 30;
+  const bool useclosestpi = false;
+  const double chargevetoangle = 15.0;
+}
+
 namespace anacuts {
   const double beta_MAX = 0.728786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
   const double dE_MIN = 2.0;
@@ -84,6 +96,13 @@ namespace anacuts {
   const double Sigmam_MAX = 1.22;
 }
 
+namespace anacuts_lpim {
+  const double ppi_MIN = 1.1075;
+  const double ppi_MAX = 1.1225;
+
+  const double proton_MIN = 0.85;
+  const double proton_MAX = 1.03;
+}
 
 
 namespace kin {
