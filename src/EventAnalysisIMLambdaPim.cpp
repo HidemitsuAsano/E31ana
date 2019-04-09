@@ -121,7 +121,6 @@ private:
   int nAbort_fblc2bpc;
   int nAbort_flagbmom;
   int nAbort_ftarget;
-  int nAbort_CDHiso;
   int nAbort_pipi;
   int nAbort_end;
 
@@ -370,7 +369,6 @@ void EventAnalysis::ResetCounters()
   nAbort_ftarget = 0;
   nAbort_end = 0;
   nAbort_pipi = 0;
-  nAbort_CDHiso = 0;
 
   return;
 }
@@ -694,13 +692,13 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     bool vtx_flag1=TrackTools::Calc2HelixVertex(track_pim1, track_p, CA_pim1_pim1p, CA_p_pim1p);
     double dcapim1p=-9999.;
     if(vtx_flag1) dcapim1p = (CA_pim1_pim1p-CA_p_pim1p).Mag();
-    Tools::H1( Form("DCA_pim1p"), dcapim1p,3000,0,30);
+    Tools::Fill1D( Form("DCA_pim1p"), dcapim1p);
    
     
     bool vtx_flag2=TrackTools::Calc2HelixVertex(track_pim2, track_p, CA_pim2_pim2p, CA_p_pim2p);
     double dcapim2p=-9999.;
     if(vtx_flag2) dcapim2p = (CA_pim2_pim2p-CA_p_pim2p).Mag();
-    Tools::H1( Form("DCA_pim2p"), dcapim2p,3000,0,30);
+    Tools::Fill1D( Form("DCA_pim2p"), dcapim2p);
 
     //reaction vertex is determined from beam and nearest vtx
     TVector3 vtx_beam;
@@ -1081,11 +1079,10 @@ void EventAnalysis::Finalize()
   std::cout<<" nAbort_fblc2bpc      = "<<nAbort_fblc2bpc<<std::endl;
   std::cout<<" nAbort_flagbmom      = "<<nAbort_flagbmom<<std::endl;
   std::cout<<" nAbort_ftarget       = "<<nAbort_ftarget<<std::endl;
-  std::cout<<" nAbort_CDHiso        = "<<nAbort_CDHiso<<std::endl;
   std::cout<<" nAbort_nAbort_pipi   = "<<nAbort_pipi<<std::endl;
   std::cout<<" nAbort_end           = "<<nAbort_end<<std::endl;
   std::cout<<"========= Abort counter ========="<<std::endl;
-  std::cout<<"*** # of pi+ pi- n events = "<<nFill_npippim<<" ***"<<std::endl;
+  std::cout<<"*** # of pi- pi- p events = "<<nFill_npippim<<" ***"<<std::endl;
 
   //  confMan->SaveCDSParam();
   gFile->Write();
