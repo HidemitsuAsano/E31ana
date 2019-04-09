@@ -19,12 +19,11 @@ void InitBasicHist(const bool MCFlag)
     Tools::newTH1F( Form("vertex_diff_X"), 100, -50, 50 );
     Tools::newTH1F( Form("vertex_diff_Y"), 100, -50, 50 );
     Tools::newTH1F( Form("vertex_diff_Z"), 100, -50, 50 );
-
-    //===== CDH hit pos study =====//
-    Tools::newTH2F( Form("CDH_mom_diffpos_pi_phi"), 100, -10, 10, 100, 0, 1.0 );
-    Tools::newTH2F( Form("CDH_mom_diffpos_pi_z"), 100, -10, 10, 100, 0, 1.0 );
-    Tools::newTH2F( Form("CDH_mom_TOF_pi"),       100, -2, 2, 100, 0, 1.0 );
   }
+  //===== CDH hit pos study =====//
+  Tools::newTH2F( Form("CDH_mom_diffpos_pi_phi"), 100, -10, 10, 100, 0, 1.0 );
+  Tools::newTH2F( Form("CDH_mom_diffpos_pi_z"), 1000, -50, 50, 100, 0, 1.0 );
+  Tools::newTH2F( Form("CDH_mom_TOF_pi"),       100, -2, 2, 100, 0, 1.0 );
   //** beam line **//
   Tools::newTH1F( Form("mul_BHD"), 12, -0.5, 11.5 );
   Tools::newTH1F( Form("mul_T0"),   6, -0.5, 5.5 );
@@ -53,6 +52,12 @@ void InitBasicHist(const bool MCFlag)
   //Tools::newTH1F( Form("ntrack_deuteron"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_pi_minus"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_K_minus"), 6, -0.5, 5.5 );
+  Tools::newTH1F( Form("CDHNeutralSeg"),36, 0.5, 36.5);
+  Tools::newTH2F( Form("CDHseg_MMass_fid_beta_dE_woK0"),36,0.5,36.5,140,0.4,1.8);
+  Tools::newTH2F( Form("CDHz_MMass_fid_beta_dE_woK0"),100,-50,50,140,0.4,1.8);
+  //Tools::newTH2F( Form("zVTX_MMass_fid_beta_dE_woK0"),100,-12,2,140,0.4,1.8);
+  Tools::newTH2F( Form("CDHz_IMnpip_fid_beta_dE_woK0_n"),100,-50,50,140,1,1.7);
+  Tools::newTH2F( Form("CDHz_IMnpim_fid_beta_dE_woK0_n"),100,-50,50,140,1,1.7);
 
   //** forward counters **//
   Tools::newTH1F( Form("mul_BVC"), 9, -0.5, 8.5 );
@@ -66,7 +71,6 @@ void InitBasicHist(const bool MCFlag)
   Tools::newTH2F( Form("Vtx_ZX_fid"),1000,-25,25,500,-12.5,12.5);
   Tools::newTH2F( Form("Vtx_ZY_fid"),1000,-25,25,500,-12.5,12.5);
   Tools::newTH2F( Form("Vtx_XY_fid"),500,-12.5,12.5,500,-12.5,12.5);
-  Tools::newTH1F( Form("CDHNeutralSeg"),36, 0.5, 36.5);
   Tools::newTH2F( Form("Vtx_ZX_nofid"),1000,-25,25,500,-12.5,12.5);
   Tools::newTH2F( Form("Vtx_ZY_nofid"),1000,-25,25,500,-12.5,12.5);
   Tools::newTH2F( Form("Vtx_XY_nofid"),500,-12.5,12.5,500,-12.5,12.5);
@@ -82,6 +86,7 @@ void InitIMPiSigmaHist()
   Tools::newTH2F( Form("dE_CDHtime_pippimn"),100,0.,100,100,0,50);
 
   Tools::newTH2F( Form("NeutraltimeEnergy"),100,0,100,200,0,50);
+  Tools::newTH2F( Form("CDHzNeutraltime"),100,-50,50,100,0,50);
   Tools::newTH1F( Form("diff_CDH"), 73, -36.5, 36.5 );
   Tools::newTH1F( Form("diff_CDH_pippim"), 73, -36.5, 36.5 );
   Tools::newTH1F( Form("diff_CDH_pip"), 73, -36.5, 36.5 );
@@ -150,3 +155,13 @@ void InitIMPiSigmaHist()
 
 
 
+void InitIMLambdaPimHist() {
+  Tools::newTH2F( Form("MMom_MMass"), 140, 0.4, 1.8, 100, 0, 1.5 );
+  Tools::newTH2F( Form("MMom_MMass_fid_p"),140, 0.4, 1.8, 100, 0, 1.5);
+  Tools::newTH2F( Form("MMom_PMom_fid_p"),100, 0, 1.5, 100, 0, 1.5);
+  Tools::newTH2F( Form("IMppim1_IMppim2_p"),100, 0, 1.5, 100, 0, 1.5);
+
+
+
+
+}

@@ -638,9 +638,9 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
     for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
       HodoscopeLikeHit *cdhhit=track->CDHHit(cdsman,icdh);
       //Tools::H1(Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),1000,-50,50);
-      Tools::H1(Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),400,-20,20);
-      Tools::H1( Form("CTMean%d",cdhhit->seg()), cdhhit->ctmean(), 2000,-50,150 );
-      Tools::H1( Form("CTSub%d",cdhhit->seg()), cdhhit->ctsub(), 2000,-50,150 );
+      //Tools::H1(Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),400,-20,20);
+      //Tools::H1( Form("CTMean%d",cdhhit->seg()), cdhhit->ctmean(), 2000,-50,150 );
+      //Tools::H1( Form("CTSub%d",cdhhit->seg()), cdhhit->ctsub(), 2000,-50,150 );
     }
   }
 
@@ -753,18 +753,15 @@ void Util::CorrectCDHz(CDSHitMan *cdsman){
 
 
 
-void Util::AnaReactionData(ReactionData *reactionData, TDatabasePDG *pdg){
+void Util::AnaReactionData( ReactionData *reactionData){
   int ndecay    = reactionData->NParticle(0);
   int nspec     = reactionData->NParticle(1);
   int nparticle = ndecay+nspec;
-  
-  for(Int_t ipart=0;ipart<nparticle;ipart++){
-    std::string sname;
+  if(nparticle!=3) std::cout << "nparticle is 3 ! "  << nparticle << std::endl;
+  for(int ipart=0;ipart<nparticle;ipart++){
     //0: neutron
     //1: Sigma
     //2: pi
-    sname = pdg->GetParticle(reactionData->PDG(ipart))->GetName();  
-    //std::cout << sname << std::endl;
     double coscm = reactionData->GetCMParticle(ipart).CosTheta();
     Tools::H1(Form("ReactCosCM_%d",ipart),coscm, 100,-1.0,1.0);
     double cosl = reactionData->GetParticle(ipart).CosTheta();
