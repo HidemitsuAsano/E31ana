@@ -663,25 +663,26 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
                              <<Event_Number<<" , "<<Block_Event_Number<<" , "<<CDC_Event_Number<<std::endl;
     nFill_pimpimp++;
 
-    if(Verbosity) {
-      std::cerr<<"CDH candidate = "<<CDHSeg<<" -> "<<Pos_CDH.Phi()/TwoPi*360.<<" deg"<<std::endl;
-    }
-    
-    CDSTrack *track_pim1 = trackMan->Track( pip_ID.at(0) ); //
+    CDSTrack *track_pim1 = trackMan->Track( pim_ID.at(0) ); //
     CDSTrack *track_pim2 = trackMan->Track( pim_ID.at(1) ); //
+    CDSTrack *track_p    = trackMan->Track( p_ID.at(0) ); //must be only 1 track due to the nCDH cut
     
     //deuteron target
     TVector3 vtx_react;//reaction vertex
     TVector3 vtx_dis;//displaced vertex
 
     TVector3 vtx_beam_wpim1;//vertex(beam-pim1) on beam
-    TVector3 vtx_pim1;//vertex(beam-pim) on beam
+    TVector3 vtx_pim1;//vertex(beam-pim) on cdc track
     track_pim1->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpim1, vtx_pim1 );
 
     TVector3 vtx_beam_wpim2;//vertex(beam-pim) on beam
-    TVector3 vtx_pim2;//vertex(beam-pim) on beam
+    TVector3 vtx_pim2;//vertex(beam-pim) on cdc track
     track_pim2->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpim2, vtx_pim2 );
-      
+    
+    TVector3 vtx_beam_wp;//vertex(beam-proton) on beam 
+    TVector3 vtx_p;//vertex(beam-proton) on cdc track
+    track_p->GetVertex(bpctrack->GetPosatZ(0),bpctrack->GetMomDir(),vtx_beam_wp,vtx_p);
+
     const double dcapim1vtx =  (vtx_pim1-vtx_beam_wpim1).Mag();
     const double dcapim2vtx =  (vtx_pim2-vtx_beam_wpim2).Mag();
     const TVector3 vtxpim1_mean = 0.5*(vtx_pim1+vtx_beam_wpim1);
@@ -689,28 +690,34 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     Tools::Fill1D( Form("DCA_pim1"), dcapim1vtx );
     Tools::Fill1D( Form("DCA_pim2"), dcapim2vtx );
 
-    TVector3 CA_pim1_pimpim,CA_pim2_pimpim;
-    bool vtx_flag=TrackTools::Calc2HelixVertex(track_pim1, track_pim2, CA_pim1_pimpim, CA_pim2_pimpim);
-    double dcapimpim=-9999.;
-    if(vtx_flag) dcapimpim = (CA_pim1_pimpim-CA_pim2_pimpim).Mag();
-    Tools::Fill1D( Form("DCA_pimpim"), dcapimpim);
-
+    TVector3 CA_pim1_pim1p,CA_pim2_pim2p,CA_p_pim1p,CA_p_pim2p;
+    bool vtx_flag1=TrackTools::Calc2HelixVertex(track_pim1, track_p, CA_pim1_pim1p, CA_p_pim1p);
+    double dcapim1p=-9999.;
+    if(vtx_flag1) dcapim1p = (CA_pim1_pim1p-CA_p_pim1p).Mag();
+    Tools::H1( Form("DCA_pim1p"), dcapim1p,3000,0,30);
+   
+    
+    bool vtx_flag2=TrackTools::Calc2HelixVertex(track_pim2, track_p, CA_pim2_pim2p, CA_p_pim2p);
+    double dcapim2p=-9999.;
+    if(vtx_flag2) dcapim2p = (CA_pim2_pim2p-CA_p_pim2p).Mag();
+    Tools::H1( Form("DCA_pim2p"), dcapim2p,3000,0,30);
 
     //reaction vertex is determined from beam and nearest vtx
     TVector3 vtx_beam;
-    if(dcapim1vtx < dcapim2vtx) {
-      //follows sakuma/sada's way , avg. of scattered particle ana beam particle [20180829]
-      vtx_react = 0.5*(vtx_pim1+vtx_beam_wpim1);
+    //determine by pim-proton DCA
+    //proton 
+    if(dcapim1p < dcapim2p) {
+      vtx_react = 0.5*(vtx_pim2+vtx_beam_wpim2);
       //if(cdscuts_lpim::useclosestpi) vtx_dis  = vtx_pip;
       //else              vtx_dis  = vtx_pim;
-      vtx_dis = CA_pim2_pimpim;
+      vtx_dis = CA_p_pim1p;
       vtx_beam = vtx_beam_wpim1;
     } else {
-      vtx_react = 0.5*(vtx_pim2+vtx_beam_wpim2);
+      vtx_react = 0.5*(vtx_pim1+vtx_beam_wpim1);
       //if(cdscuts_lpim::useclosestpi) vtx_dis = vtx_pim;
       //else             vtx_dis = vtx_pip;
-      vtx_dis = CA_pim1_pimpim;
-      vtx_beam = vtx_beam_wpim2;
+      vtx_dis = CA_p_pim2p;
+      vtx_beam = vtx_beam_wpim1;
     }
 
 
@@ -812,7 +819,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     bool MissPFlag=false;
     bool LambdaFlag=false;
 
-    Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missp.Mag() );
+    Tools::Fill2D(Form("MMom_MMass"), mm_mass, P_missp.Mag() );
     Tools::Fill2D(Form("Vtx_ZX_nofid"),vtxpim1_mean.Z(),vtxpim1_mean.X());
     Tools::Fill2D(Form("Vtx_ZY_nofid"),vtxpim1_mean.Z(),vtxpim1_mean.Y());
     Tools::Fill2D(Form("Vtx_XY_nofid"),vtxpim1_mean.X(),vtxpim1_mean.Y());
@@ -843,9 +850,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         if( (anacuts_lpim::ppi_MIN<(LVec_p+LVec_pim2).M() && (LVec_p+LVec_pim2).M()<anacuts_lpim::ppi_MAX)) LambdaFlag=true;
 
           if(MissPFlag) {
-            Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_woK0_n"), mm_mass, P_missn.Mag() );
-            Tools::Fill2D( Form("NMom_NMom_fid_beta_dE_woK0_n"), P_n.Mag(), P_missn.Mag() );
-            Tools::Fill2D( Form("IMnpim_IMnpip_dE_woK0_n"), (LVec_n+LVec_pip).M(), (LVec_n+LVec_pim).M() );
+            Tools::Fill2D( Form("MMom_MMass_fid_p"), mm_mass, P_missp.Mag() );
+            Tools::Fill2D( Form("MMom_PMom_fid_p"), P_p.Mag(), P_missp.Mag() );
+            Tools::Fill2D( Form("IMppim1_IMppim2_p"), (LVec_p+LVec_pim1).M(), (LVec_p+LVec_pim2).M() );
           }
            
           /*
@@ -1007,34 +1014,31 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
           }//if DoKinFit
        */
 
-        mom_beam   = LVec_beam;   // 4-momentum(beam)
-        //mom_beam_Sp = LVec_beam_vtx[0];
-        //mom_beam_Sm = LVec_beam_vtx[1];
-        mom_target = LVec_target; // 4-momentum(target)
-        mom_pim1 = LVec_pim1;        // 4-momentum(pi+)
-        mom_pim2 = LVec_pim2;        // 4-momentum(pi-)
-        mom_p = LVec_p;            // 4-momentum(neutron)
-        vtx_reaction = vtx_react; // vertex(reaction)
-        vtx_pim1_beam = vtx_beam_wpim1;
-        vtx_pim2_beam = vtx_beam_wpim2;
-        vtx_pim1_cdc = vtx_pim1;
-        vtx_pim2_cdc = vtx_pim2;
-        CA_pim1 = CA_pim1_pippim;
-        CA_pim2 = CA_pim2_pippim;
-        run_num   = confMan->GetRunNumber(); // run number
-        event_num = Event_Number;            // event number
-        block_num = Block_Event_Number;      // block number
+       mom_beam   = LVec_beam;   // 4-momentum(beam)
+       mom_target = LVec_target; // 4-momentum(target)
+       mom_pim1 = LVec_pim1;        // 4-momentum(pi+)
+       mom_pim2 = LVec_pim2;        // 4-momentum(pi-)
+       mom_p = LVec_p;            // 4-momentum(neutron)
+       vtx_reaction = vtx_react; // vertex(reaction)
+       vtx_pim1_beam = vtx_beam_wpim1;
+       vtx_pim2_beam = vtx_beam_wpim2;
+       vtx_pim1_cdc = vtx_pim1;
+       vtx_pim2_cdc = vtx_pim2;
+       CA_pim1 = CA_pim1_pim1p;
+       CA_pim2 = CA_pim2_pim2p;
+       run_num   = confMan->GetRunNumber(); // run number
+       event_num = Event_Number;            // event number
+       block_num = Block_Event_Number;      // block number
 
-        if(Verbosity>10)std::cout<<"%%% npippim event: Event_Number, Block_Event_Number, CDC_Event_Number = "
-                                   <<Event_Number<<" , "<<Block_Event_Number<<" , "<<CDC_Event_Number<<std::endl;
-        rtFile3->cd();
-        pimpimpTree->Fill();
-        rtFile->cd();
-        nFill_npippim++;
-        //** fill tree **//
+       if(Verbosity>10)std::cout<<"%%% npippim event: Event_Number, Block_Event_Number, CDC_Event_Number = "
+         <<Event_Number<<" , "<<Block_Event_Number<<" , "<<CDC_Event_Number<<std::endl;
+       rtFile3->cd();
+       pimpimpTree->Fill();
+       rtFile->cd();
+       nFill_npippim++;
+       //** fill tree **//
 
-      } // if( GeomTools::GetID(vtx_react)==CID_Fiducial )
-    } // if( !nCDCforVeto )
+    } // if( GeomTools::GetID(vtx_react)==CID_Fiducial )
   }//pi+,pi-X event
   else {
     Clear( nAbort_pipi );
@@ -1119,7 +1123,7 @@ void EventAnalysis::InitializeHistogram()
   // 18. BPC timing and track chi2 is NOT good
   // 19. BLC2-BPC track is not matched
   InitBasicHist();
-  InitIMPiSigmaHist();
+  InitIMLambdaPimHist();
 
 
   return;
@@ -1182,19 +1186,13 @@ void EventAnalysis::Clear( int &nAbort)
   ctmT0 = 0;
 
   //CDS
-  NeutralBetaCDH=-9999.;
-  NeutralBetaCDH_vtx[0]=-9999.;
-  NeutralBetaCDH_vtx[1]=-9999.;
-
-  dE=-9999.;
   vtx_reaction.SetXYZ(-9999.,-9999.,-9999.);
-  vtx_pip_beam.SetXYZ(-9999.,-9999.,-9999.);
-  vtx_pim_beam.SetXYZ(-9999.,-9999.,-9999.);
-  vtx_pip_cdc.SetXYZ(-9999.,-9999.,-9999.);
-  vtx_pim_cdc.SetXYZ(-9999.,-9999.,-9999.);
-  CA_pip.SetXYZ(-9999.,-9999.,-9999.);
-  CA_pim.SetXYZ(-9999.,-9999.,-9999.);
-  CDH_Pos.SetXYZ(-9999.,-9999.,-9999.);
+  vtx_pim1_beam.SetXYZ(-9999.,-9999.,-9999.);
+  vtx_pim2_beam.SetXYZ(-9999.,-9999.,-9999.);
+  vtx_pim1_cdc.SetXYZ(-9999.,-9999.,-9999.);
+  vtx_pim2_cdc.SetXYZ(-9999.,-9999.,-9999.);
+  CA_pim1.SetXYZ(-9999.,-9999.,-9999.);
+  CA_pim2.SetXYZ(-9999.,-9999.,-9999.);
 
 
   return;
