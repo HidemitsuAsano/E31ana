@@ -60,11 +60,12 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TFile *smhis;
   if(Spmode){
     std::cout << "This is Sigma+ mode sim." << std::endl;
-    sphis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v28.root","READ");
+    //sphis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v28.root","READ");
+    sphis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v28_v32.root","READ");
   }
   else if(Smmode){
     std::cout << "This is Sigma- mode sim." << std::endl;
-    smhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v28.root","READ");
+    smhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v28_v32.root","READ");
   }else{
     std::cout << "This is real data" << std::endl;
   }
@@ -640,7 +641,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     LVec_pip_pim_n_CM.Boost(-boost);
     double cos_X = LVec_pip_pim_n_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pip_pim_n_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
 
-    if(qkn.P()<anacuts::qvalcut || qkn.P()>0.70) continue;
+    //if(qkn.P()<anacuts::qvalcut || qkn.P()>0.70) continue;
     //if(qkn.P()>anacuts::qvalcut ) continue;
     //if(qkn.P()>0.70 ) continue;
     //if(LVec_pip_pim_n.M() < 1.45) continue;
@@ -1053,13 +1054,13 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   
 
   //w/o K0
-  q_IMnpipi_woK0_wSid_n_px->GetYaxis()->SetTitle("Counts / 20 MeV/c^{2}");
+  //q_IMnpipi_woK0_wSid_n_px->GetYaxis()->SetTitle("Counts / 20 MeV/c^{2}");
   q_IMnpipi_woK0_wSid_n_px->GetYaxis()->CenterTitle();
   q_IMnpipi_woK0_wSid_n_px->Draw("EH");
   
   //including K0
   q_IMnpipi_wSid_n_px1->SetLineColor(5);
-  q_IMnpipi_wSid_n_px1->GetYaxis()->SetTitle("Counts / 20 MeV/c^{2}");
+  //q_IMnpipi_wSid_n_px1->GetYaxis()->SetTitle("Counts / 20 MeV/c^{2}");
   q_IMnpipi_wSid_n_px1->GetYaxis()->CenterTitle();
   q_IMnpipi_wSid_n_px1->Draw("HEsame");
   
@@ -1809,7 +1810,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   }
   
   
-  /*
+  
   if(Smmode){
     smhis->cd();
     TCanvas *cphaseSm = new TCanvas("cphaseSm","cphaseSm");
@@ -1823,7 +1824,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     React_q_IMPiSigma_Sm->Draw("colz");
     
     TCanvas *ceffSm = new TCanvas("ceffSm","cefffSm");
-    q_IMnpipi_woK0_wSid_n_Sm->RebinY(12);
+    //q_IMnpipi_woK0_wSid_n_Sm->RebinY(12);
     TH2F *acc_Sm = (TH2F*)q_IMnpipi_woK0_wSid_n_Sm->Clone();
     acc_Sm->Sumw2();
     q_IMnpipi_woK0_wSid_n_Sm->Sumw2();
@@ -1838,7 +1839,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     React_q_IMPiSigma_Sm->SetName("React_q_IMPiSigma_Sm");
     React_q_IMPiSigma_Sm->Write();
     q_IMnpipi_woK0_wSid_n_Sm->Write();
-  }*/
+  }
   
   facc->cd();
   TH2F* acc_Sp_cal = (TH2F*)facc->Get("acc_Sp");
