@@ -61,11 +61,18 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   if(Spmode){
     std::cout << "This is Sigma+ mode sim." << std::endl;
     //sphis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v28.root","READ");
-    sphis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v28_v32.root","READ");
+    sphis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v32.root","READ");
+    //sphis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v28_v32.root","READ");
+    std::cout << "file for generated info " ;
+    std::cout << sphis->GetName() << std::endl;
   }
   else if(Smmode){
     std::cout << "This is Sigma- mode sim." << std::endl;
-    smhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v28_v32.root","READ");
+    //smhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v28.root","READ");
+    smhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v32.root","READ");
+    //smhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v28_v32.root","READ");
+    std::cout << "file for generated info " ;
+    std::cout << smhis->GetName() << std::endl;
   }else{
     std::cout << "This is real data" << std::endl;
   }
@@ -1784,29 +1791,44 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     React_q_IMPiSigma_Sp->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
     React_q_IMPiSigma_Sp->SetYTitle("Mom. tranfer [GeV/c]");
     React_q_IMPiSigma_Sp->SetTitle("Generated Events (#pi^{-}#Sigma^{+} mode) ");
-    React_q_IMPiSigma_Sp->RebinX(5);
+    //React_q_IMPiSigma_Sp->RebinX(1);
     React_q_IMPiSigma_Sp->RebinY(12);
     React_q_IMPiSigma_Sp->Draw("colz");
    
     TCanvas *ceffSp = new TCanvas("ceffSp","cefffSp");
     //q_IMnpipi_woK0_wSid_n_Sp->RebinY(12);
-    TH2F *acc_Sp = (TH2F*)q_IMnpipi_woK0_wSid_n_Sp->Clone();
+    TH2F *acc_Sp = (TH2F*)q_IMnpipi_woK0_wSid_n_Sp_acc->Clone();
     acc_Sp->Sumw2();
+    acc_Sp->RebinY(12);
     q_IMnpipi_woK0_wSid_n_Sp->Sumw2();
     React_q_IMPiSigma_Sp->Sumw2();
-    //q_IMnpipi_woK0_wSid_n_Sp_acc->Divide(q_IMnpipi_woK0_wSid_n_Sp_acc,React_q_IMPiSigma_Sp,1.0,1.0,"b");
-    acc_Sp->Divide(q_IMnpipi_woK0_wSid_n_Sp,React_q_IMPiSigma_Sp,1.0,1.0,"b");
+    React_q_IMPiSigma_Sp->Print("base");
+    q_IMnpipi_woK0_wSid_n_Sp_acc->RebinY(12);
+    q_IMnpipi_woK0_wSid_n_Sp_acc->Print("base");
+    std::cout << "calc. acc. Sp mode" << std::endl;
+    acc_Sp->Divide(q_IMnpipi_woK0_wSid_n_Sp_acc,React_q_IMPiSigma_Sp,1.0,1.0,"b");
+    //acc_Sp->Divide(q_IMnpipi_woK0_wSid_n_Sp,React_q_IMPiSigma_Sp,1.0,1.0,"b");
     acc_Sp->SetMaximum(0.02);
     acc_Sp->Draw("colz");
     facc->cd();
     acc_Sp->SetName("acc_Sp");
     acc_Sp->SetTitle("acc_Sp");
     acc_Sp->Write();
+    TH2F *acc_err_Sp = new TH2F("acc_err_Sp","acc_err_Sp",500,1,2,300,0,1.5);
+    acc_err_Sp->RebinY(12);
+    for(int ix=0;ix<acc_Sp->GetNbinsX();ix++){
+      for(int iy=0;iy<acc_Sp->GetNbinsY();iy++){
+        double err = acc_Sp->GetBinErrorUp(ix,iy);
+        double cont = acc_Sp->GetBinContent(ix,iy);
+        if(cont) acc_err_Sp->SetBinContent(ix,iy,err/cont);
+      }
+    }
+    TCanvas *cacc_err_Sp = new TCanvas("cacc_err_Sp","acc_err_Sp");
+    acc_err_Sp->Draw("colz");
+
     React_q_IMPiSigma_Sp->SetName("React_q_IMPiSigma_Sp");
     React_q_IMPiSigma_Sp->Write();
     q_IMnpipi_woK0_wSid_n_Sp->Write();
-    React_q_IMPiSigma_Sp->Print("base");
-    q_IMnpipi_woK0_wSid_n_Sp->Print("base");
   }
   
   
@@ -1829,6 +1851,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     acc_Sm->Sumw2();
     q_IMnpipi_woK0_wSid_n_Sm->Sumw2();
     React_q_IMPiSigma_Sm->Sumw2();
+    std::cout << "calc. acc. Sm mode" << std::endl;
     acc_Sm->Divide(q_IMnpipi_woK0_wSid_n_Sm,React_q_IMPiSigma_Sm,1.0,1.0,"b");
     acc_Sm->SetMaximum(0.02);
     acc_Sm->Draw("colz");
@@ -1854,27 +1877,34 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   }*/
   TH2F* acc_Sm_cal = (TH2F*)facc->Get("acc_Sm");
   f->cd(); 
+  std::cout << std::endl;
+  std::cout << "calculation CS of Sp mode..." << std::endl;
+  std::cout << std::endl;
   TCanvas *cq_IMnpipi_woK0_wSid_n_Sp_cs = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp_cs","q_IMnpipi_woK0_wSid_n_Sp_cs");
   cq_IMnpipi_woK0_wSid_n_Sp_cs->cd();
   TH2F *q_IMnpipi_woK0_wSid_n_Sp_cs = (TH2F*)q_IMnpipi_woK0_wSid_n_Sp->Clone("Sp_cs");
   q_IMnpipi_woK0_wSid_n_Sp_cs->Sumw2();
+  acc_Sp_cal->Print("base");
+  //acc_Sp_cal->RebinX(5);
+  q_IMnpipi_woK0_wSid_n_Sp_cs->Print("base");
   q_IMnpipi_woK0_wSid_n_Sp_cs->Divide(acc_Sp_cal);
   q_IMnpipi_woK0_wSid_n_Sp_cs->SetMaximum(30000);
   q_IMnpipi_woK0_wSid_n_Sp_cs->Draw("colz");
   
-
-  TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_cs = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sm_cs","q_IMnpipi_woK0_wSid_n_Sm_cs");
-  cq_IMnpipi_woK0_wSid_n_Sm_cs->cd();
-  TH2F *q_IMnpipi_woK0_wSid_n_Sm_cs = (TH2F*)q_IMnpipi_woK0_wSid_n_Sm->Clone("Sm_cs");
-  q_IMnpipi_woK0_wSid_n_Sm_cs->Sumw2();
-  q_IMnpipi_woK0_wSid_n_Sm_cs->Divide(acc_Sm_cal);
-  q_IMnpipi_woK0_wSid_n_Sm_cs->SetMaximum(30000);
-  q_IMnpipi_woK0_wSid_n_Sm_cs->Draw("colz");
-
   TCanvas *cq_IMnpipi_woK0_wSid_n_Sp_cs_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp_cs_px","q_IMnpipi_woK0_wSid_n_Sp_cs_px");
   TH1D *q_IMnpipi_woK0_wSid_n_Sp_cs_px = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_cs->ProjectionX();
   q_IMnpipi_woK0_wSid_n_Sp_cs_px->SetLineColor(2);
   q_IMnpipi_woK0_wSid_n_Sp_cs_px->Draw("HE");
+  
+  TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_cs = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sm_cs","q_IMnpipi_woK0_wSid_n_Sm_cs");
+  cq_IMnpipi_woK0_wSid_n_Sm_cs->cd();
+  TH2F *q_IMnpipi_woK0_wSid_n_Sm_cs = (TH2F*)q_IMnpipi_woK0_wSid_n_Sm->Clone("Sm_cs");
+  q_IMnpipi_woK0_wSid_n_Sm_cs->Sumw2();
+  //acc_Sm_cal->Print("base");
+  //  q_IMnpipi_woK0_wSid_n_Sm_cs->Print("base");
+  q_IMnpipi_woK0_wSid_n_Sm_cs->Divide(acc_Sm_cal);
+  q_IMnpipi_woK0_wSid_n_Sm_cs->SetMaximum(30000);
+  q_IMnpipi_woK0_wSid_n_Sm_cs->Draw("colz");
 
   //TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_cs_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sm_cs_px","q_IMnpipi_woK0_wSid_n_Sm_cs_px");
   TH1D *q_IMnpipi_woK0_wSid_n_Sm_cs_px = (TH1D*)q_IMnpipi_woK0_wSid_n_Sm_cs->ProjectionX();
@@ -2009,10 +2039,10 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   q_IMnpipi_woK0_wSid_n_SpSm_side_cs->SetMaximum(60000);
   q_IMnpipi_woK0_wSid_n_SpSm_side_cs->Draw("colz");
 
-  TCanvas *cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px","q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px");
-  cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px->cd();
-  TH1D* q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px = q_IMnpipi_woK0_wSid_n_SpSm_side_cs->ProjectionX();
-  q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px->Draw("E");
+  //TCanvas *cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px","q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px");
+  //cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px->cd();
+  //TH1D* q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px = q_IMnpipi_woK0_wSid_n_SpSm_side_cs->ProjectionX();
+  //q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px->Draw("E");
 
 
   
