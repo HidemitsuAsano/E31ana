@@ -1834,8 +1834,11 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     if(Spmode)React_q_IMPiSigma->SetName("React_q_IMPiSigma_Sp");
     else      React_q_IMPiSigma->SetName("React_q_IMPiSigma_Sm");
     React_q_IMPiSigma->Write();
-    if(Spmode)q_IMnpipi_woK0_wSid_n_Sp->Write();
-    else      q_IMnpipi_woK0_wSid_n_Sm->Write();
+    if(Spmode){
+      q_IMnpipi_woK0_wSid_n_Sp_acc->Write();
+    }else{
+      q_IMnpipi_woK0_wSid_n_Sm_acc->Write();
+    }
     fsacc->Close();
   }
   
