@@ -235,7 +235,7 @@ int main( int argc, char** argv )
 
   //** output file 1 : histograms **//
   TFile *outfile = new TFile(argv[2], "recreate");
-  outfile->cd();
+  //outfile->cd();
   //check seed distribution
   if( tree2->GetEntries()==1 ){
     std::cout<<"  !!! tree2 entries==1 !!!"<<std::endl;
@@ -434,7 +434,7 @@ int main( int argc, char** argv )
       }
     }
     //reaction data
-    Util::AnaReactionData(reacData,pdg);
+    Util::AnaReactionData(reacData);
 
 
     const int reactionID = reacData->ReactionID();
@@ -583,6 +583,7 @@ int main( int argc, char** argv )
       if( ip ) TL_gene[ip].SetVectM(mcData->track(ID[ip])->momentum()*0.001,  pdg->GetParticle(PDG[ip])->Mass()); // GeV
       else    TL_gene[ip].SetVectM(mcData->track(ID[ip])->momentum()*-0.001, pdg->GetParticle(PDG[ip])->Mass()); // GeV
     }
+    /*
     if(flagG4Decay){
       double q = (TL_gene[kin::kmbeam].Vect()-TL_gene[kin::nmiss].Vect()).Mag();
       TLorentzVector TL_Sigma_cor;// define to evaluate energy loss effect of Sigma
@@ -592,21 +593,21 @@ int main( int argc, char** argv )
         TL_Sigma_cor = TL_gene[kin::ncds]+TL_gene[kin::pip_g2]; 
         TL_piSigma = TL_gene[kin::Sp]+TL_gene[kin::pim_g1];
         TL_piSigma_cor = TL_Sigma_cor + TL_gene[kin::pim_g1];
-        Tools::H2("q_IMpin_gen",TL_Sigma_cor.M(), q,100,1,2,300,0,1.5);
-        Tools::H1("IMpiSigma_gen",TL_piSigma.M(), 1000,1,2);
-        Tools::H2("q_IMpiSigma_cor_gen",TL_piSigma_cor.M(), q,100,1,2,300,0,1.5);
+        //Tools::H2("q_IMpin_gen",TL_Sigma_cor.M(), q,100,1,2,300,0,1.5);
+        //Tools::H1("IMpiSigma_gen",TL_piSigma.M(), 1000,1,2);
+        //Tools::H2("q_IMpiSigma_cor_gen",TL_piSigma_cor.M(), q,100,1,2,300,0,1.5);
       }else if(reactionID == gen::reactionID_Smmode){
         TL_Sigma_cor = TL_gene[kin::ncds]+TL_gene[kin::pim_g2];
         TL_piSigma = TL_gene[kin::Sm]+TL_gene[kin::pip_g1];
         TL_piSigma_cor = TL_Sigma_cor + TL_gene[kin::pip_g1];
-        Tools::H2("q_IMpin_gen",TL_Sigma_cor.M(), q,100,1,2,300,0,1.5);
-        Tools::H1("IMpiSigma_gen",TL_piSigma.M(), 1000,1,2);
-        Tools::H2("q_IMpiSigma_cor_gen",TL_piSigma_cor.M(), q,100,1,2,300,0,1.5);
+        //Tools::H2("q_IMpin_gen",TL_Sigma_cor.M(), q,100,1,2,300,0,1.5);
+        //Tools::H1("IMpiSigma_gen",TL_piSigma.M(), 1000,1,2);
+        //Tools::H2("q_IMpiSigma_cor_gen",TL_piSigma_cor.M(), q,100,1,2,300,0,1.5);
       }else{
         std::cout << "L." << __LINE__ << " input file must be wrong ! " << std::endl;
         std::cout << "reactionID " <<  reactionID << std::endl;
       }
-    }
+    }*/
 
     //##########################//
     //### get G4 information ###//
