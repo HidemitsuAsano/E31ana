@@ -1830,7 +1830,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     }
     TCanvas *cacc_err = new TCanvas("cacc_err","acc_err");
     acc_err->Draw("colz");
-
+    acc_err->Write();
     if(Spmode)React_q_IMPiSigma->SetName("React_q_IMPiSigma_Sp");
     else      React_q_IMPiSigma->SetName("React_q_IMPiSigma_Sm");
     React_q_IMPiSigma->Write();
