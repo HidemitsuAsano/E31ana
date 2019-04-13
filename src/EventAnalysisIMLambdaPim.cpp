@@ -851,6 +851,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             Tools::Fill2D( Form("MMom_MMass_fid_p"), mm_mass, P_missp.Mag() );
             Tools::Fill2D( Form("MMom_PMom_fid_p"), P_p.Mag(), P_missp.Mag() );
             Tools::Fill2D( Form("IMppim1_IMppim2_p"), (LVec_p+LVec_pim1).M(), (LVec_p+LVec_pim2).M() );
+            Tools::Fill2D( Form("q_IMppipi_p"), (LVec_p+LVec_pim1+LVec_pim2).M(), (LVec_beam.Vect()-LVec_pmiss.Vect()).Mag());
+          }
+
+          if(MissPFlag && LambdaFlag){
+            Tools::Fill2D( Form("q_IMppipi_wL_p"), (LVec_p+LVec_pim1+LVec_pim2).M(), (LVec_beam.Vect()-LVec_pmiss.Vect()).Mag());
           }
            
           /*
