@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="1"
+set Version="11"
 set DATADIR="/group/had/knucl/e15/data/Run78/"
 set OUTDIR="/group/had/knucl/e15/asano/Run78/"
 set KWSKDIR="/group/had/knucl/e15/shinngo/Run78/evtracking/"
@@ -7,7 +7,7 @@ set KWSKDIR="/group/had/knucl/e15/shinngo/Run78/evtracking/"
 set starttime=`date '+%y/%m/%d %H:%M:%S'`
 set logbasedir="/home/had/hiasano/logs/"
 set date=`date +%Y%m%d_%H%M`
-set logdir="${logbasedir}${date}_IMpisigma_${Version}"
+set logdir="${logbasedir}${date}_kpn_${Version}"
 echo "log files  ${logdir}"
 
 if( ! -d $logdir) then 

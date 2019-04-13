@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="43"
+set Version="47"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim2/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 set CDSDIRSUB="${CDSDIR}simDST2"
