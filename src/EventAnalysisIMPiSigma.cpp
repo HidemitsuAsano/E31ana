@@ -539,7 +539,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   Tools::Fill1D( Form("EventCheck"), 1 );
   
   //temporary fix of the cdhz position
-  Util::CorrectCDHz(cdsMan);
+  //Util::CorrectCDHz(cdsMan);
 
   //CDH-hits cut
   if( Util::GetCDHMul(cdsMan,nGoodTrack)!=cdscuts::cdhmulti){
@@ -649,8 +649,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   LVec_targetCM = LVec_target;
   //LVec_targetPCM = LVec_targetP;
   //boost to CM frame
-  LVec_beambfCM.Boost( -1*boost );
-  LVec_targetCM.Boost( -1*boost );
+  LVec_beambfCM.Boost( -1.*boost );
+  LVec_targetCM.Boost( -1.*boost );
 
 
   //** + + + + + + + + + + + + **//
@@ -666,7 +666,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   // PID of CDS tracks //
   const int nIDedTrack = Util::CDSChargedAna(
     DoCDCRetiming,
-    bpctrack, cdsMan, trackMan, confMan, 
+    bpctrack, cdsMan, trackMan, confMan,blMan, 
     LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID);
   if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
   if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );

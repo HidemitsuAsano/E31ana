@@ -225,6 +225,7 @@ int Util::CDSChargedAna(const bool docdcretiming,
                         CDSHitMan *cdsman,
                         CDSTrackingMan *trackman,
                         ConfMan *confman,
+                        BeamLineHitMan *blman,
                         const TLorentzVector LVecbeam,
                         const double ctmt0, 
                         std::vector <int> &cdhseg,
@@ -355,7 +356,10 @@ int Util::CDSChargedAna(const bool docdcretiming,
     track->SetPID( pid );
     Tools::Fill2D( "PID_CDS_beta", 1/beta_calc, mom );
     Tools::Fill2D( "PID_CDS", mass2, mom );
-
+    //if(pid == CDS_PiMinus) Tools::Fill2D("PID_CDS_PIM",mass2,mom);
+    //else if(pid == CDS_PiPlus) Tools::Fill2D("PID_CDS_PIP",mass2,mom);
+    //else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton",mass2,mom);
+    //else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon",mass2,mom);
 
     // Energy loss calculation //
     double tmpl=0;
@@ -376,7 +380,7 @@ int Util::CDSChargedAna(const bool docdcretiming,
        FindMass2OK2 && 
        EnergyLossOK && 
       ((pid==CDS_PiMinus) || (pid==CDS_PiPlus))){
-      Util::AnaCDHHitPos(tof,beta_calc,bpctrack,LVecbeam,track,cdsman,confman,MCFlag);
+      Util::AnaCDHHitPos(tof,beta_calc,bpctrack,LVecbeam,track,cdsman,confman,blman,MCFlag);
     }
 
     if( pid==CDS_PiMinus ) {
@@ -615,6 +619,7 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
                  CDSTrack *track, 
                  CDSHitMan *cdsman,
                  ConfMan *confman,
+                 BeamLineHitMan *blman,
                  const bool MCFlag
                  )
 {
@@ -634,14 +639,33 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
   TVector3 diff = track_pos-hit_pos;
   Tools::Fill2D( Form("CDH_mom_diffpos_pi_phi"), (track_pos.Phi()-hit_pos.Phi())/TwoPi*360., track->Momentum() );
   Tools::Fill2D( Form("CDH_mom_diffpos_pi_z"), diff.Z(), track->Momentum() );
-  if(-1 < track_pos.Z() && track_pos.Z() <1 ){
-    for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
-      HodoscopeLikeHit *cdhhit=track->CDHHit(cdsman,icdh);
+  for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
+    HodoscopeLikeHit *cdhhit=track->CDHHit(cdsman,icdh);
+    HodoscopeLikeHit *t0hit = blman->T0(0);
+    int t0seg = t0hit->seg();
+    if(-5 < track_pos.Z() && track_pos.Z() <5 ){
       //Tools::H1(Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),1000,-50,50);
-      //Tools::H1(Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),400,-20,20);
-      //Tools::H1( Form("CTMean%d",cdhhit->seg()), cdhhit->ctmean(), 2000,-50,150 );
-      //Tools::H1( Form("CTSub%d",cdhhit->seg()), cdhhit->ctsub(), 2000,-50,150 );
+      Tools::H1(Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),400,-20,20);
+      Tools::H1( Form("CTMean%d",cdhhit->seg()), cdhhit->ctmean(), 2000,-50,150 );
+      Tools::H1( Form("CTSub%d",cdhhit->seg()), cdhhit->ctsub(), 1000,-50,50 );
     }
+    if(!MCFlag){
+      if(track->charge()>0){
+        Tools::H2( Form("dECDH_T0%d_CDHU%d_PIP",t0seg,cdhhit->seg()), cdhhit->eu(),cdhhit->ctmean(),500, -0.5,49.5,300,15.,30.);
+        Tools::SetXTitleH2(Form("dECDH_T0%d_CDHU%d_PIP",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
+        Tools::SetYTitleH2(Form("dECDH_T0%d_CDHU%d_PIP",t0seg,cdhhit->seg()),"ctmean  [nsec.]");
+        Tools::H2( Form("dECDH_T0%d_CDHD%d_PIP",t0seg,cdhhit->seg()), cdhhit->ed(),cdhhit->ctmean(),500, -0.5,49.5,300,15.,35.);
+        Tools::SetXTitleH2(Form("dECDH_T0%d_CDHD%d_PIP",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
+        Tools::SetYTitleH2(Form("dECDH_T0%d_CDHD%d_PIP",t0seg,cdhhit->seg()),"ctmean  [nsec.]");
+      }else{
+        Tools::H2( Form("dECDH_T0%d_CDHU%d_PIM",t0seg,cdhhit->seg()), cdhhit->eu(),cdhhit->ctmean(),500, -0.5,49.5,300,15.,35.);
+        Tools::SetXTitleH2(Form("dECDH_T0%d_CDHU%d_PIM",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
+        Tools::SetYTitleH2(Form("dECDH_T0%d_CDHU%d_PIM",t0seg,cdhhit->seg()),"ctmean  [nsec.]");
+        Tools::H2( Form("dECDH_T0%d_CDHD%d_PIM",t0seg,cdhhit->seg()), cdhhit->ed(),cdhhit->ctmean(),500, -0.5,49.5,300,15.,35.);
+        Tools::SetXTitleH2(Form("dECDH_T0%d_CDHD%d_PIM",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
+        Tools::SetYTitleH2(Form("dECDH_T0%d_CDHD%d_PIM",t0seg,cdhhit->seg()),"ctmean  [nsec.]");
+      }
+    }//!MCFlag
   }
 
   TVector3 Pos_T0;
