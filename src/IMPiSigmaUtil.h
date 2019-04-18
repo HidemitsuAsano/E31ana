@@ -36,6 +36,7 @@ namespace Util
                     CDSHitMan *cdsman,
                     CDSTrackingMan *trackman,
                     ConfMan *confman,
+                    BeamLineHitMan *blman,
                     const TLorentzVector beam,
                     const double ctmt0, 
                     std::vector <int> &cdhseg,
@@ -60,10 +61,11 @@ namespace Util
                  CDSTrack *track,
                  CDSHitMan *cdsman,
                  ConfMan *confman,
+                 BeamLineHitMan *blman,
                  const bool MCFlag=false
                  );
    void CorrectCDHz(CDSHitMan *cdsman);
-   void AnaReactionData(ReactionData *reactionData, TDatabasePDG *pdg);
+   void AnaReactionData(ReactionData *reactionData);
 };
 
 #endif

@@ -46,6 +46,10 @@ void InitBasicHist(const bool MCFlag)
   Tools::newTH1F( Form("trackchi2_CDC"), 1000, 0, 50 );
   Tools::newTH2F( Form("PID_CDS_beta"), 2000, 0, 10., 1000, -1.2, 1.2 );
   Tools::newTH2F( Form("PID_CDS"), 1000, -0.6, 5, 1000, -1.2, 1.2 );
+  //Tools::newTH2F( Form("PID_CDS_PIM"), 1000, -0.6, 5, 1000, -1.2, 1.2 );
+  //Tools::newTH2F( Form("PID_CDS_PIP"), 1000, -0.6, 5, 1000, -1.2, 1.2 );
+  //Tools::newTH2F( Form("PID_CDS_Proton"), 1000, -0.6, 5, 1000, -1.2, 1.2 );
+  //Tools::newTH2F( Form("PID_CDS_Kaon"), 1000, -0.6, 5, 1000, -1.2, 1.2 );
   Tools::newTH1F( Form("ntrack_CDS"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_pi_plus"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_proton"), 6, -0.5, 5.5 );
@@ -74,15 +78,15 @@ void InitBasicHist(const bool MCFlag)
   Tools::newTH2F( Form("Vtx_ZX_nofid"),1000,-25,25,500,-12.5,12.5);
   Tools::newTH2F( Form("Vtx_ZY_nofid"),1000,-25,25,500,-12.5,12.5);
   Tools::newTH2F( Form("Vtx_XY_nofid"),500,-12.5,12.5,500,-12.5,12.5);
+  Tools::newTH2F( Form("CDHtime"),36,0.5,36.5,400,0,200);
+  Tools::newTH2F( Form("dE_CDHtime"),100,0.,100,100,0,50);
+  Tools::newTH2F( Form("dE_CDHtime_2track"),100,0.,100,100,0,50);
 }
 
 void InitIMPiSigmaHist()
 {
   
   //CDH
-  Tools::newTH2F( Form("CDHtime"),36,0.5,36.5,400,0,200);
-  Tools::newTH2F( Form("dE_CDHtime"),100,0.,100,100,0,50);
-  Tools::newTH2F( Form("dE_CDHtime_2track"),100,0.,100,100,0,50);
   Tools::newTH2F( Form("dE_CDHtime_pippimn"),100,0.,100,100,0,50);
 
   Tools::newTH2F( Form("NeutraltimeEnergy"),100,0,100,200,0,50);
@@ -157,11 +161,14 @@ void InitIMPiSigmaHist()
 
 void InitIMLambdaPimHist() {
   Tools::newTH2F( Form("MMom_MMass"), 140, 0.4, 1.8, 100, 0, 1.5 );
+  Tools::newTH2F( Form("MMom_MMass_fid"),140, 0.4, 1.8, 100, 0, 1.5);
   Tools::newTH2F( Form("MMom_MMass_fid_p"),140, 0.4, 1.8, 100, 0, 1.5);
   Tools::newTH2F( Form("MMom_PMom_fid_p"),100, 0, 1.5, 100, 0, 1.5);
-  Tools::newTH2F( Form("IMppim1_IMppim2_p"),100, 0, 1.5, 100, 0, 1.5);
-
-
-
-
+  Tools::newTH2F( Form("IMppim1_IMppim2_p"),150, 1, 2.5, 150, 1, 2.5);
+  Tools::newTH1F( Form("DCA_pim1"),3000,0,30);
+  Tools::newTH1F( Form("DCA_pim2"),3000,0,30);
+  Tools::newTH1F( Form("DCA_pim1p"),3000,0,30);
+  Tools::newTH1F( Form("DCA_pim2p"),3000,0,30);
+  Tools::newTH2F( Form("q_IMppipi_p"),100,1,2,300,0,1.5);
+  Tools::newTH2F( Form("q_IMppipi_wL_p"),100,1,2,300,0,1.5);
 }

@@ -100,8 +100,8 @@ namespace anacuts_lpim {
   const double ppi_MIN = 1.1075;
   const double ppi_MAX = 1.1225;
 
-  const double proton_MIN = 0.85;
-  const double proton_MAX = 1.03;
+  const double proton_MIN = 0.83;
+  const double proton_MAX = 1.04;
 }
 
 
