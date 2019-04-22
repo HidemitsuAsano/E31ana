@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="70"
+set Version="86"
 set DATADIR="/group/had/knucl/e15/data/Run78/"
 set OUTDIR="/group/had/knucl/e15/asano/Run78/"
 set KWSKDIR="/group/had/knucl/e15/shinngo/Run78/evtracking/"
@@ -25,6 +25,7 @@ cp $SRCDIR/IMPiSigmaAnaPar.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaHist.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaUtil.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaUtil.cpp $OUTDIRSUB/
+cp conf/Run78/analyzer_kwsk.conf $OUTDIRSUB/
 
 cp hadd_IMhist.csh $OUTDIRSUB/
 cp hadd_IMnpippim.csh $OUTDIRSUB/
