@@ -1840,7 +1840,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
       q_IMnpipi_woK0_wSid_n_Sm_acc->Write();
     }
     fsacc->Close();
-  }
+  }//Spmode or Smmode
   
   
   facc->cd();
