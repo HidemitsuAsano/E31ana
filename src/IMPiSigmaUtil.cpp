@@ -26,7 +26,7 @@ int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack, const bool MCFlag)
       if((cdsman->CDH(i)->CheckRange()) && (cdsman->CDH(i)->ctmean()<(cdscuts::tdc_cdh_max+cdscuts::tdc_simoffset))) nCDH++;
     }else{
       if((cdsman->CDH(i)->CheckRange()) && (cdsman->CDH(i)->ctmean()<cdscuts::tdc_cdh_max)){
-        //std::cout << cdsman->CDH(i)->ctmean() << std::endl;
+        //std::cout << cdsman->CDH(i)->seg() << " " <<  cdsman->CDH(i)->ctmean() << std::endl;
         nCDH++;
       }
     }
@@ -272,7 +272,7 @@ int Util::CDSChargedAna(const bool docdcretiming,
     if( !track->CDHFlag() ) {
       CDHseg1hitOK = false;
     }
-    double mom = track->Momentum();
+    double mom = track->Momentum();//charge X momentum
     TVector3 vtxbline, vtxbhelix ,vtxb; //,vtxb;
     
 
@@ -639,35 +639,6 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
   TVector3 diff = track_pos-hit_pos;
   Tools::Fill2D( Form("CDH_mom_diffpos_pi_phi"), (track_pos.Phi()-hit_pos.Phi())/TwoPi*360., track->Momentum() );
   Tools::Fill2D( Form("CDH_mom_diffpos_pi_z"), diff.Z(), track->Momentum() );
-  for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
-    HodoscopeLikeHit *cdhhit=track->CDHHit(cdsman,icdh);
-    HodoscopeLikeHit *t0hit = blman->T0(0);
-    int t0seg = t0hit->seg();
-    if(-5 < track_pos.Z() && track_pos.Z() <5 ){
-      //Tools::H1(Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),1000,-50,50);
-      Tools::H1(Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),400,-20,20);
-      Tools::H1( Form("CTMean%d",cdhhit->seg()), cdhhit->ctmean(), 2000,-50,150 );
-      Tools::H1( Form("CTSub%d",cdhhit->seg()), cdhhit->ctsub(), 1000,-50,50 );
-    }
-    if(!MCFlag){
-      if(track->charge()>0){
-        Tools::H2( Form("dECDH_T0%d_CDHU%d_PIP",t0seg,cdhhit->seg()), cdhhit->eu(),cdhhit->ctmean(),500, -0.5,49.5,300,15.,30.);
-        Tools::SetXTitleH2(Form("dECDH_T0%d_CDHU%d_PIP",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
-        Tools::SetYTitleH2(Form("dECDH_T0%d_CDHU%d_PIP",t0seg,cdhhit->seg()),"ctmean  [nsec.]");
-        Tools::H2( Form("dECDH_T0%d_CDHD%d_PIP",t0seg,cdhhit->seg()), cdhhit->ed(),cdhhit->ctmean(),500, -0.5,49.5,300,15.,35.);
-        Tools::SetXTitleH2(Form("dECDH_T0%d_CDHD%d_PIP",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
-        Tools::SetYTitleH2(Form("dECDH_T0%d_CDHD%d_PIP",t0seg,cdhhit->seg()),"ctmean  [nsec.]");
-      }else{
-        Tools::H2( Form("dECDH_T0%d_CDHU%d_PIM",t0seg,cdhhit->seg()), cdhhit->eu(),cdhhit->ctmean(),500, -0.5,49.5,300,15.,35.);
-        Tools::SetXTitleH2(Form("dECDH_T0%d_CDHU%d_PIM",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
-        Tools::SetYTitleH2(Form("dECDH_T0%d_CDHU%d_PIM",t0seg,cdhhit->seg()),"ctmean  [nsec.]");
-        Tools::H2( Form("dECDH_T0%d_CDHD%d_PIM",t0seg,cdhhit->seg()), cdhhit->ed(),cdhhit->ctmean(),500, -0.5,49.5,300,15.,35.);
-        Tools::SetXTitleH2(Form("dECDH_T0%d_CDHD%d_PIM",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
-        Tools::SetYTitleH2(Form("dECDH_T0%d_CDHD%d_PIM",t0seg,cdhhit->seg()),"ctmean  [nsec.]");
-      }
-    }//!MCFlag
-  }
-
   TVector3 Pos_T0;
   confman->GetGeomMapManager()->GetPos( CID_T0, 0, Pos_T0 );
   double beamtof=0;// T0-VTX
@@ -686,7 +657,44 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
   double part_beta = sqrt(part_mom*part_mom/(part_mom*part_mom+piMass*piMass));
   double beam_beta = sqrt(beam_mom*beam_mom/(beam_mom*beam_mom+kpMass*kpMass));
   double calc_tof = beam_len/(Const*100.)/beam_beta+part_len/(Const*100.)/part_beta; // T0-VTX part is measured value
-	Tools::Fill2D( Form("CDH_mom_TOF_pi"), meas_tof-calc_tof, track->Momentum() );
+  HodoscopeLikeHit *cdh=track->CDHHit(cdsman,0);
+	Tools::Fill2D( Form("CDH%d_mom_TOF_pi",cdh->seg()) , meas_tof-calc_tof, track->Momentum() );
+  
+  for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
+    HodoscopeLikeHit *cdhhit=track->CDHHit(cdsman,icdh);
+    HodoscopeLikeHit *t0hit = blman->T0(0);
+    int t0seg = t0hit->seg();
+    if(-5 < track_pos.Z() && track_pos.Z() <5 ){
+      //Tools::H1(Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),1000,-50,50);
+      Tools::H1( Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),400,-20,20);
+      Tools::H1( Form("CTMean%d",cdhhit->seg()), cdhhit->ctmean(), 2000,-50,150 );
+      Tools::H1( Form("CTSub%d",cdhhit->seg()), cdhhit->ctsub(), 1000,-50,50 );
+    }
+    if(!MCFlag){
+      if(track->charge()>0){
+        Tools::H2( Form("dECDH_T0%d_CDHU%d_PIP",t0seg,cdhhit->seg()), cdhhit->eu(),part_tof,500, -0.5,49.5,300,0,15.);
+        Tools::SetXTitleH2(Form("dECDH_T0%d_CDHU%d_PIP",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
+        Tools::SetYTitleH2(Form("dECDH_T0%d_CDHU%d_PIP",t0seg,cdhhit->seg()),"tof  [nsec.]");
+        Tools::H2( Form("dECDH_T0%d_CDHD%d_PIP",t0seg,cdhhit->seg()), cdhhit->ed(),part_tof,500, -0.5,49.5,300,0,15.);
+        Tools::SetXTitleH2(Form("dECDH_T0%d_CDHD%d_PIP",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
+        Tools::SetYTitleH2(Form("dECDH_T0%d_CDHD%d_PIP",t0seg,cdhhit->seg()),"tof  [nsec.]");
+      }else{
+        Tools::H2( Form("dECDH_T0%d_CDHU%d_PIM",t0seg,cdhhit->seg()), cdhhit->eu(),part_tof,500, -0.5,49.5,300,0,15.);
+        Tools::SetXTitleH2(Form("dECDH_T0%d_CDHU%d_PIM",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
+        Tools::SetYTitleH2(Form("dECDH_T0%d_CDHU%d_PIM",t0seg,cdhhit->seg()),"tof  [nsec.]");
+        Tools::H2( Form("dECDH_T0%d_CDHD%d_PIM",t0seg,cdhhit->seg()), cdhhit->ed(),part_tof,500, -0.5,49.5,300,0,15.);
+        Tools::SetXTitleH2(Form("dECDH_T0%d_CDHD%d_PIM",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
+        Tools::SetYTitleH2(Form("dECDH_T0%d_CDHD%d_PIM",t0seg,cdhhit->seg()),"tof  [nsec.]");
+      }
+      Tools::H2( Form("dECDH_T0%d_CDH%d_PI",t0seg,cdhhit->seg()), cdhhit->emean(),part_tof,500, -0.5,49.5,300,0,15.);
+      Tools::SetXTitleH2(Form("dECDH_T0%d_CDH%d_PI",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
+      Tools::SetYTitleH2(Form("dECDH_T0%d_CDH%d_PI",t0seg,cdhhit->seg()),"tof  [nsec.]");
+      //std::cout << "t0seg " << t0hit->ctu() << "  " << t0hit->ctd() << std::endl;
+      //Tools::H2(Form("ectT0U%d",t0seg),t0hit->eu(),t0hit->ctu(),200,-0.5,4.5,300,5,20);
+      //Tools::H2(Form("ectT0D%d",t0seg),t0hit->ed(),t0hit->ctd(),200,-0.5,4.5,300,5,20);
+    }//!MCFlag
+  }
+
 }
 
 void Util::CorrectCDHz(CDSHitMan *cdsman){

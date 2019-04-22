@@ -21,9 +21,11 @@ void InitBasicHist(const bool MCFlag)
     Tools::newTH1F( Form("vertex_diff_Z"), 100, -50, 50 );
   }
   //===== CDH hit pos study =====//
-  Tools::newTH2F( Form("CDH_mom_diffpos_pi_phi"), 100, -10, 10, 100, 0, 1.0 );
-  Tools::newTH2F( Form("CDH_mom_diffpos_pi_z"), 1000, -50, 50, 100, 0, 1.0 );
-  Tools::newTH2F( Form("CDH_mom_TOF_pi"),       100, -2, 2, 100, 0, 1.0 );
+  Tools::newTH2F( Form("CDH_mom_diffpos_pi_phi"), 100, -10, 10, 100, -1.0, 1.0 );
+  Tools::newTH2F( Form("CDH_mom_diffpos_pi_z"), 1000, -50, 50, 100, -1.0, 1.0 );
+  for(int iseg=0;iseg<36;iseg++){
+    Tools::newTH2F( Form("CDH%d_mom_TOF_pi",iseg+1),       100, -2, 2, 200, -1.0, 1.0 );
+  }
   //** beam line **//
   Tools::newTH1F( Form("mul_BHD"), 12, -0.5, 11.5 );
   Tools::newTH1F( Form("mul_T0"),   6, -0.5, 5.5 );
