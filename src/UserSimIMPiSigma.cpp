@@ -813,7 +813,7 @@ int main( int argc, char** argv )
     std::vector <int> vCDHseg;
     const int nIDedTrack = Util::CDSChargedAna(
         DoCDCRetiming,
-        bpctrack, cdsMan, cdstrackMan, confMan, 
+        bpctrack, cdsMan, cdstrackMan, confMan, blMan,
         LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,true);
     if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
     if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );

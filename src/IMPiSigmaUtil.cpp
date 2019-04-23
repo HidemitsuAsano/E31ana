@@ -670,8 +670,8 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
       Tools::H1( Form("CTMean%d",cdhhit->seg()), cdhhit->ctmean(), 2000,-50,150 );
       Tools::H1( Form("CTSub%d",cdhhit->seg()), cdhhit->ctsub(), 1000,-50,50 );
     }
-    if(!MCFlag){
-      if(track->charge()>0){
+    if(!MCFlag && fabs(track->Momentum())>0.3){
+      if(track->charge()>0 ){
         Tools::H2( Form("dECDH_T0%d_CDHU%d_PIP",t0seg,cdhhit->seg()), cdhhit->eu(),part_tof,500, -0.5,49.5,300,0,15.);
         Tools::SetXTitleH2(Form("dECDH_T0%d_CDHU%d_PIP",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
         Tools::SetYTitleH2(Form("dECDH_T0%d_CDHU%d_PIP",t0seg,cdhhit->seg()),"tof  [nsec.]");
@@ -686,9 +686,12 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
         Tools::SetXTitleH2(Form("dECDH_T0%d_CDHD%d_PIM",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
         Tools::SetYTitleH2(Form("dECDH_T0%d_CDHD%d_PIM",t0seg,cdhhit->seg()),"tof  [nsec.]");
       }
-      Tools::H2( Form("dECDH_T0%d_CDH%d_PI",t0seg,cdhhit->seg()), cdhhit->emean(),part_tof,500, -0.5,49.5,300,0,15.);
-      Tools::SetXTitleH2(Form("dECDH_T0%d_CDH%d_PI",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
-      Tools::SetYTitleH2(Form("dECDH_T0%d_CDH%d_PI",t0seg,cdhhit->seg()),"tof  [nsec.]");
+      //std::cout << "tmean " << cdhhit->tmean() << " ctmean " << cdhhit->ctmean() << std::endl;
+      if(fabs(track->Momentum())>0.3){
+        Tools::H2( Form("dECDH_T0%d_CDH%d_PI",t0seg,cdhhit->seg()), cdhhit->emean(),cdhhit->tmean(),500, -0.5,49.5,600,0,30.);
+        Tools::SetXTitleH2(Form("dECDH_T0%d_CDH%d_PI",t0seg,cdhhit->seg()),"Energy dep. [MeVee]");
+        Tools::SetYTitleH2(Form("dECDH_T0%d_CDH%d_PI",t0seg,cdhhit->seg()),"ctmean [nsec.]");
+      }
       //std::cout << "t0seg " << t0hit->ctu() << "  " << t0hit->ctd() << std::endl;
       //Tools::H2(Form("ectT0U%d",t0seg),t0hit->eu(),t0hit->ctu(),200,-0.5,4.5,300,5,20);
       //Tools::H2(Form("ectT0D%d",t0seg),t0hit->ed(),t0hit->ctd(),200,-0.5,4.5,300,5,20);

@@ -628,7 +628,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   // PID of CDS tracks //
   const int nIDedTrack = Util::CDSChargedAna(
     DoCDCRetiming,
-    bpctrack, cdsMan, trackMan, confMan, 
+    bpctrack, cdsMan, trackMan, confMan,blMan, 
     LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID);
   if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
   if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );
@@ -646,7 +646,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   Tools::Fill1D( Form("ntrack_proton"),   p_ID.size() );
   Tools::Fill1D( Form("ntrack_pi_minus"), pim_ID.size() );
   Tools::Fill1D( Form("ntrack_K_minus"),  km_ID.size() );
-
+  
+  //check forward charge
+  //not used for event selection
+  bool isforwardcharge = Util::IsForwardCharge(blMan);
   //  pi+ pi- X event
   //  with CDH multiplicity selection
   bool pimpimpFlag = false;
