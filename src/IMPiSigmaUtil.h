@@ -58,10 +58,12 @@ namespace Util
   void AnaCDHHitPos(const double meas_tof, const double beta_calc, 
                  LocalTrack *bpc,
                  const TLorentzVector LVec_beambf,
+                 const double ctmt0,
                  CDSTrack *track,
                  CDSHitMan *cdsman,
                  ConfMan *confman,
                  BeamLineHitMan *blman,
+                 const double correctedtof,
                  const bool MCFlag=false
                  );
    void CorrectCDHz(CDSHitMan *cdsman);
