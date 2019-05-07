@@ -1,8 +1,8 @@
 #!/bin/tcsh -f
-set Version="36"
-set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim13/"
+set Version="43"
+set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim15/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
-set CDSDIRSUB="${CDSDIR}simDST13"
+set CDSDIRSUB="${CDSDIR}simDST15"
 set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simIMPiSigma/"
 
 set starttime=`date '+%y/%m/%d %H:%M:%S'`
@@ -18,6 +18,9 @@ endif
 set OUTDIRSUB="${OUTDIR}DoraAir_v${Version}"
 if( ! -d $OUTDIRSUB) then 
  mkdir -p $OUTDIRSUB
+else 
+ echo "version exist v"${Version}
+ exit 0
 endif
 
 set SRCDIR="/gpfs/home/had/hiasano/ana/k18ana/src/"
@@ -26,6 +29,8 @@ cp $SRCDIR/IMPiSigmaAnaPar.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaHist.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaUtil.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaUtil.cpp $OUTDIRSUB/
+set CONF___="conf/Run78/analyzer_kwsk_sim_DoraAir.conf"
+cp $CONF___ $OUTDIRSUB
 
 cp hadd_simhist.csh $OUTDIRSUB/
 cp hadd_sim_pippimn.csh $OUTDIRSUB/
@@ -38,7 +43,6 @@ ln -s $OUTDIRSUB/simIMpisigma_nSmpip_pippimn_all.root simpost/simIMpisigma_nSmpi
 while ($i < 400)   
 
   set EXEC___="./bin/simIMPiSigma"
-  set CONF___="conf/Run78/analyzer_kwsk_sim_DoraAir.conf"
   set jobnum=`printf  "%03d"  $i`
 
   set INPFILESP=${DATADIR}"sim_nSppim_0${jobnum}.root"
