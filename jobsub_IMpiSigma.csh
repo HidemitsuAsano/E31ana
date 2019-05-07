@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="86"
+set Version="141"
 set DATADIR="/group/had/knucl/e15/data/Run78/"
 set OUTDIR="/group/had/knucl/e15/asano/Run78/"
 set KWSKDIR="/group/had/knucl/e15/shinngo/Run78/evtracking/"
@@ -17,6 +17,9 @@ endif
 set OUTDIRSUB="${OUTDIR}IMpisigmav${Version}"
 if( ! -d $OUTDIRSUB) then 
  mkdir -p $OUTDIRSUB
+else 
+ echo "version exist v"${Version}
+ exit 0
 endif
 
 set SRCDIR="/gpfs/home/had/hiasano/ana/k18ana/src/"
