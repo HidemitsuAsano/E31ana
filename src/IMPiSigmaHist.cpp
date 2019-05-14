@@ -23,6 +23,8 @@ void InitBasicHist(const bool MCFlag)
   //===== CDH hit pos study =====//
   Tools::newTH2F( Form("CDH_mom_diffpos_pi_phi"), 100, -10, 10, 100, -1.0, 1.0 );
   Tools::newTH2F( Form("CDH_mom_diffpos_pi_z"), 1000, -50, 50, 100, -1.0, 1.0 );
+  
+  Tools::newTH2F( Form("CDH_mom_TOF_pi"),   100, -2, 2, 200, -1.0, 1.0 );
   for(int iseg=0;iseg<36;iseg++){
     Tools::newTH2F( Form("CDH%d_mom_TOF_pi",iseg+1),       100, -2, 2, 200, -1.0, 1.0 );
   }
@@ -48,10 +50,10 @@ void InitBasicHist(const bool MCFlag)
   Tools::newTH1F( Form("trackchi2_CDC"), 1000, 0, 50 );
   Tools::newTH2F( Form("PID_CDS_beta"), 2000, 0, 10., 1000, -1.2, 1.2 );
   Tools::newTH2F( Form("PID_CDS"), 1000, -0.6, 5, 1000, -1.2, 1.2 );
-  //Tools::newTH2F( Form("PID_CDS_PIM"), 1000, -0.6, 5, 1000, -1.2, 1.2 );
-  //Tools::newTH2F( Form("PID_CDS_PIP"), 1000, -0.6, 5, 1000, -1.2, 1.2 );
-  //Tools::newTH2F( Form("PID_CDS_Proton"), 1000, -0.6, 5, 1000, -1.2, 1.2 );
-  //Tools::newTH2F( Form("PID_CDS_Kaon"), 1000, -0.6, 5, 1000, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_PIM"), 200, -0.6, 5, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_PIP"), 200, -0.6, 5, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_Proton"), 200, -0.6, 5, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_Kaon"), 200, -0.6, 5, 200, -1.2, 1.2 );
   Tools::newTH1F( Form("ntrack_CDS"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_pi_plus"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_proton"), 6, -0.5, 5.5 );
@@ -64,6 +66,7 @@ void InitBasicHist(const bool MCFlag)
   //Tools::newTH2F( Form("zVTX_MMass_fid_beta_dE_woK0"),100,-12,2,140,0.4,1.8);
   Tools::newTH2F( Form("CDHz_IMnpip_fid_beta_dE_woK0_n"),100,-50,50,140,1,1.7);
   Tools::newTH2F( Form("CDHz_IMnpim_fid_beta_dE_woK0_n"),100,-50,50,140,1,1.7);
+  Tools::newTH2F( Form("CDH_diffpos_z_n"),1000,-50,50,1000,-50,50);
 
   //** forward counters **//
   Tools::newTH1F( Form("mul_BVC"), 9, -0.5, 8.5 );

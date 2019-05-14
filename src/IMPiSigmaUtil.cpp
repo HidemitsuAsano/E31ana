@@ -291,7 +291,7 @@ int Util::CDSChargedAna(const bool docdcretiming,
     Tools::Fill2D(Form("Vtx_ZY"),vtxb.Z(),vtxb.Y());
     Tools::Fill2D(Form("Vtx_XY"),vtxb.X(),vtxb.Y());
 
-    double tof = 999.;//cdh-T0
+    double tof = 999.;//TOF of CDH-T0 (slewing corrected)
     double mass2 = -999.;
     int nCDHass = track->nCDHHit();
     Tools::Fill1D(Form("mul_CDH_assoc"),nCDHass);
@@ -322,7 +322,7 @@ int Util::CDSChargedAna(const bool docdcretiming,
     cdhseg.push_back( CDHseg );
 
     // calculation of beta and squared-mass //
-    double correctedtof=0;
+    double correctedtof=0;//CDH-T0 (corrected by energy loss)
     double beta_calc=0;
     if( !TrackTools::FindMass2( track, bpctrack, tof, LVecbeam.Vect().Mag(),
                                 Beam_Kaon, beta_calc, mass2, correctedtof ) ) {
@@ -356,10 +356,10 @@ int Util::CDSChargedAna(const bool docdcretiming,
     track->SetPID( pid );
     Tools::Fill2D( "PID_CDS_beta", 1/beta_calc, mom );
     Tools::Fill2D( "PID_CDS", mass2, mom );
-    //if(pid == CDS_PiMinus) Tools::Fill2D("PID_CDS_PIM",mass2,mom);
-    //else if(pid == CDS_PiPlus) Tools::Fill2D("PID_CDS_PIP",mass2,mom);
-    //else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton",mass2,mom);
-    //else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon",mass2,mom);
+    if(pid == CDS_PiMinus) Tools::Fill2D("PID_CDS_PIM",mass2,mom);
+    else if(pid == CDS_PiPlus) Tools::Fill2D("PID_CDS_PIP",mass2,mom);
+    else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton",mass2,mom);
+    else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon",mass2,mom);
 
     // Energy loss calculation //
     double tmpl=0;
@@ -380,7 +380,7 @@ int Util::CDSChargedAna(const bool docdcretiming,
        FindMass2OK2 && 
        EnergyLossOK && 
       ((pid==CDS_PiMinus) || (pid==CDS_PiPlus))){
-      Util::AnaCDHHitPos(tof,beta_calc,bpctrack,LVecbeam,ctmt0,track,cdsman,confman,blman,correctedtof,MCFlag);
+        Util::AnaCDHHitPos(tof,beta_calc,bpctrack,LVecbeam,ctmt0,track,cdsman,confman,blman,correctedtof,MCFlag);
     }
 
     if( pid==CDS_PiMinus ) {
@@ -659,41 +659,47 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
   double beam_beta = sqrt(beam_mom*beam_mom/(beam_mom*beam_mom+kpMass*kpMass));
   double calc_tof = beam_len/(Const*100.)/beam_beta+part_len/(Const*100.)/part_beta; // T0-VTX part is measured value
   HodoscopeLikeHit *cdh=track->CDHHit(cdsman,0);
+	Tools::Fill2D( Form("CDH_mom_TOF_pi") , meas_tof-calc_tof, track->Momentum() );
 	Tools::Fill2D( Form("CDH%d_mom_TOF_pi",cdh->seg()) , meas_tof-calc_tof, track->Momentum() );
   
   Tools::Fill2D( Form("CDH_mom_diffpos_pi_phi"), (track_pos.Phi()-hit_pos.Phi())/TwoPi*360., track->Momentum() );
   Tools::Fill2D( Form("CDH_mom_diffpos_pi_z"), diff.Z(), track->Momentum() );
-  Tools::H2( Form("CDH_z_diffpos_pi_z"), diff.Z(), track_pos.Z(),1000,-50,50,1000,-50,50);
+  Tools::H2( Form("CDH_diffpos_z_pi_z"), track_pos.Z(),diff.Z(),1000,-50,50,1000,-50,50);
   
+  //return here as checking histogram is not necessary
+  return;
   for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
     HodoscopeLikeHit *cdhhit=track->CDHHit(cdsman,icdh);
     HodoscopeLikeHit *t0hit = blman->T0(0);
     int t0seg = t0hit->seg();
+    //Tools::H2( Form("CDH_diffpos_z_pi_z_seg%d",cdhhit->seg()), track_pos.Z(),diff.Z(),1000,-50,50,1000,-50,50);
+    //Tools::H2( Form("CDH_diffpos_ctsub_pi_z_seg%d",cdhhit->seg()),cdhhit->ctsub(),diff.Z(),1000,-4,4,1000,-50,50);
     if(-5 < track_pos.Z() && track_pos.Z() <5 ){
       //Tools::H1(Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),1000,-50,50);
-      Tools::H1( Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),400,-20,20);
-      Tools::H1( Form("CTMean%d",cdhhit->seg()), cdhhit->ctmean(), 2000,-50,150 );
-      Tools::H1( Form("CTSub%d",cdhhit->seg()), cdhhit->ctsub(), 1000,-50,50 );
+      //Tools::H1( Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),400,-20,20);
+      //Tools::H1( Form("CTMean%d",cdhhit->seg()), cdhhit->ctmean(), 2000,-50,150 );
+      //Tools::H1( Form("CTSub%d",cdhhit->seg()), cdhhit->ctsub(), 1000,-50,50 );
     }
-    if(!MCFlag && (fabs(track->Momentum())>0.1) && t0seg==3 &&
+    if(!MCFlag && (fabs(track->Momentum())>0.1) && t0seg==3// &&
     //if(!MCFlag  && t0seg==3 &&
-        (-5 < track_pos.Z()) && (track_pos.Z() <5)){
-      double ct0tof = (cdhhit->tmean()) - ctmt0 - beamtof - correctedtof;
-      double tof = (cdhhit->ctmean()) - ctmt0 - beamtof - correctedtof;
+      // && (-5 < track_pos.Z()) && (track_pos.Z() <5)
+      ){
+      double tof = (cdhhit->tmean()) - ctmt0 - correctedtof;
+      double ctof = (cdhhit->ctmean()) - ctmt0 - correctedtof;
       if(track->charge()>0){
-        Tools::H2( Form("dECDH_T0%d_CDHU%d_PIP",t0seg,cdhhit->seg()), cdhhit->eu(),ct0tof,500, -0.5,49.5,300,0,15.);
-        Tools::H2( Form("dECDH_T0%d_CDHD%d_PIP",t0seg,cdhhit->seg()), cdhhit->ed(),ct0tof,500, -0.5,49.5,300,0,15.);
-        Tools::H2( Form("dECDH_T0%d_CDHU%d_PIPc",t0seg,cdhhit->seg()), cdhhit->eu(),tof,500, -0.5,49.5,300,0,15.);
-        Tools::H2( Form("dECDH_T0%d_CDHD%d_PIPc",t0seg,cdhhit->seg()), cdhhit->ed(),tof,500, -0.5,49.5,300,0,15.);
+        Tools::H2( Form("dECDH_T0%d_CDHU%d_PIP",t0seg,cdhhit->seg()), cdhhit->eu(),tof,500, -0.5,49.5,300,0,15.);
+        Tools::H2( Form("dECDH_T0%d_CDHD%d_PIP",t0seg,cdhhit->seg()), cdhhit->ed(),tof,500, -0.5,49.5,300,0,15.);
+        Tools::H2( Form("dECDH_T0%d_CDHU%d_PIPc",t0seg,cdhhit->seg()), cdhhit->eu(),ctof,500, -0.5,49.5,300,0,15.);
+        Tools::H2( Form("dECDH_T0%d_CDHD%d_PIPc",t0seg,cdhhit->seg()), cdhhit->ed(),ctof,500, -0.5,49.5,300,0,15.);
       }else{
-        Tools::H2( Form("dECDH_T0%d_CDHU%d_PIM",t0seg,cdhhit->seg()), cdhhit->eu(),ct0tof,500, -0.5,49.5,300,0,15.);
-        Tools::H2( Form("dECDH_T0%d_CDHD%d_PIM",t0seg,cdhhit->seg()), cdhhit->ed(),ct0tof,500, -0.5,49.5,300,0,15.);
-        Tools::H2( Form("dECDH_T0%d_CDHU%d_PIMc",t0seg,cdhhit->seg()), cdhhit->eu(),tof,500, -0.5,49.5,300,0,15.);
-        Tools::H2( Form("dECDH_T0%d_CDHD%d_PIMc",t0seg,cdhhit->seg()), cdhhit->ed(),tof,500, -0.5,49.5,300,0,15.);
+        Tools::H2( Form("dECDH_T0%d_CDHU%d_PIM",t0seg,cdhhit->seg()), cdhhit->eu(),tof,500, -0.5,49.5,300,0,15.);
+        Tools::H2( Form("dECDH_T0%d_CDHD%d_PIM",t0seg,cdhhit->seg()), cdhhit->ed(),tof,500, -0.5,49.5,300,0,15.);
+        Tools::H2( Form("dECDH_T0%d_CDHU%d_PIMc",t0seg,cdhhit->seg()), cdhhit->eu(),ctof,500, -0.5,49.5,300,0,15.);
+        Tools::H2( Form("dECDH_T0%d_CDHD%d_PIMc",t0seg,cdhhit->seg()), cdhhit->ed(),ctof,500, -0.5,49.5,300,0,15.);
       }
-      std::cout << "tmean " << cdhhit->tmean() << " ctmean " << cdhhit->ctmean() << std::endl;
-      Tools::H2( Form("dECDH_T0%d_CDH%d_PI",t0seg,cdhhit->seg()), cdhhit->emean(),ct0tof,500, -0.5,49.5,600,0,30.);
-      Tools::H2( Form("dECDH_T0%d_CDH%d_PIc",t0seg,cdhhit->seg()), cdhhit->emean(),tof,500, -0.5,49.5,600,0,30.);
+      //std::cout << "tmean " << cdhhit->tmean() << " ctmean " << cdhhit->ctmean() << std::endl;
+      Tools::H2( Form("dECDH_T0%d_CDH%d_PI",t0seg,cdhhit->seg()), cdhhit->emean(),tof,500, -0.5,49.5,600,0,30.);
+      Tools::H2( Form("dECDH_T0%d_CDH%d_PIc",t0seg,cdhhit->seg()), cdhhit->emean(),ctof,500, -0.5,49.5,600,0,30.);
       //std::cout << "t0seg " << t0hit->ctu() << "  " << t0hit->ctd() << std::endl;
       //Tools::H2(Form("ectT0U%d",t0seg),t0hit->eu(),t0hit->ctu(),200,-0.5,4.5,300,5,20);
       //Tools::H2(Form("ectT0D%d",t0seg),t0hit->ed(),t0hit->ctd(),200,-0.5,4.5,300,5,20);

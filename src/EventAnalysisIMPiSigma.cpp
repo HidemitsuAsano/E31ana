@@ -684,7 +684,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   Tools::Fill1D( Form("ntrack_proton"),   p_ID.size() );
   Tools::Fill1D( Form("ntrack_pi_minus"), pim_ID.size() );
   Tools::Fill1D( Form("ntrack_K_minus"),  km_ID.size() );
-
+  
   //  pi+ pi- X event
   //  with CDH multiplicity selection
   bool pimpipFlag = false;
@@ -718,7 +718,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       //if(Verbosity) {
         std::cerr<<" CDH neutral hit is not 1 :: "<<NeutralCDHseg.size()<<std::endl;
       //}
-      //if(Verbosity){
+      if(Verbosity){
         std::cerr<<"# of diff = "<<NeutralCDHseg.size()<<std::endl;
         std::cerr<<"CDH hits =   ";
         for( int n=0; n<(int)CDHhit_list.size(); n++ ) {
@@ -735,7 +735,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
           std::cerr<<NeutralCDHseg[n]<<" ";
         }
         std::cerr<<std::endl;
-      //}//if Verbosity
+      }//if Verbosity
     }
     
     //** isolation cut **//

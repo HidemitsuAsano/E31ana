@@ -51,7 +51,7 @@
 
 const int MaxTreeSize = 1000000000;
 
-const unsigned int Verbosity = 0;
+const unsigned int Verbosity = 100;
 const bool DoCDCRetiming = false;
 const bool DoKinFit = true;
 const bool IsVtxDoubleCheck = false;
@@ -80,7 +80,7 @@ private:
   TFile *cdcFile;
   TTree *cdcTree;
   TTree *evTree;
-  TTree *pimpimpTree;
+  TTree *ppimpimTree;
 
   const EventHeader *header_CDC; // original in CDC-tracking-file
   CDSTrackingMan *trackMan_CDC; // original in CDC-tracking-file
@@ -107,7 +107,7 @@ private:
   int bpcGoodTrackID;// event by event
 
   //** counters for filling **//
-  int nFill_pimpimp;
+  int nFill_ppimpim;
   int nFill_npippim;
   //** counters for event abort **//
   int nAbort_nGoodTrack;
@@ -190,7 +190,7 @@ EventAnalysis::EventAnalysis()
   cdcFile(nullptr),
   cdcTree(nullptr),
   evTree(nullptr),
-  pimpimpTree(nullptr)
+  ppimpimTree(nullptr)
 //**--**--**--**--**--**--**--**--**--**--**--**--**--**//
 {
 }
@@ -290,23 +290,23 @@ void EventAnalysis::Initialize( ConfMan *conf )
   evTree->Branch( "EventHeader", &header );
   evTree->Branch( "CDSTrackingMan", &trackMan_CDC ); //** = fill original CDSTrackingMan (w/o dE correction) **//
 
-  //** output file 3 : npippim final-sample tree **//
+  //** output file 3 : ppimpim final-sample tree **//
   std::string outfile3 = confMan->GetOutFileName();
-  outfile3.insert( outfile3.size()-5, "_pimpimp" );
+  outfile3.insert( outfile3.size()-5, "_ppimpim" );
   std::cout<<"npippim file "<<outfile3<<std::endl;
   rtFile3 = new TFile( outfile3.c_str(), "recreate" );
   rtFile3->cd();
-  pimpimpTree = new TTree( "EventTree", "EventTree" );
-  pimpimpTree->Branch( "mom_beam",   &mom_beam );
-  pimpimpTree->Branch( "mom_target", &mom_target );
-  pimpimpTree->Branch( "mom_pim1", &mom_pim1 );
-  pimpimpTree->Branch( "mom_pim2", &mom_pim2 );
-  pimpimpTree->Branch( "mom_p", &mom_p );
-  pimpimpTree->Branch( "vtx_reaction", &vtx_reaction );
-  //pimpimpTree->Branch( "run_num", &run_num );
-  //pimpimpTree->Branch( "event_num", &event_num );
-  //pimpimpTree->Branch( "block_num", &block_num );
-  pimpimpTree->Branch( "kf_flag", &kf_flag );
+  ppimpimTree = new TTree( "EventTree", "EventTree" );
+  ppimpimTree->Branch( "mom_beam",   &mom_beam );
+  ppimpimTree->Branch( "mom_target", &mom_target );
+  ppimpimTree->Branch( "mom_pim1", &mom_pim1 );
+  ppimpimTree->Branch( "mom_pim2", &mom_pim2 );
+  ppimpimTree->Branch( "mom_p", &mom_p );
+  ppimpimTree->Branch( "vtx_reaction", &vtx_reaction );
+  //ppimpimTree->Branch( "run_num", &run_num );
+  //ppimpimTree->Branch( "event_num", &event_num );
+  //ppimpimTree->Branch( "block_num", &block_num );
+  ppimpimTree->Branch( "kf_flag", &kf_flag );
 
   trackMan = new CDSTrackingMan(); //** = dE correction is performed in this code **//
   if( trackMan==NULL ) {
@@ -353,7 +353,7 @@ void EventAnalysis::ResetCounters()
   nTrack = 0;
   CDC_Event_Number = 0;
 
-  nFill_pimpimp = 0;
+  nFill_ppimpim = 0;
   nFill_npippim  = 0;
 
   nAbort_nGoodTrack = 0;
@@ -652,9 +652,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   bool isforwardcharge = Util::IsForwardCharge(blMan);
   //  pi+ pi- X event
   //  with CDH multiplicity selection
-  bool pimpimpFlag = false;
-  if( pim_ID.size()==2 && p_ID.size()==1) pimpimpFlag = true;
-  if( pimpimpFlag &&
+  bool ppimpimFlag = false;
+  if( pim_ID.size()==2 && p_ID.size()==1) ppimpimFlag = true;
+  if( ppimpimFlag &&
       (trackMan->nGoodTrack()==cdscuts_lpim::cds_ngoodtrack)){ // && !Util::IsForwardCharge(blMan))
     //=== pi+ pi- X candidates ===//
     rtFile2->cd();
@@ -662,7 +662,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     rtFile->cd();
     if(Verbosity) std::cout<<"### filled: Event_Number, Block_Event_Number, CDC_Event_Number = "
                              <<Event_Number<<" , "<<Block_Event_Number<<" , "<<CDC_Event_Number<<std::endl;
-    nFill_pimpimp++;
+    nFill_ppimpim++;
 
     CDSTrack *track_pim1 = trackMan->Track( pim_ID.at(0) ); //
     CDSTrack *track_pim2 = trackMan->Track( pim_ID.at(1) ); //
@@ -753,7 +753,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       
     //** reconstructoin of missing proton **//
     TVector3 P_pim1; // Momentum(pi-)
-    TVector3 P_pim2; // Momentum(pi+)
+    TVector3 P_pim2; // Momentum(pi-)
     TVector3 P_p; // Momentum(proton)
 
     TLorentzVector LVec_pim1; // 4-Momentum(pi-)
@@ -850,16 +850,16 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         if( (anacuts_lpim::ppi_MIN<(LVec_p+LVec_pim1).M() && (LVec_p+LVec_pim1).M()<anacuts_lpim::ppi_MAX)) LambdaFlag=true;
         if( (anacuts_lpim::ppi_MIN<(LVec_p+LVec_pim2).M() && (LVec_p+LVec_pim2).M()<anacuts_lpim::ppi_MAX)) LambdaFlag=true;
 
-          if(MissPFlag) {
-            Tools::Fill2D( Form("MMom_MMass_fid_p"), mm_mass, P_missp.Mag() );
-            Tools::Fill2D( Form("MMom_PMom_fid_p"), P_p.Mag(), P_missp.Mag() );
-            Tools::Fill2D( Form("IMppim1_IMppim2_p"), (LVec_p+LVec_pim1).M(), (LVec_p+LVec_pim2).M() );
-            Tools::Fill2D( Form("q_IMppipi_p"), (LVec_p+LVec_pim1+LVec_pim2).M(), (LVec_beam.Vect()-LVec_pmiss.Vect()).Mag());
-          }
+        if(MissPFlag) {
+          Tools::Fill2D( Form("MMom_MMass_fid_p"), mm_mass, P_missp.Mag() );
+          Tools::Fill2D( Form("MMom_PMom_fid_p"), P_p.Mag(), P_missp.Mag() );
+          Tools::Fill2D( Form("IMppim1_IMppim2_p"), (LVec_p+LVec_pim1).M(), (LVec_p+LVec_pim2).M() );
+          Tools::Fill2D( Form("q_IMppipi_p"), (LVec_p+LVec_pim1+LVec_pim2).M(), (LVec_beam.Vect()-LVec_pmiss.Vect()).Mag());
+        }
 
-          if(MissPFlag && LambdaFlag){
-            Tools::Fill2D( Form("q_IMppipi_wL_p"), (LVec_p+LVec_pim1+LVec_pim2).M(), (LVec_beam.Vect()-LVec_pmiss.Vect()).Mag());
-          }
+        if(MissPFlag && LambdaFlag){
+          Tools::Fill2D( Form("q_IMppipi_wL_p"), (LVec_p+LVec_pim1+LVec_pim2).M(), (LVec_beam.Vect()-LVec_pmiss.Vect()).Mag());
+        }
            
           /*
           if(DoKinFit) {
@@ -1036,16 +1036,16 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
        event_num = Event_Number;            // event number
        block_num = Block_Event_Number;      // block number
 
-       if(Verbosity>10)std::cout<<"%%% npippim event: Event_Number, Block_Event_Number, CDC_Event_Number = "
+       if(Verbosity>10)std::cout<<"End loop :: %%% npippim event: Event_Number, Block_Event_Number, CDC_Event_Number = "
          <<Event_Number<<" , "<<Block_Event_Number<<" , "<<CDC_Event_Number<<std::endl;
        rtFile3->cd();
-       pimpimpTree->Fill();
+       ppimpimTree->Fill();
        rtFile->cd();
        nFill_npippim++;
        //** fill tree **//
 
     } // if( GeomTools::GetID(vtx_react)==CID_Fiducial )
-  }//pi+,pi-X event
+  }//pi-,pi-X event
   else {
     Clear( nAbort_pipi );
     return true;
