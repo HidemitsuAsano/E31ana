@@ -51,7 +51,7 @@
 
 const int MaxTreeSize = 1000000000;
 
-const unsigned int Verbosity = 100;
+const unsigned int Verbosity = 0;
 const bool DoCDCRetiming = false;
 const bool DoKinFit = true;
 const bool IsVtxDoubleCheck = false;
@@ -108,7 +108,6 @@ private:
 
   //** counters for filling **//
   int nFill_ppimpim;
-  int nFill_npippim;
   //** counters for event abort **//
   int nAbort_nGoodTrack;
   int nAbort_CDSPID;
@@ -128,14 +127,11 @@ private:
   
   // 4-momentum(beam) (reaction vtx determined by DCA)
   TLorentzVector mom_beam;   
-  // 4-momentum(beam) (reaction vtx Sp mode assumption)
-  TLorentzVector mom_beam_Sp;  
-  // 4-momentum(beam) (reaction vtx Sm mode assumption)
-  TLorentzVector mom_beam_Sm;
   TLorentzVector mom_target; // 4-momentum(target)
-  TLorentzVector mom_pim1;    // 4-momentum(pi+)
+  //ordering of two pi- tracks filled in these vector is determined by ???
+  TLorentzVector mom_pim1;    // 4-momentum(pi-)
   TLorentzVector mom_pim2;    // 4-momentum(pi-)
-  TLorentzVector mom_p;      // 4-momentum(neutron)
+  TLorentzVector mom_p;      // 4-momentum(proton)
   TVector3 vtx_reaction; // 
   TVector3 vtx_pim1_beam; // 
   TVector3 vtx_pim2_beam; // 
@@ -159,14 +155,6 @@ private:
   double kfSpmode_NDF;    // NDF of kinematical refit
   double kfSpmode_status; // status of kinematical refit, 0 :converged 1: not converged
   double kfSpmode_pvalue; // p-value of kinematical refit
-  TLorentzVector kfSmmode_mom_beam;   // 4-momentum(beam) after kinematical refit for pi+ Sigma-
-  TLorentzVector kfSmmode_mom_pip;    // 4-momentum(pi+) after kinematical refit for pi+ Sigma-
-  TLorentzVector kfSmmode_mom_pim;    // 4-momentum(pi-) after kinematical refit for pi+ Sigma-
-  TLorentzVector kfSmmode_mom_n;      // 4-momentum(neutron) after kinematical refit for pi+ Sigma-
-  double kfSmmode_chi2;   // chi2 of kinematical refit
-  double kfSmmode_NDF;    // NDF of kinematical refit
-  double kfSmmode_status; // status of kinematical refit, 0 : convergetd ,1:not converged
-  double kfSmmode_pvalue; // p-value of kinematical refit
   int kf_flag; // flag of correct pair reconstruction, etc
   //= = = = npippim final-sample tree = = = =//
   TDatabasePDG *pdg;
@@ -354,7 +342,6 @@ void EventAnalysis::ResetCounters()
   CDC_Event_Number = 0;
 
   nFill_ppimpim = 0;
-  nFill_npippim  = 0;
 
   nAbort_nGoodTrack = 0;
   nAbort_CDSPID = 0;
@@ -668,6 +655,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     CDSTrack *track_pim2 = trackMan->Track( pim_ID.at(1) ); //
     CDSTrack *track_p    = trackMan->Track( p_ID.at(0) ); //must be only 1 track due to the nCDH cut
     
+    if(Verbosity){
+      std::cout << "pim1 chi2  " << track_pim1->Chi() << std::endl;
+      std::cout << "pim1 mom  " << track_pim1->Momentum() << std::endl;
+      std::cout << "pim2 chi2  " << track_pim2->Chi() << std::endl;
+      std::cout << "pim2 mom  " << track_pim2->Momentum() << std::endl;
+    }
     //deuteron target
     TVector3 vtx_react;//reaction vertex
     TVector3 vtx_dis;//displaced vertex
@@ -1041,7 +1034,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
        rtFile3->cd();
        ppimpimTree->Fill();
        rtFile->cd();
-       nFill_npippim++;
        //** fill tree **//
 
     } // if( GeomTools::GetID(vtx_react)==CID_Fiducial )
@@ -1090,7 +1082,7 @@ void EventAnalysis::Finalize()
   std::cout<<" nAbort_nAbort_pipi   = "<<nAbort_pipi<<std::endl;
   std::cout<<" nAbort_end           = "<<nAbort_end<<std::endl;
   std::cout<<"========= Abort counter ========="<<std::endl;
-  std::cout<<"*** # of pi- pi- p events = "<<nFill_npippim<<" ***"<<std::endl;
+  std::cout<<"*** # of pi- pi- p events = "<<nFill_ppimpim<<" ***"<<std::endl;
 
   //  confMan->SaveCDSParam();
   gFile->Write();
