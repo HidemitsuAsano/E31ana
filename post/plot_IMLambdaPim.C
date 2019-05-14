@@ -124,107 +124,48 @@ void plot_IMLambdaPim(const char* filename="")
   //  tree->SetBranchAddress( "mcmom_ncds", &mcmom_ncds);
   //  tree->SetBranchAddress( "mcmom_nmiss", &mcmom_nmiss);
   //}
-  tree->SetBranchAddress( "kfSpmode_mom_beam",   &kfSpmode_mom_beam );
-  tree->SetBranchAddress( "kfSpmode_mom_pip", &kfSpmode_mom_pip );
-  tree->SetBranchAddress( "kfSpmode_mom_pim", &kfSpmode_mom_pim );
-  tree->SetBranchAddress( "kfSpmode_mom_n", &kfSpmode_mom_n );
-  tree->SetBranchAddress( "kfSpmode_chi2", &kfSpmode_chi2 );
-  tree->SetBranchAddress( "kfSpmode_NDF", &kfSpmode_NDF );
-  tree->SetBranchAddress( "kfSpmode_status", &kfSpmode_status );
-  tree->SetBranchAddress( "kfSpmode_pvalue", &kfSpmode_pvalue );
-  tree->SetBranchAddress( "kfSmmode_mom_beam",   &kfSmmode_mom_beam );
-  tree->SetBranchAddress( "kfSmmode_mom_pip", &kfSmmode_mom_pip );
-  tree->SetBranchAddress( "kfSmmode_mom_pim", &kfSmmode_mom_pim );
-  tree->SetBranchAddress( "kfSmmode_mom_n", &kfSmmode_mom_n );
-  tree->SetBranchAddress( "kfSmmode_chi2", &kfSmmode_chi2 );
-  tree->SetBranchAddress( "kfSmmode_NDF", &kfSmmode_NDF );
-  tree->SetBranchAddress( "kfSmmode_status", &kfSmmode_status );
-  tree->SetBranchAddress( "kfSmmode_pvalue", &kfSmmode_pvalue );
-  tree->SetBranchAddress( "kf_flag", &kf_flag );
+  //tree->SetBranchAddress( "kfSpmode_mom_beam",   &kfSpmode_mom_beam );
+  //tree->SetBranchAddress( "kfSpmode_mom_pip", &kfSpmode_mom_pip );
+  //tree->SetBranchAddress( "kfSpmode_mom_pim", &kfSpmode_mom_pim );
+  //tree->SetBranchAddress( "kfSpmode_mom_n", &kfSpmode_mom_n );
+  //tree->SetBranchAddress( "kfSpmode_chi2", &kfSpmode_chi2 );
+  //tree->SetBranchAddress( "kfSpmode_NDF", &kfSpmode_NDF );
+  //tree->SetBranchAddress( "kfSpmode_status", &kfSpmode_status );
+  //tree->SetBranchAddress( "kfSpmode_pvalue", &kfSpmode_pvalue );
+  //tree->SetBranchAddress( "kfSmmode_mom_beam",   &kfSmmode_mom_beam );
+  //tree->SetBranchAddress( "kfSmmode_mom_pip", &kfSmmode_mom_pip );
+  //tree->SetBranchAddress( "kfSmmode_mom_pim", &kfSmmode_mom_pim );
+  //tree->SetBranchAddress( "kfSmmode_mom_n", &kfSmmode_mom_n );
+  //tree->SetBranchAddress( "kfSmmode_chi2", &kfSmmode_chi2 );
+  //tree->SetBranchAddress( "kfSmmode_NDF", &kfSmmode_NDF );
+  //tree->SetBranchAddress( "kfSmmode_status", &kfSmmode_status );
+  //tree->SetBranchAddress( "kfSmmode_pvalue", &kfSmmode_pvalue );
+  //tree->SetBranchAddress( "kf_flag", &kf_flag );
   
   
   // w/o kinematic fit 
-  TH2F* dE_betainv_fid;//
-  TH2F* dE_MMom_fid_beta_woK0;
-  TH2F* dE_MMass_fid_beta_woK0;
-  TH2F* MMom_MMass_woK0;
-  TH2F* MMom_MMass_woK0_wSid;
-  TH2F* IMnpim_IMnpip_dE_woK0;
-  TH2F* IMnpim_IMnpip_dE_woK0_n;//
-  TH2F* IMnpim_IMnpip_dE_woK0_n_cut;//Sp or Sm mode after selection
-  TH2F* IMnpim_IMnpip_dE_woK0_n_Sp;//Spmode, avoiding crossing-point
-  TH2F* IMnpim_IMnpip_dE_woK0_n_Sm;//Smmode, avoiding crossing-point
-  TH2F* IMnpim_IMnpip_dE_woK0_n_side;//Side band for Sp + Sm mode
-  TH2F* IMnpim_IMnpip_dE_woK0_n_Sp_side[2];//low mass,high mass 
-  TH2F* IMnpim_IMnpip_dE_woK0_n_Sp_side_cut[2];//low mass,high mass 
-  TH2F* IMnpim_IMnpip_dE_woK0_n_Sp_side_sum;//low mass,high mass 
-  TH2F* IMnpim_IMnpip_dE_woK0_n_Sm_side[2];//low mass,high mass
-  TH2F* IMnpim_IMnpip_dE_woK0_n_Sm_side_cut[2];//low mass,high mass
-  TH2F* IMnpim_IMnpip_dE_woK0_n_Sm_side_sum;//low mass,high mass 
-  TH2F* MMnmiss_IMnpip_dE_woK0;
-  TH2F* MMnmiss_IMnpim_dE_woK0;
-  TH2F* MMnpip_MMnpim_woK0_wSid_n;
-  TH2F* dE_IMnpim_woK0;
-  TH2F* dE_IMnpim_woK0_n;
-  TH2F* dE_IMnpip_woK0;
-  TH2F* dE_IMnpip_woK0_n;
-  TH2F* dE_IMnpipi_woK0_wSid_n;
-  TH2F* Cosn_IMnpipi_woK0_wSid_n;
-  TH2F* MMnmiss_IMnpipi_woK0_wSid_n;
-  TH2F* q_IMnpipi_wSid_n;
-  TH2F* q_IMnpipi_woK0_wSid_n;
-  TH2F* q_IMnpipi_woK0_wSid_n_Sp;
-  TH2F* q_IMnpipi_woK0_wSid_n_Sp_acc;//fine bins
-  TH2F* q_IMnpipi_woK0_wSid_n_Sp_side;
-  TH2F* q_IMnpipi_woK0_wSid_n_Sm;
-  TH2F* q_IMnpipi_woK0_wSid_n_Sm_acc;//fine bins
-  TH2F* q_IMnpipi_woK0_wSid_n_Sm_side;
-  //TH2F* q_IMnpipi_woK0_wSid_n_wocross;
+  TH2F* MMom_MMass;
+  TH2F* MMom_MMass_p;
+  TH2F* MMom_PMom_p;
+  TH2F* IMppim1_IMppim2_p;
+  TH2F* q_IMppipi_p;
+  TH2F* q_IMppipi_wL_p;
 
-  TH2F* q_IMnpipi_wSid_n_side;//side band method
-  TH2F* q_IMnpipi_woK0_wSid_n_side;//side band method
-  TH2F* nmom_IMnpipi_woK0_wSid_n;
-  TH2F* q_pippim_n;
 
   // w/ kinematic fit
-  TH2F* dE_betainv_fid_kin[2];//
-  TH2F* dE_MMom_fid_beta_woK0_kin[2];
-  TH2F* dE_MMass_fid_beta_woK0_kin[2];
-  TH2F* MMom_MMass_woK0_kin[2];
-  TH2F* IMnpim_IMnpip_dE_woK0_kin[2];
-  TH2F* MMnmiss_IMnpip_dE_woK0_kin[2];//not yet
-  TH2F* MMnmiss_IMnpim_dE_woK0_kin[2];//not yet
-  TH2F* MMnpip_MMnpim_woK0_kin[2];
-  TH2F* dE_IMnpipi_woK0_kin[2];
-  TH2F* Cosn_IMnpipi_woK0_kin[2];
-  TH2F* MMnmiss_IMnpipi_woK0_kin[2];
-  TH2F* q_IMnpipi_kin[2];
-  TH2F* q_IMnpipi_woK0_kin[2];
-  TH2F* nmom_IMnpipi_woK0_kin[2];
-  TH2F* q_pippim_n_kin[2];
-  const char smode[][4]={"Sp","Sm"};
+  TH2F* MMom_MMass_fid_kin;
+  TH2F* IMppim1_IMppim2_kin;
+  TH2F* MMom_PMom_kin[];
+  TH2F* q_IMppipi_kin[2];
   
-  const int nbinIMnpipi = 100;//1-2 GeV/c^2
+  const int nbinIMppipi = 100;//1-2 GeV/c^2
   const int nbinq = 25;//0-1.5 GeV/c
   const int nbinIMnpi = 200; //1-2 GeV/c^2
   const int nbinnmiss = 100; //0-1.5 GeV/c
-  const int nbindE = 200;
   
-  dE_betainv_fid = new TH2F(Form("dE_betainv_fid"),Form("dE_betainv_fid"),1000, 0, 50, nbindE, 0, 50);
-  dE_betainv_fid->SetXTitle("1/#beta");
-  dE_betainv_fid->SetYTitle("dE [MeVee]");
-  
-  dE_MMom_fid_beta_woK0 = new TH2F(Form("dE_MMom_fid_beta_woK0"),Form("dE_MMom_fid_beta_woK0"),100, 0, 1.5, nbindE, 0, 50);
-  dE_MMom_fid_beta_woK0->SetXTitle("Missing Mom. [GeV/c]");
-  dE_MMom_fid_beta_woK0->SetYTitle("dE [MeVee]");
-
-  dE_MMass_fid_beta_woK0 = new TH2F(Form("dE_MMass_fid_beta_woK0"),Form("dE_MMass_fid_beta_woK0"), 140, 0.4, 1.8, nbindE, 0, 50);
-  dE_MMass_fid_beta_woK0->SetXTitle("Missing mass [GeV/c^{2}]");
-  dE_MMass_fid_beta_woK0->SetYTitle("dE [MeVee]");
-
-  MMom_MMass_woK0 = new TH2F(Form("MMom_MMass_woK0"),Form("MMom_MMass_woK0"), 140, 0.4, 1.8, 100, 0, 1.5);
-  MMom_MMass_woK0->SetXTitle("Missing Mass [GeV/c^{2}]");
-  MMom_MMass_woK0->SetYTitle("Missing Mom. [GeV/c]");
+  MMom_MMass = new TH2F(Form("MMom_MMass"),Form("MMom_MMass"), 140, 0.4, 1.8, 100, 0, 1.5);
+  MMom_MMass->SetXTitle("Missing Mass [GeV/c^{2}]");
+  MMom_MMass->SetYTitle("Missing Mom. [GeV/c]");
 
   MMom_MMass_woK0_wSid = new TH2F(Form("MMom_MMass_woK0_wSid"),Form("MMom_MMass_woK0_wSid"), 140, 0.4, 1.8, 100, 0, 1.5);
   MMom_MMass_woK0_wSid->SetXTitle("Missing Mass [GeV/c^{2}]");
