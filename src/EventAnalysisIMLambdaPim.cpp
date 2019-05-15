@@ -128,7 +128,7 @@ private:
   // 4-momentum(beam) (reaction vtx determined by DCA)
   TLorentzVector mom_beam;   
   TLorentzVector mom_target; // 4-momentum(target)
-  //ordering of two pi- tracks filled in these vector is determined by ???
+  //ordering of two pi- tracks filled in these vector is determined by chi2 of cds tracking
   TLorentzVector mom_pim1;    // 4-momentum(pi-)
   TLorentzVector mom_pim2;    // 4-momentum(pi-)
   TLorentzVector mom_p;      // 4-momentum(proton)
@@ -137,8 +137,8 @@ private:
   TVector3 vtx_pim2_beam; // 
   TVector3 vtx_pim1_cdc;//
   TVector3 vtx_pim2_cdc;//
-  TVector3 CA_pim1;
-  TVector3 CA_pim2;
+  TVector3 CA_pim1;//Closest Approach Point of CDS pim1-pim2 tracks
+  TVector3 CA_pim2;//Closest Approach Point of CDS pim1-pim2 tracks
   int run_num;   // run number
   int event_num; // event number
   int block_num; // block number

@@ -147,8 +147,8 @@ private:
   TVector3 vtx_pim_beam; // 
   TVector3 vtx_pip_cdc;//
   TVector3 vtx_pim_cdc;//
-  TVector3 CA_pip;
-  TVector3 CA_pim;
+  TVector3 CA_pip;//Closest Approach Point of CDS pip-pim tracks
+  TVector3 CA_pim;//Closest Approach Point of CDS pip-pim tracks
   TVector3 CDH_Pos;
   int run_num;   // run number
   int event_num; // event number
