@@ -178,9 +178,53 @@ namespace kin {
   };
 }
 
+namespace kinpLpim {
+  const int npart=6;
+  const int kmbeam=0;
+  const int pim_g1=1;//pi- 1st generation
+  const int L=2;
+  const int pmiss=3;
+  const int pcds=4;
+  const int pim_g2=5;//pi- 2nd generation
+
+  const int maxitr=50;
+  const double maxdchi2=5e-5;
+  const double maxsumconst=1e-4;
+
+  const double chi2cut=6;
+
+  const double covValpLpim[kin::npart][16] = {
+    { 1.79228e-05, 0, 0, 0,
+      0, 1.82956e-05, 0, 0,
+      0, 0, 4.02874e-06, 0,
+      0, 0, 0, 3.23335e-06 },
+    { 2.05071e-05, 0, 0, 0,
+      0, 1.9884e-05, 0, 0,
+      0, 0, 7.15267e-05, 0,
+      0, 0, 0, 4.39928e-05 },
+    { 0.000165845, 0, 0, 0,
+      0, 0.000166991, 0, 0,
+      0, 0, 0.000115236, 0,
+      0, 0, 0, 4.90095e-05 },
+    { 0.000370377, 0, 0, 0,
+      0, 0.000368532, 0, 0,
+      0, 0, 0.000336299, 0,
+      0, 0, 0, 0.000174533 },
+    { 0.000141756, 0, 0, 0,
+      0, 0.000139519, 0, 0,
+      0, 0, 6.62114e-05, 0,
+      0, 0, 0, 2.7891e-06 },
+    { 1.23728e-05, 0, 0, 0,
+      0, 1.27203e-05, 0, 0,
+      0, 0, 3.29329e-05, 0,
+      0, 0, 0, 1.50133e-05 },
+  };
+}
+
 namespace gen {
   const int reactionID_Spmode = 1725;
   const int reactionID_Smmode = 1525;
+  const int reactionID_pLpim  = 1600;
 }
 
 #endif 

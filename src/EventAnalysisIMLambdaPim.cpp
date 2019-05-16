@@ -836,7 +836,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
         Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missp.Mag() );
 
-        //missing mass neutron ID
+        //missing mass proton ID
         if( anacuts_lpim::proton_MIN<mm_mass && mm_mass<anacuts_lpim::proton_MAX ) MissPFlag=true;
 
         //Lambda production in CDS

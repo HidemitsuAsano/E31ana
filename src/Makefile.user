@@ -100,5 +100,17 @@ simIMPiSigma:$(TMPDIR)/UserSimIMPiSigma.o IMPiSigmaAnaPar.h\
 	$(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o  $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB) $(KFLIB)
 
+simIMLPim:$(TMPDIR)/UserSimIMLPim.o IMPiSigmaAnaPar.h\
+	$(TMPDIR)/IMPiSigmaHist.o \
+	$(TMPDIR)/IMPiSigmaUtil.o \
+	$(TMPDIR)/SimDataMan.o \
+	$(TMPDIR)/SimDataMan_Dict.o \
+	$(TMPDIR)/KnuclRootData.o \
+	$(TMPDIR)/KnuclRootData_Dict.o \
+	$(TMPDIR)/ComCrossSectionTable.o \
+	$(TMPDIR)/ComCrossSectionTable_Dict.o \
+	$(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o  $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB) $(KFLIB)
+
 simclean:
 	rm -rf $(BINDIR)/simIMPiSigma $(TMPDIR)/IMPiSigma* $(TMPDIR)/UserSimIMPiSigma.*
