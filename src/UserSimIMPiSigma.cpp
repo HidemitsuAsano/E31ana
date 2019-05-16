@@ -495,7 +495,7 @@ int main( int argc, char** argv )
         std::cout<<"flight length:" << flightlength << std::endl;
       }
       for( int ip=0; ip<kin::npart; ip++ ){ 
-        //   pick up necessary partciels stored in PDG[] array.
+        //   pick up necessary particles stored in PDG[] array.
         //   if it is primary particle ,parentID is 0, decay particles are rejected by the parentID selection
         if( pdgcode==PDG[ip] && parent==parentID[ip] && ID[ip]==-1 ){
           ID[ip] = imctrk;
