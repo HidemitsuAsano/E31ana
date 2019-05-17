@@ -525,31 +525,24 @@ int main( int argc, char** argv )
       if( ip ) TL_gene[ip].SetVectM(mcData->track(ID[ip])->momentum()*0.001,  pdg->GetParticle(PDG[ip])->Mass()); // GeV
       else    TL_gene[ip].SetVectM(mcData->track(ID[ip])->momentum()*-0.001, pdg->GetParticle(PDG[ip])->Mass()); // GeV
     }
-    /*
+    
     if(flagG4Decay){
-      double q = (TL_gene[kinpLpim::kmbeam].Vect()-TL_gene[kinpLpim::nmiss].Vect()).Mag();
-      TLorentzVector TL_Sigma_cor;// define to evaluate energy loss effect of Sigma
-      TLorentzVector TL_piSigma;// 
-      TLorentzVector TL_piSigma_cor;//
-      if(reactionID == gen::reactionID_Spmode){
-        TL_Sigma_cor = TL_gene[kinpLpim::ncds]+TL_gene[kinpLpim::pip_g2]; 
-        TL_piSigma = TL_gene[kinpLpim::Sp]+TL_gene[kinpLpim::pim_g1];
-        TL_piSigma_cor = TL_Sigma_cor + TL_gene[kinpLpim::pim_g1];
-        //Tools::H2("q_IMpin_gen",TL_Sigma_cor.M(), q,100,1,2,300,0,1.5);
-        //Tools::H1("IMpiSigma_gen",TL_piSigma.M(), 1000,1,2);
-        //Tools::H2("q_IMpiSigma_cor_gen",TL_piSigma_cor.M(), q,100,1,2,300,0,1.5);
-      }else if(reactionID == gen::reactionID_Smmode){
-        TL_Sigma_cor = TL_gene[kinpLpim::ncds]+TL_gene[kinpLpim::pim_g2];
-        TL_piSigma = TL_gene[kinpLpim::Sm]+TL_gene[kinpLpim::pip_g1];
-        TL_piSigma_cor = TL_Sigma_cor + TL_gene[kinpLpim::pip_g1];
-        //Tools::H2("q_IMpin_gen",TL_Sigma_cor.M(), q,100,1,2,300,0,1.5);
-        //Tools::H1("IMpiSigma_gen",TL_piSigma.M(), 1000,1,2);
-        //Tools::H2("q_IMpiSigma_cor_gen",TL_piSigma_cor.M(), q,100,1,2,300,0,1.5);
+      double q = (TL_gene[kinpLpim::kmbeam].Vect()-TL_gene[kinpLpim::pmiss].Vect()).Mag();
+      TLorentzVector TL_Lambda_cor;// define to evaluate energy loss effect of Sigma
+      TLorentzVector TL_LambdaPim;// 
+      TLorentzVector TL_LambdaPim_cor;//
+      if(reactionID == gen::reactionID_pLpim){
+        TL_Lambda_cor = TL_gene[kinpLpim::pcds]+TL_gene[kinpLpim::pim_g2]; 
+        TL_LambdaPim = TL_gene[kinpLpim::L]+TL_gene[kinpLpim::pim_g1];
+        TL_LambdaPim_cor = TL_Lambda_cor + TL_gene[kinpLpim::pim_g1];
+        Tools::H2("q_IMppim_gen",TL_Lambda_cor.M(), q,100,1,2,300,0,1.5);
+        Tools::H1("IMLambdaPim_gen",TL_LambdaPim.M(), 1000,1,2);
+        Tools::H2("q_IMLambdaPim_cor_gen",TL_LambdaPim_cor.M(), q,100,1,2,300,0,1.5);
       }else{
         std::cout << "L." << __LINE__ << " input file must be wrong ! " << std::endl;
         std::cout << "reactionID " <<  reactionID << std::endl;
       }
-    }*/
+    }
 
     //##########################//
     //### get G4 information ###//
