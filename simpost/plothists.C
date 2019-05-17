@@ -68,9 +68,9 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   
   //centering title of all histograms 
   TIter nexthist(gDirectory->GetList());
-  TH1F *h1 = nullptr;
-  TH1D *h1d = nullptr;
-  TH2F *h2 = nullptr;
+  TH1F *h1;
+  TH1D *h1d;
+  TH2F *h2;
   TObject *obj = nullptr;
   while( ((obj = (TObject*)nexthist())!=nullptr) && labelon  ){
     if(obj->InheritsFrom("TH1F")){
