@@ -14,7 +14,7 @@ void plotCTSub()
   for(int irun=100;irun<812;irun++){
     //{int irun=601;
     char filename[1024];
-    sprintf(filename,"/gpfs/group/had/knucl/e15/asano/Run78/IMpisigmav97/evanaIMpisigma_0%03d.root",irun);
+    sprintf(filename,"/gpfs/group/had/knucl/e15/asano/Run78/IMpisigmav140/evanaIMpisigma_0%03d.root",irun);
     std::cout << filename << std::endl;
     TFile *fin = new TFile(filename,"READ");
     if(!fin->IsOpen()){ 
@@ -29,7 +29,7 @@ void plotCTSub()
     std::string filenamecds = conf->GetGainMapManager()->GetFileNameCDS();
     std::cout << "cdsfile name " << filenamecds.c_str() << std::endl;
     filenamecds.replace(0,28,"");
-    filenamecds.replace(filenamecds.size()-8,2,"35");
+    filenamecds.replace(filenamecds.size()-8,2,"36");
     std::cout << "outfile name " << filenamecds.c_str() << std::endl;
     //TCanvas *cctsub = new TCanvas("cctsub","cctsub",1800,1000);
     //cctsub->Divide(6,6);
