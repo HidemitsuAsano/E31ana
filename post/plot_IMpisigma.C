@@ -26,7 +26,7 @@
 const double pvalcut = 0.005;
 //const double pvalcut = 1.0e-5;
 const bool gridon=true;
-const bool staton=false;
+const bool staton=true;
 const bool UseKinFitVal = true;
 
 //mode 0: Sigma+ ,1: Sigma- 
@@ -653,6 +653,11 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     bool SigmaMsideFlag=false;
     bool SigmaMsideLowFlag=false;
     bool SigmaMsideHighFlag=false;
+    
+    bool SigmaCrossFlagTop=false;
+    bool SigmaCrossFlagBottom=false;
+    bool SigmaCrossFlagLeft=false;
+    bool SigmaCrossFlagRight=false;
     //-- neutron-ID, K0 and missing neutron selection --//
 
     double dca_pip_beam = (*vtx_pip_beam-*vtx_pip_cdc).Mag();
@@ -660,38 +665,61 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     double dca_pip_pim =(*CA_pip-*CA_pim).Mag();
     if(anacuts::beta_MIN<NeutralBetaCDH &&  NeutralBetaCDH<anacuts::beta_MAX  ) NBetaOK=true;
     if(anacuts::dE_MIN<dE) NdEOK=true;
-   
+    double MassNPip= (*LVec_n+*LVec_pip).M();
+    double MassNPim= (*LVec_n+*LVec_pim).M();
+
     //Sigma+ production in CDS
-    if( (anacuts::Sigmap_MIN<(*LVec_n+*LVec_pip).M() && (*LVec_n+*LVec_pip).M()<anacuts::Sigmap_MAX)) SigmaPFlag=true;
+    //band cut for signal
+    
+    if( (anacuts::Sigmap_MIN<MassNPip && MassNPip<anacuts::Sigmap_MAX)) SigmaPFlag=true;
         
     //Sigma- production in CDS
-    if( (anacuts::Sigmam_MIN<(*LVec_n+*LVec_pim).M() && (*LVec_n+*LVec_pim).M()<anacuts::Sigmam_MAX)) SigmaMFlag=true;
+    //band cut for signal
+    if( (anacuts::Sigmam_MIN<MassNPim && MassNPim<anacuts::Sigmam_MAX)) SigmaMFlag=true;
     
     //Sigma+ production in CDS
-    if( (anacuts::Sigmap_MIN_wide<(*LVec_n+*LVec_pip).M() && (*LVec_n+*LVec_pip).M()<anacuts::Sigmap_MAX_wide)) SigmawidePFlag=true;
+    //
+    if( (anacuts::Sigmap_MIN_wide<MassNPip && MassNPip<anacuts::Sigmap_MAX_wide)) SigmawidePFlag=true;
         
     //Sigma- production in CDS
-    if( (anacuts::Sigmam_MIN_wide<(*LVec_n+*LVec_pim).M() && (*LVec_n+*LVec_pim).M()<anacuts::Sigmam_MAX_wide)) SigmawideMFlag=true;
+    if( (anacuts::Sigmam_MIN_wide<MassNPim && MassNPim<anacuts::Sigmam_MAX_wide)) SigmawideMFlag=true;
       
     //Sigma+ production side band low mass side
-    if( ((anacuts::Sigmap_sidelow_MIN<(*LVec_n+*LVec_pip).M()) && 
-         ((*LVec_n+*LVec_pip).M() < anacuts::Sigmap_sidelow_MAX))) SigmaPsideLowFlag=true;
+    if( ((anacuts::Sigmap_sidelow_MIN<MassNPip) && 
+         (MassNPip < anacuts::Sigmap_sidelow_MAX))) SigmaPsideLowFlag=true;
     
     //Sigma+ production side band high mass side
-    if( ((anacuts::Sigmap_sidehigh_MIN<(*LVec_n+*LVec_pip).M()) && 
-         ((*LVec_n+*LVec_pip).M() < anacuts::Sigmap_sidehigh_MAX))) SigmaPsideHighFlag=true;
+    if( ((anacuts::Sigmap_sidehigh_MIN<MassNPip) && 
+         (MassNPip < anacuts::Sigmap_sidehigh_MAX))) SigmaPsideHighFlag=true;
      
     //Sigma+ production side band low or high mass side
     if(SigmaPsideLowFlag || SigmaPsideHighFlag) SigmaPsideFlag=true;
 
     //Sigma- production side band low mass side
-    if( ((anacuts::Sigmam_sidelow_MIN<(*LVec_n+*LVec_pim).M()) && 
-         ((*LVec_n+*LVec_pim).M() <  anacuts::Sigmam_sidelow_MAX))) SigmaMsideLowFlag=true;
+    if( ((anacuts::Sigmam_sidelow_MIN<MassNPim) && 
+         (MassNPim <  anacuts::Sigmam_sidelow_MAX))) SigmaMsideLowFlag=true;
     
     //Sigma- production side band high mass side
-    if( ((anacuts::Sigmam_sidehigh_MIN<(*LVec_n+*LVec_pim).M()) && 
-         ((*LVec_n+*LVec_pim).M() <  anacuts::Sigmam_sidehigh_MAX))) SigmaMsideHighFlag=true;
+    if( ((anacuts::Sigmam_sidehigh_MIN<MassNPim) && 
+         (MassNPim <  anacuts::Sigmam_sidehigh_MAX))) SigmaMsideHighFlag=true;
+    
+    //Sigma cross region up
+    if(  (MassNPim >  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
+      && (MassNPim > -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagTop=true;
+    
+    //Sigma cross region down
+    if(  (MassNPim <  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
+      && (MassNPim < -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagBottom=true;
 
+    //Sigma cross region right
+    if(  (MassNPim <  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
+      && (MassNPim > -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagRight=true;
+    
+    //Sigma cross region light
+    if(  (MassNPim >  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
+      && (MassNPim < -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagLeft=true;
+    
+    
     //Sigma- production side band low or high mass side
     if(SigmaMsideLowFlag || SigmaMsideHighFlag) SigmaMsideFlag=true;
 
@@ -780,7 +808,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
         DCA_pip_pim->Fill(dca_pip_pim);
       }
 
-      if(SigmaPFlag && !SigmawideMFlag) {
+      //if(SigmaPFlag && !SigmawideMFlag) {
+      if(SigmaPFlag && !SigmaCrossFlagLeft && !SigmaCrossFlagRight) {
         IMnpim_IMnpip_dE_woK0_n_Sp->Fill(LVec_pip_n.M(),LVec_pim_n.M());
         q_IMnpipi_woK0_wSid_n_Sp->Fill(LVec_pip_pim_n.M(),qkn.P());
         q_IMnpipi_woK0_wSid_n_Sp_acc->Fill(LVec_pip_pim_n.M(),qkn.P());
@@ -790,7 +819,8 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
         IMnpim_IMnpip_dE_woK0_n_Sp_side_sum->Fill(LVec_pip_n.M(),LVec_pim_n.M());
         q_IMnpipi_woK0_wSid_n_Sp_side->Fill(LVec_pip_pim_n.M(),qkn.P());
       }
-      if(!SigmawidePFlag && SigmaMFlag){
+      //if(!SigmawidePFlag && SigmaMFlag){
+      if( SigmaMFlag && !SigmaCrossFlagTop && !SigmaCrossFlagBottom){
         IMnpim_IMnpip_dE_woK0_n_Sm->Fill(LVec_pip_n.M(),LVec_pim_n.M());
         q_IMnpipi_woK0_wSid_n_Sm->Fill(LVec_pip_pim_n.M(),qkn.P());
         q_IMnpipi_woK0_wSid_n_Sm_acc->Fill(LVec_pip_pim_n.M(),qkn.P());
