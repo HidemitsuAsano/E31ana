@@ -654,15 +654,43 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     bool SigmaMsideLowFlag=false;
     bool SigmaMsideHighFlag=false;
     
+    //triangular cuts to minimize acceptance distortion
     bool SigmaCrossFlagTop=false;
     bool SigmaCrossFlagBottom=false;
     bool SigmaCrossFlagLeft=false;
     bool SigmaCrossFlagRight=false;
-    //-- neutron-ID, K0 and missing neutron selection --//
+    
+    //triangular cuts for side band of Sp mode low mass side
+    bool SigmaCrossPsideLowFlagTop=false;
+    bool SigmaCrossPsideLowFlagBottom=false;
+    bool SigmaCrossPsideLowFlagLeft=false;
+    bool SigmaCrossPsideLowFlagRight=false;
+    
+    //triangular cuts for side band of Sp mode high mass side
+    bool SigmaCrossPsideHighFlagTop=false;
+    bool SigmaCrossPsideHighFlagBottom=false;
+    bool SigmaCrossPsideHighFlagLeft=false;
+    bool SigmaCrossPsideHighFlagRight=false;
+
+    //triangular cuts for side band of Sm mode low mass side
+    bool SigmaCrossMsideLowFlagTop=false;
+    bool SigmaCrossMsideLowFlagBottom=false;
+    bool SigmaCrossMsideLowFlagLeft=false;
+    bool SigmaCrossMsideLowFlagRight=false;
+    
+    //triangular cuts for side band of Sm mode high mass side
+    bool SigmaCrossMsideHighFlagTop=false;
+    bool SigmaCrossMsideHighFlagBottom=false;
+    bool SigmaCrossMsideHighFlagLeft=false;
+    bool SigmaCrossMsideHighFlagRight=false;
+  
+
+
 
     double dca_pip_beam = (*vtx_pip_beam-*vtx_pip_cdc).Mag();
     double dca_pim_beam = (*vtx_pim_beam-*vtx_pim_cdc).Mag();
     double dca_pip_pim =(*CA_pip-*CA_pim).Mag();
+    //-- neutron-ID, K0 and missing neutron selection --//
     if(anacuts::beta_MIN<NeutralBetaCDH &&  NeutralBetaCDH<anacuts::beta_MAX  ) NBetaOK=true;
     if(anacuts::dE_MIN<dE) NdEOK=true;
     double MassNPip= (*LVec_n+*LVec_pip).M();
@@ -703,11 +731,15 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     if( ((anacuts::Sigmam_sidehigh_MIN<MassNPim) && 
          (MassNPim <  anacuts::Sigmam_sidehigh_MAX))) SigmaMsideHighFlag=true;
     
-    //Sigma cross region up
+    //
+    //triangular cuts
+    //
+    
+    //Sigma cross region top
     if(  (MassNPim >  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
       && (MassNPim > -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagTop=true;
     
-    //Sigma cross region down
+    //Sigma cross region bottom
     if(  (MassNPim <  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
       && (MassNPim < -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagBottom=true;
 
@@ -715,11 +747,80 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     if(  (MassNPim <  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
       && (MassNPim > -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagRight=true;
     
-    //Sigma cross region light
+    //Sigma cross region left
     if(  (MassNPim >  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
       && (MassNPim < -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagLeft=true;
     
+
+    //Sigma cross side band Sp low mass top
+    if(  (MassNPim >  (MassNPip - anacuts::Sigmap_sidelow_center) + anacuts::Sigmam_center)  
+      && (MassNPim > -(MassNPip - anacuts::Sigmap_sidelow_center) + anacuts::Sigmam_center)) SigmaCrossPsideLowFlagTop=true;
+
+    //Sigma cross side band Sp low mass bottom
+    if(  (MassNPim <  (MassNPip - anacuts::Sigmap_sidelow_center) + anacuts::Sigmam_center)  
+      && (MassNPim < -(MassNPip - anacuts::Sigmap_sidelow_center) + anacuts::Sigmam_center)) SigmaCrossPsideLowFlagBottom=true;
     
+    //Sigma cross side band Sp low mass right 
+    if(  (MassNPim <  (MassNPip - anacuts::Sigmap_sidelow_center) + anacuts::Sigmam_center)  
+      && (MassNPim > -(MassNPip - anacuts::Sigmap_sidelow_center) + anacuts::Sigmam_center)) SigmaCrossPsideLowFlagRight=true;
+
+    //Sigma cross side band Sp low mass left
+    if(  (MassNPim >  (MassNPip - anacuts::Sigmap_sidelow_center) + anacuts::Sigmam_center)  
+      && (MassNPim < -(MassNPip - anacuts::Sigmap_sidelow_center) + anacuts::Sigmam_center)) SigmaCrossPsideLowFlagLeft=true;
+
+     
+    //Sigma cross side band Sp high mass top
+    if(  (MassNPim >  (MassNPip - anacuts::Sigmap_sidehigh_center) + anacuts::Sigmam_center)  
+      && (MassNPim > -(MassNPip - anacuts::Sigmap_sidehigh_center) + anacuts::Sigmam_center)) SigmaCrossPsideHighFlagTop=true;
+
+    //Sigma cross side band Sp high mass bottom
+    if(  (MassNPim <  (MassNPip - anacuts::Sigmap_sidehigh_center) + anacuts::Sigmam_center)  
+      && (MassNPim < -(MassNPip - anacuts::Sigmap_sidehigh_center) + anacuts::Sigmam_center)) SigmaCrossPsideHighFlagBottom=true;
+    
+    //Sigma cross side band Sp high mass right 
+    if(  (MassNPim <  (MassNPip - anacuts::Sigmap_sidehigh_center) + anacuts::Sigmam_center)  
+      && (MassNPim > -(MassNPip - anacuts::Sigmap_sidehigh_center) + anacuts::Sigmam_center)) SigmaCrossPsideHighFlagRight=true;
+
+    //Sigma cross side band Sp high mass left
+    if(  (MassNPim >  (MassNPip - anacuts::Sigmap_sidehigh_center) + anacuts::Sigmam_center)  
+      && (MassNPim < -(MassNPip - anacuts::Sigmap_sidehigh_center) + anacuts::Sigmam_center)) SigmaCrossPsideHighFlagLeft=true;
+
+
+    //Sigma cross side band Sm low mass top
+    if(  (MassNPim >  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidelow_center)  
+      && (MassNPim > -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidelow_center)) SigmaCrossMsideLowFlagTop=true;
+
+    //Sigma cross side band Sp low mass bottom
+    if(  (MassNPim <  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidelow_center)  
+      && (MassNPim < -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidelow_center)) SigmaCrossMsideLowFlagBottom=true;
+    
+    //Sigma cross side band Sp low mass right 
+    if(  (MassNPim <  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidelow_center)  
+      && (MassNPim > -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidelow_center)) SigmaCrossMsideLowFlagRight=true;
+
+    //Sigma cross side band Sp low mass left
+    if(  (MassNPim >  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidelow_center)  
+      && (MassNPim < -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidelow_center)) SigmaCrossMsideLowFlagLeft=true;
+
+     
+    //Sigma cross side band Sm high mass top
+    if(  (MassNPim >  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidehigh_center)  
+      && (MassNPim > -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidehigh_center)) SigmaCrossMsideHighFlagTop=true;
+
+    //Sigma cross side band Sm high mass bottom
+    if(  (MassNPim <  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidehigh_center)  
+      && (MassNPim < -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidehigh_center)) SigmaCrossMsideHighFlagBottom=true;
+    
+    //Sigma cross side band Sm high mass right 
+    if(  (MassNPim <  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidehigh_center)  
+      && (MassNPim > -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidehigh_center)) SigmaCrossMsideHighFlagRight=true;
+
+    //Sigma cross side band Sm high mass left
+    if(  (MassNPim >  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidehigh_center)  
+      && (MassNPim < -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidehigh_center)) SigmaCrossMsideHighFlagLeft=true;
+
+
+
     //Sigma- production side band low or high mass side
     if(SigmaMsideLowFlag || SigmaMsideHighFlag) SigmaMsideFlag=true;
 
