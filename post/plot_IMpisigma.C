@@ -24,13 +24,11 @@
 #include "anacuts.h"
 
 const double pvalcut = 0.005;
-//const double pvalcut = 1.0e-5;
 const bool gridon=true;
 const bool staton=true;
 const bool UseKinFitVal = true;
 
-//mode 0: Sigma+ ,1: Sigma- 
-void plot_IMpisigma(const char* filename="",const int mode=0)
+void plot_IMpisigma(const char* filename="")
 {
 
   //gROOT->SetStyle("Plain");
@@ -61,7 +59,6 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   else             std::cout << "No"  << std::endl;
 
   TH1::SetDefaultSumw2();
-  //--- color style ---//
   //= = = = pipipnn final-sample tree = = = =//
   TLorentzVector *LVec_beam=nullptr;   // 4-momentum(beam)
   TLorentzVector *LVec_beam_Sp=nullptr;   // 4-momentum(beam),Sp mode assumption
@@ -488,6 +485,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   TH1F *npimmom_kin = new TH1F("npimmom_kin", "npimmom_kin", 150, 0, 3.0);
   npimmom_kin->SetXTitle("mom. [GeV/c]");
   
+  //DCA analysis
   TH1F* DCA_pip_beam = new TH1F("DCA_pip_beam","DCA_pip_beam",3000,0,30);
   DCA_pip_beam->SetXTitle("DCA [cm]");
   TH1F* DCA_pim_beam = new TH1F("DCA_pim_beam","DCA_pim_beam",3000,0,30);
@@ -510,7 +508,6 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
 
   Int_t nevent = tree->GetEntries();
   std::cerr<<"# of events = "<<nevent<<std::endl;
-  
   std::cout << "p-value cut:" << pvalcut << std::endl; 
   std::cout << "dE cut:" << anacuts::dE_MIN << std::endl; 
   TCanvas *cinfo = new TCanvas("cinfo","info");
@@ -545,7 +542,6 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     double nmiss_mass = LVec_n_miss.M();
     double nmiss_mass_vtx[2]={LVec_n_miss_vtx[0].M(),LVec_n_miss_vtx[1].M()};
     double nmiss_mom = LVec_n_miss.P();
-    double nmiss_mom_vtx[2] = {LVec_n_miss_vtx[0].P(),LVec_n_miss_vtx[1].P()};
 
     // calc cos(theta) of missing n //
     TVector3 boost = (*LVec_target+*LVec_beam).BoostVector();
@@ -626,7 +622,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     }
     TLorentzVector LVec_pip_pim_n_CM = LVec_pip_pim_n;
     LVec_pip_pim_n_CM.Boost(-boost);
-    double cos_X = LVec_pip_pim_n_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pip_pim_n_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
+    //double cos_X = LVec_pip_pim_n_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pip_pim_n_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
 
     //if(qkn.P()<anacuts::qvalcut || qkn.P()>0.70) continue;
     //if(qkn.P()>anacuts::qvalcut ) continue;
@@ -635,7 +631,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     //if(LVec_pip_pim_n.M() > 1.55) continue;
     //if(dcapippim < 1) continue;
     //if(LVec_pip_pim_n.M()<1.45 ) continue;
-    double chi2 = kfSpmode_chi2<kfSmmode_chi2 ? kfSpmode_chi2:kfSmmode_chi2;
+    //double chi2 = kfSpmode_chi2<kfSmmode_chi2 ? kfSpmode_chi2:kfSmmode_chi2;
     double pvalue = kfSmmode_pvalue<kfSpmode_pvalue ? kfSpmode_pvalue:kfSmmode_pvalue;
 
     bool K0rejectFlag=false;
@@ -712,29 +708,9 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     //Sigma- production in CDS
     if( (anacuts::Sigmam_MIN_wide<MassNPim && MassNPim<anacuts::Sigmam_MAX_wide)) SigmawideMFlag=true;
       
-    //Sigma+ production side band low mass side
-    if( ((anacuts::Sigmap_sidelow_MIN<MassNPip) && 
-         (MassNPip < anacuts::Sigmap_sidelow_MAX))) SigmaPsideLowFlag=true;
-    
-    //Sigma+ production side band high mass side
-    if( ((anacuts::Sigmap_sidehigh_MIN<MassNPip) && 
-         (MassNPip < anacuts::Sigmap_sidehigh_MAX))) SigmaPsideHighFlag=true;
-     
-    //Sigma+ production side band low or high mass side
-    if(SigmaPsideLowFlag || SigmaPsideHighFlag) SigmaPsideFlag=true;
-
-    //Sigma- production side band low mass side
-    if( ((anacuts::Sigmam_sidelow_MIN<MassNPim) && 
-         (MassNPim <  anacuts::Sigmam_sidelow_MAX))) SigmaMsideLowFlag=true;
-    
-    //Sigma- production side band high mass side
-    if( ((anacuts::Sigmam_sidehigh_MIN<MassNPim) && 
-         (MassNPim <  anacuts::Sigmam_sidehigh_MAX))) SigmaMsideHighFlag=true;
-    
     //
     //triangular cuts
     //
-    
     //Sigma cross region top
     if(  (MassNPim >  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
       && (MassNPim > -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagTop=true;
@@ -746,7 +722,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     //Sigma cross region right
     if(  (MassNPim <  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
       && (MassNPim > -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagRight=true;
-    
+   
     //Sigma cross region left
     if(  (MassNPim >  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
       && (MassNPim < -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagLeft=true;
@@ -819,14 +795,35 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     if(  (MassNPim >  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidehigh_center)  
       && (MassNPim < -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_sidehigh_center)) SigmaCrossMsideHighFlagLeft=true;
 
-
-
-    //Sigma- production side band low or high mass side
-    if(SigmaMsideLowFlag || SigmaMsideHighFlag) SigmaMsideFlag=true;
-
     
-    if(!(SigmawidePFlag || SigmawideMFlag) && (SigmaPsideFlag || SigmaMsideFlag)) SidebandFlag=true;
-    //if(!(SigmaPFlag || SigmaMFlag) && (SigmaPsideFlag || SigmaMsideFlag)) SidebandFlag=true;
+    //Sigma+ production side band low mass side
+    if( ((anacuts::Sigmap_sidelow_MIN<MassNPip) && 
+         (MassNPip < anacuts::Sigmap_sidelow_MAX))) SigmaPsideLowFlag=true;
+    
+    //Sigma+ production side band high mass side
+    if( ((anacuts::Sigmap_sidehigh_MIN<MassNPip) && 
+         (MassNPip < anacuts::Sigmap_sidehigh_MAX))) SigmaPsideHighFlag=true;
+     
+    //Sigma+ production side band low or high mass side
+    if( (SigmaPsideLowFlag  && !SigmaCrossPsideLowFlagLeft  && !SigmaCrossPsideLowFlagRight) 
+    ||  (SigmaPsideHighFlag && !SigmaCrossPsideHighFlagLeft  && !SigmaCrossPsideHighFlagRight)
+    ) SigmaPsideFlag=true;
+
+    //Sigma- production side band low mass side
+    if( ((anacuts::Sigmam_sidelow_MIN<MassNPim) && 
+         (MassNPim <  anacuts::Sigmam_sidelow_MAX))) SigmaMsideLowFlag=true;
+    
+    //Sigma- production side band high mass side
+    if( ((anacuts::Sigmam_sidehigh_MIN<MassNPim) && 
+         (MassNPim <  anacuts::Sigmam_sidehigh_MAX))) SigmaMsideHighFlag=true;
+    
+    //Sigma- production side band low or high mass side
+    //if(SigmaMsideLowFlag || SigmaMsideHighFlag) SigmaMsideFlag=true;
+    if( (SigmaMsideLowFlag  && !SigmaCrossMsideLowFlagTop  && !SigmaCrossMsideLowFlagBottom) 
+    ||  (SigmaMsideHighFlag && !SigmaCrossMsideHighFlagTop && !SigmaCrossMsideHighFlagBottom)
+    ) SigmaMsideFlag=true;
+
+    if( (SigmaPsideFlag || SigmaMsideFlag)) SidebandFlag=true;
 
     if(anacuts::neutron_MIN<nmiss_mass && nmiss_mass<anacuts::neutron_MAX ) MissNFlag=true;
     
@@ -871,29 +868,29 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
       if(SidebandFlag){
         IMnpim_IMnpip_dE_woK0_n_side->Fill(LVec_pip_n.M(),LVec_pim_n.M());
       }
-      if(SigmaPsideLowFlag){
+      if(SigmaPsideLowFlag && !SigmaCrossPsideLowFlagLeft && !SigmaCrossPsideLowFlagRight){
         IMnpim_IMnpip_dE_woK0_n_Sp_side[0]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-        if(!SigmawideMFlag){
+        //if(!SigmawideMFlag){
           IMnpim_IMnpip_dE_woK0_n_Sp_side_cut[0]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-        }
+        //}
       }
-      if(SigmaPsideHighFlag) {
+      if(SigmaPsideHighFlag && (SigmaCrossPsideHighFlagTop || SigmaCrossPsideHighFlagBottom)) {
         IMnpim_IMnpip_dE_woK0_n_Sp_side[1]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-        if(!SigmawideMFlag){
+        //if(!SigmawideMFlag){
           IMnpim_IMnpip_dE_woK0_n_Sp_side_cut[1]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-        }
+        //}
       }
-      if(SigmaMsideLowFlag ){
+      if(SigmaMsideLowFlag && (SigmaCrossMsideLowFlagLeft || SigmaCrossMsideLowFlagRight)){
         IMnpim_IMnpip_dE_woK0_n_Sm_side[0]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-        if(!SigmawidePFlag){
+        //if(!SigmawidePFlag){
           IMnpim_IMnpip_dE_woK0_n_Sm_side_cut[0]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-        }
+        //}
       }
-      if(SigmaMsideHighFlag){
+      if(SigmaMsideHighFlag && (SigmaCrossMsideHighFlagLeft || SigmaCrossMsideHighFlagRight)){
         IMnpim_IMnpip_dE_woK0_n_Sm_side[1]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-        if(!SigmawidePFlag){
+        //if(!SigmawidePFlag){
           IMnpim_IMnpip_dE_woK0_n_Sm_side_cut[1]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-        }
+        //}
       }
       
       if(SigmaPFlag || SigmaMFlag){
@@ -1230,7 +1227,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
   q_IMnpipi_woK0_wSid_n_Sp_px->SetLineColor(2);
   q_IMnpipi_woK0_wSid_n_Sm_px->SetLineColor(3);
   q_IMnpipi_woK0_wSid_n_px->Draw("EH");
-  q_IMnpipi_wSid_n_px1->Draw("HEsame");
+  //q_IMnpipi_wSid_n_px1->Draw("HEsame");
   q_IMnpipi_woK0_wSid_n_Sp_px->Draw("HEsame");
   q_IMnpipi_woK0_wSid_n_Sm_px->Draw("HEsame");
   TH1D* q_IMnpipi_woK0_wSid_n_wocross = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_px->Clone();
@@ -1531,7 +1528,7 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
       TFile *fnup = new TFile("NumericalRootFinder_Spmode.root");
       fnup->cd();
       TMultiGraph *mgp = (TMultiGraph*)fnup->Get("mg"); 
-      mg->Draw("c");
+      mgp->Draw("c");
       f->cd();
     }else{
       TFile *fnum = new TFile("NumericalRootFinder_Smmode.root");
@@ -2173,23 +2170,23 @@ void plot_IMpisigma(const char* filename="",const int mode=0)
     if(obj->InheritsFrom("TH1F")){
       h1 = (TH1F*) obj;
       h1->GetXaxis()->CenterTitle();
-      h1->GetXaxis()->SetTitleSize(0.05);
-      h1->GetXaxis()->SetTitleOffset(0.80);
+      //h1->GetXaxis()->SetTitleSize(0.05);
+      //h1->GetXaxis()->SetTitleOffset(0.80);
     }
     if(obj->InheritsFrom("TH1D")){
       h1d = (TH1D*) obj;
       h1d->GetXaxis()->CenterTitle();
-      h1d->GetXaxis()->SetTitleSize(0.05);
-      h1d->GetXaxis()->SetTitleOffset(0.80);
+      //h1d->GetXaxis()->SetTitleSize(0.05);
+      //h1d->GetXaxis()->SetTitleOffset(0.80);
     }
     if(obj->InheritsFrom("TH2")){
       h2 = (TH2F*) obj;
       h2->GetXaxis()->CenterTitle();
       h2->GetYaxis()->CenterTitle();
-      h2->GetXaxis()->SetTitleSize(0.05);
-      h2->GetXaxis()->SetTitleOffset(0.80);
-      h2->GetYaxis()->SetTitleSize(0.05);
-      h2->GetYaxis()->SetTitleOffset(0.85);
+      //h2->GetXaxis()->SetTitleSize(0.05);
+      //h2->GetXaxis()->SetTitleOffset(0.80);
+      //h2->GetYaxis()->SetTitleSize(0.05);
+      //h2->GetYaxis()->SetTitleOffset(0.85);
     }
   }
 
