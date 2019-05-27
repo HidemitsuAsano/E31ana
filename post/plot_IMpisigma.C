@@ -1001,13 +1001,15 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   f1->SetParameter(4, 3.61475e+02);
   //IMnpim_IMnpip_dE_woK0_n_px->Fit("f1","","",1.16,1.23);
   IMnpim_IMnpip_dE_woK0_n_px->Fit("f1","","",anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
-  TF1 *fpol1 = new TF1("fpol1","pol1",binlowcenter-0.001,binhighcenter+0.001);
-  fpol1->SetLineColor(4);
-  fpol1->SetFillColor(4);
-  fpol1->SetFillStyle(3002);
-  fpol1->SetParameter(0,f1->GetParameter(3));
-  fpol1->SetParameter(1,f1->GetParameter(4));
-  fpol1->Draw("same");
+  TF1 *fbgSp = new TF1("fbgSp","pol1",binlowcenter-0.001,binhighcenter+0.001);
+  fbgSp->SetLineColor(4);
+  fbgSp->SetFillColor(4);
+  fbgSp->SetFillStyle(3002);
+  fbgSp->SetParameter(0,f1->GetParameter(3));
+  fbgSp->SetParameter(1,f1->GetParameter(4));
+  fbgSp->Draw("same");
+  double bgsp = fbgSp->Integral(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
+
 
   TH1D *IMnpim_IMnpip_dE_woK0_n_px_2 = (TH1D*)IMnpim_IMnpip_dE_woK0_n_px->Clone();
   IMnpim_IMnpip_dE_woK0_n_px_2->GetXaxis()->SetRangeUser(anacuts::Sigmap_sidelow_MIN,anacuts::Sigmap_sidelow_MAX);
@@ -1027,11 +1029,18 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0_n_Sp_side_1_px->SetFillStyle(3009);
   IMnpim_IMnpip_dE_woK0_n_Sp_side_1_px->Draw("HEsame");
   
-  std::cout << "Sigma+ signal region     " << IMnpim_IMnpip_dE_woK0_n_px_1->Integral() << std::endl;
+  std::cout << "Sigma+ signal region:    " << IMnpim_IMnpip_dE_woK0_n_px_1->Integral() << std::endl;
   std::cout << "Sigma+ sideband low:     " << IMnpim_IMnpip_dE_woK0_n_px_2->Integral() << std::endl;
   std::cout << "Sigma+ sideband low cut: " << IMnpim_IMnpip_dE_woK0_n_Sp_side_0_px->Integral() << std::endl;
   std::cout << "Sigma+ sideband high:    " << IMnpim_IMnpip_dE_woK0_n_px_3->Integral() << std::endl;
   std::cout << "Sigma+ sideband high cut:" << IMnpim_IMnpip_dE_woK0_n_Sp_side_1_px->Integral() << std::endl;
+  std::cout << "bg (Integral)           :" << bgsp       << std::endl;
+  std::cout << "bg (Integral)/binw      :" << bgsp/IMnpim_IMnpip_dE_woK0_n_px_1->GetBinWidth(100) << std::endl;
+  double trapezoidbgSp = (fbgSp->Eval(anacuts::Sigmap_MIN)+fbgSp->Eval(anacuts::Sigmap_MAX))*
+                         (anacuts::Sigmap_MAX-anacuts::Sigmap_MIN)
+                         /IMnpim_IMnpip_dE_woK0_n_px_1->GetBinWidth(100)/2.0;
+  std::cout << "bg (trapezoid)          :" << trapezoidbgSp << std::endl;
+
 
 
   TCanvas *cIMnpim_IMnpip_dE_woK0_n_py2 = new TCanvas("cIMnpim_IMnpip_dE_woK0_n_py2","IMnpim_IMnpip_dE_woK0_n_py2");
@@ -1048,23 +1057,24 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0_n_py_1->SetFillColor(2);
   IMnpim_IMnpip_dE_woK0_n_py_1->SetFillStyle(3002);
   IMnpim_IMnpip_dE_woK0_n_py_1->Draw("HEsame");
-  //TF1 *f2 = new TF1("f2","gaus(0)+pol2(3)",1.16,1.23);
-  TF1 *f2 = new TF1("f2","gaus(0)+pol2(3)",anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
-  f2->SetParameter(0,4.34555e+02);
-  f2->SetParameter(1,1.18847e+00);
-  f2->SetParameter(2, 5.10023e-03);
-  f2->SetParameter(3,1.16667e-05);
-  f2->SetParameter(4, 3.61475e+02);
-  //IMnpim_IMnpip_dE_woK0_n_py->Fit("f2","","",1.16,1.23);
-  IMnpim_IMnpip_dE_woK0_n_py->Fit("f2","","",anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
+  //TF1 *fbgSm = new TF1("fbgSm","gaus(0)+pol2(3)",1.16,1.23);
+  TF1 *fbgSm = new TF1("fbgSm","gaus(0)+pol2(3)",anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
+  fbgSm->SetParameter(0,4.34555e+02);
+  fbgSm->SetParameter(1,1.18847e+00);
+  fbgSm->SetParameter(2, 5.10023e-03);
+  fbgSm->SetParameter(3,1.16667e-05);
+  fbgSm->SetParameter(4, 3.61475e+02);
+  //IMnpim_IMnpip_dE_woK0_n_py->Fit("fbgSm","","",1.16,1.23);
+  IMnpim_IMnpip_dE_woK0_n_py->Fit("fbgSm","","",anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
   TF1 *fpol2 = new TF1("fpol2","pol2",anacuts::Sigmam_MIN-0.001,anacuts::Sigmam_MAX+0.002);
   fpol2->SetLineColor(4);
   fpol2->SetFillColor(4);
   fpol2->SetFillStyle(3002);
-  fpol2->SetParameter(0,f2->GetParameter(3));
-  fpol2->SetParameter(1,f2->GetParameter(4));
-  fpol2->SetParameter(2,f2->GetParameter(5));
+  fpol2->SetParameter(0,fbgSm->GetParameter(3));
+  fpol2->SetParameter(1,fbgSm->GetParameter(4));
+  fpol2->SetParameter(2,fbgSm->GetParameter(5));
   fpol2->Draw("same");
+  double bgsm = fpol2->Integral(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
   
   TH1D *IMnpim_IMnpip_dE_woK0_n_py_2 = (TH1D*)IMnpim_IMnpip_dE_woK0_n_py->Clone();
   IMnpim_IMnpip_dE_woK0_n_py_2->GetXaxis()->SetRangeUser(anacuts::Sigmam_sidelow_MIN,anacuts::Sigmam_sidelow_MAX);
@@ -1084,12 +1094,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0_n_Sm_side_1_py->SetFillStyle(3009);
   IMnpim_IMnpip_dE_woK0_n_Sm_side_1_py->Draw("HEsame");
 
-  std::cout << "Sigma- signal region     " << IMnpim_IMnpip_dE_woK0_n_py_1->Integral() << std::endl;
+  std::cout << "Sigma- signal region:    " << IMnpim_IMnpip_dE_woK0_n_py_1->Integral() << std::endl;
   std::cout << "Sigma- sideband low:     " << IMnpim_IMnpip_dE_woK0_n_py_2->Integral() << std::endl;
   std::cout << "Sigma- sideband low cut: " << IMnpim_IMnpip_dE_woK0_n_Sm_side_0_py->Integral() << std::endl;
   std::cout << "Sigma- sideband high:    " << IMnpim_IMnpip_dE_woK0_n_py_3->Integral() << std::endl;
   std::cout << "Sigma- sideband high cut:" << IMnpim_IMnpip_dE_woK0_n_Sm_side_1_py->Integral() << std::endl;
-  
+  std::cout << "bg (Integral)           :" << bgsm << std::endl;
+  std::cout << "bg (Integral)/binw      :" << bgsm/IMnpim_IMnpip_dE_woK0_n_py_1->GetBinWidth(100)  << std::endl;
+  double trapezoidbgSm = (fbgSm->Eval(anacuts::Sigmam_MIN)+fbgSm->Eval(anacuts::Sigmam_MAX))*
+                         (anacuts::Sigmam_MAX-anacuts::Sigmam_MIN)
+                         /IMnpim_IMnpip_dE_woK0_n_py_1->GetBinWidth(100)/2.0;
+  std::cout << "bg (trapezoid)          :" << trapezoidbgSm    << std::endl;
   
   /*
   TCanvas *cq_IMnpipi_woK0_wSid_n_px_side = new TCanvas("cq_IMnpipi_woK0_wSid_n_px_side","q_IMnpipi_woK0_wSid_n_px_side"); 
