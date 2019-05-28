@@ -1805,6 +1805,46 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     TProfile *pfxSm = diff_IMnpipi_woK0_wSid_n_Sm->ProfileX("pfxSm",1,-1,"s");
     pfxSm->SetLineColor(2);
     pfxSm->Draw("same");
+    TCanvas *cgaus = new TCanvas("cgaus","cgaus");
+    double recomass[nbinIMnpipi];
+    double cent[nbinIMnpipi];
+    double cent_err[nbinIMnpipi];
+    double sigma[nbinIMnpipi];
+    double sigma_err[nbinIMnpipi];
+    //cgaus->Divide(10,10);
+    TH1D *px[nbinIMnpipi];
+    for(int i=0;i<nbinIMnpipi;i++){
+      px[i] = (TH1D*)diff_IMnpipi_woK0_wSid_n_Sp->ProjectionY(Form("px%d",i),i+1,i+2,"");
+      recomass[i] = diff_IMnpipi_woK0_wSid_n_Sp->GetXaxis()->GetBinCenter(i+1);
+      cgaus->cd(i+1);
+      if(px[i]->GetEntries()>200){
+        //px[i]->Draw("HE");
+        px[i]->Fit("gaus"); 
+        cent[i] = px[i]->GetFunction("gaus")->GetParameter(1);
+        cent_err[i] = px[i]->GetFunction("gaus")->GetParError(1);
+        sigma[i]= px[i]->GetFunction("gaus")->GetParameter(2);
+        sigma_err[i]= px[i]->GetFunction("gaus")->GetParError(2);
+      }else{
+        cent[i]=0;
+        cent_err[i]=0;
+        sigma[i]=0;
+        sigma_err[i]=0;
+      }
+    }
+    TCanvas *cfitmean = new TCanvas("cfitmean","fitmean");
+    cfitmean->cd();
+    TGraphErrors *grcent = new TGraphErrors(nbinIMnpipi,recomass,cent,0,cent_err); 
+    grcent->Draw("AP");
+    TCanvas *cfitsigma = new TCanvas("cfitsigma","fitsigma");
+    cfitsigma->cd();
+    TGraphErrors *grsigma = new TGraphErrors(nbinIMnpipi,recomass,sigma,0,sigma_err); 
+    grsigma->SetTitle("mass resolution");
+    grsigma->GetXaxis()->SetTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+    grsigma->GetXaxis()->CenterTitle();
+    grsigma->GetYaxis()->SetTitle("resolution [GeV/c^{2}]");
+    grsigma->GetYaxis()->CenterTitle();
+    grsigma->GetYaxis()->SetTitleOffset(1.3);
+    grsigma->Draw("AP");
   }
 
 
