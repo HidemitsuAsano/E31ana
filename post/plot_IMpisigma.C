@@ -12,12 +12,14 @@
 #include <TF1.h>
 #include <TH1.h>
 #include <TH2.h>
+#include <TProfile.h>
 #include <TVector3.h>
 #include <TLorentzVector.h>
 #include <TLegend.h>
 #include <TPDF.h>
 #include <TPaveText.h>
 #include <TLatex.h>
+#include <TGraphErrors.h>
 //#include <TEfficiency.h>
 
 #include "../src/GlobalVariables.h"
@@ -44,7 +46,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   gStyle->SetStatY(0.9);      
   gStyle->SetPalette(1);
   gStyle->SetStatBorderSize(1);
-  gStyle->SetCanvasDefH(800); gStyle->SetCanvasDefW(900);
+  gStyle->SetCanvasDefH(800); gStyle->SetCanvasDefW(1000);
   //gStyle->SetTitleFontSize(0.1);
   
 
@@ -425,15 +427,13 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   diff_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   diff_IMnpipi_woK0_wSid_n->SetYTitle("reco. - gen.  [GeV/c^{2}]");
 
-
   TH2F* diff_IMnpipi_woK0_wSid_n_Sp;
-  diff_IMnpipi_woK0_wSid_n_Sp = new TH2F(Form("diff_IMnpipi_woK0_wSid_n_Sp"),Form("diff_IMnpipi_woK0_wSid_n_Sp"),nbinIMnpipi,1,2,100,-1,1);
+  diff_IMnpipi_woK0_wSid_n_Sp = new TH2F(Form("diff_IMnpipi_woK0_wSid_n_Sp"),Form("diff_IMnpipi_woK0_wSid_n_Sp"),nbinIMnpipi,1,2,600,-0.3,0.3);
   diff_IMnpipi_woK0_wSid_n_Sp->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   diff_IMnpipi_woK0_wSid_n_Sp->SetYTitle("reco. - gen. [GeV/c^{2}]");
   
-  
   TH2F* diff_IMnpipi_woK0_wSid_n_Sm;
-  diff_IMnpipi_woK0_wSid_n_Sm = new TH2F(Form("diff_IMnpipi_woK0_wSid_n_Sm"),Form("diff_IMnpipi_woK0_wSid_n_Sm"),nbinIMnpipi,1,2,100,-1,1);
+  diff_IMnpipi_woK0_wSid_n_Sm = new TH2F(Form("diff_IMnpipi_woK0_wSid_n_Sm"),Form("diff_IMnpipi_woK0_wSid_n_Sm"),nbinIMnpipi,1,2,600,-0.3,0.3);
   diff_IMnpipi_woK0_wSid_n_Sm->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   diff_IMnpipi_woK0_wSid_n_Sm->SetYTitle("reco. - gen.  [GeV/c^{2}]");
 
@@ -484,6 +484,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     LVec_beam_CM.Boost(-boost);
     double cos_n = LVec_n_miss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_n_miss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
     TLorentzVector qkn = *LVec_beam-LVec_n_miss;
+    TLorentzVector qkn_mc = *mcmom_beam-*mcmom_nmiss;
     TLorentzVector qkn_vtx[2];
     if(!UseKinFitVal){ 
       qkn_vtx[0] = *LVec_beam_Sp-LVec_n_miss_vtx[0];
@@ -494,10 +495,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     }
     // calc pi+pi- //
     TLorentzVector LVec_pip_pim = *LVec_pip+*LVec_pim;
-     
+    TLorentzVector LVec_pip_pim_mc = *mcmom_pip+*mcmom_pim; 
 
     // calc pi+n //
     TLorentzVector LVec_pip_n = *LVec_pip+*LVec_n;
+    TLorentzVector LVec_pip_n_mc = *mcmom_pip+*mcmom_ncds;
     TLorentzVector LVec_pip_n_vtx[2];
     if(!UseKinFitVal){
       LVec_pip_n_vtx[0] = *LVec_pip+*LVec_n_Sp;
@@ -508,6 +510,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     }
     // calc pi-n //
     TLorentzVector LVec_pim_n = *LVec_pim+*LVec_n;
+    TLorentzVector LVec_pim_n_mc = *mcmom_pim+*mcmom_ncds;
     TLorentzVector LVec_pim_n_vtx[2];
     if(!UseKinFitVal){
       LVec_pim_n_vtx[0]= *LVec_pim+*LVec_n_Sp;
@@ -519,6 +522,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
     // calc missing Sp //
     TLorentzVector LVec_pip_n_miss = *LVec_target+*LVec_beam-*LVec_pim-*LVec_n;
+    TLorentzVector LVec_pip_n_miss_mc = *LVec_target+*mcmom_beam-*mcmom_pim-*mcmom_ncds;
     TLorentzVector LVec_pip_n_miss_vtx[2];
     if(!UseKinFitVal){
       LVec_pip_n_miss_vtx[0]= *LVec_target+*LVec_beam_Sp-*LVec_pim-*LVec_n_Sp;                          
@@ -530,6 +534,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
     // calc missing Sm //
     TLorentzVector LVec_pim_n_miss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_n;
+    TLorentzVector LVec_pim_n_miss_mc = *LVec_target+*mcmom_beam-*mcmom_pip-*mcmom_ncds;
     TLorentzVector LVec_pim_n_miss_vtx[2];
     if(!UseKinFitVal){
       LVec_pim_n_miss_vtx[0] = *LVec_target+*LVec_beam_Sp-*LVec_pip-*LVec_n_Sp;
@@ -541,6 +546,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     
     // calc pi+pi-n //
     TLorentzVector LVec_pip_pim_n = *LVec_pip+*LVec_pim+*LVec_n;
+    TLorentzVector LVec_pip_pim_n_mc = *mcmom_pip+*mcmom_pim+*mcmom_ncds;
     TLorentzVector LVec_pip_pim_n_vtx[2];
     if(!UseKinFitVal){
       LVec_pip_pim_n_vtx[0] = *LVec_pip+*LVec_pim+*LVec_n_Sp;
@@ -864,6 +870,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         IMnpim_IMnpip_dE_woK0_n_Sp->Fill(LVec_pip_n.M(),LVec_pim_n.M());
         q_IMnpipi_woK0_wSid_n_Sp->Fill(LVec_pip_pim_n.M(),qkn.P());
         q_IMnpipi_woK0_wSid_n_Sp_acc->Fill(LVec_pip_pim_n.M(),qkn.P());
+        if(Spmode){
+          q_IMnpipi_woK0_wSid_n_Sp_mc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
+          diff_IMnpipi_woK0_wSid_n_Sp->Fill(LVec_pip_pim_n.M(),LVec_pip_pim_n.M()-LVec_pip_pim_n_mc.M());
+        }
       }
       if(SigmaPcutFlag[sigmacuttype] || (!SigmaPFlag)){
         IMnpim_IMnpip_dE_woK0_n_Sp_bg->Fill(LVec_pip_n.M(),LVec_pim_n.M());
@@ -880,6 +890,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         IMnpim_IMnpip_dE_woK0_n_Sm->Fill(LVec_pip_n.M(),LVec_pim_n.M());
         q_IMnpipi_woK0_wSid_n_Sm->Fill(LVec_pip_pim_n.M(),qkn.P());
         q_IMnpipi_woK0_wSid_n_Sm_acc->Fill(LVec_pip_pim_n.M(),qkn.P());
+        if(Smmode){
+          q_IMnpipi_woK0_wSid_n_Sm_mc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
+          diff_IMnpipi_woK0_wSid_n_Sm->Fill(LVec_pip_pim_n.M(),LVec_pip_pim_n.M()-LVec_pip_pim_n_mc.M());
+        }
       }
       if(SigmaMcutFlag[sigmacuttype] || (!SigmaMFlag)){
         IMnpim_IMnpip_dE_woK0_n_Sm_bg->Fill(LVec_pip_n.M(),LVec_pim_n.M());
@@ -1734,6 +1748,64 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px->cd();
   //TH1D* q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px = q_IMnpipi_woK0_wSid_n_SpSm_side_cs->ProjectionX();
   //q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px->Draw("E");
+  if(Spmode){
+    TCanvas *cdiff_IMnpipi_woK0_wSid_n_Sp = new TCanvas("cdiff_IMnpipi_woK0_wSid_n_Sp","diff_IMnpipi_woK0_wSid_n_Sp");
+    cdiff_IMnpipi_woK0_wSid_n_Sp->cd();
+    diff_IMnpipi_woK0_wSid_n_Sp->Draw("colz");
+    auto pfxSp = (TProfile*)diff_IMnpipi_woK0_wSid_n_Sp->ProfileX("pfxSp",1,-1,"s");
+    pfxSp->SetLineColor(2);
+    pfxSp->SetMarkerStyle(33);
+    pfxSp->Draw("same");
+    TCanvas *cgaus = new TCanvas("cgaus","cgaus");
+    double recomass[nbinIMnpipi];
+    double cent[nbinIMnpipi];
+    double cent_err[nbinIMnpipi];
+    double sigma[nbinIMnpipi];
+    double sigma_err[nbinIMnpipi];
+    //cgaus->Divide(10,10);
+    TH1D *px[nbinIMnpipi];
+    for(int i=0;i<nbinIMnpipi;i++){
+      px[i] = (TH1D*)diff_IMnpipi_woK0_wSid_n_Sp->ProjectionY(Form("px%d",i),i+1,i+2,"");
+      recomass[i] = diff_IMnpipi_woK0_wSid_n_Sp->GetXaxis()->GetBinCenter(i+1);
+      cgaus->cd(i+1);
+      if(px[i]->GetEntries()>200){
+        //px[i]->Draw("HE");
+        px[i]->Fit("gaus"); 
+        cent[i] = px[i]->GetFunction("gaus")->GetParameter(1);
+        cent_err[i] = px[i]->GetFunction("gaus")->GetParError(1);
+        sigma[i]= px[i]->GetFunction("gaus")->GetParameter(2);
+        sigma_err[i]= px[i]->GetFunction("gaus")->GetParError(2);
+      }else{
+        cent[i]=0;
+        cent_err[i]=0;
+        sigma[i]=0;
+        sigma_err[i]=0;
+      }
+    }
+    TCanvas *cfitmean = new TCanvas("cfitmean","fitmean");
+    cfitmean->cd();
+    TGraphErrors *grcent = new TGraphErrors(nbinIMnpipi,recomass,cent,0,cent_err); 
+    grcent->Draw("AP");
+    TCanvas *cfitsigma = new TCanvas("cfitsigma","fitsigma");
+    cfitsigma->cd();
+    TGraphErrors *grsigma = new TGraphErrors(nbinIMnpipi,recomass,sigma,0,sigma_err); 
+    grsigma->SetTitle("mass resolution");
+    grsigma->GetXaxis()->SetTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+    grsigma->GetXaxis()->CenterTitle();
+    grsigma->GetYaxis()->SetTitle("resolution [GeV/c^{2}]");
+    grsigma->GetYaxis()->CenterTitle();
+    grsigma->GetYaxis()->SetTitleOffset(1.3);
+    grsigma->Draw("AP");
+  }
+  
+  if(Smmode){
+    TCanvas *cdiff_IMnpipi_woK0_wSid_n_Sm = new TCanvas("cdiff_IMnpipi_woK0_wSid_n_Sm","diff_IMnpipi_woK0_wSid_n_Sm");
+    cdiff_IMnpipi_woK0_wSid_n_Sm->cd();
+    diff_IMnpipi_woK0_wSid_n_Sm->Draw("colz");
+    TProfile *pfxSm = diff_IMnpipi_woK0_wSid_n_Sm->ProfileX("pfxSm",1,-1,"s");
+    pfxSm->SetLineColor(2);
+    pfxSm->Draw("same");
+  }
 
 
   
@@ -1750,12 +1822,14 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       h1->GetXaxis()->CenterTitle();
       //h1->GetXaxis()->SetTitleSize(0.05);
       //h1->GetXaxis()->SetTitleOffset(0.80);
+      h1->GetYaxis()->SetTitleOffset(1.3);
     }
     if(obj->InheritsFrom("TH1D")){
       h1d = (TH1D*) obj;
       h1d->GetXaxis()->CenterTitle();
       //h1d->GetXaxis()->SetTitleSize(0.05);
       //h1d->GetXaxis()->SetTitleOffset(0.80);
+      h1d->GetYaxis()->SetTitleOffset(1.3);
     }
     if(obj->InheritsFrom("TH2")){
       h2 = (TH2F*) obj;
@@ -1764,7 +1838,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       //h2->GetXaxis()->SetTitleSize(0.05);
       //h2->GetXaxis()->SetTitleOffset(0.80);
       //h2->GetYaxis()->SetTitleSize(0.05);
-      //h2->GetYaxis()->SetTitleOffset(0.85);
+      h2->GetYaxis()->SetTitleOffset(1.1);
     }
   }
 
