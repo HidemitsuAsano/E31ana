@@ -38,7 +38,7 @@ const unsigned int sigmacuttype=0;
 //0:diagonal cut
 //1:3 sigma cut
 //2:5 sigma cut
-const unsigned int sidebandtype=2;
+const unsigned int sidebandtype=0;
 
 
 void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
@@ -380,6 +380,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   q_IMnpipi_woK0_wSid_n_side->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_woK0_wSid_n_side->SetYTitle("Mom. Transfer [GeV/c]");
   
+  //IMnpip_IMnpipi_woK0 = new TH2F(Form("IMnpip_IMnpipi_woK0_wSid    "),
+
   nmom_IMnpipi_woK0_wSid_n = new TH2F(Form("nmom_IMnpipi_woK0_wSid_n"),Form("nmom_IMnpipi_woK0_wSid_n"), nbinIMnpipi,1,2,100,0,1.0);
   nmom_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   nmom_IMnpipi_woK0_wSid_n->SetYTitle("nmom  [GeV/c]");
@@ -654,7 +656,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
     //Sigma+ production in CDS
     //band cut for signal
-    
     if( (anacuts::Sigmap_MIN<MassNPip && MassNPip<anacuts::Sigmap_MAX)) SigmaPFlag=true;
         
     //Sigma- production in CDS
@@ -672,20 +673,20 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     //triangular cuts
     //
     //Sigma cross region top
-    if(  (MassNPim >  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
+    if(  (MassNPim >=  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
       && (MassNPim > -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagTop=true;
     
     //Sigma cross region bottom
-    if(  (MassNPim <  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
+    if(  (MassNPim <=  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
       && (MassNPim < -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagBottom=true;
 
     //Sigma cross region right
     if(  (MassNPim <  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
-      && (MassNPim > -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagRight=true;
+      && (MassNPim >= -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagRight=true;
    
     //Sigma cross region left
     if(  (MassNPim >  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )  
-      && (MassNPim < -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagLeft=true;
+      && (MassNPim <= -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagLeft=true;
     
     bool SigmaPcutFlag[3] = {false,false,false};
     bool SigmaMcutFlag[3] = {false,false,false};
@@ -695,7 +696,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       if(SigmaPFlag && !SigmaCrossFlagLeft && !SigmaCrossFlagRight){ 
         SigmaPcutFlag[0]=true;
       }
-      if(SigmaMFlag && !SigmaCrossFlagTop && !SigmaCrossFlagBottom){
+      if(SigmaMFlag && !SigmaCrossFlagTop  && !SigmaCrossFlagBottom){
         SigmaMcutFlag[0]=true;
       }
     }
@@ -816,7 +817,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
          (MassNPim <  anacuts::Sigmam_sidehigh_MAX))) SigmaMsideHighFlag=true;
     
     //Sigma- production side band low or high mass side
-    //if(SigmaMsideLowFlag || SigmaMsideHighFlag) SigmaMsideFlag=true;
     if( (SigmaMsideLowFlag  && !SigmaCrossMsideLowFlagTop  && !SigmaCrossMsideLowFlagBottom) 
         ||  (SigmaMsideHighFlag && !SigmaCrossMsideHighFlagTop && !SigmaCrossMsideHighFlagBottom)
       ) SigmaMsideFlag[0]=true;
