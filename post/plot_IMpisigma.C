@@ -29,8 +29,16 @@ const double pvalcut = 0.005;
 const bool gridon=true;
 const bool staton=false;
 const bool UseKinFitVal = true;
+
+//0: diagonal cut
+//1: 3 sigma cut
+//2: 5 simga cut 
 const unsigned int sigmacuttype=0;
-const unsigned int sidebandtype=1;
+
+//0:diagonal cut
+//1:3 sigma cut
+//2:5 sigma cut
+const unsigned int sidebandtype=2;
 
 
 void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
@@ -484,7 +492,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     LVec_beam_CM.Boost(-boost);
     double cos_n = LVec_n_miss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_n_miss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
     TLorentzVector qkn = *LVec_beam-LVec_n_miss;
-    TLorentzVector qkn_mc = *mcmom_beam-*mcmom_nmiss;
+    TLorentzVector qkn_mc;
+    if(Spmode || Smmode){
+      qkn_mc = *mcmom_beam-*mcmom_nmiss;
+    }
     TLorentzVector qkn_vtx[2];
     if(!UseKinFitVal){ 
       qkn_vtx[0] = *LVec_beam_Sp-LVec_n_miss_vtx[0];
@@ -495,11 +506,16 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     }
     // calc pi+pi- //
     TLorentzVector LVec_pip_pim = *LVec_pip+*LVec_pim;
-    TLorentzVector LVec_pip_pim_mc = *mcmom_pip+*mcmom_pim; 
-
+    TLorentzVector LVec_pip_pim_mc;
+    if(Spmode || Smmode){
+      LVec_pip_pim_mc = *mcmom_pip+*mcmom_pim; 
+    }
     // calc pi+n //
     TLorentzVector LVec_pip_n = *LVec_pip+*LVec_n;
-    TLorentzVector LVec_pip_n_mc = *mcmom_pip+*mcmom_ncds;
+    TLorentzVector LVec_pip_n_mc;
+    if(Spmode || Smmode){
+     LVec_pip_n_mc  = *mcmom_pip+*mcmom_ncds;
+    }
     TLorentzVector LVec_pip_n_vtx[2];
     if(!UseKinFitVal){
       LVec_pip_n_vtx[0] = *LVec_pip+*LVec_n_Sp;
@@ -510,7 +526,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     }
     // calc pi-n //
     TLorentzVector LVec_pim_n = *LVec_pim+*LVec_n;
-    TLorentzVector LVec_pim_n_mc = *mcmom_pim+*mcmom_ncds;
+    TLorentzVector LVec_pim_n_mc;
+    if(Spmode || Smmode){
+      LVec_pim_n_mc = *mcmom_pim+*mcmom_ncds;
+    }
     TLorentzVector LVec_pim_n_vtx[2];
     if(!UseKinFitVal){
       LVec_pim_n_vtx[0]= *LVec_pim+*LVec_n_Sp;
@@ -522,7 +541,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
     // calc missing Sp //
     TLorentzVector LVec_pip_n_miss = *LVec_target+*LVec_beam-*LVec_pim-*LVec_n;
-    TLorentzVector LVec_pip_n_miss_mc = *LVec_target+*mcmom_beam-*mcmom_pim-*mcmom_ncds;
+    
+    TLorentzVector LVec_pip_n_miss_mc;
+    if(Spmode || Smmode){
+      LVec_pip_n_miss_mc = *LVec_target+*mcmom_beam-*mcmom_pim-*mcmom_ncds;
+    }
     TLorentzVector LVec_pip_n_miss_vtx[2];
     if(!UseKinFitVal){
       LVec_pip_n_miss_vtx[0]= *LVec_target+*LVec_beam_Sp-*LVec_pim-*LVec_n_Sp;                          
@@ -534,7 +557,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
     // calc missing Sm //
     TLorentzVector LVec_pim_n_miss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_n;
-    TLorentzVector LVec_pim_n_miss_mc = *LVec_target+*mcmom_beam-*mcmom_pip-*mcmom_ncds;
+    TLorentzVector LVec_pim_n_miss_mc; 
+    if(Spmode || Smmode){
+      LVec_pim_n_miss_mc = *LVec_target+*mcmom_beam-*mcmom_pip-*mcmom_ncds;
+    }
     TLorentzVector LVec_pim_n_miss_vtx[2];
     if(!UseKinFitVal){
       LVec_pim_n_miss_vtx[0] = *LVec_target+*LVec_beam_Sp-*LVec_pip-*LVec_n_Sp;
@@ -546,7 +572,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     
     // calc pi+pi-n //
     TLorentzVector LVec_pip_pim_n = *LVec_pip+*LVec_pim+*LVec_n;
-    TLorentzVector LVec_pip_pim_n_mc = *mcmom_pip+*mcmom_pim+*mcmom_ncds;
+    TLorentzVector LVec_pip_pim_n_mc; 
+    if(Spmode || Smmode){
+      LVec_pip_pim_n_mc = *mcmom_pip+*mcmom_pim+*mcmom_ncds;
+    }
     TLorentzVector LVec_pip_pim_n_vtx[2];
     if(!UseKinFitVal){
       LVec_pip_pim_n_vtx[0] = *LVec_pip+*LVec_pim+*LVec_n_Sp;
@@ -1203,7 +1232,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //q_IMnpipi_woK0_wSid_n_Sp_side_px->Draw("HEsame");
   
   TH1D* q_IMnpipi_woK0_wSid_n_Sp_side_px_0 = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side[0]->ProjectionX();
-  q_IMnpipi_woK0_wSid_n_Sp_side_px_0->SetLineColor(kOrange);
+  q_IMnpipi_woK0_wSid_n_Sp_side_px_0->SetLineColor(kOrange+1);
   q_IMnpipi_woK0_wSid_n_Sp_side_px_0->Draw("HEsame");
   TH1D* q_IMnpipi_woK0_wSid_n_Sp_side_px_1 = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side[1]->ProjectionX();
   q_IMnpipi_woK0_wSid_n_Sp_side_px_1->SetLineColor(kOrange+2);
@@ -1751,6 +1780,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   if(Spmode){
     TCanvas *cdiff_IMnpipi_woK0_wSid_n_Sp = new TCanvas("cdiff_IMnpipi_woK0_wSid_n_Sp","diff_IMnpipi_woK0_wSid_n_Sp");
     cdiff_IMnpipi_woK0_wSid_n_Sp->cd();
+    diff_IMnpipi_woK0_wSid_n_Sp->GetYaxis()->SetRangeUser(-0.1,0.1);
     diff_IMnpipi_woK0_wSid_n_Sp->Draw("colz");
     auto pfxSp = (TProfile*)diff_IMnpipi_woK0_wSid_n_Sp->ProfileX("pfxSp",1,-1,"s");
     pfxSp->SetLineColor(2);
@@ -1801,9 +1831,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   if(Smmode){
     TCanvas *cdiff_IMnpipi_woK0_wSid_n_Sm = new TCanvas("cdiff_IMnpipi_woK0_wSid_n_Sm","diff_IMnpipi_woK0_wSid_n_Sm");
     cdiff_IMnpipi_woK0_wSid_n_Sm->cd();
+    diff_IMnpipi_woK0_wSid_n_Sm->GetYaxis()->SetRangeUser(-0.1,0.1);
     diff_IMnpipi_woK0_wSid_n_Sm->Draw("colz");
     TProfile *pfxSm = diff_IMnpipi_woK0_wSid_n_Sm->ProfileX("pfxSm",1,-1,"s");
     pfxSm->SetLineColor(2);
+    pfxSm->SetMarkerStyle(33);
     pfxSm->Draw("same");
     TCanvas *cgaus = new TCanvas("cgaus","cgaus");
     double recomass[nbinIMnpipi];
@@ -1814,8 +1846,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     //cgaus->Divide(10,10);
     TH1D *px[nbinIMnpipi];
     for(int i=0;i<nbinIMnpipi;i++){
-      px[i] = (TH1D*)diff_IMnpipi_woK0_wSid_n_Sp->ProjectionY(Form("px%d",i),i+1,i+2,"");
-      recomass[i] = diff_IMnpipi_woK0_wSid_n_Sp->GetXaxis()->GetBinCenter(i+1);
+      px[i] = (TH1D*)diff_IMnpipi_woK0_wSid_n_Sm->ProjectionY(Form("px%d",i),i+1,i+2,"");
+      recomass[i] = diff_IMnpipi_woK0_wSid_n_Sm->GetXaxis()->GetBinCenter(i+1);
       cgaus->cd(i+1);
       if(px[i]->GetEntries()>200){
         //px[i]->Draw("HE");
