@@ -24,6 +24,7 @@
 
 #include "../src/GlobalVariables.h"
 #include "anacuts.h"
+#include "globalana.h"
 
 const double pvalcut = 0.005;
 const bool gridon=true;
@@ -57,6 +58,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=1)
   gStyle->SetCanvasDefH(800); gStyle->SetCanvasDefW(1000);
   //gStyle->SetTitleFontSize(0.1);
   
+  TH1::SetDefaultSumw2();
 
   std::cout << "infile " << filename <<std::endl;
   TString pdfname = std::string(filename);
@@ -75,52 +77,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=1)
   bool Spmode = (std::string(filename).find("Sp")!= std::string::npos);
   bool Smmode = (std::string(filename).find("Sm")!= std::string::npos);
   
-  TH1::SetDefaultSumw2();
-  //= = = = pipipnn final-sample tree = = = =//
-  TLorentzVector *LVec_beam=nullptr;   // 4-momentum(beam)
-  TLorentzVector *LVec_beam_Sp=nullptr;   // 4-momentum(beam),Sp mode assumption
-  TLorentzVector *LVec_beam_Sm=nullptr;   // 4-momentum(beam),Sm mode assumption
-  TLorentzVector *LVec_target=nullptr; // 4-momentum(target)
-  TLorentzVector *LVec_pip=nullptr;    // 4-momentum(pi+)
-  TLorentzVector *LVec_pim=nullptr;    // 4-momentum(pi-)
-  TLorentzVector *LVec_n=nullptr;      // 4-momentum(neutron)
-  TLorentzVector *LVec_n_Sp=nullptr;      // 4-momentum(neutron),Sp mode assumption
-  TLorentzVector *LVec_n_Sm=nullptr;      // 4-momentum(neutron),Sm mode assumption
-  TLorentzVector *mcmom_beam=nullptr;   // generated 4-momentum(beam)
-  TLorentzVector *mcmom_pip=nullptr;    // generated 4-momentum(pi+)
-  TLorentzVector *mcmom_pim=nullptr;    // generated 4-momentum(pi-)
-  TLorentzVector *mcmom_ncds=nullptr;      // generated 4-momentum(neutron)
-  TLorentzVector *mcmom_nmiss=nullptr;      // generated 4-momentum(neutron)
-  double NeutralBetaCDH; // velocity of neutral particle on CDH
-  double NeutralBetaCDH_vtx[2]; // velocity of neutral particle on CDH,0: Spmode 1:Smmode
-  double dE;   // energy deposit on CDH
-  TVector3 *vtx_reaction = nullptr; // vertex(reaction) 
-  TVector3 *vtx_pip_beam = nullptr; //C.A.P of pip-beam beam side
-  TVector3 *vtx_pim_beam = nullptr; //C.A.P of pim-beam beam side
-  TVector3 *vtx_pip_cdc = nullptr;//C.A.P of pip-beam pip side
-  TVector3 *vtx_pim_cdc = nullptr;//C.A.P of pim-beam pim side
-  TVector3 *CA_pip = nullptr;//C.A.P of pip-pim pip side
-  TVector3 *CA_pim = nullptr;//C.A.P of pip-pim pim side
-  //int run_num;   // run number
-  //int event_num; // event number
-  //int block_num; // block number
-  TLorentzVector *kfSpmode_mom_beam=nullptr;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
-  TLorentzVector *kfSpmode_mom_pip=nullptr;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
-  TLorentzVector *kfSpmode_mom_pim=nullptr;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
-  TLorentzVector *kfSpmode_mom_n=nullptr;      // 4-momentum(neutron) after kinematical refit for pi- Sigma+
-  double kfSpmode_chi2;   // chi2 of kinematical refit
-  double kfSpmode_NDF;    // NDF of kinematical refit
-  double kfSpmode_status; // status of kinematical refit -> details can be found in this code
-  double kfSpmode_pvalue; // p-value of kinematical refit
-  TLorentzVector *kfSmmode_mom_beam=nullptr;   // 4-momentum(beam) after kinematical refit for pi+ Sigma-
-  TLorentzVector *kfSmmode_mom_pip=nullptr;    // 4-momentum(pi+) after kinematical refit for pi+ Sigma-
-  TLorentzVector *kfSmmode_mom_pim=nullptr;    // 4-momentum(pi-) after kinematical refit for pi+ Sigma-
-  TLorentzVector *kfSmmode_mom_n=nullptr;      // 4-momentum(neutron) after kinematical refit for pi+ Sigma-
-  double kfSmmode_chi2;   // chi2 of kinematical refit
-  double kfSmmode_NDF;    // NDF of kinematical refit
-  double kfSmmode_status; // status of kinematical refit -> details can be found in this code
-  double kfSmmode_pvalue; // p-value of kinematical refit
-  int kf_flag; // flag of correct pair reconstruction, etc
 
   //= = = = pipipnn final-sample tree = = = =//
   
@@ -1585,9 +1541,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=1)
     }else{
       std::cout << "This is Sigma- mode sim." << std::endl;
     }
-    //sphis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v28.root","READ");
-    //sphis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v32.root","READ");
-    TFile *genhis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v28_v32.root","READ");
+    TFile *genhis;
+    if(Spmode) genhis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v45_v48.root","READ");
+    if(Smmode) genhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v45_v48.root","READ");
     std::cout << "file for generated info " ;
     std::cout << genhis->GetName() << std::endl;
     TString sacc = genhis->GetName();
@@ -1599,8 +1555,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=1)
     TCanvas *cphase = new TCanvas("cphase","cphase");
     cphase->cd();
     TH2F *React_q_IMPiSigma = (TH2F*)genhis->Get("React_q_IMPiSigma");
-    React_q_IMPiSigma->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
-    React_q_IMPiSigma->SetYTitle("Mom. tranfer [GeV/c]");
+    React_q_IMPiSigma->SetXTitle("true IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+    React_q_IMPiSigma->GetXaxis()->CenterTitle();
+    React_q_IMPiSigma->SetYTitle("true Mom. tranfer [GeV/c]");
+    React_q_IMPiSigma->GetYaxis()->CenterTitle();
     if(Spmode)React_q_IMPiSigma->SetTitle("Generated Events (#pi^{-}#Sigma^{+} mode) ");
     if(Smmode)React_q_IMPiSigma->SetTitle("Generated Events (#pi^{+}#Sigma^{-} mode) ");
     //React_q_IMPiSigma->RebinX(1);
@@ -1891,17 +1849,25 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=1)
     TCanvas *cfitmean = new TCanvas("cfitmean","fitmean");
     cfitmean->cd();
     TGraphErrors *grcent = new TGraphErrors(nbinIMnpipi,recomass,cent,0,cent_err); 
-    grcent->Draw("AP");
+    grcent->SetTitle("gaussian mean");
+    grcent->GetXaxis()->SetTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+    grcent->GetXaxis()->CenterTitle();
+    grcent->GetYaxis()->SetTitle("mass center [GeV/c^{2}]");
+    grcent->GetYaxis()->CenterTitle();
+    grcent->SetMarkerStyle(20);
+    grcent->GetYaxis()->SetTitleOffset(1.5);
+    grcent->Draw("APE");
     TCanvas *cfitsigma = new TCanvas("cfitsigma","fitsigma");
     cfitsigma->cd();
     TGraphErrors *grsigma = new TGraphErrors(nbinIMnpipi,recomass,sigma,0,sigma_err); 
     grsigma->SetTitle("mass resolution");
     grsigma->GetXaxis()->SetTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
     grsigma->GetXaxis()->CenterTitle();
-    grsigma->GetYaxis()->SetTitle("resolution [GeV/c^{2}]");
+    grsigma->GetYaxis()->SetTitle("mass resolution [GeV/c^{2}]");
     grsigma->GetYaxis()->CenterTitle();
-    grsigma->GetYaxis()->SetTitleOffset(1.3);
-    grsigma->Draw("AP");
+    grsigma->GetYaxis()->SetTitleOffset(1.5);
+    grsigma->SetMarkerStyle(20);
+    grsigma->Draw("APE");
   }
   
   if(Smmode){
