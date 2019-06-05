@@ -31,7 +31,7 @@ const double pvalcut = 0.005;
 const bool gridon=true;
 const bool staton=false;
 const bool UseKinFitVal = true;
-const bool Sim1400Cut = false;
+const bool Sim1400Cut = true;
 
 //0: diagonal cut
 //1: 3 sigma cut
@@ -1581,10 +1581,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       std::cout << "This is Sigma- mode sim." << std::endl;
     }
     TFile *genhis;
-    //if(Spmode) genhis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v47_v48.root","READ");
-    //if(Smmode) genhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v47_v48.root","READ");
-    if(Spmode) genhis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v45_v46.root","READ");
-    if(Smmode) genhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v45_v46.root","READ");
+    if(Spmode) genhis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v47_v48.root","READ");
+    if(Smmode) genhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v47_v48.root","READ");
+    //if(Spmode) genhis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v45_v46.root","READ");
+    //if(Smmode) genhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v45_v46.root","READ");
     std::cout << "file for generated info " ;
     std::cout << genhis->GetName() << std::endl;
     TString sacc = genhis->GetName();
