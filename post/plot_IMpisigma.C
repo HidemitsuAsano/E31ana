@@ -31,7 +31,7 @@ const double pvalcut = 0.005;
 const bool gridon=true;
 const bool staton=false;
 const bool UseKinFitVal = true;
-const bool Sim1400Cut = true;
+const bool Sim1400Cut = false;
 
 //0: diagonal cut
 //1: 3 sigma cut
@@ -485,7 +485,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     LVec_n_miss_CM.Boost(-boost);
     LVec_beam_CM.Boost(-boost);
     double cos_n = LVec_n_miss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_n_miss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
-    
+    if(Spmode || Smmode){
+      TVector3 boost_mc =  (*LVec_target+*mcmom_beam).BoostVector();
+
+    }
     TLorentzVector qkn_mc;
     if(Spmode || Smmode){
       qkn_mc = *mcmom_beam-*mcmom_nmiss;
@@ -1581,10 +1584,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       std::cout << "This is Sigma- mode sim." << std::endl;
     }
     TFile *genhis;
-    if(Spmode) genhis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v47_v48.root","READ");
-    if(Smmode) genhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v47_v48.root","READ");
-    //if(Spmode) genhis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v45_v46.root","READ");
-    //if(Smmode) genhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v45_v46.root","READ");
+    //if(Spmode) genhis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v47_v48.root","READ");
+    //if(Smmode) genhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v47_v48.root","READ");
+    if(Spmode) genhis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v45_v46.root","READ");
+    if(Smmode) genhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v45_v46.root","READ");
     std::cout << "file for generated info " ;
     std::cout << genhis->GetName() << std::endl;
     TString sacc = genhis->GetName();
@@ -1603,22 +1606,18 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     if(Spmode)React_q_IMPiSigma->SetTitle("Generated Events (#pi^{-}#Sigma^{+} mode) ");
     if(Smmode)React_q_IMPiSigma->SetTitle("Generated Events (#pi^{+}#Sigma^{-} mode) ");
     //React_q_IMPiSigma->RebinX(1);
-    React_q_IMPiSigma->RebinY(12);
+    //React_q_IMPiSigma->RebinY(12);
     React_q_IMPiSigma->Draw("colz");
    
     TCanvas *ceff = new TCanvas("ceff","ceff");
-    //q_IMnpipi_woK0_wSid_n_Sp->RebinY(12);
     TH2F *h2acc=NULL;
     if(Spmode) h2acc =  (TH2F*)q_IMnpipi_woK0_wSid_n_Sp_acc->Clone();
     else       h2acc =  (TH2F*)q_IMnpipi_woK0_wSid_n_Sm_acc->Clone();
     h2acc->Sumw2();
-    h2acc->RebinY(12);
     q_IMnpipi_woK0_wSid_n_Sp->Sumw2();
     q_IMnpipi_woK0_wSid_n_Sm->Sumw2();
     React_q_IMPiSigma->Sumw2();
     React_q_IMPiSigma->Print("base");
-    q_IMnpipi_woK0_wSid_n_Sp_acc->RebinY(12);
-    q_IMnpipi_woK0_wSid_n_Sm_acc->RebinY(12);
     q_IMnpipi_woK0_wSid_n_Sp_acc->Print("base");
     std::cout << "calc. acc." << std::endl;
     TEfficiency *pEff ;
@@ -1629,16 +1628,19 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         int bingen =  React_q_IMPiSigma->GetBinContent(ibinx,ibiny);
         int binacc =  q_IMnpipi_woK0_wSid_n_Sp_acc->GetBinContent(ibinx,ibiny);
         if(binacc>=bingen) q_IMnpipi_woK0_wSid_n_Sp_acc->SetBinContent(ibinx,ibiny,0.0);
-        if(bingen<100) q_IMnpipi_woK0_wSid_n_Sp_acc->SetBinContent(ibinx,ibiny,0.0); 
-      }
-    }
-
-    for(int ibinx=0;ibinx<React_q_IMPiSigma->GetNbinsX();ibinx++){
-      for(int ibiny=0;ibiny<React_q_IMPiSigma->GetNbinsY();ibiny++){
-        int bingen =  React_q_IMPiSigma->GetBinContent(ibinx,ibiny);
-        int binacc =  q_IMnpipi_woK0_wSid_n_Sm_acc->GetBinContent(ibinx,ibiny);
+        binacc =  q_IMnpipi_woK0_wSid_n_Sm_acc->GetBinContent(ibinx,ibiny);
         if(binacc>=bingen) q_IMnpipi_woK0_wSid_n_Sm_acc->SetBinContent(ibinx,ibiny,0.0);
-        if(bingen<100) q_IMnpipi_woK0_wSid_n_Sm_acc->SetBinContent(ibinx,ibiny,0.0); 
+        binacc =  q_IMnpipi_wSid_n_acc->GetBinContent(ibinx,ibiny);
+        if(binacc>=bingen) q_IMnpipi_wSid_n_acc->SetBinContent(ibinx,ibiny,0.0);
+        binacc =  q_IMnpipi_woK0_wSid_n_acc->GetBinContent(ibinx,ibiny);
+        if(binacc>=bingen) q_IMnpipi_woK0_wSid_n_acc->SetBinContent(ibinx,ibiny,0.0);
+        
+        if(bingen<100){
+          q_IMnpipi_wSid_n_acc->SetBinContent(ibinx,ibiny,0.0); 
+          q_IMnpipi_woK0_wSid_n_acc->SetBinContent(ibinx,ibiny,0.0); 
+          q_IMnpipi_woK0_wSid_n_Sp_acc->SetBinContent(ibinx,ibiny,0.0); 
+          q_IMnpipi_woK0_wSid_n_Sm_acc->SetBinContent(ibinx,ibiny,0.0); 
+        }
       }
     }
 
@@ -1667,8 +1669,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     }
     h2acc->Write();
     pEff->Write();
-    TH2F *acc_err = new TH2F("acc_err","acc_err",500,1,2,300,0,1.5);
-    acc_err->RebinY(12);
+    TH2F *acc_err = new TH2F("acc_err","acc_err",500,1,2,25,0,1.5);
     for(int ix=0;ix<h2acc->GetNbinsX();ix++){
       for(int iy=0;iy<h2acc->GetNbinsY();iy++){
         double err = h2acc->GetBinErrorUp(ix,iy);
@@ -1689,6 +1690,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     }
     q_IMnpipi_wSid_n_acc->Write();
     q_IMnpipi_woK0_wSid_n_acc->Write();
+    
     fsacc->Close();
   }//Spmode or Smmode
   
