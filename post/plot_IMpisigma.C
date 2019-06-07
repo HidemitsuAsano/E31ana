@@ -1899,7 +1899,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     cdiff_IMnpipi_woK0_wSid_n_Sp->cd();
     diff_IMnpipi_woK0_wSid_n_Sp->GetYaxis()->SetRangeUser(-0.1,0.1);
     diff_IMnpipi_woK0_wSid_n_Sp->Draw("colz");
-    auto pfxSp = (TProfile*)diff_IMnpipi_woK0_wSid_n_Sp->ProfileX("pfxSp",1,-1,"s");
+    TProfile *pfxSp = (TProfile*)diff_IMnpipi_woK0_wSid_n_Sp->ProfileX("pfxSp",1,-1,"s");
     pfxSp->SetLineColor(2);
     pfxSp->SetMarkerStyle(33);
     pfxSp->Draw("same");
@@ -1959,7 +1959,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     cdiff_q_woK0_wSid_n_Sp->cd();
     diff_q_woK0_wSid_n_Sp->GetYaxis()->SetRangeUser(-0.1,0.1);
     diff_q_woK0_wSid_n_Sp->Draw("colz");
-    auto pfxSp_q = (TProfile*)diff_q_woK0_wSid_n_Sp->ProfileX("pfxSp_q",1,-1,"s");
+    TProfile *pfxSp_q = (TProfile*)diff_q_woK0_wSid_n_Sp->ProfileX("pfxSp_q",1,-1,"s");
     pfxSp_q->SetLineColor(2);
     pfxSp_q->SetMarkerStyle(33);
     pfxSp_q->Draw("same");
@@ -2080,7 +2080,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     cdiff_q_woK0_wSid_n_Sm->cd();
     diff_q_woK0_wSid_n_Sm->GetYaxis()->SetRangeUser(-0.1,0.1);
     diff_q_woK0_wSid_n_Sm->Draw("colz");
-    auto pfxSm_q = (TProfile*)diff_q_woK0_wSid_n_Sm->ProfileX("pfxSm_q",1,-1,"s");
+    TProfile *pfxSm_q = (TProfile*)diff_q_woK0_wSid_n_Sm->ProfileX("pfxSm_q",1,-1,"s");
     pfxSm_q->SetLineColor(2);
     pfxSm_q->SetMarkerStyle(33);
     pfxSm_q->Draw("same");
