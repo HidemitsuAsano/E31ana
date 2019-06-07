@@ -31,7 +31,7 @@ const double pvalcut = 0.005;
 const bool gridon=true;
 const bool staton=false;
 const bool UseKinFitVal = true;
-const bool Sim1400Cut = false;
+//const bool Sim1400Cut = false;
 
 //0: diagonal cut
 //1: 3 sigma cut
@@ -581,9 +581,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       LVec_pip_pim_n_vtx[0] = *kfSpmode_mom_pip+*kfSpmode_mom_pim+*kfSpmode_mom_n;
       LVec_pip_pim_n_vtx[1] = *kfSmmode_mom_pip+*kfSmmode_mom_pim+*kfSmmode_mom_n;
     }
-    if(Sim1400Cut && (Spmode || Smmode)){
-      if(!(((0.85<cos_n) && (cos_n<=1)) || (LVec_pip_pim_n.M()<1.40))) continue;  
-    }
+    //if(Sim1400Cut && (Spmode || Smmode)){
+    //  if(!(((0.85<cos_n) && (cos_n<=1)) || (LVec_pip_pim_n.M()<1.40))) continue;  
+    // }
     TLorentzVector qkn = *LVec_beam-LVec_n_miss;
     TLorentzVector LVec_pip_pim_n_CM = LVec_pip_pim_n;
     LVec_pip_pim_n_CM.Boost(-boost);
@@ -1586,8 +1586,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     TFile *genhis;
     //if(Spmode) genhis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v47_v48.root","READ");
     //if(Smmode) genhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v47_v48.root","READ");
-    if(Spmode) genhis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v45_v46.root","READ");
-    if(Smmode) genhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v45_v46.root","READ");
+    //if(Spmode) genhis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v45_v46.root","READ");
+    //if(Smmode) genhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v45_v46.root","READ");
+    if(Spmode) genhis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v49.root","READ");
+    if(Smmode) genhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v49.root","READ");
     std::cout << "file for generated info " ;
     std::cout << genhis->GetName() << std::endl;
     TString sacc = genhis->GetName();
