@@ -18,10 +18,12 @@ const bool labelon=true;
 #include <TVector3.h>
 #include <TLorentzVector.h>
 #include <TLegend.h>
+#include <TPaveText.h>
 
 
 #include "../src/IMPiSigmaAnaPar.h"
 
+void SimGenInfo(TFile *f);
 void QAbeamline(TFile *f);
 void QACDS(TFile *f);
 void QAForward(TFile *f);
@@ -41,6 +43,15 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   //gStyle->SetPalette(56);
   TFile *f = new TFile(filename,"READ"); 
   
+  bool Spmode = (std::string(filename).find("Sp")!= std::string::npos);
+  bool Smmode = (std::string(filename).find("Sm")!= std::string::npos);
+  if(Spmode){
+    std::cout << "This is Sigma+ mode sim." << std::endl;
+  }else if(Smmode){
+    std::cout << "This is Sigma- mode sim." << std::endl;
+  }
+
+
   std::cout << "infile " << filename <<std::endl;
   TString pdfname = std::string(filename);
   pdfname.Replace(std::string(filename).size()-4,5,"pdf");
@@ -51,6 +62,8 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   TH1F *h1_EventCheck = (TH1F*)f->Get("EventCheck");
   h1_EventCheck->SetXTitle("Event tag"); 
   h1_EventCheck->Draw();
+  
+  if(Spmode || Smmode) SimGenInfo(f);
 
   QAbeamline(f);
    
@@ -67,11 +80,11 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   
   //centering title of all histograms 
   TIter nexthist(gDirectory->GetList());
-  TH1F *h1 = nullptr;
-  TH1D *h1d = nullptr;
-  TH2F *h2 = nullptr;
-  TObject *obj = nullptr;
-  while( ((obj = (TObject*)nexthist())!=nullptr) && labelon  ){
+  TH1F *h1 = NULL;
+  TH1D *h1d = NULL;
+  TH2F *h2 = NULL;
+  TObject *obj = NULL;
+  while( ((obj = (TObject*)nexthist())!=NULL) && labelon  ){
     if(obj->InheritsFrom("TH1F")){
       h1 = (TH1F*) obj;
       //h1->SetFillStyle(3004);
@@ -90,12 +103,11 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
     }
   }
 
-  TCanvas *c = nullptr;
+  TCanvas *c = NULL;
   //TPDF *pdf = new TPDF(pdfname);
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
   int size = SCol->GetSize();
   TIter next(SCol);
-  // while((c= (TCanvas*)next())){
   for(int i=0;i<size;i++){
     //pdf->NewPage();
     c= (TCanvas*)next();
@@ -104,7 +116,17 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
     //inside the canvas
     //TPaveText *pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
     TPaveText *pt = new TPaveText(.82,0.90,0.98,0.99,"NDC");
-    pt->AddText("Real Data");
+    if(Spmode){
+      pt->SetFillColor(kAzure-4);
+      pt->AddText("MC #Sigma+#pi- mode");
+    }
+    else if(Smmode){
+      pt->SetFillColor(kAzure-4);
+      pt->AddText("MC #Sigma-#pi+ mode"); 
+    }else{
+      pt->AddText("Real Data");
+      pt->SetFillColor(kCyan-9);
+    }
     pt->SetFillColor(kCyan-9);
     pt->SetBorderSize(1);
     pt->Draw();
@@ -120,6 +142,20 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
 
   return;
 }
+
+void SimGenInfo(TFile *f){
+  
+  gStyle->SetOptStat("e");
+  TCanvas *cReact_q_IMPiSigma = new TCanvas("cReact_q_IMPiSigma","React_q_IMPiSigma");
+  TH2F* React_q_IMPiSigma = (TH2F*)f->Get("React_q_IMPiSigma");
+  React_q_IMPiSigma->SetMaximum(4000);
+  React_q_IMPiSigma->SetXTitle("true IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  React_q_IMPiSigma->SetYTitle("true Mom. Transfer [GeV/c]");
+  React_q_IMPiSigma->Draw("colz");
+
+}
+
+
 
 void QAForward(TFile *f){
   
@@ -831,3 +867,4 @@ void QAbeamline(TFile *f){
 
   return;
 }
+
