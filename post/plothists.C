@@ -65,6 +65,9 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   
   if(Spmode || Smmode) SimGenInfo(f);
 
+  bool IsLPim =  (std::string(filename).find("Lambda")!=std::string::npos);
+  if(IsLPim) std::cout << "This is Lambda #pi^{-} analysis " << std::endl;
+
   QAbeamline(f);
    
   //CDS QA 
