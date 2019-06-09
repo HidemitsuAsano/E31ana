@@ -956,6 +956,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         IMnpim_IMnpip_dE_woK0_n_cut->Fill(LVec_pip_n.M(),LVec_pim_n.M());
         //MMnmiss_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(), nmiss_mass);
         q_IMnpipi_woK0_wSid_n_acc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
+        q_IMnpipi_woK0_wSid_n_acc_reco->Fill(LVec_pip_pim_n.M(),qkn.P());
         q_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),qkn.P());
         nmom_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P());
         DCA_pip_beam->Fill( dca_pip_beam);
@@ -972,6 +973,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         IMnpim_IMnpip_dE_woK0_n_Sp->Fill(LVec_pip_n.M(),LVec_pim_n.M());
         q_IMnpipi_woK0_wSid_n_Sp->Fill(LVec_pip_pim_n.M(),qkn.P());
         q_IMnpipi_woK0_wSid_n_Sp_acc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
+        q_IMnpipi_woK0_wSid_n_Sp_acc_reco->Fill(LVec_pip_pim_n.M(),qkn.P());
         if(Spmode){
           q_IMnpipi_woK0_wSid_n_Sp_mc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
           diff_IMnpipi_woK0_wSid_n_Sp->Fill(LVec_pip_pim_n.M(),LVec_pip_pim_n.M()-LVec_pip_pim_n_mc.M());
@@ -997,6 +999,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         q_IMnpipi_woK0_wSid_n_Sm->Fill(LVec_pip_pim_n.M(),qkn.P());
         //q_IMnpipi_woK0_wSid_n_Sm_acc->Fill(LVec_pip_pim_n.M(),qkn.P());
         q_IMnpipi_woK0_wSid_n_Sm_acc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
+        q_IMnpipi_woK0_wSid_n_Sm_acc_reco->Fill(LVec_pip_pim_n.M(),qkn.P());
         if(Smmode){
           q_IMnpipi_woK0_wSid_n_Sm_mc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
           diff_IMnpipi_woK0_wSid_n_Sm->Fill(LVec_pip_pim_n.M(),LVec_pip_pim_n.M()-LVec_pip_pim_n_mc.M());
@@ -1029,6 +1032,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       if(SigmaPFlag || SigmaMFlag){
         q_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),qkn.P());
         q_IMnpipi_wSid_n_acc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
+        q_IMnpipi_wSid_n_acc_reco->Fill(LVec_pip_pim_n.M(),qkn.P());
       }
       if(SigmaPsideFlag[sidebandtype] || SigmaMsideFlag[sidebandtype]){
         q_IMnpipi_wSid_n_side->Fill(LVec_pip_pim_n.M(),qkn.P());
@@ -1066,7 +1070,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0_n_Sp->GetYaxis()->SetRangeUser(0,1.7);
   IMnpim_IMnpip_dE_woK0_n_Sp->SetMaximum(IMnpim_IMnpip_dE_woK0_n->GetMaximum());
   IMnpim_IMnpip_dE_woK0_n_Sp->Draw("colz");
-
   IMnpim_IMnpip_dE_woK0_n_Sm->Draw("colsame");
 
 
@@ -1076,8 +1079,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0_n_Sp_side[0]->Draw("colsame");
   IMnpim_IMnpip_dE_woK0_n_Sp_side[1]->Draw("colsame");
 
-
-  
   TCanvas *cIMnpim_IMnpip_dE_woK0_n_Sm = new TCanvas("cIMnpim_IMnpip_dE_woK0_n_Sm","IMnpim_IMnpip_dE_woK0_n_Sm");
   IMnpim_IMnpip_dE_woK0_n_Sm->SetMaximum(IMnpim_IMnpip_dE_woK0_n->GetMaximum());
   IMnpim_IMnpip_dE_woK0_n_Sm->GetXaxis()->SetRangeUser(0,1.7);
@@ -1643,30 +1644,14 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     }else{
       std::cout << "This is Sigma- mode sim." << std::endl;
     }
-    TFile *genhis;
-    if(Spmode) genhis = new TFile("../simpost/simIMpisigma_nSppim_DoraAir_v49.root","READ");
-    if(Smmode) genhis = new TFile("../simpost/simIMpisigma_nSmpip_DoraAir_v49.root","READ");
-    std::cout << "file for generated info " ;
-    std::cout << genhis->GetName() << std::endl;
-    TString sacc = genhis->GetName();
+    TString sacc = std::string(filename);
     sacc.Replace(sacc.Length()-5,10,"_acc.root");
     std::cout << "acc file Sp mode: " << sacc.Data() << std::endl;
-   
-    //facc->SetName(sacc.Data());
-    genhis->cd();
+    TFile *fsacc = new TFile(sacc.Data(),"RECREATE");
+
     TCanvas *cphase = new TCanvas("cphase","cphase");
     cphase->cd();
-    TH2F *React_q_IMPiSigma = (TH2F*)genhis->Get("React_q_IMPiSigma");
-    React_q_IMPiSigma->SetXTitle("true IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
-    React_q_IMPiSigma->GetXaxis()->CenterTitle();
-    React_q_IMPiSigma->SetYTitle("true Mom. tranfer [GeV/c]");
-    React_q_IMPiSigma->GetYaxis()->CenterTitle();
-    if(Spmode)React_q_IMPiSigma->SetTitle("Generated Events (#pi^{-}#Sigma^{+} mode) ");
-    if(Smmode)React_q_IMPiSigma->SetTitle("Generated Events (#pi^{+}#Sigma^{-} mode) ");
-    //React_q_IMPiSigma->RebinX(1);
-    //React_q_IMPiSigma->RebinY(12);
-    React_q_IMPiSigma->Draw("colz");
-   
+    q_IMnpipi_gen->Draw("colz");
     TCanvas *ceff = new TCanvas("ceff","ceff");
     TH2F *h2acc=NULL;
     if(Spmode) h2acc =  (TH2F*)q_IMnpipi_woK0_wSid_n_Sp_acc->Clone();
@@ -1674,18 +1659,19 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     h2acc->Sumw2();
     q_IMnpipi_woK0_wSid_n_Sp->Sumw2();
     q_IMnpipi_woK0_wSid_n_Sm->Sumw2();
-    React_q_IMPiSigma->Sumw2();
-    React_q_IMPiSigma->Print("base");
+    q_IMnpipi_gen->Sumw2();
+    q_IMnpipi_gen->Print("base");
     q_IMnpipi_woK0_wSid_n_Sp_acc->Print("base");
     std::cout << "calc. acc." << std::endl;
     TEfficiency *pEff ;
 
     //cleaning 
-    for(int ibinx=0;ibinx<React_q_IMPiSigma->GetNbinsX();ibinx++){
-      for(int ibiny=0;ibiny<React_q_IMPiSigma->GetNbinsY();ibiny++){
-        int bingen =  React_q_IMPiSigma->GetBinContent(ibinx,ibiny);
-        int binacc =  q_IMnpipi_woK0_wSid_n_Sp_acc->GetBinContent(ibinx,ibiny);
-        if(binacc>=bingen) q_IMnpipi_woK0_wSid_n_Sp_acc->SetBinContent(ibinx,ibiny,0.0);
+    /*
+    for(int ibinx=0;ibinx<q_IMnpipi_gen->GetNbinsX();ibinx++){
+      for(int ibiny=0;ibiny<q_IMnpipi_gen->GetNbinsY();ibiny++){
+        int bingen =  q_IMnpipi_gen->GetBinContent(ibinx,ibiny);
+        int binacc =  q_IMnpipi_woK0_wSid_n_Sp_acc_reco->GetBinContent(ibinx,ibiny);
+        if(binacc>=bingen) q_IMnpipi_woK0_wSid_n_Sp_acc_reco->SetBinContent(ibinx,ibiny,0.0);
         binacc =  q_IMnpipi_woK0_wSid_n_Sm_acc->GetBinContent(ibinx,ibiny);
         if(binacc>=bingen) q_IMnpipi_woK0_wSid_n_Sm_acc->SetBinContent(ibinx,ibiny,0.0);
         binacc =  q_IMnpipi_wSid_n_acc->GetBinContent(ibinx,ibiny);
@@ -1700,59 +1686,23 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           q_IMnpipi_woK0_wSid_n_Sm_acc->SetBinContent(ibinx,ibiny,0.0); 
         }
       }
-    }
+    }*/
 
 
-    if(Spmode){
-      h2acc->Divide(q_IMnpipi_woK0_wSid_n_Sp_acc,React_q_IMPiSigma,1.0,1.0,"b");
-      pEff = new TEfficiency(*q_IMnpipi_woK0_wSid_n_Sp_acc,*React_q_IMPiSigma);
-    }else{
-      h2acc->Divide(q_IMnpipi_woK0_wSid_n_Sm_acc,React_q_IMPiSigma,1.0,1.0,"b");
-      pEff = new TEfficiency(*q_IMnpipi_woK0_wSid_n_Sm_acc,*React_q_IMPiSigma);
-    }
-    pEff->SetTitle("efftest");
-    TCanvas *cefftest = new TCanvas("cefftest","efftest");
-    pEff->Draw("");
-
-    h2acc->SetMaximum(0.02);
-    h2acc->Draw("colz");
-    TFile *fsacc = new TFile(sacc.Data(),"RECREATE");
-    fsacc->cd();
-    if(Spmode){
-      h2acc->SetName("acc_Sp");
-      h2acc->SetTitle("acc_Sp");
-    }else if(Smmode){
-      h2acc->SetName("acc_Sm");
-      h2acc->SetTitle("acc_Sm");
-    }
-    h2acc->Write();
-    pEff->Write();
-    TH2F *acc_err = new TH2F("acc_err","acc_err",500,1,2,25,0,1.5);
-    for(int ix=0;ix<h2acc->GetNbinsX();ix++){
-      for(int iy=0;iy<h2acc->GetNbinsY();iy++){
-        double err = h2acc->GetBinErrorUp(ix,iy);
-        double cont = h2acc->GetBinContent(ix,iy);
-        if(cont) acc_err->SetBinContent(ix,iy,err/cont);
-      }
-    }
-    TCanvas *cacc_err = new TCanvas("cacc_err","acc_err");
-    acc_err->Draw("colz");
-    acc_err->Write();
-    if(Spmode)React_q_IMPiSigma->SetName("React_q_IMPiSigma_Sp");
-    else      React_q_IMPiSigma->SetName("React_q_IMPiSigma_Sm");
-    React_q_IMPiSigma->Write();
-    if(Spmode){
-      q_IMnpipi_woK0_wSid_n_Sp_acc->Write();
-    }else{
-      q_IMnpipi_woK0_wSid_n_Sm_acc->Write();
-    }
+    q_IMnpipi_gen->Write();
+    q_IMnpipi_woK0_wSid_n_Sp_acc->Write();
+    q_IMnpipi_woK0_wSid_n_Sp_acc_reco->Write();
+    q_IMnpipi_woK0_wSid_n_Sm_acc->Write();
+    q_IMnpipi_woK0_wSid_n_Sm_acc_reco->Write();
     q_IMnpipi_wSid_n_acc->Write();
+    q_IMnpipi_wSid_n_acc_reco->Write();
     q_IMnpipi_woK0_wSid_n_acc->Write();
+    q_IMnpipi_woK0_wSid_n_acc_reco->Write();
     
     fsacc->Close();
   }//Spmode or Smmode
   
-  
+  /*
   facc->cd();
   TH2F* acc_Sp_cal = (TH2F*)facc->Get("acc_Sp");
   if(acc_Sp_cal == NULL){
@@ -1849,7 +1799,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   cs_sub_sum->Add(q_IMnpipi_woK0_wSid_n_Sm_sub_cs_px);
   cs_sub_sum->SetLineColor(4);
   cs_sub_sum->Draw("PEsame");
-
+  */
   /*
   TCanvas *c1 = new TCanvas("c1","c1");
   c1->cd();
@@ -1878,7 +1828,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   cs_sub_sum->SetMaximum(q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->GetMaximum());
   cs_sub_sum->Draw("PE");
   */
-  
+   
+  /*
   TCanvas *cq_IMnpipi_woK0_wSid_n_Sp_sub_cs_py = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp_sub_cs_py","q_IMnpipi_woK0_wSid_n_Sp_sub_cs_py");
   TH1D *q_IMnpipi_woK0_wSid_n_Sp_sub_cs_py = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_sub_cs->ProjectionY();
   q_IMnpipi_woK0_wSid_n_Sp_sub_cs_py->SetLineColor(2);
@@ -1933,7 +1884,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TCanvas *cIMnpim_IMnpipi_woK0_n = new TCanvas("cIMnpim_IMnpipi_woK0_n","IMnpim_IMnpipi_woK0_n");
   cIMnpim_IMnpipi_woK0_n->cd();
   IMnpim_IMnpipi_woK0_n->Draw("colz");
-
+  */
 
   //TCanvas *cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px","q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px");
   //cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px->cd();
