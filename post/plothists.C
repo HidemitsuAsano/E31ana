@@ -18,6 +18,7 @@ const bool labelon=true;
 #include <TVector3.h>
 #include <TLorentzVector.h>
 #include <TLegend.h>
+#include <TPaveText.h>
 
 
 #include "../src/IMPiSigmaAnaPar.h"
@@ -51,6 +52,9 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
   TH1F *h1_EventCheck = (TH1F*)f->Get("EventCheck");
   h1_EventCheck->SetXTitle("Event tag"); 
   h1_EventCheck->Draw();
+
+  bool IsLPim =  (std::string(filename).find("Lambda")!=std::string::npos);
+  if(IsLPim) std::cout << "This is Lambda #pi^{-} analysis " << std::endl;
 
   QAbeamline(f);
    
