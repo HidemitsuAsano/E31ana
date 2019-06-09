@@ -589,15 +589,30 @@ int main( int argc, char** argv )
       if( ip ) TL_gene[ip].SetVectM(mcData->track(ID[ip])->momentum()*0.001,  pdg->GetParticle(PDG[ip])->Mass()); // GeV
       else    TL_gene[ip].SetVectM(mcData->track(ID[ip])->momentum()*-0.001, pdg->GetParticle(PDG[ip])->Mass()); // GeV
     }
+    int genID[kin::npart] = {0,1,2,3,4,5};
     mcmom_beam = TL_gene[kin::kmbeam];
     //mcmom_ncds = TL_gene[genID[kin::ncds]];
     //mcmom_nmiss = TL_gene[genID[kin::nmiss]];
-    mcmom_ncds = TL_gene[kin::ncds];
-    mcmom_nmiss = TL_gene[kin::nmiss];
     if( reactionID==gen::reactionID_Spmode ){
+      TLorentzVector mcmom_ncdspi = TL_gene[kin::ncds]+TL_gene[kin::pip_g2];
+      TLorentzVector mcmom_nmisspi = TL_gene[kin::nmiss]+TL_gene[kin::pip_g2];
+      if( fabs(mcmom_ncdspi.M()-spMass)>fabs(mcmom_nmisspi.M()-spMass)){
+        genID[kin::nmiss] = kin::ncds;
+        genID[kin::ncds] = kin::nmiss;
+      }
+      mcmom_ncds = TL_gene[genID[kin::ncds]];
+      mcmom_nmiss = TL_gene[genID[kin::nmiss]];
       mcmom_pip  = TL_gene[kin::pip_g2];
       mcmom_pim  = TL_gene[kin::pim_g1];
     } else if ( reactionID==gen::reactionID_Smmode ){
+      TLorentzVector mcmom_ncdspi = TL_gene[kin::ncds]+TL_gene[kin::pim_g2];
+      TLorentzVector mcmom_nmisspi = TL_gene[kin::nmiss]+TL_gene[kin::pim_g2];
+      if( fabs(mcmom_ncdspi.M()-smMass)>fabs(mcmom_nmisspi.M()-smMass)){
+        genID[kin::nmiss] = kin::ncds;
+        genID[kin::ncds] = kin::nmiss;
+      }
+      mcmom_ncds = TL_gene[genID[kin::ncds]];
+      mcmom_nmiss = TL_gene[genID[kin::nmiss]];
       mcmom_pip  = TL_gene[kin::pip_g1];
       mcmom_pim  = TL_gene[kin::pim_g2];
     }
@@ -1320,7 +1335,7 @@ int main( int argc, char** argv )
 
             double val1 = (TL_meas[kin::ncds]-TL_gene[kin::nmiss]).P(); // n_measured - n_initial
             double val2 = (TL_meas[kin::ncds]-TL_gene[kin::ncds]).P(); // n_measured - n_Sigma
-            int genID[kin::npart] = {0,1,2,3,4,5};
+            //int genID[kin::npart] = {0,1,2,3,4,5};
             IsncdsfromSigma = true;
             if( val1<val2 ){ // is there more good selection way?
               genID[kin::nmiss] = kin::ncds;
