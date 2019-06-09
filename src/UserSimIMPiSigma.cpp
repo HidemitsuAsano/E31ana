@@ -272,7 +272,7 @@ int main( int argc, char** argv )
   npippimTree->Branch( "CA_pim",&CA_pim);
   npippimTree->Branch( "CDH_Pos",&CDH_Pos);
   //npippimTree->Branch( "run_num", &run_num );
-  //npippimTree->Branch( "event_num", &event_num );
+  npippimTree->Branch( "event_num", &event_num );
   //npippimTree->Branch( "block_num", &block_num );
   npippimTree->Branch( "mc_nparticle",   &mc_nparticle );
   npippimTree->Branch( "mcmom_beam",   &mcmom_beam );
@@ -371,7 +371,7 @@ int main( int argc, char** argv )
   int nAbort_pippim = 0;
   int nAbort_anothern = 0;
   int nAbort_end = 0;
-  bool IsGoodEvent = true;
+  bool IsncdsfromSigma = true;
   
   int nFill_pippim = 0;
   int nFill_pippimn = 0;
@@ -402,6 +402,9 @@ int main( int argc, char** argv )
     
     //### event ID matching
     if( evHeaderMC->eventID()!=header->ev() ){
+      std::cout << "event ID mismatch !!"  << std::endl;
+      std::cout << "evHeaderMC: " << evHeaderMC->eventID() << std::endl;
+      std::cout << "header:     " << header->ev()  << std::endl;
       continue;
     }
     ev_cdc++;
@@ -579,7 +582,6 @@ int main( int argc, char** argv )
     }
 
     
-    //*** for kinematical fit ***//
     // beam_K(K+), pi, Y, N, N from Sigma, pi from Sigma
     // beam particle is emitted from the target
     TLorentzVector TL_gene[kin::npart]; // generated
@@ -587,6 +589,21 @@ int main( int argc, char** argv )
       if( ip ) TL_gene[ip].SetVectM(mcData->track(ID[ip])->momentum()*0.001,  pdg->GetParticle(PDG[ip])->Mass()); // GeV
       else    TL_gene[ip].SetVectM(mcData->track(ID[ip])->momentum()*-0.001, pdg->GetParticle(PDG[ip])->Mass()); // GeV
     }
+    mcmom_beam = TL_gene[kin::kmbeam];
+    //mcmom_ncds = TL_gene[genID[kin::ncds]];
+    //mcmom_nmiss = TL_gene[genID[kin::nmiss]];
+    mcmom_ncds = TL_gene[kin::ncds];
+    mcmom_nmiss = TL_gene[kin::nmiss];
+    if( reactionID==gen::reactionID_Spmode ){
+      mcmom_pip  = TL_gene[kin::pip_g2];
+      mcmom_pim  = TL_gene[kin::pim_g1];
+    } else if ( reactionID==gen::reactionID_Smmode ){
+      mcmom_pip  = TL_gene[kin::pip_g1];
+      mcmom_pim  = TL_gene[kin::pim_g2];
+    }
+   
+
+
     /*
     if(flagG4Decay){
       double q = (TL_gene[kin::kmbeam].Vect()-TL_gene[kin::nmiss].Vect()).Mag();
@@ -665,9 +682,9 @@ int main( int argc, char** argv )
       IsrecoPassed=false;
     }
     LocalTrack *bpctrack = bltrackMan->trackBPC(bpcid);    
-    if( bpctrack->chi2all()>10 ){
+    if(IsrecoPassed && bpctrack->chi2all()>10 ){
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_bpctrack" << std::endl;
-      if(IsrecoPassed)nAbort_bpctrack++;
+      nAbort_bpctrack++;
       //continue;
       IsrecoPassed=false;
     }
@@ -696,9 +713,9 @@ int main( int argc, char** argv )
       if( bltrackMan->trackBLC2(iblc2trk)->chi2all()<blcuts::blc2_chi2_max) blc2id = iblc2trk;
     }
     Tools::Fill1D( Form("ntrack_BLC2"), nblc2 );
-    if( !(nblc2==1 && blc2id!=-1) ){
+    if(IsrecoPassed && !(nblc2==1 && blc2id!=-1) ){
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nblc2" << std::endl;
-      if(IsrecoPassed)nAbort_nblc2++;
+      nAbort_nblc2++;
       //continue;
       IsrecoPassed=false;
     }
@@ -706,48 +723,50 @@ int main( int argc, char** argv )
     //### BLC2-BPC position matching
     //TODO : not tuned yet
     bool fblc2bpc = false;
-    for( int iblc2trk=0; iblc2trk<bltrackMan->ntrackBLC2(); iblc2trk++ ){
-      if( iblc2trk!=blc2id ) continue;
-      LocalTrack *blc2 = bltrackMan->trackBLC2(iblc2trk);
-      double xblc2bpc[2], yblc2bpc[2];
-      double xmom[2], ymom[2];
+    if(IsrecoPassed){
+      for( int iblc2trk=0; iblc2trk<bltrackMan->ntrackBLC2(); iblc2trk++ ){
+        if( iblc2trk!=blc2id ) continue;
+        LocalTrack *blc2 = bltrackMan->trackBLC2(iblc2trk);
+        double xblc2bpc[2], yblc2bpc[2];
+        double xmom[2], ymom[2];
 
-      TVector3 Pos_BPC, Pos_BLC2, tmp;
-      confMan->GetBLDCWireMapManager()->GetGParam( CID_BPC, Pos_BPC, tmp );
-      confMan->GetBLDCWireMapManager()->GetGParam( CID_BLC2a, Pos_BLC2, tmp );
-      const double zPos_BPC = Pos_BPC.Z();
-      const double zPos_BLC2 = Pos_BLC2.Z();
-      const double zPos_BPC_BLC2 = (Pos_BPC.Z()+Pos_BLC2.Z())/2;
+        TVector3 Pos_BPC, Pos_BLC2, tmp;
+        confMan->GetBLDCWireMapManager()->GetGParam( CID_BPC, Pos_BPC, tmp );
+        confMan->GetBLDCWireMapManager()->GetGParam( CID_BLC2a, Pos_BLC2, tmp );
+        const double zPos_BPC = Pos_BPC.Z();
+        const double zPos_BLC2 = Pos_BLC2.Z();
+        const double zPos_BPC_BLC2 = (Pos_BPC.Z()+Pos_BLC2.Z())/2;
 
-      bpctrack->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[0], yblc2bpc[0] );
-      bpctrack->XYPosatZ( zPos_BPC, xmom[0], ymom[0] );
-      blc2->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[1], yblc2bpc[1]);
-      blc2->XYPosatZ( zPos_BLC2, xmom[1], ymom[1]);
-      double dxdz[2], dydz[2];
-      dxdz[0] = (xmom[0]-xblc2bpc[0]) / (zPos_BPC-zPos_BPC_BLC2);
-      dxdz[1] = (xmom[1]-xblc2bpc[1]) / (zPos_BLC2-zPos_BPC_BLC2);
-      dydz[0] = (ymom[0]-yblc2bpc[0]) / (zPos_BPC-zPos_BPC_BLC2);
-      dydz[1] = (ymom[1]-yblc2bpc[1]) / (zPos_BLC2-zPos_BPC_BLC2);
+        bpctrack->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[0], yblc2bpc[0] );
+        bpctrack->XYPosatZ( zPos_BPC, xmom[0], ymom[0] );
+        blc2->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[1], yblc2bpc[1]);
+        blc2->XYPosatZ( zPos_BLC2, xmom[1], ymom[1]);
+        double dxdz[2], dydz[2];
+        dxdz[0] = (xmom[0]-xblc2bpc[0]) / (zPos_BPC-zPos_BPC_BLC2);
+        dxdz[1] = (xmom[1]-xblc2bpc[1]) / (zPos_BLC2-zPos_BPC_BLC2);
+        dydz[0] = (ymom[0]-yblc2bpc[0]) / (zPos_BPC-zPos_BPC_BLC2);
+        dydz[1] = (ymom[1]-yblc2bpc[1]) / (zPos_BLC2-zPos_BPC_BLC2);
 
-      if( (xblc2bpc[1]-xblc2bpc[0])<PARA_blc2bpc_dx_MIN ||
-	       (xblc2bpc[1]-xblc2bpc[0])>PARA_blc2bpc_dx_MAX ) fblc2bpc = false;
-      else if( (yblc2bpc[1]-yblc2bpc[0])<PARA_blc2bpc_dy_MIN ||
-	       (yblc2bpc[1]-yblc2bpc[0])>PARA_blc2bpc_dy_MAX ) fblc2bpc = false;
-      else if( (dxdz[1]-dxdz[0])<PARA_blc2bpc_dxdz_MIN ||
-	       (dxdz[1]-dxdz[0])>PARA_blc2bpc_dxdz_MAX ) fblc2bpc = false;
-      else if( (dydz[1]-dydz[0])<PARA_blc2bpc_dydz_MIN ||
-	       (dydz[1]-dydz[0])>PARA_blc2bpc_dydz_MAX ) fblc2bpc = false;
-      else fblc2bpc = true;
+        if( (xblc2bpc[1]-xblc2bpc[0])<PARA_blc2bpc_dx_MIN ||
+            (xblc2bpc[1]-xblc2bpc[0])>PARA_blc2bpc_dx_MAX ) fblc2bpc = false;
+        else if( (yblc2bpc[1]-yblc2bpc[0])<PARA_blc2bpc_dy_MIN ||
+            (yblc2bpc[1]-yblc2bpc[0])>PARA_blc2bpc_dy_MAX ) fblc2bpc = false;
+        else if( (dxdz[1]-dxdz[0])<PARA_blc2bpc_dxdz_MIN ||
+            (dxdz[1]-dxdz[0])>PARA_blc2bpc_dxdz_MAX ) fblc2bpc = false;
+        else if( (dydz[1]-dydz[0])<PARA_blc2bpc_dydz_MIN ||
+            (dydz[1]-dydz[0])>PARA_blc2bpc_dydz_MAX ) fblc2bpc = false;
+        else fblc2bpc = true;
 
-      Tools::Fill2D( Form("dydx_BLC2BPC"), xblc2bpc[1]-xblc2bpc[0], yblc2bpc[1]-yblc2bpc[0] );
-      Tools::Fill2D( Form("dydzdxdz_BLC2BPC"), dxdz[1]-dxdz[0], dydz[1]-dydz[0] );
-    }//iblc2trk
+        Tools::Fill2D( Form("dydx_BLC2BPC"), xblc2bpc[1]-xblc2bpc[0], yblc2bpc[1]-yblc2bpc[0] );
+        Tools::Fill2D( Form("dydzdxdz_BLC2BPC"), dxdz[1]-dxdz[0], dydz[1]-dydz[0] );
+      }//iblc2trk
 
-    if( !fblc2bpc ){
-      if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_fblc2bpc" << std::endl;
-      if(IsrecoPassed)nAbort_fblc2bpc++;
-      //continue;
-      IsrecoPassed=false;
+      if( !fblc2bpc ){
+        if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_fblc2bpc" << std::endl;
+        if(IsrecoPassed) nAbort_fblc2bpc++;
+        //continue;
+        IsrecoPassed=false;
+      }
     }
 
     //** beam momentum calculation **//
@@ -786,8 +805,10 @@ int main( int argc, char** argv )
 
     double x1, y1, x2, y2;
     const double z1 = 0, z2 = 20;//TODO: what is this 20 ?
-    bpctrack->XYPosatZ(z1, x1, y1);
-    bpctrack->XYPosatZ(z2, x2, y2);
+    if(IsrecoPassed){
+      bpctrack->XYPosatZ(z1, x1, y1);
+      bpctrack->XYPosatZ(z2, x2, y2);
+    }
     TVector3 ls;
     ls.SetXYZ(x2-x1, y2-y1, z2-z1);
     ls = ls.Unit();
@@ -825,23 +846,26 @@ int main( int argc, char** argv )
     //** + + + + + + + + + + + + **//
     
     std::vector <int> vCDHseg;
-    const int nIDedTrack = Util::CDSChargedAna(
-        DoCDCRetiming,
-        bpctrack, cdsMan, cdstrackMan, confMan, blMan,
-        LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,true);
-    if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
-    if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );
-    if(nIDedTrack==-9){
-      nTrack_CDHshare++;
-      Tools::Fill1D( Form("EventCheck"), 9 );
-    }
-    if(nIDedTrack==-10) Tools::Fill1D( Form("EventCheck"), 10 );
-    if(nIDedTrack==-11) Tools::Fill1D( Form("EventCheck"), 11 );
-    if(nIDedTrack==-12) Tools::Fill1D( Form("EventCheck"), 12 );
-    if(nIDedTrack<0){
-      if(IsrecoPassed)nAbort_CDSPID++;
-      //continue;
-      IsrecoPassed=false;
+    int nIDedTrack=0;
+    if(IsrecoPassed){
+          nIDedTrack = Util::CDSChargedAna(
+          DoCDCRetiming,
+          bpctrack, cdsMan, cdstrackMan, confMan, blMan,
+          LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,true);
+      if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
+      if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );
+      if(nIDedTrack==-9){
+        nTrack_CDHshare++;
+        Tools::Fill1D( Form("EventCheck"), 9 );
+      }
+      if(nIDedTrack==-10) Tools::Fill1D( Form("EventCheck"), 10 );
+      if(nIDedTrack==-11) Tools::Fill1D( Form("EventCheck"), 11 );
+      if(nIDedTrack==-12) Tools::Fill1D( Form("EventCheck"), 12 );
+      if(nIDedTrack<0){
+        nAbort_CDSPID++;
+        //continue;
+        IsrecoPassed=false;
+      }
     }
 
     //Tools::Fill1D( Form("ntrack_CDS"), pip_ID.size()+p_ID.size()+d_ID.size()+pim_ID.size()+km_ID.size() );
@@ -919,8 +943,9 @@ int main( int argc, char** argv )
       }
       if( flag_isolation ){
         if(Verbosity_>100)std::cout<< "L."<< __LINE__ << " Event Number: " <<iev <<  " CDH hit candidate is NOT isolated !!!"<<std::endl;
-        nAbort_CDHiso++;
-        continue;
+        if(IsrecoPassed)nAbort_CDHiso++;
+        //continue;
+        IsrecoPassed=false;
       }else{
         if(Verbosity_>100) std::cerr<<"CDH isolation cuts : OK " << std::endl;
         Tools::Fill1D( Form("EventCheck"), 14 );
@@ -955,7 +980,7 @@ int main( int argc, char** argv )
          
 
       //** neutral particle in CDH **//
-      if( !nCDCforVeto ){
+      if( !nCDCforVeto && !flag_isolation ){
         if(NeutralCDHseg.size()!=1) {
           std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
         } else {
@@ -1296,7 +1321,7 @@ int main( int argc, char** argv )
             double val1 = (TL_meas[kin::ncds]-TL_gene[kin::nmiss]).P(); // n_measured - n_initial
             double val2 = (TL_meas[kin::ncds]-TL_gene[kin::ncds]).P(); // n_measured - n_Sigma
             int genID[kin::npart] = {0,1,2,3,4,5};
-            IsGoodEvent = true;
+            IsncdsfromSigma = true;
             if( val1<val2 ){ // is there more good selection way?
               genID[kin::nmiss] = kin::ncds;
               genID[kin::ncds] = kin::nmiss;
@@ -1304,19 +1329,9 @@ int main( int argc, char** argv )
               //ncds(gen.) is not detected, initial n is detected in CDS instead.
               //abort this event !
               if(IsrecoPassed)nAbort_anothern++;
-              IsGoodEvent = false;
+              IsncdsfromSigma = false;
             }
             if(Verbosity_)std::cout<< "L." << __LINE__ << " val = "<<val1<<" "<<val2<<" -> "<< genID[kin::nmiss] <<" "<< genID[kin::ncds] << std::endl;
-            mcmom_beam = TL_gene[kin::kmbeam];
-            mcmom_ncds = TL_gene[genID[kin::ncds]];
-            mcmom_nmiss = TL_gene[genID[kin::nmiss]];
-            if( reactionID==gen::reactionID_Spmode ){
-              mcmom_pip  = TL_gene[kin::pip_g2];
-              mcmom_pim  = TL_gene[kin::pim_g1];
-            } else if ( reactionID==gen::reactionID_Smmode ){
-              mcmom_pip  = TL_gene[kin::pip_g1];
-              mcmom_pim  = TL_gene[kin::pim_g2];
-            }
 
             //--- set TLorentzVector ---//
             // beam_K(K+), pi-/+, Sigma+/-, p, n, n from S, pi+/- from S 
@@ -1477,7 +1492,7 @@ int main( int argc, char** argv )
             // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
 
             //--- for the covariance matrix evaluation ---//
-            if( flagG4Decay && IsGoodEvent && MissNFlag && K0rejectFlag ){
+            if( flagG4Decay && IsncdsfromSigma && MissNFlag && K0rejectFlag ){
               if( ((reactionID==gen::reactionID_Spmode)&&SigmaPFlag)
                   ||  ((reactionID==gen::reactionID_Smmode)&&SigmaMFlag)){
                 TVector3 primvtx;
@@ -1576,26 +1591,27 @@ int main( int argc, char** argv )
           } // if( NBetaOK && NdEOK )
 
           //** fill tree **//
-          mom_beam   = LVec_beam;   // 4-momentum(beam)
-          mom_beam_Sp = LVec_beam_vtx[0];
-          mom_beam_Sm = LVec_beam_vtx[1];
-          mom_target = LVec_target; // 4-momentum(target)
-          mom_pip = LVec_pip;        // 4-momentum(pi+)
-          mom_pim = LVec_pim;        // 4-momentum(pi-)
-          mom_n = LVec_n;            // 4-momentum(neutron)
-          mom_n_Sp = LVec_n_vtx[0];            // 4-momentum(neutron)
-          mom_n_Sm = LVec_n_vtx[1];            // 4-momentum(neutron)
-          dE = ncdhhit->emean();
-          // beta is already filled
-          vtx_reaction = vtx_react; // vertex(reaction)
-          vtx_pip_beam = vtx_beam_wpip;
-          vtx_pim_beam = vtx_beam_wpim;
-          vtx_pip_cdc = vtx_pip;
-          vtx_pim_cdc = vtx_pim;
-          CA_pip = CA_pip_pippim;
-          CA_pim = CA_pim_pippim;
-          CDH_Pos = Pos_CDH;
-	  
+          if(IsncdsfromSigma && IsrecoPassed){
+            dE = ncdhhit->emean();
+            mom_n_Sp = LVec_n_vtx[0];            // 4-momentum(neutron)
+            mom_n_Sm = LVec_n_vtx[1];            // 4-momentum(neutron)
+            mom_beam_Sp = LVec_beam_vtx[0];
+            mom_beam_Sm = LVec_beam_vtx[1];
+            mom_beam   = LVec_beam;   // 4-momentum(beam)
+            mom_target = LVec_target; // 4-momentum(target)
+            mom_pip = LVec_pip;        // 4-momentum(pi+)
+            mom_pim = LVec_pim;        // 4-momentum(pi-)
+            mom_n = LVec_n;            // 4-momentum(neutron)
+            // beta is already filled
+            vtx_reaction = vtx_react; // vertex(reaction)
+            vtx_pip_beam = vtx_beam_wpip;
+            vtx_pim_beam = vtx_beam_wpim;
+            vtx_pip_cdc = vtx_pip;
+            vtx_pim_cdc = vtx_pim;
+            CA_pip = CA_pip_pippim;
+            CA_pim = CA_pim_pippim;
+            CDH_Pos = Pos_CDH;
+	        }
         } // if( GeomTools::GetID(vtx_react)==CID_Fiducial )
       } // if( !nCDCforVeto )
     }else{  //if pi+ pi- X event  
@@ -1615,8 +1631,8 @@ int main( int argc, char** argv )
         <<iev<<" , "<<" ---, "<<ev_cdc<<std::endl;
     }
     outfile2->cd();
-    //if(IsGoodEvent && piSigma_detect)
-    //if(IsGoodEvent ){
+    //if(IsncdsfromSigma && piSigma_detect)
+    //if(IsncdsfromSigma ){
     npippimTree->Fill();
     nFill_pippimn++;
     //}
