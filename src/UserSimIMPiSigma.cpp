@@ -92,11 +92,21 @@ int run_num;   // run number
 int event_num; // event number
 int block_num; // block number
 int mc_nparticle;
-TLorentzVector mcmom_beam;   // generated 4-momentum(beam)
-TLorentzVector mcmom_pip;    // generated 4-momentum(pi+)
-TLorentzVector mcmom_pim;    // generated 4-momentum(pi-)
-TLorentzVector mcmom_ncds;      // generated 4-momentum(neutron)
-TLorentzVector mcmom_nmiss;      // generated 4-momentum(neutron)
+
+//GEANT4 info after decay, interaction with detector, momentum is true
+TLorentzVector mcmom_beam;  // generated 4-momentum(beam)
+TLorentzVector mcmom_pip;   // generated 4-momentum(pi+)
+TLorentzVector mcmom_pim;   // generated 4-momentum(pi-)
+TLorentzVector mcmom_ncds;    // generated 4-momentum(neutron)
+TLorentzVector mcmom_nmiss;    // generated 4-momentum(neutron)
+
+
+//GEANT4 info generated particle before interaction
+TLorentzVector react_nmiss;
+TLorentzVector react_Sigma;//Sigma+ or Simga -
+TLorentzVector react_pi;//pi- or pi +
+
+
 TVector3 mc_vtx;
 TLorentzVector kfMomBeamSpmode;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
 TLorentzVector kfMom_pip_Spmode;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
@@ -272,14 +282,17 @@ int main( int argc, char** argv )
   npippimTree->Branch( "CA_pim",&CA_pim);
   npippimTree->Branch( "CDH_Pos",&CDH_Pos);
   //npippimTree->Branch( "run_num", &run_num );
-  npippimTree->Branch( "event_num", &event_num );
+  //npippimTree->Branch( "event_num", &event_num );
   //npippimTree->Branch( "block_num", &block_num );
-  npippimTree->Branch( "mc_nparticle",   &mc_nparticle );
+  //npippimTree->Branch( "mc_nparticle",   &mc_nparticle );
   npippimTree->Branch( "mcmom_beam",   &mcmom_beam );
   npippimTree->Branch( "mcmom_pip", &mcmom_pip );
   npippimTree->Branch( "mcmom_pim", &mcmom_pim );
   npippimTree->Branch( "mcmom_ncds", &mcmom_ncds );
   npippimTree->Branch( "mcmom_nmiss", &mcmom_nmiss );
+  npippimTree->Branch( "react_nmiss",&react_nmiss);
+  npippimTree->Branch( "react_Sigma",&react_Sigma);
+  npippimTree->Branch( "react_pi",&react_pi);
   npippimTree->Branch( "mc_vtx", &mc_vtx );
   npippimTree->Branch( "kfSpmode_mom_beam",   &kfMomBeamSpmode );
   npippimTree->Branch( "kfSpmode_mom_pip", &kfMom_pip_Spmode );
@@ -440,9 +453,12 @@ int main( int argc, char** argv )
           <<std::endl;
       }
     }
-    //reaction data
+    //reaction data (=generated particle info.)
     Util::AnaReactionData(reacData);
-
+    
+    react_nmiss = reacData->GetParticle(0);
+    react_Sigma = reacData->GetParticle(1);
+    react_pi = reacData->GetParticle(2);
 
     const int reactionID = reacData->ReactionID();
     //These partcile IDs are defined in pythia6
@@ -591,8 +607,13 @@ int main( int argc, char** argv )
     }
     int genID[kin::npart] = {0,1,2,3,4,5};
     mcmom_beam = TL_gene[kin::kmbeam];
-    //mcmom_ncds = TL_gene[genID[kin::ncds]];
-    //mcmom_nmiss = TL_gene[genID[kin::nmiss]];
+    //std::cout << mcmom_beam.P() << std::endl;
+    //std::cout << mcmom_beam.M() << std::endl;
+    /*
+    mcmom_beam = TL_gene[kin::kmbeam];
+    mcmom_ncds = TL_gene[genID[kin::ncds]];
+    mcmom_nmiss = TL_gene[genID[kin::nmiss]];
+    
     if( reactionID==gen::reactionID_Spmode ){
       TLorentzVector mcmom_ncdspi = TL_gene[kin::ncds]+TL_gene[kin::pip_g2];
       TLorentzVector mcmom_nmisspi = TL_gene[kin::nmiss]+TL_gene[kin::pip_g2];
@@ -600,6 +621,9 @@ int main( int argc, char** argv )
         genID[kin::nmiss] = kin::ncds;
         genID[kin::ncds] = kin::nmiss;
       }
+      std::cout << __LINE__  << std::endl;
+      std::cout << mcmom_ncdspi.M() << std::endl;
+      std::cout << mcmom_nmisspi.M() << std::endl;
       mcmom_ncds = TL_gene[genID[kin::ncds]];
       mcmom_nmiss = TL_gene[genID[kin::nmiss]];
       mcmom_pip  = TL_gene[kin::pip_g2];
@@ -616,7 +640,7 @@ int main( int argc, char** argv )
       mcmom_pip  = TL_gene[kin::pip_g1];
       mcmom_pim  = TL_gene[kin::pim_g2];
     }
-   
+    */
 
 
     /*
@@ -1346,6 +1370,19 @@ int main( int argc, char** argv )
               if(IsrecoPassed)nAbort_anothern++;
               IsncdsfromSigma = false;
             }
+            mcmom_beam = TL_gene[kin::kmbeam];
+            mcmom_ncds  = TL_gene[genID[kin::ncds]];
+            mcmom_nmiss  = TL_gene[genID[kin::nmiss]];
+            if( reactionID==gen::reactionID_Spmode ){
+              mcmom_pip  = TL_gene[kin::pip_g2];
+              mcmom_pim  = TL_gene[kin::pim_g1];
+            } else if ( reactionID==gen::reactionID_Smmode ){
+              mcmom_pip  = TL_gene[kin::pip_g1];
+              mcmom_pim  = TL_gene[kin::pim_g2];
+            }
+
+
+
             if(Verbosity_)std::cout<< "L." << __LINE__ << " val = "<<val1<<" "<<val2<<" -> "<< genID[kin::nmiss] <<" "<< genID[kin::ncds] << std::endl;
 
             //--- set TLorentzVector ---//
@@ -1612,7 +1649,6 @@ int main( int argc, char** argv )
             mom_n_Sm = LVec_n_vtx[1];            // 4-momentum(neutron)
             mom_beam_Sp = LVec_beam_vtx[0];
             mom_beam_Sm = LVec_beam_vtx[1];
-            mom_beam   = LVec_beam;   // 4-momentum(beam)
             mom_target = LVec_target; // 4-momentum(target)
             mom_pip = LVec_pip;        // 4-momentum(pi+)
             mom_pim = LVec_pim;        // 4-momentum(pi-)
@@ -1626,6 +1662,8 @@ int main( int argc, char** argv )
             CA_pip = CA_pip_pippim;
             CA_pim = CA_pim_pippim;
             CDH_Pos = Pos_CDH;
+            TLorentzVector mcmom_ncdspi = TL_gene[genID[kin::ncds]]+TL_gene[kin::pip_g2];
+            //std::cout << __LINE__ << mcmom_ncdspi.M() << std::endl;
 	        }
         } // if( GeomTools::GetID(vtx_react)==CID_Fiducial )
       } // if( !nCDCforVeto )
@@ -1645,6 +1683,7 @@ int main( int argc, char** argv )
       std::cout<<"%%% pippimn event: Event_Number, Block_Event_Number, CDC_Event_Number = "
         <<iev<<" , "<<" ---, "<<ev_cdc<<std::endl;
     }
+    mom_beam   = LVec_beam;   // 4-momentum(beam)
     outfile2->cd();
     //if(IsncdsfromSigma && piSigma_detect)
     //if(IsncdsfromSigma ){
@@ -1766,6 +1805,10 @@ void InitTreeVal()
   mcmom_pim.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);    // generated 4-momentum(pi-)
   mcmom_ncds.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // generated 4-momentum(neutron)
   mcmom_nmiss.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // generated 4-momentum(neutron)
+  react_nmiss.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
+  react_Sigma.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
+  react_pi.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
+  
   mc_vtx.SetXYZ(-9999., -9999., -9999.);
   kfMomBeamSpmode.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);   // 4-momentum(beam) after kinematical refit for pi- Sigma+
   kfMom_pip_Spmode.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
