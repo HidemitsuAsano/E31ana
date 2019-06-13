@@ -1,7 +1,7 @@
 void accPiSigmaUniformGen(){
 
- // TFile *file1 = new TFile("simIMpisigma_nSppim_pippimn_DoraAir_v57_v58_acc.root","READ");
-  TFile *file1 = new TFile("simIMpisigma_nSmpip_pippimn_DoraAir_v57_v58_acc.root","READ");
+  TFile *file1 = new TFile("simIMpisigma_nSppim_pippimn_DoraAir_v57_v58_acc.root","READ");
+  //TFile *file1 = new TFile("simIMpisigma_nSmpip_pippimn_DoraAir_v57_v58_acc.root","READ");
   
   bool Spmode = (std::string(file1->GetName()).find("Sp")!= std::string::npos);
   bool Smmode = (std::string(file1->GetName()).find("Sm")!= std::string::npos);
@@ -19,22 +19,22 @@ void accPiSigmaUniformGen(){
   //generated info.
   TH2F* q_IMpiSigma_gen = (TH2F*)file1->Get("q_IMpiSigma_gen");
   TCanvas *cq_IMpiSigma_gen = new TCanvas("cq_IMpiSigma_gen","q_IMpiSigma_gen;");
-  q_IMpiSigma_gen->RebinX(4);
-  q_IMpiSigma_gen->RebinY(6);
+  q_IMpiSigma_gen->RebinX(5);
+  q_IMpiSigma_gen->RebinY(12);
   q_IMpiSigma_gen->Draw("colz");
   
   //true mass & q  including K0, 
   TH2F* q_IMpiSigma_wSid_n_genacc = (TH2F*)file1->Get("q_IMpiSigma_wSid_n_genacc");
   TCanvas *cq_IMpiSigma_wSid_n_genacc = new TCanvas("cq_IMpiSigma_wSid_n_genacc","q_IMpiSigma_wSid_n_genacc");
-  q_IMpiSigma_wSid_n_genacc->RebinX(4);
-  q_IMpiSigma_wSid_n_genacc->RebinY(6);
+  q_IMpiSigma_wSid_n_genacc->RebinX(5);
+  q_IMpiSigma_wSid_n_genacc->RebinY(12);
   q_IMpiSigma_wSid_n_genacc->Draw("colz");
   
   //true mass & q, removing K0
   TH2F* q_IMpiSigma_woK0_wSid_n_genacc = (TH2F*)file1->Get("q_IMpiSigma_woK0_wSid_n_genacc");
   TCanvas *cq_IMpiSigma_woK0_wSid_n_genacc = new TCanvas("cq_IMpiSigma_woK0_wSid_n_genacc","q_IMpiSigma_woK0_wSid_n_genacc");
-  q_IMpiSigma_woK0_wSid_n_genacc->RebinX(4);
-  q_IMpiSigma_woK0_wSid_n_genacc->RebinY(6);
+  q_IMpiSigma_woK0_wSid_n_genacc->RebinX(5);
+  q_IMpiSigma_woK0_wSid_n_genacc->RebinY(12);
   q_IMpiSigma_woK0_wSid_n_genacc->Draw("colz");
   
   //true mass & q, removing K0, Sp selection
@@ -42,22 +42,22 @@ void accPiSigmaUniformGen(){
   if(Spmode) q_IMpiSigma_woK0_wSid_n_SpSm_genacc = (TH2F*)file1->Get("q_IMpiSigma_woK0_wSid_n_Sp_genacc");
   if(Smmode) q_IMpiSigma_woK0_wSid_n_SpSm_genacc = (TH2F*)file1->Get("q_IMpiSigma_woK0_wSid_n_Sm_genacc");
   TCanvas *cq_IMpiSigma_woK0_wSid_n_SpSm_genacc = new TCanvas("cq_IMpiSigma_woK0_wSid_n_SpSm_genacc","q_IMpiSigma_woK0_wSid_n_SpSm_genacc");
-  q_IMpiSigma_woK0_wSid_n_SpSm_genacc->RebinX(4);
-  q_IMpiSigma_woK0_wSid_n_SpSm_genacc->RebinY(6);
+  q_IMpiSigma_woK0_wSid_n_SpSm_genacc->RebinX(5);
+  q_IMpiSigma_woK0_wSid_n_SpSm_genacc->RebinY(12);
   q_IMpiSigma_woK0_wSid_n_SpSm_genacc->Draw("colz");
 
   //reco mass & q including K0
   TH2F* q_IMnpipi_wSid_n_acc_reco = (TH2F*)file1->Get("q_IMnpipi_wSid_n_acc_reco");
   TCanvas *cq_IMnpipi_wSid_n_acc_reco = new TCanvas("cq_IMnpipi_wSid_n_acc_reco","q_IMnpipi_wSid_n_acc_reco");
-  q_IMnpipi_wSid_n_acc_reco->RebinX(4);
-  q_IMnpipi_wSid_n_acc_reco->RebinY(6);
+  q_IMnpipi_wSid_n_acc_reco->RebinX(5);
+  q_IMnpipi_wSid_n_acc_reco->RebinY(12);
   q_IMnpipi_wSid_n_acc_reco->Draw("colz");
  
   //reco mass & q, removing K0
   TH2F* q_IMnpipi_woK0_wSid_n_acc_reco = (TH2F*)file1->Get("q_IMnpipi_woK0_wSid_n_acc_reco");
   TCanvas *cq_IMnpipi_woK0_wSid_n_acc_reco = new TCanvas("cq_IMnpipi_woK0_wSid_n_acc_reco","q_IMnpipi_woK0_wSid_n_acc_reco");
-  q_IMnpipi_woK0_wSid_n_acc_reco->RebinX(4);
-  q_IMnpipi_woK0_wSid_n_acc_reco->RebinY(6);
+  q_IMnpipi_woK0_wSid_n_acc_reco->RebinX(5);
+  q_IMnpipi_woK0_wSid_n_acc_reco->RebinY(12);
   q_IMnpipi_woK0_wSid_n_acc_reco->Draw("colz");
 
   //reco mass & q, removing K0, Sp selection
@@ -65,8 +65,8 @@ void accPiSigmaUniformGen(){
   if(Spmode)q_IMnpipi_woK0_wSid_n_SpSm_acc_reco = (TH2F*)file1->Get("q_IMnpipi_woK0_wSid_n_Sp_acc_reco");
   if(Smmode)q_IMnpipi_woK0_wSid_n_SpSm_acc_reco = (TH2F*)file1->Get("q_IMnpipi_woK0_wSid_n_Sm_acc_reco");
   TCanvas *cq_IMnpipi_woK0_wSid_n_SpSm_acc_reco = new TCanvas("cq_IMnpipi_woK0_wSid_n_SpSm_acc_reco","q_IMnpipi_woK0_wSid_n_SpSm_acc_reco");
-  q_IMnpipi_woK0_wSid_n_SpSm_acc_reco->RebinX(4);
-  q_IMnpipi_woK0_wSid_n_SpSm_acc_reco->RebinY(6);
+  q_IMnpipi_woK0_wSid_n_SpSm_acc_reco->RebinX(5);
+  q_IMnpipi_woK0_wSid_n_SpSm_acc_reco->RebinY(12);
   q_IMnpipi_woK0_wSid_n_SpSm_acc_reco->Draw("colz");
   
   
