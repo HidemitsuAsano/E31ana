@@ -72,6 +72,9 @@ TLorentzVector mom_target; // 4-momentum(target)
 TLorentzVector mom_pim1;    // 4-momentum(pi-)
 TLorentzVector mom_pim2;    // 4-momentum(pi-)
 TLorentzVector mom_p;      // 4-momentum(proton)
+TLorentzVector react_pmiss;
+TLorentzVector react_Lambda;
+TLorentzVector react_pim;
 TVector3 vtx_reaction; //  vertex(reaction)   
 TVector3 vtx_pim1_beam; //  
 TVector3 vtx_pim2_beam; //   
@@ -101,7 +104,7 @@ int kf_flag; // flag of correct pair reconstruction, etc
 
 
 void InitializeHistogram();
-
+void InitTreeVal();
 
 int main( int argc, char** argv )
 {
@@ -236,6 +239,9 @@ int main( int argc, char** argv )
   ppimpimTree->Branch( "mcmom_pim1", &mcmom_pim1 );
   ppimpimTree->Branch( "mcmom_pim2", &mcmom_pim2 );
   ppimpimTree->Branch( "mcmom_p", &mcmom_p );
+  ppimpimTree->Branch( "react_pmiss",&react_pmiss);
+  ppimpimTree->Branch( "react_Lambda",&react_Lambda);
+  ppimpimTree->Branch( "react_pim",&react_pim);
   ppimpimTree->Branch( "mc_vtx", &mc_vtx );
   ppimpimTree->Branch( "kfSpmode_mom_beam",   &kfMomBeamSpmode );
   ppimpimTree->Branch( "kfSpmode_mom_pip", &kfMom_pip_Spmode );
@@ -329,6 +335,9 @@ int main( int argc, char** argv )
 
   //=== event loop ===//
   for( int iev=0; iev<exen; iev++ ){
+    
+    InitTreeVal();
+    bool IsrecoPassed=true;
     if(Verbosity_){
       std::cout<<"> Event Number "<<iev<<std::endl;
     }else if( /*iev<100 ||*/ iev%1000==0 ){
@@ -383,6 +392,9 @@ int main( int argc, char** argv )
     //reaction data
     Util::AnaReactionData(reacData);
 
+    react_pmiss = reacData->GetParticle(0);
+    react_Lambda = reacData->GetParticle(1);
+    react_pim = reacData->GetParticle(2);
 
     const int reactionID = reacData->ReactionID();
     //These partcile IDs are defined in pythia6
@@ -557,15 +569,17 @@ int main( int argc, char** argv )
     
     
     if( Util::GetCDHMul(cdsMan,nGoodTrack,true)!=cdscuts_lpim::cdhmulti ){
-      nAbort_nCDH++;
+      if(IsrecoPassed)nAbort_nCDH++;
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nCDH" << std::endl;
-      continue;
+      //continue;
+      IsrecoPassed = false;
     }
 
     if( nGoodTrack!=cdscuts_lpim::cds_ngoodtrack ){ // dedicated for pi+ pi- event
-      nAbort_nGoodTrack++;
+      if(IsrecoPassed)nAbort_nGoodTrack++;
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nGoodTrack" << std::endl;
-      continue;
+      //continue;
+      IsrecoPassed = false;
     }
     
     //beam line analysis and event selection
@@ -573,9 +587,10 @@ int main( int argc, char** argv )
     //** T0 = 1hit selection **//
     const double ctmT0 = Util::AnalyzeT0(blMan,confMan);
     if(ctmT0<-9000){
-      nAbort_nT0++;
+      if(IsrecoPassed) nAbort_nT0++;
       Tools::Fill1D( Form("EventCheck"), 15 );
-      continue;
+      //continue;
+      IsrecoPassed = false;
     }
 
     //** BPC track selection **//
@@ -588,14 +603,16 @@ int main( int argc, char** argv )
     Tools::Fill1D( Form("ntrack_BPC"), nbpc );
     if( nbpc!=1 ){
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nbpc" << std::endl;
-      nAbort_nbpc++;
-      continue;
+      if(IsrecoPassed)nAbort_nbpc++;
+      //continue;
+      IsrecoPassed = false;
     }
     LocalTrack *bpctrack = bltrackMan->trackBPC(bpcid);    
     if( bpctrack->chi2all()>10 ){
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_bpctrack" << std::endl;
-      nAbort_bpctrack++;
-      continue;
+      if(IsrecoPassed)nAbort_bpctrack++;
+      //continue;
+      IsrecoPassed = false;
     }
 
     // vertex calculation //
@@ -624,8 +641,9 @@ int main( int argc, char** argv )
     Tools::Fill1D( Form("ntrack_BLC2"), nblc2 );
     if( !(nblc2==1 && blc2id!=-1) ){
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nblc2" << std::endl;
-      nAbort_nblc2++;
-      continue;
+      if(IsrecoPassed)nAbort_nblc2++;
+      //continue;
+      IsrecoPassed=false;
     }
 
     //### BLC2-BPC position matching
@@ -670,8 +688,9 @@ int main( int argc, char** argv )
 
     if( !fblc2bpc ){
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_fblc2bpc" << std::endl;
-      nAbort_fblc2bpc++;
-      continue;
+      if(IsrecoPassed)nAbort_fblc2bpc++;
+      //continue;
+      IsrecoPassed=false;
     }
 
     //** beam momentum calculation **//
@@ -730,11 +749,26 @@ int main( int argc, char** argv )
     LVec_targetCM.Boost(-1.*boost);
     LVec_targetPCM.Boost(-1.*boost);
     flagbmom = true;
+
+    double px = (LVec_beam).Px();
+    double py = (LVec_beam).Py();
+    double pz = (LVec_beam).Pz();
+    double E = (LVec_beam).E();
+    TLorentzVector LVec_beam_unit;
+    LVec_beam_unit.SetPx(px*1000.0);
+    LVec_beam_unit.SetPy(py*1000.0);
+    LVec_beam_unit.SetPz(pz*1000.0);
+    LVec_beam_unit.SetE(E*1000.0);
+    double q = (LVec_beam_unit.Vect()-react_pmiss.Vect()).Mag()/1000.;
+    TLorentzVector TL_piLambda = react_Lambda + react_pim;
+    double mass = TL_piLambda.M()/1000.;
+    Tools::H2("q_IMLPim_gen",mass,q,500,1,2,300,0,1.5);
     
     //always OK, because this is simulation
     if( !flagbmom ){
-      nAbort_flagbmom++;
-      continue;
+      if(IsrecoPassed)nAbort_flagbmom++;
+      //continue;
+      IsrecoPassed = false;
     }
     Tools::Fill1D( Form("momentum_beam"), LVec_beambf.P() );
 
@@ -757,8 +791,9 @@ int main( int argc, char** argv )
     if(nIDedTrack==-11) Tools::Fill1D( Form("EventCheck"), 11 );
     if(nIDedTrack==-12) Tools::Fill1D( Form("EventCheck"), 12 );
     if(nIDedTrack<0){
-      nAbort_CDSPID++;
-      continue;
+      if(IsrecoPassed)nAbort_CDSPID++;
+      //continue;
+      IsrecoPassed = false;
     }
 
     if(nIDedTrack>0) nTrack_PID =+ nIDedTrack;
@@ -769,12 +804,13 @@ int main( int argc, char** argv )
     Tools::Fill1D( Form("ntrack_pi_minus"), pim_ID.size() );
     Tools::Fill1D( Form("ntrack_K_minus"),  km_ID.size() );
 
-    bool forwardcharge= Util::IsForwardCharge(blMan); 
-
+    //bool forwardcharge= Util::IsForwardCharge(blMan); 
+    
     // + + + + + + + + + + + //
     //  pi+ pi- X event  //
     // + + + + + + + + + + + //
-    if( flagbmom && 
+    if( IsrecoPassed &&
+        flagbmom && 
         (pim_ID.size()==2) && 
         (p_ID.size()==1) && 
         (cdstrackMan->nGoodTrack()==cdscuts_lpim::cds_ngoodtrack)){
@@ -1353,3 +1389,45 @@ void InitializeHistogram()
   InitIMLambdaPimHist();
   return;
 }
+
+void InitTreeVal()
+{
+
+  mom_beam.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);   // 4-momentum(beam)
+  mom_target.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.); // 4-momentum(target)
+  mom_pim1.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);   // 4-momentum(pi+)
+  mom_pim2.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);    // 4-momentum(pi-)
+  mom_p.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // 4-momentum(neutron)
+  vtx_reaction.SetXYZ(-9999., -9999., -9999.); //  vertex(reaction)   
+  vtx_pim1_beam.SetXYZ(-9999., -9999., -9999.); //  
+  vtx_pim2_beam.SetXYZ(-9999., -9999., -9999.); //   
+  vtx_pim1_cdc.SetXYZ(-9999., -9999., -9999.);
+  vtx_pim2_cdc.SetXYZ(-9999., -9999., -9999.);
+  CA_pim1.SetXYZ(-9999., -9999., -9999.);
+  CA_pim2.SetXYZ(-9999., -9999., -9999.);
+  run_num=-9999;   // run number
+  event_num=-9999; // event number
+  block_num=-9999; // block number
+  mc_nparticle=-9999;
+  mcmom_beam.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);   // generated 4-momentum(beam)
+  mcmom_pim1.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);    // generated 4-momentum(pi+)
+  mcmom_pim2.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);    // generated 4-momentum(pi-)
+  mcmom_p.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // generated 4-momentum(neutron)
+  react_pmiss.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
+  react_Lambda.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
+  react_pim.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
+  
+  mc_vtx.SetXYZ(-9999., -9999., -9999.);
+  kfMomBeamSpmode.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);   // 4-momentum(beam) after kinematical refit for pi- Sigma+
+  kfMom_pip_Spmode.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
+  kfMom_pim_Spmode.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
+  kfMom_n_Spmode.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // 4-momentum(neutron) after kinematical refit for pi- Sigma+
+  kf_chi2_Spmode=-9999.;   // chi2 of kinematical refit
+  kf_NDF_Spmode=-9999.;    // NDF of kinematical refit
+  kf_status_Spmode=-9999; // status of kinematical refit -> details can be found in this code
+  kf_pvalue_Spmode=-9999; // p-value of kinematical refit
+  kf_flag=-9999; // flag of correct pair reconstruction, etc
+//= = = = pippimn final-sample tree = = = =//
+
+}
+

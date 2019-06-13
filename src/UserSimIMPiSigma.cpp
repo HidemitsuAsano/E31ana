@@ -871,6 +871,8 @@ int main( int argc, char** argv )
     LVec_targetCM.Boost(-1.*boost);
     LVec_targetPCM.Boost(-1.*boost);
     flagbmom = true;
+
+
     
     //always OK, because this is simulation
     if( !flagbmom ){
@@ -879,6 +881,20 @@ int main( int argc, char** argv )
       IsrecoPassed=false;
     }
     Tools::Fill1D( Form("momentum_beam"), LVec_beambf.P() );
+    //generated info taking into account momentum bite
+    double px = (LVec_beam).Px();
+    double py = (LVec_beam).Py();
+    double pz = (LVec_beam).Pz();
+    double E = (LVec_beam).E();
+    TLorentzVector LVec_beam_unit;
+    LVec_beam_unit.SetPx(px*1000.0);
+    LVec_beam_unit.SetPy(py*1000.0);
+    LVec_beam_unit.SetPz(pz*1000.0);
+    LVec_beam_unit.SetE(E*1000.0);
+    double q = (LVec_beam_unit.Vect()-react_nmiss.Vect()).Mag()/1000.;
+    TLorentzVector TL_piSigma = react_Sigma + react_pi;
+    double mass = TL_piSigma.M()/1000.;
+    Tools::H2("q_IMpiSigma_gen",mass,q,500,1,2,300,0,1.5);
 
     //** + + + + + + + + + + + + **//
     //**  PID in CDS             **//
@@ -1664,33 +1680,33 @@ int main( int argc, char** argv )
             CDH_Pos = Pos_CDH;
             TLorentzVector mcmom_ncdspi = TL_gene[genID[kin::ncds]]+TL_gene[kin::pip_g2];
             //std::cout << __LINE__ << mcmom_ncdspi.M() << std::endl;
-	        }
+            mc_nparticle = nparticle;
+            TVector3 mcvertex = mcData->track(kin::kmbeam)->vertex();
+            TVector3 mcvertexc(mcvertex.x()/10.,mcvertex.y()/10.,mcvertex.z()/10.); 
+            mc_vtx = mcvertexc;
+            run_num   = confMan->GetRunNumber(); // run number
+            event_num = iev;     // event number
+            block_num = 0;      // block number (temp)
+
+            if(Verbosity_){
+              std::cout<<"%%% pippimn event: Event_Number, Block_Event_Number, CDC_Event_Number = "
+                <<iev<<" , "<<" ---, "<<ev_cdc<<std::endl;
+            }
+            mom_beam   = LVec_beam;   // 4-momentum(beam)
+            outfile2->cd();
+            //if(IsncdsfromSigma && piSigma_detect)
+            //if(IsncdsfromSigma ){
+            npippimTree->Fill();
+            nFill_pippimn++;
+            //}
+            outfile->cd();
+	        }//IsrecoPassed
         } // if( GeomTools::GetID(vtx_react)==CID_Fiducial )
       } // if( !nCDCforVeto )
     }else{  //if pi+ pi- X event  
       nAbort_pippim++;
     }
 
-    mc_nparticle = nparticle;
-    TVector3 mcvertex = mcData->track(kin::kmbeam)->vertex();
-    TVector3 mcvertexc(mcvertex.x()/10.,mcvertex.y()/10.,mcvertex.z()/10.); 
-    mc_vtx = mcvertexc;
-    run_num   = confMan->GetRunNumber(); // run number
-    event_num = iev;     // event number
-    block_num = 0;      // block number (temp)
-
-    if(Verbosity_){
-      std::cout<<"%%% pippimn event: Event_Number, Block_Event_Number, CDC_Event_Number = "
-        <<iev<<" , "<<" ---, "<<ev_cdc<<std::endl;
-    }
-    mom_beam   = LVec_beam;   // 4-momentum(beam)
-    outfile2->cd();
-    //if(IsncdsfromSigma && piSigma_detect)
-    //if(IsncdsfromSigma ){
-    npippimTree->Fill();
-    nFill_pippimn++;
-    //}
-    outfile->cd();
     
     
     nAbort_end++;
