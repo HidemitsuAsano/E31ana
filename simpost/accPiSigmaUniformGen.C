@@ -1,7 +1,7 @@
 void accPiSigmaUniformGen(){
 
-  TFile *file1 = new TFile("simIMpisigma_nSppim_pippimn_DoraAir_v57_v58_acc.root","READ");
-  //TFile *file1 = new TFile("simIMpisigma_nSmpip_pippimn_DoraAir_v57_v58_acc.root","READ");
+ // TFile *file1 = new TFile("simIMpisigma_nSppim_pippimn_DoraAir_v57_v58_acc.root","READ");
+  TFile *file1 = new TFile("simIMpisigma_nSmpip_pippimn_DoraAir_v57_v58_acc.root","READ");
   
   bool Spmode = (std::string(file1->GetName()).find("Sp")!= std::string::npos);
   bool Smmode = (std::string(file1->GetName()).find("Sm")!= std::string::npos);
@@ -92,6 +92,8 @@ void accPiSigmaUniformGen(){
   
   TH2F* heff;// = new TH2F("heff","heff",125,1,2,50,0,1.5);
   heff = (TH2F*)q_IMpiSigma_wSid_n_genacc->Clone();
+  heff->SetName("eff_q_IMpiSigma_wSid_n");
+  heff->SetTitle("eff_q_IMpiSigma_wSid_n");
   TCanvas *ceff_hist = new TCanvas("ceff_hist","ceff_hist");
   heff->Divide(q_IMpiSigma_wSid_n_genacc,q_IMpiSigma_gen,1.0,1.0,"b");
   if(Spmode)heff->SetMaximum(0.005);
@@ -100,6 +102,8 @@ void accPiSigmaUniformGen(){
   
   TH2F* heff_woK0;// = new TH2F("heff","heff",125,1,2,50,0,1.5);
   heff_woK0 = (TH2F*)q_IMpiSigma_wSid_n_genacc->Clone();
+  heff_woK0->SetName("eff_q_IMpiSigma_woK0_wSid_n");
+  heff_woK0->SetTitle("eff_q_IMpiSigma_woK0_wSid_n");
   TCanvas *ceff_woK0_hist = new TCanvas("ceff_woK0_hist","ceff_woK0_hist");
   heff_woK0->Divide(q_IMpiSigma_woK0_wSid_n_genacc,q_IMpiSigma_gen,1.0,1.0,"b");
   if(Spmode)heff_woK0->SetMaximum(0.005);
@@ -108,6 +112,8 @@ void accPiSigmaUniformGen(){
 
   TH2F* heff_woK0_SpSm;// = new TH2F("heff","heff",125,1,2,50,0,1.5);
   heff_woK0_SpSm = (TH2F*)q_IMpiSigma_wSid_n_genacc->Clone();
+  heff_woK0_SpSm->SetName("eff_q_IMpiSigma_woK0_wSid_n_SpSm");
+  heff_woK0_SpSm->SetTitle("eff_q_IMpiSigma_woK0_wSid_n_SpSm");
   TCanvas *ceff_woK0_SpSm_hist = new TCanvas("ceff_woK0_SpSm_hist","ceff_woK0_SpSm_hist");
   heff_woK0_SpSm->Divide(q_IMpiSigma_woK0_wSid_n_SpSm_genacc,q_IMpiSigma_gen,1.0,1.0,"b");
   if(Spmode)heff_woK0_SpSm->SetMaximum(0.005);
@@ -143,6 +149,8 @@ void accPiSigmaUniformGen(){
 
   TH2F* heff_err;// = new TH2F("heff_err","heff_err",125,1,2,50,0,1.5);
   heff_err = (TH2F*)heff_woK0_SpSm->Clone();
+  heff_err->SetName("heff_err");
+  heff_err->SetTitle("heff_err");
   for(int ix=0;ix<heff_woK0_SpSm->GetNbinsX();ix++){
     for(int iy=0;iy<heff_woK0_SpSm->GetNbinsY();iy++){
       double err = heff_woK0_SpSm->GetBinErrorUp(ix,iy);
