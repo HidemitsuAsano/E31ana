@@ -30,6 +30,11 @@ const bool gridon=true;
 const bool staton=false;
 const bool UseKinFit = false;
 const bool UseKinFitVal = true;
+const double lumi = 56.0e9; // rough value
+const double Beamsurvival =  0.4; //rough value from Kawasaki ana
+const double D2density = 4.83e23; //kawasaki ana
+const double DAQeff = 0.77;//kawasaki ana
+const double trigeff = 1.0; //unknown
 
 //0: diagonal cut
 //1: 3 sigma cut
@@ -56,13 +61,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   gStyle->SetPalette(1);
   gStyle->SetStatBorderSize(1);
   gStyle->SetCanvasDefH(800); gStyle->SetCanvasDefW(1000);
+  gStyle->SetPadRightMargin(0.15);
+  gStyle->SetPadLeftMargin(0.12);
   //gStyle->SetTitleFontSize(0.1);
   
   TH1::SetDefaultSumw2();
 
   std::cout << "infile " << filename <<std::endl;
   TString pdfname = std::string(filename);
-  pdfname.Replace(std::string(filename).size()-4,5,"pdf");
+  if(qvalcutflag==0) pdfname.Replace(std::string(filename).size()-4,5,"pdf");
+  if(qvalcutflag==1) pdfname.Replace(std::string(filename).size()-5,8,"_1.pdf");
+  if(qvalcutflag==2) pdfname.Replace(std::string(filename).size()-5,8,"_2.pdf");
   std::cout << "pdfname: " << pdfname << std::endl;
   std::cout << std::endl;
 
@@ -432,13 +441,13 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   q_IMnpipi_woK0_wSid_n_side->SetYTitle("Mom. Transfer [GeV/c]");
   
 
-  IMnpip_IMnpipi_woK0_n = new TH2F(Form("IMnpip_IMnpipi_woK0_n"),Form("IMnpip_IMnpipi_woK0_n"),nbinIMnpi,1.0,2.0, nbinIMnpipi,1.0,2.0);
-  IMnpip_IMnpipi_woK0_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
-  IMnpip_IMnpipi_woK0_n->SetYTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  IMnpip_IMnpipi_woK0_n = new TH2F(Form("IMnpip_IMnpipi_woK0_n"),Form("IMnpip_IMnpipi_woK0_n"),nbinIMnpipi,1.0,2.0, nbinIMnpi,1.0,2.0);
+  IMnpip_IMnpipi_woK0_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  IMnpip_IMnpipi_woK0_n->SetYTitle("IM(n#pi^{+}) [GeV/c^{2}]");
 
-  IMnpim_IMnpipi_woK0_n = new TH2F(Form("IMnpim_IMnpipi_woK0_n"),Form("IMnpim_IMnpipi_woK0_n"),nbinIMnpi,1.0,2.0, nbinIMnpipi,1.0,2.0);
-  IMnpim_IMnpipi_woK0_n->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
-  IMnpim_IMnpipi_woK0_n->SetYTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  IMnpim_IMnpipi_woK0_n = new TH2F(Form("IMnpim_IMnpipi_woK0_n"),Form("IMnpim_IMnpipi_woK0_n"),nbinIMnpipi,1.0,2.0, nbinIMnpi,1.0,2.0);
+  IMnpim_IMnpipi_woK0_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  IMnpim_IMnpipi_woK0_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
 
 
   nmom_IMnpipi_woK0_wSid_n = new TH2F(Form("nmom_IMnpipi_woK0_wSid_n"),Form("nmom_IMnpipi_woK0_wSid_n"), nbinIMnpipi,1,2,100,0,1.0);
@@ -986,8 +995,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     }
     if(K0rejectFlag && NBetaOK && NdEOK && MissNFlag){
       IMnpim_IMnpip_dE_woK0_n->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-      IMnpip_IMnpipi_woK0_n->Fill(LVec_pip_n.M(),LVec_pip_pim_n.M());
-      IMnpim_IMnpipi_woK0_n->Fill(LVec_pim_n.M(),LVec_pip_pim_n.M());
+      IMnpip_IMnpipi_woK0_n->Fill(LVec_pip_pim_n.M(),LVec_pip_n.M());
+      IMnpim_IMnpipi_woK0_n->Fill(LVec_pip_pim_n.M(),LVec_pim_n.M());
       
       
       if(SigmaPsideFlag[sidebandtype]|| SigmaMsideFlag[sidebandtype]){
@@ -1797,6 +1806,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   std::cout << std::endl;
   std::cout << "calculation CS of Sp mode..." << std::endl;
   std::cout << std::endl;
+  const double efflumi = lumi*Beamsurvival*D2density*DAQeff*trigeff*10e-30;//micro barn(^-1)
+  std::cout << "eff. lumi " << efflumi << std::endl;
+  
   TCanvas *cq_IMnpipi_woK0_wSid_n_Sp_cs = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp_cs","q_IMnpipi_woK0_wSid_n_Sp_cs");
   cq_IMnpipi_woK0_wSid_n_Sp_cs->cd();
   TH2F *q_IMnpipi_woK0_wSid_n_Sp_cs = (TH2F*)q_IMnpipi_woK0_wSid_n_Sp->Clone("Sp_cs");
@@ -1815,6 +1827,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   q_IMnpipi_woK0_wSid_n_Sp_cs->Print("base");
   q_IMnpipi_woK0_wSid_n_Sp_cs->Divide(acc_Sp);
   //q_IMnpipi_woK0_wSid_n_Sp_cs->SetMaximum(30000);
+  q_IMnpipi_woK0_wSid_n_Sp_cs->Scale(1./efflumi);
   q_IMnpipi_woK0_wSid_n_Sp_cs->Draw("colz");
   
 
@@ -1823,6 +1836,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TCanvas *cq_IMnpipi_woK0_wSid_n_Sp_cs_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp_cs_px","q_IMnpipi_woK0_wSid_n_Sp_cs_px");
   TH1D *q_IMnpipi_woK0_wSid_n_Sp_cs_px = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_cs->ProjectionX();
   q_IMnpipi_woK0_wSid_n_Sp_cs_px->SetLineColor(2);
+  q_IMnpipi_woK0_wSid_n_Sp_cs_px->SetYTitle("a.u");
   q_IMnpipi_woK0_wSid_n_Sp_cs_px->Draw("HE");
   
   TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_cs = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sm_cs","q_IMnpipi_woK0_wSid_n_Sm_cs");
@@ -1843,17 +1857,24 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //  q_IMnpipi_woK0_wSid_n_Sm_cs->Print("base");
   q_IMnpipi_woK0_wSid_n_Sm_cs->Divide(acc_Sm);
   //q_IMnpipi_woK0_wSid_n_Sm_cs->SetMaximum(30000);
+  q_IMnpipi_woK0_wSid_n_Sm_cs->Scale(1.0/efflumi);
   q_IMnpipi_woK0_wSid_n_Sm_cs->Draw("colz");
 
   TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_cs_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sm_cs_px","q_IMnpipi_woK0_wSid_n_Sm_cs_px");
   TH1D *q_IMnpipi_woK0_wSid_n_Sm_cs_px = (TH1D*)q_IMnpipi_woK0_wSid_n_Sm_cs->ProjectionX();
   q_IMnpipi_woK0_wSid_n_Sm_cs_px->SetLineColor(3);
+  q_IMnpipi_woK0_wSid_n_Sm_cs_px->SetYTitle("a.u");
   q_IMnpipi_woK0_wSid_n_Sm_cs_px->Draw("HE");
-
+  
+  TCanvas *ccs_sum = new TCanvas("ccs_sum","ccs_sum");
+  ccs_sum->cd();
   TH1D* cs_sum = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_cs_px->Clone();
   cs_sum->Add(q_IMnpipi_woK0_wSid_n_Sm_cs_px);
   cs_sum->SetLineColor(4);
-  //cs_sum->Draw("HEsame");
+  cs_sum->SetYTitle("a.u.");
+  cs_sum->Draw("HE");
+  q_IMnpipi_woK0_wSid_n_Sm_cs_px->Draw("HEsame");
+  q_IMnpipi_woK0_wSid_n_Sp_cs_px->Draw("HEsame");
   
   /*
   TCanvas *cq_IMnpipi_woK0_wSid_n_Sp_sub_cs = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp_sub_cs","q_IMnpipi_woK0_wSid_n_Sp_sub_cs");
@@ -1978,16 +1999,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   q_IMnpipi_woK0_wSid_n_SpSm_side_cs->SetTitle("q_IMnpipi_woK0_wSid_n_SpSm_side_cs");
   q_IMnpipi_woK0_wSid_n_SpSm_side_cs->SetMaximum(60000);
   q_IMnpipi_woK0_wSid_n_SpSm_side_cs->Draw("colz");
-  
+  */  
 
   TCanvas *cIMnpip_IMnpipi_woK0_n = new TCanvas("cIMnpip_IMnpipi_woK0_n","IMnpip_IMnpipi_woK0_n");
   cIMnpip_IMnpipi_woK0_n->cd();
+  IMnpip_IMnpipi_woK0_n->GetYaxis()->SetRangeUser(1,1.8);
   IMnpip_IMnpipi_woK0_n->Draw("colz");
   
   TCanvas *cIMnpim_IMnpipi_woK0_n = new TCanvas("cIMnpim_IMnpipi_woK0_n","IMnpim_IMnpipi_woK0_n");
   cIMnpim_IMnpipi_woK0_n->cd();
+  IMnpim_IMnpipi_woK0_n->GetYaxis()->SetRangeUser(1,1.8);
   IMnpim_IMnpipi_woK0_n->Draw("colz");
-  */
 
   //TCanvas *cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px","q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px");
   //cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px->cd();
@@ -2251,14 +2273,14 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       h1->GetXaxis()->CenterTitle();
       //h1->GetXaxis()->SetTitleSize(0.05);
       //h1->GetXaxis()->SetTitleOffset(0.80);
-      h1->GetYaxis()->SetTitleOffset(1.3);
+      h1->GetYaxis()->SetTitleOffset(1.4);
     }
     if(obj->InheritsFrom("TH1D")){
       h1d = (TH1D*) obj;
       h1d->GetXaxis()->CenterTitle();
       //h1d->GetXaxis()->SetTitleSize(0.05);
       //h1d->GetXaxis()->SetTitleOffset(0.80);
-      h1d->GetYaxis()->SetTitleOffset(1.3);
+      h1d->GetYaxis()->SetTitleOffset(1.4);
     }
     if(obj->InheritsFrom("TH2")){
       h2 = (TH2F*) obj;
@@ -2267,7 +2289,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       //h2->GetXaxis()->SetTitleSize(0.05);
       //h2->GetXaxis()->SetTitleOffset(0.80);
       //h2->GetYaxis()->SetTitleSize(0.05);
-      h2->GetYaxis()->SetTitleOffset(1.1);
+      h2->GetYaxis()->SetTitleOffset(1.3);
     }
   }
 
@@ -2286,7 +2308,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     if(Spmode || Smmode){
       pt = new TPaveText(.80,0.90,0.98,0.99,"NDC");    
     }else{
-      pt = new TPaveText(.80,0.90,0.98,0.99,"NDC");    
+      pt = new TPaveText(.76,0.90,0.90,0.98,"NDC");    
       //pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
     }
     if(Spmode){
