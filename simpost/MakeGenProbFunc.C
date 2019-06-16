@@ -4,6 +4,7 @@
 void MakeGenProbFunc()
 {
   //TFile *file = new TFile("simIMpisigma_nSppim_DoraAir_v45_v46_acc.root","READ");
+  //TFile *file = new TFile("simIMpisigma_nSmpip_DoraAir_v45_v46_acc.root","READ");
   TFile *file = new TFile("simIMpisigma_nSmpip_DoraAir_v45_v46_acc.root","READ");
   std::cout << "file name:" << file->GetName() << std::endl;
 
@@ -27,6 +28,7 @@ void MakeGenProbFunc()
       y = React_q_IMPiSigma->GetYaxis()->GetBinCenter(ibiny);
       int cont = React_q_IMPiSigma->GetBinContent(ibinx,ibiny);
       z = 2.0/cont;
+      //z = cont;
       if(cont>1){
         dt->SetPoint(i,x,y,z);
         h2prob->SetBinContent(ibinx,ibiny,z);
