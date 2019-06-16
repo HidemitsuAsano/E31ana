@@ -1339,16 +1339,25 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //fkp->Draw("same");
   */ 
   
+  const double Kp_mass = pMass + kpMass;  
+  TF1 *fkp = new TF1("f", "sqrt(((x*x-[0]*[0]-[1]*[1])/(2*[0]))*((x*x-[0]*[0]-[1]*[1])/(2*[0]))-[1]*[1])",Kp_mass-0.001,2);
+  fkp->SetParameter(0,pMass);
+  fkp->SetParameter(1,kpMass);
+  //fkp->SetLineColor(4);
+  fkp->SetLineWidth(4);
+  fkp->SetLineStyle(4);
+  fkp->SetLineColorAlpha(kPink, 0.35);
   TCanvas *cq_IMnpipi_woK0_wSid_n_Sp = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp","q_IMnpipi_woK0_wSid_n_Sp");
   cq_IMnpipi_woK0_wSid_n_Sp->cd();
   q_IMnpipi_woK0_wSid_n_Sp->Draw("colz");
-
+  fkp->Draw("same");
   
   TCanvas *cq_IMnpipi_woK0_wSid_n_Sm = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sm","q_IMnpipi_woK0_wSid_n_Sm");
   cq_IMnpipi_woK0_wSid_n_Sm->cd();
 //  q_IMnpipi_woK0_wSid_n_Sm->SetMaximum(q_IMnpipi_woK0_wSid_n_Sp->GetMaximum());
   q_IMnpipi_woK0_wSid_n_Sm->Draw("colz");
-  
+  fkp->Draw("same");
+
   TCanvas *cq_IMnpipi_woK0_wSid_n_Sp_side_low = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp_side_low","q_IMnpipi_woK0_wSid_n_Sp_side_low");
   cq_IMnpipi_woK0_wSid_n_Sp_side_low->cd();
   q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][0]->Draw("colz");
@@ -1504,14 +1513,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TCanvas *cq_IMnpipi_woK0_wSid_n = new TCanvas("cq_IMnpipi_woK0_wSid_n","q_IMnpipi_woK0_wSid_n");
   cq_IMnpipi_woK0_wSid_n->cd();
   q_IMnpipi_woK0_wSid_n->Draw("colz");
-  const double Kp_mass = pMass + kpMass;  
-  TF1 *fkp = new TF1("f", "sqrt(((x*x-[0]*[0]-[1]*[1])/(2*[0]))*((x*x-[0]*[0]-[1]*[1])/(2*[0]))-[1]*[1])",Kp_mass-0.001,2);
-  fkp->SetParameter(0,pMass);
-  fkp->SetParameter(1,kpMass);
-  //fkp->SetLineColor(4);
-  fkp->SetLineWidth(4);
-  fkp->SetLineStyle(4);
-  fkp->SetLineColorAlpha(kPink, 0.35);
   fkp->Draw("same");
   //q_IMnpipi_woK0_wSid_n->Draw("colzsame");
   //fnu->cd();
@@ -1785,7 +1786,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   }//Spmode or Smmode
   
   
-  TH2F* acc_Sp = (TH2F*)facc_Sp->Get("eff_q_IMpiSigma_woK0_wSid_n_SpSm");
+  //TH2F* acc_Sp = (TH2F*)facc_Sp->Get("eff_q_IMpiSigma_woK0_wSid_n_SpSm");
+  TH2F* acc_Sp = (TH2F*)facc_Sp->Get("eff_q_IMpiSigma_woK0_wSid_n_SpSm_reco");
   TH2F* acc_Sp_err = (TH2F*)facc_Sp->Get("heff_err");
   if(acc_Sp == NULL){
     std::cout << " acc_Sp is NULL " << std::endl;
@@ -1794,7 +1796,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     std::cout << " acc_Sp_err is NULL " << std::endl;
   }
 
-  TH2F* acc_Sm = (TH2F*)facc_Sm->Get("eff_q_IMpiSigma_woK0_wSid_n_SpSm");
+  //TH2F* acc_Sm = (TH2F*)facc_Sm->Get("eff_q_IMpiSigma_woK0_wSid_n_SpSm");
+  TH2F* acc_Sm = (TH2F*)facc_Sm->Get("eff_q_IMpiSigma_woK0_wSid_n_SpSm_reco");
   TH2F* acc_Sm_err = (TH2F*)facc_Sm->Get("heff_err");
   if(acc_Sm == NULL){
     std::cout << " acc_Sm is NULL " << std::endl;
@@ -1829,7 +1832,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //q_IMnpipi_woK0_wSid_n_Sp_cs->SetMaximum(30000);
   q_IMnpipi_woK0_wSid_n_Sp_cs->Scale(1./efflumi);
   q_IMnpipi_woK0_wSid_n_Sp_cs->Draw("colz");
-  
+  fkp->Draw("same");
 
 
 
@@ -1859,6 +1862,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //q_IMnpipi_woK0_wSid_n_Sm_cs->SetMaximum(30000);
   q_IMnpipi_woK0_wSid_n_Sm_cs->Scale(1.0/efflumi);
   q_IMnpipi_woK0_wSid_n_Sm_cs->Draw("colz");
+  fkp->Draw("same");
 
   TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_cs_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sm_cs_px","q_IMnpipi_woK0_wSid_n_Sm_cs_px");
   TH1D *q_IMnpipi_woK0_wSid_n_Sm_cs_px = (TH1D*)q_IMnpipi_woK0_wSid_n_Sm_cs->ProjectionX();
