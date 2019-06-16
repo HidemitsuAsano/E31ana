@@ -403,7 +403,7 @@ void QACDS(TFile *f){
   TH1F* h1_cdiff_CDH_CDC = (TH1F*)f->Get("diff_CDH_CDC");
   h1_cdiff_CDH_CDC->SetXTitle("angle [deg]");
   h1_cdiff_CDH_CDC->Draw();
-  
+   
   
   TCanvas *cdE_betainv_fiducial = new TCanvas("cdE_betainv_fiducial","dE_betainv_fid");
   TH2F* h2_dE_betainv = (TH2F*)f->Get("dE_betainv_fid");
@@ -438,8 +438,28 @@ void QACDS(TFile *f){
   TH1F* h1_DCA_pippim = (TH1F*)f->Get("DCA_pippim");
   h1_DCA_pippim->Draw();
 
+  TCanvas *cCDH_diffpos_z_pi_z = new TCanvas("CDH_diffpos_z_pi_z","CDH_diffpos_z_pi_z");
+  TH2F* CDH_diffpos_z_pi_z = (TH2F*)f->Get("CDH_diffpos_z_pi_z");
+  CDH_diffpos_z_pi_z->SetXTitle("CDC.z [cm]");
+  CDH_diffpos_z_pi_z->SetYTitle("CDH.z - CDC.z [cm]");
+  CDH_diffpos_z_pi_z->Draw("colz");
+  
+  TCanvas *cCDH_mom_diffpos_pi_phi = new TCanvas("CDH_mom_diffpos_pi_phi","CDH_mom_diffpos_pi_phi");
+  TH2F* CDH_mom_diffpos_pi_phi = (TH2F*)f->Get("CDH_mom_diffpos_pi_phi");
+  CDH_mom_diffpos_pi_phi->SetXTitle("CDH.phi - CDC.phi [cm]");
+  CDH_mom_diffpos_pi_phi->ProjectionX()->Draw();
 
+  TCanvas *cCDH_mom_diffpos_pi_z = new TCanvas("CDH_mom_diffpos_pi_z","CDH_mom_diffpos_pi_z");
+  TH2F* CDH_mom_diffpos_pi_z = (TH2F*)f->Get("CDH_mom_diffpos_pi_z");
+  CDH_mom_diffpos_pi_z->SetXTitle("CDH.z - CDC.z [cm]");
+  CDH_mom_diffpos_pi_z->ProjectionX()->Draw();
 
+  TCanvas *cCDH_mom_TOF_pi = new TCanvas("cCDH_mom_TOF_pi","CDH_mom_TOF_pi");
+  TH2F* CDH_mom_TOF_pi = (TH2F*)f->Get("CDH_mom_TOF_pi");
+  CDH_mom_TOF_pi = (TH2F*)f->Get("CDH_mom_TOF_pi");
+  CDH_mom_TOF_pi->SetXTitle("TOF (meas. - cal.) [nsec]");
+  CDH_mom_TOF_pi->ProjectionX()->Draw();
+ 
 
   return;
 }
