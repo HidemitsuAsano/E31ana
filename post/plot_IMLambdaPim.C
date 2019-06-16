@@ -62,30 +62,33 @@ void plot_IMLambdaPim(const char* filename="")
   TH1::SetDefaultSumw2();
   //--- color style ---//
   //= = = = pipipnn final-sample tree = = = =//
-  TLorentzVector *LVec_beam=nullptr;   // 4-momentum(beam)
-  TLorentzVector *LVec_target=nullptr; // 4-momentum(target)
-  TLorentzVector *LVec_pim1=nullptr;    // 4-momentum(pi+)
-  TLorentzVector *LVec_pim2=nullptr;    // 4-momentum(pi-)
-  TLorentzVector *LVec_p=nullptr;      // 4-momentum(proton)
-  TLorentzVector *mcmom_beam=nullptr;   // generated 4-momentum(beam)
-  TLorentzVector *mcmom_pim1=nullptr;    // generated 4-momentum(pi+)
-  TLorentzVector *mcmom_pim2=nullptr;    // generated 4-momentum(pi-)
-  TLorentzVector *mcmom_p=nullptr;      // generated 4-momentum(neutron)
-  TLorentzVector *mcmom_pmiss=nullptr;      // generated 4-momentum(neutron)
-  TVector3 *vtx_reaction = nullptr; // vertex(reaction) 
-  TVector3 *vtx_pim1_beam = nullptr; //C.A.P of pip-beam beam side
-  TVector3 *vtx_pim2_beam = nullptr; //C.A.P of pim-beam beam side
-  TVector3 *vtx_pim1_cdc = nullptr;//C.A.P of pip-beam pip side
-  TVector3 *vtx_pim2_cdc = nullptr;//C.A.P of pim-beam pim side
-  TVector3 *CA_pip = nullptr;//C.A.P of pip-pim pip side
-  TVector3 *CA_pim = nullptr;//C.A.P of pip-pim pim side
+  TLorentzVector *LVec_beam=NULL;   // 4-momentum(beam)
+  TLorentzVector *LVec_target=NULL; // 4-momentum(target)
+  TLorentzVector *LVec_pim1=NULL;    // 4-momentum(pi+)
+  TLorentzVector *LVec_pim2=NULL;    // 4-momentum(pi-)
+  TLorentzVector *LVec_p=NULL;      // 4-momentum(proton)
+  TLorentzVector *mcmom_beam=NULL;   // generated 4-momentum(beam)
+  TLorentzVector *mcmom_pim1=NULL;    // generated 4-momentum(pi+)
+  TLorentzVector *mcmom_pim2=NULL;    // generated 4-momentum(pi-)
+  TLorentzVector *mcmom_p=NULL;      // generated 4-momentum(neutron)
+  TLorentzVector *mcmom_pmiss=NULL;      // generated 4-momentum(neutron)
+  TLorentzVector *react_pmiss=NULL;
+  TLorentzVector *react_Lambda=NULL;
+  TLorentzVector *react_pim=NULL;
+  TVector3 *vtx_reaction = NULL; // vertex(reaction) 
+  TVector3 *vtx_pim1_beam = NULL; //C.A.P of pip-beam beam side
+  TVector3 *vtx_pim2_beam = NULL; //C.A.P of pim-beam beam side
+  TVector3 *vtx_pim1_cdc = NULL;//C.A.P of pip-beam pip side
+  TVector3 *vtx_pim2_cdc = NULL;//C.A.P of pim-beam pim side
+  TVector3 *CA_pip = NULL;//C.A.P of pip-pim pip side
+  TVector3 *CA_pim = NULL;//C.A.P of pip-pim pim side
   //int run_num;   // run number
   //int event_num; // event number
   //int block_num; // block number
-  TLorentzVector *kf_mom_beam=nullptr;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
-  TLorentzVector *kf_mom_pim1=nullptr;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
-  TLorentzVector *kf_mom_pim2=nullptr;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
-  TLorentzVector *kf_mom_proton=nullptr;      // 4-momentum(neutron) after kinematical refit for pi- Sigma+
+  TLorentzVector *kf_mom_beam=NULL;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
+  TLorentzVector *kf_mom_pim1=NULL;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
+  TLorentzVector *kf_mom_pim2=NULL;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
+  TLorentzVector *kf_mom_proton=NULL;      // 4-momentum(neutron) after kinematical refit for pi- Sigma+
   double kf_chi2;   // chi2 of kinematical refit
   double kf_NDF;    // NDF of kinematical refit
   double kf_status; // status of kinematical refit -> details can be found in this code
@@ -104,9 +107,9 @@ void plot_IMLambdaPim(const char* filename="")
   
   tree->SetBranchAddress( "mom_beam",   &LVec_beam );
   tree->SetBranchAddress( "mom_target", &LVec_target );
-  tree->SetBranchAddress( "mom_pim1", &LVec_pip );
-  tree->SetBranchAddress( "mom_pim2", &LVec_pim );
-  tree->SetBranchAddress( "mom_p", &LVec_n );
+  tree->SetBranchAddress( "mom_pim1", &LVec_pim1 );
+  tree->SetBranchAddress( "mom_pim2", &LVec_pim2 );
+  tree->SetBranchAddress( "mom_p", &LVec_p );
   tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
   //tree->SetBranchAddress( "vtx_pip_beam",&vtx_pip_beam);
   //tree->SetBranchAddress( "vtx_pim_beam",&vtx_pim_beam);
@@ -1952,11 +1955,11 @@ void plot_IMLambdaPim(const char* filename="")
   //centering title of all histograms 
   f->cd();
   TIter nexthist(gDirectory->GetList());
-  TH1F *h1 = nullptr;
-  TH1D *h1d = nullptr;
-  TH2F *h2 = nullptr;
-  TObject *obj = nullptr;
-  while( (obj = (TObject*)nexthist())!=nullptr  ){
+  TH1F *h1 = NULL;
+  TH1D *h1d = NULL;
+  TH2F *h2 = NULL;
+  TObject *obj = NULL;
+  while( (obj = (TObject*)nexthist())!=NULL  ){
     if(obj->InheritsFrom("TH1F")){
       h1 = (TH1F*) obj;
       h1->GetXaxis()->CenterTitle();
@@ -1980,7 +1983,7 @@ void plot_IMLambdaPim(const char* filename="")
     }
   }
 
-  TCanvas *c = nullptr;
+  TCanvas *c = NULL;
   //TPDF *pdf = new TPDF(pdfname);
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
   int size = SCol->GetSize();
