@@ -658,9 +658,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     if(Verbosity){
       std::cout << "pim1 chi2  " << track_pim1->Chi() << std::endl;
       std::cout << "pim1 mom  " << track_pim1->Momentum() << std::endl;
+      std::cout << "pim1 angle " << track_pim1->Theta() << std::endl;
       std::cout << "pim2 chi2  " << track_pim2->Chi() << std::endl;
       std::cout << "pim2 mom  " << track_pim2->Momentum() << std::endl;
+      std::cout << "pim2 angle " << track_pim2->Theta() << std::endl;
     }
+
     //deuteron target
     TVector3 vtx_react;//reaction vertex
     TVector3 vtx_dis;//displaced vertex
@@ -732,17 +735,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         LVec_beambf.Vect().Mag(), kpMass, momout, beamtof );
     LVec_beam.SetVectM( momout*LVec_beambf.Vect().Unit(), kpMass );
     
-    //double beamtof_vtx[2];
-    //double momout_vtx[2];
-    //Sp mode assumption
-    //ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), 0.5*(vtx_pim+vtx_beam_wpim),
-    //                                 LVec_beambf.Vect().Mag(), kpMass, momout_vtx[0], beamtof_vtx[0] );
-    //  LVec_beam_vtx[0].SetVectM( momout_vtx[0]*LVec_beambf.Vect().Unit(), kpMass );
-    //  //Sm mode assumption
-    //  ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), 0.5*(vtx_pip+vtx_beam_wpip),
-    //                                LVec_beambf.Vect().Mag(), kpMass, momout_vtx[1], beamtof_vtx[1] );
-    //   LVec_beam_vtx[1].SetVectM( momout_vtx[1]*LVec_beambf.Vect().Unit(), kpMass );
-
       
     //** reconstructoin of missing proton **//
     TVector3 P_pim1; // Momentum(pi-)

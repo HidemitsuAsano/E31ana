@@ -6,7 +6,7 @@ namespace anacuts {
   //const double pipi_MIN = 0.480;
   //const double pipi_MAX = 0.518;
   const double pipi_MIN = 0.475;
-  const double pipi_MAX = 0.525;
+  const double pipi_MAX = 0.522;
   //const double neutron_MIN = 0.85;
   //const double neutron_MAX = 1.03;
   const double neutron_MIN = 0.939161-2.5*0.0308562;

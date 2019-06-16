@@ -802,8 +802,8 @@ void Util::AnaReactionData( ReactionData *reactionData){
   int nparticle = ndecay+nspec;
   if(nparticle!=3) std::cout << "nparticle is 3 ! "  << nparticle << std::endl;
   for(int ipart=0;ipart<nparticle;ipart++){
-    //0: neutron
-    //1: Sigma
+    //0: neutron, or proton
+    //1: Sigma,  or Lambda
     //2: pi
     double coscm = reactionData->GetCMParticle(ipart).CosTheta();
     Tools::H1(Form("ReactCosCM_%d",ipart),coscm, 100,-1.0,1.0);
@@ -814,7 +814,7 @@ void Util::AnaReactionData( ReactionData *reactionData){
     double moml = (reactionData->GetParticle(ipart).P())/1000.;
     Tools::H1(Form("Reactmom_%d",ipart),moml, 150,0,1.5);
   }
-  TVector3 beammom(0,0,1000);//1 GeV/c 
+  TVector3 beammom(0,0,1000);//1 MeV/c 
   TLorentzVector TL_beam;
   TL_beam.SetVectM(beammom, 493.677);
   TLorentzVector TL_nmiss = reactionData->GetParticle(0);

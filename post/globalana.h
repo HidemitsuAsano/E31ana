@@ -14,6 +14,9 @@
   TLorentzVector *mcmom_pim=NULL;    // generated 4-momentum(pi-)
   TLorentzVector *mcmom_ncds=NULL;      // generated 4-momentum(neutron)
   TLorentzVector *mcmom_nmiss=NULL;      // generated 4-momentum(neutron)
+  TLorentzVector *react_nmiss=NULL;      // generated 4-momentum(neutron)
+  TLorentzVector *react_Sigma=NULL;      // generated 4-momentum(neutron)
+  TLorentzVector *react_pi=NULL;      // generated 4-momentum(neutron)
   double NeutralBetaCDH; // velocity of neutral particle on CDH
   double NeutralBetaCDH_vtx[2]; // velocity of neutral particle on CDH,0: Spmode 1:Smmode
   double dE;   // energy deposit on CDH
