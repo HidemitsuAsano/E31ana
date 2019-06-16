@@ -1,7 +1,7 @@
 void accPiSigmaUniformGen(){
 
-  TFile *file1 = new TFile("simIMpisigma_nSppim_pippimn_DoraAir_v57_v58_acc.root","READ");
-  //TFile *file1 = new TFile("simIMpisigma_nSmpip_pippimn_DoraAir_v57_v58_acc.root","READ");
+  //TFile *file1 = new TFile("simIMpisigma_nSppim_pippimn_DoraAir_v57_v58_acc.root","READ");
+  TFile *file1 = new TFile("simIMpisigma_nSmpip_pippimn_DoraAir_v57_v58_acc.root","READ");
   
   bool Spmode = (std::string(file1->GetName()).find("Sp")!= std::string::npos);
   bool Smmode = (std::string(file1->GetName()).find("Sm")!= std::string::npos);
@@ -15,13 +15,18 @@ void accPiSigmaUniformGen(){
   TH1::SetDefaultSumw2();
   gStyle->SetOptStat(0);
   
+  TH2F* q_IMpiSigma_gen_2 = (TH2F*)file1->Get("q_IMpiSigma_gen");
+  q_IMpiSigma_gen_2->SetName("gen2");
+  TCanvas *cq_IMpiSigma_gen_2 = new TCanvas("cq_IMpiSigma_gen_2","q_IMpiSigma_gen_2");
+  q_IMpiSigma_gen_2->Draw("colz");
   
   //generated info.
   TH2F* q_IMpiSigma_gen = (TH2F*)file1->Get("q_IMpiSigma_gen");
-  TCanvas *cq_IMpiSigma_gen = new TCanvas("cq_IMpiSigma_gen","q_IMpiSigma_gen;");
+  TCanvas *cq_IMpiSigma_gen = new TCanvas("cq_IMpiSigma_gen","q_IMpiSigma_gen");
   q_IMpiSigma_gen->RebinX(5);
   q_IMpiSigma_gen->RebinY(12);
   q_IMpiSigma_gen->Draw("colz");
+  
   
   //true mass & q  including K0, 
   TH2F* q_IMpiSigma_wSid_n_genacc = (TH2F*)file1->Get("q_IMpiSigma_wSid_n_genacc");
@@ -119,6 +124,32 @@ void accPiSigmaUniformGen(){
   if(Spmode)heff_woK0_SpSm->SetMaximum(0.005);
   if(Smmode)heff_woK0_SpSm->SetMaximum(0.009);
   heff_woK0_SpSm->Draw("colz");
+
+  TH2F* heff_woK0_SpSm_reco;
+  heff_woK0_SpSm_reco = (TH2F*)q_IMpiSigma_wSid_n_genacc->Clone();
+  heff_woK0_SpSm_reco->SetName("eff_q_IMpiSigma_woK0_wSid_n_SpSm_reco");
+  heff_woK0_SpSm_reco->SetTitle("eff_q_IMpiSigma_woK0_wSid_n_SpSm_reco");
+  TCanvas *ceff_woK0_SpSm_reco_hist = new TCanvas("ceff_woK0_SpSm_reco_hist","ceff_woK0_SpSm_reco_hist");
+  heff_woK0_SpSm_reco->Divide(q_IMnpipi_woK0_wSid_n_SpSm_acc_reco,q_IMpiSigma_gen,1.0,1.0,"b");
+  if(Spmode)heff_woK0_SpSm_reco->SetMaximum(0.005);
+  if(Smmode)heff_woK0_SpSm_reco->SetMaximum(0.009);
+  heff_woK0_SpSm_reco->Draw("colz");
+
+  
+  TH2F* heff_woK0_SpSm_clone = (TH2F*)heff_woK0_SpSm->Clone();
+  heff_woK0_SpSm_clone->SetName("eff_q_IMpiSigma_woK0_wSid_n_SpSm_clone");
+  heff_woK0_SpSm_clone->SetTitle("eff_q_IMpiSigma_woK0_wSid_n_SpSm_clone");
+  TCanvas *ceff_woK0_SpSm_hist2 = new TCanvas("ceff_woK0_SpSm_hist2","ceff_woK0_SpSm_hist2");
+  if(Spmode)heff_woK0_SpSm_clone->SetMaximum(0.005);
+  if(Smmode)heff_woK0_SpSm_clone->SetMaximum(0.009);
+  heff_woK0_SpSm_clone->Draw("colz");
+
+  TFile *fnu = new TFile("NumericalRootFinder_Spmode.root");
+  fnu->cd();
+  TMultiGraph *mg = (TMultiGraph*)fnu->Get("mg"); 
+  mg->Draw("c");
+
+
   
   TCanvas *ceff_woK0_SpSm_hist_px_q0 = new TCanvas("ceff_woK0_SpSm_hist_px_q0","eff_woK0_SpSm_hist_px_q0");
   int ybin = heff_woK0_SpSm->GetYaxis()->FindBin(0.35);
@@ -237,6 +268,7 @@ void accPiSigmaUniformGen(){
   heff->Write();
   heff_woK0->Write();
   heff_woK0_SpSm->Write();
+  heff_woK0_SpSm_reco->Write();
   heff_err->Write();
 
 
