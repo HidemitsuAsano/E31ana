@@ -1154,21 +1154,20 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           }
         }
       }
-
+    }
     
-      //including K0 
-      if(NBetaOK && NdEOK && MissNFlag){
-        q_pippim_n->Fill(LVec_pip_pim.M(),qkn.P());
-        if(SigmaPFlag || SigmaMFlag){
-          q_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),qkn.P());
-          q_IMpiSigma_wSid_n_genacc->Fill(LVec_piSigma_react.M()/1000.,qkn_react.P()/1000.);
-          q_IMnpipi_wSid_n_acc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
-          q_IMnpipi_wSid_n_acc_reco->Fill(LVec_pip_pim_n.M(),qkn.P());
-        }
-        for(int igap=0;igap<ngap;igap++){
-          if(SigmaPsideFlag[sidebandtype][igap] || SigmaMsideFlag[sidebandtype][igap]){
-            q_IMnpipi_wSid_n_side[igap]->Fill(LVec_pip_pim_n.M(),qkn.P());
-          }
+    //including K0 
+    if(NBetaOK && NdEOK && MissNFlag){
+      q_pippim_n->Fill(LVec_pip_pim.M(),qkn.P());
+      if(SigmaPFlag || SigmaMFlag){
+        q_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),qkn.P());
+        q_IMpiSigma_wSid_n_genacc->Fill(LVec_piSigma_react.M()/1000.,qkn_react.P()/1000.);
+        q_IMnpipi_wSid_n_acc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
+        q_IMnpipi_wSid_n_acc_reco->Fill(LVec_pip_pim_n.M(),qkn.P());
+      }
+      for(int igap=0;igap<ngap;igap++){
+        if(SigmaPsideFlag[sidebandtype][igap] || SigmaMsideFlag[sidebandtype][igap]){
+          q_IMnpipi_wSid_n_side[igap]->Fill(LVec_pip_pim_n.M(),qkn.P());
         }
       }
     }
@@ -1426,7 +1425,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 //  q_IMnpipi_woK0_wSid_n_Sm->SetMaximum(q_IMnpipi_woK0_wSid_n_Sp->GetMaximum());
   q_IMnpipi_woK0_wSid_n_Sm->Draw("colz");
   fkp->Draw("same");
-
+  
   TCanvas *cq_IMnpipi_woK0_wSid_n_Sp_side_low = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp_side_low","q_IMnpipi_woK0_wSid_n_Sp_side_low");
   cq_IMnpipi_woK0_wSid_n_Sp_side_low->cd();
   q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][0][0]->Draw("colz");
@@ -1462,35 +1461,35 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   q_IMnpipi_woK0_wSid_n_wocross->SetLineColor(4);
   //q_IMnpipi_woK0_wSid_n_wocross->Draw("HEsame");
   
-
-  TCanvas *cq_IMnpipi_woK0_wSid_n_px_Sp = new TCanvas("cq_IMnpipi_woK0_wSid_n_px_Sp","q_IMnpipi_woK0_wSid_n_px_Sp"); 
-  //q_IMnpipi_woK0_wSid_n_Sp_px->SetMaximum(q_IMnpipi_woK0_wSid_n_Sm_px->GetMaximum());
-  if(qvalcutflag==1 && !Spmode && !Smmode) q_IMnpipi_woK0_wSid_n_Sp_px->SetMaximum(160);
-  if(qvalcutflag==2 && !Spmode && !Smmode) q_IMnpipi_woK0_wSid_n_Sp_px->SetMaximum(260);
-  q_IMnpipi_woK0_wSid_n_Sp_px->Draw("HE");
-  //TH1D* q_IMnpipi_woK0_wSid_n_Sp_side_px = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype]->ProjectionX();
-  //q_IMnpipi_woK0_wSid_n_Sp_side_px->SetLineColor(5);
-  //q_IMnpipi_woK0_wSid_n_Sp_side_px->Draw("HEsame");
+  TCanvas *cq_IMnpipi_woK0_wSid_n_px_Sp[ngap];
+  TH1D* q_IMnpipi_woK0_wSid_n_Sp_side_low_px[ngap];
+  TH1D* q_IMnpipi_woK0_wSid_n_Sp_side_high_px[ngap];
+  TH1D* q_IMnpipi_woK0_wSid_nSp_side_px_sum[ngap];
+  for(int igap=0;igap<ngap;igap++){
+    cq_IMnpipi_woK0_wSid_n_px_Sp[igap]  = new TCanvas(Form("cq_IMnpipi_woK0_wSid_n_px_Sp_%d",igap),Form("q_IMnpipi_woK0_wSid_n_px_Sp_%d",igap)); 
+    //q_IMnpipi_woK0_wSid_n_Sp_px->SetMaximum(q_IMnpipi_woK0_wSid_n_Sm_px->GetMaximum());
+    if(qvalcutflag==1 && !Spmode && !Smmode) q_IMnpipi_woK0_wSid_n_Sp_px->SetMaximum(160);
+    if(qvalcutflag==2 && !Spmode && !Smmode) q_IMnpipi_woK0_wSid_n_Sp_px->SetMaximum(260);
+    q_IMnpipi_woK0_wSid_n_Sp_px->Draw("HE");
   
-  TH1D* q_IMnpipi_woK0_wSid_n_Sp_side_0_px = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][0][0]->ProjectionX();
-  q_IMnpipi_woK0_wSid_n_Sp_side_0_px->SetLineColor(kCyan);
-  q_IMnpipi_woK0_wSid_n_Sp_side_0_px->SetMarkerStyle(20);
-  q_IMnpipi_woK0_wSid_n_Sp_side_0_px->SetMarkerColor(kCyan);
-  q_IMnpipi_woK0_wSid_n_Sp_side_0_px->Draw("Esame");
+    q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][0][igap]->ProjectionX();
+    q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap]->SetLineColor(kCyan);
+    q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap]->SetMarkerStyle(20);
+    q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap]->SetMarkerColor(kCyan);
+    q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap]->Draw("Esame");
   
-  TH1D* q_IMnpipi_woK0_wSid_n_Sp_side_1_px = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][1][0]->ProjectionX();
-  q_IMnpipi_woK0_wSid_n_Sp_side_1_px->SetLineColor(kCyan+2);
-  q_IMnpipi_woK0_wSid_n_Sp_side_1_px->SetMarkerStyle(21);
-  //q_IMnpipi_woK0_wSid_n_Sp_side_1_px->SetMarkerColor(kOrange+6);
-  q_IMnpipi_woK0_wSid_n_Sp_side_1_px->Draw("Esame");
+    q_IMnpipi_woK0_wSid_n_Sp_side_high_px[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][1][igap]->ProjectionX();
+    q_IMnpipi_woK0_wSid_n_Sp_side_high_px[igap]->SetLineColor(kCyan+2);
+    q_IMnpipi_woK0_wSid_n_Sp_side_high_px[igap]->SetMarkerStyle(21);
+    q_IMnpipi_woK0_wSid_n_Sp_side_high_px[igap]->Draw("Esame");
   
-  TH1D* q_IMnpipi_woK0_wSid_nSp_side_px_sum = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side_0_px->Clone();
-  q_IMnpipi_woK0_wSid_nSp_side_px_sum->Add(q_IMnpipi_woK0_wSid_n_Sp_side_1_px);
-  q_IMnpipi_woK0_wSid_nSp_side_px_sum->SetLineColor(kCyan+4);
-  q_IMnpipi_woK0_wSid_nSp_side_px_sum->SetMarkerStyle(22);
-  q_IMnpipi_woK0_wSid_nSp_side_px_sum->SetMarkerColor(kCyan+4);
-  q_IMnpipi_woK0_wSid_nSp_side_px_sum->Draw("Esame");
-
+    q_IMnpipi_woK0_wSid_nSp_side_px_sum[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap]->Clone();
+    q_IMnpipi_woK0_wSid_nSp_side_px_sum[igap]->Add(q_IMnpipi_woK0_wSid_n_Sp_side_high_px[igap]);
+    q_IMnpipi_woK0_wSid_nSp_side_px_sum[igap]->SetLineColor(kCyan+4);
+    q_IMnpipi_woK0_wSid_nSp_side_px_sum[igap]->SetMarkerStyle(22);
+    q_IMnpipi_woK0_wSid_nSp_side_px_sum[igap]->SetMarkerColor(kCyan+4);
+    q_IMnpipi_woK0_wSid_nSp_side_px_sum[igap]->Draw("Esame");
+  }
   //TH1D* q_IMnpipi_woK0_wSid_n_Sp_side_px_1 = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side[1]->ProjectionX();
   //q_IMnpipi_woK0_wSid_n_Sp_side_px_1->SetLineColor(kOrange+2);
   //q_IMnpipi_woK0_wSid_n_Sp_side_px_1->Draw("HEsame");
@@ -1511,29 +1510,34 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   
   
   //overlay signal and sideband projected 1d histo to IM
-  TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sm_px","q_IMnpipi_woK0_wSid_n_Sm_px"); 
+  TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_px[ngap];
+  TH1D* q_IMnpipi_woK0_wSid_n_Sm_side_low_px[ngap];
+  TH1D* q_IMnpipi_woK0_wSid_n_Sm_side_high_px[ngap];
+  TH1D* q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[ngap];
+  for(int igap=0;igap<ngap;igap++){
+    cq_IMnpipi_woK0_wSid_n_Sm_px[igap] = new TCanvas(Form("cq_IMnpipi_woK0_wSid_n_Sm_px_%d",igap),Form("q_IMnpipi_woK0_wSid_n_Sm_px_%d",igap)); 
   //q_IMnpipi_woK0_wSid_n_Sm_px->SetMaximum(q_IMnpipi_woK0_wSid_n_px->GetMaximum());
-  if(qvalcutflag==1) q_IMnpipi_woK0_wSid_n_Sm_px->SetMaximum(160);
-  if(qvalcutflag==2) q_IMnpipi_woK0_wSid_n_Sm_px->SetMaximum(260);
-  q_IMnpipi_woK0_wSid_n_Sm_px->Draw("EH");
-  TH1D* q_IMnpipi_woK0_wSid_n_Sm_side_0_px = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][0][0]->ProjectionX();
-  q_IMnpipi_woK0_wSid_n_Sm_side_0_px->SetLineColor(kPink+1);
-  q_IMnpipi_woK0_wSid_n_Sm_side_0_px->SetMarkerStyle(20);
-  q_IMnpipi_woK0_wSid_n_Sm_side_0_px->Draw("Esame");
+    if(qvalcutflag==1) q_IMnpipi_woK0_wSid_n_Sm_px->SetMaximum(160);
+    if(qvalcutflag==2) q_IMnpipi_woK0_wSid_n_Sm_px->SetMaximum(260);
+    q_IMnpipi_woK0_wSid_n_Sm_px->Draw("EH");
+    q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][0][igap]->ProjectionX();
+    q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->SetLineColor(kPink+1);
+    q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->SetMarkerStyle(20);
+    q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->Draw("Esame");
   
-  TH1D* q_IMnpipi_woK0_wSid_n_Sm_side_1_px = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][1][0]->ProjectionX();
-  q_IMnpipi_woK0_wSid_n_Sm_side_1_px->SetLineColor(kPink+3);
-  q_IMnpipi_woK0_wSid_n_Sm_side_1_px->SetMarkerStyle(21);
-  q_IMnpipi_woK0_wSid_n_Sm_side_1_px->SetMarkerColor(kPink+3);
-  q_IMnpipi_woK0_wSid_n_Sm_side_1_px->Draw("Esame");
+    q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][1][igap]->ProjectionX();
+    q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->SetLineColor(kPink+3);
+    q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->SetMarkerStyle(21);
+    q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->SetMarkerColor(kPink+3);
+    q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->Draw("Esame");
   
-  TH1D* q_IMnpipi_woK0_wSid_n_Sm_side_px_sum = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side_0_px->Clone();
-  q_IMnpipi_woK0_wSid_n_Sm_side_px_sum->Add(q_IMnpipi_woK0_wSid_n_Sm_side_1_px);
-  q_IMnpipi_woK0_wSid_n_Sm_side_px_sum->SetLineColor(kPink+10);
-  q_IMnpipi_woK0_wSid_n_Sm_side_px_sum->SetMarkerStyle(22);
-  q_IMnpipi_woK0_wSid_n_Sm_side_px_sum->SetMarkerColor(kPink+10);
-  q_IMnpipi_woK0_wSid_n_Sm_side_px_sum->Draw("Esame");
-
+    q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->Clone();
+    q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->Add(q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]);
+    q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->SetLineColor(kPink+10);
+    q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->SetMarkerStyle(22);
+    q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->SetMarkerColor(kPink+10);
+    q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->Draw("Esame");
+  }
   //TH1D* q_IMnpipi_woK0_wSid_n_Sm_side_px_1 = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side[1]->ProjectionX();
   //q_IMnpipi_woK0_wSid_n_Sm_side_px_1->SetLineColor(kPink+3);
   //q_IMnpipi_woK0_wSid_n_Sm_side_px_1->Draw("HEsame");
