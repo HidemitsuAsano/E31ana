@@ -1978,7 +1978,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   
   TCanvas *cq_IMnpipi_woK0_wSid_n_Sp_side_cs = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp_side_cs","q_IMnpipi_woK0_wSid_n_Sp_side_cs");
   cq_IMnpipi_woK0_wSid_n_Sp_side_cs->cd();
-  TH2F *q_IMnpipi_woK0_wSid_n_Sp_side_cs = (TH2F*)q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][0]->Clone("Sp_cs_side");
+  TH2F *q_IMnpipi_woK0_wSid_n_Sp_side_cs = (TH2F*)q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][LOWside][0]->Clone("Sp_cs_side_low");
   q_IMnpipi_woK0_wSid_n_Sp_side_cs->Sumw2();
   q_IMnpipi_woK0_wSid_n_Sp_side_cs->Divide(acc_Sp);
   q_IMnpipi_woK0_wSid_n_Sp_side_cs->SetMaximum(30000);
