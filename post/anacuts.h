@@ -31,6 +31,7 @@ namespace anacuts {
   const double Sigmam_MAX_wide = 1.19723+5.0*0.00601265;  
   
   //side band selection
+  const double Sigmap_sigma = 0.00540844;
   const double Sigmap_sidelow_MIN = 1.18911-6.0*0.00540844;   
   const double Sigmap_sidelow_MAX = 1.18911-3.0*0.00540844;   
   //const double Sigmap_sidelow_MIN = 1.18911-11.0*0.00540844;   
@@ -41,7 +42,8 @@ namespace anacuts {
   //const double Sigmap_sidehigh_MIN = 1.18911+8.0*0.00540844;   
   //const double Sigmap_sidehigh_MAX = 1.18911+11.0*0.00540844;   
   const double Sigmap_sidehigh_center = (Sigmap_sidehigh_MAX + Sigmap_sidehigh_MIN)/2.0;
-
+  
+  const double Sigmam_sigma = 0.00601265;
   const double Sigmam_sidelow_MIN = 1.19723-6.0*0.00601265;
   const double Sigmam_sidelow_MAX = 1.19723-3.0*0.00601265;  
   //const double Sigmam_sidelow_MIN = 1.19723-11.0*0.00601265;
