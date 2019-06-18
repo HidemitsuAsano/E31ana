@@ -106,13 +106,13 @@ void accPiSigmaUniformGen(){
   heff->Draw("colz");
   
   TH2F* heff_reco;// = new TH2F("heff","heff",125,1,2,50,0,1.5);
-  heff_reco = (TH2F*)q_IMpiSigma_wSid_n_genacc->Clone();
+  heff_reco = (TH2F*)q_IMnpipi_wSid_n_acc_reco->Clone();
   heff_reco->SetName("eff_q_IMpiSigma_wSid_n_reco");
   heff_reco->SetTitle("eff_q_IMpiSigma_wSid_n_reco");
   TCanvas *ceff_hist_reco = new TCanvas("ceff_hist_reco","ceff_hist_reco");
   heff_reco->Divide(q_IMnpipi_wSid_n_acc_reco,q_IMpiSigma_gen,1.0,1.0,"b");
-  if(Spmode)heff->SetMaximum(0.005);
-  if(Smmode)heff->SetMaximum(0.009);
+  if(Spmode)heff_reco->SetMaximum(0.005);
+  if(Smmode)heff_reco->SetMaximum(0.009);
   heff_reco->Draw("colz");
   
   TH2F* heff_woK0;// = new TH2F("heff","heff",125,1,2,50,0,1.5);
@@ -126,7 +126,7 @@ void accPiSigmaUniformGen(){
   heff_woK0->Draw("colz");
   
   TH2F* heff_woK0_reco;// = new TH2F("heff","heff",125,1,2,50,0,1.5);
-  heff_woK0_reco = (TH2F*)q_IMpiSigma_wSid_n_genacc->Clone();
+  heff_woK0_reco = (TH2F*)q_IMnpipi_woK0_wSid_n_acc_reco->Clone();
   heff_woK0_reco->SetName("eff_q_IMpiSigma_woK0_wSid_n_reco");
   heff_woK0_reco->SetTitle("eff_q_IMpiSigma_woK0_wSid_n_reco");
   TCanvas *ceff_woK0_hist_reco = new TCanvas("ceff_woK0_hist_reco","ceff_woK0_hist_reco");
@@ -146,7 +146,7 @@ void accPiSigmaUniformGen(){
   heff_woK0_SpSm->Draw("colz");
 
   TH2F* heff_woK0_SpSm_reco;
-  heff_woK0_SpSm_reco = (TH2F*)q_IMpiSigma_wSid_n_genacc->Clone();
+  heff_woK0_SpSm_reco = (TH2F*)q_IMnpipi_woK0_wSid_n_SpSm_acc_reco->Clone();
   heff_woK0_SpSm_reco->SetName("eff_q_IMpiSigma_woK0_wSid_n_SpSm_reco");
   heff_woK0_SpSm_reco->SetTitle("eff_q_IMpiSigma_woK0_wSid_n_SpSm_reco");
   TCanvas *ceff_woK0_SpSm_reco_hist = new TCanvas("ceff_woK0_SpSm_reco_hist","ceff_woK0_SpSm_reco_hist");
@@ -169,13 +169,49 @@ void accPiSigmaUniformGen(){
   TMultiGraph *mg = (TMultiGraph*)fnu->Get("mg"); 
   mg->Draw("c");
 
+  
+  TH2F* heff_err;// = new TH2F("heff_err","heff_err",125,1,2,50,0,1.5);
+  //heff_err = (TH2F*)heff_woK0_SpSm->Clone();
+  heff_err = (TH2F*)heff_woK0_SpSm_reco->Clone();
+  heff_err->SetName("heff_err");
+  heff_err->SetTitle("heff_err");
+  for(int ix=0;ix<heff_woK0_SpSm_reco->GetNbinsX();ix++){
+    for(int iy=0;iy<heff_woK0_SpSm_reco->GetNbinsY();iy++){
+      double err = heff_woK0_SpSm_reco->GetBinErrorUp(ix,iy);
+      double cont = heff_woK0_SpSm_reco->GetBinContent(ix,iy);
+      if(cont>0.00)heff_err->SetBinContent(ix,iy,err/cont);
+    }
+  }
+  heff_err->SetMaximum(1.0);
+  TCanvas *cacc_err = new TCanvas("cacc_err","acc_err");
+  cacc_err->cd();
+  heff_err->Draw("colz");
+  
+  //cleaning up
+  
+  for(int ibinx=0;ibinx<heff_err->GetNbinsX();ibinx++){
+    for(int ibiny=0;ibiny<heff_err->GetNbinsY();ibiny++){
+      double cont =  heff_woK0_SpSm_reco->GetBinContent(ibinx,ibiny);
+      double precision =  heff_err->GetBinContent(ibinx,ibiny);
+      if(precision>0.2 || cont >0.1){ 
+        heff_reco->SetBinContent(ibinx,ibiny,0.0);
+        heff_reco->SetBinError(ibinx,ibiny,0.0);
+        heff_woK0_reco->SetBinContent(ibinx,ibiny,0.0);
+        heff_woK0_reco->SetBinError(ibinx,ibiny,0.0);
+        heff_woK0_SpSm_reco->SetBinContent(ibinx,ibiny,0.0);
+        heff_woK0_SpSm_reco->SetBinError(ibinx,ibiny,0.0);
+      }
+    }
+  }
+
 
   
   TCanvas *ceff_woK0_SpSm_hist_px_q0 = new TCanvas("ceff_woK0_SpSm_hist_px_q0","eff_woK0_SpSm_hist_px_q0");
-  int ybin = heff_woK0_SpSm->GetYaxis()->FindBin(0.35);
-  heff->ProjectionX("px0",0,ybin-1);
-  heff_woK0->ProjectionX("px0_woK0",0,ybin-1);
-  heff_woK0_SpSm->ProjectionX("px0_woK0_SpSm",0,ybin-1);
+  //int ybin = heff_woK0_SpSm->GetYaxis()->FindBin(0.35);
+  int ybin = heff_woK0_SpSm_reco->GetYaxis()->FindBin(0.35);
+  heff_reco->ProjectionX("px0",0,ybin-1);
+  heff_woK0_reco->ProjectionX("px0_woK0",0,ybin-1);
+  heff_woK0_SpSm_reco->ProjectionX("px0_woK0_SpSm",0,ybin-1);
   px0->SetYTitle("acceptance X efficiency");
   px0->GetYaxis()->CenterTitle();
   px0->Draw();
@@ -186,9 +222,9 @@ void accPiSigmaUniformGen(){
   
   TCanvas *ceff_woK0_SpSm_hist_px_q350 = new TCanvas("ceff_woK0_SpSm_hist_px_q350","eff_woK0_SpSm_hist_px_q350");
   //int ybin = heff_woK0_SpSm->GetYaxis()->FindBin(0.35);
-  heff->ProjectionX("px350",ybin,50);
-  heff_woK0->ProjectionX("px350_woK0",ybin,50);
-  heff_woK0_SpSm->ProjectionX("px350_woK0_SpSm",ybin,50);
+  heff_reco->ProjectionX("px350",ybin,50);
+  heff_woK0_reco->ProjectionX("px350_woK0",ybin,50);
+  heff_woK0_SpSm_reco->ProjectionX("px350_woK0_SpSm",ybin,50);
   px350->SetYTitle("acceptance X efficiency");
   px350->GetYaxis()->CenterTitle();
   px350->Draw();
@@ -198,21 +234,6 @@ void accPiSigmaUniformGen(){
   px350_woK0_SpSm->Draw("same");
 
 
-  TH2F* heff_err;// = new TH2F("heff_err","heff_err",125,1,2,50,0,1.5);
-  heff_err = (TH2F*)heff_woK0_SpSm->Clone();
-  heff_err->SetName("heff_err");
-  heff_err->SetTitle("heff_err");
-  for(int ix=0;ix<heff_woK0_SpSm->GetNbinsX();ix++){
-    for(int iy=0;iy<heff_woK0_SpSm->GetNbinsY();iy++){
-      double err = heff_woK0_SpSm->GetBinErrorUp(ix,iy);
-      double cont = heff_woK0_SpSm->GetBinContent(ix,iy);
-      if(cont>0.00)heff_err->SetBinContent(ix,iy,err/cont);
-    }
-  }
-  heff_err->SetMaximum(1.0);
-  TCanvas *cacc_err = new TCanvas("cacc_err","acc_err");
-  cacc_err->cd();
-  heff_err->Draw("colz");
   
 
   TIter nexthist(gDirectory->GetList());
