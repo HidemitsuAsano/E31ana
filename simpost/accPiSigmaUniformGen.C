@@ -105,6 +105,16 @@ void accPiSigmaUniformGen(){
   if(Smmode)heff->SetMaximum(0.009);
   heff->Draw("colz");
   
+  TH2F* heff_reco;// = new TH2F("heff","heff",125,1,2,50,0,1.5);
+  heff_reco = (TH2F*)q_IMpiSigma_wSid_n_genacc->Clone();
+  heff_reco->SetName("eff_q_IMpiSigma_wSid_n_reco");
+  heff_reco->SetTitle("eff_q_IMpiSigma_wSid_n_reco");
+  TCanvas *ceff_hist_reco = new TCanvas("ceff_hist_reco","ceff_hist_reco");
+  heff_reco->Divide(q_IMnpipi_wSid_n_acc_reco,q_IMpiSigma_gen,1.0,1.0,"b");
+  if(Spmode)heff->SetMaximum(0.005);
+  if(Smmode)heff->SetMaximum(0.009);
+  heff_reco->Draw("colz");
+  
   TH2F* heff_woK0;// = new TH2F("heff","heff",125,1,2,50,0,1.5);
   heff_woK0 = (TH2F*)q_IMpiSigma_wSid_n_genacc->Clone();
   heff_woK0->SetName("eff_q_IMpiSigma_woK0_wSid_n");
@@ -114,6 +124,16 @@ void accPiSigmaUniformGen(){
   if(Spmode)heff_woK0->SetMaximum(0.005);
   if(Smmode)heff_woK0->SetMaximum(0.009);
   heff_woK0->Draw("colz");
+  
+  TH2F* heff_woK0_reco;// = new TH2F("heff","heff",125,1,2,50,0,1.5);
+  heff_woK0_reco = (TH2F*)q_IMpiSigma_wSid_n_genacc->Clone();
+  heff_woK0_reco->SetName("eff_q_IMpiSigma_woK0_wSid_n_reco");
+  heff_woK0_reco->SetTitle("eff_q_IMpiSigma_woK0_wSid_n_reco");
+  TCanvas *ceff_woK0_hist_reco = new TCanvas("ceff_woK0_hist_reco","ceff_woK0_hist_reco");
+  heff_woK0_reco->Divide(q_IMnpipi_woK0_wSid_n_acc_reco,q_IMpiSigma_gen,1.0,1.0,"b");
+  if(Spmode)heff_woK0_reco->SetMaximum(0.005);
+  if(Smmode)heff_woK0_reco->SetMaximum(0.009);
+  heff_woK0_reco->Draw("colz");
 
   TH2F* heff_woK0_SpSm;// = new TH2F("heff","heff",125,1,2,50,0,1.5);
   heff_woK0_SpSm = (TH2F*)q_IMpiSigma_wSid_n_genacc->Clone();
@@ -266,7 +286,9 @@ void accPiSigmaUniformGen(){
   if(Spmode) facc = new TFile("acc_Sp.root","RECREATE");
   if(Smmode) facc = new TFile("acc_Sm.root","RECREATE");
   heff->Write();
+  heff_reco->Write();
   heff_woK0->Write();
+  heff_woK0_reco->Write();
   heff_woK0_SpSm->Write();
   heff_woK0_SpSm_reco->Write();
   heff_err->Write();
