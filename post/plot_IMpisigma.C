@@ -218,7 +218,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* q_IMnpipi_wSid_n_side[ngap];//side band method
   TH2F* q_IMnpipi_woK0_wSid_n_side[ngap];//side band method
   TH2F* nmom_IMnpipi_woK0_wSid_n;
-  TH2F* q_pippim_n;
+  //K0 study
+  TH2F* q_IMpippim_n;
+  TH2F* q_IMpippim_n_wSid;
+  TH2F* IMpippim_IMnpipi_n;
+  TH2F* IMpippim_IMnpipi_n_wSid;
 
   const char smode[][4]={"Sp","Sm"};
   
@@ -499,9 +503,21 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   nmom_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   nmom_IMnpipi_woK0_wSid_n->SetYTitle("nmom  [GeV/c]");
    
-  q_pippim_n = new TH2F("q_pippim_n","q_pippim_n",500,0,1, 100,0,1.5);
-  q_pippim_n->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
-  q_pippim_n->SetYTitle("Mom. Transfer [GeV/c]");
+  q_IMpippim_n = new TH2F("q_IMpippim_n","q_IMpippim_n",500,0,1, 100,0,1.5);
+  q_IMpippim_n->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMpippim_n->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMpippim_n_wSid = new TH2F("q_IMpippim_n_wSid","q_IMpippim_n_wSid",500,0,1, 100,0,1.5);
+  q_IMpippim_n_wSid->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMpippim_n_wSid->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  IMpippim_IMnpipi_n = new TH2F("IMpippim_IMnpipi_n","IMpippim_IMnpipi_n",100,1,2,500,0,1);
+  IMpippim_IMnpipi_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  IMpippim_IMnpipi_n->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  
+  IMpippim_IMnpipi_n_wSid = new TH2F("IMpippim_IMnpipi_n_wSid","IMpippim_IMnpipi_n_wSid",100,1,2,500,0,1);
+  IMpippim_IMnpipi_n_wSid->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  IMpippim_IMnpipi_n_wSid->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
 
   TH1F *nmom = new TH1F("nmom", "nmom", 50, 0, 1.0);
   nmom->SetXTitle("mom. [GeV/c]");
@@ -1275,8 +1291,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     
     //including K0 
     if(NBetaOK && NdEOK && MissNFlag){
-      q_pippim_n->Fill(LVec_pip_pim.M(),qkn.P());
+      q_IMpippim_n->Fill(LVec_pip_pim.M(),qkn.P());
+      IMpippim_IMnpipi_n->Fill(LVec_pip_pim_n.M(), LVec_pip_pim.M());
       if(SigmaPFlag || SigmaMFlag){
+        q_IMpippim_n_wSid->Fill(LVec_pip_pim.M(),qkn.P());
+        IMpippim_IMnpipi_n_wSid->Fill(LVec_pip_pim_n.M(), LVec_pip_pim.M());
         q_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),qkn.P());
         q_IMpiSigma_wSid_n_genacc->Fill(LVec_piSigma_react.M()/1000.,qkn_react.P()/1000.);
         q_IMnpipi_wSid_n_acc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
@@ -1872,21 +1891,34 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   cMMnmiss_IMnpipi_woK0_wSid_n->cd();
   MMnmiss_IMnpipi_woK0_wSid_n->Draw("colz");
 
-  //TCanvas *cq_pippim_n = new TCanvas("cq_pippim_n","q_pippim_n");
-  //cq_pippim_n->cd();
-  //q_pippim_n->Draw("colz");
+  TCanvas *cq_IMpippim_n = new TCanvas("cq_IMpippim_n","q_IMpippim_n");
+  cq_IMpippim_n->cd();
+  q_IMpippim_n->Draw("colz");
 
-  TCanvas *cq_pippim_n_px = new TCanvas("cq_pippim_n_px","q_pippim_n_px");
-  cq_pippim_n_px->cd();
-  TH1D* q_pippim_n_px = q_pippim_n->ProjectionX();
-  q_pippim_n_px->GetXaxis()->SetRangeUser(0.4,0.6);
-  q_pippim_n_px->GetYaxis()->SetTitle("Counts / 2 MeV/c^{2}");
-  q_pippim_n_px->GetYaxis()->CenterTitle();
-  q_pippim_n_px->Draw("EH");
-  TH1D* q_pippim_n_px_cut = (TH1D*)q_pippim_n_px->Clone();
-  q_pippim_n_px_cut->GetXaxis()->SetRangeUser(anacuts::pipi_MIN,anacuts::pipi_MAX);
-  q_pippim_n_px_cut->SetFillColor(2);
-  q_pippim_n_px_cut->Draw("HEsame");
+  TCanvas *cq_IMpippim_n_px = new TCanvas("cq_IMpippim_n_px","q_IMpippim_n_px");
+  cq_IMpippim_n_px->cd();
+  TH1D* q_IMpippim_n_px = q_IMpippim_n->ProjectionX();
+  q_IMpippim_n_px->GetXaxis()->SetRangeUser(0.4,0.6);
+  q_IMpippim_n_px->GetYaxis()->SetTitle("Counts / 2 MeV/c^{2}");
+  q_IMpippim_n_px->GetYaxis()->CenterTitle();
+  q_IMpippim_n_px->Draw("EH");
+  TH1D* q_IMpippim_n_px_cut = (TH1D*)q_IMpippim_n_px->Clone();
+  q_IMpippim_n_px_cut->GetXaxis()->SetRangeUser(anacuts::pipi_MIN,anacuts::pipi_MAX);
+  q_IMpippim_n_px_cut->SetFillColor(2);
+  q_IMpippim_n_px_cut->Draw("HEsame");
+  
+  TCanvas *cq_IMpippim_n_wSid = new TCanvas("cq_IMpippim_n_wSid","q_IMpippim_n_wSid");
+  cq_IMpippim_n_wSid->cd();
+  q_IMpippim_n_wSid->Draw("colz");
+  
+  TCanvas *cIMpippim_IMnpipi_n = new TCanvas("cIMpippim_IMnpipi_n","IMpippim_IMnpipi_n");
+  cIMpippim_IMnpipi_n->cd();
+  IMpippim_IMnpipi_n->Draw("colz");
+
+  TCanvas *cIMpippim_IMnpipi_n_wSid = new TCanvas("cIMpippim_IMnpipi_n_wSid","IMpippim_IMnpipi_n_wSid");
+  cIMpippim_IMnpipi_n_wSid->cd();
+  IMpippim_IMnpipi_n_wSid->Draw("colz");
+
   
   TCanvas *cMMnpip_MMnpim_woK0_n = new TCanvas("cMMnpip_MMnpim_woK0_n","MMnpip_MMnpim_woK0_n");
   cMMnpip_MMnpim_woK0_n->cd();
