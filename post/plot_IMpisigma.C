@@ -180,8 +180,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* MMnmiss_IMnpim_dE_woK0;
   TH2F* MMnpip_MMnpim_woK0_n;
   TH2F* MMnpip_MMnpim_woK0_wSid_n;
-  TH2F* dE_Pncds_woK0;//
-  TH2F* dE_Pncds_woK0_n;//
   TH2F* dE_IMnpim_woK0;
   TH2F* dE_IMnpim_woK0_n;
   TH2F* dE_IMnpip_woK0;
@@ -327,13 +325,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMnpip_MMnpim_woK0_wSid_n->SetXTitle("Miss. Mass(n#pi^{+}) [GeV/c^{2}]");
   MMnpip_MMnpim_woK0_wSid_n->SetYTitle("Miss. Mass(n#pi^{-}) [GeV/c^{2}]");
   
-  dE_Pncds_woK0 = new TH2F(Form("dE_Pncds_woK0"),Form("dE_Pncds_woK0"), 150, 0, 1.5, nbindE, 0, 50.);
-  dE_Pncds_woK0->SetXTitle("nmom [GeV/c]");
-  dE_Pncds_woK0->SetYTitle("dE [MeVee]");
-  
-  
-
-
 
   
   dE_IMnpim_woK0 = new TH2F(Form("dE_IMnpim_woK0"),Form("dE_IMnpim_woK0"), nbinIMnpi, 1.0, 2.0, nbindE, 0, 50.);
@@ -1356,7 +1347,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH1D* q_IMnpipi_woK0_wSid_n_Sp_sidewide_px[nzone];
   for(int izone=0;izone<nzone;izone++){
     cIMnpim_IMnpip_dE_woK0_n_Sp_wide[izone] = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_n_Sp_wide_%d",izone),Form("IMnpim_IMnpip_dE_woK0_n_Sp_wide_%d",izone));   
-    cIMnpim_IMnpip_dE_woK0_n_Sp_wide[izone]->Divide(2,1);
+    cIMnpim_IMnpip_dE_woK0_n_Sp_wide[izone]->Divide(2,2);
     cIMnpim_IMnpip_dE_woK0_n_Sp_wide[izone]->cd(1);
     IMnpim_IMnpip_dE_woK0_n_Sp->SetMaximum(IMnpim_IMnpip_dE_woK0_n->GetMaximum());
     IMnpim_IMnpip_dE_woK0_n_Sp->GetXaxis()->SetRangeUser(0,1.7);
@@ -1366,9 +1357,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     cIMnpim_IMnpip_dE_woK0_n_Sp_wide[izone]->cd(2);
     TH1D* q_IMnpipi_woK0_wSid_n_Sp_px = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp->ProjectionX();
     q_IMnpipi_woK0_wSid_n_Sp_px->Draw("HE");
-    q_IMnpipi_woK0_wSid_n_Sp_sidewide_px[izone] = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_sidewide[izone]->ProjectionX();
+    q_IMnpipi_woK0_wSid_n_Sp_sidewide_px[izone] = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_sidewide[izone]->ProjectionX(Form("Sp_sidewide_px_%d",izone));
     q_IMnpipi_woK0_wSid_n_Sp_sidewide_px[izone]->SetLineColor(kCyan);
+    q_IMnpipi_woK0_wSid_n_Sp_sidewide_px[izone]->SetMarkerColor(kCyan);
+    q_IMnpipi_woK0_wSid_n_Sp_sidewide_px[izone]->SetMarkerStyle(22);
     q_IMnpipi_woK0_wSid_n_Sp_sidewide_px[izone]->Draw("HEsame");
+    cIMnpim_IMnpip_dE_woK0_n_Sp_wide[izone]->cd(3);
+    q_IMnpipi_woK0_wSid_n_Sp->Draw("colz");
+    cIMnpim_IMnpip_dE_woK0_n_Sp_wide[izone]->cd(4);
+    q_IMnpipi_woK0_wSid_n_Sp_sidewide[izone]->SetMaximum(q_IMnpipi_woK0_wSid_n_Sp->GetMaximum());
+    q_IMnpipi_woK0_wSid_n_Sp_sidewide[izone]->Draw("colz"); 
+    
     if(Spmode || Smmode) break;
   }
 
@@ -1376,7 +1375,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH1D* q_IMnpipi_woK0_wSid_n_Sm_sidewide_px[nzone];
   for(int izone=0;izone<nzone;izone++){
     cIMnpim_IMnpip_dE_woK0_n_Sm_wide[izone] = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_n_Sm_wide_%d",izone),Form("IMnpim_IMnpip_dE_woK0_n_Sm_wide_%d",izone));
-    cIMnpim_IMnpip_dE_woK0_n_Sm_wide[izone]->Divide(2,1);
+    cIMnpim_IMnpip_dE_woK0_n_Sm_wide[izone]->Divide(2,2);
     cIMnpim_IMnpip_dE_woK0_n_Sm_wide[izone]->cd(1);
     IMnpim_IMnpip_dE_woK0_n_Sm->SetMaximum(IMnpim_IMnpip_dE_woK0_n->GetMaximum());
     IMnpim_IMnpip_dE_woK0_n_Sm->GetXaxis()->SetRangeUser(0,1.7);
@@ -1386,9 +1385,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     cIMnpim_IMnpip_dE_woK0_n_Sm_wide[izone]->cd(2);
     TH1D* q_IMnpipi_woK0_wSid_n_Sm_px = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm->ProjectionX();
     q_IMnpipi_woK0_wSid_n_Sm_px->Draw("HE");
-    q_IMnpipi_woK0_wSid_n_Sm_sidewide_px[izone] = (TH1D*)q_IMnpipi_woK0_wSid_n_Sm_sidewide[izone]->ProjectionX();
-    q_IMnpipi_woK0_wSid_n_Sm_sidewide_px[izone]->SetLineColor(kCyan);
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide_px[izone] = (TH1D*)q_IMnpipi_woK0_wSid_n_Sm_sidewide[izone]->ProjectionX(Form("Sm_sidewide_px_%d",izone));
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide_px[izone]->SetLineColor(kPink);
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide_px[izone]->SetMarkerColor(kPink);
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide_px[izone]->SetMarkerStyle(22);
     q_IMnpipi_woK0_wSid_n_Sm_sidewide_px[izone]->Draw("HEsame");
+    cIMnpim_IMnpip_dE_woK0_n_Sm_wide[izone]->cd(3);
+    q_IMnpipi_woK0_wSid_n_Sm->Draw("colz");
+    cIMnpim_IMnpip_dE_woK0_n_Sm_wide[izone]->cd(4);
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide[izone]->SetMaximum(q_IMnpipi_woK0_wSid_n_Sm->GetMaximum());
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide[izone]->Draw("colz"); 
+
     if(Spmode || Smmode) break;
   }
 
@@ -2306,6 +2313,76 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     q_IMnpipi_woK0_wSid_n_Sm_side_cs_px[igap]->SetMarkerColor(kPink+10);   
     q_IMnpipi_woK0_wSid_n_Sm_side_cs_px[igap]->Draw("Esame");              
   }
+
+  TCanvas *cIMnpim_IMnpip_dE_woK0_n_Sp_wide_cs[nzone];
+  TH2D* q_IMnpipi_woK0_wSid_n_Sp_sidewide_cs[nzone];
+  TH1D* q_IMnpipi_woK0_wSid_n_Sp_sidewide_cs_px[nzone];
+  for(int izone=0;izone<nzone;izone++){
+    cIMnpim_IMnpip_dE_woK0_n_Sp_wide_cs[izone] = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_n_Sp_wide_cs_%d",izone),Form("IMnpim_IMnpip_dE_woK0_n_Sp_wide_cs_%d",izone));   
+    cIMnpim_IMnpip_dE_woK0_n_Sp_wide_cs[izone]->Divide(2,2);
+    cIMnpim_IMnpip_dE_woK0_n_Sp_wide_cs[izone]->cd(1);
+    IMnpim_IMnpip_dE_woK0_n_Sp->SetMaximum(IMnpim_IMnpip_dE_woK0_n->GetMaximum());
+    IMnpim_IMnpip_dE_woK0_n_Sp->GetXaxis()->SetRangeUser(0,1.7);
+    IMnpim_IMnpip_dE_woK0_n_Sp->GetYaxis()->SetRangeUser(0,1.7);
+    IMnpim_IMnpip_dE_woK0_n_Sp->Draw("colz");
+    IMnpim_IMnpip_dE_woK0_n_Sp_sidewide[izone]->Draw("colsame");
+    cIMnpim_IMnpip_dE_woK0_n_Sp_wide_cs[izone]->cd(2);
+    q_IMnpipi_woK0_wSid_n_Sp_cs_px->Draw("HE");
+    q_IMnpipi_woK0_wSid_n_Sp_sidewide_cs[izone] = (TH2D*) q_IMnpipi_woK0_wSid_n_Sp_sidewide[izone]->Clone(Form("Sp_sidewide_cs_%d",izone));
+    q_IMnpipi_woK0_wSid_n_Sp_sidewide_cs[izone]->Sumw2();
+    q_IMnpipi_woK0_wSid_n_Sp_sidewide_cs[izone]->Divide(acc_SpSel_woK0);
+    if(!(Spmode || Smmode)){
+      q_IMnpipi_woK0_wSid_n_Sp_sidewide_cs[izone]->Scale(1./efflumi);
+    }
+    q_IMnpipi_woK0_wSid_n_Sp_sidewide_cs_px[izone] = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_sidewide_cs[izone]->ProjectionX();
+    q_IMnpipi_woK0_wSid_n_Sp_sidewide_cs_px[izone]->SetLineColor(kCyan);
+    q_IMnpipi_woK0_wSid_n_Sp_sidewide_cs_px[izone]->SetMarkerStyle(22);
+    q_IMnpipi_woK0_wSid_n_Sp_sidewide_cs_px[izone]->SetMarkerColor(kCyan);
+    q_IMnpipi_woK0_wSid_n_Sp_sidewide_cs_px[izone]->Draw("Esame");
+    cIMnpim_IMnpip_dE_woK0_n_Sp_wide_cs[izone]->cd(3);
+    q_IMnpipi_woK0_wSid_n_Sp_cs->Draw("colz");
+    cIMnpim_IMnpip_dE_woK0_n_Sp_wide_cs[izone]->cd(4);
+    q_IMnpipi_woK0_wSid_n_Sp_sidewide_cs[izone]->SetMaximum(q_IMnpipi_woK0_wSid_n_Sp_cs->GetMaximum());
+    q_IMnpipi_woK0_wSid_n_Sp_sidewide_cs[izone]->Draw("colz");
+    if(Spmode || Smmode) break;
+  }
+
+  TCanvas *cIMnpim_IMnpip_dE_woK0_n_Sm_wide_cs[nzone];
+  TH2D* q_IMnpipi_woK0_wSid_n_Sm_sidewide_cs[nzone];
+  TH1D* q_IMnpipi_woK0_wSid_n_Sm_sidewide_cs_px[nzone];
+  for(int izone=0;izone<nzone;izone++){
+    cIMnpim_IMnpip_dE_woK0_n_Sm_wide_cs[izone] = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_n_Sm_wide_cs_%d",izone),Form("IMnpim_IMnpip_dE_woK0_n_Sm_wide_cs_%d",izone));   
+    cIMnpim_IMnpip_dE_woK0_n_Sm_wide_cs[izone]->Divide(2,2);
+    cIMnpim_IMnpip_dE_woK0_n_Sm_wide_cs[izone]->cd(1);
+    IMnpim_IMnpip_dE_woK0_n_Sm->SetMaximum(IMnpim_IMnpip_dE_woK0_n->GetMaximum());
+    IMnpim_IMnpip_dE_woK0_n_Sm->GetXaxis()->SetRangeUser(0,1.7);
+    IMnpim_IMnpip_dE_woK0_n_Sm->GetYaxis()->SetRangeUser(0,1.7);
+    IMnpim_IMnpip_dE_woK0_n_Sm->Draw("colz");
+    IMnpim_IMnpip_dE_woK0_n_Sm_sidewide[izone]->Draw("colsame");
+    cIMnpim_IMnpip_dE_woK0_n_Sm_wide_cs[izone]->cd(2);
+    q_IMnpipi_woK0_wSid_n_Sm_cs_px->Draw("HE");
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide_cs[izone] = (TH2D*) q_IMnpipi_woK0_wSid_n_Sm_sidewide[izone]->Clone(Form("Sm_sidewide_cs_%d",izone));
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide_cs[izone]->Sumw2();
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide_cs[izone]->Divide(acc_SmSel_woK0);
+    if(!(Spmode || Smmode)){
+      q_IMnpipi_woK0_wSid_n_Sm_sidewide_cs[izone]->Scale(1./efflumi);
+    }
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide_cs_px[izone] = (TH1D*)q_IMnpipi_woK0_wSid_n_Sm_sidewide_cs[izone]->ProjectionX();
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide_cs_px[izone]->SetLineColor(kPink);
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide_cs_px[izone]->SetMarkerStyle(22);
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide_cs_px[izone]->SetMarkerColor(kPink);
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide_cs_px[izone]->Draw("Esame");
+
+    cIMnpim_IMnpip_dE_woK0_n_Sm_wide_cs[izone]->cd(3);
+    q_IMnpipi_woK0_wSid_n_Sm_cs->Draw("colz");
+
+    cIMnpim_IMnpip_dE_woK0_n_Sm_wide_cs[izone]->cd(4);
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide_cs[izone]->SetMaximum(q_IMnpipi_woK0_wSid_n_Sm_cs->GetMaximum());
+    q_IMnpipi_woK0_wSid_n_Sm_sidewide_cs[izone]->Draw("colz");
+    
+    if(Spmode || Smmode) break;
+  }
+
 
   TCanvas *ccs_sum = new TCanvas("ccs_sum","ccs_sum");
   ccs_sum->cd();
