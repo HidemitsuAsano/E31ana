@@ -73,6 +73,11 @@ int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector
     for( int ihit=0; ihit<(int)allhit.size(); ihit++ ) {
       if( seg[ineuseg]-allhit[ihit] ) {
         Tools::Fill1D( Form("diff_CDH"), seg[ineuseg]-allhit[ihit] );
+        HodoscopeLikeHit *ncdhhit = cdsman->CDH(seg[ineuseg]);
+        HodoscopeLikeHit *pippimcdhhit = cdsman->CDH(allhit[ihit]);
+        double ncdhz = -1.0*ncdhhit->hitpos();
+        double pippimcdhz = -1.0*pippimcdhhit->hitpos();
+        Tools::Fill2D( Form("diff2D_CDH"), seg[ineuseg]-pippimhit[ihit],ncdhz-pippimcdhz );
       }
       //CDH has 36 segments. # of hits on neghiboring cdh segments
       if( (abs(seg[ineuseg]-allhit[ihit])==1) || (abs(seg[ineuseg]-allhit[ihit])==35) )
@@ -85,12 +90,17 @@ int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector
   }
   for( int ineuseg=0; ineuseg<(int)seg.size(); ineuseg++ ) {
     for( int ihit=0; ihit<(int)pippimhit.size(); ihit++ ) {
-      Tools::Fill1D( Form("diff_CDH_pippim"), seg[ineuseg]-pippimhit[ihit]);
-      HodoscopeLikeHit *ncdhhit = cdsman->CDH(seg[ineuseg]);
-      HodoscopeLikeHit *pippimcdhhit = cdsman->CDH(pippimhit[ihit]);
-      double ncdhz = -1.0*ncdhhit->hitpos();
-      double pippimcdhz = -1.0*pippimcdhhit->hitpos();
-      Tools::Fill2D( Form("diff2D_CDH_pippim"), seg[ineuseg]-pippimhit[ihit],ncdhz-pippimcdhz );
+      if( seg[ineuseg]-pippimhit[ihit] ) {
+        Tools::Fill1D( Form("diff_CDH_pippim"), seg[ineuseg]-pippimhit[ihit]);
+        HodoscopeLikeHit *ncdhhit = cdsman->CDH(seg[ineuseg]);
+        HodoscopeLikeHit *pippimcdhhit = cdsman->CDH(pippimhit[ihit]);
+        double ncdhz = -1.0*ncdhhit->hitpos();
+        double pippimcdhz = -1.0*pippimcdhhit->hitpos();
+        //std::cout << "pippimcdhz: " << pippimcdhz << std::endl; 
+        //std::cout << "ncdhz: " << ncdhz << std::endl; 
+        //std::cout  << ncdhz-pippimcdhz << std::endl;
+        Tools::Fill2D( Form("diff2D_CDH_pippim"), seg[ineuseg]-pippimhit[ihit],ncdhz-pippimcdhz );
+      }
     }
   }
 
