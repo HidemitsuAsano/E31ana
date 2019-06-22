@@ -987,13 +987,13 @@ int main( int argc, char** argv )
       // isolation cut //
       int flag_isolation = 0;
       if(IsolationCutFlag==2){
-        flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg);
+        flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan);
         flag_isolation+= Util::GetCDHTwoSegAwayNHits(NeutralCDHseg,CDHhit_list);
       }else if(IsolationCutFlag==1){
-        flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg);
+        flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan);
       }else{
         //check cdh hit position anyway, but don't apply isolation cuts 
-        flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg);
+        flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan);
         flag_isolation = 0;
       }
       if( flag_isolation ){
