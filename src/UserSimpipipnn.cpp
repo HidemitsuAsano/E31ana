@@ -65,7 +65,7 @@ double PARA_lnL_MAX;
 double PARA_MM_LP_MIN;
 double PARA_MM_LP_MAX;
 
-const double TDC_CDH_MAX = 20; // ns
+const double TDC_CDH_MAX = 25; // ns [updated on 20190206]
 const double ADC_CDH_MIN = 1;  // MeV
 
 //= = = = pipipnn final-sample tree = = = =//
@@ -135,35 +135,35 @@ int main( int argc, char** argv )
   // ###  using G4-data with TH1F(Form("cov_%d_%d_%d", i, j, j), 100, -cov_MAX, cov_MAX);
   // ###  and evaluated using "Air" Dora MC
   // 1) TLorentzVector L3_beam, L_pim, (L_n+L_pip), L_p, L_nmiss, L_n, L_pip = for pi- Sigma+
-  const double covVal1[7][16] = {
-    { 2.03675e-05, 0, 0, 0,
-      0, 1.72317e-05, 0, 0,
-      0, 0, 3.63879e-06, 0,
-      0, 0, 0, 3.13463e-06 },
-    { 9.61619e-06, 0, 0, 0,
-      0, 9.71896e-06, 0, 0,
-      0, 0, 1.95299e-05, 0,
-      0, 0, 0, 1.23025e-05 },
-    { 0.000344907, 0, 0, 0,
-      0, 0.000344784, 0, 0,
-      0, 0, 6.33015e-05, 0,
-      0, 0, 0, 4.95287e-05 },
-    { 9.63118e-05, 0, 0, 0,
-      0, 9.49883e-05, 0, 0,
-      0, 0, 0.000100833, 0,
-      0, 0, 0, 6.21131e-05 },
-    { 0.000624282, 0, 0, 0,
-      0, 0.000664143, 0, 0,
-      0, 0, 0.00028286, 0,
-      0, 0, 0, 0.000121639 },
-    { 0.000253317, 0, 0, 0,
-      0, 0.000234635, 0, 0,
-      0, 0, 1.96443e-05, 0,
-      0, 0, 0, 2.26387e-05 },
-    { 9.82579e-06, 0, 0, 0,
-      0, 1.00648e-05, 0, 0,
-      0, 0, 1.50993e-05, 0,
-      0, 0, 0, 7.68311e-06 }
+  const double covVal1[7][16] = { // updated on 20190206
+   { 1.91772e-05, 0, 0, 0,
+     0, 1.86139e-05, 0, 0,
+     0, 0, 3.56451e-06, 0,
+     0, 0, 0, 2.98057e-06 },
+   { 1.11029e-05, 0, 0, 0,
+     0, 1.08072e-05, 0, 0,
+     0, 0, 2.13929e-05, 0,
+     0, 0, 0, 1.11826e-05 },
+   { 0.000271716, 0, 0, 0,
+     0, 0.000319842, 0, 0,
+     0, 0, 0.000187455, 0,
+     0, 0, 0, 3.19664e-05 },
+   { 9.86835e-05, 0, 0, 0,
+     0, 9.95192e-05, 0, 0,
+     0, 0, 9.72367e-05, 0,
+     0, 0, 0, 6.83127e-05 },
+   { 0.000484078, 0, 0, 0,
+     0, 0.000646091, 0, 0,
+     0, 0, 0.000369458, 0,
+     0, 0, 0, 0.000150794 },
+   { 0.000205586, 0, 0, 0,
+     0, 0.000216426, 0, 0,
+     0, 0, 0.000115703, 0,
+     0, 0, 0, 1.0675e-05 },
+   { 1.02664e-05, 0, 0, 0,
+     0, 9.26392e-06, 0, 0,
+     0, 0, 1.41449e-05, 0,
+     0, 0, 0, 7.08272e-06 }
   };
   // 2) TLorentzVector L3_beam, L_pip, (L_n+L_pim), L_p, L_nmiss, L_n, L_pim = for pi+ Sigma-
   double covVal2[7][16];
@@ -173,35 +173,35 @@ int main( int argc, char** argv )
     }
   }
   // 3) TLorentzVector L3_beam, L_pip, (L_p+L_pim), L_n, L_nmiss, L_p, L_pim = for pi+ Lambda
-  const double covVal3[7][16] = {
-    { 1.92133e-05, 0, 0, 0,
-      0, 1.84496e-05, 0, 0,
-      0, 0, 3.86757e-06, 0,
-      0, 0, 0, 3.2775e-06 },
-    { 1.23926e-05, 0, 0, 0,
-      0, 1.19661e-05, 0, 0,
-      0, 0, 2.22957e-05, 0,
-      0, 0, 0, 2.20691e-05 },
-    { 0.000121839, 0, 0, 0,
-      0, 0.000130653, 0, 0,
-      0, 0, 9.66432e-05, 0,
-      0, 0, 0, 4.40921e-05 },
-    { 0.000345995, 0, 0, 0,
-      0, 0.00038387, 0, 0,
-      0, 0, 2.89356e-05, 0,
-      0, 0, 0, 3.34355e-05 },
-    { 0.000640011, 0, 0, 0,
-      0, 0.000674321, 0, 0,
-      0, 0, 0.000210562, 0,
-      0, 0, 0, 0.000122066 },
-    { 0.00014628, 0, 0, 0,
-      0, 0.000132961, 0, 0,
-      0, 0, 7.55614e-05, 0,
-      0, 0, 0, 3.42671e-05 },
-    { 2.10616e-05, 0, 0, 0,
-      0, 1.72002e-05, 0, 0,
-      0, 0, 1.12709e-05, 0,
-      0, 0, 0, 2.56098e-06 }
+  const double covVal3[7][16] = { // updated on 20190206
+   { 1.95356e-05, 0, 0, 0,
+     0, 1.98593e-05, 0, 0,
+     0, 0, 3.79889e-06, 0,
+     0, 0, 0, 3.15198e-06 },
+   { 1.2416e-05, 0, 0, 0,
+     0, 1.19929e-05, 0, 0,
+     0, 0, 2.26916e-05, 0,
+     0, 0, 0, 2.3276e-05 },
+   { 0.00013445, 0, 0, 0,
+     0, 0.000133109, 0, 0,
+     0, 0, 0.00010516, 0,
+     0, 0, 0, 4.48063e-05 },
+   { 0.000335095, 0, 0, 0,
+     0, 0.000404103, 0, 0,
+     0, 0, 0.000137552, 0,
+     0, 0, 0, 3.70149e-05 },
+   { 0.000710552, 0, 0, 0,
+     0, 0.00080671, 0, 0,
+     0, 0, 0.000323943, 0,
+     0, 0, 0, 0.000167072 },
+   { 0.000151726, 0, 0, 0,
+     0, 0.000157232, 0, 0,
+     0, 0, 8.24064e-05, 0,
+     0, 0, 0, 3.51061e-05 },
+   { 2.0277e-05, 0, 0, 0,
+     0, 1.7724e-05, 0, 0,
+     0, 0, 1.16752e-05, 0,
+     0, 0, 0, 2.79945e-06 }
   };
 
   TMatrixD *covZero = new TMatrixD(4, 4);
@@ -437,6 +437,18 @@ int main( int argc, char** argv )
   Tools::newTH1F( Form("DCA_pip_Lambda"), 200, 0, 2 );
   Tools::newTH1F( Form("DCA_pim_Lambda"), 200, 0, 2 );
 
+  //*** vertex dump ***//
+  Tools::newTH1F( Form("vertex_diff_X"), 100, -50, 50 );
+  Tools::newTH1F( Form("vertex_diff_Y"), 100, -50, 50 );
+  Tools::newTH1F( Form("vertex_diff_Z"), 100, -50, 50 );
+  //*** vertex dump ***//
+
+  //===== CDH hit pos study =====//
+  Tools::newTH2F( Form("CDH_mom_diffpos_pi_phi"), 100, -10, 10, 100, 0, 1.0 );
+  Tools::newTH2F( Form("CDH_mom_diffpos_pi_z"), 100, -10, 10, 100, 0, 1.0 );
+  Tools::newTH2F( Form("CDH_mom_TOF_pi"),       100, -2, 2, 100, 0, 1.0 );
+  //===== CDH hit pos study =====//
+  
 #if 1
   //*** for kinematical fit ***//
   // beam_K(K+), pi-/+, Sigma+/-, p, n, n from S, pi+/- from S
@@ -592,7 +604,6 @@ int main( int argc, char** argv )
     //std::cerr<<j<<" "<<reacData->PDG(j)<<" "<<reacData->GetParticle(j).P()<<std::endl;
     //}
     int reactionID = reacData->ReactionID();
-                  //K-   pi-   S+     p    n     n      pi+
     int PDG1[7] = {321, -211, 3222, 2212, 2112, 2112,  211}; // pi-Sigma+
     int PDG2[7] = {321,  211, 3112, 2212, 2112, 2112, -211}; // pi+Sigma-
     int PDG3[7] = {321,  211, 3122, 2112, 2112, 2212, -211}; // pi+Lambda
@@ -959,6 +970,44 @@ int main( int argc, char** argv )
       //cerr<<"    pid = "<<pid<<", tof = "<<tmptof<<", beta = "<<beta_calc
       //<<", mom = "<<mom<<", mass = "<<sqrt(fabs(mass2))<<endl;
 
+      //===== CDH hit pos study =====//
+      TVector3 track_pos = track->CDHVertex();
+      TVector3 hit_pos;
+      if( track->nCDHHit()!=1 ){
+	std::cerr<<" #of CDH hit / track is not 1 !!! continue;"<<std::endl;
+	continue;
+      }
+      for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
+	HodoscopeLikeHit *cdhhit=track->CDHHit(cdsMan,icdh);
+	confMan->GetGeomMapManager()->GetPos( CID_CDH, cdhhit->seg(), hit_pos );
+	hit_pos.SetZ(cdhhit->hitpos());
+      }
+      TVector3 diff = track_pos-hit_pos;
+      if( pid==CDS_PiPlus || pid==CDS_PiMinus ){
+	Tools::Fill2D( Form("CDH_mom_diffpos_pi_phi"), (track_pos.Phi()-hit_pos.Phi())/TwoPi*360, track->Momentum() );
+	Tools::Fill2D( Form("CDH_mom_diffpos_pi_z"), diff.Z(), track->Momentum() );
+      }
+
+      double meas_tof = tof; // T0-CDH
+      TVector3 Pos_T0;
+      confMan->GetGeomMapManager()->GetPos( CID_T0, 0, Pos_T0 );
+      double beamtof;// T0-VTX
+      double momout;
+      double z_pos = Pos_T0.Z();
+      ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), vtxb,
+				     L3_beambf.Vect().Mag(), kpMass, momout, beamtof );
+      double beam_len = (bpctrack->GetPosatZ(z_pos)-vtxb).Mag();
+      double beam_mom = momout;
+      double part_tof = tof-beamtof; // VTX-CDH
+      double part_len = part_tof*(Const*100)*beta_calc;
+      double part_mom = track->Momentum(); // from CDC
+      double part_beta = sqrt(part_mom*part_mom/(part_mom*part_mom+piMass*piMass));
+      double beam_beta = sqrt(beam_mom*beam_mom/(beam_mom*beam_mom+kpMass*kpMass));
+      double calc_tof = beam_len/(Const*100)/beam_beta+part_len/(Const*100)/part_beta; // T0-VTX part is measured value
+      if( pid==CDS_PiMinus || pid==CDS_PiPlus )
+	Tools::Fill2D( Form("CDH_mom_TOF_pi"), meas_tof-calc_tof, track->Momentum() );
+      //===== CDH hit pos study =====//
+      
     }// for( int it=0; it<cdstrackMan->nGoodTrack(); it++ ){
     //** end of PID **//
 
@@ -1144,6 +1193,14 @@ int main( int argc, char** argv )
 	  track_pip->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_b, vtx_p );
 	}
 	vtx_react = 0.5*(vtx_b+vtx_p); // reaction vertex
+
+	//*** vertex dump ***//
+	std::cerr<<" ! vertex study ! "<<std::endl;
+	std::cerr<<vtx_react.X()<<" "<<vtx_react.Y()<<" "<<vtx_react.Z()<<std::endl;
+	std::cerr<<mcData->track(ID[0])->vertex().X()<<" "
+		 <<mcData->track(ID[0])->vertex().Y()<<" "
+		 <<mcData->track(ID[0])->vertex().Z()<<std::endl;
+	//*** vertex dump ***//
 	
 	double tof = 999.;
 	for( int icdh=0; icdh<track_p->nCDHHit(); icdh++ ){
@@ -1264,10 +1321,14 @@ int main( int argc, char** argv )
 	      // *** pi Sigma mode *** //
 	      // ********************** //
 	      // 1: Sigma reconstruction,  vertex = K- & p
+#if 0
 	      if( VTX_SIGMA==1 &&
 		  ((L_pim+L_pip).M()<pipi_MIN || pipi_MAX<(L_pim+L_pip).M()) &&
 		  ((L_p+L_pim).M()<ppi_MIN || ppi_MAX<(L_p+L_pim).M()) ){ // K0 & Lambda subtraction
 		Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE_res"), 1/beta, ncdhhit->emean() );
+#else
+	      if( VTX_SIGMA==1 ){
+#endif
 		Tools::Fill2D( Form("MMom_MMass_fiducial_beta_dE_res"), mm_mass, P_missn.Mag() );
 		
 		if( neutron_MIN<mm_mass && mm_mass<neutron_MAX ){ // missing n selection
@@ -1290,6 +1351,12 @@ int main( int argc, char** argv )
 		    Tools::Fill1D( Form("DCA_p"), dca_p );
 		    Tools::Fill1D( Form("DCA_pip"), dca_pip );
 		    Tools::Fill1D( Form("DCA_pim"), dca_pim );
+
+		    //*** vertex dump ***//
+		    Tools::Fill1D( Form("vertex_diff_X"), vtx_react.X()-mcData->track(ID[0])->vertex().X() );
+		    Tools::Fill1D( Form("vertex_diff_Y"), vtx_react.Y()-mcData->track(ID[0])->vertex().Y() );
+		    Tools::Fill1D( Form("vertex_diff_Z"), vtx_react.Z()-mcData->track(ID[0])->vertex().Z() );
+		    //*** vertex dump ***//
 		  }
 		} // if( neutron_MIN<mm_mass && mm_mass<neutron_MAX ){
 
@@ -1503,8 +1570,12 @@ int main( int argc, char** argv )
 	      // *** pi Lambda mode *** //
 	      // ********************** //
 	      // 0: Lambda reconstruction, vertex = K- & pi+
+#if 0
 	      else if( VTX_SIGMA==0 &&
 		       ((L_pim+L_pip).M()<pipi_MIN || pipi_MAX<(L_pim+L_pip).M()) ){ // K0 subtraction
+#else
+              else if( VTX_SIGMA==0 ){
+#endif
 		Tools::Fill2D( Form("dE_betainv_fiducial_beta_dE_Lambda"), 1/beta, ncdhhit->emean() );
 		Tools::Fill2D( Form("MMom_MMass_fiducial_beta_dE_Lambda"), mm_mass, P_missn.Mag() );
 

@@ -332,6 +332,7 @@ void GainMapMan::PrintMap( const int &crate, std::ostream &p_out )
     cr = ((key>>CSHIFT)&CMASK);
     sl = ((key>>NSHIFT)&NMASK);
     if( !( cr==crate || crate==-1 ) ) continue;
+    if ( cr==6 && (sl==17 || sl==18 || sl==19 || sl==20 || sl==21)) continue;
     if( sl!=sl_old ){
       p_out << "# crate  slot   ch    par0    par1    par2" << std::endl;
       sl_old=sl;

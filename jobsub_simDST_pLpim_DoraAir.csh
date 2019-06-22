@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="1"
+set Version="4"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simpLpim${Version}/"
 set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 
@@ -23,7 +23,7 @@ cp $SRCDIR/UserSimDatG4.cpp $OUTDIRSUB/
 #ln -s $OUTDIRSUB/simIMpisigma_all.root simpost/simIMpisigma_all_v${Version}.root
 
 @ i = 0
-while ($i < 100)   
+while ($i < 400)   
 
   set EXEC___="./bin/sim"
   set CONF___="conf/Run78/analyzer_kwsk_sim_DoraAir.conf"

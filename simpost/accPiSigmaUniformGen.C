@@ -193,7 +193,7 @@ void accPiSigmaUniformGen(){
     for(int ibiny=0;ibiny<heff_err->GetNbinsY();ibiny++){
       double cont =  heff_woK0_SpSm_reco->GetBinContent(ibinx,ibiny);
       double precision =  heff_err->GetBinContent(ibinx,ibiny);
-      if(precision>0.2 || cont >0.1){ 
+      if(precision>0.2){ 
         heff_reco->SetBinContent(ibinx,ibiny,0.0);
         heff_reco->SetBinError(ibinx,ibiny,0.0);
         heff_woK0_reco->SetBinContent(ibinx,ibiny,0.0);
