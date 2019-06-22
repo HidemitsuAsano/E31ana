@@ -1900,7 +1900,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   for(int ibinx=0;ibinx<acc_Sp_err->GetNbinsX();ibinx++){
     for(int ibiny=0;ibiny<acc_Sp_err->GetNbinsY();ibiny++){
       double precision =  acc_Sp_err->GetBinContent(ibinx,ibiny);
-      if(precision>0.3){ 
+      if(precision>0.2){ 
         q_IMnpipi_woK0_wSid_n_Sp_cs->SetBinContent(ibinx,ibiny,0.0);
         q_IMnpipi_woK0_wSid_n_Sp_cs->SetBinError(ibinx,ibiny,0.0);
       }
