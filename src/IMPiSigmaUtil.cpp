@@ -66,7 +66,7 @@ bool Util::IsForwardCharge(BeamLineHitMan *blman)
 
 //returns # of neighboring hits of CDH segments listed in vector cdhseg
 //used for Isolation cuts of neutral particle candidates
-int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector <int> &allhit, const std::vector <int> &pippimhit )
+int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector <int> &allhit, const std::vector <int> &pippimhit,CDSHitMan *cdsman )
 {
   int NNeighboringHits=0;
   for( int ineuseg=0; ineuseg<(int)seg.size(); ineuseg++ ) {
@@ -80,9 +80,17 @@ int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector
     }
   }
   
+  if(pippimhit.size()!=2){
+    std::cout << __FILE__ << " L." << __LINE__ << "# of pion tracks !=2 " << std::endl; 
+  }
   for( int ineuseg=0; ineuseg<(int)seg.size(); ineuseg++ ) {
     for( int ihit=0; ihit<(int)pippimhit.size(); ihit++ ) {
       Tools::Fill1D( Form("diff_CDH_pippim"), seg[ineuseg]-pippimhit[ihit]);
+      HodoscopeLikeHit *ncdhhit = cdsman->CDH(seg[ineuseg]);
+      HodoscopeLikeHit *pippimcdhhit = cdsman->CDH(pippimhit[ihit]);
+      double ncdhz = -1.0*ncdhhit->hitpos();
+      double pippimcdhz = -1.0*pippimcdhhit->hitpos();
+      Tools::Fill2D( Form("diff2D_CDH_pippim"), seg[ineuseg]-pippimhit[ihit],ncdhz-pippimcdhz );
     }
   }
 

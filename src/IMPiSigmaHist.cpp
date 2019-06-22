@@ -98,6 +98,7 @@ void InitIMPiSigmaHist()
   Tools::newTH2F( Form("CDHzNeutraltime"),100,-50,50,100,0,50);
   Tools::newTH1F( Form("diff_CDH"), 73, -36.5, 36.5 );
   Tools::newTH1F( Form("diff_CDH_pippim"), 73, -36.5, 36.5 );
+  Tools::newTH2F( Form("diff2D_CDH_pippim"), 73, -36.5, 36.5,100,-50,50 );
   Tools::newTH1F( Form("diff_CDH_pip"), 73, -36.5, 36.5 );
   Tools::newTH1F( Form("diff_CDH_pim"), 73, -36.5, 36.5 );
   Tools::newTH1F( Form("diff_CDH_CDC"), 181, 0, 181 );
