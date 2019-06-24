@@ -78,10 +78,16 @@ TLorentzVector react_pim;
 TVector3 vtx_reaction; //  vertex(reaction)   
 TVector3 vtx_pim1_beam; //  
 TVector3 vtx_pim2_beam; //   
+TVector3 vtx_p_beam; //   
 TVector3 vtx_pim1_cdc;
 TVector3 vtx_pim2_cdc;
-TVector3 CA_pim1;
-TVector3 CA_pim2;
+TVector3 vtx_p_cdc;
+TVector3 CA_pim1_pim1p;
+TVector3 CA_p_pim1p;
+TVector3 CA_pim2_pim2p;
+TVector3 CA_p_pim2p;
+TVector3 CA_pim1_pim1pim2;
+TVector3 CA_pim2_pim1pim2;
 int run_num;   // run number
 int event_num; // event number
 int block_num; // block number
@@ -227,10 +233,16 @@ int main( int argc, char** argv )
   ppimpimTree->Branch( "vtx_reaction", &vtx_reaction );
   ppimpimTree->Branch( "vtx_pim1_beam", &vtx_pim1_beam );
   ppimpimTree->Branch( "vtx_pim2_beam", &vtx_pim2_beam );
+  ppimpimTree->Branch( "vtx_p_beam", &vtx_p_beam );
   ppimpimTree->Branch( "vtx_pim1_cdc", &vtx_pim1_cdc );
   ppimpimTree->Branch( "vtx_pim2_cdc", &vtx_pim2_cdc );
-  ppimpimTree->Branch( "CA_pim1",&CA_pim1);
-  ppimpimTree->Branch( "CA_pim2",&CA_pim2);
+  ppimpimTree->Branch( "vtx_p_cdc", &vtx_p_cdc );
+  ppimpimTree->Branch( "CA_pim1_pim1p",&CA_pim1_pim1p);
+  ppimpimTree->Branch( "CA_p_pim1p",&CA_p_pim1p);
+  ppimpimTree->Branch( "CA_pim2_pim2p",&CA_pim2_pim2p);
+  ppimpimTree->Branch( "CA_p_pim2p",&CA_p_pim2p);
+  ppimpimTree->Branch( "CA_pim1_pim1pim2",&CA_pim1_pim1pim2);
+  ppimpimTree->Branch( "CA_pim2_pim1pim2",&CA_pim2_pim1pim2);
   //ppimpimTree->Branch( "run_num", &run_num );
   //ppimpimTree->Branch( "event_num", &event_num );
   //ppimpimTree->Branch( "block_num", &block_num );
@@ -243,15 +255,15 @@ int main( int argc, char** argv )
   ppimpimTree->Branch( "react_Lambda",&react_Lambda);
   ppimpimTree->Branch( "react_pim",&react_pim);
   ppimpimTree->Branch( "mc_vtx", &mc_vtx );
-  ppimpimTree->Branch( "kfSpmode_mom_beam",   &kfMomBeamSpmode );
-  ppimpimTree->Branch( "kfSpmode_mom_pip", &kfMom_pip_Spmode );
-  ppimpimTree->Branch( "kfSpmode_mom_pim", &kfMom_pim_Spmode );
-  ppimpimTree->Branch( "kfSpmode_mom_n", &kfMom_n_Spmode );
-  ppimpimTree->Branch( "kfSpmode_chi2", &kf_chi2_Spmode );
-  ppimpimTree->Branch( "kfSpmode_NDF", &kf_NDF_Spmode );
-  ppimpimTree->Branch( "kfSpmode_status", &kf_status_Spmode );
-  ppimpimTree->Branch( "kfSpmode_pvalue", &kf_pvalue_Spmode );
-  ppimpimTree->Branch( "kf_flag", &kf_flag );
+  //ppimpimTree->Branch( "kfSpmode_mom_beam",   &kfMomBeamSpmode );
+  //ppimpimTree->Branch( "kfSpmode_mom_pip", &kfMom_pip_Spmode );
+  //ppimpimTree->Branch( "kfSpmode_mom_pim", &kfMom_pim_Spmode );
+  //ppimpimTree->Branch( "kfSpmode_mom_n", &kfMom_n_Spmode );
+  //ppimpimTree->Branch( "kfSpmode_chi2", &kf_chi2_Spmode );
+  //ppimpimTree->Branch( "kfSpmode_NDF", &kf_NDF_Spmode );
+  //ppimpimTree->Branch( "kfSpmode_status", &kf_status_Spmode );
+  //ppimpimTree->Branch( "kfSpmode_pvalue", &kf_pvalue_Spmode );
+  //ppimpimTree->Branch( "kf_flag", &kf_flag );
   outfile->cd();
 
 
@@ -847,11 +859,19 @@ int main( int argc, char** argv )
       Tools::Fill1D( Form("DCA_pim1"), dcapim1vtx );
       Tools::Fill1D( Form("DCA_pim2"), dcapim2vtx );
         
-      TVector3 CA_pim1_pim1pim2,CA_pim2_pim1pim2;
-      bool vtx_flag=TrackTools::Calc2HelixVertex(track_pim1, track_pim2, CA_pim1_pim1pim2, CA_pim2_pim1pim2);
+      TVector3 CroA_pim1_pim1pim2,CroA_pim2_pim1pim2;
+      bool vtx_flag=TrackTools::Calc2HelixVertex(track_pim1, track_pim2, CroA_pim1_pim1pim2, CroA_pim2_pim1pim2);
       double dcapim1pim2=-9999.;
       if(vtx_flag) dcapim1pim2 = (CA_pim1_pim1pim2-CA_pim2_pim1pim2).Mag();
-        
+       
+      TVector3 CroA_pim1_pim1p,CroA_p_pim1p;
+      TrackTools::Calc2HelixVertex(track_pim1, track_p, CroA_pim1_pim1p, CroA_p_pim1p);
+
+      TVector3 CroA_pim2_pim2p,CroA_p_pim2p;
+      TrackTools::Calc2HelixVertex(track_pim2, track_p, CroA_pim2_pim2p, CroA_p_pim2p);
+
+
+
       //reaction vertex is determined from beam and nearest vtx 
       if(dcapim1vtx <= dcapim2vtx){
         //follows sakuma/sada's way , avg. of scattered particle ana beam particle [20180829]
@@ -1288,10 +1308,16 @@ int main( int argc, char** argv )
           vtx_reaction = vtx_react; // vertex(reaction)
           vtx_pim1_beam = vtx_beam_wpim1;
           vtx_pim2_beam = vtx_beam_wpim2;
+          vtx_p_beam = vtx_beam_wp;
           vtx_pim1_cdc = vtx_pim1;
           vtx_pim2_cdc = vtx_pim2;
-          CA_pim1 = CA_pim1_pim1pim2;
-          CA_pim2 = CA_pim2_pim1pim2;
+          vtx_p_cdc = vtx_p;
+          CA_pim1_pim1p = CroA_pim1_pim1p;
+          CA_p_pim1p = CroA_p_pim1p;
+          CA_pim2_pim2p = CroA_pim2_pim2p;
+          CA_p_pim2p = CroA_p_pim2p;
+          CA_pim1_pim1pim2 = CroA_pim1_pim1pim2;
+          CA_pim2_pim1pim2 = CroA_pim2_pim1pim2;
           run_num   = confMan->GetRunNumber(); // run number
           event_num = iev;     // event number
           block_num = 0;      // block number (temp)
@@ -1403,8 +1429,12 @@ void InitTreeVal()
   vtx_pim2_beam.SetXYZ(-9999., -9999., -9999.); //   
   vtx_pim1_cdc.SetXYZ(-9999., -9999., -9999.);
   vtx_pim2_cdc.SetXYZ(-9999., -9999., -9999.);
-  CA_pim1.SetXYZ(-9999., -9999., -9999.);
-  CA_pim2.SetXYZ(-9999., -9999., -9999.);
+  CA_pim1_pim1p.SetXYZ(-9999., -9999., -9999.);
+  CA_p_pim1p.SetXYZ(-9999., -9999., -9999.);
+  CA_pim2_pim2p.SetXYZ(-9999., -9999., -9999.);
+  CA_p_pim2p.SetXYZ(-9999., -9999., -9999.);
+  CA_pim1_pim1pim2.SetXYZ(-9999., -9999., -9999.);
+  CA_pim2_pim1pim2.SetXYZ(-9999., -9999., -9999.);
   run_num=-9999;   // run number
   event_num=-9999; // event number
   block_num=-9999; // block number
