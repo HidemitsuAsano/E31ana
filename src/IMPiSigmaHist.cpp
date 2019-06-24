@@ -103,6 +103,7 @@ void InitIMPiSigmaHist()
   Tools::newTH1F( Form("diff_CDH_pip"), 73, -36.5, 36.5 );
   Tools::newTH1F( Form("diff_CDH_pim"), 73, -36.5, 36.5 );
   Tools::newTH1F( Form("diff_CDH_CDC"), 181, 0, 181 );
+  Tools::newTH2F( Form("diff2D_CDH_CDC"), 181, 0, 181, 500,-50,50);
   Tools::newTH1F( Form("diff_CDH_CDC_pip"), 181, 0, 181 );
   Tools::newTH1F( Form("diff_CDH_CDC_pim"), 181, 0, 181 );
   

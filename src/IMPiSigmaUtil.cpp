@@ -86,8 +86,8 @@ int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector
         for(int ihit=0; ihit<cdsman->nCDH(); ihit++){
           if( cdsman->CDH(ihit)->seg()==segall[iseg] ) cdhpippimhit = ihit;
         }
-        HodoscopeLikeHit *ncdhhit = cdsman->CDH(seg[ineuseg]);
-        HodoscopeLikeHit *pippimcdhhit = cdsman->CDH(segall[iseg]);
+        HodoscopeLikeHit *ncdhhit = cdsman->CDH(cdhnuhit);
+        HodoscopeLikeHit *pippimcdhhit = cdsman->CDH(cdhpippimhit);
         double ncdhz = -1.0*ncdhhit->hitpos();
         double pippimcdhz = -1.0*pippimcdhhit->hitpos();
         Tools::Fill2D( Form("diff2D_CDH"), seg[ineuseg]-pippimhit[iseg],ncdhz-pippimcdhz );
@@ -166,6 +166,11 @@ int Util::GetNHitsCDCOuter(const TVector3 PosCDH, CDSHitMan *cdsman, const doubl
       //
       Tools::Fill1D( Form("diff_CDH_CDC"), angle/TwoPi*360 );
       if( PhiMin<angle && angle<PhiMax ) nCDChit++;
+
+      //check z 
+      double cdcz = (cdc->wpos()).Z();
+      double neucdhz = PosCDH.Z();
+      Tools::Fill2D( Form("diff2D_CDH_CDC"),angle/TwoPi*360,(neucdhz-cdcz));
     }//icdchit
   }//ilr
   
