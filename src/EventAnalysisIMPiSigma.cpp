@@ -662,7 +662,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   std::vector <int> km_ID;
   std::vector <int> p_ID;
 
-  std::vector <int> vCDHseg;
+  std::vector <int> vCDHseg;//vector of CDH seg. 
   // PID of CDS tracks //
   const int nIDedTrack = Util::CDSChargedAna(
     DoCDCRetiming,
@@ -701,16 +701,16 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
     //** find CDH hit from neutral particles **//
     std::vector <int> NeutralCDHseg;//CDHhits - CDHhits used for charged particle tracking
-    std::vector <int> CDHhit_list;
+    std::vector <int> CDHhitsegall;
     for( int icdhhit=0; icdhhit<cdsMan->nCDH(); icdhhit++ ) {
       if( cdsMan->CDH(icdhhit)->CheckRange() &&
           cdsMan->CDH(icdhhit)->ctmean()< cdscuts::tdc_cdh_max) {
-        CDHhit_list.push_back( cdsMan->CDH(icdhhit)->seg() );
+        CDHhitsegall.push_back( cdsMan->CDH(icdhhit)->seg() );
       }
     }
     std::sort(vCDHseg.begin(), vCDHseg.end());
-    std::sort(CDHhit_list.begin(), CDHhit_list.end());
-    std::set_difference( CDHhit_list.begin(), CDHhit_list.end(),
+    std::sort(CDHhitsegall.begin(), CDHhitsegall.end());
+    std::set_difference( CDHhitsegall.begin(), CDHhitsegall.end(),
                          vCDHseg.begin(), vCDHseg.end(),
                          std::back_inserter(NeutralCDHseg) );
 
@@ -721,8 +721,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       if(Verbosity){
         std::cerr<<"# of diff = "<<NeutralCDHseg.size()<<std::endl;
         std::cerr<<"CDH hits =   ";
-        for( int n=0; n<(int)CDHhit_list.size(); n++ ) {
-          std::cerr<<CDHhit_list[n]<<" ";
+        for( int n=0; n<(int)CDHhitsegall.size(); n++ ) {
+          std::cerr<<CDHhitsegall[n]<<" ";
         }
         std::cerr<<std::endl;
         std::cerr<<"track hits = ";
@@ -741,13 +741,13 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     //** isolation cut **//
     int flag_isolation = 0;
     if(IsolationCutFlag==2){
-      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan);
-      flag_isolation+= Util::GetCDHTwoSegAwayNHits(NeutralCDHseg,CDHhit_list);
+      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhitsegall,vCDHseg,cdsMan);
+      flag_isolation+= Util::GetCDHTwoSegAwayNHits(NeutralCDHseg,CDHhitsegall);
     }else if(IsolationCutFlag==1){
-      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan);
+      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhitsegall,vCDHseg,cdsMan);
     }else{
       //check cdh hit position anyway, but don't apply isolation cuts 
-      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan);
+      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhitsegall,vCDHseg,cdsMan);
       flag_isolation = 0;
     }
 
@@ -781,7 +781,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     Util::AnaPipPimCDCCDH(Pos_CDH,NeutralCDHseg,pip_ID[0],pim_ID[0],cdsMan,trackMan);
     
     Pos_CDH.SetZ(-1.*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
-
+    //std::cout << __LINE__ << "  "  << -1.*ncdhhit->hitpos() << std::endl;
 
     //** neutral particle in CDH **//
     if( !nCDCforVeto ) {

@@ -64,23 +64,36 @@ bool Util::IsForwardCharge(BeamLineHitMan *blman)
 }
 
 
+//inputs
+//1. seg, vector of CDH segment IDs to check # of neigboring hits
+//2. segall, vector of CDH segment IDs of all CDH hits
+//3. pippimhit, vector of CDH segment IDs (size == 2) of pi+ and pi- tracks
+//4, cdsman
 //returns # of neighboring hits of CDH segments listed in vector cdhseg
 //used for Isolation cuts of neutral particle candidates
-int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector <int> &allhit, const std::vector <int> &pippimhit,CDSHitMan *cdsman )
+int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector <int> &segall, const std::vector <int> &pippimhit,CDSHitMan *cdsman )
 {
   int NNeighboringHits=0;
   for( int ineuseg=0; ineuseg<(int)seg.size(); ineuseg++ ) {
-    for( int ihit=0; ihit<(int)allhit.size(); ihit++ ) {
-      if( seg[ineuseg]-allhit[ihit] ) {
-        Tools::Fill1D( Form("diff_CDH"), seg[ineuseg]-allhit[ihit] );
+    for( int iseg=0; iseg<(int)segall.size(); iseg++ ) {
+      if( seg[ineuseg]-segall[iseg] ) {
+        Tools::Fill1D( Form("diff_CDH"), seg[ineuseg]-segall[iseg] );
+        int cdhnuhit=-1;
+        for(int ihit=0; ihit<cdsman->nCDH(); ihit++) {
+          if( cdsman->CDH(ihit)->seg()==seg[ineuseg] ) cdhnuhit = ihit;
+        }
+        int cdhpippimhit = -1;
+        for(int ihit=0; ihit<cdsman->nCDH(); ihit++){
+          if( cdsman->CDH(ihit)->seg()==segall[iseg] ) cdhpippimhit = ihit;
+        }
         HodoscopeLikeHit *ncdhhit = cdsman->CDH(seg[ineuseg]);
-        HodoscopeLikeHit *pippimcdhhit = cdsman->CDH(allhit[ihit]);
+        HodoscopeLikeHit *pippimcdhhit = cdsman->CDH(segall[iseg]);
         double ncdhz = -1.0*ncdhhit->hitpos();
         double pippimcdhz = -1.0*pippimcdhhit->hitpos();
-        Tools::Fill2D( Form("diff2D_CDH"), seg[ineuseg]-pippimhit[ihit],ncdhz-pippimcdhz );
+        Tools::Fill2D( Form("diff2D_CDH"), seg[ineuseg]-pippimhit[iseg],ncdhz-pippimcdhz );
       }
       //CDH has 36 segments. # of hits on neghiboring cdh segments
-      if( (abs(seg[ineuseg]-allhit[ihit])==1) || (abs(seg[ineuseg]-allhit[ihit])==35) )
+      if( (abs(seg[ineuseg]-segall[iseg])==1) || (abs(seg[ineuseg]-segall[iseg])==35) )
         NNeighboringHits++;
     }
   }
@@ -89,17 +102,23 @@ int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector
     std::cout << __FILE__ << " L." << __LINE__ << "# of pion tracks !=2 " << std::endl; 
   }
   for( int ineuseg=0; ineuseg<(int)seg.size(); ineuseg++ ) {
-    for( int ihit=0; ihit<(int)pippimhit.size(); ihit++ ) {
-      if( seg[ineuseg]-pippimhit[ihit] ) {
-        Tools::Fill1D( Form("diff_CDH_pippim"), seg[ineuseg]-pippimhit[ihit]);
-        HodoscopeLikeHit *ncdhhit = cdsman->CDH(seg[ineuseg]);
-        HodoscopeLikeHit *pippimcdhhit = cdsman->CDH(pippimhit[ihit]);
+    for( int iseg=0; iseg<(int)pippimhit.size(); iseg++ ) {
+      if( seg[ineuseg]-pippimhit[iseg] ) {
+        Tools::Fill1D( Form("diff_CDH_pippim"), seg[ineuseg]-pippimhit[iseg]);
+        int cdhnuhit=-1;
+        for(int ihit=0; ihit<cdsman->nCDH(); ihit++) {
+          if( cdsman->CDH(ihit)->seg()==seg[ineuseg] ) cdhnuhit = ihit;
+        }
+        int cdhpippimhit = -1;
+        for(int ihit=0; ihit<cdsman->nCDH(); ihit++){
+          if( cdsman->CDH(ihit)->seg()==pippimhit[iseg] ) cdhpippimhit = ihit;
+        }
+
+        HodoscopeLikeHit *ncdhhit = cdsman->CDH(cdhnuhit);
+        HodoscopeLikeHit *pippimcdhhit = cdsman->CDH(cdhpippimhit);
         double ncdhz = -1.0*ncdhhit->hitpos();
         double pippimcdhz = -1.0*pippimcdhhit->hitpos();
-        //std::cout << "pippimcdhz: " << pippimcdhz << std::endl; 
-        //std::cout << "ncdhz: " << ncdhz << std::endl; 
-        //std::cout  << ncdhz-pippimcdhz << std::endl;
-        Tools::Fill2D( Form("diff2D_CDH_pippim"), seg[ineuseg]-pippimhit[ihit],ncdhz-pippimcdhz );
+        Tools::Fill2D( Form("diff2D_CDH_pippim"), seg[ineuseg]-pippimhit[iseg],ncdhz-pippimcdhz );
       }
     }
   }
@@ -110,13 +129,13 @@ int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector
 //returns # of CDH hits which is 2 segment away from 
 //CDH segments listed in vector cdhseg
 //used for Isolation cuts of neutral particle candidates
-int Util::GetCDHTwoSegAwayNHits(const std::vector <int> &seg, const std::vector <int> &allhit )
+int Util::GetCDHTwoSegAwayNHits(const std::vector <int> &seg, const std::vector <int> &segall )
 {
   int NTwoSegAwayHits=0;
   for( int ineuseg=0; ineuseg<(int)seg.size(); ineuseg++ ) {
-    for( int ihit=0; ihit<(int)allhit.size(); ihit++ ) {
+    for( int iseg=0; iseg<(int)segall.size(); iseg++ ) {
       //CDH has 36 segments. 
-      if( (abs(seg[ineuseg]-allhit[ihit])==2) || (abs(seg[ineuseg]-allhit[ihit])==34) )
+      if( (abs(seg[ineuseg]-segall[iseg])==2) || (abs(seg[ineuseg]-segall[iseg])==34) )
         NTwoSegAwayHits++;
     }
   }
