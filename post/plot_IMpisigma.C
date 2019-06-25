@@ -43,13 +43,12 @@ const unsigned int HIGHside=1;
 //0: diagonal cut
 //1: 3 sigma cut
 //2: 5 simga cut 
-const unsigned int sigmacuttype=0;
+const unsigned int sigmacuttype=1;
 
 //0:diagonal cut
 //1:3 sigma cut
 //2:5 sigma cut
-const unsigned int sidebandtype=0;
-
+const unsigned int sidebandtype=1;
 
 void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 {
@@ -1197,13 +1196,33 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       }
       
       for(int izone=0;izone<nzone;izone++){
-        if( !SigmaCrossPsideWideFlagLeft[izone] && !SigmaCrossPsideWideFlagRight[izone]  && SigmaPsideWideFlag[izone]){
-          IMnpim_IMnpip_dE_woK0_n_Sp_sidewide[izone]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-          q_IMnpipi_woK0_wSid_n_Sp_sidewide[izone]->Fill(LVec_pip_pim_n.M(),qkn.P());
-        }
-        if( !SigmaCrossMsideWideFlagTop[izone] && !SigmaCrossMsideWideFlagBottom[izone]  && SigmaMsideWideFlag[izone]){
-          IMnpim_IMnpip_dE_woK0_n_Sm_sidewide[izone]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-          q_IMnpipi_woK0_wSid_n_Sm_sidewide[izone]->Fill(LVec_pip_pim_n.M(),qkn.P());
+        if(sidebandtype==0){
+          if( !SigmaCrossPsideWideFlagLeft[izone] && !SigmaCrossPsideWideFlagRight[izone]  && SigmaPsideWideFlag[izone]){
+            IMnpim_IMnpip_dE_woK0_n_Sp_sidewide[izone]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
+            q_IMnpipi_woK0_wSid_n_Sp_sidewide[izone]->Fill(LVec_pip_pim_n.M(),qkn.P());
+          }
+          if( !SigmaCrossMsideWideFlagTop[izone] && !SigmaCrossMsideWideFlagBottom[izone]  && SigmaMsideWideFlag[izone]){
+            IMnpim_IMnpip_dE_woK0_n_Sm_sidewide[izone]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
+            q_IMnpipi_woK0_wSid_n_Sm_sidewide[izone]->Fill(LVec_pip_pim_n.M(),qkn.P());
+          }
+        }else if(sidebandtype==1){
+          if( !SigmaMFlag  && SigmaPsideWideFlag[izone]){
+            IMnpim_IMnpip_dE_woK0_n_Sp_sidewide[izone]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
+            q_IMnpipi_woK0_wSid_n_Sp_sidewide[izone]->Fill(LVec_pip_pim_n.M(),qkn.P());
+          }
+          if( !SigmaPFlag  && SigmaMsideWideFlag[izone]){
+            IMnpim_IMnpip_dE_woK0_n_Sm_sidewide[izone]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
+            q_IMnpipi_woK0_wSid_n_Sm_sidewide[izone]->Fill(LVec_pip_pim_n.M(),qkn.P());
+          }
+        }else if(sidebandtype==2){
+          if( !SigmawideMFlag  && SigmaPsideWideFlag[izone]){
+            IMnpim_IMnpip_dE_woK0_n_Sp_sidewide[izone]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
+            q_IMnpipi_woK0_wSid_n_Sp_sidewide[izone]->Fill(LVec_pip_pim_n.M(),qkn.P());
+          }
+          if( !SigmawidePFlag  && SigmaMsideWideFlag[izone]){
+            IMnpim_IMnpip_dE_woK0_n_Sm_sidewide[izone]->Fill(LVec_pip_n.M(),LVec_pim_n.M());
+            q_IMnpipi_woK0_wSid_n_Sm_sidewide[izone]->Fill(LVec_pip_pim_n.M(),qkn.P());
+          }
         }
       }
 
@@ -1339,7 +1358,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0_n_Sp->Draw("colz");
   IMnpim_IMnpip_dE_woK0_n_Sm->Draw("colsame");
 
-  
+  /*
   TCanvas *cIMnpim_IMnpip_dE_woK0_n_Sp[ngap];
   for(int igap=0;igap<ngap;igap++){
     cIMnpim_IMnpip_dE_woK0_n_Sp[igap] = new TCanvas(Form("cIMnpim_IMnpip_dE_woK0_n_Sp_%d",igap),Form("IMnpim_IMnpip_dE_woK0_n_Sp_%d",igap));   
@@ -1360,7 +1379,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     IMnpim_IMnpip_dE_woK0_n_Sm_side[LOWside][igap]->Draw("colsame");
     IMnpim_IMnpip_dE_woK0_n_Sm_side[HIGHside][igap]->Draw("colsame");
     if(Spmode || Smmode) break;
-  }
+  }*/
 
   TCanvas *cIMnpim_IMnpip_dE_woK0_n_Sp_wide[nzone];
   TH1D* q_IMnpipi_woK0_wSid_n_Sp_sidewide_px[nzone];
@@ -1665,21 +1684,30 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH1D* q_IMnpipi_woK0_wSid_nSp_side_px_sum[ngap];
   for(int igap=0;igap<ngap;igap++){
     cq_IMnpipi_woK0_wSid_n_px_Sp[igap]  = new TCanvas(Form("cq_IMnpipi_woK0_wSid_n_px_Sp_%d",igap),Form("q_IMnpipi_woK0_wSid_n_px_Sp_%d",igap)); 
+    cq_IMnpipi_woK0_wSid_n_px_Sp[igap]->Divide(2,2); 
+    cq_IMnpipi_woK0_wSid_n_px_Sp[igap]->cd(1); 
+    IMnpim_IMnpip_dE_woK0_n_Sp->SetMaximum(IMnpim_IMnpip_dE_woK0_n->GetMaximum());
+    IMnpim_IMnpip_dE_woK0_n_Sp->Draw("colz");
+    IMnpim_IMnpip_dE_woK0_n_Sp_side[LOWside][igap]->Draw("colsame");
+    IMnpim_IMnpip_dE_woK0_n_Sp_side[HIGHside][igap]->Draw("colsame");
+
+    cq_IMnpipi_woK0_wSid_n_px_Sp[igap]->cd(2); 
     //q_IMnpipi_woK0_wSid_n_Sp_px->SetMaximum(q_IMnpipi_woK0_wSid_n_Sm_px->GetMaximum());
     if(qvalcutflag==1 && !Spmode && !Smmode) q_IMnpipi_woK0_wSid_n_Sp_px->SetMaximum(160);
     if(qvalcutflag==2 && !Spmode && !Smmode) q_IMnpipi_woK0_wSid_n_Sp_px->SetMaximum(260);
     q_IMnpipi_woK0_wSid_n_Sp_px->Draw("HE");
   
-    q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][0][igap]->ProjectionX();
+    q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][LOWside][igap]->ProjectionX();
     q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap]->SetLineColor(kCyan);
     q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap]->SetMarkerStyle(20);
     q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap]->SetMarkerColor(kCyan);
-    q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap]->Draw("Esame");
+    // q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap]->Draw("Esame");
   
-    q_IMnpipi_woK0_wSid_n_Sp_side_high_px[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][1][igap]->ProjectionX();
+    //q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap]->Draw("E");
+    q_IMnpipi_woK0_wSid_n_Sp_side_high_px[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][HIGHside][igap]->ProjectionX();
     q_IMnpipi_woK0_wSid_n_Sp_side_high_px[igap]->SetLineColor(kCyan+2);
     q_IMnpipi_woK0_wSid_n_Sp_side_high_px[igap]->SetMarkerStyle(21);
-    q_IMnpipi_woK0_wSid_n_Sp_side_high_px[igap]->Draw("Esame");
+    //q_IMnpipi_woK0_wSid_n_Sp_side_high_px[igap]->Draw("Esame");
   
     q_IMnpipi_woK0_wSid_nSp_side_px_sum[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap]->Clone();
     q_IMnpipi_woK0_wSid_nSp_side_px_sum[igap]->Add(q_IMnpipi_woK0_wSid_n_Sp_side_high_px[igap]);
@@ -1687,6 +1715,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     q_IMnpipi_woK0_wSid_nSp_side_px_sum[igap]->SetMarkerStyle(22);
     q_IMnpipi_woK0_wSid_nSp_side_px_sum[igap]->SetMarkerColor(kCyan+4);
     q_IMnpipi_woK0_wSid_nSp_side_px_sum[igap]->Draw("Esame");
+    cq_IMnpipi_woK0_wSid_n_px_Sp[igap]->cd(3); 
+    q_IMnpipi_woK0_wSid_nSp_side_px_sum[igap]->Draw("E");
+    q_IMnpipi_woK0_wSid_n_Sp_side_low_px[igap]->Draw("Esame");
+    q_IMnpipi_woK0_wSid_n_Sp_side_high_px[igap]->Draw("Esame");
     if(Spmode || Smmode) break;
   }
   //TH1D* q_IMnpipi_woK0_wSid_n_Sp_side_px_1 = (TH1D*) q_IMnpipi_woK0_wSid_n_Sp_side[1]->ProjectionX();
@@ -1715,20 +1747,30 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH1D* q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[ngap];
   for(int igap=0;igap<ngap;igap++){
     cq_IMnpipi_woK0_wSid_n_Sm_px[igap] = new TCanvas(Form("cq_IMnpipi_woK0_wSid_n_Sm_px_%d",igap),Form("q_IMnpipi_woK0_wSid_n_Sm_px_%d",igap)); 
-  //q_IMnpipi_woK0_wSid_n_Sm_px->SetMaximum(q_IMnpipi_woK0_wSid_n_px->GetMaximum());
+    cq_IMnpipi_woK0_wSid_n_Sm_px[igap]->Divide(2,2);  
+    cq_IMnpipi_woK0_wSid_n_Sm_px[igap]->cd(1);  
+    IMnpim_IMnpip_dE_woK0_n_Sm->SetMaximum(IMnpim_IMnpip_dE_woK0_n->GetMaximum());
+    IMnpim_IMnpip_dE_woK0_n_Sm->GetXaxis()->SetRangeUser(0,1.7);
+    IMnpim_IMnpip_dE_woK0_n_Sm->GetYaxis()->SetRangeUser(0,1.7);
+    IMnpim_IMnpip_dE_woK0_n_Sm->Draw("colz");
+    IMnpim_IMnpip_dE_woK0_n_Sm_side[LOWside][igap]->Draw("colsame");
+    IMnpim_IMnpip_dE_woK0_n_Sm_side[HIGHside][igap]->Draw("colsame");
+ 
+    cq_IMnpipi_woK0_wSid_n_Sm_px[igap]->cd(2);  
+   //q_IMnpipi_woK0_wSid_n_Sm_px->SetMaximum(q_IMnpipi_woK0_wSid_n_px->GetMaximum());
     if(qvalcutflag==1) q_IMnpipi_woK0_wSid_n_Sm_px->SetMaximum(160);
     if(qvalcutflag==2) q_IMnpipi_woK0_wSid_n_Sm_px->SetMaximum(260);
     q_IMnpipi_woK0_wSid_n_Sm_px->Draw("EH");
-    q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][0][igap]->ProjectionX();
+    q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][LOWside][igap]->ProjectionX();
     q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->SetLineColor(kPink+1);
     q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->SetMarkerStyle(20);
-    q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->Draw("Esame");
+    //q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->Draw("Esame");
   
-    q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][1][igap]->ProjectionX();
+    q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][HIGHside][igap]->ProjectionX();
     q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->SetLineColor(kPink+3);
     q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->SetMarkerStyle(21);
     q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->SetMarkerColor(kPink+3);
-    q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->Draw("Esame");
+    //q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->Draw("Esame");
   
     q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->Clone();
     q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->Add(q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]);
@@ -1736,6 +1778,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->SetMarkerStyle(22);
     q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->SetMarkerColor(kPink+10);
     q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->Draw("Esame");
+    cq_IMnpipi_woK0_wSid_n_Sm_px[igap]->cd(3);  
+    q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->Draw("E");
+    q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->Draw("Esame");
+    q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->Draw("Esame");
     if(Spmode || Smmode) break;
   }
   //TH1D* q_IMnpipi_woK0_wSid_n_Sm_side_px_1 = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side[1]->ProjectionX();
@@ -1749,8 +1795,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_sub = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sm_sub","q_IMnpipi_woK0_wSid_n_Sm_sub");
   cq_IMnpipi_woK0_wSid_n_Sm_sub->cd();
   TH2F* q_IMnpipi_woK0_wSid_n_Sm_sub = (TH2F*)q_IMnpipi_woK0_wSid_n_Sm->Clone("Sm_sub");
-  q_IMnpipi_woK0_wSid_n_Sm_sub->Add(q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][LOWside][0],-1);
-  q_IMnpipi_woK0_wSid_n_Sm_sub->Add(q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][HIGHside][0],-1);
+  q_IMnpipi_woK0_wSid_n_Sm_sub->Add(q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][LOWside][LOWside],-1);
+  q_IMnpipi_woK0_wSid_n_Sm_sub->Add(q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][HIGHside][HIGHside],-1);
   q_IMnpipi_woK0_wSid_n_Sm_sub->SetMinimum(0);
   q_IMnpipi_woK0_wSid_n_Sm_sub->Draw("colz");
   
@@ -2180,7 +2226,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   }
   q_IMnpipi_wSid_n_cs->Print("base");
   q_IMnpipi_wSid_n_cs->Divide(acc_Sp);
-  //q_IMnpipi_woK0_wSid_n_Sp_cs->SetMaximum(30000);
   if(!(Spmode || Smmode))q_IMnpipi_wSid_n_cs->Scale(1./efflumi);
   q_IMnpipi_wSid_n_cs->Draw("colz");
   fkp->Draw("same");
@@ -2195,11 +2240,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   for(int ibinx=0;ibinx<acc_Sp_err->GetNbinsX();ibinx++){
     for(int ibiny=0;ibiny<acc_Sp_err->GetNbinsY();ibiny++){
       double precision =  acc_Sp_err->GetBinContent(ibinx,ibiny);
-<<<<<<< HEAD
-      if(precision>0.2){ 
-=======
       if(precision>0.20){ 
->>>>>>> 4fb65c4db4f4a94d7b71e9843f69c124f2fb5a24
         q_IMnpipi_woK0_wSid_n_Sp_cs->SetBinContent(ibinx,ibiny,0.0);
         q_IMnpipi_woK0_wSid_n_Sp_cs->SetBinError(ibinx,ibiny,0.0);
       }
@@ -2237,8 +2278,13 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       q_IMnpipi_woK0_wSid_n_Sp_side_cs_low[igap]->Scale(1./efflumi);
       q_IMnpipi_woK0_wSid_n_Sp_side_cs_high[igap]->Scale(1./efflumi);
     }
-    q_IMnpipi_woK0_wSid_n_Sp_side_cs[igap] = (TH2F*)q_IMnpipi_woK0_wSid_n_Sp_side_cs_low[igap]->Clone(Form("Sp_cs_side_sum_%d",igap));
-    q_IMnpipi_woK0_wSid_n_Sp_side_cs[igap]->Add(q_IMnpipi_woK0_wSid_n_Sp_side_cs_high[igap]);
+    q_IMnpipi_woK0_wSid_n_Sp_side_cs[igap] = (TH2F*)q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][LOWside][igap]->Clone(Form("Sp_cs_side_sum_%d",igap));
+    q_IMnpipi_woK0_wSid_n_Sp_side_cs[igap]->Add(q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][HIGHside][igap]);
+    q_IMnpipi_woK0_wSid_n_Sp_side_cs[igap]->Sumw2();
+    q_IMnpipi_woK0_wSid_n_Sp_side_cs[igap]->Divide(acc_SpSel_woK0);
+    if(!(Spmode || Smmode)){
+      q_IMnpipi_woK0_wSid_n_Sp_side_cs[igap]->Scale(1./efflumi);
+    }
     q_IMnpipi_woK0_wSid_n_Sp_side_cs[igap]->SetMaximum(q_IMnpipi_woK0_wSid_n_Sp_cs->GetMaximum());
     q_IMnpipi_woK0_wSid_n_Sp_side_cs[igap]->Draw("colz");
   }
@@ -2318,8 +2364,13 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       q_IMnpipi_woK0_wSid_n_Sm_side_cs_low[igap]->Scale(1.0/efflumi);
       q_IMnpipi_woK0_wSid_n_Sm_side_cs_high[igap]->Scale(1.0/efflumi);
     }
-    q_IMnpipi_woK0_wSid_n_Sm_side_cs[igap] = (TH2F*)q_IMnpipi_woK0_wSid_n_Sm_side_cs_low[igap]->Clone(Form("Sm_cs_side_sum_%d",igap));
-    q_IMnpipi_woK0_wSid_n_Sm_side_cs[igap]->Add(q_IMnpipi_woK0_wSid_n_Sm_side_cs_high[igap]);
+    q_IMnpipi_woK0_wSid_n_Sm_side_cs[igap] = (TH2F*)q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][LOWside][igap]->Clone(Form("Sm_cs_side_sum_%d",igap));
+    q_IMnpipi_woK0_wSid_n_Sm_side_cs[igap]->Add(q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][HIGHside][igap]);
+    q_IMnpipi_woK0_wSid_n_Sm_side_cs[igap]->Sumw2();
+    q_IMnpipi_woK0_wSid_n_Sm_side_cs[igap]->Divide(acc_SmSel_woK0);
+    if(!(Spmode || Smmode)){
+      q_IMnpipi_woK0_wSid_n_Sm_side_cs[igap]->Scale(1./efflumi);
+    }
     q_IMnpipi_woK0_wSid_n_Sm_side_cs[igap]->SetMaximum(q_IMnpipi_woK0_wSid_n_Sm_cs->GetMaximum());
     q_IMnpipi_woK0_wSid_n_Sm_side_cs[igap]->Draw("colz");
   }
@@ -2831,7 +2882,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       h2->GetYaxis()->SetTitleOffset(1.3);
     }
   }
-
   TCanvas *c = nullptr;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
   int size = SCol->GetSize();
@@ -2872,7 +2922,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     else if(i==size-1)c->Print(pdfname+")",Form("Title:%s",c->GetTitle())); 
     else c->Print(pdfname,Form("Title:%s",c->GetTitle())); 
   }
-  //pdf->Close();
   std::cout << "closing pdf " << std::endl;
   
   TIter nexthist2(gDirectory->GetList());
@@ -2885,3 +2934,4 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   fout->cd();
   fout->Close();
 }
+
