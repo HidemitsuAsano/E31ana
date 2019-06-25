@@ -777,10 +777,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     }
     
     // charge veto using CDC
+    Pos_CDH.SetZ(-1.*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
     const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
     Util::AnaPipPimCDCCDH(Pos_CDH,NeutralCDHseg,pip_ID[0],pim_ID[0],cdsMan,trackMan);
     
-    Pos_CDH.SetZ(-1.*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
     //std::cout << __LINE__ << "  "  << -1.*ncdhhit->hitpos() << std::endl;
 
     //** neutral particle in CDH **//
@@ -994,6 +994,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       Tools::Fill2D( Form("dE_betainv"), 1./NeutralBetaCDH, ncdhhit->emean() );
       Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
       
+       
+
       Tools::Fill2D(Form("Vtx_ZX_nofid"),vtxpip_mean.Z(),vtxpip_mean.X());
       Tools::Fill2D(Form("Vtx_ZY_nofid"),vtxpip_mean.Z(),vtxpip_mean.Y());
       Tools::Fill2D(Form("Vtx_XY_nofid"),vtxpip_mean.X(),vtxpip_mean.Y());
@@ -1011,6 +1013,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
           Tools::Fill2D(Form("dE_CDHtime_pippimn"), cdsMan->CDH(i)->ctmean(), cdsMan->CDH(i)->emean());
         }
 
+        Tools::Fill2D(Form("Vtx_ZX_primfid"),vtx_react.Z(),vtx_react.X());
+        Tools::Fill2D(Form("Vtx_ZY_primfid"),vtx_react.Z(),vtx_react.Y());
+        Tools::Fill2D(Form("Vtx_XY_primfid"),vtx_react.X(),vtx_react.Y());
         Tools::Fill2D(Form("Vtx_ZX_fid"),vtxpip_mean.Z(),vtxpip_mean.X());
         Tools::Fill2D(Form("Vtx_ZY_fid"),vtxpip_mean.Z(),vtxpip_mean.Y());
         Tools::Fill2D(Form("Vtx_XY_fid"),vtxpip_mean.X(),vtxpip_mean.Y());
