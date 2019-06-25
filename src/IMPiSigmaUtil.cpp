@@ -166,11 +166,6 @@ int Util::GetNHitsCDCOuter(const TVector3 PosCDH, CDSHitMan *cdsman, const doubl
       //
       Tools::Fill1D( Form("diff_CDH_CDC"), angle/TwoPi*360 );
       if( PhiMin<angle && angle<PhiMax ) nCDChit++;
-
-      //check z 
-      double cdcz = (cdc->wpos()).Z();
-      double neucdhz = PosCDH.Z();
-      Tools::Fill2D( Form("diff2D_CDH_CDC"),angle/TwoPi*360,(neucdhz-cdcz));
     }//icdchit
   }//ilr
   
