@@ -50,6 +50,19 @@ const unsigned int sigmacuttype=0;
 //2:5 sigma cut
 const unsigned int sidebandtype=0;
 
+//color def. 
+//Sp mode Signal :2 (red)
+//Sm mode Signal :3 (green)
+//Sp mode sideband Cyan+4
+//Sp mode sideband low mass side :kCyan
+//Sp mode sideband high mass side :kCyan+2
+//Sm mode sideband : kPink+10
+//Sm mode sideband low mass side kPink+1
+//Sm mode sideband high mass side kPink+3
+//neutron mass : 4 (blue)
+
+
+
 void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 {
   gROOT->SetBatch(true);
@@ -1560,8 +1573,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       if(SigmaPFlag || SigmaMFlag){
         MMnpip_MMnpim_wSid_n->Fill(LVec_pim_n_miss.M(),LVec_pip_n_miss.M());
         q_IMpippim_n_wSid->Fill(LVec_pip_pim.M(),qkn.P());
-        if(SigmaPFlag)q_IMnpipi_wSid_n_Sp->Fill(LVec_pip_pim_n.M(),qkn.P());
-        if(SigmaMFlag)q_IMnpipi_wSid_n_Sm->Fill(LVec_pip_pim_n.M(),qkn.P());
         Cosn_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),cos_nmiss);
         dE_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),dE);
         IMpippim_IMnpipi_n_wSid->Fill(LVec_pip_pim_n.M(), LVec_pip_pim.M());
@@ -2189,10 +2200,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //q_IMnpipi_wSid_n_px1->Draw("HEsame");
   q_IMnpipi_wSid_n_Sp_px->Draw("HEsame");
   q_IMnpipi_wSid_n_Sm_px->Draw("HEsame");
-  TH1D* q_IMnpipi_wSid_n_wocross = (TH1D*)q_IMnpipi_wSid_n_Sp_px->Clone();
-  q_IMnpipi_wSid_n_wocross->Add(q_IMnpipi_wSid_n_Sm_px,1);
-  q_IMnpipi_wSid_n_wocross->SetLineColor(4);
-  q_IMnpipi_wSid_n_wocross->Draw("HEsame");
+  //TH1D* q_IMnpipi_wSid_n_sum = (TH1D*)q_IMnpipi_wSid_n_Sp_px->Clone();
+  //q_IMnpipi_wSid_n_sum->Add(q_IMnpipi_wSid_n_Sm_px,1);
+  //q_IMnpipi_wSid_n_sum->Draw("HEsame");
 
   TCanvas *cq_IMnpipi_woK0_wSid_n_px_SpSm = new TCanvas("cq_IMnpipi_woK0_wSid_n_px_SpSm","q_IMnpipi_woK0_wSid_n_px_SpSm"); 
   cq_IMnpipi_woK0_wSid_n_px_SpSm->cd();
@@ -2205,9 +2215,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //q_IMnpipi_wSid_n_px1->Draw("HEsame");
   q_IMnpipi_woK0_wSid_n_Sp_px->Draw("HEsame");
   q_IMnpipi_woK0_wSid_n_Sm_px->Draw("HEsame");
-  TH1D* q_IMnpipi_woK0_wSid_n_wocross = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_px->Clone();
-  q_IMnpipi_woK0_wSid_n_wocross->Add(q_IMnpipi_woK0_wSid_n_Sm_px,1);
-  q_IMnpipi_woK0_wSid_n_wocross->SetLineColor(4);
+  //TH1D* q_IMnpipi_woK0_wSid_n_sum = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_px->Clone();
+  // q_IMnpipi_woK0_wSid_n_sum->Add(q_IMnpipi_woK0_wSid_n_Sm_px,1);
+  //q_IMnpipi_woK0_wSid_n_sum->SetLineColor(4);
   //q_IMnpipi_woK0_wSid_n_wocross->Draw("HEsame");
   
   TCanvas *cq_IMnpipi_wSid_n_px_Sp[ngap];
@@ -2472,7 +2482,12 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   h1_4mevcut->Draw("HEsame");
   h1_6mevcut->SetLineColor(4);
   h1_6mevcut->Draw("HEsame");
-  
+  TLegend *ldE_betainv_fid_px = new TLegend(0.6,0.7,0.9,0.9);
+  ldE_betainv_fid_px->AddEntry(h1_nocut,"no cut","f");
+  ldE_betainv_fid_px->AddEntry(h1_2mevcut,"<2 MeVee","f");
+  ldE_betainv_fid_px->AddEntry(h1_4mevcut,"<4 MeVee","f");
+  ldE_betainv_fid_px->AddEntry(h1_6mevcut,"<6 MeVee","f");
+  ldE_betainv_fid_px->Draw();
   
   TCanvas *cdE_MMom_fid_beta_woK0 = new TCanvas("cdE_MMom_fid_beta_woK0","dE_MMom_fid_beta_woK0");
   cdE_MMom_fid_beta_woK0->cd();
@@ -2536,9 +2551,13 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH1D* mnmom_IMpippim_n_py_cut = (TH1D*)mnmom_IMpippim_n->ProjectionY("mnmom_IMpippim_n_py_cut",
                                                                         mnmom_IMpippim_n->GetXaxis()->FindBin(anacuts::pipi_MIN),
                                                                         mnmom_IMpippim_n->GetXaxis()->FindBin(anacuts::pipi_MAX));
-  mnmom_IMpippim_n_py_cut->SetLineColor(2);
+  //mnmom_IMpippim_n_py_cut->SetLineColor(2);
+  mnmom_IMpippim_n_py_cut->SetFillColor(kViolet);
   mnmom_IMpippim_n_py_cut->Draw("HEsame");
-
+  TLegend *lmnmom_IMpippim_n_py  = new TLegend(0.15,0.7,0.45,0.9);
+  lmnmom_IMpippim_n_py->AddEntry(mnmom_IMpippim_n_py,Form("missing mom. "),"f");
+  lmnmom_IMpippim_n_py->AddEntry(mnmom_IMpippim_n_py_cut,Form("missing mom. (K0 region selected)"),"f");
+  lmnmom_IMpippim_n_py->Draw();
 
   TCanvas *cmnmom_IMpippim_wSid_n = new TCanvas(Form("cmnmom_IMpippim_wSid_n"),"mnmom_IMpippim_wSid_n");
   cmnmom_IMpippim_wSid_n->cd();
@@ -2572,7 +2591,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   q_IMpippim_n_px->Draw("EH");
   TH1D* q_IMpippim_n_px_cut = (TH1D*)q_IMpippim_n_px->Clone();
   q_IMpippim_n_px_cut->GetXaxis()->SetRangeUser(anacuts::pipi_MIN,anacuts::pipi_MAX);
-  q_IMpippim_n_px_cut->SetFillColor(2);
+  q_IMpippim_n_px_cut->SetFillColor(kViolet);
   q_IMpippim_n_px_cut->Draw("HEsame");
   
   TCanvas *cq_IMpippim_n_wSid = new TCanvas("cq_IMpippim_n_wSid","q_IMpippim_n_wSid");
@@ -2616,15 +2635,21 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   cMMnpip_MMnpim_woK0_n->cd();
   MMnpip_MMnpim_woK0_n->Draw("colz");
   
-  TCanvas *cMMnpip_MMnpim_woK0_n_px = new TCanvas("cMMnpip_MMnpim_woK0_n_px","cMMnpip_MMnpim_woK0_n_px");
-  cMMnpip_MMnpim_woK0_n_px->cd();
+  TCanvas *cMMnpip_MMnpim_wwoK0_n_px = new TCanvas("cMMnpip_MMnpim_wwoK0_n_px","cMMnpip_MMnpim_wwoK0_n_px");
+  cMMnpip_MMnpim_wwoK0_n_px->cd();
+  TH1D* MMnpip_MMnpim_n_px = (TH1D*)MMnpip_MMnpim_n->ProjectionX();
+  MMnpip_MMnpim_n_px->Draw("HE");
   TH1D* MMnpip_MMnpim_woK0_n_px = (TH1D*)MMnpip_MMnpim_woK0_n->ProjectionX();
-  MMnpip_MMnpim_woK0_n_px->Draw("HE");
+  MMnpip_MMnpim_woK0_n_px->SetLineColor(kViolet);
+  MMnpip_MMnpim_woK0_n_px->Draw("HEsame");
 
-  TCanvas *cMMnpip_MMnpim_woK0_n_py = new TCanvas("cMMnpip_MMnpim_woK0_n_py","cMMnpip_MMnpim_woK0_n_py");
-  cMMnpip_MMnpim_woK0_n_py->cd();
+  TCanvas *cMMnpip_MMnpim_wwoK0_n_py = new TCanvas("cMMnpip_MMnpim_wwoK0_n_py","cMMnpip_MMnpim_wwoK0_n_py");
+  cMMnpip_MMnpim_wwoK0_n_py->cd();
+  TH1D* MMnpip_MMnpim_n_py = (TH1D*)MMnpip_MMnpim_n->ProjectionY();
+  MMnpip_MMnpim_n_py->Draw("HE");
   TH1D* MMnpip_MMnpim_woK0_n_py = (TH1D*)MMnpip_MMnpim_woK0_n->ProjectionY();
-  MMnpip_MMnpim_woK0_n_py->Draw("HE");
+  MMnpip_MMnpim_woK0_n_py->SetLineColor(kViolet);
+  MMnpip_MMnpim_woK0_n_py->Draw("HEsame");
 
 
   TCanvas *cMMnpip_MMnpim_woK0_wSid_n = new TCanvas("cMMnpip_MMnpim_woK0_wSid_n","MMnpip_MMnpim_woK0_wSid_n");
@@ -2649,6 +2674,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //TCanvas *cMMom_MMass_woK0_px = new TCanvas("cMMom_MMass_woK0_px","MMom_MMass_woK0_px");
   //TH1D *MMom_MMass_woK0_px = MMom_MMass_woK0->ProjectionX();
   //MMom_MMass_woK0_px->Draw("");
+  
+  TCanvas *cMMom_MMass_wSid  = new TCanvas("cMMom_MMass_wSid","MMom_MMass_wSid");
+  cMMom_MMass_wSid->cd();
+  MMom_MMass_wSid->Draw("colz");
   
   TCanvas *cMMom_MMass_woK0_wSid  = new TCanvas("cMMom_MMass_woK0_wSid","MMom_MMass_woK0_wSid");
   cMMom_MMass_woK0_wSid->cd();
