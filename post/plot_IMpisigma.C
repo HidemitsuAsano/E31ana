@@ -2862,8 +2862,12 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     q_IMnpipi_woK0_wSid_n_acc_reco->Write();
     q_IMpiSigma_woK0_wSid_n_Sp_genacc->Write();
     q_IMnpipi_woK0_wSid_n_Sp_acc->Write();
+    q_IMnpipi_wSid_n_Sp_acc->Write();
+    q_IMnpipi_wSid_n_Sp_acc_reco->Write();
     q_IMnpipi_woK0_wSid_n_Sp_acc_reco->Write();
     q_IMpiSigma_woK0_wSid_n_Sm_genacc->Write();
+    q_IMnpipi_wSid_n_Sm_acc->Write();
+    q_IMnpipi_wSid_n_Sm_acc_reco->Write();
     q_IMnpipi_woK0_wSid_n_Sm_acc->Write();
     q_IMnpipi_woK0_wSid_n_Sm_acc_reco->Write();
     
