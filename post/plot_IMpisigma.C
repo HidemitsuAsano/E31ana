@@ -265,6 +265,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* q_IMnpipi_woK0_wSid_n_Sm_sidewide[nzone];//
   TH2F* IMnpip_IMnpipi_n;
   TH2F* IMnpim_IMnpipi_n;
+  TH2F* IMnpip_IMnpipi_wK0_n;
+  TH2F* IMnpim_IMnpipi_wK0_n;
   TH2F* IMnpip_IMnpipi_woK0_n;
   TH2F* IMnpim_IMnpipi_woK0_n;
 
@@ -716,6 +718,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpip_IMnpipi_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   IMnpip_IMnpipi_n->SetYTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   
+  IMnpip_IMnpipi_wK0_n = new TH2F(Form("IMnpip_IMnpipi_wK0_n"),Form("IMnpip_IMnpipi_wK0_n"),nbinIMnpipi,1.0,2.0, nbinIMnpi,1.0,2.0);
+  IMnpip_IMnpipi_wK0_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  IMnpip_IMnpipi_wK0_n->SetYTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  
   IMnpip_IMnpipi_woK0_n = new TH2F(Form("IMnpip_IMnpipi_woK0_n"),Form("IMnpip_IMnpipi_woK0_n"),nbinIMnpipi,1.0,2.0, nbinIMnpi,1.0,2.0);
   IMnpip_IMnpipi_woK0_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   IMnpip_IMnpipi_woK0_n->SetYTitle("IM(n#pi^{+}) [GeV/c^{2}]");
@@ -723,6 +729,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpim_IMnpipi_n = new TH2F(Form("IMnpim_IMnpipi_n"),Form("IMnpim_IMnpipi_n"),nbinIMnpipi,1.0,2.0, nbinIMnpi,1.0,2.0);
   IMnpim_IMnpipi_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   IMnpim_IMnpipi_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  
+  IMnpim_IMnpipi_wK0_n = new TH2F(Form("IMnpim_IMnpipi_wK0_n"),Form("IMnpim_IMnpipi_wK0_n"),nbinIMnpipi,1.0,2.0, nbinIMnpi,1.0,2.0);
+  IMnpim_IMnpipi_wK0_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  IMnpim_IMnpipi_wK0_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   
   IMnpim_IMnpipi_woK0_n = new TH2F(Form("IMnpim_IMnpipi_woK0_n"),Form("IMnpim_IMnpipi_woK0_n"),nbinIMnpipi,1.0,2.0, nbinIMnpi,1.0,2.0);
   IMnpim_IMnpipi_woK0_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -1642,6 +1652,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         Mompippim_IMnpipi_dE_wK0_n_Sp->Fill(LVec_pip_pim_n.M(),LVec_pip_pim.P());
         q_IMnpipi_wK0_wSid_n_Sp->Fill(LVec_pip_pim_n.M(),qkn.P());
       }
+      IMnpip_IMnpipi_wK0_n->Fill(LVec_pip_pim_n.M(),LVec_pip_n.M());
+      IMnpim_IMnpipi_wK0_n->Fill(LVec_pip_pim_n.M(),LVec_pim_n.M());
     
       if(SigmaMcutFlag[sigmacuttype]){
         Mompippim_IMnpipi_dE_wK0_n_Sm->Fill(LVec_pip_pim_n.M(),LVec_pip_pim.P());
@@ -2833,9 +2845,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
   TCanvas *cMMom_MMass_woK0_wSid_px  = new TCanvas("cMMom_MMass_woK0_wSid_px","MMom_MMass_woK0_wSid_px");
   cMMom_MMass_woK0_wSid_px->cd();
+  //TH1D *MMom_MMass_wSid_px = MMom_MMass_wSid->ProjectionX();
   TH1D *MMom_MMass_woK0_wSid_px = MMom_MMass_woK0_wSid->ProjectionX();
   MMom_MMass_woK0_wSid_px->GetYaxis()->SetTitle("Counts/ 10 MeV/c^{2}");
   MMom_MMass_woK0_wSid_px->GetYaxis()->CenterTitle();
+  //MMom_MMass_wSid_px->Draw("HE");
   MMom_MMass_woK0_wSid_px->Draw("HE");
   TH1D *MMom_MMass_woK0_wSid_px_clone1= (TH1D*) MMom_MMass_woK0_wSid_px->Clone();
   MMom_MMass_woK0_wSid_px_clone1->GetXaxis()->SetRangeUser(anacuts::neutron_MIN,anacuts::neutron_MAX);
@@ -3418,6 +3432,16 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   q_IMnpipi_woK0_wSid_n_SpSm_side_cs->SetMaximum(60000);
   q_IMnpipi_woK0_wSid_n_SpSm_side_cs->Draw("colz");
   */  
+  
+  TCanvas *cIMnpip_IMnpipi_wK0_n = new TCanvas("cIMnpip_IMnpipi_wK0_n","IMnpip_IMnpipi_wK0_n");
+  cIMnpip_IMnpipi_wK0_n->cd();
+  IMnpip_IMnpipi_wK0_n->GetYaxis()->SetRangeUser(1,1.8);
+  IMnpip_IMnpipi_wK0_n->Draw("colz");
+  
+  TCanvas *cIMnpim_IMnpipi_wK0_n = new TCanvas("cIMnpim_IMnpipi_wK0_n","IMnpim_IMnpipi_wK0_n");
+  cIMnpim_IMnpipi_wK0_n->cd();
+  IMnpim_IMnpipi_wK0_n->GetYaxis()->SetRangeUser(1,1.8);
+  IMnpim_IMnpipi_wK0_n->Draw("colz");
 
   TCanvas *cIMnpip_IMnpipi_woK0_n = new TCanvas("cIMnpip_IMnpipi_woK0_n","IMnpip_IMnpipi_woK0_n");
   cIMnpip_IMnpipi_woK0_n->cd();
@@ -3428,6 +3452,16 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   cIMnpim_IMnpipi_woK0_n->cd();
   IMnpim_IMnpipi_woK0_n->GetYaxis()->SetRangeUser(1,1.8);
   IMnpim_IMnpipi_woK0_n->Draw("colz");
+
+  TCanvas *cIMnpip_IMnpipi_n = new TCanvas("cIMnpip_IMnpipi_n","IMnpip_IMnpipi_n");
+  cIMnpip_IMnpipi_n->cd();
+  IMnpip_IMnpipi_n->GetYaxis()->SetRangeUser(1,1.8);
+  IMnpip_IMnpipi_n->Draw("colz");
+  
+  TCanvas *cIMnpim_IMnpipi_n = new TCanvas("cIMnpim_IMnpipi_n","IMnpim_IMnpipi_n");
+  cIMnpim_IMnpipi_n->cd();
+  IMnpim_IMnpipi_n->GetYaxis()->SetRangeUser(1,1.8);
+  IMnpim_IMnpipi_n->Draw("colz");
 
   //TCanvas *cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px","q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px");
   //cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px->cd();
