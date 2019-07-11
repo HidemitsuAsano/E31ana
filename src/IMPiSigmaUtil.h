@@ -26,7 +26,7 @@ namespace Util
   int GetCDHTwoSegAwayNHits(const std::vector <int> &seg, const std::vector <int> &allhit);
   
   
-  int GetNHitsCDCOuter(const TVector3 PosCDH, CDSHitMan *cdsman, const double rangedeg=15.0);
+  int GetNHitsCDCOuter(TVector3 PosCDH, CDSHitMan *cdsman, const double rangedeg=15.0);
   void AnaPipPimCDCCDH(const TVector3 PosCDH,const std::vector <int> &seg, const int pip_ID, const int pim_ID, CDSHitMan *cdsman,CDSTrackingMan *trackman);
   
   
@@ -46,7 +46,7 @@ namespace Util
                     std::vector <int> &protonid,
                     const bool MCFlag=false
                     );
-  double AnalyzeT0(BeamLineHitMan *blman, ConfMan *confman);
+  double AnalyzeT0(BeamLineHitMan *blman, ConfMan *confman,int &t0seg);
   int BeamPID(EventHeader *header, const double ctmt0, BeamLineHitMan *blman); 
   int EveSelectBeamline(BeamLineTrackMan *bltrackman, 
                         CDSTrackingMan *trackman,

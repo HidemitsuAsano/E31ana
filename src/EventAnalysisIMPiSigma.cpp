@@ -561,7 +561,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   //** BLDC tracking **//
   bltrackMan->DoTracking(blMan,confMan,true,true);
   //Get T0
-  ctmT0 = Util::AnalyzeT0(blMan,confMan);
+  int t0seg=-1;
+  ctmT0 = Util::AnalyzeT0(blMan,confMan,t0seg);
   if(ctmT0<-9000){
     Clear( nAbort_nT0 );
     Tools::Fill1D( Form("EventCheck"), 15 );
@@ -869,7 +870,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       //here flight time of Sigma is ignored.
       const double ntof = ncdhhit->ctmean()-ctmT0-beamtof;
       const double ntof_vtx[2] = {ncdhhit->ctmean()-ctmT0-beamtof_vtx[0], ncdhhit->ctmean()-ctmT0-beamtof_vtx[1]};
-
+      Tools::Fill1D(Form("CDH%d_T0%d_TOF_Neutral",CDHSeg,t0seg),ntof);
       double nlen;
       double nlen_vtx[2];
       if(UseDecayVtx) nlen = (Pos_CDH-vtx_dis).Mag();  
@@ -1026,6 +1027,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
         Tools::Fill2D( Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
         Tools::Fill2D( Form("CDHzNeutraltime"),Pos_CDH.z(),ncdhhit->ctmean()-ctmT0-beamtof);
+        Tools::Fill2D( Form("CDH%dzNeutraltime",CDHSeg),Pos_CDH.z(),ncdhhit->ctmean()-ctmT0-beamtof);
         Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
         Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
 
