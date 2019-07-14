@@ -459,7 +459,7 @@ int Util::CDSChargedAna(const bool docdcretiming,
   return pimid.size()+pipid.size()+protonid.size()+kmid.size();
 }
 
-double Util::AnalyzeT0(BeamLineHitMan *blman,ConfMan *confman)
+double Util::AnalyzeT0(BeamLineHitMan *blman,ConfMan *confman,int &t0seg)
 {
   //** BHD & T0 **//
   int nBHD = 0;
@@ -485,11 +485,13 @@ double Util::AnalyzeT0(BeamLineHitMan *blman,ConfMan *confman)
     if( blman->T0(i)->CheckRange() ) {
       ctmt0 = blman->T0(i)->ctmean();
       confman->GetGeomMapManager()->GetGPos(CID_T0, blman->T0(i)->seg(), vtxT0);
+      t0seg = blman->T0(i)->seg();
     }
   }
 
   return ctmt0;
 }
+
 
 int Util::BeamPID(EventHeader *header, const double ctmt0,BeamLineHitMan *blman)
 {
