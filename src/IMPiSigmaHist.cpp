@@ -28,6 +28,7 @@ void InitBasicHist(const bool MCFlag)
   for(int iseg=0;iseg<36;iseg++){
     Tools::newTH2F( Form("CDH%d_mom_TOF_pi",iseg+1),       100, -2, 2, 200, -1.0, 1.0 );
   }
+  
   //** beam line **//
   Tools::newTH1F( Form("mul_BHD"), 12, -0.5, 11.5 );
   Tools::newTH1F( Form("mul_T0"),   6, -0.5, 5.5 );
@@ -96,9 +97,18 @@ void InitIMPiSigmaHist()
   
   //CDH
   Tools::newTH2F( Form("dE_CDHtime_pippimn"),100,0.,100,100,0,50);
-
+  
+  for(int it0=0;it0<5;it0++){
+    for(int iseg=0;iseg<36;iseg++){
+      Tools::newTH1F( Form("CDH%d_T0%d_TOF_Neutral",iseg+1,it0+1), 400, 0, 100);
+    }
+  }
   Tools::newTH2F( Form("NeutraltimeEnergy"),100,0,100,200,0,50);
   Tools::newTH2F( Form("CDHzNeutraltime"),100,-50,50,100,0,50);
+  for(int iseg=0;iseg<36;iseg++){
+    Tools::newTH2F( Form("CDH%dzNeutraltime",iseg+1),100,-50,50,100,0,50);
+  }
+
   Tools::newTH1F( Form("diff_CDH"), 73, -36.5, 36.5 );
   Tools::newTH1F( Form("diff_CDH_pippim"), 73, -36.5, 36.5 );
   Tools::newTH2F( Form("diff2D_CDH"), 73, -36.5, 36.5,500,-50,50 );
