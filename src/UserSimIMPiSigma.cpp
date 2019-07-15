@@ -1384,7 +1384,7 @@ int main( int argc, char** argv )
               //ncds(gen.) is not detected, initial n is detected in CDS instead.
               //abort this event !
               if(IsrecoPassed)nAbort_anothern++;
-              IsncdsfromSigma = false;
+              //IsncdsfromSigma = false;
             }
             mcmom_beam = TL_gene[kin::kmbeam];
             mcmom_ncds  = TL_gene[genID[kin::ncds]];
