@@ -232,6 +232,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* MMnpip_MMnpim_wSid_n;
   TH2F* MMnpip_MMnpim_woK0_n;
   TH2F* MMnpip_MMnpim_woK0_wSid_n;
+  TH2F* dE_CDHphi;
+  TH2F* dE_CDHz;
   TH2F* dE_IMnpim;
   TH2F* dE_IMnpim_n;
   TH2F* dE_IMnpip;
@@ -584,6 +586,13 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMnpip_MMnpim_woK0_wSid_n->SetXTitle("IM(n_{miss}#pi^{+}) [GeV/c^{2}]");
   MMnpip_MMnpim_woK0_wSid_n->SetYTitle("IM(n_{miss}#pi^{-}) [GeV/c^{2}]");
   
+  dE_CDHphi = new TH2F(Form("dE_CDHphi"),Form("dE_CDHphi"),100,-3.14,3.14, nbindE,0,50);
+  dE_CDHphi->SetXTitle("CDH phi");
+  dE_CDHphi->SetYTitle("dE [MeVee]");
+
+  dE_CDHz = new TH2F(Form("dE_CDHz"),"dE_CDHz",100,-50,50,nbindE,0,50);
+  dE_CDHz->SetXTitle("CDH z [cm]");
+  dE_CDHz->SetYTitle("dE [MeVee]");
 
   dE_IMnpim = new TH2F(Form("dE_IMnpim"),Form("dE_IMnpim"), nbinIMnpi, 1.0, 2.0, nbindE, 0, 50.);
   dE_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
@@ -1646,6 +1655,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       if(SigmaPFlag || SigmaMFlag){
         dE_MMass_fid_beta_wSid->Fill(LVec_nmiss.M(),dE);
       }
+      dE_CDHphi->Fill((*CDH_Pos).Phi(),dE);
+      dE_CDHz->Fill((*CDH_Pos).z(),dE);
       dE_IMnpim->Fill(LVec_pim_n.M(),dE);
       dE_IMnpip->Fill(LVec_pip_n.M(),dE);
     }
@@ -3412,6 +3423,13 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMom_MMass_woK0_wSid_py_clone->SetTitle("Missing Mom. d(K^{-},#pi^{+}#pi^{-}n)\"X\"");
   MMom_MMass_woK0_wSid_py_clone->Draw("");
   
+  TCanvas *cdE_CDHphi = new TCanvas("cdE_CDHphi","cdE_CDHphi");
+  cdE_CDHphi->cd();
+  dE_CDHphi->Draw("colz");
+
+  TCanvas *cdE_CDHz = new TCanvas("cdE_CDHz","cdE_CDHz");
+  cdE_CDHz->cd();
+  dE_CDHz->Draw("colz");
   /*
   TCanvas *cdE_IMnpim_woK0_n = new TCanvas("cdE_IMnpim_woK0_n","dE_IMnpim_woK0_n");
   cdE_IMnpim_woK0_n->cd();
