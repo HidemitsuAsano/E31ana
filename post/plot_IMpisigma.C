@@ -2141,10 +2141,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0_n_py_Sp->SetFillColor(2);
   IMnpim_IMnpip_dE_woK0_n_py_Sp->Draw("HEsame");
 
-
-
-
-
    
   TCanvas *cCDHphi_betainv_fid = new TCanvas("cCDHphi_betainv_fid","CDHphi_betainv_fid");
   cCDHphi_betainv_fid->cd();
