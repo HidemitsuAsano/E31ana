@@ -142,6 +142,7 @@ private:
   double NeutralBetaCDH; // velocity of neutral particle on CDH from decay vtx 
   double NeutralBetaCDH_vtx[2];//1:pip_vtx,2:pim_vtx  
   double dE;   // energy deposit on CDH [MeVee]
+  double dEseg[36];   // energy deposit on CDH [MeVee]
   TVector3 vtx_reaction; // 
   TVector3 vtx_pip_beam; // 
   TVector3 vtx_pim_beam; // 
@@ -316,6 +317,7 @@ void EventAnalysis::Initialize( ConfMan *conf )
   npippimTree->Branch( "NeutralBetaCDH", &NeutralBetaCDH );
   npippimTree->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
   npippimTree->Branch( "dE", &dE );
+  npippimTree->Branch( "dEseg[36]", dEseg );
   npippimTree->Branch( "vtx_reaction", &vtx_reaction );
   npippimTree->Branch( "vtx_pip_beam", &vtx_pip_beam );
   npippimTree->Branch( "vtx_pim_beam", &vtx_pim_beam );
@@ -534,10 +536,13 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   const int nallTrack = trackMan->nTrack();
   AllGoodTrack += nGoodTrack;
   nTrack += nallTrack;
-  Tools::Fill1D( Form("nGoodTrack"), nGoodTrack );
-
+  Tools::Fill1D( Form("nTrack"),nallTrack);
+  Tools::Fill1D( Form("nGoodTrack"), nGoodTrack);
+  if(nGoodTrack==2){
+    Tools::Fill1D( Form("nTrack_If2GoodTracks"),nallTrack);
+  }
   Tools::Fill1D( Form("EventCheck"), 1 );
-  
+
   //temporary fix of the cdhz position
   //Util::CorrectCDHz(cdsMan);
 
@@ -549,7 +554,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   Tools::Fill1D( Form("EventCheck"), 2 );
 
   //** # of good CDS tracks cut **//
-  if( nGoodTrack!=cdscuts::cds_ngoodtrack ) { //require pi+,pi-
+  if( nGoodTrack!=cdscuts::cds_ngoodtrack  ) { //require pi+,pi-
+  //if( nGoodTrack!=cdscuts::cds_ngoodtrack && nallTrack!=cdscuts::cds_ngoodtrack ) { //require pi+,pi-
     Clear( nAbort_nGoodTrack );
     return true;
   }
@@ -696,6 +702,43 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     rtFile2->cd();
     evTree->Fill();
     rtFile->cd();
+    
+    //added Jul.28th,2019
+    //purpose 
+    for( int it=0; it<trackMan->nGoodTrack(); it++ ) {
+      CDSTrack *track = trackMan->Track( trackMan->GoodTrackID(it) );
+
+      double mom = track->Momentum();//charge X momentum
+      double tof = 999.;//TOF of CDH-T0 (slewing corrected)
+      double mass2 = -999.;
+      double correctedtof=0;//CDH-T0 (corrected by energy loss)
+      double beta_calc=0;
+      for( int icdh=0; icdh<track->nCDHHit(); icdh++ ) {
+        HodoscopeLikeHit *cdhhit = track->CDHHit( cdsMan, icdh );
+        double tmptof = cdhhit->ctmean()-ctmT0;
+        if( tmptof<tof || tof==999. ) {
+          tof = tmptof;
+        }
+      }
+      if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
+            Beam_Kaon, beta_calc, mass2, correctedtof ) ) {
+
+      }
+      //const int pid = TrackTools::PIDcorr_wide(mom,mass2);
+      const int pid = TrackTools::PIDcorr(mom,mass2);
+      track->SetPID( pid );
+      Tools::Fill2D( "PID_CDS_beta_select", 1./beta_calc, mom );
+      Tools::Fill2D( "PID_CDS_select", mass2, mom );
+      if(pid == CDS_PiMinus){
+        Tools::Fill2D("PID_CDS_PIM_beta_select",1./beta_calc,mom);
+        Tools::Fill2D("PID_CDS_PIM_select",mass2,mom);
+      }else if(pid == CDS_PiPlus){
+        Tools::Fill2D("PID_CDS_PIP_beta_select",1./beta_calc,mom);
+        Tools::Fill2D("PID_CDS_PIP_select",mass2,mom);
+      }
+      else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton_select",mass2,mom);
+      else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon_select",mass2,mom);
+    }
     if(Verbosity) std::cout<<"### filled: Event_Number, Block_Event_Number, CDC_Event_Number = "
                              <<Event_Number<<" , "<<Block_Event_Number<<" , "<<CDC_Event_Number<<std::endl;
     nFill_pippim++;
@@ -1044,6 +1087,44 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
           Tools::Fill2D( Form("MMom_MMass_fid_beta_dE"), mm_mass, P_missn.Mag() );
           Tools::Fill1D( Form("IMpipi_dE"), (LVec_pim+LVec_pip).M() );
           Tools::Fill2D( Form("IMpipi_NMom_dE"),P_n.Mag(), (LVec_pim+LVec_pip).M());
+        
+        
+      //added Jul.28th,2019
+      //purpose 
+      for( int it=0; it<trackMan->nGoodTrack(); it++ ) {
+        CDSTrack *track = trackMan->Track( trackMan->GoodTrackID(it) );
+
+        double mom = track->Momentum();//charge X momentum
+        double tof = 999.;//TOF of CDH-T0 (slewing corrected)
+        double mass2 = -999.;
+        double correctedtof=0;//CDH-T0 (corrected by energy loss)
+        double beta_calc=0;
+        for( int icdh=0; icdh<track->nCDHHit(); icdh++ ) {
+          HodoscopeLikeHit *cdhhit = track->CDHHit( cdsMan, icdh );
+          double tmptof = cdhhit->ctmean()-ctmT0;
+          if( tmptof<tof || tof==999. ) {
+            tof = tmptof;
+          }
+        }
+        if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
+                                Beam_Kaon, beta_calc, mass2, correctedtof ) ) {
+
+        }
+        //const int pid = TrackTools::PIDcorr_wide(mom,mass2);
+        const int pid = TrackTools::PIDcorr(mom,mass2);
+        track->SetPID( pid );
+        Tools::Fill2D( "PID_CDS_beta_select2", 1./beta_calc, mom );
+        Tools::Fill2D( "PID_CDS_select2", mass2, mom );
+        if(pid == CDS_PiMinus){
+          Tools::Fill2D("PID_CDS_PIM_beta_select2",1./beta_calc,mom);
+          Tools::Fill2D("PID_CDS_PIM_select2",mass2,mom);
+        }else if(pid == CDS_PiPlus){
+          Tools::Fill2D("PID_CDS_PIP_beta_select2",1./beta_calc,mom);
+          Tools::Fill2D("PID_CDS_PIP_select2",mass2,mom);
+        }
+        else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton_select2",mass2,mom);
+        else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon_select2",mass2,mom);
+      }//for it
         }
 
         if( ((LVec_pim+LVec_pip).M()<anacuts::pipi_MIN || anacuts::pipi_MAX<(LVec_pim+LVec_pip).M())) K0rejectFlag=true;
@@ -1302,6 +1383,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         mom_n_Sp = LVec_n_vtx[0];
         mom_n_Sm = LVec_n_vtx[1];
         dE = ncdhhit->emean();
+        dEseg[(ncdhhit->seg())-1] = ncdhhit->emean();
         // beta is already filled
         vtx_reaction = vtx_react; // vertex(reaction)
         vtx_pip_beam = vtx_beam_wpip;
@@ -1477,6 +1559,9 @@ void EventAnalysis::Clear( int &nAbort)
   NeutralBetaCDH_vtx[1]=-9999.;
 
   dE=-9999.;
+  for(int iseg=0;iseg<36;iseg++){
+    dEseg[iseg]=-9999.;
+  }
   vtx_reaction.SetXYZ(-9999.,-9999.,-9999.);
   vtx_pip_beam.SetXYZ(-9999.,-9999.,-9999.);
   vtx_pim_beam.SetXYZ(-9999.,-9999.,-9999.);

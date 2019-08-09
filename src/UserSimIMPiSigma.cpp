@@ -80,6 +80,7 @@ TLorentzVector mom_n_Sm;      // 4-momentum(neutron)
 double NeutralBetaCDH; // veracity of neutral particle on CDH
 double NeutralBetaCDH_vtx[2]; // veracity of neutral particle on CDH
 double dE;   // energy deposit on CDH
+double dEseg[36];   // energy deposit on CDH
 TVector3 vtx_reaction; //  vertex(reaction)   
 TVector3 vtx_pip_beam; //  
 TVector3 vtx_pim_beam; //   
@@ -273,6 +274,7 @@ int main( int argc, char** argv )
   npippimTree->Branch( "NeutralBetaCDH", &NeutralBetaCDH );
   npippimTree->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx);
   npippimTree->Branch( "dE", &dE );
+  npippimTree->Branch( "dEseg[36]", dEseg );
   npippimTree->Branch( "vtx_reaction", &vtx_reaction );
   npippimTree->Branch( "vtx_pip_beam", &vtx_pip_beam );
   npippimTree->Branch( "vtx_pim_beam", &vtx_pim_beam );
@@ -423,9 +425,48 @@ int main( int argc, char** argv )
     ev_cdc++;
 
     //### CDH ADC cut ###//
+    double discri[36]={
+      2.85,
+      2.45,
+      2.15,
+      2.05,
+      1.75,
+      2.25,
+      2.15,
+      2.15,
+      2.15,
+      1.95,
+      1.85,
+      1.95,
+      2.15,
+      2.15,
+      1.85,
+      1.95,
+      1.95,
+      2.05,
+      1.85,
+      1.95,
+      2.15,
+      2.55,
+      1.75,
+      1.95,
+      1.85,
+      2.05,
+      2.05,
+      1.95,
+      2.05,
+      2.05,
+      1.85,
+      2.15,
+      1.85,
+      2.05,
+      1.85,
+      2.15
+    };
+
     DetectorData *detData2  = new DetectorData();
     for( int i=0; i<detData->detectorHitSize(); i++ ){
-      if( !((detData->detectorHit(i)->detectorID()==CID_CDH) && (detData->detectorHit(i)->adc()<ADC_CDH_MIN)) ){
+      if( !((detData->detectorHit(i)->detectorID()==CID_CDH) && (detData->detectorHit(i)->adc()<discri[detData->detectorHit(i)->channelID()])) ){
         detData2->setDetectorHit(*detData->detectorHit(i));
       }
     }
@@ -481,7 +522,7 @@ int main( int argc, char** argv )
       }
     }
 
-    //  beam_K(K-), pi, nmiss, n from Sigma, pi from Sigma
+    //  beam_K(K-), prompt pi, Sigma, nmiss, n from Sigma, pi from Sigma
     //  0: init. val. for prompt particles , -1:init. val. for decay particles            
     int parentID[kin::npart] = {0, 0, 0, 0, -1, -1}; 
     // IDs defined by imctrk which is the serial number in mcData class
@@ -679,6 +720,10 @@ int main( int argc, char** argv )
     AllGoodTrack += nGoodTrack;
     nTrack += nallTrack;
     Tools::Fill1D( Form("nGoodTrack"), nGoodTrack );
+    Tools::Fill1D( Form("nTrack"),nallTrack);
+    if(nGoodTrack==2){
+      Tools::Fill1D( Form("nTrack_If2GoodTracks"),nallTrack);
+    }
     
     
     if( Util::GetCDHMul(cdsMan,nGoodTrack,true)!=cdscuts::cdhmulti ){
@@ -688,7 +733,8 @@ int main( int argc, char** argv )
       IsrecoPassed=false;
     }
 
-    if( nGoodTrack!=cdscuts::cds_ngoodtrack ){ // dedicated for pi+ pi- event
+    //if( nGoodTrack!=cdscuts::cds_ngoodtrack ){ // dedicated for pi+ pi- event
+    if( nGoodTrack!=cdscuts::cds_ngoodtrack && nallTrack!=cdscuts::cds_ngoodtrack ){ // dedicated for pi+ pi- event
       if(IsrecoPassed)nAbort_nGoodTrack++;
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nGoodTrack" << std::endl;
       //continue;
@@ -698,7 +744,8 @@ int main( int argc, char** argv )
     //beam line analysis and event selection
 
     //** T0 = 1hit selection **//
-    const double ctmT0 = Util::AnalyzeT0(blMan,confMan);
+    int t0seg=-1;
+    const double ctmT0 = Util::AnalyzeT0(blMan,confMan,t0seg);
     if(ctmT0<-9000){
       if(IsrecoPassed) nAbort_nT0++;
       Tools::Fill1D( Form("EventCheck"), 15 );
@@ -945,6 +992,43 @@ int main( int argc, char** argv )
         !forwardcharge ){
       
       nFill_pippim++;
+      
+      //added Jul.28th,2019
+      //purpose 
+      for( int it=0; it<cdstrackMan->nGoodTrack(); it++ ) {
+        CDSTrack *track = cdstrackMan->Track( cdstrackMan->GoodTrackID(it) );
+
+        double mom = track->Momentum();//charge X momentum
+        double tof = 999.;//TOF of CDH-T0 (slewing corrected)
+        double mass2 = -999.;
+        double correctedtof=0;//CDH-T0 (corrected by energy loss)
+        double beta_calc=0;
+        for( int icdh=0; icdh<track->nCDHHit(); icdh++ ) {
+          HodoscopeLikeHit *cdhhit = track->CDHHit( cdsMan, icdh );
+          double tmptof = cdhhit->ctmean()-ctmT0;
+          if( tmptof<tof || tof==999. ) {
+            tof = tmptof;
+          }
+        }
+        if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
+                                Beam_Kaon, beta_calc, mass2, correctedtof ) ) {
+
+        }
+        //const int pid = TrackTools::PIDcorr_wide(mom,mass2);
+        const int pid = TrackTools::PIDcorr(mom,mass2);
+        track->SetPID( pid );
+        Tools::Fill2D( "PID_CDS_beta_select", 1./beta_calc, mom );
+        Tools::Fill2D( "PID_CDS_select", mass2, mom );
+        if(pid == CDS_PiMinus){
+          Tools::Fill2D("PID_CDS_PIM_beta_select",1./beta_calc,mom);
+          Tools::Fill2D("PID_CDS_PIM_select",mass2,mom);
+        }else if(pid == CDS_PiPlus){
+          Tools::Fill2D("PID_CDS_PIP_beta_select",1./beta_calc,mom);
+          Tools::Fill2D("PID_CDS_PIP_select",mass2,mom);
+        }
+        else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton_select",mass2,mom);
+        else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon_select",mass2,mom);
+      }
       
       //** find CDH hit from neutral particles **//
       std::vector <int> NeutralCDHseg;
@@ -1247,7 +1331,43 @@ int main( int argc, char** argv )
             Tools::Fill2D( Form("MMom_MMass_fid_beta_dE"), mm_mass, P_missn.Mag() );
             Tools::Fill1D( Form("IMpipi_dE"), (LVec_pim+LVec_pip).M() );
             Tools::Fill2D( Form("IMpipi_NMom_dE"),P_n.Mag(), (LVec_pim+LVec_pip).M());
+      //added Jul.28th,2019
+      //purpose 
+      for( int it=0; it<cdstrackMan->nGoodTrack(); it++ ) {
+        CDSTrack *track = cdstrackMan->Track( cdstrackMan->GoodTrackID(it) );
+
+        double mom = track->Momentum();//charge X momentum
+        double tof = 999.;//TOF of CDH-T0 (slewing corrected)
+        double mass2 = -999.;
+        double correctedtof=0;//CDH-T0 (corrected by energy loss)
+        double beta_calc=0;
+        for( int icdh=0; icdh<track->nCDHHit(); icdh++ ) {
+          HodoscopeLikeHit *cdhhit = track->CDHHit( cdsMan, icdh );
+          double tmptof = cdhhit->ctmean()-ctmT0;
+          if( tmptof<tof || tof==999. ) {
+            tof = tmptof;
           }
+        }
+        if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
+                                Beam_Kaon, beta_calc, mass2, correctedtof ) ) {
+
+        }
+        //const int pid = TrackTools::PIDcorr_wide(mom,mass2);
+        const int pid = TrackTools::PIDcorr(mom,mass2);
+        track->SetPID( pid );
+        Tools::Fill2D( "PID_CDS_beta_select2", 1./beta_calc, mom );
+        Tools::Fill2D( "PID_CDS_select2", mass2, mom );
+        if(pid == CDS_PiMinus){
+          Tools::Fill2D("PID_CDS_PIM_beta_select2",1./beta_calc,mom);
+          Tools::Fill2D("PID_CDS_PIM_select2",mass2,mom);
+        }else if(pid == CDS_PiPlus){
+          Tools::Fill2D("PID_CDS_PIP_beta_select2",1./beta_calc,mom);
+          Tools::Fill2D("PID_CDS_PIP_select2",mass2,mom);
+        }
+        else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton_select2",mass2,mom);
+        else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon_select2",mass2,mom);
+      }//for it
+          }//NbetaOK
 
           if( ((LVec_pim+LVec_pip).M()<anacuts::pipi_MIN || anacuts::pipi_MAX<(LVec_pim+LVec_pip).M())) K0rejectFlag=true;
         
@@ -1661,6 +1781,7 @@ int main( int argc, char** argv )
           //** fill tree **//
           if(IsncdsfromSigma && IsrecoPassed){
             dE = ncdhhit->emean();
+            dEseg[ncdhhit->seg()-1] = ncdhhit->emean();
             mom_n_Sp = LVec_n_vtx[0];            // 4-momentum(neutron)
             mom_n_Sm = LVec_n_vtx[1];            // 4-momentum(neutron)
             mom_beam_Sp = LVec_beam_vtx[0];
@@ -1804,6 +1925,9 @@ void InitTreeVal()
   NeutralBetaCDH_vtx[0]=-9999.; // veracity of neutral particle on CDH
   NeutralBetaCDH_vtx[1]=-9999.; // veracity of neutral particle on CDH
   dE=-9999.;   // energy deposit on CDH
+  for(int iseg=0;iseg<36;iseg++){
+    dEseg[iseg]=-9999.;   // energy deposit on CDH
+  }
   vtx_reaction.SetXYZ(-9999., -9999., -9999.); //  vertex(reaction)   
   vtx_pip_beam.SetXYZ(-9999., -9999., -9999.); //  
   vtx_pim_beam.SetXYZ(-9999., -9999., -9999.); //   

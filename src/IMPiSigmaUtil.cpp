@@ -15,17 +15,25 @@ int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack, const bool MCFlag)
 {
   //** # of CDH-hits cut **//
   int nCDH = 0;
+
   for( int i=0; i<cdsman->nCDH(); i++ ){
     Tools::Fill2D(Form("CDHtime"),cdsman->CDH(i)->seg(),cdsman->CDH(i)->ctmean());
+    Tools::Fill2D(Form("CDHdE"),cdsman->CDH(i)->seg(),cdsman->CDH(i)->emean());
     Tools::Fill2D(Form("dE_CDHtime"), cdsman->CDH(i)->ctmean(), cdsman->CDH(i)->emean());
     if(ntrack == cdscuts::cds_ngoodtrack){
       Tools::Fill2D(Form("dE_CDHtime_2track"), cdsman->CDH(i)->ctmean(), cdsman->CDH(i)->emean());
     }
     //if( cdsman->CDH(i)->CheckRange() ) nCDH++; //** only requirement of TDC **//
     if(MCFlag){
-      if((cdsman->CDH(i)->CheckRange()) && (cdsman->CDH(i)->ctmean()<(cdscuts::tdc_cdh_max+cdscuts::tdc_simoffset))) nCDH++;
+      if((cdsman->CDH(i)->CheckRange()) && (cdsman->CDH(i)->ctmean()<(cdscuts::tdc_cdh_max+cdscuts::tdc_simoffset))){
+        int seg = cdsman->CDH(i)->seg();
+        double emean = cdsman->CDH(i)->emean();
+        Tools::Fill2D(Form("CDHdE_wt"),seg,emean);
+        nCDH++;
+      }
     }else{
       if((cdsman->CDH(i)->CheckRange()) && (cdsman->CDH(i)->ctmean()<cdscuts::tdc_cdh_max)){
+        Tools::Fill2D(Form("CDHdE_wt"),cdsman->CDH(i)->seg(),cdsman->CDH(i)->emean());
         //std::cout << cdsman->CDH(i)->seg() << " " <<  cdsman->CDH(i)->ctmean() << std::endl;
         nCDH++;
       }
@@ -388,13 +396,22 @@ int Util::CDSChargedAna(const bool docdcretiming,
       continue;
     }
 
-    const int pid = TrackTools::PIDcorr_wide(mom,mass2);
-
+    int pid = -1;
+    //if(!MCFlag){
+      pid = TrackTools::PIDcorr_wide(mom,mass2);
+    //}else{
+    //  pid = TrackTools::PIDcorr(mom,mass2);
+    // }
     track->SetPID( pid );
-    Tools::Fill2D( "PID_CDS_beta", 1/beta_calc, mom );
+    Tools::Fill2D( "PID_CDS_beta", 1./beta_calc, mom );
     Tools::Fill2D( "PID_CDS", mass2, mom );
-    if(pid == CDS_PiMinus) Tools::Fill2D("PID_CDS_PIM",mass2,mom);
-    else if(pid == CDS_PiPlus) Tools::Fill2D("PID_CDS_PIP",mass2,mom);
+    if(pid == CDS_PiMinus){
+      Tools::Fill2D("PID_CDS_PIM_beta",1./beta_calc,mom);
+      Tools::Fill2D("PID_CDS_PIM",mass2,mom);
+    }else if(pid == CDS_PiPlus){
+      Tools::Fill2D("PID_CDS_PIP_beta",1./beta_calc,mom);
+      Tools::Fill2D("PID_CDS_PIP",mass2,mom);
+    }
     else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton",mass2,mom);
     else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon",mass2,mom);
 
@@ -706,7 +723,6 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
   Tools::H2( Form("CDH_diffpos_z_pi_z"), track_pos.Z(),diff.Z(),1000,-50,50,1000,-50,50);
   
   //return here as checking histogram is not necessary
-  return;
   for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
     HodoscopeLikeHit *cdhhit=track->CDHHit(cdsman,icdh);
     HodoscopeLikeHit *t0hit = blman->T0(0);

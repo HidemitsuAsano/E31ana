@@ -5,6 +5,8 @@ void InitBasicHist(const bool MCFlag)
 {
   // geneneral informantion **//
   Tools::newTH1F( Form("Time"), 3000, -0.5, 2999.5 );
+  Tools::newTH1F( Form("nTrack"), 11, -0.5, 10.5 );
+  Tools::newTH1F( Form("nTrack_If2GoodTracks"), 11, -0.5, 10.5 );
   Tools::newTH1F( Form("nGoodTrack"), 11, -0.5, 10.5 );
   Tools::newTH1F( Form("Scaler"), 41, -0.5, 40.5 );
 
@@ -50,11 +52,29 @@ void InitBasicHist(const bool MCFlag)
   //** CDS **//
   Tools::newTH1F( Form("trackchi2_CDC"), 1000, 0, 50 );
   Tools::newTH2F( Form("PID_CDS_beta"), 2000, 0, 10., 1000, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_beta_select"), 2000, 0, 10., 1000, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_beta_select2"), 2000, 0, 10., 1000, -1.2, 1.2 );
   Tools::newTH2F( Form("PID_CDS"), 1000, -0.6, 5, 1000, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_select"), 1000, -0.6, 5, 1000, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_select2"), 1000, -0.6, 5, 1000, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_PIM_beta"), 400, 0, 10, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_PIM_beta_select"), 400, 0, 10, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_PIM_beta_select2"), 400, 0, 10, 200, -1.2, 1.2 );
   Tools::newTH2F( Form("PID_CDS_PIM"), 200, -0.6, 5, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_PIM_select"), 200, -0.6, 5, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_PIM_select2"), 200, -0.6, 5, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_PIP_beta"), 400, 0, 10, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_PIP_beta_select"), 400, 0, 10, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_PIP_beta_select2"), 400, 0, 10, 200, -1.2, 1.2 );
   Tools::newTH2F( Form("PID_CDS_PIP"), 200, -0.6, 5, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_PIP_select"), 200, -0.6, 5, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_PIP_select2"), 200, -0.6, 5, 200, -1.2, 1.2 );
   Tools::newTH2F( Form("PID_CDS_Proton"), 200, -0.6, 5, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_Proton_select"), 200, -0.6, 5, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_Proton_select2"), 200, -0.6, 5, 200, -1.2, 1.2 );
   Tools::newTH2F( Form("PID_CDS_Kaon"), 200, -0.6, 5, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_Kaon_select"), 200, -0.6, 5, 200, -1.2, 1.2 );
+  Tools::newTH2F( Form("PID_CDS_Kaon_select2"), 200, -0.6, 5, 200, -1.2, 1.2 );
   Tools::newTH1F( Form("ntrack_CDS"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_pi_plus"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_proton"), 6, -0.5, 5.5 );
@@ -88,6 +108,8 @@ void InitBasicHist(const bool MCFlag)
   Tools::newTH2F( Form("Vtx_ZY_nofid"),1000,-25,25,500,-12.5,12.5);
   Tools::newTH2F( Form("Vtx_XY_nofid"),500,-12.5,12.5,500,-12.5,12.5);
   Tools::newTH2F( Form("CDHtime"),36,0.5,36.5,400,0,200);
+  Tools::newTH2F( Form("CDHdE"),36,0.5,36.5,100,0,10);
+  Tools::newTH2F( Form("CDHdE_wt"),36,0.5,36.5,100,0,10);
   Tools::newTH2F( Form("dE_CDHtime"),100,0.,100,100,0,50);
   Tools::newTH2F( Form("dE_CDHtime_2track"),100,0.,100,100,0,50);
 }
