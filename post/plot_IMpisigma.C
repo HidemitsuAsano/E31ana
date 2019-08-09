@@ -171,6 +171,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   }
   
   // w/o kinematic fit 
+  TH2F* CDHphi_betainv_fid;
+  TH2F* CDHz_betainv_fid;
   TH2F* dE_betainv_fid;//
   TH2F* dE_nmom_fid_beta;
   TH2F* dE_MMom_fid_beta;
@@ -232,6 +234,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* MMnpip_MMnpim_wSid_n;
   TH2F* MMnpip_MMnpim_woK0_n;
   TH2F* MMnpip_MMnpim_woK0_wSid_n;
+  TH2F* dE_CDHphi;
+  TH2F* dE_CDHz;
   TH2F* dE_IMnpim;
   TH2F* dE_IMnpim_n;
   TH2F* dE_IMnpip;
@@ -330,6 +334,14 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   const int nbindE = 200;
   const int nbinpippim = 500;
   
+  CDHphi_betainv_fid = new TH2F("CDHphi_betainv_fid","CDHphi_betainv_fid",1000,0,10,100,-3.14,3.14);
+  CDHphi_betainv_fid->SetXTitle("1/#beta");
+  CDHphi_betainv_fid->SetYTitle("CDH phi");
+
+  CDHz_betainv_fid = new TH2F("CDHz_betainv_fid","CDHz_betainv_fid",1000,0,10,100,-50,50);
+  CDHz_betainv_fid->SetXTitle("1/#beta");
+  CDHz_betainv_fid->SetYTitle("CDH z [cm]");
+
   dE_betainv_fid = new TH2F(Form("dE_betainv_fid"),Form("dE_betainv_fid"),1000, 0, 50, nbindE, 0, 50);
   dE_betainv_fid->SetXTitle("1/#beta");
   dE_betainv_fid->SetYTitle("dE [MeVee]");
@@ -584,6 +596,13 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMnpip_MMnpim_woK0_wSid_n->SetXTitle("IM(n_{miss}#pi^{+}) [GeV/c^{2}]");
   MMnpip_MMnpim_woK0_wSid_n->SetYTitle("IM(n_{miss}#pi^{-}) [GeV/c^{2}]");
   
+  dE_CDHphi = new TH2F(Form("dE_CDHphi"),Form("dE_CDHphi"),100,-3.14,3.14, nbindE,0,50);
+  dE_CDHphi->SetXTitle("CDH phi");
+  dE_CDHphi->SetYTitle("dE [MeVee]");
+
+  dE_CDHz = new TH2F(Form("dE_CDHz"),"dE_CDHz",100,-50,50,nbindE,0,50);
+  dE_CDHz->SetXTitle("CDH z [cm]");
+  dE_CDHz->SetYTitle("dE [MeVee]");
 
   dE_IMnpim = new TH2F(Form("dE_IMnpim"),Form("dE_IMnpim"), nbinIMnpi, 1.0, 2.0, nbindE, 0, 50.);
   dE_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
@@ -1244,7 +1263,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     
     if( (qkn.P()>=anacuts::qvalcut) && (qvalcutflag==1) ) continue;
     if( (qkn.P()<anacuts::qvalcut) && (qvalcutflag==2) ) continue;
-    if((*LVec_n).P()<0.10 ) continue;
+    //if((*LVec_n).P()<0.10 ) continue;
     //if(LVec_pip_pim_n.M() < 1.45) continue;
     //if(LVec_pip_pim_n.M() > 1.55) continue;
     //if(dcapippim < 1) continue;
@@ -1636,6 +1655,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
     //w/o kinfit
     //---including K0 --------------------------------------------------------------
+    
+    CDHphi_betainv_fid->Fill(1./NeutralBetaCDH,(*CDH_Pos).Phi());
+    CDHz_betainv_fid->Fill(1./NeutralBetaCDH,(*CDH_Pos).z());
     dE_betainv_fid->Fill(1./NeutralBetaCDH,dE);
     pipmom_IMnpip->Fill(LVec_pip_n.M(),(*LVec_pip).P());
     pimmom_IMnpim->Fill(LVec_pim_n.M(),(*LVec_pim).P());
@@ -1646,6 +1668,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       if(SigmaPFlag || SigmaMFlag){
         dE_MMass_fid_beta_wSid->Fill(LVec_nmiss.M(),dE);
       }
+      dE_CDHphi->Fill((*CDH_Pos).Phi(),dE);
+      dE_CDHz->Fill((*CDH_Pos).z(),dE);
       dE_IMnpim->Fill(LVec_pim_n.M(),dE);
       dE_IMnpip->Fill(LVec_pip_n.M(),dE);
     }
@@ -2026,7 +2050,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //----------------------------------------------------------------------------
   //---Drawing Part
   //----------------------------------------------------------------------------
-
   TCanvas *cMMnmiss_IMnpip_dE = new TCanvas("cMMnmiss_IMnpip_dE","MMnmiss_IMnpip_dE");
   cMMnmiss_IMnpip_dE->cd();
   MMnmiss_IMnpip_dE->GetXaxis()->SetRangeUser(1.05,1.5);
@@ -2097,6 +2120,12 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0_n_px_cut->SetFillColor(2);
   IMnpim_IMnpip_dE_woK0_n_px_cut->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
   IMnpim_IMnpip_dE_woK0_n_px_cut->Draw("HEsame");
+  TH1D* IMnpim_IMnpip_dE_woK0_n_px_Sm = (TH1D*)IMnpim_IMnpip_dE_woK0_n->ProjectionX("IMnpim_IMnpip_dE_woK0_n_px_Sm",
+      IMnpim_IMnpip_dE_woK0_n->GetYaxis()->FindBin(anacuts::Sigmam_MIN),
+      IMnpim_IMnpip_dE_woK0_n->GetYaxis()->FindBin(anacuts::Sigmam_MAX)); 
+  IMnpim_IMnpip_dE_woK0_n_px_Sm->SetFillColor(3);
+  IMnpim_IMnpip_dE_woK0_n_px_Sm->Draw("HEsame");
+
 
   TCanvas *cIMnpim_IMnpip_dE_woK0_n_py = new TCanvas("cIMnpim_IMnpip_dE_woK0_n_py","IMnpim_IMnpip_dE_woK0_n_py");
   cIMnpim_IMnpip_dE_woK0_n_py->cd();
@@ -2106,7 +2135,22 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0_n_py_cut->SetFillColor(3);
   IMnpim_IMnpip_dE_woK0_n_py_cut->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
   IMnpim_IMnpip_dE_woK0_n_py_cut->Draw("HEsame");
+  TH1D* IMnpim_IMnpip_dE_woK0_n_py_Sp = (TH1D*)IMnpim_IMnpip_dE_woK0_n->ProjectionY("IMnpim_IMnpip_dE_woK0_n_py_Sp",
+      IMnpim_IMnpip_dE_woK0_n->GetXaxis()->FindBin(anacuts::Sigmap_MIN),
+      IMnpim_IMnpip_dE_woK0_n->GetXaxis()->FindBin(anacuts::Sigmap_MAX)); 
+  IMnpim_IMnpip_dE_woK0_n_py_Sp->SetFillColor(2);
+  IMnpim_IMnpip_dE_woK0_n_py_Sp->Draw("HEsame");
+
    
+  TCanvas *cCDHphi_betainv_fid = new TCanvas("cCDHphi_betainv_fid","CDHphi_betainv_fid");
+  cCDHphi_betainv_fid->cd();
+  CDHphi_betainv_fid->Draw("colz");
+ 
+  TCanvas *cCDHz_betainv_fid = new TCanvas("cCDHz_betainv_fid","CDHz_betainv_fid");
+  cCDHz_betainv_fid->cd();
+  CDHz_betainv_fid->Draw("colz");
+
+
   TCanvas *cnmom_CDHphi = new TCanvas("cnmom_CDHphi","nmom_CDHphi");
   cnmom_CDHphi->cd();
   nmom_CDHphi->Draw("colz");
@@ -3412,6 +3456,13 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMom_MMass_woK0_wSid_py_clone->SetTitle("Missing Mom. d(K^{-},#pi^{+}#pi^{-}n)\"X\"");
   MMom_MMass_woK0_wSid_py_clone->Draw("");
   
+  TCanvas *cdE_CDHphi = new TCanvas("cdE_CDHphi","cdE_CDHphi");
+  cdE_CDHphi->cd();
+  dE_CDHphi->Draw("colz");
+
+  TCanvas *cdE_CDHz = new TCanvas("cdE_CDHz","cdE_CDHz");
+  cdE_CDHz->cd();
+  dE_CDHz->Draw("colz");
   /*
   TCanvas *cdE_IMnpim_woK0_n = new TCanvas("cdE_IMnpim_woK0_n","dE_IMnpim_woK0_n");
   cdE_IMnpim_woK0_n->cd();
