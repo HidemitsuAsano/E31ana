@@ -28,7 +28,7 @@
 37   WVC        1	2	1     1    1     0     Plastic   red
 40   BPC        0	8	32    1    1     0     BLDCGas   green
 41   BPD        1	70	2     1    1     0     Plastic   red
-42   IH	        1       24      1     1    1     0     Plastic   white
+42   IH	        1       24      1     1    1     0     Air   white
 61   HVC1       1       4       2     1    1     0     Plastic   white
 62   HVC2       1       4       2     1    1     0     Plastic   white
 90   BD	        1       5       2     1    1     0     Plastic   white
@@ -59,3 +59,4 @@
 #155  BFrange    3       0       0     0    0     0     SUS304    gray
 155  BFrange    3       0       0     0    0     0     Iron       gray
 160  Fiducial   3       0       0     1    1     0     LDeuterium cyan
+161  Bobbin     3       0       0     0    0     0     Aluminum   red
