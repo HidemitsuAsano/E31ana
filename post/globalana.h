@@ -27,6 +27,7 @@
   TVector3 *vtx_pim_cdc = NULL;//C.A.P of pim-beam pim side
   TVector3 *CA_pip = NULL;//C.A.P of pip-pim pip side
   TVector3 *CA_pim = NULL;//C.A.P of pip-pim pim side
+  TVector3 *CDH_Pos = NULL;
   //int run_num;   // run number
   //int event_num; // event number
   //int block_num; // block number
@@ -47,4 +48,7 @@
   double kfSmmode_status; // status of kinematical refit -> details can be found in this code
   double kfSmmode_pvalue; // p-value of kinematical refit
   int kf_flag; // flag of correct pair reconstruction, etc
+
+
+  
 
