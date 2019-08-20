@@ -545,7 +545,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   Tools::Fill1D( Form("EventCheck"), 2 );
 
   //** # of good CDS tracks cut **//
-  if( nGoodTrack!=1 ) { //require K
+  if( nGoodTrack!=2 ) { //require K
     Clear( nAbort_nGoodTrack );
     return true;
   }
@@ -681,9 +681,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   //  pi+ pi- X event
   //  with CDH multiplicity selection
   bool kmFlag = false;
-  if( km_ID.size()==1 ) kmFlag = true;
+  if( km_ID.size()==1 && p_ID.size()==1 ) kmFlag = true;
   if( kmFlag &&
-      (trackMan->nGoodTrack()==1) && !Util::IsForwardCharge(blMan)){
+      (trackMan->nGoodTrack()==2) && !Util::IsForwardCharge(blMan)){
     //=== condense pi+ pi- X candidates ===//
     rtFile2->cd();
     evTree->Fill();
