@@ -1,18 +1,22 @@
 namespace anacuts {
   const double beta_MAX = 0.728786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
+  //const double beta_MAX = 0.628786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
   const double beta_MIN = 0.000000001;
   const double dE_MIN = 2.0;
 
   const double pipi_NSigmacut=3.0;
   const double pipi_MIN = 0.475;
   const double pipi_MAX = 0.522;
+  //const double pipi_MIN = 0.487; (almost 1.5 sigma)
+  //const double pipi_MAX = 0.510; (almost 1.5 sigma)
+  
   const double neutron_NSigmacut = 1.5;//+/- N sigma
   const double neutron_center = 0.939161;
   const double neutron_sigma = 0.0308562;
   const double neutron_MIN = neutron_center-neutron_NSigmacut*neutron_sigma;
   const double neutron_MAX = neutron_center+neutron_NSigmacut*neutron_sigma;
   
-  const double Sigma_NSigmacut = 3.0;
+  const double Sigma_NSigmacut = 2.0;
   const double Sigmap_center = 1.18911;
   const double Sigmap_sigma = 0.00540844;
   const double Sigmap_MIN = Sigmap_center-Sigma_NSigmacut*Sigmap_sigma;   
@@ -29,18 +33,20 @@ namespace anacuts {
   const double Sigmam_MAX_wide = Sigmam_center+Sigma_wideNSigmacut*Sigmam_sigma;  
   
   //side band selection
-  const double Sigmap_sidelow_MIN = Sigmap_center-6.0*Sigmap_sigma;   
-  const double Sigmap_sidelow_MAX = Sigmap_center-3.0*Sigmap_sigma;   
+  //const double Sigmap_sidelow_MIN = Sigmap_center-6.0*Sigmap_sigma;   
+  //const double Sigmap_sidelow_MAX = Sigmap_center-3.0*Sigmap_sigma;   
+  const double Sigmap_sidelow_MIN = Sigmap_center-4.0*Sigmap_sigma;   
+  const double Sigmap_sidelow_MAX = Sigmap_center-2.0*Sigmap_sigma;   
   const double Sigmap_sidelow_center = (Sigmap_sidelow_MAX + Sigmap_sidelow_MIN)/2.0;
-  const double Sigmap_sidehigh_MIN = Sigmap_center+3.0*Sigmap_sigma;   
-  const double Sigmap_sidehigh_MAX = Sigmap_center+6.0*Sigmap_sigma;   
+  const double Sigmap_sidehigh_MIN = Sigmap_center+2.0*Sigmap_sigma;   
+  const double Sigmap_sidehigh_MAX = Sigmap_center+4.0*Sigmap_sigma;   
   const double Sigmap_sidehigh_center = (Sigmap_sidehigh_MAX + Sigmap_sidehigh_MIN)/2.0;
   
-  const double Sigmam_sidelow_MIN = Sigmam_center-6.0*Sigmam_sigma;
-  const double Sigmam_sidelow_MAX = Sigmam_center-3.0*Sigmam_sigma;  
+  const double Sigmam_sidelow_MIN = Sigmam_center-4.0*Sigmam_sigma;
+  const double Sigmam_sidelow_MAX = Sigmam_center-2.0*Sigmam_sigma;  
   const double Sigmam_sidelow_center = (Sigmam_sidelow_MAX + Sigmam_sidelow_MIN)/2.0;
-  const double Sigmam_sidehigh_MIN = Sigmam_center+3.0*Sigmam_sigma;
-  const double Sigmam_sidehigh_MAX = Sigmam_center+6.0*Sigmam_sigma;  
+  const double Sigmam_sidehigh_MIN = Sigmam_center+2.0*Sigmam_sigma;
+  const double Sigmam_sidehigh_MAX = Sigmam_center+4.0*Sigmam_sigma;  
   const double Sigmam_sidehigh_center = (Sigmam_sidehigh_MAX + Sigmam_sidehigh_MIN)/2.0;
 
 
