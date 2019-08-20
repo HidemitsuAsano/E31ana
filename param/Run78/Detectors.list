@@ -59,4 +59,5 @@
 #155  BFrange    3       0       0     0    0     0     SUS304    gray
 155  BFrange    3       0       0     0    0     0     Iron       gray
 160  Fiducial   3       0       0     1    1     0     LDeuterium cyan
-161  Bobbin     3       0       0     0    0     0     Aluminum   red
+161  Bobbin     3       0       0     0    0     0     Aluminum   cyan
+162  Coil       3       0       0     0    0     0     Coil      yellow
