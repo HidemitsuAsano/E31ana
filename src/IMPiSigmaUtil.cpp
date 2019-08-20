@@ -399,9 +399,10 @@ int Util::CDSChargedAna(const bool docdcretiming,
     int pid = -1;
     //if(!MCFlag){
       pid = TrackTools::PIDcorr_wide(mom,mass2);
+      //pid = TrackTools::PIDcorr3(mom,mass2);
     //}else{
     //  pid = TrackTools::PIDcorr(mom,mass2);
-    // }
+    //}
     track->SetPID( pid );
     Tools::Fill2D( "PID_CDS_beta", 1./beta_calc, mom );
     Tools::Fill2D( "PID_CDS", mass2, mom );
