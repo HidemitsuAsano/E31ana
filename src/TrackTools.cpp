@@ -416,6 +416,170 @@ int TrackTools::PIDcorr_wide(double mom,double mass2)
 }
 
 
+int TrackTools::PIDcorr3(double mom,double mass2)
+{
+  int ptype=CDS_Other;
+  double fmom=fabs(mom);
+  //double param[4][4]={{0.00227537,0.000112426,piMass*piMass,0.0130341},
+  //                    {0.00227537,0.000112426,kpMass*kpMass,0.0130341},
+  //                    {0.00227537,0.000112426,pMass*pMass  ,0.0130341},
+  //                    {0.00227537,0.000112426,dMass*dMass  ,0.0130341}};
+  //double pi_mass2 = 0.139570*0.139570;
+  //double k_mass2 = 0.493600*0.493600;
+  //double p_mass2 = 0.938272*0.938272;
+  //double d_mass2 = 1.875610*1.875610;
+  
+  /* 2016.07.05 -----> */
+  double pi_mass2 = 0.139570*0.139570;
+  double k_mass2 = 0.497234*0.497234;
+  double p_mass2 = 0.918312*0.918312;
+  double d_mass2 = 1.829990*1.829990;
+  /* <----- 2016.07.05 */
+
+  //double param[4][4]={{0.00227537,0.000112426,pi_mass2,0.0130341},
+  //                    {0.00227537,0.000112426,k_mass2,0.0130341},
+  //                    {0.00227537,0.000112426,p_mass2,0.0130341},
+  //                    {0.00227537,0.000112426,d_mass2,0.0130341}};
+  //double param[4][4]={{0.00049612,0.000105752,pi_mass2,0.00809271},
+  //                    {0.00049612,0.000105752,k_mass2 ,0.00809271},
+  //                    {0.00049612,0.000105752,p_mass2 ,0.00809271},
+  //                    {0.00049612,0.000105752,d_mass2 ,0.00809271}};
+  
+  /* 2016.07.05 -----> */
+  double param[4][4]={{0.00084734,0.00011146,pi_mass2,0.00674811},
+                      {0.00084734,0.00011146,k_mass2 ,0.00674811},
+                      {0.00084734,0.00011146,p_mass2 ,0.00674811},
+                      {0.00084734,0.00011146,d_mass2 ,0.00674811}};
+  /* <----- 2016.07.05 */
+
+  double pi_sigma = sqrt(4.0*param[0][2]*param[0][0]*mom*mom+4.0*param[0][2]*param[0][2]*param[0][1]*(1.0+param[0][2]/(mom*mom))+4.0*param[0][3]*mom*mom*(param[0][2]+mom*mom));
+  double k_sigma = sqrt(4.0*param[1][2]*param[1][0]*mom*mom+4.0*param[1][2]*param[1][2]*param[1][1]*(1.0+param[1][2]/(mom*mom))+4.0*param[1][3]*mom*mom*(param[1][2]+mom*mom));
+  double p_sigma = sqrt(4.0*param[2][2]*param[2][0]*mom*mom+4.0*param[2][2]*param[2][2]*param[2][1]*(1.0+param[2][2]/(mom*mom))+4.0*param[2][3]*mom*mom*(param[2][2]+mom*mom));
+  double d_sigma = sqrt(4.0*param[3][2]*param[3][0]*mom*mom+4.0*param[3][2]*param[3][2]*param[3][1]*(1.0+param[3][2]/(mom*mom))+4.0*param[3][3]*mom*mom*(param[3][2]+mom*mom));
+  /*=== positive ===*/
+  double n_sigma = 2.5;
+  double pi_ll = pi_mass2 - n_sigma*pi_sigma;
+  double pi_ul = pi_mass2 + n_sigma*pi_sigma;
+  double k_ll = k_mass2 - n_sigma*k_sigma;
+  double k_ul = k_mass2 + n_sigma*k_sigma;
+  double p_ll = p_mass2 - n_sigma*p_sigma;
+  double p_ul = p_mass2 + n_sigma*p_sigma;
+  double d_ll = d_mass2 - n_sigma*d_sigma;
+  double d_ul = d_mass2 + n_sigma*d_sigma;
+  if(mom>0){
+    bool pi_flag = false;
+    bool p_flag = false;
+    bool d_flag = false;
+    if(pi_ll<mass2&&mass2<pi_ul){
+      pi_flag = true;
+    }
+    if(p_ll<mass2&&mass2<p_ul){
+      if(mom>0.1){
+        p_flag = true;
+      }
+    }
+    if(d_ll<mass2&&mass2<d_ul){
+      if(mom>0.2){
+        d_flag = true;
+      }
+    }
+    /*=== pi+ ===*/
+    if(pi_flag){
+      if(!p_flag){
+        ptype = CDS_PiPlus; return ptype;
+      }
+    }
+    /*=== proton ===*/
+    if(p_flag){
+      if(!pi_flag&&!d_flag){
+        ptype = CDS_Proton; return ptype;
+      }
+    }
+    /*=== deuteron ===*/
+    if(d_flag){
+      if(!p_flag){
+        ptype = CDS_Deuteron; return ptype;
+      }
+    }
+  }
+  /*=== negative ===*/
+  else {
+    bool pi_flag = false;
+    bool k_flag = false;
+    if(pi_ll<mass2&&mass2<pi_ul){
+      pi_flag = true;
+    }
+    if(k_ll<mass2&&mass2<k_ul){
+      if(mom<-0.05){
+        k_flag = true;
+      }
+    }
+    /*=== pi- ===*/
+    if(pi_flag){
+      if(!k_flag){
+        ptype = CDS_PiMinus; return ptype;
+      }
+    }
+    /*=== k- ===*/
+    if(k_flag){
+      if(!pi_flag){
+        ptype = CDS_Kaon; return ptype;
+      }
+    }
+  }
+
+  ptype = CDS_Other; return ptype;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 pCDS* TrackTools::CalcSingleAll(pBeam *beam,CDSTrack* cdc,CDSHitMan *cdsMan,bool ELOSS)
 {
   double cdhtime,dis;
