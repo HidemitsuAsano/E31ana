@@ -36,6 +36,7 @@ namespace TrackTools
 
   int PID(double mom,double mass2);
   int PIDcorr(double mom,double mass2);
+  int PIDcorr3(double mom,double mass2);
   int PIDcorr_wide(double mom, double mass2);
 
   pCDS *CalcSingleAll(pBeam *beam,CDSTrack* cdc,CDSHitMan *cdsMan, bool ELOSS=false);

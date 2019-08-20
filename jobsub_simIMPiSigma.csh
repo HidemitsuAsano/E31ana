@@ -1,8 +1,8 @@
 #!/bin/tcsh -f
-set Version="50"
-set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim2/"
+set Version="54"
+set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim20/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
-set CDSDIRSUB="${CDSDIR}simDST2"
+set CDSDIRSUB="${CDSDIR}simDST20"
 set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simIMPiSigma/"
 
 set starttime=`date '+%y/%m/%d %H:%M:%S'`

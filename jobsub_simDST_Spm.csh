@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
-set Version="2"
-set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim2/"
+set Version="20"
+set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim${Version}/"
 set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 
 set logbasedir="/home/had/hiasano/logs/"
