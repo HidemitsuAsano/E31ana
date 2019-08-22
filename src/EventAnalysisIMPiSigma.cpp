@@ -141,8 +141,8 @@ private:
   TLorentzVector mom_n_Sm;  // 4-momentum(neutron),Sm mode assumption
   double NeutralBetaCDH; // velocity of neutral particle on CDH from decay vtx 
   double NeutralBetaCDH_vtx[2];//1:pip_vtx,2:pim_vtx  
-  double dE;   // energy deposit on CDH [MeVee]
-  double dEseg[36];   // energy deposit on CDH [MeVee]
+  double dE;   // energy deposit on CDH [MeVee] (neutral candidate)
+  int neutralseg;   //neutral candidate segment
   TVector3 vtx_reaction; // 
   TVector3 vtx_pip_beam; // 
   TVector3 vtx_pim_beam; // 
@@ -317,7 +317,7 @@ void EventAnalysis::Initialize( ConfMan *conf )
   npippimTree->Branch( "NeutralBetaCDH", &NeutralBetaCDH );
   npippimTree->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
   npippimTree->Branch( "dE", &dE );
-  npippimTree->Branch( "dEseg[36]", dEseg );
+  npippimTree->Branch( "neutralseg", &neutralseg );
   npippimTree->Branch( "vtx_reaction", &vtx_reaction );
   npippimTree->Branch( "vtx_pip_beam", &vtx_pip_beam );
   npippimTree->Branch( "vtx_pim_beam", &vtx_pim_beam );
@@ -703,6 +703,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     evTree->Fill();
     rtFile->cd();
     
+    for( int i=0; i<cdsMan->nCDH(); i++ ){
+      if((cdsMan->CDH(i)->CheckRange()) && (cdsMan->CDH(i)->ctmean()<cdscuts::tdc_cdh_max)){
+        Tools::Fill2D( Form("CDHdE_pippim"),cdsMan->CDH(i)->seg(),cdsMan->CDH(i)->emean());
+      }
+    }
     //added Jul.28th,2019
     //purpose 
     for( int it=0; it<trackMan->nGoodTrack(); it++ ) {
@@ -1054,7 +1059,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         
         
         for( int i=0; i<cdsMan->nCDH(); i++ ) {
-          Tools::Fill2D(Form("dE_CDHtime_pippimn"), cdsMan->CDH(i)->ctmean(), cdsMan->CDH(i)->emean());
+          if((cdsMan->CDH(i)->CheckRange()) && (cdsMan->CDH(i)->ctmean()<cdscuts::tdc_cdh_max)){
+            Tools::Fill2D(Form("dE_CDHtime_pippimn"), cdsMan->CDH(i)->ctmean(), cdsMan->CDH(i)->emean());
+          }
         }
 
         Tools::Fill2D(Form("Vtx_ZX_primfid"),vtx_react.Z(),vtx_react.X());
@@ -1168,6 +1175,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
           if(K0rejectFlag && (SigmaPFlag || SigmaMFlag)) {
             Tools::Fill2D(Form("MMom_MMass_fid_beta_dE_woK0_wSid"),mm_mass, P_missn.Mag());
+            for( int i=0; i<cdsMan->nCDH(); i++ ){
+              if((cdsMan->CDH(i)->CheckRange()) && (cdsMan->CDH(i)->ctmean()<cdscuts::tdc_cdh_max)){
+                Tools::Fill2D( Form("CDHdE_woK0_wSid"),cdsMan->CDH(i)->seg(),cdsMan->CDH(i)->emean());
+              }
+            }
           }
 
           if( MissNFlag ) {
@@ -1201,6 +1213,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             Tools::Fill1D( Form("DCA_pim_SigmaPM"),dcapimvtx);
             Tools::Fill1D( Form("DCA_pippim_SigmaPM"),dcapippim);
             //vertex position from pi+/pi-
+            
+            for( int i=0; i<cdsMan->nCDH(); i++ ){
+              if((cdsMan->CDH(i)->CheckRange()) && (cdsMan->CDH(i)->ctmean()<cdscuts::tdc_cdh_max)){
+                Tools::Fill2D( Form("CDHdE_woK0_wSid_n"),cdsMan->CDH(i)->seg(),cdsMan->CDH(i)->emean());
+              }
+            }
           }//MissNFlag && K0rejectFlag && (SigmaPFlag || SigmaMFlag)
           
           if(K0rejectFlag && MissNFlag && SigmaPFlag) {
@@ -1383,7 +1401,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         mom_n_Sp = LVec_n_vtx[0];
         mom_n_Sm = LVec_n_vtx[1];
         dE = ncdhhit->emean();
-        dEseg[(ncdhhit->seg())-1] = ncdhhit->emean();
+        neutralseg = (ncdhhit->seg());
         // beta is already filled
         vtx_reaction = vtx_react; // vertex(reaction)
         vtx_pip_beam = vtx_beam_wpip;
@@ -1559,9 +1577,7 @@ void EventAnalysis::Clear( int &nAbort)
   NeutralBetaCDH_vtx[1]=-9999.;
 
   dE=-9999.;
-  for(int iseg=0;iseg<36;iseg++){
-    dEseg[iseg]=-9999.;
-  }
+  neutralseg=-1;
   vtx_reaction.SetXYZ(-9999.,-9999.,-9999.);
   vtx_pip_beam.SetXYZ(-9999.,-9999.,-9999.);
   vtx_pim_beam.SetXYZ(-9999.,-9999.,-9999.);

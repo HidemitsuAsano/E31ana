@@ -736,7 +736,7 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
       //Tools::H1( Form("CTMean%d",cdhhit->seg()), cdhhit->ctmean(), 2000,-50,150 );
       //Tools::H1( Form("CTSub%d",cdhhit->seg()), cdhhit->ctsub(), 1000,-50,50 );
     }
-    if(!MCFlag && (fabs(track->Momentum())>0.1) && t0seg==3// &&
+    if( (fabs(track->Momentum())>0.1) && t0seg==3// &&
     //if(!MCFlag  && t0seg==3 &&
       // && (-5 < track_pos.Z()) && (track_pos.Z() <5)
       ){

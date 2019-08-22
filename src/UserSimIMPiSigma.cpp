@@ -80,7 +80,7 @@ TLorentzVector mom_n_Sm;      // 4-momentum(neutron)
 double NeutralBetaCDH; // veracity of neutral particle on CDH
 double NeutralBetaCDH_vtx[2]; // veracity of neutral particle on CDH
 double dE;   // energy deposit on CDH
-double dEseg[36];   // energy deposit on CDH
+int neutralseg;   // energy deposit on CDH
 TVector3 vtx_reaction; //  vertex(reaction)   
 TVector3 vtx_pip_beam; //  
 TVector3 vtx_pim_beam; //   
@@ -274,7 +274,7 @@ int main( int argc, char** argv )
   npippimTree->Branch( "NeutralBetaCDH", &NeutralBetaCDH );
   npippimTree->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx);
   npippimTree->Branch( "dE", &dE );
-  npippimTree->Branch( "dEseg[36]", dEseg );
+  npippimTree->Branch( "neutralseg", &neutralseg );
   npippimTree->Branch( "vtx_reaction", &vtx_reaction );
   npippimTree->Branch( "vtx_pip_beam", &vtx_pip_beam );
   npippimTree->Branch( "vtx_pim_beam", &vtx_pim_beam );
@@ -1303,7 +1303,9 @@ int main( int argc, char** argv )
             (GeomTools::GetID(vtx_pip_mean)==CID_Fiducial)))  {
            
           for( int i=0; i<cdsMan->nCDH(); i++ ) {
-            Tools::Fill2D(Form("dE_CDHtime_pippimn"), cdsMan->CDH(i)->ctmean(), cdsMan->CDH(i)->emean());
+            if((cdsMan->CDH(i)->CheckRange()) && (cdsMan->CDH(i)->ctmean()<cdscuts::tdc_cdh_max+cdscuts::tdc_simoffset)){
+              Tools::Fill2D(Form("dE_CDHtime_pippimn"), cdsMan->CDH(i)->ctmean(), cdsMan->CDH(i)->emean());
+            }
           }
 
            
@@ -1410,6 +1412,11 @@ int main( int argc, char** argv )
 
             if(K0rejectFlag && (SigmaPFlag || SigmaMFlag)){
               Tools::Fill2D(Form("MMom_MMass_fid_beta_dE_woK0_wSid"),mm_mass, P_missn.Mag());
+              for( int i=0; i<cdsMan->nCDH(); i++ ){
+                if((cdsMan->CDH(i)->CheckRange()) && (cdsMan->CDH(i)->ctmean()<cdscuts::tdc_cdh_max+cdscuts::tdc_simoffset)){
+                  Tools::Fill2D( Form("CDHdE_woK0_wSid"),cdsMan->CDH(i)->seg(),cdsMan->CDH(i)->emean());
+                }
+              }
             }
 
             if( MissNFlag ){
@@ -1448,6 +1455,12 @@ int main( int argc, char** argv )
               Tools::Fill1D( Form("DCA_pippim_SigmaPM"),dcapippim);
               if(Verbosity_){
                 std::cout << "L."<< __LINE__ <<" Kinematical Fit using KinFitter" << std::endl;
+              }
+
+              for( int i=0; i<cdsMan->nCDH(); i++ ){
+                if((cdsMan->CDH(i)->CheckRange()) && (cdsMan->CDH(i)->ctmean()<cdscuts::tdc_cdh_max+cdscuts::tdc_simoffset)){
+                  Tools::Fill2D( Form("CDHdE_woK0_wSid_n"),cdsMan->CDH(i)->seg(),cdsMan->CDH(i)->emean());
+                }
               }
             }//if (MissNFlag && K0rejectFlag && (SigmaPFlag || SigmaMFlag))
 
@@ -1781,7 +1794,7 @@ int main( int argc, char** argv )
           //** fill tree **//
           if(IsncdsfromSigma && IsrecoPassed){
             dE = ncdhhit->emean();
-            dEseg[ncdhhit->seg()-1] = ncdhhit->emean();
+            neutralseg = ncdhhit->seg();
             mom_n_Sp = LVec_n_vtx[0];            // 4-momentum(neutron)
             mom_n_Sm = LVec_n_vtx[1];            // 4-momentum(neutron)
             mom_beam_Sp = LVec_beam_vtx[0];
@@ -1925,9 +1938,7 @@ void InitTreeVal()
   NeutralBetaCDH_vtx[0]=-9999.; // veracity of neutral particle on CDH
   NeutralBetaCDH_vtx[1]=-9999.; // veracity of neutral particle on CDH
   dE=-9999.;   // energy deposit on CDH
-  for(int iseg=0;iseg<36;iseg++){
-    dEseg[iseg]=-9999.;   // energy deposit on CDH
-  }
+  neutralseg =-1;   // energy deposit on CDH
   vtx_reaction.SetXYZ(-9999., -9999., -9999.); //  vertex(reaction)   
   vtx_pip_beam.SetXYZ(-9999., -9999., -9999.); //  
   vtx_pim_beam.SetXYZ(-9999., -9999., -9999.); //   
