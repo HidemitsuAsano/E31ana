@@ -203,6 +203,7 @@ enum gCounterID { CID_CDC      = 0,
 		  CID_CellRing = 156,
 		  CID_Fiducial = 160,
       CID_Bobbin = 161, //added by asano for CDS neutron
+      CID_Coil = 162, //added by asano for CDS neutron
 		  CID_DegC =  200, 
 		  CID_Degrader1 =  200, 
 		  CID_DegCu = 201,

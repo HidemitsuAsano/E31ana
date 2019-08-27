@@ -11,7 +11,7 @@
 #include "TVector3.h"
 #include "TLorentzVector.h"
 
-#include "ComCrossSectionTable.h"
+#include "ComCrossSectionTable.hh"
 
 #define DEFVALI -999
 #define DEFVALD -999.0
@@ -122,6 +122,7 @@ private:
   TVector3 tMomentum;
   Double_t fFlightLength;
   std::vector <Int_t>    vnDetectorHitLink;
+  TString  CreatorProcess; 
 
 public:
   Track();
@@ -137,18 +138,20 @@ public:
   void setDetectorHitLink(const std::vector <Int_t>& val){vnDetectorHitLink=val;}
   void setDetectorHitLink(Int_t val){vnDetectorHitLink.push_back(val);}
   void setDetectorHitLink(Int_t i, Int_t val){vnDetectorHitLink[i]=val;}
+  void setCreatorProcess(TString val){CreatorProcess=val;}
 
   Int_t trackID() const {return nTrackID;}
   Int_t parentTrackID() const {return nParentTrackID;}
   Int_t pdgID() const {return nPdgID;}
   TVector3 vertex() const {return tVertex;}
-  TVector3 momentum() const {return tMomentum;}
+  TVector3 momentum() const {return tMomentum;}//MeV/c
   Double_t FlightLength() const {return fFlightLength;}
   Int_t detectorHitLinkSize() const {return vnDetectorHitLink.size();}
   Int_t detectorHitLink(Int_t i) {return vnDetectorHitLink[i];}
   std::vector <Int_t>* detectorHitLink() {return &vnDetectorHitLink;}
+  TString creatorProcess() const {return CreatorProcess; }
 
-  ClassDef(Track,1)
+  ClassDef(Track,2)
 };
 
 
