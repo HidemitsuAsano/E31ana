@@ -66,8 +66,16 @@ namespace Util
                  const double correctedtof,
                  const bool MCFlag=false
                  );
-   void CorrectCDHz(CDSHitMan *cdsman);
+   //MC only
    void AnaReactionData(ReactionData *reactionData);
+   void AnaMcData(MCData *mcdata, 
+                  DetectorData  *detdata,
+                  CDSHitMan *cdsman
+                  );
+   int ProcessNameToProcessID(const std::string &name);
+   std::string ProcessIDToProcessName(const int &id);
+   int CalcGeneration(MCData *mcdata,DetectorHit *dhit);
+   Track *FindTrackFromMcIndex(MCData *mcdata, int trackid);
 };
 
 #endif

@@ -723,6 +723,7 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
   Tools::Fill2D( Form("CDH_mom_diffpos_pi_z"), diff.Z(), track->Momentum() );
   Tools::H2( Form("CDH_diffpos_z_pi_z"), track_pos.Z(),diff.Z(),1000,-50,50,1000,-50,50);
   
+  /*
   //return here as checking histogram is not necessary
   for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
     HodoscopeLikeHit *cdhhit=track->CDHHit(cdsman,icdh);
@@ -760,97 +761,9 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
       //Tools::H2(Form("ectT0U%d",t0seg),t0hit->eu(),t0hit->ctu(),200,-0.5,4.5,300,5,20);
       //Tools::H2(Form("ectT0D%d",t0seg),t0hit->ed(),t0hit->ctd(),200,-0.5,4.5,300,5,20);
     }//!MCFlag
-  }
+  }*/
 
 }
-
-void Util::CorrectCDHz(CDSHitMan *cdsman){
-   for(int i=0;i<cdsman->nCDH();i++){
-     double HitPosition = cdsman->CDH(i)->hitpos();
-     int CDHSeg = cdsman->CDH(i)->seg();
-    {
-      //CDCz <10
-      if(CDHSeg==1) HitPosition -= 16.639714;
-      else if(CDHSeg==2) HitPosition -= 14.798649;
-      else if(CDHSeg==3) HitPosition -= 5.953724;
-      else if(CDHSeg==4) HitPosition -= 12.213804;
-      else if(CDHSeg==5) HitPosition -= 8.428154;
-      else if(CDHSeg==6) HitPosition -= 15.883103;
-      else if(CDHSeg==7) HitPosition -= 12.115939;
-      else if(CDHSeg==8) HitPosition -= 16.009665;
-      else if(CDHSeg==9) HitPosition -= 14.164350;
-      else if(CDHSeg==10) HitPosition -= 13.751159;
-      else if(CDHSeg==11) HitPosition -= 16.320796;
-      else if(CDHSeg==12) HitPosition -= -17.983675;
-      else if(CDHSeg==13) HitPosition -= 0.183959;
-      else if(CDHSeg==14) HitPosition -= 6.421490;
-      else if(CDHSeg==15) HitPosition -= 10.357269;
-      else if(CDHSeg==16) HitPosition -= 4.211167;
-      else if(CDHSeg==17) HitPosition -= 12.573929;
-      else if(CDHSeg==18) HitPosition -= 13.799147;
-      else if(CDHSeg==19) HitPosition -= 8.857060;
-      else if(CDHSeg==20) HitPosition -= -11.439437;
-      else if(CDHSeg==21) HitPosition -= 14.573345;
-      else if(CDHSeg==22) HitPosition -= 15.119745;
-      else if(CDHSeg==23) HitPosition -= 9.142359;
-      else if(CDHSeg==24) HitPosition -= 12.666169;
-      else if(CDHSeg==25) HitPosition -= 13.793150;
-      else if(CDHSeg==26) HitPosition -= 0.132931;
-      else if(CDHSeg==27) HitPosition -= 11.586085;
-      else if(CDHSeg==28) HitPosition -= 25.751971;
-      else if(CDHSeg==29) HitPosition -= 8.215086;
-      else if(CDHSeg==30) HitPosition -= 7.648705;
-      else if(CDHSeg==31) HitPosition -= 0.085094;
-      else if(CDHSeg==32) HitPosition -= -0.417300;
-      else if(CDHSeg==33) HitPosition -= -5.000405;
-      else if(CDHSeg==34) HitPosition -= -11.931577;
-      else if(CDHSeg==35) HitPosition -= -7.746246;
-      else if(CDHSeg==36) HitPosition -= -9.454847;
-      //CDCz <1 cm correction
-      if(CDHSeg==1) HitPosition -= 0.044796;
-      else if(CDHSeg==2) HitPosition -= 0.050329;
-      else if(CDHSeg==3) HitPosition -= 0.047539;
-      else if(CDHSeg==4) HitPosition -= 0.011800;
-      else if(CDHSeg==5) HitPosition -= 0.025058;
-      else if(CDHSeg==6) HitPosition -= 0.066763;
-      else if(CDHSeg==7) HitPosition -= 0.048025;
-      else if(CDHSeg==8) HitPosition -= 0.053559;
-      else if(CDHSeg==9) HitPosition -= 0.041002;
-      else if(CDHSeg==10) HitPosition -= 0.043818;
-      else if(CDHSeg==11) HitPosition -= 0.016847;
-      else if(CDHSeg==12) HitPosition -= 0.060654;
-      else if(CDHSeg==13) HitPosition -= 0.021380;
-      else if(CDHSeg==14) HitPosition -= 0.054790;
-      else if(CDHSeg==15) HitPosition -= 0.027565;
-      else if(CDHSeg==16) HitPosition -= 0.012008;
-      else if(CDHSeg==17) HitPosition -= 0.047283;
-      else if(CDHSeg==18) HitPosition -= 0.038955;
-      else if(CDHSeg==19) HitPosition -= 0.028200;
-      else if(CDHSeg==20) HitPosition -= 0.033359;
-      else if(CDHSeg==21) HitPosition -= 0.055034;
-      else if(CDHSeg==22) HitPosition -= -0.006987;
-      else if(CDHSeg==23) HitPosition -= 0.024364;
-      else if(CDHSeg==24) HitPosition -= 0.013297;
-      else if(CDHSeg==25) HitPosition -= 0.014870;
-      else if(CDHSeg==26) HitPosition -= 0.050980;
-      else if(CDHSeg==27) HitPosition -= 0.020656;
-      else if(CDHSeg==28) HitPosition -= 0.047146;
-      else if(CDHSeg==29) HitPosition -= 0.064573;
-      else if(CDHSeg==30) HitPosition -= 0.020890;
-      else if(CDHSeg==31) HitPosition -= 0.026834;
-      else if(CDHSeg==32) HitPosition -= 0.022567;
-      else if(CDHSeg==33) HitPosition -= 0.064572;
-      else if(CDHSeg==34) HitPosition -= -0.070272;
-      else if(CDHSeg==35) HitPosition -= 0.015730;
-      else if(CDHSeg==36) HitPosition -= 0.056956;
-    }
-
-     cdsman->CDH(i)->SetHitPosition(HitPosition);
-
-   }
-}
-
-
 
 void Util::AnaReactionData( ReactionData *reactionData){
   int ndecay    = reactionData->NParticle(0);
@@ -917,5 +830,326 @@ void Util::AnaReactionData( ReactionData *reactionData){
     double mass = TL_K0n.M()/1000.;
     Tools::H2(Form("React_q_IMnpipi"),mass,q,500,1,2,300,0,1.5);
   }
+}
+
+void Util::AnaMcData(MCData *mcdata, 
+                     DetectorData  *detdata,
+                     CDSHitMan *cdsman
+                     )
+{
+  
+  for(int itr=0;itr<mcdata->trackSize();itr++){
+    TVector3 vtx = mcdata->track(itr)->vertex();
+    //std::cout << "vtx_r" << vtx.Mag() << std::endl;;
+    Tools::H1(Form("track_vtxr"),1000,0,100,vtx.Mag()/10.);
+  }
+  
+  
+  int EventType=0;
+  struct pimInfo{
+    int gen;
+    int processID;
+    double dE;
+    double mom;
+    pimInfo(){
+      gen=-1;
+      processID=-1;
+      dE=0.0;
+      mom=0.0;
+    }
+  };
+  
+  struct pipInfo{
+    int gen;
+    int processID;
+    double dE;
+    double mom;
+    pipInfo(){
+      gen=-1;
+      processID=-1;
+      dE=0.0;
+      mom=0.0;
+    }
+  };
+
+  struct NcanInfo{
+    int pdg;
+    int parentpdg;
+    int gen;
+    int processID;
+    double dE;
+    double mom;
+    double vtx_r;
+    double vtx_r_g1parent;
+    double vtx_r_g2parent;
+    NcanInfo(){
+      pdg=-9999;
+      parentpdg=-9999;
+      gen=-1;
+      processID=-1;
+      dE=0.0;
+      mom=0.0;
+    }
+  };
+  
+  pimInfo piminfo;
+  pipInfo pipinfo;
+  NcanInfo ncaninfo;
+
+  int npim=0;
+  int npip=0;
+  int trackIDcont[3]={-1,-1,-1};
+  int iokhit=0;
+  for(int idethit=0;idethit<detdata->detectorHitSize(); idethit++){  
+    DetectorHit *dhit = detdata->detectorHit(idethit);
+    int cid    = dhit->detectorID();
+    if(cid!=CID_CDH){
+      continue;
+    }
+    int seg  = dhit->channelID();//0 origin
+    double dEreco = -100.;
+    int segReco = -1;
+    bool isHitMatch = false;
+    for(int icdhhit=0;icdhhit<cdsman->nCDH();icdhhit++){
+      if(cdsman->CDH(icdhhit)->CheckRange() && cdsman->CDH(icdhhit)->ctmean()<(cdscuts::tdc_cdh_max+cdscuts::tdc_simoffset)){
+        segReco = (cdsman->CDH(icdhhit)->seg())-1;//1 origin   
+        if(seg==segReco){
+          isHitMatch=true;
+          dEreco = cdsman->CDH(icdhhit)->emean();
+        }
+      }//if
+    }//for
+    if(!isHitMatch){
+      continue;
+    }else{
+    }
+    int pdg    = dhit->pdg();
+    int trackID = dhit->trackID();
+    trackIDcont[iokhit]=trackID;
+    iokhit++;
+    Track *track_p  = Util::FindTrackFromMcIndex(mcdata,trackID);
+    int parentID = dhit->parentID();
+    Track *parenttrack_p = Util::FindTrackFromMcIndex(mcdata,parentID);
+    int parentpdg = 0;
+    if(parenttrack_p !=0) parentpdg= parenttrack_p->pdgID();
+
+    double truemom = (track_p->momentum()).Mag()/1000.;
+    std::string processname = std::string(track_p->creatorProcess());
+    int processID =ProcessNameToProcessID(processname);
+    //std::cout << "pdg dhit" << pdg << std::endl;//->OK
+    //std::cout << "pdg track" << track_p->pdgID() << std::endl;//->OK
+    //std::cout << "processname " << processname.c_str() << std::endl;
+    //std::cout << "processID " << processID << std::endl;
+    
+    int generation = Util::CalcGeneration(mcdata,dhit);
+    //std::cout << "gen " << generation << std::endl;
+
+    Tools::H2(Form("CDHdE_processID"),processID, dEreco,222,-0.5,221.5, 100,0,10);
+    Tools::H2(Form("CDHdE_generation"),generation, dEreco,10,0,10, 100,0,10);
+    if(pdg>=8000){// std::cout << "large pdgID " << pdg << std::endl; 
+      if(pdg==1000010020) pdg=4000;//deuteron
+      else if(pdg==1000010030) pdg=4001;//triton
+      else if(pdg==1000020030) pdg=4002;//3He
+      else if(pdg==1000020040) pdg=4003;//alpha
+      else if(pdg==1000030050) pdg=4004;//Li5
+      else if(pdg==1000030060) pdg=4005;//Li6
+      else if(pdg==1000030070) pdg=4006;//Li7
+      else if(pdg==1000040070) pdg=4007;//Be7
+      else if(pdg==1000040080) pdg=4008;//Be8
+      else if(pdg==1000040090) pdg=4009;//Be9
+      else if(pdg==1000040100) pdg=4010;//Be10
+      else if(pdg==1000050090) pdg=4011;//B9
+      else if(pdg==1000050100) pdg=4012;//B10
+      else if(pdg==1000050110) pdg=4013;//B11
+      else if(pdg==1000060110) pdg=4014;//C12
+      else if(pdg==1000060120) pdg=4015;//C12
+      else if(pdg==1000060130) pdg=4016;//C13
+      else{
+        std::cout << "large pdgID " << pdg << std::endl;  
+      }
+    } 
+
+    Tools::H1(Form("pdgID"),pdg,16000,-8000,8000);
+    //pi- track
+    if(pdg== -211){
+      npim++;
+      piminfo.dE = dEreco;
+      piminfo.mom = truemom;
+      piminfo.processID = processID;
+      piminfo.gen = generation;
+      Tools::H2(Form("mom_processID_pim"),processID, truemom ,222,-0.5,221.5, 200,0,2);
+      Tools::H2(Form("mom_generation_pim"),generation, truemom,10,0,10, 200,0,2);
+      Tools::H2(Form("CDHdE_processID_pim"),processID, dEreco,222,-0.5,221.5, 100,0,10);
+      Tools::H2(Form("CDHdE_generation_pim"),generation, dEreco,10,0,10, 100,0,10);
+    }
+    //pi+ track
+    else if(pdg== 211){
+      npip++;
+      pipinfo.dE = dEreco;
+      pipinfo.mom = truemom;
+      pipinfo.processID = processID;
+      pipinfo.gen = generation;
+      Tools::H2(Form("mom_processID_pip"),processID, truemom ,222,-0.5,221.5, 200,0,2);
+      Tools::H2(Form("mom_generation_pip"),generation, truemom,10,0,10, 200,0,2);
+      Tools::H2(Form("CDHdE_processID_pip"),processID, dEreco,222,-0.5,221.5, 100,0,10);
+      Tools::H2(Form("CDHdE_generation_pip"),generation, dEreco,10,0,10, 100,0,10);
+    }
+    //neutron candidate
+    else{
+      ncaninfo.pdg = pdg;
+      ncaninfo.parentpdg = parentpdg;
+      ncaninfo.dE = dEreco;
+      ncaninfo.mom = truemom;
+      ncaninfo.processID = processID;
+      ncaninfo.gen = generation;
+      Tools::H1(Form("ncan_pdg"),pdg,16000,-8000,8000);
+      Tools::H1(Form("ncan_parentpdg"),parentpdg,16000,-8000,8000);
+      Tools::H2(Form("mom_processID_ncan"),processID, truemom ,222,-0.5,221.5, 200,0,2);
+      Tools::H2(Form("mom_generation_ncan"),generation, truemom,10,0,10, 200,0,2);
+      Tools::H2(Form("CDHdE_processID_ncan"),processID, dEreco,222,-0.5,221.5, 100,0,10);
+      Tools::H2(Form("CDHdE_generation_ncan"),generation, dEreco,10,0,10, 100,0,10);
+    }
+  }//idethit
+  if(npip==1 && npim==1) EventType = 1;
+  //check track sharing 
+  for(int i=0;i<3;i++){
+    int tidi = trackIDcont[i];
+    for(int j=0;j<3;j++){
+      int tidj = trackIDcont[j];
+      if(i!=j && tidi==tidj) EventType=2;
+    }
+  }
+  Tools::H1(Form("EventType"),EventType,3,-0.5,2.5);
+  if(EventType==1){
+    Tools::H2(Form("mom_processID_pim_select"),piminfo.processID, piminfo.mom ,222,-0.5,221.5, 200,0,2);
+    Tools::H2(Form("mom_generation_pim_select"),piminfo.gen, piminfo.mom,10,0,10, 200,0,2);
+    Tools::H2(Form("CDHdE_processID_pim_select"),piminfo.processID, piminfo.dE,222,-0.5,221.5, 100,0,10);
+    Tools::H2(Form("CDHdE_generation_pim_select"),piminfo.gen, piminfo.dE,10,0,10, 100,0,10);
+    Tools::H2(Form("mom_processID_pip_select"),pipinfo.processID, pipinfo.mom ,222,-0.5,221.5, 200,0,2);
+    Tools::H2(Form("mom_generation_pip_select"),pipinfo.gen, pipinfo.mom,10,0,10, 200,0,2);
+    Tools::H2(Form("CDHdE_processID_pip_select"),pipinfo.processID, pipinfo.dE,222,-0.5,221.5, 100,0,10);
+    Tools::H2(Form("CDHdE_generation_pip_select"),pipinfo.gen, pipinfo.dE,10,0,10, 100,0,10);
+    
+    Tools::H1(Form("ncan_pdg_select"),ncaninfo.pdg,16000,-8000,8000);
+    Tools::H1(Form("ncan_parentpdg_select"),ncaninfo.parentpdg,16000,-8000,8000);
+    Tools::H2(Form("mom_processID_ncan_select"),ncaninfo.processID, ncaninfo.mom ,222,-0.5,221.5, 200,0,2);
+    Tools::H2(Form("mom_generation_ncan_select"),ncaninfo.gen, ncaninfo.mom,10,0,10, 200,0,2);
+    Tools::H2(Form("CDHdE_processID_ncan_select"),ncaninfo.processID, ncaninfo.dE,222,-0.5,221.5, 100,0,10);
+    Tools::H2(Form("CDHdE_generation_ncan_select"),ncaninfo.gen, ncaninfo.dE,10,0,10, 100,0,10);
+  }
+
+
+  return;
+}
+
+
+int Util::ProcessNameToProcessID(const std::string &name)
+{
+  if( name=="" ) return 0; //Initial
+  else if( name=="Decay"                 ) return 1;
+  else if( name=="conv"                  ) return 2;
+  else if( name=="Transportation"        ) return 3;
+  else if( name=="phot"                  ) return 4;
+  else if( name=="annihil"               ) return 5;
+  else if( name=="compt"                 ) return 6;
+  else if( name=="eBrem"                 ) return 7;
+  else if( name=="hadElastic"            ) return 8;
+  else if( name=="CoulombScat"           ) return 9;
+  else if( name=="nKiller"               ) return 10;
+  else if( name=="photonNuclear"         ) return 11;
+  else if( name=="msc"                   ) return 12;
+  else if( name=="pi-Inelastic"          ) return 100;
+  else if( name=="pi+Inelastic"          ) return 101;
+  else if( name=="kaon-Inelastic"        ) return 102;
+  else if( name=="kaon+Inelastic"        ) return 103;
+  else if( name=="kaon0LInelastic"       ) return 104;
+  else if( name=="kaon0SInelastic"       ) return 105;
+  else if( name=="lambdaInelastic"       ) return 106;
+  else if( name=="sigma+Inelastic"       ) return 107;
+  else if( name=="sigma-Inelastic"       ) return 108;
+  else if( name=="sigma0Inelastic"       ) return 109;
+  else if( name=="protonInelastic"       ) return 110;
+  else if( name=="neutronInelastic"      ) return 111;
+  else if( name=="dInelastic"            ) return 112;
+  else if( name=="tInelastic"            ) return 113;
+  else if( name=="He3Inelastic"          ) return 114;
+  else if( name=="alphaInelastic"        ) return 115;
+  else if( name.find("Inelastic")!=std::string::npos ) return 199;
+  else if( name=="eIoni"                 ) return 200;
+  else if( name=="hIoni"                 ) return 201;
+  else if( name=="ionIoni"               ) return 202;
+  else if( name=="muIoni"                ) return 203;
+  else if( name=="hBertiniCaptureAtRest" ) return 204;
+  else if( name=="nCapture"              ) return 205;
+  else if( name=="muMinusCaptureAtRest"  ) return 206;
+  else if( name=="unknown"               ) return -999;
+  else return -1;
+}
+
+std::string Util::ProcessIDToProcessName(const int &id)
+{
+  if( id==0                 ) return "initial";
+  else if( id==1            ) return "Decay";
+  else if( id==2            ) return "conv";
+  else if( id==3            ) return "Transportation";
+  else if( id==4            ) return "phot";
+  else if( id==5            ) return "annihil";
+  else if( id==6            ) return "compt";
+  else if( id==7            ) return "eBrem";
+  else if( id==8            ) return "hadElastic";
+  else if( id==9            ) return "CoulombScat";
+  else if( id==10           ) return "nKiller";
+  else if( id==11           ) return "photoNuclear";
+  else if( id==12           ) return "msc";
+  else if( id==100          ) return "pi-Inelastic";
+  else if( id==101          ) return "pi+Inelastic";
+  else if( id==102          ) return "kaon-Inelastic";
+  else if( id==103          ) return "kaon+Inelastic";
+  else if( id==104          ) return "kaon0Inelastic";
+  else if( id==105          ) return "kaon0SInelastic";
+  else if( id==106          ) return "lambdaInelastic";
+  else if( id==107          ) return "sigma-Inelastic";
+  else if( id==108          ) return "sigma+Inelastic";
+  else if( id==109          ) return "sigma0Inelastic";
+  else if( id==110          ) return "protonInelastic";
+  else if( id==111          ) return "neutronInelastic";
+  else if( id==112          ) return "dInelastic";
+  else if( id==113          ) return "tInelastic";
+  else if( id==114          ) return "He3Inelastic";
+  else if( id==115          ) return "alphaInelastic";
+  else if( 100<id && id<200 ) return "Inelastic";
+  else if( id==200          ) return "eIoni";
+  else if( id==201          ) return "hIoni";
+  else if( id==202          ) return "ionIoni";
+  else if( id==203          ) return "muIoni";
+  else if( id==204          ) return "hBertiniCaptureAtRest";
+  else if( id==205          ) return "nCapture";
+  else if( id==206          ) return "muMinusCaptureAtRest";
+  else if( id==-999         ) return "unknown";
+  else return "error";
+}
+
+int Util::CalcGeneration(MCData *mcdata,DetectorHit *dhit)
+{
+  int gen=1;
+  Track *parentTr=Util::FindTrackFromMcIndex(mcdata, dhit->parentID());
+  while( parentTr!=0){
+    //std::cout << "parent ID " << parentTr->parentTrackID() << std::endl;
+    parentTr=Util::FindTrackFromMcIndex(mcdata,parentTr->parentTrackID());
+    gen++;
+  }
+  return gen;
+}
+
+//input 
+//MCData node
+//trackid from detectorhit
+Track* Util::FindTrackFromMcIndex(MCData *mcdata, int trackid)
+{
+  for( int itr=0;itr<mcdata->trackSize();itr++){
+    Track *track=mcdata->track(itr);
+    if( track->trackID()==trackid) return track;
+  }
+  return 0;
 }
 
