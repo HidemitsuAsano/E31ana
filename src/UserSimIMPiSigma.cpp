@@ -216,6 +216,7 @@ int main( int argc, char** argv )
   ConfMan *confMan = new ConfMan(argv[1]);
   confMan->Initialize();
 
+  std::cout << __LINE__  << " ** Simulation file open ** " << std::endl;
   //** Simulation file open **// 
   SimDataMan *simMan = new SimDataMan();
   TFile *simfile = new TFile(argv[3]);
@@ -233,6 +234,7 @@ int main( int argc, char** argv )
   tree->SetBranchAddress("ReactionData", &reacData);
   tree->SetBranchAddress("MCData", &mcData);
 
+  std::cout << __LINE__  << " Getting CDSTracking info. from CDCfile " << std::endl;
   //** Getting CDSTracking info. from CDCfile **//
   TFile *cdcfile = new TFile(argv[4]);
   TTree *evTree  = (TTree*)cdcfile->Get("EventTree");
@@ -426,42 +428,42 @@ int main( int argc, char** argv )
 
     //### CDH ADC cut ###//
     double discri[36]={
-      2.85,
-      2.45,
-      2.15,
-      2.05,
-      1.75,
+      2.65,
       2.25,
-      2.15,
-      2.15,
-      2.15,
       1.95,
       1.85,
-      1.95,
-      2.15,
-      2.15,
-      1.85,
-      1.95,
-      1.95,
+      1.55,
       2.05,
-      1.85,
       1.95,
-      2.15,
-      2.55,
+      1.95,
+      1.95,
+      1.75,
+      1.65,
       1.75,
       1.95,
-      1.85,
-      2.05,
-      2.05,
       1.95,
-      2.05,
-      2.05,
+      1.65,
+      1.75,
+      1.75,
       1.85,
-      2.15,
+      1.65,
+      1.75,
+      1.95,
+      2.35,
+      1.55,
+      1.75,
+      1.65,
       1.85,
-      2.05,
       1.85,
-      2.15
+      1.75,
+      1.85,
+      1.85,
+      1.65,
+      1.95,
+      1.65,
+      1.85,
+      1.65,
+      1.95
     };
 
     DetectorData *detData2  = new DetectorData();
@@ -474,13 +476,13 @@ int main( int argc, char** argv )
     simMan->Convert(detData2, confMan, blMan, cdsMan);
     cdstrackMan->Calc(cdsMan, confMan, true);
     bltrackMan->DoTracking(blMan, confMan, true, true);
-
+    
 
     //##########################//
     //### get G4 information ###//
     //##########################//
     bool flagG4Decay = false;
-    bool piSigma_detect = false;
+    //bool piSigma_detect = false;
     //int pi_parent  = 0;
     //int Y_parent  = 0;
     //int N_parent  = 0;
@@ -596,47 +598,47 @@ int main( int argc, char** argv )
 
     //actually not used ?
     //std::cout << "ievt " << iev << std::endl;
-    int nCDHhit[kin::npart] = {0, 0, 0, 0, 0, 0};
-    if( flagG4Decay ){ // Sigma -> n pi decay
-      for( int ihit=0; ihit<detData2->detectorHitSize(); ihit++ ){
-        int cid    = detData2->detectorHit(ihit)->detectorID();
-        int track  = detData2->detectorHit(ihit)->trackID();
-        int parent = mcData->track(ihit)->parentTrackID();
-        for( int ip=1; ip<kin::npart; ip++ ){// ip=0: beam (K-) is not included  
+    //int nCDHhit[kin::npart] = {0, 0, 0, 0, 0, 0};
+    //if( flagG4Decay ){ // Sigma -> n pi decay
+    //  for( int ihit=0; ihit<detData2->detectorHitSize(); ihit++ ){
+    //    int cid    = detData2->detectorHit(ihit)->detectorID();
+    //    int track  = detData2->detectorHit(ihit)->trackID();
+    //    int parent = mcData->track(ihit)->parentTrackID();
+    //    for( int ip=1; ip<kin::npart; ip++ ){// ip=0: beam (K-) is not included  
           //std::cout << "L." << __LINE__ << " sim IP:" <<  ip << std::endl;
           //std::cout << "L." << __LINE__ << " CID:" << cid << std::endl;
           //std::cout << "L." << __LINE__ << " track:" << track << std::endl;
           //std::cout << "L." << __LINE__ << " trackID[ip]:" << trackID[ip] << std::endl;
           //std::cout << "L." << __LINE__ << " parent:" << parent << std::endl;
-          if( cid==CID_CDH && track==trackID[ip] ){
-            //std::cout << "match " << std::endl;
-            nCDHhit[ip]++;
-          }
-        }
+    //      if( cid==CID_CDH && track==trackID[ip] ){
+    //        //std::cout << "match " << std::endl;
+    //        nCDHhit[ip]++;
+    //      }
+    //    }
         //*** neutron hit search ***//
         //scan ncds and pip/pim from Sigma 
-        for( int ip=4; ip<kin::npart; ip++ ){
+    //    for( int ip=4; ip<kin::npart; ip++ ){
           //std::cout << "L." << __LINE__ << " sim IP:" <<  ip << std::endl;
           //std::cout << "L." << __LINE__ << " parent:" << parent << std::endl;
           //std::cout << "L." << __LINE__ << " trackID[ip]:" << trackID[ip] << std::endl;
-          if( cid==CID_CDH && parent==trackID[ip] ){
+    //      if( cid==CID_CDH && parent==trackID[ip] ){
             //std::cout << "match " << std::endl;
-            nCDHhit[ip]++;
-          }
-        }
+    //        nCDHhit[ip]++;
+    //      }
+    //    }
         //*** neutron hit search ***//
-      }//ihit
-    }//flagG4Decay
+    //  }//ihit
+    //}//flagG4Decay
 
     //determine whether pi-Sigma is detected in the CDS
     //actually, not used so far (Jan.22,2019 asano)
     //pim_g1 = pip_g1 pip_g2 = pim_g2
     //not working right now.
-    if( nCDHhit[kin::pim_g1] && nCDHhit[kin::ncds] && nCDHhit[kin::pip_g2] ){ 
+    //if( nCDHhit[kin::pim_g1] && nCDHhit[kin::ncds] && nCDHhit[kin::pip_g2] ){ 
       //std::cout << "allmatch " << std::endl;
-      piSigma_detect = true;
-      nG4Event_piSigma++;
-    }
+    //  piSigma_detect = true;
+    //  nG4Event_piSigma++;
+    //}
 
     
     // beam_K(K+), pi, Y, N, N from Sigma, pi from Sigma
@@ -731,6 +733,8 @@ int main( int argc, char** argv )
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nCDH" << std::endl;
       //continue;
       IsrecoPassed=false;
+    }else{
+      Util::AnaMcData(mcData,detData2,cdsMan);
     }
 
     //if( nGoodTrack!=cdscuts::cds_ngoodtrack ){ // dedicated for pi+ pi- event
