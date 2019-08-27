@@ -1,4 +1,4 @@
-void plotCDHdE(const char* filename="evanaIMpisigma_v156.root")
+void plotCDHdE(const char* filename="evanaIMpisigma_v160.root")
 {
   TFile *file = new TFile(filename,"READ");
 
@@ -48,6 +48,25 @@ void plotCDHdE(const char* filename="evanaIMpisigma_v156.root")
     his->SetLineStyle(iseg/10);
     if(iseg==0)his->Draw("HE");
     else his->Draw("HEsame");
+  }
+  
+  TFile *filesim = new TFile("../simpost/simIMpisigma_nSmpip_v56.root","READ");
+  TH2D* CDHdEsim = (TH2D*)filesim->Get("CDHdE");
+
+  TCanvas *cCDH[36];
+  for(int iseg=0;iseg<36;iseg++){
+    cCDH[iseg] = new TCanvas(Form("c%d",iseg),Form("c%d",iseg));
+    cCDH[iseg]->cd(iseg+1);
+    TH1D *his = (TH1D*)CDHdE_wt->ProjectionY(Form("hh%d",iseg+1),iseg+1,iseg+1);
+    TH1D *hissim = (TH1D*)CDHdEsim->ProjectionY(Form("hsim%d",iseg+1),iseg+1,iseg+1);
+    his->GetXaxis()->SetRangeUser(0,10);
+    his->SetLineColor(1);
+    hissim->SetLineColor(2);
+    his->Draw("HE");
+    double maxr = his->GetMaximum();
+    double maxsim = hissim->GetMaximum();
+    hissim->Scale(maxr/maxsim);
+    hissim->Draw("HEsame");
   }
 
 }
