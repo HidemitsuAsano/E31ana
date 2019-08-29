@@ -543,8 +543,17 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   }
   Tools::Fill1D( Form("EventCheck"), 1 );
 
-  //temporary fix of the cdhz position
-  //Util::CorrectCDHz(cdsMan);
+  //CDH emean recalibrator
+  static bool isState=false;
+  if(!isState){
+    std::cout << "L." << __LINE__ << " CDH emean is recalibrated " << std::endl;
+    std::cout << "correction factor " << cdscuts::CDHemeanCal << std::endl;
+    isState=true;
+  }
+  for( int i=0; i<cdsMan->nCDH(); i++ ){
+    double emean = cdsMan->CDH(i)->emean();
+    cdsMan->CDH(i)->SetEMean(emean*cdscuts::CDHemeanCal);
+  }
 
   //CDH-hits cut
   if( Util::GetCDHMul(cdsMan,nGoodTrack)!=cdscuts::cdhmulti){

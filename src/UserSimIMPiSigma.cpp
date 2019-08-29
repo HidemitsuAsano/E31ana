@@ -727,6 +727,10 @@ int main( int argc, char** argv )
       Tools::Fill1D( Form("nTrack_If2GoodTracks"),nallTrack);
     }
     
+    for(int itr=0;itr<mcData->trackSize();itr++){
+      TVector3 vtx = mcData->track(itr)->vertex();
+      Tools::H1(Form("track_vtxr"),vtx.Perp()/10.,1200,0,120);
+    }
     
     if( Util::GetCDHMul(cdsMan,nGoodTrack,true)!=cdscuts::cdhmulti ){
       if(IsrecoPassed)nAbort_nCDH++;

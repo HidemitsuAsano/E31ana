@@ -840,8 +840,7 @@ void Util::AnaMcData(MCData *mcdata,
   
   for(int itr=0;itr<mcdata->trackSize();itr++){
     TVector3 vtx = mcdata->track(itr)->vertex();
-    //std::cout << "vtx_r" << vtx.Mag() << std::endl;;
-    Tools::H1(Form("track_vtxr"),1000,0,100,vtx.Mag()/10.);
+    Tools::H1(Form("track_vtxr_cdh"),vtx.Perp()/10.,1200,0,120);
   }
   
   
