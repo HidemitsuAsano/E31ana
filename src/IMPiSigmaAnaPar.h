@@ -65,6 +65,7 @@ namespace cdscuts {
   const double cds_chi2_max = 30;
   const bool useclosestpi = false;
   const double chargevetoangle = 15.0;
+  const double CDHemeanCal = 0.88;
 }
 
 namespace cdscuts_lpim{
