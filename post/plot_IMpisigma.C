@@ -3583,7 +3583,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //TH2F* acc_Sp = (TH2F*)facc_Sp->Get("eff_q_IMpiSigma_wSid_n");
   TH2F* acc_Sp = (TH2F*)facc_Sp->Get("eff_q_IMpiSigma_wSid_n_reco");
   //w/o K0, true (q,IM)
-  TH2F* acc_Sp_woK0 = (TH2F*)facc_Sp->Get("eff_q_IMpiSigma_woK0_wSid_n");
+  TH2F* acc_Sp_woK0 = (TH2F*)facc_Sp->Get("eff_q_IMpiSigma_woK0_wSid_n_reco");
   //w/o K0, Sp selection
   TH2F* acc_SpSel_woK0 = (TH2F*)facc_Sp->Get("eff_q_IMpiSigma_woK0_wSid_n_SpSm_reco");
   //TH2F* acc_SpSel_woK0 = (TH2F*)facc_Sp->Get("eff_q_IMpiSigma_woK0_wSid_n_SpSm");
@@ -3594,7 +3594,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   }
   if(acc_Sp_woK0 == NULL){
     std::cout << " acc_Sp_woK0 is NULL " << std::endl;
-    return;
+    //return;
   }
   if(acc_SpSel_woK0 == NULL){
     std::cout << " acc_SpSel_woK0 is NULL " << std::endl;
@@ -3606,17 +3606,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   }
 
   //TH2F* acc_Sm = (TH2F*)facc_Sm->Get("eff_q_IMpiSigma_woK0_wSid_n_SpSm");
-  TH2F* acc_Sm = (TH2F*)facc_Sm->Get("eff_q_IMpiSigma_wSid_n");
-  TH2F* acc_Sm_woK0 = (TH2F*)facc_Sm->Get("eff_q_IMpiSigma_woK0_wSid_n");
+  TH2F* acc_Sm = (TH2F*)facc_Sm->Get("eff_q_IMpiSigma_wSid_n_reco");
+  TH2F* acc_Sm_woK0 = (TH2F*)facc_Sm->Get("eff_q_IMpiSigma_woK0_wSid_n_reco");
   TH2F* acc_SmSel_woK0 = (TH2F*)facc_Sm->Get("eff_q_IMpiSigma_woK0_wSid_n_SpSm_reco");
   TH2F* acc_Sm_err = (TH2F*)facc_Sm->Get("heff_err");
   if(acc_Sm == NULL){
     std::cout << " acc_Sm is NULL " << std::endl;
-    return;
+    //return;
   }
   if(acc_Sm_woK0 == NULL){
     std::cout << " acc_Sm_woK0 is NULL " << std::endl;
-    return;
+    //return;
   }
   if(acc_SmSel_woK0 == NULL){
     std::cout << " acc_SmSel_woK0 is NULL " << std::endl;
