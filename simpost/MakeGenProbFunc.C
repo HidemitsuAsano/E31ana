@@ -5,13 +5,18 @@ void MakeGenProbFunc()
 {
   //TFile *file = new TFile("simIMpisigma_nSppim_DoraAir_v45_v46_acc.root","READ");
   //TFile *file = new TFile("simIMpisigma_nSmpip_DoraAir_v45_v46_acc.root","READ");
-  TFile *file = new TFile("simIMLpim_DoraAir_v2.root","READ");
+  //TFile *file = new TFile("simIMLpim_DoraAir_v2.root","READ");
+  TFile *file = new TFile("simIMpisigma_npipiL_DoraAir_v10.root","READ");
   std::cout << "file name:" << file->GetName() << std::endl;
 
   //TH2F* React_q_IMPiSigma = (TH2F*)file->Get("React_q_IMPiSigma_Sp");
-  TH2F* React_q_IMPiSigma = (TH2F*)file->Get("React_q_IMPiSigma");
+  //TH2F* React_q_IMPiSigma = (TH2F*)file->Get("React_q_IMPiSigma");
+  TH2F* React_q_IMPiSigma = (TH2F*)file->Get("React_q_IMnpipi");
   double ntotal = React_q_IMPiSigma->Integral();
   std::cout << "total " << ntotal << std::endl;
+  TCanvas *creact = new TCanvas("creact","creact");
+  creact->cd();
+  React_q_IMPiSigma->Draw("colz");
 
   TGraph2D *dt = new TGraph2D();
   dt->SetName("g2dprob");
@@ -50,7 +55,8 @@ void MakeGenProbFunc()
 
   //TH2F* pro = (TH2F*)dt->Project("xy");
   //pro->Draw("colz");
-  TFile *fout = new TFile("probLpim.root","RECREATE");
+  //TFile *fout = new TFile("probLpim.root","RECREATE");
+  TFile *fout = new TFile("probnpipiL.root","RECREATE");
   //dt->Write();
   h2prob->Write();
 
