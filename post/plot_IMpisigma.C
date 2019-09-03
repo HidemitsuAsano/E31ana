@@ -40,12 +40,12 @@ const int nzone=2;//for wide range side band study
 const unsigned int LOWside=0;
 const unsigned int HIGHside=1;
 
-//0: diagonal cut
+//0: diagonal cut for S+/S- separation
 //1: 3 sigma cut
 //2: 5 simga cut 
 const unsigned int sigmacuttype=0;
 
-//0:diagonal cut
+//0:diagonal cut 
 //1:3 sigma cut
 //2:5 sigma cut
 const unsigned int sidebandtype=0;
@@ -63,6 +63,7 @@ const unsigned int sidebandtype=0;
 
 void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 {
+  gROOT->Reset();
   gROOT->SetBatch(true);
   //gROOT->SetStyle("Plain");
   if(staton)gStyle->SetOptStat(111111);
@@ -77,7 +78,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   gStyle->SetCanvasDefH(800); gStyle->SetCanvasDefW(1000);
   gStyle->SetPadRightMargin(0.15);
   gStyle->SetPadLeftMargin(0.12);
-  //gStyle->SetTitleFontSize(0.1);
   
   TH1::SetDefaultSumw2();
 
@@ -103,9 +103,15 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
   bool SimSpmode = (std::string(filename).find("Sp")!= std::string::npos);
   bool SimSmmode = (std::string(filename).find("Sm")!= std::string::npos);
-  bool SimK0nn = (std::string(filename).find("K0nn")!= std::string::npos);
-  bool SimK0n_ns = (std::string(filename).find("K0n_ns")!= std::string::npos);
-  bool SimnpipiL = (std::string(filename).find("npipiL")!= std::string::npos);
+  bool SimK0nnmode = (std::string(filename).find("K0nn")!= std::string::npos);//K0nn phase space
+  bool SimK0n_nsmode = (std::string(filename).find("K0n_ns")!= std::string::npos);
+  bool SimK0_nntsmode = (std::string(filename).find("K0_nnts")!= std::string::npos);
+  bool SimnpipiLmode = (std::string(filename).find("npipiL")!= std::string::npos);
+  bool SimnS0pippimmode = (std::string(filename).find("nS0pippim")!= std::string::npos);
+  bool SimSppi0mode = (std::string(filename).find("Sppimpi0")!=std::string::npos);
+  bool SimSmpi0mode = (std::string(filename).find("Smpippi0")!=std::string::npos);
+  bool SimSp_nsmode = (std::string(filename).find("Sppim_ns")!=std::string::npos);
+  bool SimSm_nsmode = (std::string(filename).find("Smpip_ns")!=std::string::npos);
 
   //= = = = pipipnn final-sample tree = = = =//
   
@@ -248,7 +254,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* dE_IMnpipi_woK0_wSid_n;
   TH2F* Cosn_IMnpipi_wSid_n;
   TH2F* Cosn_IMnpipi_woK0_wSid_n;
-  TH2F* MMnmiss_IMnpipi_wSid_n;
+  TH2F* MMnmiss_IMnpipi_wSid_n;//MM= missing Mass
   TH2F* MMnmiss_IMnpipi_woK0_wSid;
   TH2F* MMnmiss_IMnpipi_woK0_wSid_Sp;
   TH2F* MMnmiss_IMnpipi_woK0_wSid_Sm;
@@ -2141,27 +2147,26 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0_n_py_Sp->SetFillColor(2);
   IMnpim_IMnpip_dE_woK0_n_py_Sp->Draw("HEsame");
    
-  TCanvas *cCDHphi_betainv_fid = new TCanvas("cCDHphi_betainv_fid","CDHphi_betainv_fid");
-  cCDHphi_betainv_fid->cd();
-  CDHphi_betainv_fid->Draw("colz");
+  //TCanvas *cCDHphi_betainv_fid = new TCanvas("cCDHphi_betainv_fid","CDHphi_betainv_fid");
+  //cCDHphi_betainv_fid->cd();
+  //CDHphi_betainv_fid->Draw("colz");
  
-  TCanvas *cCDHz_betainv_fid = new TCanvas("cCDHz_betainv_fid","CDHz_betainv_fid");
-  cCDHz_betainv_fid->cd();
-  CDHz_betainv_fid->Draw("colz");
+  //TCanvas *cCDHz_betainv_fid = new TCanvas("cCDHz_betainv_fid","CDHz_betainv_fid");
+  //cCDHz_betainv_fid->cd();
+  //CDHz_betainv_fid->Draw("colz");
 
+  //TCanvas *cnmom_CDHphi = new TCanvas("cnmom_CDHphi","nmom_CDHphi");
+  //cnmom_CDHphi->cd();
+  //nmom_CDHphi->Draw("colz");
 
-  TCanvas *cnmom_CDHphi = new TCanvas("cnmom_CDHphi","nmom_CDHphi");
-  cnmom_CDHphi->cd();
-  nmom_CDHphi->Draw("colz");
-
-  TCanvas *cIMnpip_CDHphi_dE_woK0_n = new TCanvas("cIMnpip_CDHphi_dE_woK0_n","IMnpip_CDHphi_dE_woK0_n");
-  cIMnpip_CDHphi_dE_woK0_n->cd();
-  IMnpip_CDHphi_dE_woK0_n->Draw("colz");
+  //TCanvas *cIMnpip_CDHphi_dE_woK0_n = new TCanvas("cIMnpip_CDHphi_dE_woK0_n","IMnpip_CDHphi_dE_woK0_n");
+  //cIMnpip_CDHphi_dE_woK0_n->cd();
+  //IMnpip_CDHphi_dE_woK0_n->Draw("colz");
   
-  TCanvas *cIMnpip_CDHz_dE_woK0_n = new TCanvas("cIMnpip_CDHz_dE_woK0_n","IMnpip_CDHz_dE_woK0_n");
-  cIMnpip_CDHz_dE_woK0_n->cd();
-  IMnpip_CDHz_dE_woK0_n->RebinX(5);
-  IMnpip_CDHz_dE_woK0_n->Draw("colz");
+  //TCanvas *cIMnpip_CDHz_dE_woK0_n = new TCanvas("cIMnpip_CDHz_dE_woK0_n","IMnpip_CDHz_dE_woK0_n");
+  //cIMnpip_CDHz_dE_woK0_n->cd();
+  //IMnpip_CDHz_dE_woK0_n->RebinX(5);
+  //IMnpip_CDHz_dE_woK0_n->Draw("colz");
    
   TCanvas *cpipmom_IMnpip_dE_n = new TCanvas("cpipmom_IMnpip_dE_n","pipmom_IMnpip_dE_n");
   cpipmom_IMnpip_dE_n->cd();
@@ -4365,18 +4370,37 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       pt->SetFillColor(kAzure-4);
       pt->AddText("MC #Sigma-#pi+ mode"); 
     }
-    else if(SimK0nn){
+    else if(SimK0nnmode){
       pt->SetFillColor(kAzure-4);
       pt->AddText("MC K0nn"); 
     }
-    else if(SimK0n_ns){
+    else if(SimK0n_nsmode){
       pt->SetFillColor(kAzure-4);
       pt->AddText("MC K0n_ns"); 
     }
-    else if(SimnpipiL){
+    else if(SimnpipiLmode){
       pt->SetFillColor(kAzure-4);
       pt->AddText("MC n#pi+#pi-#Lambda");
-    }else{
+    }
+    else if(SimnS0pippimmode){
+      pt->SetFillColor(kAzure-4);
+      pt->AddText("MC n#Sigma0#pi#pi-");
+    }
+    else if(SimSppi0mode){
+      pt->SetFillColor(kAzure-4);
+      pt->AddText("MC n#Sigma+#pi+#pi-#pi0");
+    }
+    else if(SimSmpi0mode){
+      pt->SetFillColor(kAzure-4);
+      pt->AddText("MC n#Sigma-#pi+#pi-#pi0");
+    }else if(SimSp_nsmode){
+      pt->SetFillColor(kAzure-4);
+      pt->AddText("MC #Sigma+#pi+#pi- 1NA");
+    }else if(SimSm_nsmode){
+      pt->SetFillColor(kAzure-4);
+      pt->AddText("MC #Sigma-#pi+#pi- 1NA");
+    }
+    else{
       pt->AddText("Real Data");
       pt->SetFillColor(kCyan-9);
     }
