@@ -1190,6 +1190,15 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
               }
             }
           }
+          
+          if(K0rejectFlag && SigmaMFlag) {
+            for( int i=0; i<cdsMan->nCDH(); i++ ){
+              if((cdsMan->CDH(i)->CheckRange()) && (cdsMan->CDH(i)->ctmean()<cdscuts::tdc_cdh_max)){
+                Tools::Fill2D( Form("CDHdE_woK0_wSmid"),cdsMan->CDH(i)->seg(),cdsMan->CDH(i)->emean());
+              }
+            }
+          }
+
 
           if( MissNFlag ) {
             Tools::Fill1D( Form("IMnpipi_n"), (LVec_n+LVec_pim+LVec_pip).M() );
