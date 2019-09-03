@@ -881,6 +881,7 @@ void Util::AnaMcData(MCData *mcdata,
     double vtx_r;
     double vtx_r_g1parent;
     double vtx_r_g2parent;
+    DetectorHit *dhitncan;
     NcanInfo(){
       pdg=-9999;
       parentpdg=-9999;
@@ -888,6 +889,7 @@ void Util::AnaMcData(MCData *mcdata,
       processID=-1;
       dE=0.0;
       mom=0.0;
+      dhitncan=NULL;
     }
   };
   
@@ -1001,6 +1003,7 @@ void Util::AnaMcData(MCData *mcdata,
       ncaninfo.mom = truemom;
       ncaninfo.processID = processID;
       ncaninfo.gen = generation;
+      ncaninfo.dhitncan = dhit;
       Tools::H1(Form("ncan_pdg"),pdg,16000,-8000,8000);
       Tools::H1(Form("ncan_parentpdg"),parentpdg,16000,-8000,8000);
       Tools::H2(Form("mom_processID_ncan"),processID, truemom ,222,-0.5,221.5, 200,0,2);
@@ -1035,6 +1038,7 @@ void Util::AnaMcData(MCData *mcdata,
     Tools::H2(Form("mom_generation_ncan_select"),ncaninfo.gen, ncaninfo.mom,10,0,10, 200,0,2);
     Tools::H2(Form("CDHdE_processID_ncan_select"),ncaninfo.processID, ncaninfo.dE,222,-0.5,221.5, 100,0,10);
     Tools::H2(Form("CDHdE_generation_ncan_select"),ncaninfo.gen, ncaninfo.dE,10,0,10, 100,0,10);
+    Util::FillAncestryVertexR(mcdata,ncaninfo.dhitncan,ncaninfo.dE);
   }
 
 
@@ -1152,3 +1156,19 @@ Track* Util::FindTrackFromMcIndex(MCData *mcdata, int trackid)
   return 0;
 }
 
+
+int Util::FillAncestryVertexR(MCData *mcdata,DetectorHit *dhit, double dE)
+{
+  Track *parentTr=Util::FindTrackFromMcIndex(mcdata, dhit->parentID());
+  
+  TVector3 vtxp = parentTr->vertex();
+  Tools::H2(Form("dE_track_vtxr_ncan_1stg"),vtxp.Perp()/10.,dE,1200,0,120,100,0,10);
+  int gen=0;
+  while( parentTr!=0){
+    TVector3 vtx = parentTr->vertex();
+    Tools::H2(Form("dE_track_vtxr_ncan"),vtx.Perp()/10.,dE,1200,0,120,100,0,10);
+    parentTr=Util::FindTrackFromMcIndex(mcdata,parentTr->parentTrackID());
+    gen++;
+  }
+  return gen;
+}
