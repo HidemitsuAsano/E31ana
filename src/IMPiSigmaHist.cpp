@@ -112,6 +112,7 @@ void InitBasicHist(const bool MCFlag)
   Tools::newTH2F( Form("CDHdE_wt"),36,0.5,36.5,100,0,10);
   Tools::newTH2F( Form("CDHdE_pippim"),36,0.5,36.5,100,0,10);
   Tools::newTH2F( Form("CDHdE_woK0_wSid"),36,0.5,36.5,100,0,10);
+  Tools::newTH2F( Form("CDHdE_woK0_wSmid"),36,0.5,36.5,100,0,10);
   Tools::newTH2F( Form("CDHdE_woK0_wSid_n"),36,0.5,36.5,100,0,10);
   Tools::newTH2F( Form("dE_CDHtime"),100,0.,100,100,0,50);
   Tools::newTH2F( Form("dE_CDHtime_2track"),100,0.,100,100,0,50);
