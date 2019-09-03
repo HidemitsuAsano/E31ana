@@ -3612,11 +3612,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* acc_Sm_err = (TH2F*)facc_Sm->Get("heff_err");
   if(acc_Sm == NULL){
     std::cout << " acc_Sm is NULL " << std::endl;
-    //return;
+    return;
   }
   if(acc_Sm_woK0 == NULL){
     std::cout << " acc_Sm_woK0 is NULL " << std::endl;
-    //return;
+    return;
   }
   if(acc_SmSel_woK0 == NULL){
     std::cout << " acc_SmSel_woK0 is NULL " << std::endl;
