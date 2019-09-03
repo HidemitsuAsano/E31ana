@@ -75,6 +75,7 @@ namespace Util
    int ProcessNameToProcessID(const std::string &name);
    std::string ProcessIDToProcessName(const int &id);
    int CalcGeneration(MCData *mcdata,DetectorHit *dhit);
+   int FillAncestryVertexR(MCData *mcdata,DetectorHit *dhit,double dE);
    Track *FindTrackFromMcIndex(MCData *mcdata, int trackid);
 };
 
