@@ -400,10 +400,14 @@ void QACDS(TFile *f){
   h1_diff_CDH->Draw();
   
   TCanvas *cdiff_CDH_CDC = new TCanvas("cdiff_CDH_CDC","diff_CDH_CDC");
-  TH1F* h1_cdiff_CDH_CDC = (TH1F*)f->Get("diff_CDH_CDC");
-  h1_cdiff_CDH_CDC->SetXTitle("angle [deg]");
-  h1_cdiff_CDH_CDC->Draw();
-   
+  TH1F* h1_diff_CDH_CDC = (TH1F*)f->Get("diff_CDH_CDC");
+  h1_diff_CDH_CDC->SetXTitle("angle [deg]");
+  h1_diff_CDH_CDC->Draw();
+  TH1F* h1_diff_CDH_CDC_clone= (TH1F*)h1_diff_CDH_CDC->Clone();
+  h1_diff_CDH_CDC_clone->SetFillColor(kGreen);
+  h1_diff_CDH_CDC_clone->GetXaxis()->SetRangeUser(0,15);
+  h1_diff_CDH_CDC_clone->Draw("same");
+
   
   TCanvas *cdE_betainv_fiducial = new TCanvas("cdE_betainv_fiducial","dE_betainv_fid");
   TH2F* h2_dE_betainv = (TH2F*)f->Get("dE_betainv_fid");
@@ -703,11 +707,13 @@ void QAbeamline(TFile *f){
   cnBHD->cd();
   h1_nBHD->GetXaxis()->SetTitle("BHD multiplicity");
   h1_nBHD->Draw();
+  cnBHD->SetLogy();
   TH1F *h1_nT0 = (TH1F*) f->Get("mul_T0");
   TCanvas *cnT0 =  new TCanvas("nT0","mul_T0");
   cnT0->cd();
   h1_nT0->GetXaxis()->SetTitle("T0 multiplicity");
   h1_nT0->Draw();
+  cnT0->SetLogy();
 
   TH1F *h1_T0BHDtof = (TH1F*)f->Get("tof_T0BHD");
   TCanvas *ctof = new TCanvas("tof","tof_T0BHD");
@@ -715,6 +721,7 @@ void QAbeamline(TFile *f){
   h1_T0BHDtof->GetXaxis()->SetRangeUser(24,38);
   h1_T0BHDtof->GetXaxis()->SetTitle("T0-BHD tof [nsec.]");
   h1_T0BHDtof->Draw();
+  ctof->SetLogy();
 
   TH1F *h1_T0BHDtof_cut = (TH1F*) h1_T0BHDtof->Clone();
   h1_T0BHDtof_cut->GetXaxis()->SetRangeUser(blcuts::beam_tof_k_min,blcuts::beam_tof_k_max);
