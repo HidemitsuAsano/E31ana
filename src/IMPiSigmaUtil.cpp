@@ -848,11 +848,13 @@ void Util::AnaMcData(MCData *mcdata,
   struct pimInfo{
     int gen;
     int processID;
+    int parentProcessID;
     double dE;
     double mom;
     pimInfo(){
       gen=-1;
       processID=-1;
+      parentProcessID=-1;
       dE=0.0;
       mom=0.0;
     }
@@ -861,11 +863,13 @@ void Util::AnaMcData(MCData *mcdata,
   struct pipInfo{
     int gen;
     int processID;
+    int parentProcessID;
     double dE;
     double mom;
     pipInfo(){
       gen=-1;
       processID=-1;
+      parentProcessID=-1;
       dE=0.0;
       mom=0.0;
     }
@@ -876,6 +880,7 @@ void Util::AnaMcData(MCData *mcdata,
     int parentpdg;
     int gen;
     int processID;
+    int parentProcessID;
     double dE;
     double mom;
     double vtx_r;
@@ -887,6 +892,7 @@ void Util::AnaMcData(MCData *mcdata,
       parentpdg=-9999;
       gen=-1;
       processID=-1;
+      parentProcessID=-1;
       dE=0.0;
       mom=0.0;
       dhitncan=NULL;
@@ -932,8 +938,12 @@ void Util::AnaMcData(MCData *mcdata,
     int parentID = dhit->parentID();
     Track *parenttrack_p = Util::FindTrackFromMcIndex(mcdata,parentID);
     int parentpdg = 0;
-    if(parenttrack_p !=0) parentpdg= parenttrack_p->pdgID();
-
+    int parentprocessID=-1;
+    if(parenttrack_p !=0){
+      parentpdg= parenttrack_p->pdgID();
+      std::string parentProcessname = std::string(parenttrack_p->creatorProcess()); 
+      parentprocessID = ProcessNameToProcessID(parentProcessname);
+    }
     double truemom = (track_p->momentum()).Mag()/1000.;
     std::string processname = std::string(track_p->creatorProcess());
     int processID =ProcessNameToProcessID(processname);
@@ -977,9 +987,15 @@ void Util::AnaMcData(MCData *mcdata,
       piminfo.dE = dEreco;
       piminfo.mom = truemom;
       piminfo.processID = processID;
+      piminfo.parentProcessID = parentprocessID;
       piminfo.gen = generation;
-      Tools::H2(Form("mom_processID_pim"),processID, truemom ,222,-0.5,221.5, 200,0,2);
-      Tools::H2(Form("mom_generation_pim"),generation, truemom,10,0,10, 200,0,2);
+      Tools::H2(Form("mom_processID_pim"),processID, truemom ,222,-0.5,221.5, 200,0,1);
+      Tools::H2(Form("mom_parentprocessID_pim"),parentprocessID, truemom ,222,-0.5,221.5, 200,0,1);
+      if(generation>2){
+        Tools::H2(Form("mom_processID_pim_over2g"),processID, truemom ,222,-0.5,221.5, 200,0,1);
+        Tools::H2(Form("mom_parentprocessID_pim_over2g"),parentprocessID, truemom ,222,-0.5,221.5, 200,0,1);
+      }
+      Tools::H2(Form("mom_generation_pim"),generation, truemom,10,0,10, 200,0,1);
       Tools::H2(Form("CDHdE_processID_pim"),processID, dEreco,222,-0.5,221.5, 100,0,10);
       Tools::H2(Form("CDHdE_generation_pim"),generation, dEreco,10,0,10, 100,0,10);
     }
@@ -989,9 +1005,15 @@ void Util::AnaMcData(MCData *mcdata,
       pipinfo.dE = dEreco;
       pipinfo.mom = truemom;
       pipinfo.processID = processID;
+      pipinfo.parentProcessID = parentprocessID;
       pipinfo.gen = generation;
-      Tools::H2(Form("mom_processID_pip"),processID, truemom ,222,-0.5,221.5, 200,0,2);
-      Tools::H2(Form("mom_generation_pip"),generation, truemom,10,0,10, 200,0,2);
+      Tools::H2(Form("mom_processID_pip"),processID, truemom ,222,-0.5,221.5, 200,0,1);
+      Tools::H2(Form("mom_parentprocessID_pip"),parentprocessID, truemom ,222,-0.5,221.5, 200,0,1);
+      if(generation>2){
+        Tools::H2(Form("mom_processID_pip_over2g"),processID, truemom ,222,-0.5,221.5, 200,0,1);
+        Tools::H2(Form("mom_parentprocessID_pip_over2g"),parentprocessID, truemom ,222,-0.5,221.5, 200,0,1);
+      }
+      Tools::H2(Form("mom_generation_pip"),generation, truemom,10,0,10, 200,0,1);
       Tools::H2(Form("CDHdE_processID_pip"),processID, dEreco,222,-0.5,221.5, 100,0,10);
       Tools::H2(Form("CDHdE_generation_pip"),generation, dEreco,10,0,10, 100,0,10);
     }
@@ -1023,19 +1045,27 @@ void Util::AnaMcData(MCData *mcdata,
   }
   Tools::H1(Form("EventType"),EventType,3,-0.5,2.5);
   if(EventType==1){
-    Tools::H2(Form("mom_processID_pim_select"),piminfo.processID, piminfo.mom ,222,-0.5,221.5, 200,0,2);
-    Tools::H2(Form("mom_generation_pim_select"),piminfo.gen, piminfo.mom,10,0,10, 200,0,2);
+    Tools::H2(Form("mom_processID_pim_select"),piminfo.processID, piminfo.mom ,222,-0.5,221.5, 200,0,1);
+    if(piminfo.gen>2){ 
+      Tools::H2(Form("mom_processID_pim_select_over2g"),piminfo.processID, piminfo.mom ,222,-0.5,221.5, 200,0,1);
+      Tools::H2(Form("mom_parentprocessID_pim_select_over2g"),piminfo.parentProcessID, piminfo.mom ,222,-0.5,221.5, 200,0,1);
+    }
+    Tools::H2(Form("mom_generation_pim_select"),piminfo.gen, piminfo.mom,10,0,10, 200,0,1);
     Tools::H2(Form("CDHdE_processID_pim_select"),piminfo.processID, piminfo.dE,222,-0.5,221.5, 100,0,10);
     Tools::H2(Form("CDHdE_generation_pim_select"),piminfo.gen, piminfo.dE,10,0,10, 100,0,10);
-    Tools::H2(Form("mom_processID_pip_select"),pipinfo.processID, pipinfo.mom ,222,-0.5,221.5, 200,0,2);
-    Tools::H2(Form("mom_generation_pip_select"),pipinfo.gen, pipinfo.mom,10,0,10, 200,0,2);
+    Tools::H2(Form("mom_processID_pip_select"),pipinfo.processID, pipinfo.mom ,222,-0.5,221.5, 200,0,1);
+    if(pipinfo.gen>2){ 
+      Tools::H2(Form("mom_processID_pip_select_over2g"),pipinfo.processID, pipinfo.mom ,222,-0.5,221.5, 200,0,1);
+      Tools::H2(Form("mom_parentprocessID_pip_select_over2g"),pipinfo.parentProcessID, pipinfo.mom ,222,-0.5,221.5, 200,0,1);
+    }
+    Tools::H2(Form("mom_generation_pip_select"),pipinfo.gen, pipinfo.mom,10,0,10, 200,0,1);
     Tools::H2(Form("CDHdE_processID_pip_select"),pipinfo.processID, pipinfo.dE,222,-0.5,221.5, 100,0,10);
     Tools::H2(Form("CDHdE_generation_pip_select"),pipinfo.gen, pipinfo.dE,10,0,10, 100,0,10);
     
     Tools::H1(Form("ncan_pdg_select"),ncaninfo.pdg,16000,-8000,8000);
     Tools::H1(Form("ncan_parentpdg_select"),ncaninfo.parentpdg,16000,-8000,8000);
-    Tools::H2(Form("mom_processID_ncan_select"),ncaninfo.processID, ncaninfo.mom ,222,-0.5,221.5, 200,0,2);
-    Tools::H2(Form("mom_generation_ncan_select"),ncaninfo.gen, ncaninfo.mom,10,0,10, 200,0,2);
+    Tools::H2(Form("mom_processID_ncan_select"),ncaninfo.processID, ncaninfo.mom ,222,-0.5,221.5, 100,0,2);
+    Tools::H2(Form("mom_generation_ncan_select"),ncaninfo.gen, ncaninfo.mom,10,0,10, 100,0,2);
     Tools::H2(Form("CDHdE_processID_ncan_select"),ncaninfo.processID, ncaninfo.dE,222,-0.5,221.5, 100,0,10);
     Tools::H2(Form("CDHdE_generation_ncan_select"),ncaninfo.gen, ncaninfo.dE,10,0,10, 100,0,10);
     Util::FillAncestryVertexR(mcdata,ncaninfo.dhitncan,ncaninfo.dE);
