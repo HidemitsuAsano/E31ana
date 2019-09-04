@@ -1,7 +1,7 @@
 #!/bin/tcsh -f
-set Version="1"
-set DSTVersion="1"
-set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simK0_nnts${DSTVersion}/"
+set Version="8"
+set DSTVersion="2"
+set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim_K0_nnts${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 set CDSDIRSUB="${CDSDIR}simDSTK0_nnts${DSTVersion}"
 set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simIMPiSigma_K0_nnts/"
@@ -35,8 +35,8 @@ cp $CONF___ $OUTDIRSUB
 
 cp hadd_simhist_K0nn_nnts.csh $OUTDIRSUB/
 cp hadd_sim_pippimn_K0nn_nnts.csh $OUTDIRSUB/
-ln -s $OUTDIRSUB/simIMpisigma_K0nn_all.root simpost/simIMpisigma_K0_nnts_v${Version}.root
-ln -s $OUTDIRSUB/simIMpisigma_K0nn_pippimn_all.root simpost/simIMpisigma_K0_nnts_pippimn_v${Version}.root
+ln -s $OUTDIRSUB/simIMpisigma_K0nn_nnts_all.root simpost/simIMpisigma_K0_nnts_v${Version}.root
+ln -s $OUTDIRSUB/simIMpisigma_K0nn_nnts_pippimn_all.root simpost/simIMpisigma_K0_nnts_pippimn_v${Version}.root
 
 @ i = 0
 while ($i < 400)   
