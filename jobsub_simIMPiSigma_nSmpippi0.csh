@@ -1,15 +1,15 @@
 #!/bin/tcsh -f
-set DSTVersion="4"
-set Version="5"
-set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim_nS0pipi${DSTVersion}/"
+set DSTVersion="2"
+set Version="2"
+set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simSmpippi0${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
-set CDSDIRSUB="${CDSDIR}simDST_nS0pipi${DSTVersion}"
-set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simIMPiSigma_nS0pipi/"
+set CDSDIRSUB="${CDSDIR}simDST_simSmpippi0${DSTVersion}"
+set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simIMPiSigma_nSmpippi0/"
 
 set starttime=`date '+%y/%m/%d %H:%M:%S'`
 set logbasedir="/home/had/hiasano/logs/"
 set date=`date +%Y%m%d_%H%M`
-set logdir="${logbasedir}${date}_simIMPiSigma_nS0pipi_${Version}"
+set logdir="${logbasedir}${date}_simIMPiSigma_nSmpippi0_${Version}"
 echo "log files  ${logdir}"
 
 if( ! -d $logdir) then 
@@ -28,10 +28,10 @@ cp $SRCDIR/IMPiSigmaHist.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaUtil.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaUtil.cpp $OUTDIRSUB/
 
-cp hadd_simhist_nS0pippim.csh $OUTDIRSUB/
-cp hadd_sim_nS0pippim_pippimn.csh $OUTDIRSUB/
-ln -s $OUTDIRSUB/simIMpisigma_nS0pippim_all.root simpost/simIMpisigma_nS0pippim_v${Version}.root
-ln -s $OUTDIRSUB/simIMpisigma_nS0pippim_pippimn_all.root simpost/simIMpisigma_nS0pippim_pippimn_v${Version}.root
+cp hadd_simhist_nSmpippi0.csh $OUTDIRSUB/
+cp hadd_sim_nSmpippi0_pippimn.csh $OUTDIRSUB/
+ln -s $OUTDIRSUB/simIMpisigma_nSmpippi0_all.root simpost/simIMpisigma_nSmpippi0_v${Version}.root
+ln -s $OUTDIRSUB/simIMpisigma_nSmpippi0_pippimn_all.root simpost/simIMpisigma_nSmpippi0_pippimn_v${Version}.root
 
 @ i = 0
 while ($i < 400)   
@@ -40,30 +40,28 @@ while ($i < 400)
   set CONF___="conf/Run78/analyzer_kwsk_sim.conf"
   set jobnum=`printf  "%03d"  $i`
 
-  set INPFILESP=${DATADIR}"sim_nS0pippim_0${jobnum}.root"
+  set INPFILESP=${DATADIR}"sim_nSmpippi0_0${jobnum}.root"
   
-  set CDSFILESP=${CDSDIRSUB}"/simDST_nS0pippim_0${jobnum}.root"
+  set CDSFILESP=${CDSDIRSUB}"/simDST_nSmpippi0_0${jobnum}.root"
   
-  set OUTFILESP=${OUTDIRSUB}"/simIMpisigma_nS0pippim_0${jobnum}.root"
+  set OUTFILESP=${OUTDIRSUB}"/simIMpisigma_nSmpippi0_0${jobnum}.root"
 
   echo ${INPFILESP}
   echo ${CDSFILESP} 
   echo ${OUTFILESP}
   
-  set lognamesp = "${logdir}/runS0$i.log"
+  set lognamesp = "${logdir}/runnSmpippi0$i.log"
   bsub -o $lognamesp -q s ${EXEC___} ${CONF___} ${OUTFILESP} ${INPFILESP} ${CDSFILESP}
     @ i ++
 end
 
-set hname=`hostname -s`
-echo ${hname}
 while (1)
-  @ njob=`bjobs | grep ${hname} | wc -l`
+  @ njob=`bjobs | wc -l`
   if ( $njob < 1 ) then 
     echo "all jobs finished"
     cd $OUTDIRSUB
-    tcsh hadd_simhist_nS0pippim.csh
-    tcsh hadd_sim_nS0pippim_pippimn.csh
+    tcsh hadd_simhist_nSmpippi0.csh
+    tcsh hadd_sim_nSmpippi0_pippimn.csh
     cd -
     break
   endif

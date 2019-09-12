@@ -1,15 +1,15 @@
 #!/bin/tcsh -f
-set Version="9"
-set DSTVersion="3"
-set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim_K0_nnts${DSTVersion}/"
+set Version="2"
+set DSTVersion="2"
+set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simK0nn_Knts${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
-set CDSDIRSUB="${CDSDIR}simDSTK0_nnts${DSTVersion}"
-set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simIMPiSigma_K0_nnts/"
+set CDSDIRSUB="${CDSDIR}simDSTK0_Knts${DSTVersion}"
+set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simIMPiSigma_K0_Knts/"
 
 set starttime=`date '+%y/%m/%d %H:%M:%S'`
 set logbasedir="/home/had/hiasano/logs/"
 set date=`date +%Y%m%d_%H%M`
-set logdir="${logbasedir}${date}_simIMPiSigma_K0_nnts_${Version}"
+set logdir="${logbasedir}${date}_simIMPiSigma_K0_Knts_${Version}"
 echo "log files  ${logdir}"
 
 if( ! -d $logdir) then 
@@ -33,10 +33,10 @@ cp $SRCDIR/IMPiSigmaUtil.cpp $OUTDIRSUB/
 set CONF___="conf/Run78/analyzer_kwsk_sim.conf"
 cp $CONF___ $OUTDIRSUB
 
-cp hadd_simhist_K0nn_nnts.csh $OUTDIRSUB/
-cp hadd_sim_pippimn_K0nn_nnts.csh $OUTDIRSUB/
-ln -s $OUTDIRSUB/simIMpisigma_K0nn_nnts_all.root simpost/simIMpisigma_K0_nnts_v${Version}.root
-ln -s $OUTDIRSUB/simIMpisigma_K0nn_nnts_pippimn_all.root simpost/simIMpisigma_K0_nnts_pippimn_v${Version}.root
+cp hadd_simhist_K0nn_Knts.csh $OUTDIRSUB/
+cp hadd_sim_pippimn_K0nn_Knts.csh $OUTDIRSUB/
+ln -s $OUTDIRSUB/simIMpisigma_K0nn_Knts_all.root simpost/simIMpisigma_K0_Knts_v${Version}.root
+ln -s $OUTDIRSUB/simIMpisigma_K0nn_Knts_pippimn_all.root simpost/simIMpisigma_K0_Knts_pippimn_v${Version}.root
 
 @ i = 0
 while ($i < 400)   
@@ -44,11 +44,11 @@ while ($i < 400)
   set EXEC___="./bin/simIMPiSigma"
   set jobnum=`printf  "%03d"  $i`
 
-  set INPFILE=${DATADIR}"sim_K0nn_nnts_0${jobnum}.root"
+  set INPFILE=${DATADIR}"sim_K0nn_Knts_0${jobnum}.root"
   
-  set CDSFILE=${CDSDIRSUB}"/simDST_K0nn_nnts_0${jobnum}.root"
+  set CDSFILE=${CDSDIRSUB}"/simDST_K0nn_Knts_0${jobnum}.root"
   
-  set OUTFILE=${OUTDIRSUB}"/simIMpisigma_K0nn_nnts_0${jobnum}.root"
+  set OUTFILE=${OUTDIRSUB}"/simIMpisigma_K0nn_Knts_0${jobnum}.root"
 
   echo ${INPFILE}
   echo ${CDSFILE} 
@@ -65,8 +65,8 @@ while (1)
   if ( $njob < 1 ) then 
     echo "all jobs finished"
     cd $OUTDIRSUB
-    tcsh hadd_simhist_K0nn_nnts.csh
-    tcsh hadd_sim_pippimn_K0nn_nnts.csh
+    tcsh hadd_simhist_K0nn_Knts.csh
+    tcsh hadd_sim_pippimn_K0nn_Knts.csh
     cd -
     break
   endif

@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
-set Version="14"
-set DSTVersion="5"
+set Version="16"
+set DSTVersion="6"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simnpipiL${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 set CDSDIRSUB="${CDSDIR}simDSTnpipiL${DSTVersion}"
@@ -64,8 +64,10 @@ while ($i < 400)
   @ i ++
 end
 
+set hname=`hostname -s`
+echo ${hname}
 while (1)
-  @ njob=`bjobs | wc -l`
+  @ njob=`bjobs | grep ${hname} | wc -l`
   if ( $njob < 1 ) then 
     echo "all jobs finished"
     cd $OUTDIRSUB
