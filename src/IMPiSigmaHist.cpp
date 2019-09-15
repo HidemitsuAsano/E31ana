@@ -34,6 +34,7 @@ void InitBasicHist(const bool MCFlag)
   //** beam line **//
   Tools::newTH1F( Form("mul_BHD"), 12, -0.5, 11.5 );
   Tools::newTH1F( Form("mul_T0"),   6, -0.5, 5.5 );
+  Tools::newTH1F( Form("T0time"),   1000, -50, 50 );
   Tools::newTH1F( Form("tof_T0BHD"), 2000, 20, 40 );
   Tools::newTH1F( Form("tracktime_BPC"),  1200, -200, 400 );
   Tools::newTH1F( Form("trackchi2_BPC"),  200, 0, 20 );
@@ -114,26 +115,32 @@ void InitBasicHist(const bool MCFlag)
   Tools::newTH2F( Form("CDHdE_woK0_wSid"),36,0.5,36.5,100,0,10);
   Tools::newTH2F( Form("CDHdE_woK0_wSmid"),36,0.5,36.5,100,0,10);
   Tools::newTH2F( Form("CDHdE_woK0_wSid_n"),36,0.5,36.5,100,0,10);
-  Tools::newTH2F( Form("dE_CDHtime"),100,0.,100,100,0,50);
-  Tools::newTH2F( Form("dE_CDHtime_2track"),100,0.,100,100,0,50);
+  Tools::newTH2F( Form("dE_CDHtime"),150,0.,150,100,0,50);
+  Tools::newTH2F( Form("dE_CDHtime_2track"),150,0.,150,100,0,50);
 }
 
 void InitIMPiSigmaHist()
 {
   
   //CDH
-  Tools::newTH2F( Form("dE_CDHtime_pippimn"),100,0.,100,100,0,50);
+  Tools::newTH2F( Form("dE_CDHtime_pippimn"),150,0.,150,100,0,50);
   
   for(int it0=0;it0<5;it0++){
     for(int iseg=0;iseg<36;iseg++){
       Tools::newTH1F( Form("CDH%d_T0%d_TOF_Neutral",iseg+1,it0+1), 400, 0, 100);
     }
   }
-  Tools::newTH2F( Form("NeutraltimeEnergy"),100,0,100,200,0,50);
-  Tools::newTH2F( Form("CDHzNeutraltime"),100,-50,50,100,0,50);
+  Tools::newTH2F( Form("NeutraltimeEnergy"),100,0,100,150,0,150);
+  Tools::newTH2F( Form("CDHzNeutraltime"),100,-50,50,150,0,150);
+  Tools::newTH2F( Form("NMomCDHtime"),300,0,150,150,0,1.5);
+  Tools::newTH2F( Form("NMomCDHtime_wK0"),300,0,150,150,0,1.5);
   for(int iseg=0;iseg<36;iseg++){
-    Tools::newTH2F( Form("CDH%dzNeutraltime",iseg+1),100,-50,50,100,0,50);
+    Tools::newTH2F( Form("CDH%dzNeutraltime",iseg+1),100,-50,50,150,0,150);
+    Tools::newTH2F( Form("NMomCDHtime%d",iseg+1),300,0,150,150,0,1.5);
+    Tools::newTH2F( Form("NMomCDHtime%d_wK0",iseg+1),300,0,150,150,0,1.5);
   }
+  
+  Tools::newTH2F( Form("ntof_nlen"),1000,0,100,1000,0,100);
 
   Tools::newTH1F( Form("diff_CDH"), 73, -36.5, 36.5 );
   Tools::newTH1F( Form("diff_CDH_pippim"), 73, -36.5, 36.5 );

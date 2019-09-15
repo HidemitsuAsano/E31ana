@@ -60,7 +60,8 @@ namespace cdscuts {
   //const double tdc_cdh_max = 40; // ns v25
   //const double tdc_cdh_max = 50; // ns v32-v40
   //const double tdc_cdh_max = 9999; // ns v32-v40
-  const double tdc_cdh_max = 200;// ns v160-
+  //const double tdc_cdh_max = 200;// ns v160-
+  const double tdc_cdh_max = 100;// ns v160-
   const double tdc_simoffset = -17;
   const double cds_chi2_max = 30;
   const bool useclosestpi = false;
@@ -83,9 +84,9 @@ namespace cdscuts_lpim{
 
 namespace anacuts {
   const double beta_MAX = 0.728786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
-  const double dE_MIN = 2.0;
+  const double dE_MIN = 2.0/0.88;
 
-  const double pipi_MIN = 0.485;
+  const double pipi_MIN = 0.487;
   const double pipi_MAX = 0.510;
   const double ppi_MIN = 1.1075;
   const double ppi_MAX = 1.1225;

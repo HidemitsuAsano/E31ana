@@ -546,8 +546,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   //CDH emean recalibrator
   static bool isState=false;
   if(!isState){
+    std::cout << "***********************************************" << std::endl;
     std::cout << "L." << __LINE__ << " CDH emean is recalibrated " << std::endl;
     std::cout << "correction factor " << cdscuts::CDHemeanCal << std::endl;
+    std::cout << "***********************************************" << std::endl;
     isState=true;
   }
   for( int i=0; i<cdsMan->nCDH(); i++ ){
@@ -937,6 +939,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       
       nlen_vtx[0] = (Pos_CDH-CA_pip_pippim).Mag();
       nlen_vtx[1] = (Pos_CDH-CA_pim_pippim).Mag();
+      Tools::Fill2D(Form("ntof_nlen"),ntof,nlen);
       if(Verbosity>10) std::cout << "L." << __LINE__ << " flight length " << nlen << std::endl;
       NeutralBetaCDH = nlen/ntof/(Const*100.);
       for(int ivtx=0;ivtx<2;ivtx++){
@@ -1087,6 +1090,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         Tools::Fill2D( Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
         Tools::Fill2D( Form("CDHzNeutraltime"),Pos_CDH.z(),ncdhhit->ctmean()-ctmT0-beamtof);
         Tools::Fill2D( Form("CDH%dzNeutraltime",CDHSeg),Pos_CDH.z(),ncdhhit->ctmean()-ctmT0-beamtof);
+        Tools::Fill2D( Form("NMomCDHtime"),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
+        Tools::Fill2D( Form("NMomCDHtime%d",CDHSeg),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
         Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
         Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
 
@@ -1171,6 +1176,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             // K0 selection
             Tools::Fill2D( Form("dE_betainv_fid_beta_dE_wK0"), 1./NeutralBetaCDH, ncdhhit->emean() );
             Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_wK0"), mm_mass, P_missn.Mag() );
+            Tools::Fill2D( Form("NMomCDHtime_wK0"),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
+            Tools::Fill2D( Form("NMomCDHtime%d_wK0",CDHSeg),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
           }//K0 rejection
 
           if(K0rejectFlag && MissNFlag) {
