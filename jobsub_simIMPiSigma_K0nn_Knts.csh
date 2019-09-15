@@ -60,8 +60,10 @@ while ($i < 400)
   @ i ++
 end
 
+set hname=`hostname -s`
+echo ${hname}
 while (1)
-  @ njob=`bjobs | wc -l`
+  @ njob=`bjobs | grep ${hname} | wc -l`
   if ( $njob < 1 ) then 
     echo "all jobs finished"
     cd $OUTDIRSUB
