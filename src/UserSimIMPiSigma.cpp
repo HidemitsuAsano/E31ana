@@ -889,6 +889,7 @@ int main( int argc, char** argv )
       //beam K (K+) to -Z direction 
       //beam momentum is fixed in GEANT simulation. It is smeared here by gaussian.
       if( pdgcode==321 && parent==0 ){
+        //std::cout << mcData->track(imctrk)->momentum().Mag() << std::endl;
         beammom = (mcData->track(imctrk)->momentum().Mag()+gRandom->Gaus(0,MOM_RES))/1000.0;
         if(Verbosity_>100){
           std::cout << "L." << __LINE__ << " beam mom:" << beammom << std::endl;
@@ -1202,9 +1203,15 @@ int main( int argc, char** argv )
 
         
         double ntof = ncdhhit->ctmean()-ctmT0-beamtof;
+        Tools::Fill1D(Form("CDH%d_T0%d_TOF_Neutral",ncdhhit->seg() ,t0seg),ntof);
+        //std::cout <<"cdh time "<<  ncdhhit->ctmean() << std::endl;
+        //std::cout << "ctmt0   " << ctmT0 << std::endl;
+        //std::cout <<"beamtof  " <<  beamtof << std::endl;
+        //double ntof = ncdhhit->ctmean();
         const double ntof_vtx[2] = {ncdhhit->ctmean()-ctmT0-beamtof_vtx[0], ncdhhit->ctmean()-ctmT0-beamtof_vtx[1]};
         double nlen = (Pos_CDH-vtx_dis).Mag();
         double nlen_vtx[2];
+        Tools::Fill2D(Form("ntof_nlen"),ntof,nlen);
         //nlen_vtx[0] = (Pos_CDH-vtx_pip).Mag();
         //nlen_vtx[1] = (Pos_CDH-vtx_pim).Mag();
         nlen_vtx[0] = (Pos_CDH-CA_pip_pippim).Mag();
@@ -1325,6 +1332,7 @@ int main( int argc, char** argv )
           Tools::Fill2D(Form("Vtx_XY_fid"),vtx_pim_mean.X(),vtx_pim_mean.Y());
           Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
           Tools::Fill2D(Form("CDHzNeutraltime"),Pos_CDH.z(),ncdhhit->ctmean()-ctmT0-beamtof);
+          Tools::Fill2D( Form("NMomCDHtime%d",ncdhhit->seg()),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
           Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
           Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
          
@@ -1407,6 +1415,7 @@ int main( int argc, char** argv )
               Tools::Fill2D( Form("CDHz_IMnpim_fid_beta_dE_woK0_n"),Pos_CDH.z(),(LVec_n+LVec_pim).M());
             }else{
               // K0 selection
+              Tools::Fill2D( Form("NMomCDHtime%d_wK0",ncdhhit->seg()),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
               Tools::Fill2D( Form("dE_betainv_fid_beta_dE_wK0"), 1./NeutralBetaCDH, ncdhhit->emean() );
               Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_wK0"), mm_mass, P_missn.Mag() );
             }
@@ -1524,7 +1533,7 @@ int main( int argc, char** argv )
 
               //ncds(gen.) is not detected, initial n is detected in CDS instead.
               //abort this event !
-              if(IsrecoPassed)nAbort_anothern++;
+              //if(IsrecoPassed)nAbort_anothern++;
               //IsncdsfromSigma = false;
             }
             mcmom_beam = TL_gene[kin::kmbeam];
