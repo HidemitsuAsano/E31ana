@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
-set Version="6"
-set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simK0n_ns${Version}/"
+set Version="1"
+set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simpimS1385p_ns${Version}/"
 set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 
 set logbasedir="/home/had/hiasano/logs/"
@@ -11,12 +11,8 @@ echo "log files  ${logdir}"
 if( ! -d $logdir) then 
   mkdir -p  $logdir
 endif 
-else 
- echo "version exist v"${Version}
- exit 0
-endif
 
-set OUTDIRSUB="${OUTDIR}simDSTK0n_ns${Version}"
+set OUTDIRSUB="${OUTDIR}simDSTpimS1385p_ns${Version}"
 if( ! -d $OUTDIRSUB) then 
  mkdir -p $OUTDIRSUB
 endif
@@ -30,19 +26,19 @@ cp $SRCDIR/UserSimDatG4.cpp $OUTDIRSUB/
 while ($i < 400)   
 
   set EXEC___="./bin/sim"
- # set CONF___="conf/Run78/analyzer_kwsk_sim_DoraAir.conf"
+  #set CONF___="conf/Run78/analyzer_kwsk_sim_DoraAir.conf"
   set CONF___="conf/Run78/analyzer_kwsk_sim.conf"
   set jobnum=`printf  "%03d"  $i`
 
-  set INPFILE=${DATADIR}"sim_K0n_ns_0${jobnum}.root"
+  set INPFILE=${DATADIR}"sim_pimS1385p_ns_0${jobnum}.root"
   
-  set OUTFILE=${OUTDIRSUB}"/simDST_K0n_ns_0${jobnum}.root"
+  set OUTFILE=${OUTDIRSUB}"/simDST_pimS1385p_ns_0${jobnum}.root"
 
   echo ${INPFILE}
   echo ${OUTFILE}
 
-  set logname = "${logdir}/runK0n_ns$i.log"
-  bsub -o $logname -q s ${EXEC___} ${CONF___} ${OUTFILE} ${INPFILE} 
+  set lognamesp = "${logdir}/runpimS1385p_ns$i.log"
+  bsub -o $lognamesp -q l ${EXEC___} ${CONF___} ${OUTFILE} ${INPFILE} 
     @ i ++
 end
 
