@@ -346,13 +346,15 @@ int Util::CDSChargedAna(const bool docdcretiming,
     if(nCDHass>1) {
       CDHseg1hitOK = false;
     }
-
+    
+    double dE = -999.;
     for( int icdh=0; icdh<track->nCDHHit(); icdh++ ) {
       HodoscopeLikeHit *cdhhit = track->CDHHit( cdsman, icdh );
       double tmptof = cdhhit->ctmean()-ctmt0;
       if( tmptof<tof || tof==999. ) {
         tof = tmptof;
         CDHseg = cdhhit->seg();
+        dE = cdhhit->emean();
       }
     }
 
@@ -412,14 +414,16 @@ int Util::CDSChargedAna(const bool docdcretiming,
     if(pid == CDS_PiMinus){
       Tools::Fill2D("PID_CDS_PIM_beta",1./beta_calc,mom);
       Tools::Fill2D("PID_CDS_PIM",mass2,mom);
-      Tools::H2("PIM_TOF_MOM",fabs(mom),correctedtof,100,0,2,1000,0,100);
+      Tools::H2("PIM_TOF_MOM",fabs(mom),correctedtof,100,0,2,10000,0,100);
     }else if(pid == CDS_PiPlus){
       Tools::Fill2D("PID_CDS_PIP_beta",1./beta_calc,mom);
       Tools::Fill2D("PID_CDS_PIP",mass2,mom);
-      Tools::H2("PIP_TOF_MOM",mom,correctedtof,100,0,2,1000,0,100);
+      Tools::H2("PIP_TOF_MOM",mom,correctedtof,100,0,2,10000,0,100);
     }
-    else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton",mass2,mom);
-    else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon",mass2,mom);
+    else if(pid == CDS_Proton){
+      Tools::Fill2D("PID_CDS_Proton",mass2,mom);
+      Tools::H2("dE_mom_proton",mom,dE,100,0,2,500,0,50);
+    }else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon",mass2,mom);
 
     // Energy loss calculation //
     double tmpl=0;
@@ -439,8 +443,9 @@ int Util::CDSChargedAna(const bool docdcretiming,
        FindMass2OK1 && 
        FindMass2OK2 && 
        EnergyLossOK && 
-      ((pid==CDS_PiMinus) || (pid==CDS_PiPlus))){
-        Util::AnaCDHHitPos(tof,beta_calc,bpctrack,LVecbeam,ctmt0,track,cdsman,confman,blman,correctedtof,MCFlag);
+      ( (pid==CDS_PiMinus) || (pid==CDS_PiPlus) || (pid==CDS_Proton)) 
+      ){
+        Util::AnaCDHHitPos(tof,beta_calc,bpctrack,LVecbeam,ctmt0,track,cdsman,confman,blman,correctedtof,pid,MCFlag);
     }
 
     if( pid==CDS_PiMinus ) {
@@ -685,6 +690,7 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
                  ConfMan *confman,
                  BeamLineHitMan *blman,
                  const double correctedtof,
+                 const int pid,
                  const bool MCFlag
                  )
 {
@@ -718,34 +724,57 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
   double part_tof = meas_tof-beamtof; // VTX-CDH, scattered particle tof
   double part_len = part_tof*(Const*100.)*beta_calc; //
   double part_mom = track->Momentum(); // from CDC
-  double part_beta = sqrt(part_mom*part_mom/(part_mom*part_mom+piMass*piMass));
+  double Mass =0;
+  if(pid==CDS_PiMinus || pid==CDS_PiPlus) Mass = piMass;
+  if(pid==CDS_Proton) Mass = pMass;
+  double part_beta = sqrt(part_mom*part_mom/(part_mom*part_mom+Mass*Mass));
   double beam_beta = sqrt(beam_mom*beam_mom/(beam_mom*beam_mom+kpMass*kpMass));
   double calc_tof = beam_len/(Const*100.)/beam_beta+part_len/(Const*100.)/part_beta; // T0-VTX part is measured value
   HodoscopeLikeHit *cdh=track->CDHHit(cdsman,0);
-	Tools::Fill2D( Form("CDH_mom_TOF_pi") , meas_tof-calc_tof, track->Momentum() );
-	Tools::Fill2D( Form("CDH%d_mom_TOF_pi",cdh->seg()) , meas_tof-calc_tof, track->Momentum() );
+	if( (pid==CDS_PiMinus)|| (pid==CDS_PiPlus)){
+    Tools::Fill2D( Form("CDH_mom_TOF_pi") , meas_tof-calc_tof, track->Momentum() );
+    Tools::Fill2D( Form("CDH%d_mom_TOF_pi",cdh->seg()) , meas_tof-calc_tof, track->Momentum() );
+
+    Tools::Fill2D( Form("CDH_mom_diffpos_pi_phi"), (track_pos.Phi()-hit_pos.Phi())/TwoPi*360., track->Momentum() );
+    Tools::Fill2D( Form("CDH_mom_diffpos_pi_z"), diff.Z(), track->Momentum() );
+    Tools::H2( Form("CDH_diffpos_z_pi_z"), track_pos.Z(),diff.Z(),1000,-50,50,1000,-50,50);
+  }else if(pid==CDS_Proton){
+    Tools::Fill2D( Form("CDH_mom_TOF_p") , meas_tof-calc_tof, track->Momentum() );
+    Tools::Fill2D( Form("CDH%d_mom_TOF_p",cdh->seg()) , meas_tof-calc_tof, track->Momentum() );
   
-  Tools::Fill2D( Form("CDH_mom_diffpos_pi_phi"), (track_pos.Phi()-hit_pos.Phi())/TwoPi*360., track->Momentum() );
-  Tools::Fill2D( Form("CDH_mom_diffpos_pi_z"), diff.Z(), track->Momentum() );
-  Tools::H2( Form("CDH_diffpos_z_pi_z"), track_pos.Z(),diff.Z(),1000,-50,50,1000,-50,50);
-  
+    Tools::Fill2D( Form("CDH_mom_diffpos_p_phi"), (track_pos.Phi()-hit_pos.Phi())/TwoPi*360., track->Momentum() );
+    Tools::Fill2D( Form("CDH_mom_diffpos_p_z"), diff.Z(), track->Momentum() );
+    Tools::H2( Form("CDH_diffpos_z_p_z"), track_pos.Z(),diff.Z(),1000,-50,50,1000,-50,50);
+  }
   /*
-  //return here as checking histogram is not necessary
   for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
     HodoscopeLikeHit *cdhhit=track->CDHHit(cdsman,icdh);
     HodoscopeLikeHit *t0hit = blman->T0(0);
     int t0seg = t0hit->seg();
-    //Tools::H2( Form("CDH_diffpos_z_pi_z_seg%d",cdhhit->seg()), track_pos.Z(),diff.Z(),1000,-50,50,1000,-50,50);
-    //Tools::H2( Form("CDH_diffpos_ctsub_pi_z_seg%d",cdhhit->seg()),cdhhit->ctsub(),diff.Z(),1000,-4,4,1000,-50,50);
-    if(-5 < track_pos.Z() && track_pos.Z() <5 ){
-      //Tools::H1(Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),1000,-50,50);
-      //Tools::H1( Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),400,-20,20);
-      //Tools::H1( Form("CTMean%d",cdhhit->seg()), cdhhit->ctmean(), 2000,-50,150 );
-      //Tools::H1( Form("CTSub%d",cdhhit->seg()), cdhhit->ctsub(), 1000,-50,50 );
+    if( (pid==CDS_PiMinus)|| (pid==CDS_PiPlus)){
+      Tools::H2( Form("CDH_diffpos_z_pi_z_seg%d",cdhhit->seg()), track_pos.Z(),diff.Z(),1000,-50,50,1000,-50,50);
+      Tools::H2( Form("CDH_diffpos_ctsub_pi_z_seg%d",cdhhit->seg()),cdhhit->ctsub(),diff.Z(),1000,-4,4,1000,-50,50);
+    }else if(pid==CDS_Proton){
+      Tools::H2( Form("CDH_diffpos_z_p_z_seg%d",cdhhit->seg()), track_pos.Z(),diff.Z(),1000,-50,50,1000,-50,50);
+      Tools::H2( Form("CDH_diffpos_ctsub_p_z_seg%d",cdhhit->seg()),cdhhit->ctsub(),diff.Z(),1000,-4,4,1000,-50,50);
     }
+    if(-5 < track_pos.Z() && track_pos.Z() <5 ){
+      if( (pid==CDS_PiMinus)|| (pid==CDS_PiPlus)){
+        Tools::H1(Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),1000,-50,50);
+        Tools::H1( Form("CDH_diffpos_pi_z_seg%d",cdhhit->seg()),diff.Z(),400,-20,20);
+        Tools::H1( Form("CTMean%d",cdhhit->seg()), cdhhit->ctmean(), 2000,-50,150 );
+        Tools::H1( Form("CTSub%d",cdhhit->seg()), cdhhit->ctsub(), 1000,-50,50 );
+      }else if(pid==CDS_Proton){
+        Tools::H1(Form("CDH_diffpos_p_z_seg%d",cdhhit->seg()),diff.Z(),1000,-50,50);
+        Tools::H1( Form("CDH_diffpos_p_z_seg%d",cdhhit->seg()),diff.Z(),400,-20,20);
+        Tools::H1( Form("CTMean%d_p",cdhhit->seg()), cdhhit->ctmean(), 2000,-50,150 );
+        Tools::H1( Form("CTSub%d_p",cdhhit->seg()), cdhhit->ctsub(), 1000,-50,50 );
+      }
+    }*/
+    /*
     if( (fabs(track->Momentum())>0.1) && t0seg==3// &&
-    //if(!MCFlag  && t0seg==3 &&
-      // && (-5 < track_pos.Z()) && (track_pos.Z() <5)
+    if(!MCFlag  && t0seg==3 &&
+       && (-5 < track_pos.Z()) && (track_pos.Z() <5)
       ){
       double tof = (cdhhit->tmean()) - ctmt0 - correctedtof;
       double ctof = (cdhhit->ctmean()) - ctmt0 - correctedtof;
@@ -767,8 +796,8 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
       //Tools::H2(Form("ectT0U%d",t0seg),t0hit->eu(),t0hit->ctu(),200,-0.5,4.5,300,5,20);
       //Tools::H2(Form("ectT0D%d",t0seg),t0hit->ed(),t0hit->ctd(),200,-0.5,4.5,300,5,20);
     }//!MCFlag
+    
   }*/
-
 }
 
 void Util::AnaReactionData( ReactionData *reactionData){
@@ -941,13 +970,12 @@ void Util::AnaMcData(MCData *mcdata,
         }
       }//if
     }//for
-    if(!isHitMatch){
-      continue;
-    }else{
-    }
+    if(!isHitMatch) continue;
+    //}else{
     int pdg    = dhit->pdg();
     int trackID = dhit->trackID();
     double time = dhit->time();
+    double dEtrue = dhit->de();
     trackIDcont[iokhit]=trackID;
     iokhit++;
     Track *track_p  = Util::FindTrackFromMcIndex(mcdata,trackID);
@@ -971,8 +999,8 @@ void Util::AnaMcData(MCData *mcdata,
     int generation = Util::CalcGeneration(mcdata,dhit);
     //std::cout << "gen " << generation << std::endl;
 
-    Tools::H2(Form("CDHdE_processID"),processID, dEreco,222,-0.5,221.5, 100,0,10);
-    Tools::H2(Form("CDHdE_generation"),generation, dEreco,10,0,10, 100,0,10);
+    Tools::H2(Form("CDHdE_processID"),processID, dEtrue,222,-0.5,221.5, 100,0,10);
+    Tools::H2(Form("CDHdE_generation"),generation, dEtrue,10,0,10, 100,0,10);
     if(pdg>=8000){// std::cout << "large pdgID " << pdg << std::endl; 
       if(pdg==1000010020) pdg=4000;//deuteron
       else if(pdg==1000010030) pdg=4001;//triton
@@ -1000,7 +1028,7 @@ void Util::AnaMcData(MCData *mcdata,
     //pi- track
     if(pdg== -211){
       npim++;
-      piminfo.dE = dEreco;
+      piminfo.dE = dEtrue;
       piminfo.mom = truemom;
       piminfo.processID = processID;
       piminfo.parentProcessID = parentprocessID;
@@ -1013,13 +1041,13 @@ void Util::AnaMcData(MCData *mcdata,
         Tools::H2(Form("mom_parentprocessID_pim_over2g"),parentprocessID, truemom ,222,-0.5,221.5, 200,0,1);
       }
       Tools::H2(Form("mom_generation_pim"),generation, truemom,10,0,10, 200,0,1);
-      Tools::H2(Form("CDHdE_processID_pim"),processID, dEreco,222,-0.5,221.5, 100,0,10);
-      Tools::H2(Form("CDHdE_generation_pim"),generation, dEreco,10,0,10, 100,0,10);
+      Tools::H2(Form("CDHdE_processID_pim"),processID, dEtrue,222,-0.5,221.5, 100,0,10);
+      Tools::H2(Form("CDHdE_generation_pim"),generation, dEtrue,10,0,10, 100,0,10);
     }
     //pi+ track
     else if(pdg== 211){
       npip++;
-      pipinfo.dE = dEreco;
+      pipinfo.dE = dEtrue;
       pipinfo.mom = truemom;
       pipinfo.processID = processID;
       pipinfo.parentProcessID = parentprocessID;
@@ -1032,14 +1060,14 @@ void Util::AnaMcData(MCData *mcdata,
         Tools::H2(Form("mom_parentprocessID_pip_over2g"),parentprocessID, truemom ,222,-0.5,221.5, 200,0,1);
       }
       Tools::H2(Form("mom_generation_pip"),generation, truemom,10,0,10, 200,0,1);
-      Tools::H2(Form("CDHdE_processID_pip"),processID, dEreco,222,-0.5,221.5, 100,0,10);
-      Tools::H2(Form("CDHdE_generation_pip"),generation, dEreco,10,0,10, 100,0,10);
+      Tools::H2(Form("CDHdE_processID_pip"),processID, dEtrue,222,-0.5,221.5, 100,0,10);
+      Tools::H2(Form("CDHdE_generation_pip"),generation, dEtrue,10,0,10, 100,0,10);
     }
     //neutron candidate
     else{
       ncaninfo.pdg = pdg;
       ncaninfo.parentpdg = parentpdg;
-      ncaninfo.dE = dEreco;
+      ncaninfo.dE = dEtrue;
       ncaninfo.mom = truemom;
       ncaninfo.processID = processID;
       ncaninfo.gen = generation;
@@ -1049,8 +1077,8 @@ void Util::AnaMcData(MCData *mcdata,
       Tools::H1(Form("ncan_parentpdg"),parentpdg,16000,-8000,8000);
       Tools::H2(Form("mom_processID_ncan"),processID, truemom ,222,-0.5,221.5, 200,0,2);
       Tools::H2(Form("mom_generation_ncan"),generation, truemom,10,0,10, 200,0,2);
-      Tools::H2(Form("CDHdE_processID_ncan"),processID, dEreco,222,-0.5,221.5, 100,0,10);
-      Tools::H2(Form("CDHdE_generation_ncan"),generation, dEreco,10,0,10, 100,0,10);
+      Tools::H2(Form("CDHdE_processID_ncan"),processID, dEtrue,222,-0.5,221.5, 100,0,10);
+      Tools::H2(Form("CDHdE_generation_ncan"),generation, dEtrue,10,0,10, 100,0,10);
       Tools::H1("ncan_time",ncaninfo.time,1000,0,100);
     }
   }//idethit
@@ -1063,10 +1091,15 @@ void Util::AnaMcData(MCData *mcdata,
       if(i!=j && tidi==tidj) EventType=2;
     }
   }
+  //EventType
+  //0:CDH 3 hits,pi+ or pi- does not hit CDH
+  //1:CDH 3 hits,pi+,pi- hits, no CDH sharing by pi+ or pi-
+  //2:CDH 3 hits,pi+,pi- hits, at least one sharing by pi+/- tracks
   Tools::H1(Form("EventType"),EventType,3,-0.5,2.5);
   if(EventType==1){
     Tools::H2(Form("mom_processID_pim_select"),piminfo.processID, piminfo.mom ,222,-0.5,221.5, 200,0,1);
     Tools::H1("time_pim_select",piminfo.time,1000,0,100);
+    Tools::H2(Form("CDHdE_mom_pim_select"),piminfo.mom,piminfo.dE,100,0,2, 100,0,10);
     if(piminfo.gen>2){ 
       Tools::H2(Form("mom_processID_pim_select_over2g"),piminfo.processID, piminfo.mom ,222,-0.5,221.5, 200,0,1);
       Tools::H2(Form("mom_parentprocessID_pim_select_over2g"),piminfo.parentProcessID, piminfo.mom ,222,-0.5,221.5, 200,0,1);
@@ -1078,6 +1111,7 @@ void Util::AnaMcData(MCData *mcdata,
     
     Tools::H2(Form("mom_processID_pip_select"),pipinfo.processID, pipinfo.mom ,222,-0.5,221.5, 200,0,1);
     Tools::H1("time_pip_select",pipinfo.time,1000,0,100);
+    Tools::H2(Form("CDHdE_mom_pip_select"),pipinfo.mom,pipinfo.dE,100,0,2, 100,0,10);
     if(pipinfo.gen>2){ 
       Tools::H2(Form("mom_processID_pip_select_over2g"),pipinfo.processID, pipinfo.mom ,222,-0.5,221.5, 200,0,1);
       Tools::H2(Form("mom_parentprocessID_pip_select_over2g"),pipinfo.parentProcessID, pipinfo.mom ,222,-0.5,221.5, 200,0,1);
@@ -1087,14 +1121,25 @@ void Util::AnaMcData(MCData *mcdata,
     Tools::H2(Form("CDHdE_processID_pip_select"),pipinfo.processID, pipinfo.dE,222,-0.5,221.5, 100,0,10);
     Tools::H2(Form("CDHdE_generation_pip_select"),pipinfo.gen, pipinfo.dE,10,0,10, 100,0,10);
     
-    Tools::H1(Form("ncan_pdg_select"),ncaninfo.pdg,4100,-100,4000);
-    Tools::H1(Form("ncan_parentpdg_select"),ncaninfo.parentpdg,4100,-100,4000);
+    Tools::H1(Form("ncan_pdg_select"),ncaninfo.pdg,8000,-4000,4000);
+    Tools::H1(Form("ncan_parentpdg_select"),ncaninfo.parentpdg,8000,-4000,4000);
     Tools::H2(Form("mom_processID_ncan_select"),ncaninfo.processID, ncaninfo.mom ,222,-0.5,221.5, 100,0,2);
     Tools::H2(Form("mom_generation_ncan_select"),ncaninfo.gen, ncaninfo.mom,10,0,10, 100,0,2);
     Tools::H2(Form("CDHdE_processID_ncan_select"),ncaninfo.processID, ncaninfo.dE,222,-0.5,221.5, 100,0,10);
     Tools::H2(Form("CDHdE_generation_ncan_select"),ncaninfo.gen, ncaninfo.dE,10,0,10, 100,0,10);
+    Tools::H2(Form("CDHdE_mom_ncan_select"),ncaninfo.mom,ncaninfo.dE,200,0,2, 100,0,10);
     Tools::H1("ncan_time_select",ncaninfo.time,1000,0,100);
-    Util::FillAncestryVertexR(mcdata,ncaninfo.dhitncan,ncaninfo.dE);
+    double parentvtxr=Util::FillAncestryVertexR(mcdata,ncaninfo.dhitncan,ncaninfo.dE);
+    if(ncaninfo.dE>2.0){
+      Tools::H2("ncan_mom_parentvtxr_select",ncaninfo.mom,parentvtxr,200,0,2,480,0,120.);
+      if(ncaninfo.parentpdg==2112){
+        Tools::H2("ncan_mom_parentvtxr_select_nparent",ncaninfo.mom,parentvtxr,200,0,2,480,0,120.);
+      }
+    }
+    if(parentvtxr<58.0){
+      Tools::H2("CDHdE_mom_ncan_select_vtxr",ncaninfo.mom,ncaninfo.dE,200,0,2, 100,0,10);
+      if(ncaninfo.dE>0.6 && Util::IsFromSigma(mcdata,ncaninfo.dhitncan) && ncaninfo.gen==3)Tools::H2("CDHdE_mom_ncan_select_vtxr_sigma",ncaninfo.mom,ncaninfo.dE,100,0,2, 100,0,10);
+    }
   }
 
 
@@ -1213,8 +1258,9 @@ Track* Util::FindTrackFromMcIndex(MCData *mcdata, int trackid)
 }
 
 
-int Util::FillAncestryVertexR(MCData *mcdata,DetectorHit *dhit, double dE)
+double Util::FillAncestryVertexR(MCData *mcdata,DetectorHit *dhit, double dE)
 {
+  if(dE<0.06) return 0;
   Track *parentTr=Util::FindTrackFromMcIndex(mcdata, dhit->parentID());
   
   TVector3 vtxp = parentTr->vertex();
@@ -1224,8 +1270,54 @@ int Util::FillAncestryVertexR(MCData *mcdata,DetectorHit *dhit, double dE)
     TVector3 vtx = parentTr->vertex();
     Tools::H2(Form("dE_track_vtxr_ncan"),vtx.Perp()/10.,dE,1200,0,120,100,0,10);
     Tools::H2(Form("time_track_vtxr_ncan"),vtx.Perp()/10.,dhit->time(),1200,0,120,1000,0,100);
+    Tools::H2(Form("gen_track_vtxr_ncan"),vtx.Perp()/10.,gen+1,1200,0,120,10,0,10);
     parentTr=Util::FindTrackFromMcIndex(mcdata,parentTr->parentTrackID());
     gen++;
   }
-  return gen;
+  return vtxp.Perp()/10.;
+}
+
+bool Util::IsFromSigma(MCData *mcdata,DetectorHit *dhit)
+{
+  bool isFromSigma=false;
+  Track *parentTr=Util::FindTrackFromMcIndex(mcdata, dhit->parentID());
+  if( (parentTr->pdgID()==3112) || (parentTr->pdgID()==3222)) isFromSigma = true;
+
+  while(parentTr!=0){
+    if( (parentTr->pdgID()==3112) || (parentTr->pdgID()==3222)) isFromSigma = true;
+    parentTr=Util::FindTrackFromMcIndex(mcdata,parentTr->parentTrackID());
+  }
+
+  return isFromSigma;
+}
+
+
+
+TLorentzVector *Util::GetForwardNeutralLVec(BeamLineHitMan *blman, TVector3 *vtxpos,double t0time)
+{
+  TLorentzVector *fNLVec = NULL;
+
+  /*
+  double fTime=0.0;
+  TVector3 fHitPos;
+
+  TVector3 vtxbline, vtxbhelix ,vtxb; //,vtxb;
+  if(MCFlag){
+    TVector3 Pos_T0;
+    confman->GetGeomMapManager()->GetPos( CID_T0, 0, Pos_T0 );
+    const double zPos_T0 = Pos_T0.Z();
+    track->GetVertex( bpctrack->GetPosatZ(zPos_T0), bpctrack->GetMomDir(), vtxbline, vtxbhelix );
+  }else{
+    track->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtxbline, vtxbhelix );
+  }
+  vtxb = 0.5*(vtxbline+vtxbhelix);
+  ELossTools::CalcElossBeamTGeo( bpc->GetPosatZ(z_pos), vtxb,
+  double ForwardNTof = fTime-t0time-tmp_tof;
+  double ForwardTof = (fHitPos-vtxpos).Mag();
+  */
+
+
+
+
+  return fNLVec;
 }

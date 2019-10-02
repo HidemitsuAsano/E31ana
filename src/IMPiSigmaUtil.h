@@ -64,6 +64,7 @@ namespace Util
                  ConfMan *confman,
                  BeamLineHitMan *blman,
                  const double correctedtof,
+                 const int pid,
                  const bool MCFlag=false
                  );
    //MC only
@@ -75,8 +76,11 @@ namespace Util
    int ProcessNameToProcessID(const std::string &name);
    std::string ProcessIDToProcessName(const int &id);
    int CalcGeneration(MCData *mcdata,DetectorHit *dhit);
-   int FillAncestryVertexR(MCData *mcdata,DetectorHit *dhit,double dE);
+   double FillAncestryVertexR(MCData *mcdata,DetectorHit *dhit,double dE);
    Track *FindTrackFromMcIndex(MCData *mcdata, int trackid);
+   bool IsFromSigma(MCData *mcdata,DetectorHit *dhit);
+   TLorentzVector *GetForwardNeutralLVec(BeamLineHitMan *blman, TVector3 *vtxpos,double t0time);
+
 };
 
 #endif

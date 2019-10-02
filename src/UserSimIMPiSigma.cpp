@@ -732,6 +732,8 @@ int main( int argc, char** argv )
       Tools::H1(Form("track_vtxr"),vtx.Perp()/10.,1200,0,120);
     }
     
+    //put here tmp. solution for CDH eff. study
+    //Util::AnaMcData(mcData,detData,cdsMan);
     if( Util::GetCDHMul(cdsMan,nGoodTrack,true)!=cdscuts::cdhmulti ){
       if(IsrecoPassed)nAbort_nCDH++;
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nCDH" << std::endl;
@@ -999,7 +1001,7 @@ int main( int argc, char** argv )
         (pip_ID.size()==1) && 
         (cdstrackMan->nGoodTrack()==cdscuts::cds_ngoodtrack) &&
         !forwardcharge ){
-      
+        
       nFill_pippim++;
       
       //added Jul.28th,2019

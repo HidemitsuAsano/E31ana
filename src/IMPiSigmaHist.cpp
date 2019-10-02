@@ -27,8 +27,13 @@ void InitBasicHist(const bool MCFlag)
   Tools::newTH2F( Form("CDH_mom_diffpos_pi_z"), 1000, -50, 50, 100, -1.0, 1.0 );
   
   Tools::newTH2F( Form("CDH_mom_TOF_pi"),   100, -2, 2, 200, -1.0, 1.0 );
+  Tools::newTH2F( Form("CDH_mom_diffpos_p_phi"), 100, -10, 10, 100, -1.0, 1.0 );
+  Tools::newTH2F( Form("CDH_mom_diffpos_p_z"), 1000, -50, 50, 100, -1.0, 1.0 );
+  
+  Tools::newTH2F( Form("CDH_mom_TOF_p"),   100, -2, 2, 200, -1.0, 1.0 );
   for(int iseg=0;iseg<36;iseg++){
     Tools::newTH2F( Form("CDH%d_mom_TOF_pi",iseg+1),       100, -2, 2, 200, -1.0, 1.0 );
+    Tools::newTH2F( Form("CDH%d_mom_TOF_p",iseg+1),       100, -2, 2, 200, -1.0, 1.0 );
   }
   
   //** beam line **//

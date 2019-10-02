@@ -110,6 +110,7 @@ private:
   int nFill_pippim;
   int nFill_npippim;
   //** counters for event abort **//
+  int nAbort_Trigger;
   int nAbort_nGoodTrack;
   int nAbort_CDSPID;
   int nAbort_nCDH;
@@ -522,6 +523,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   CDC_Event_Number++;
   header->SetRunNumber(0);
   header->SetEventNumber(Event_Number);
+  
 
   //** copy class CDSTrackingMan objects **//
   *trackMan = *trackMan_CDC;
@@ -531,7 +533,40 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   cdsMan->Convert( tko, confMan );
   blMan->Convert( tko, confMan );
   trackMan->Calc( cdsMan, confMan, true);
+  
+  // Trigger Pattern
+  bool FiredTrigger[20]={false};
+  for( int i=0; i<20; i++ ){
+    int val = header->pattern(i);
+    if( 0<val && val<4095 ){
+      //std::cout << "trig. " << i << std::endl;
+      Tools::H1("Pattern",i,21,-0.5,20.5);
+      Tools::H1(Form("TPattern%d",i),val,4196,-0.5,4195.5);
+      FiredTrigger[i]=true;
+    }
+  }
 
+
+  for(int i=0;i<20;i++){
+    if(header->trigmode(i))  Tools::H1("TrigMode",i, 21,-0.5,20.5); 
+  }
+  int DAQFLAG=0;
+  for(int i=0;i<20;i++){
+    if(header->trigmode2(i)) 
+      {
+	Tools::H1("DAQMode",i,21,-0.5,20.5); 
+	DAQFLAG++;
+      }
+  }
+  if(DAQFLAG==0)  Tools::H1("DAQMode",18,21,-0.5,20.5); 
+  if(DAQFLAG==1)  Tools::H1("DAQMode",19,21,-0.5,20.5); 
+  if(DAQFLAG>1)   Tools::H1("DAQMode",20,21,-0.5,20.5); 
+  
+  //if( FiredTrigger[Trig_KCDH3] ){
+  //  Clear(nAbort_Trigger);
+  //  return true; 
+  //}
+   
   const int nGoodTrack = trackMan->nGoodTrack();
   const int nallTrack = trackMan->nTrack();
   AllGoodTrack += nGoodTrack;
@@ -565,8 +600,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   Tools::Fill1D( Form("EventCheck"), 2 );
 
   //** # of good CDS tracks cut **//
-  if( nGoodTrack!=cdscuts::cds_ngoodtrack  ) { //require pi+,pi-
-  //if( nGoodTrack!=cdscuts::cds_ngoodtrack && nallTrack!=cdscuts::cds_ngoodtrack ) { //require pi+,pi-
+  //if( nGoodTrack!=cdscuts::cds_ngoodtrack  ) { //require pi+,pi-
+  if( nGoodTrack!=cdscuts::cds_ngoodtrack && nallTrack!=cdscuts::cds_ngoodtrack ) { //require pi+,pi-
     Clear( nAbort_nGoodTrack );
     return true;
   }
@@ -1481,6 +1516,7 @@ void EventAnalysis::Finalize()
   }
 
   std::cout<<"====== Abort counter ========="<<std::endl;
+  std::cout<<" nAbort_Trigger       = "<<nAbort_Trigger << std::endl;
   std::cout<<" nAbort_nGoodTrack    = "<<nAbort_nGoodTrack<<std::endl;
   std::cout<<" nAbort_CDSPID        = "<<nAbort_CDSPID<<std::endl;
   std::cout<<" nAbort_nCDH          = "<<nAbort_nCDH<<std::endl;
