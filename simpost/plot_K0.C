@@ -180,19 +180,23 @@ void plot_K0()
   TH1F* Reactmom_0_pimS1385p_ns = (TH1F*)_file9_1->Get("Reactmom_0");
   const double ngen_pimS1385p_ns = Reactmom_0_pimS1385p_ns->GetEntries();
   std::cout << "ngen pimS1385p_ns " << ngen_pimS1385p_ns << std::endl;
+  
+  //K-d -> pi
+  TFile *
+
 
   const double scale_ns = 0.38;
   const double scale_nnts = 0.01;
   const double scale_Knts = 0.03;
   const double scale_Kmpts = 0.03;
   const double scale_K0nn = 0.01;
-  const double scale_npipiL = 1.0;
+  const double scale_npipiL = 0.1;
   
   const double scale_pipiL_ns_total = 4.05;//CS total [mb]
   const double scale_pipiL_ns = 0.94;//prompt K-p -> pi+pi-L or rho L
   const double scale_pipS1385m_ns = 1.99;//CS [mb]
   const double scale_pimS1385p_ns = 1.12;//CS [mb]
-  const double scale_pipiL_ns_sum = 1.0; 
+  const double scale_pipiL_ns_sum = 4.0; 
 
   //normalization of pipiL cocktail 
   IMpippim_pipS1385m_ns->Scale(scale_pipS1385m_ns/scale_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
@@ -439,7 +443,6 @@ void plot_K0()
   q_npipiL->Scale(scale_npipiL);
   q_npipiL->SetLineColor(7);
   q_npipiL->Draw("HEsame");
-  IMnpipi_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);
   q_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);
   q_pipiL_ns_sum->SetLineColor(9);
   q_pipiL_ns_sum->Draw("HEsame");
@@ -476,7 +479,7 @@ void plot_K0()
   MMnmiss_npipiL->Scale(scale_npipiL);
   MMnmiss_npipiL->Draw("HEsame");
   MMnmiss_pipiL_ns_sum->SetLineColor(9);
-  MMnmiss_pipiL_ns_sum->Scale(scale_pipiL_ns);
+  MMnmiss_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);
   MMnmiss_pipiL_ns_sum->Draw("HEsame");
   
   TH1D* MMnmiss_sum = (TH1D*)MMnmiss_ns->Clone("MMnmiss_sum");
