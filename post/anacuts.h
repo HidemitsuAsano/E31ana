@@ -3,19 +3,23 @@ namespace anacuts {
   //const double beta_MAX = 0.628786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
   const double beta_MIN = 0.000000001;
   const double dE_MIN = 2.0/0.88;
+  //const double dE_MIN = 2.0;
 
   const double pipi_NSigmacut=3.0;
-  const double pipi_MIN = 0.475;
-  const double pipi_MAX = 0.522;
-  //const double pipi_MIN = 0.487; (almost 1.5 sigma)
-  //const double pipi_MAX = 0.510; (almost 1.5 sigma)
+  //const double pipi_MIN = 0.475;
+  //const double pipi_MAX = 0.522;
+  const double pipi_MIN = 0.487;// (almost 1.5 sigma)
+  const double pipi_MAX = 0.510;// (almost 1.5 sigma)
   
   const double neutron_NSigmacut = 1.5;//+/- N sigma
   const double neutron_center = 0.939161;
   const double neutron_sigma = 0.0308562;
   const double neutron_MIN = neutron_center-neutron_NSigmacut*neutron_sigma;
   const double neutron_MAX = neutron_center+neutron_NSigmacut*neutron_sigma;
-  
+   
+  //neutron cut of CDS
+  const double nmomcut = 0.13;
+
   const double Sigma_NSigmacut = 1.5;
   const double Sigmap_center = 1.18911;
   const double Sigmap_sigma = 0.00540844;
