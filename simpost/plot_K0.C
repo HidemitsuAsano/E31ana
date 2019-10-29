@@ -210,8 +210,11 @@ void plot_K0()
   
   const double cs_pipiL_ns_total = 4.05;//CS total [mb]
   const double cs_pipiL_ns = 0.94;//prompt K-p -> pi+pi-L or rho L
+  const double csError_pipiL_ns = 0.13;//prompt K-p -> pi+pi-L or rho L
   const double cs_pipS1385m_ns = 1.99;//CS [mb]
+  const double csError_pipS1385m_ns = 0.19;//CS [mb]
   const double cs_pimS1385p_ns = 1.12;//CS [mb]
+  const double csError_pimS1385p_ns = 0.12;//CS [mb]
   const double cs_pipiL_ns_sum = 4.0; 
 
   //normalization of pipiL cocktail 
