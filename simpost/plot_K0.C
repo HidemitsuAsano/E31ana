@@ -181,10 +181,26 @@ void plot_K0()
   const double ngen_pimS1385p_ns = Reactmom_0_pimS1385p_ns->GetEntries();
   std::cout << "ngen pimS1385p_ns " << ngen_pimS1385p_ns << std::endl;
   
-  //K-d -> pi
-  TFile *
+  //K-p -> pi+pi- S0 (n_s) 
+  TFile *_file10 = TFile::Open("simIMpisigma_S0pippim_ns_pippimn_v1_outncutK015.root");
+  TH2F* q_IMpippim_n_S0pippim_ns = (TH2F*)_file10->Get("q_IMpippim_n");
+  TH2F* nmom_IMnpipi_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("nmom_IMnpipi_wK0_n");
+  TH2F* q_IMnpipi_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("q_IMnpipi_wK0_n");
+  TH2F* Mompippim_IMnpipi_dE_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("Mompippim_IMnpipi_dE_wK0_n");
+  TH2F* MMnmiss_IMpippim_dE_S0pippim_ns = (TH2F*)_file10->Get("MMnmiss_IMpippim_dE");
+  //projection
+  TH1D* IMpippim_S0pippim_ns = (TH1D*) q_IMpippim_n_S0pippim_ns->ProjectionX("IMpippim_S0pippim_ns");
+  TH1D* IMnpipi_S0pippim_ns = (TH1D*) nmom_IMnpipi_wK0_n_S0pippim_ns->ProjectionX("IMnpipi_S0pippim_ns");
+  TH1D* nmom_IMnpipi_wK0_n_S0pippim_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_S0pippim_ns->ProjectionY("nmom_IMnpipi_wK0_n_S0pippim_ns_py");
+  TH1D* q_S0pippim_ns = (TH1D*)q_IMnpipi_wK0_n_S0pippim_ns->ProjectionY("q_S0pippim_ns");
+  TH1D* Mompippim_S0pippim_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_S0pippim_ns->ProjectionY("Mompippim_S0pippim_ns");
+  TH1D* MMnmiss_S0pippim_ns = (TH1D*)MMnmiss_IMpippim_dE_S0pippim_ns->ProjectionY("MMnmiss_S0pippim_ns",pipimin,pipimax);
 
-
+  TFile *_file10_1 = TFile::Open("simIMpisigma_S0pippim_ns_v1.root");
+  TH1F* Reactmom_0_S0pippim_ns = (TH1F*)_file10_1->Get("Reactmom_0");
+  const double ngen_S0pippim_ns = Reactmom_0_S0pippim_ns->GetEntries();
+  std::cout << "ngen S0pippim_ns " << ngen_S0pippim_ns << std::endl;
+  
   const double scale_ns = 0.38;
   const double scale_nnts = 0.01;
   const double scale_Knts = 0.03;
@@ -192,31 +208,31 @@ void plot_K0()
   const double scale_K0nn = 0.01;
   const double scale_npipiL = 0.1;
   
-  const double scale_pipiL_ns_total = 4.05;//CS total [mb]
-  const double scale_pipiL_ns = 0.94;//prompt K-p -> pi+pi-L or rho L
-  const double scale_pipS1385m_ns = 1.99;//CS [mb]
-  const double scale_pimS1385p_ns = 1.12;//CS [mb]
-  const double scale_pipiL_ns_sum = 4.0; 
+  const double cs_pipiL_ns_total = 4.05;//CS total [mb]
+  const double cs_pipiL_ns = 0.94;//prompt K-p -> pi+pi-L or rho L
+  const double cs_pipS1385m_ns = 1.99;//CS [mb]
+  const double cs_pimS1385p_ns = 1.12;//CS [mb]
+  const double cs_pipiL_ns_sum = 4.0; 
 
   //normalization of pipiL cocktail 
-  IMpippim_pipS1385m_ns->Scale(scale_pipS1385m_ns/scale_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
-  IMpippim_pimS1385p_ns->Scale(scale_pimS1385p_ns/scale_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
-  IMpippim_pipiL_ns->Scale(scale_pipiL_ns/scale_pipiL_ns_total);
-  IMnpipi_pipS1385m_ns->Scale(scale_pipS1385m_ns/scale_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
-  IMnpipi_pimS1385p_ns->Scale(scale_pimS1385p_ns/scale_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
-  IMnpipi_pipiL_ns->Scale(scale_pipiL_ns/scale_pipiL_ns_total);
-  nmom_IMnpipi_wK0_n_pipS1385m_ns_py->Scale(scale_pipS1385m_ns/scale_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
-  nmom_IMnpipi_wK0_n_pimS1385p_ns_py->Scale(scale_pimS1385p_ns/scale_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
-  nmom_IMnpipi_wK0_n_pipiL_ns_py->Scale(scale_pipiL_ns/scale_pipiL_ns_total);
-  q_pipS1385m_ns->Scale(scale_pipS1385m_ns/scale_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
-  q_pimS1385p_ns->Scale(scale_pimS1385p_ns/scale_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
-  q_pipiL_ns->Scale(scale_pipiL_ns/scale_pipiL_ns_total);
-  Mompippim_pipS1385m_ns->Scale(scale_pipS1385m_ns/scale_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
-  Mompippim_pimS1385p_ns->Scale(scale_pimS1385p_ns/scale_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
-  Mompippim_pipiL_ns->Scale(scale_pipiL_ns/scale_pipiL_ns_total);
-  MMnmiss_pipS1385m_ns->Scale(scale_pipS1385m_ns/scale_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
-  MMnmiss_pimS1385p_ns->Scale(scale_pimS1385p_ns/scale_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
-  MMnmiss_pipiL_ns->Scale(scale_pipiL_ns/scale_pipiL_ns_total);
+  IMpippim_pipS1385m_ns->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  IMpippim_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  IMpippim_pipiL_ns->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
+  IMnpipi_pipS1385m_ns->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  IMnpipi_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  IMnpipi_pipiL_ns->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
+  nmom_IMnpipi_wK0_n_pipS1385m_ns_py->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  nmom_IMnpipi_wK0_n_pimS1385p_ns_py->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  nmom_IMnpipi_wK0_n_pipiL_ns_py->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
+  q_pipS1385m_ns->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  q_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  q_pipiL_ns->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
+  Mompippim_pipS1385m_ns->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  Mompippim_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  Mompippim_pipiL_ns->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
+  MMnmiss_pipS1385m_ns->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  MMnmiss_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  MMnmiss_pipiL_ns->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
   
   //Lambda pi+ pi+ cocktail check.
   TCanvas *cMom_ncds_pipiL = new TCanvas("cMom_ncds_pipiL","cMom_ncds_pipiL");
@@ -238,26 +254,26 @@ void plot_K0()
   TCanvas *cMom_K0_pipiL = new TCanvas("cMom_K0_pipiL","cMom_K0_pipiL");
   cMom_K0_pipiL->cd();
   Mompippim_pipS1385m_ns->SetLineColor(2);
-  Mompippim_pipS1385m_ns->Scale(scale_pipS1385m_ns/scale_pipiL_ns_total);
+  Mompippim_pipS1385m_ns->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total);
   Mompippim_pipS1385m_ns->Draw("HE");
   Mompippim_pimS1385p_ns->SetLineColor(3);
-  Mompippim_pimS1385p_ns->Scale(scale_pimS1385p_ns/scale_pipiL_ns_total);
+  Mompippim_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total);
   Mompippim_pimS1385p_ns->Draw("HEsame");
   Mompippim_pipiL_ns->SetLineColor(4);
-  Mompippim_pipiL_ns->Scale(scale_pipiL_ns/scale_pipiL_ns_total);
+  Mompippim_pipiL_ns->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
   Mompippim_pipiL_ns->Draw("HEsame");
  
 
   TCanvas *cnmiss_pipiL = new TCanvas("cnmiss_pipiL","cnmiss_pipiL");
   cnmiss_pipiL->cd();
   MMnmiss_pipS1385m_ns->SetLineColor(2);
-  MMnmiss_pipS1385m_ns->Scale(scale_pipS1385m_ns/scale_pipiL_ns_total);
+  MMnmiss_pipS1385m_ns->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total);
   MMnmiss_pipS1385m_ns->Draw("HE");
   MMnmiss_pimS1385p_ns->SetLineColor(3);
-  MMnmiss_pimS1385p_ns->Scale(scale_pimS1385p_ns/scale_pipiL_ns_total);
+  MMnmiss_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total);
   MMnmiss_pimS1385p_ns->Draw("HEsame");
   MMnmiss_pipiL_ns->SetLineColor(4);
-  MMnmiss_pipiL_ns->Scale(scale_pipiL_ns/scale_pipiL_ns_total);
+  MMnmiss_pipiL_ns->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
   MMnmiss_pipiL_ns->Draw("HEsame");
   //MMnmiss_npipiL->Scale(0.6);
   //MMnmiss_npipiL->Draw("HEsame");
@@ -325,7 +341,7 @@ void plot_K0()
   nmom_IMnpipi_wK0_n_npipiL_py_zoom->Scale(5.0);
   nmom_IMnpipi_wK0_n_npipiL_py_zoom->Draw("HEsame");
 
-  nmom_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);//npi+pi-L phase space
+  nmom_pipiL_ns_sum->Scale(cs_pipiL_ns_sum);//npi+pi-L phase space
   nmom_pipiL_ns_sum->SetLineColor(9);
   //nmom_pipiL_ns_sum->Draw("HEsame");
   TH1D* nmom_pipiL_ns_sum_zoom = (TH1D*)nmom_pipiL_ns_sum->Clone("zoom2");
@@ -373,7 +389,7 @@ void plot_K0()
   Mompippim_npipiL->Scale(scale_npipiL);
   Mompippim_npipiL->SetLineColor(7);
   Mompippim_npipiL->Draw("HEsame");
-  Mompippim_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);
+  Mompippim_pipiL_ns_sum->Scale(cs_pipiL_ns_sum);
   Mompippim_pipiL_ns_sum->SetLineColor(9);
   Mompippim_pipiL_ns_sum->Draw("HEsame");
   TH1D* Mompippim_sum = (TH1D*)Mompippim_ns->Clone("Mompippim_sum");
@@ -408,7 +424,7 @@ void plot_K0()
   IMnpipi_npipiL->Scale(scale_npipiL);
   IMnpipi_npipiL->SetLineColor(7);
   IMnpipi_npipiL->Draw("HEsame");
-  IMnpipi_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);
+  IMnpipi_pipiL_ns_sum->Scale(cs_pipiL_ns_sum);
   IMnpipi_pipiL_ns_sum->SetLineColor(9);
   IMnpipi_pipiL_ns_sum->Draw("HEsame");
   TH1D* IMnpipi_sum = (TH1D*)IMnpipi_ns->Clone("IMnpipi_sum");
@@ -443,7 +459,7 @@ void plot_K0()
   q_npipiL->Scale(scale_npipiL);
   q_npipiL->SetLineColor(7);
   q_npipiL->Draw("HEsame");
-  q_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);
+  q_pipiL_ns_sum->Scale(cs_pipiL_ns_sum);
   q_pipiL_ns_sum->SetLineColor(9);
   q_pipiL_ns_sum->Draw("HEsame");
 
@@ -479,7 +495,7 @@ void plot_K0()
   MMnmiss_npipiL->Scale(scale_npipiL);
   MMnmiss_npipiL->Draw("HEsame");
   MMnmiss_pipiL_ns_sum->SetLineColor(9);
-  MMnmiss_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);
+  MMnmiss_pipiL_ns_sum->Scale(cs_pipiL_ns_sum);
   MMnmiss_pipiL_ns_sum->Draw("HEsame");
   
   TH1D* MMnmiss_sum = (TH1D*)MMnmiss_ns->Clone("MMnmiss_sum");
@@ -515,7 +531,7 @@ void plot_K0()
   IMpippim_npipiL->Scale(scale_npipiL);
   IMpippim_npipiL->Draw("HEsame");
   IMpippim_pipiL_ns_sum->SetLineColor(9);
-  IMpippim_pipiL_ns_sum->Scale(scale_pipiL_ns);
+  IMpippim_pipiL_ns_sum->Scale(cs_pipiL_ns);
   IMpippim_pipiL_ns_sum->Draw("HEsame");
   
   TH1D* IMpippim_sum = (TH1D*)IMpippim_ns->Clone("IMpippim_sum");
