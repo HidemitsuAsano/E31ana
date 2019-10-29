@@ -15,6 +15,7 @@ int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack, const bool MCFlag)
 {
   //** # of CDH-hits cut **//
   int nCDH = 0;
+  double firsthittime=0;
   double lasthittime=0;
   for( int i=0; i<cdsman->nCDH(); i++ ){
     Tools::Fill2D(Form("CDHtime"),cdsman->CDH(i)->seg(),cdsman->CDH(i)->ctmean());
@@ -31,6 +32,8 @@ int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack, const bool MCFlag)
         Tools::Fill2D(Form("CDHdE_wt"),seg,emean);
         nCDH++;
         if(lasthittime< cdsman->CDH(i)->ctmean()) lasthittime = cdsman->CDH(i)->ctmean();
+        if(i==0) firsthittime = cdsman->CDH(i)->ctmean();
+        else if(i>0 && firsthittime > cdsman->CDH(i)->ctmean()) firsthittime = cdsman->CDH(i)->ctmean();
       }
     }else{
       if((cdsman->CDH(i)->CheckRange()) && (cdsman->CDH(i)->ctmean()<cdscuts::tdc_cdh_max)){
@@ -38,12 +41,16 @@ int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack, const bool MCFlag)
         //std::cout << cdsman->CDH(i)->seg() << " " <<  cdsman->CDH(i)->ctmean() << std::endl;
         nCDH++;
         if(lasthittime< cdsman->CDH(i)->ctmean()) lasthittime = cdsman->CDH(i)->ctmean();
+        if(i==0) firsthittime = cdsman->CDH(i)->ctmean();
+        else if(i>0 && firsthittime > cdsman->CDH(i)->ctmean()) firsthittime = cdsman->CDH(i)->ctmean();
       }
     }
   }
   Tools::Fill1D( Form("mul_CDH"), nCDH );
   Tools::H2( Form("lasttime_mul_CDH"), nCDH,lasthittime,11, -0.5, 10.5,1000,0,100);
-
+  if(nCDH==3){
+    Tools::H1( Form("firstlasttimediff"), lasthittime-firsthittime,1000,0,100);
+  }
   return nCDH;
 }
 

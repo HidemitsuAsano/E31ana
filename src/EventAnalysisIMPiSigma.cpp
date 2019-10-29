@@ -562,10 +562,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   if(DAQFLAG==1)  Tools::H1("DAQMode",19,21,-0.5,20.5); 
   if(DAQFLAG>1)   Tools::H1("DAQMode",20,21,-0.5,20.5); 
   
-  //if( FiredTrigger[Trig_KCDH3] ){
-  //  Clear(nAbort_Trigger);
-  //  return true; 
-  //}
+  if( !FiredTrigger[Trig_KCDH3] ){
+    Clear(nAbort_Trigger);
+    return true; 
+  }
    
   const int nGoodTrack = trackMan->nGoodTrack();
   const int nallTrack = trackMan->nTrack();
@@ -598,7 +598,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     return true;
   }
   Tools::Fill1D( Form("EventCheck"), 2 );
-
+  
+  
   //** # of good CDS tracks cut **//
   //if( nGoodTrack!=cdscuts::cds_ngoodtrack  ) { //require pi+,pi-
   if( nGoodTrack!=cdscuts::cds_ngoodtrack && nallTrack!=cdscuts::cds_ngoodtrack ) { //require pi+,pi-
@@ -613,8 +614,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   //** BLDC tracking **//
   bltrackMan->DoTracking(blMan,confMan,true,true);
   //Get T0
-  int t0seg=-1;
-  ctmT0 = Util::AnalyzeT0(blMan,confMan,t0seg);
   if(ctmT0<-9000){
     Clear( nAbort_nT0 );
     Tools::Fill1D( Form("EventCheck"), 15 );
@@ -628,6 +627,23 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     return true;
   }
   Tools::Fill1D( Form("EventCheck"), 4 );
+
+  double firsthittime=-1.;
+  double lasthittime=0.;
+  for( int i=0; i<cdsMan->nCDH(); i++ ){
+    if((cdsMan->CDH(i)->CheckRange()) && (cdsMan->CDH(i)->ctmean()<cdscuts::tdc_cdh_max)){
+
+      if(lasthittime< cdsMan->CDH(i)->ctmean()) lasthittime = cdsMan->CDH(i)->ctmean();
+      if(firsthittime<0.0){
+        firsthittime = cdsMan->CDH(i)->ctmean();
+      }else if(firsthittime>cdsMan->CDH(i)->ctmean()){
+        firsthittime = cdsMan->CDH(i)->ctmean();
+      }
+    }
+  }
+  int t0seg=-1;
+  ctmT0 = Util::AnalyzeT0(blMan,confMan,t0seg);
+  Tools::H2("T0lasttimeCDH",lasthittime-firsthittime ,lasthittime-ctmT0,500,0,100,500,0,100);
 
   const int blstatus = Util::EveSelectBeamline(bltrackMan,trackMan,confMan,blc1GoodTrackID,blc2GoodTrackID,bpcGoodTrackID);
   
@@ -656,6 +672,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   }
   
   Tools::Fill1D( Form("EventCheck"), 5 );
+  
 
 
   //BLC1-D5-BLC2 analysis and chi2 selection

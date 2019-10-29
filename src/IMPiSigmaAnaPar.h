@@ -61,7 +61,7 @@ namespace cdscuts {
   //const double tdc_cdh_max = 50; // ns v32-v40
   //const double tdc_cdh_max = 9999; // ns v32-v40
   //const double tdc_cdh_max = 200;// ns v160-
-  const double tdc_cdh_max = 100;// ns v160-
+  const double tdc_cdh_max = 200;// ns v160-
   const double tdc_simoffset = -17;
   const double cds_chi2_max = 30;
   const bool useclosestpi = false;
