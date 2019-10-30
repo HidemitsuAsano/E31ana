@@ -201,12 +201,15 @@ void plot_K0()
   const double ngen_S0pippim_ns = Reactmom_0_S0pippim_ns->GetEntries();
   std::cout << "ngen S0pippim_ns " << ngen_S0pippim_ns << std::endl;
   
+  //K-p -> K0 n
+  const double cs_ns = 6.454; //elementary CS [mb] 
+  const double csError_ns = 0.042;//elementary CS [mb]
   const double scale_ns = 0.38;
   const double scale_nnts = 0.01;
   const double scale_Knts = 0.03;
   const double scale_Kmpts = 0.03;
   const double scale_K0nn = 0.01;
-  const double scale_npipiL = 0.1;
+  const double scale_npipiL = 0.1;//npi+pi-L 4-body phase space
   
   const double cs_pipiL_ns_total = 4.05;//CS total [mb]
   const double cs_pipiL_ns = 0.94;//prompt K-p -> pi+pi-L or rho L
@@ -215,7 +218,7 @@ void plot_K0()
   const double csError_pipS1385m_ns = 0.19;//CS [mb]
   const double cs_pimS1385p_ns = 1.12;//CS [mb]
   const double csError_pimS1385p_ns = 0.12;//CS [mb]
-  const double cs_pipiL_ns_sum = 4.0; 
+  const double scale_pipiL_ns_sum = 4.0;
 
   //normalization of pipiL cocktail 
   IMpippim_pipS1385m_ns->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
@@ -344,7 +347,7 @@ void plot_K0()
   nmom_IMnpipi_wK0_n_npipiL_py_zoom->Scale(5.0);
   nmom_IMnpipi_wK0_n_npipiL_py_zoom->Draw("HEsame");
 
-  nmom_pipiL_ns_sum->Scale(cs_pipiL_ns_sum);//npi+pi-L phase space
+  nmom_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);//npi+pi-L phase space
   nmom_pipiL_ns_sum->SetLineColor(9);
   //nmom_pipiL_ns_sum->Draw("HEsame");
   TH1D* nmom_pipiL_ns_sum_zoom = (TH1D*)nmom_pipiL_ns_sum->Clone("zoom2");
@@ -392,7 +395,7 @@ void plot_K0()
   Mompippim_npipiL->Scale(scale_npipiL);
   Mompippim_npipiL->SetLineColor(7);
   Mompippim_npipiL->Draw("HEsame");
-  Mompippim_pipiL_ns_sum->Scale(cs_pipiL_ns_sum);
+  Mompippim_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);
   Mompippim_pipiL_ns_sum->SetLineColor(9);
   Mompippim_pipiL_ns_sum->Draw("HEsame");
   TH1D* Mompippim_sum = (TH1D*)Mompippim_ns->Clone("Mompippim_sum");
@@ -427,7 +430,7 @@ void plot_K0()
   IMnpipi_npipiL->Scale(scale_npipiL);
   IMnpipi_npipiL->SetLineColor(7);
   IMnpipi_npipiL->Draw("HEsame");
-  IMnpipi_pipiL_ns_sum->Scale(cs_pipiL_ns_sum);
+  IMnpipi_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);
   IMnpipi_pipiL_ns_sum->SetLineColor(9);
   IMnpipi_pipiL_ns_sum->Draw("HEsame");
   TH1D* IMnpipi_sum = (TH1D*)IMnpipi_ns->Clone("IMnpipi_sum");
@@ -462,7 +465,7 @@ void plot_K0()
   q_npipiL->Scale(scale_npipiL);
   q_npipiL->SetLineColor(7);
   q_npipiL->Draw("HEsame");
-  q_pipiL_ns_sum->Scale(cs_pipiL_ns_sum);
+  q_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);
   q_pipiL_ns_sum->SetLineColor(9);
   q_pipiL_ns_sum->Draw("HEsame");
 
@@ -498,7 +501,7 @@ void plot_K0()
   MMnmiss_npipiL->Scale(scale_npipiL);
   MMnmiss_npipiL->Draw("HEsame");
   MMnmiss_pipiL_ns_sum->SetLineColor(9);
-  MMnmiss_pipiL_ns_sum->Scale(cs_pipiL_ns_sum);
+  MMnmiss_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);
   MMnmiss_pipiL_ns_sum->Draw("HEsame");
   
   TH1D* MMnmiss_sum = (TH1D*)MMnmiss_ns->Clone("MMnmiss_sum");
