@@ -1,8 +1,13 @@
+//plot K0 spectrucm 
+//H.Asano
+
+
 #include "../src/GlobalVariables.h"
 
 void plot_K0()
 {
-
+  
+  //open real data
   TFile *_file0 = TFile::Open("../post/evanaIMpisigma_npippim_v162_outncutK015.root");
   _file0->cd();
   TH2F* q_IMpippim_n_rdata = (TH2F*)_file0->Get("q_IMpippim_n");
@@ -210,6 +215,10 @@ void plot_K0()
   const double scale_Kmpts = 0.03;
   const double scale_K0nn = 0.01;
   const double scale_npipiL = 0.1;//npi+pi-L 4-body phase space
+  const double scale_S0pipi_ns = 2.0;
+  
+  const double cs_S0pipi_ns = 0.53;
+  const double csError_S0pipi_ns = 0.05;
   
   const double cs_pipiL_ns_total = 4.05;//CS total [mb]
   const double cs_pipiL_ns = 0.94;//prompt K-p -> pi+pi-L or rho L
@@ -219,7 +228,8 @@ void plot_K0()
   const double cs_pimS1385p_ns = 1.12;//CS [mb]
   const double csError_pimS1385p_ns = 0.12;//CS [mb]
   const double scale_pipiL_ns_sum = 4.0;
-
+  
+  //
   //normalization of pipiL cocktail 
   IMpippim_pipS1385m_ns->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
   IMpippim_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
@@ -240,6 +250,7 @@ void plot_K0()
   MMnmiss_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
   MMnmiss_pipiL_ns->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
   
+  //
   //Lambda pi+ pi+ cocktail check.
   TCanvas *cMom_ncds_pipiL = new TCanvas("cMom_ncds_pipiL","cMom_ncds_pipiL");
   cMom_ncds_pipiL->cd();
@@ -286,31 +297,31 @@ void plot_K0()
   
 
   //1NA pi+pi-Lambda n cocktail
-  TH1D* IMpippim_pipiL_ns_sum =  (TH1D*)IMpippim_pipS1385m_ns->Clone();
+  TH1D* IMpippim_pipiL_ns_sum =  (TH1D*)IMpippim_pipS1385m_ns->Clone("IMpippim_pipiL_ns_sum");
   IMpippim_pipiL_ns_sum->Add(IMpippim_pimS1385p_ns);
   IMpippim_pipiL_ns_sum->Add(IMpippim_pipiL_ns);
   
-  TH1D* IMnpipi_pipiL_ns_sum = (TH1D*)IMnpipi_pipS1385m_ns->Clone();
+  TH1D* IMnpipi_pipiL_ns_sum = (TH1D*)IMnpipi_pipS1385m_ns->Clone("IMnpipi_pipiL_ns_sum");
   IMnpipi_pipiL_ns_sum->Add(IMnpipi_pimS1385p_ns);
   IMnpipi_pipiL_ns_sum->Add(IMnpipi_pipiL_ns);
   
-  TH1D* q_IMpippim_n_pipiL_ns_sum = (TH1D*)q_IMpippim_n_pipS1385m_ns->Clone();
+  TH1D* q_IMpippim_n_pipiL_ns_sum = (TH1D*)q_IMpippim_n_pipS1385m_ns->Clone("q_IMpippim_n_pipiL_ns_sum");
   q_IMpippim_n_pipiL_ns_sum->Add(q_IMpippim_n_pimS1385p_ns);
   q_IMpippim_n_pipiL_ns_sum->Add(q_IMpippim_n_pipiL_ns);
   
-  TH1D* nmom_pipiL_ns_sum = (TH1D*) nmom_IMnpipi_wK0_n_pipS1385m_ns_py->Clone();
+  TH1D* nmom_pipiL_ns_sum = (TH1D*) nmom_IMnpipi_wK0_n_pipS1385m_ns_py->Clone("nmom_pipiL_ns_sum");
   nmom_pipiL_ns_sum->Add(nmom_IMnpipi_wK0_n_pimS1385p_ns_py);
   nmom_pipiL_ns_sum->Add(nmom_IMnpipi_wK0_n_pipiL_ns_py);
   
-  TH1D* q_pipiL_ns_sum = (TH1D*)q_pipS1385m_ns->Clone();
+  TH1D* q_pipiL_ns_sum = (TH1D*)q_pipS1385m_ns->Clone("q_pipiL_ns_sum");
   q_pipiL_ns_sum->Add(q_pimS1385p_ns);
   q_pipiL_ns_sum->Add(q_pipiL_ns);
   
-  TH1D* Mompippim_pipiL_ns_sum = (TH1D*)Mompippim_pipS1385m_ns->Clone();
+  TH1D* Mompippim_pipiL_ns_sum = (TH1D*)Mompippim_pipS1385m_ns->Clone("Mompippim_pipiL_ns_sum");
   Mompippim_pipiL_ns_sum->Add(Mompippim_pimS1385p_ns);
   Mompippim_pipiL_ns_sum->Add(Mompippim_pipiL_ns);
  
-  TH1D* MMnmiss_pipiL_ns_sum = (TH1D*)MMnmiss_pipS1385m_ns->Clone();
+  TH1D* MMnmiss_pipiL_ns_sum = (TH1D*)MMnmiss_pipS1385m_ns->Clone("MMnmiss_pipiL_ns_sum");
   MMnmiss_pipiL_ns_sum->Add(MMnmiss_pimS1385p_ns);
   MMnmiss_pipiL_ns_sum->Add(MMnmiss_pipiL_ns);
   
@@ -342,24 +353,29 @@ void plot_K0()
   nmom_IMnpipi_wK0_n_Kmpts_py->Draw("HEsame");
   nmom_IMnpipi_wK0_n_npipiL_py->Scale(scale_npipiL);//npi+pi-L phase space
   nmom_IMnpipi_wK0_n_npipiL_py->SetLineColor(7);
-  //nmom_IMnpipi_wK0_n_npipiL_py->Draw("HEsame");
-  TH1D* nmom_IMnpipi_wK0_n_npipiL_py_zoom = (TH1D*)nmom_IMnpipi_wK0_n_npipiL_py->Clone("zoom1");
-  nmom_IMnpipi_wK0_n_npipiL_py_zoom->Scale(5.0);
-  nmom_IMnpipi_wK0_n_npipiL_py_zoom->Draw("HEsame");
+  nmom_IMnpipi_wK0_n_npipiL_py->Draw("HEsame");
+  //TH1D* nmom_IMnpipi_wK0_n_npipiL_py_zoom = (TH1D*)nmom_IMnpipi_wK0_n_npipiL_py->Clone("zoom1");
+  //nmom_IMnpipi_wK0_n_npipiL_py_zoom->Scale(5.0);
+  //nmom_IMnpipi_wK0_n_npipiL_py_zoom->Draw("HEsame");
 
+  nmom_IMnpipi_wK0_n_S0pippim_ns_py->Scale(scale_S0pipi_ns);
+  nmom_IMnpipi_wK0_n_S0pippim_ns_py->SetLineColor(11);
+  nmom_IMnpipi_wK0_n_S0pippim_ns_py->Draw("HEsame");
+  
   nmom_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);//npi+pi-L phase space
   nmom_pipiL_ns_sum->SetLineColor(9);
-  //nmom_pipiL_ns_sum->Draw("HEsame");
-  TH1D* nmom_pipiL_ns_sum_zoom = (TH1D*)nmom_pipiL_ns_sum->Clone("zoom2");
-  nmom_pipiL_ns_sum_zoom->Scale(5.0);
-  nmom_pipiL_ns_sum_zoom->Draw("HEsame");
+  nmom_pipiL_ns_sum->Draw("HEsame");
+  //TH1D* nmom_pipiL_ns_sum_zoom = (TH1D*)nmom_pipiL_ns_sum->Clone("zoom2");
+  //nmom_pipiL_ns_sum_zoom->Scale(5.0);
+  //nmom_pipiL_ns_sum_zoom->Draw("HEsame");
   TH1D* nmom_sum = (TH1D*)nmom_IMnpipi_wK0_n_ns_py->Clone("nmom_sum");
   nmom_sum->Add(nmom_IMnpipi_wK0_n_nnts_py);
   nmom_sum->Add(nmom_IMnpipi_wK0_n_K0nn_py);
   nmom_sum->Add(nmom_IMnpipi_wK0_n_Knts_py);
   nmom_sum->Add(nmom_IMnpipi_wK0_n_Kmpts_py);
-  nmom_sum->Add(nmom_IMnpipi_wK0_n_npipiL_py);
-  nmom_sum->Add(nmom_pipiL_ns_sum);
+  nmom_sum->Add(nmom_IMnpipi_wK0_n_npipiL_py);//2NA phase space
+  nmom_sum->Add(nmom_pipiL_ns_sum);//1NA Fermi motion
+  nmom_sum->Add(nmom_IMnpipi_wK0_n_S0pippim_ns_py);//1NA Fermi motion
   nmom_sum->SetLineColor(6);
   nmom_sum->Draw("HEsame");
 
@@ -371,6 +387,7 @@ void plot_K0()
   tl->AddEntry(nmom_IMnpipi_wK0_n_Knts_py, "two step K0-n scat.","l");
   tl->AddEntry(nmom_IMnpipi_wK0_n_npipiL_py,"2NA n#pi^{+}#pi^{-}#Lambda phase space","l");
   tl->AddEntry(nmom_pipiL_ns_sum,"1NA #pi^{+}#pi^{-}#Lambda","l");
+  tl->AddEntry(nmom_IMnpipi_wK0_n_S0pippim_ns_py,"1NA #pi^{+}#pi^{-}#Sigma^0","l");
   tl->Draw();
 
   //K0 momentum dist.
@@ -398,6 +415,9 @@ void plot_K0()
   Mompippim_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);
   Mompippim_pipiL_ns_sum->SetLineColor(9);
   Mompippim_pipiL_ns_sum->Draw("HEsame");
+  Mompippim_S0pippim_ns->Scale(scale_S0pipi_ns);
+  Mompippim_S0pippim_ns->SetLineColor(11);
+  Mompippim_S0pippim_ns->Draw("HEsame");
   TH1D* Mompippim_sum = (TH1D*)Mompippim_ns->Clone("Mompippim_sum");
   Mompippim_sum->Add(Mompippim_nnts);
   Mompippim_sum->Add(Mompippim_K0nn);
@@ -405,6 +425,7 @@ void plot_K0()
   Mompippim_sum->Add(Mompippim_Kmpts);
   Mompippim_sum->Add(Mompippim_npipiL);
   Mompippim_sum->Add(Mompippim_pipiL_ns_sum);
+  Mompippim_sum->Add(Mompippim_S0pippim_ns);
   Mompippim_sum->SetLineColor(6);
   Mompippim_sum->Draw("HEsame");
 
@@ -468,6 +489,10 @@ void plot_K0()
   q_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);
   q_pipiL_ns_sum->SetLineColor(9);
   q_pipiL_ns_sum->Draw("HEsame");
+  q_S0pippim_ns->Scale(scale_S0pipi_ns);
+  q_S0pippim_ns->SetLineColor(11);
+  q_S0pippim_ns->Draw("HEsame");
+  
 
   TH1D* q_sum = (TH1D*)q_ns->Clone("q_sum");
   q_sum->Add(q_nnts);
@@ -476,6 +501,7 @@ void plot_K0()
   q_sum->Add(q_Kmpts);
   q_sum->Add(q_npipiL);
   q_sum->Add(q_pipiL_ns_sum);
+  q_sum->Add(q_S0pippim_ns);
   q_sum->SetLineColor(6);
   q_sum->Draw("HEsame");
   
@@ -503,6 +529,9 @@ void plot_K0()
   MMnmiss_pipiL_ns_sum->SetLineColor(9);
   MMnmiss_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);
   MMnmiss_pipiL_ns_sum->Draw("HEsame");
+  MMnmiss_S0pippim_ns->SetLineColor(11);
+  MMnmiss_S0pippim_ns->Scale(scale_S0pipi_ns);
+  MMnmiss_S0pippim_ns->Draw("HEsame");
   
   TH1D* MMnmiss_sum = (TH1D*)MMnmiss_ns->Clone("MMnmiss_sum");
   MMnmiss_sum->Add(MMnmiss_Knts);
@@ -511,6 +540,7 @@ void plot_K0()
   MMnmiss_sum->Add(MMnmiss_K0nn);
   MMnmiss_sum->Add(MMnmiss_npipiL);
   MMnmiss_sum->Add(MMnmiss_pipiL_ns_sum);
+  MMnmiss_sum->Add(MMnmiss_S0pippim_ns);
   MMnmiss_sum->SetLineColor(6);
   MMnmiss_sum->Draw("HEsame");
   
@@ -539,6 +569,9 @@ void plot_K0()
   IMpippim_pipiL_ns_sum->SetLineColor(9);
   IMpippim_pipiL_ns_sum->Scale(cs_pipiL_ns);
   IMpippim_pipiL_ns_sum->Draw("HEsame");
+  IMpippim_S0pippim_ns->SetLineColor(11);
+  IMpippim_S0pippim_ns->Scale(scale_S0pipi_ns);
+  IMpippim_S0pippim_ns->Draw("HEsame");
   
   TH1D* IMpippim_sum = (TH1D*)IMpippim_ns->Clone("IMpippim_sum");
   IMpippim_sum->Add(IMpippim_Knts);
@@ -547,6 +580,7 @@ void plot_K0()
   IMpippim_sum->Add(IMpippim_K0nn);
   IMpippim_sum->Add(IMpippim_npipiL);
   IMpippim_sum->Add(IMpippim_pipiL_ns_sum);
+  IMpippim_sum->Add(IMpippim_S0pippim_ns);
   IMpippim_sum->SetLineColor(6);
   IMpippim_sum->Draw("HEsame");
 
