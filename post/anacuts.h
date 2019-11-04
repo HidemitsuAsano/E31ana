@@ -17,7 +17,7 @@ namespace anacuts {
   const double neutron_MIN = neutron_center-neutron_NSigmacut*neutron_sigma;
   const double neutron_MAX = neutron_center+neutron_NSigmacut*neutron_sigma;
    
-  //neutron cut of CDS
+  //neutron cut of CDS, this is necesarry due to the TDC range 
   const double nmomcut = 0.13;
 
   const double Sigma_NSigmacut = 1.5;
