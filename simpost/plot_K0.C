@@ -127,7 +127,6 @@ void plot_K0()
   
   //K-p -> pi+pi-L (3-body phase space, n_s)
   TFile *_file7 = TFile::Open("simIMpisigma_pipiL_ns_pippimn_v1_outncutK015.root");
- 
   TH2F* q_IMpippim_n_pipiL_ns = (TH2F*)_file7->Get("q_IMpippim_n");
   TH2F* nmom_IMnpipi_wK0_n_pipiL_ns = (TH2F*)_file7->Get("nmom_IMnpipi_wK0_n");
   TH2F* q_IMnpipi_wK0_n_pipiL_ns = (TH2F*)_file7->Get("q_IMnpipi_wK0_n");
@@ -297,8 +296,10 @@ void plot_K0()
   const double cs_Smpip_ns = 1.53 ;//CS [mb]
   const double csError_Smpip_ns = 0.09 ;//CS [mb]
 
-
   //
+  //Lambda pi+ pi+ cocktail check.
+  //
+  
   //normalization of pipiL cocktail 
   IMpippim_pipS1385m_ns->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
   IMpippim_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
@@ -320,7 +321,6 @@ void plot_K0()
   MMnmiss_pipiL_ns->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
   
   //
-  //Lambda pi+ pi+ cocktail check.
   TCanvas *cMom_ncds_pipiL = new TCanvas("cMom_ncds_pipiL","cMom_ncds_pipiL");
   cMom_ncds_pipiL->cd();
   nmom_IMnpipi_wK0_n_pipS1385m_ns_py->SetLineColor(2);
@@ -363,8 +363,7 @@ void plot_K0()
   MMnmiss_pipiL_ns->Draw("HEsame");
   //MMnmiss_npipiL->Scale(0.6);
   //MMnmiss_npipiL->Draw("HEsame");
-  
-
+   
   //1NA pi+pi-Lambda n cocktail
   TH1D* IMpippim_pipiL_ns_sum =  (TH1D*)IMpippim_pipS1385m_ns->Clone("IMpippim_pipiL_ns_sum");
   IMpippim_pipiL_ns_sum->Add(IMpippim_pimS1385p_ns);
@@ -394,7 +393,34 @@ void plot_K0()
   MMnmiss_pipiL_ns_sum->Add(MMnmiss_pimS1385p_ns);
   MMnmiss_pipiL_ns_sum->Add(MMnmiss_pipiL_ns);
   
-  
+  //
+  //Forward Sigma (1NA) cocktail 
+  //
+  TCanvas *cMom_ncds_fSigma = new TCanvas("cMom_ncds_fSigma","cMom_ncds_fSigma");
+  cMom_ncds_fSigma->cd();
+  nmom_IMnpipi_wK0_n_Sppim_ns_py->SetLineColor(2);
+  nmom_IMnpipi_wK0_n_Sppim_ns_py->Draw("HE");
+  nmom_IMnpipi_wK0_n_Smpip_ns_py->SetLineColor(3);
+  nmom_IMnpipi_wK0_n_Smpip_ns_py->Draw("HEsame");
+
+  TLegend *tl_fSigma = new TLegend(0.6,0.68,0.89,0.89);
+  tl_fSigma->SetTextFont(133);
+  tl_fSigma->AddEntry(nmom_IMnpipi_wK0_n_Sppim_ns_py, "#pi^{-}#Sigma^{+}","l");
+  tl_fSigma->AddEntry(nmom_IMnpipi_wK0_n_Smpip_ns_py, "#pi^{+}#Sigma^{-}","l");
+  tl_fSigma->Draw();
+
+  TCanvas *cMom_K0_fSigma = new TCanvas("cMom_K0_fSigma","cMom_K0_fSigma");
+  cMom_K0_fSigma->cd();
+  Mompippim_Sppim_ns->SetLineColor(2);
+  Mompippim_Sppim_ns->Scale(cs_Sppim_ns/cs_pipiL_ns_total);
+  Mompippim_Sppim_ns->Draw("HE");
+  Mompippim_Smpip_ns->SetLineColor(3);
+  Mompippim_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total);
+  Mompippim_pimS1385p_ns->Draw("HEsame");
+  Mompippim_pipiL_ns->SetLineColor(4);
+  Mompippim_pipiL_ns->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
+  Mompippim_pipiL_ns->Draw("HEsame");
+
 
   //////////////////////////
   //plot all cocktail
