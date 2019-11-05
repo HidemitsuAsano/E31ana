@@ -6,7 +6,6 @@
 
 void plot_K0()
 {
-  
   //open real data
   TFile *_file0 = TFile::Open("../post/evanaIMpisigma_npippim_v162_outncutK015.root");
   _file0->cd();
@@ -55,7 +54,7 @@ void plot_K0()
   TH2F* Mompippim_IMnpipi_dE_wK0_n_ns = (TH2F*)_file2->Get("Mompippim_IMnpipi_dE_wK0_n");
   TH2F* MMnmiss_IMpippim_dE_ns = (TH2F*)_file2->Get("MMnmiss_IMpippim_dE");
 
-
+  //projection
   TH1D* IMpippim_ns = (TH1D*)q_IMpippim_n_ns->ProjectionX("IMpippim_ns");
   TH1D* IMnpipi_ns = (TH1D*) nmom_IMnpipi_wK0_n_ns->ProjectionX();
   TH1D* nmom_IMnpipi_wK0_n_ns_py = (TH1D*) nmom_IMnpipi_wK0_n_ns->ProjectionY("nmom_IMnpipi_wK0_n_ns_py"); 
@@ -63,6 +62,11 @@ void plot_K0()
   TH1D* Mompippim_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_ns->ProjectionY("Mompippim_ns");
   TH1D* MMnmiss_ns = (TH1D*) MMnmiss_IMpippim_dE_ns->ProjectionY("MMnmiss_ns",pipimin,pipimax);
   
+  TFile *_file2_1 = TFile::Open("simIMpisigma_K0n_ns_v12.root");
+  TH1F* Reactmom_0_K0n_ns = (TH1F*)_file2_1->Get("Reactmom_0");
+  const double ngen_K0n_ns = Reactmom_0_K0n_ns->GetEntries();
+  std::cout << "ngen K0n_ns " << ngen_K0n_ns << std::endl;
+
 
   //K-d -> K0nn phase space
   TFile *_file3 = TFile::Open("simIMpisigma_K0nn_pippimn_v7_outncutK015.root");
@@ -295,7 +299,7 @@ void plot_K0()
   const double csError_Sppim_ns = 0.11;//CS [mb]
   const double cs_Smpip_ns = 1.53 ;//CS [mb]
   const double csError_Smpip_ns = 0.09 ;//CS [mb]
-
+  
   //
   //Lambda pi+ pi+ cocktail check.
   //
@@ -395,14 +399,15 @@ void plot_K0()
   nmom_IMnpipi_wK0_n_Smpip_ns_py->Scale(cs_Smpip_ns/cs_pipiL_ns_total*ngen_pipiL_ns/ngen_Smpip_ns);
   Mompippim_Sppim_ns->Scale(cs_Sppim_ns/cs_pipiL_ns_total*ngen_pipiL_ns/ngen_Sppim_ns);
   Mompippim_Smpip_ns->Scale(cs_Smpip_ns/cs_pipiL_ns_total*ngen_pipiL_ns/ngen_Smpip_ns);
-  MMnmiss_Sppim_ns
+  MMnmiss_Sppim_ns->Scale(cs_Sppim_ns/cs_pipiL_ns_total*ngen_pipiL_ns/ngen_Sppim_ns);
+  MMnmiss_Smpip_ns->Scale(cs_Smpip_ns/cs_pipiL_ns_total*ngen_pipiL_ns/ngen_Smpip_ns);
   
   TCanvas *cMom_ncds_fSigma = new TCanvas("cMom_ncds_fSigma","cMom_ncds_fSigma");
   cMom_ncds_fSigma->cd();
-  nmom_IMnpipi_wK0_n_Sppim_ns_py->SetLineColor(2);
-  nmom_IMnpipi_wK0_n_Sppim_ns_py->Draw("HE");
   nmom_IMnpipi_wK0_n_Smpip_ns_py->SetLineColor(3);
-  nmom_IMnpipi_wK0_n_Smpip_ns_py->Draw("HEsame");
+  nmom_IMnpipi_wK0_n_Smpip_ns_py->Draw("HE");
+  nmom_IMnpipi_wK0_n_Sppim_ns_py->SetLineColor(2);
+  nmom_IMnpipi_wK0_n_Sppim_ns_py->Draw("HEsame");
 
   TLegend *tl_fSigma = new TLegend(0.6,0.68,0.89,0.89);
   tl_fSigma->SetTextFont(133);
@@ -412,17 +417,47 @@ void plot_K0()
 
   TCanvas *cMom_K0_fSigma = new TCanvas("cMom_K0_fSigma","cMom_K0_fSigma");
   cMom_K0_fSigma->cd();
-  Mompippim_Sppim_ns->SetLineColor(2);
-  Mompippim_Sppim_ns->Draw("HE");
   Mompippim_Smpip_ns->SetLineColor(3);
-  Mompippim_Smpip_ns->Draw("HEsame");
+  Mompippim_Smpip_ns->Draw("HE");
+  Mompippim_Sppim_ns->SetLineColor(2);
+  Mompippim_Sppim_ns->Draw("HEsame");
 
   TCanvas *cnmiss_fSigma = new TCanvas("cnmiss_fSigma","cnmiss_fSigma");
-  cnmiss_fiSigma->cd();
-  MMnmiss_Sppim_ns->SetLineColor(2);
-  MMnmiss_Sppim_ns->Draw("HE");
+  cnmiss_fSigma->cd();
   MMnmiss_Smpip_ns->SetLineColor(3);
-  MMnmiss_Smpip_ns->Draw("HEsame");
+  MMnmiss_Smpip_ns->Draw("HE");
+  MMnmiss_Sppim_ns->SetLineColor(2);
+  MMnmiss_Sppim_ns->Draw("HEsame");
+  
+  //1NA forward Sigma pi (n_s) cocktail
+  TH1D* IMpippim_fSigma_ns_sum =  (TH1D*)IMpippim_Sppim_ns->Clone("IMpippim_fSigma_ns_sum");
+  IMpippim_fSigma_ns_sum->Add(IMpippim_Smpip_ns);
+  
+  TH1D* IMnpipi_fSigma_ns_sum = (TH1D*)IMnpipi_Sppim_ns->Clone("IMnpipi_fSigma_ns_sum");
+  IMnpipi_fSigma_ns_sum->Add(IMnpipi_Smpip_ns);
+  
+  TH1D* q_IMpippim_n_fSigma_ns_sum = (TH1D*)q_IMpippim_n_Sppim_ns->Clone("q_IMpippim_n_fSigma_ns_sum");
+  q_IMpippim_n_fSigma_ns_sum->Add(q_IMpippim_n_Smpip_ns);
+  
+  TH1D* nmom_fSigma_ns_sum = (TH1D*) nmom_IMnpipi_wK0_n_Sppim_ns_py->Clone("nmom_fSigma_ns_sum");
+  nmom_fSigma_ns_sum->Add(nmom_IMnpipi_wK0_n_Smpip_ns_py);
+  
+  TH1D* q_fSigma_ns_sum = (TH1D*)q_Sppim_ns->Clone("q_fSigma_ns_sum");
+  q_fSigma_ns_sum->Add(q_Smpip_ns);
+  
+  TH1D* Mompippim_fSigma_ns_sum = (TH1D*)Mompippim_Sppim_ns->Clone("Mompippim_fSigma_ns_sum");
+  Mompippim_fSigma_ns_sum->Add(Mompippim_Smpip_ns);
+ 
+  TH1D* MMnmiss_fSigma_ns_sum = (TH1D*)MMnmiss_Sppim_ns->Clone("MMnmiss_fSigma_ns_sum");
+  MMnmiss_fSigma_ns_sum->Add(MMnmiss_Smpip_ns);
+  
+
+  //
+  //1 NA cocktail 
+  //
+  IMpippim_ns->Scale(cs_ns/cs_pipiL_ns_total/ngen_K0n_ns*ngen_pipiL_ns);
+
+   
 
   //////////////////////////
   //plot all cocktail
