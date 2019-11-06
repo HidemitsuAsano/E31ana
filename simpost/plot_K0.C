@@ -474,6 +474,15 @@ void plot_K0()
   Mompippim_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns); 
   MMnmiss_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
   
+  //scaling 1NA K-p->L1520pi0 (n_s)
+  IMpippim_L1520pi0_ns->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
+  IMnpipi_L1520pi0_ns->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
+  nmom_IMnpipi_wK0_n_L1520pi0_ns_py->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
+  q_L1520pi0_ns->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns); 
+  Mompippim_L1520pi0_ns->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns); 
+  MMnmiss_L1520pi0_ns->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
+
+
 
   //////////////////////////
   //plot all cocktail
