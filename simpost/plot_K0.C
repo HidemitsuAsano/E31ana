@@ -300,30 +300,31 @@ void plot_K0()
   const double cs_Smpip_ns = 1.53 ;//CS [mb]
   const double csError_Smpip_ns = 0.09 ;//CS [mb]
   
+  const double scale_1NA = 4.0;
   //
   //Lambda pi+ pi+ cocktail check.
   //
   
   //Scaling of pipiL cocktail 
   //number of generated events normalized to pipiL_ns sim.
-  IMpippim_pipS1385m_ns->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
-  IMpippim_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
-  IMpippim_pipiL_ns->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
-  IMnpipi_pipS1385m_ns->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
-  IMnpipi_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
-  IMnpipi_pipiL_ns->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
-  nmom_IMnpipi_wK0_n_pipS1385m_ns_py->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
-  nmom_IMnpipi_wK0_n_pimS1385p_ns_py->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
-  nmom_IMnpipi_wK0_n_pipiL_ns_py->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
-  q_pipS1385m_ns->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
-  q_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
-  q_pipiL_ns->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
-  Mompippim_pipS1385m_ns->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
-  Mompippim_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
-  Mompippim_pipiL_ns->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
-  MMnmiss_pipS1385m_ns->Scale(cs_pipS1385m_ns/cs_pipiL_ns_total/ngen_pipS1385m_ns*ngen_pipiL_ns);
-  MMnmiss_pimS1385p_ns->Scale(cs_pimS1385p_ns/cs_pipiL_ns_total/ngen_pimS1385p_ns*ngen_pipiL_ns);
-  MMnmiss_pipiL_ns->Scale(cs_pipiL_ns/cs_pipiL_ns_total);
+  IMpippim_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  IMpippim_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  IMpippim_pipiL_ns->Scale(cs_pipiL_ns);
+  IMnpipi_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  IMnpipi_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  IMnpipi_pipiL_ns->Scale(cs_pipiL_ns);
+  nmom_IMnpipi_wK0_n_pipS1385m_ns_py->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  nmom_IMnpipi_wK0_n_pimS1385p_ns_py->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  nmom_IMnpipi_wK0_n_pipiL_ns_py->Scale(cs_pipiL_ns);
+  q_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  q_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  q_pipiL_ns->Scale(cs_pipiL_ns);
+  Mompippim_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  Mompippim_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  Mompippim_pipiL_ns->Scale(cs_pipiL_ns);
+  MMnmiss_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  MMnmiss_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  MMnmiss_pipiL_ns->Scale(cs_pipiL_ns);
   
   //
   TCanvas *cMom_ncds_pipiL = new TCanvas("cMom_ncds_pipiL","cMom_ncds_pipiL");
@@ -395,12 +396,13 @@ void plot_K0()
   //
   //Forward Sigma (1NA) cocktail 
   //
-  nmom_IMnpipi_wK0_n_Sppim_ns_py->Scale(cs_Sppim_ns/cs_pipiL_ns_total*ngen_pipiL_ns/ngen_Sppim_ns);
-  nmom_IMnpipi_wK0_n_Smpip_ns_py->Scale(cs_Smpip_ns/cs_pipiL_ns_total*ngen_pipiL_ns/ngen_Smpip_ns);
-  Mompippim_Sppim_ns->Scale(cs_Sppim_ns/cs_pipiL_ns_total*ngen_pipiL_ns/ngen_Sppim_ns);
-  Mompippim_Smpip_ns->Scale(cs_Smpip_ns/cs_pipiL_ns_total*ngen_pipiL_ns/ngen_Smpip_ns);
-  MMnmiss_Sppim_ns->Scale(cs_Sppim_ns/cs_pipiL_ns_total*ngen_pipiL_ns/ngen_Sppim_ns);
-  MMnmiss_Smpip_ns->Scale(cs_Smpip_ns/cs_pipiL_ns_total*ngen_pipiL_ns/ngen_Smpip_ns);
+  //scaling
+  nmom_IMnpipi_wK0_n_Sppim_ns_py->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns);
+  nmom_IMnpipi_wK0_n_Smpip_ns_py->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns);
+  Mompippim_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns);
+  Mompippim_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns);
+  MMnmiss_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns);
+  MMnmiss_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns);
   
   TCanvas *cMom_ncds_fSigma = new TCanvas("cMom_ncds_fSigma","cMom_ncds_fSigma");
   cMom_ncds_fSigma->cd();
@@ -455,9 +457,23 @@ void plot_K0()
   //
   //1 NA cocktail 
   //
-  IMpippim_ns->Scale(cs_ns/cs_pipiL_ns_total/ngen_K0n_ns*ngen_pipiL_ns);
 
-   
+  //scaling 1NA K-p -> K0n (n_s)
+  IMpippim_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns);
+  IMnpipi_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns);
+  nmom_IMnpipi_wK0_n_ns_py->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns);
+  q_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns); 
+  Mompippim_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns); 
+  MMnmiss_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns);
+  
+  //scaling 1NA K-p ->S0pi+pi- (n_s)
+  IMpippim_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
+  IMnpipi_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
+  nmom_IMnpipi_wK0_n_S0pippim_ns_py->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
+  q_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns); 
+  Mompippim_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns); 
+  MMnmiss_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
+  
 
   //////////////////////////
   //plot all cocktail
@@ -469,7 +485,7 @@ void plot_K0()
   cMom_ncds->cd();
   nmom_IMnpipi_wK0_n_rdata_py->Draw("HE");
   nmom_IMnpipi_wK0_n_ns_py->SetLineColor(2);//1NA
-  nmom_IMnpipi_wK0_n_ns_py->Scale(scale_ns);
+  nmom_IMnpipi_wK0_n_ns_py->Scale(scale_1NA);
   nmom_IMnpipi_wK0_n_ns_py->Draw("HEsame");
   nmom_IMnpipi_wK0_n_nnts_py->SetLineColor(3);//n-n 2-step
   nmom_IMnpipi_wK0_n_nnts_py->Scale(scale_nnts);
