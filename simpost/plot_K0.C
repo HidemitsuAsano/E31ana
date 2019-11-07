@@ -489,6 +489,37 @@ void plot_K0()
   IMpippim_1NA->Add(IMpippim_L1520pi0_ns);
   IMpippim_1NA->Add(IMpippim_fSigma_ns_sum);
   IMpippim_1NA->Add(IMpippim_pipiL_ns_sum);
+  
+  TH1D* IMnpipi_1NA = (TH1D*)IMnpipi_ns->Clone("IMnpipi_1NA");
+  IMnpipi_1NA->Add(IMnpipi_S0pippim_ns);
+  IMnpipi_1NA->Add(IMnpipi_L1520pi0_ns);
+  IMnpipi_1NA->Add(IMnpipi_fSigma_ns_sum);
+  IMnpipi_1NA->Add(IMnpipi_pipiL_ns_sum);
+  
+  TH1D* nmom_1NA = (TH1D*)nmom_IMnpipi_wK0_n_ns_py->Clone("nmom_1NA");
+  nmom_1NA->Add(nmom_IMnpipi_wK0_n_S0pippim_ns_py);
+  nmom_1NA->Add(nmom_IMnpipi_wK0_n_L1520pi0_ns_py);
+  nmom_1NA->Add(nmom_fSigma_ns_sum);
+  nmom_1NA->Add(nmom_pipiL_ns_sum);
+
+  TH1D* q_1NA = (TH1D*)q_ns->Clone("q_1NA");
+  q_1NA->Add(q_S0pippim_ns);
+  q_1NA->Add(q_L1520pi0_ns);
+  q_1NA->Add(q_fSigma_ns_sum);   
+  q_1NA->Add(q_pipiL_ns_sum);
+
+  TH1D* Mompippim_1NA = (TH1D*)Mompippim_ns->Clone("Mompippim_1NA");
+  Mompippim_1NA->Add(Mompippim_S0pippim_ns);
+  Mompippim_1NA->Add(Mompippim_L1520pi0_ns);
+  Mompippim_1NA->Add(Mompippim_fSigma_ns_sum);
+  Mompippim_1NA->Add(Mompippim_pipiL_ns_sum);
+  
+  
+  TH1D* MMnmiss_1NA = (TH1D*)MMnmiss_ns->Clone("MMnmiss_1NA");
+  MMnmiss_1NA->Add(MMnmiss_S0pippim_ns);
+  MMnmiss_1NA->Add(MMnmiss_L1520pi0_ns);
+  MMnmiss_1NA->Add(MMnmiss_fSigma_ns_sum);
+  MMnmiss_1NA->Add(MMnmiss_pipiL_ns_sum);
 
 
   //////////////////////////
