@@ -475,13 +475,20 @@ void plot_K0()
   MMnmiss_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
   
   //scaling 1NA K-p->L1520pi0 (n_s)
-  IMpippim_L1520pi0_ns->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
-  IMnpipi_L1520pi0_ns->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
-  nmom_IMnpipi_wK0_n_L1520pi0_ns_py->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
-  q_L1520pi0_ns->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns); 
-  Mompippim_L1520pi0_ns->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns); 
-  MMnmiss_L1520pi0_ns->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
+  IMpippim_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
+  IMnpipi_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
+  nmom_IMnpipi_wK0_n_L1520pi0_ns_py->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
+  q_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns); 
+  Mompippim_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns); 
+  MMnmiss_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
 
+  
+  //adding 1NA process after scaling 
+  TH1D* IMpippim_1NA = (TH1D*)IMpippim_ns->Clone("IMpippim_1NA");
+  IMpippim_1NA->Add(IMpippim_S0pippim_ns);
+  IMpippim_1NA->Add(IMpippim_L1520pi0_ns);
+  IMpippim_1NA->Add(IMpippim_fSigma_ns_sum);
+  IMpippim_1NA->Add(IMpippim_pipiL_ns_sum);
 
 
   //////////////////////////
@@ -515,7 +522,7 @@ void plot_K0()
   //nmom_IMnpipi_wK0_n_npipiL_py_zoom->Scale(5.0);
   //nmom_IMnpipi_wK0_n_npipiL_py_zoom->Draw("HEsame");
 
-  nmom_IMnpipi_wK0_n_S0pippim_ns_py->Scale(scale_S0pipi_ns);
+  nmom_IMnpipi_wK0_n_S0pippim_ns_py->Scale(scale_1NA);
   nmom_IMnpipi_wK0_n_S0pippim_ns_py->SetLineColor(11);
   nmom_IMnpipi_wK0_n_S0pippim_ns_py->Draw("HEsame");
   
@@ -724,10 +731,10 @@ void plot_K0()
   IMpippim_npipiL->Scale(scale_npipiL);
   IMpippim_npipiL->Draw("HEsame");
   IMpippim_pipiL_ns_sum->SetLineColor(9);
-  IMpippim_pipiL_ns_sum->Scale(cs_pipiL_ns);
+  //IMpippim_pipiL_ns_sum->Scale(cs_pipiL_ns);
   IMpippim_pipiL_ns_sum->Draw("HEsame");
   IMpippim_S0pippim_ns->SetLineColor(11);
-  IMpippim_S0pippim_ns->Scale(scale_S0pipi_ns);
+  //IMpippim_S0pippim_ns->Scale(scale_S0pipi_ns);
   IMpippim_S0pippim_ns->Draw("HEsame");
   
   TH1D* IMpippim_sum = (TH1D*)IMpippim_ns->Clone("IMpippim_sum");
