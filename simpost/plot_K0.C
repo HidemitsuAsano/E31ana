@@ -16,19 +16,18 @@ void plot_K0()
 
   TH1D* IMpippim_rdata = (TH1D*)q_IMpippim_n_rdata->ProjectionX("IMpippim_rdata");
   TH1D* IMnpipi_rdata = (TH1D*)nmom_IMnpipi_wK0_n_rdata->ProjectionX("IMnpipi_rdata");
-  TH1D* nmom_IMnpipi_wK0_n_rdata_py = (TH1D*) nmom_IMnpipi_wK0_n_rdata->ProjectionY("nmom_IMnpipi_wK0_n_rdata_py");
+  TH1D* nmom_IMnpipi_wK0_n_rdata_py = (TH1D*)nmom_IMnpipi_wK0_n_rdata->ProjectionY("nmom_IMnpipi_wK0_n_rdata_py");
   TH1D* q_rdata = (TH1D*)q_IMnpipi_wK0_n_rdata->ProjectionY("q_rdata");
   TH1D* Mompippim_rdata = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_rdata->ProjectionY("Mompippim_rdata"); 
    
   const double pipi_MIN = 0.487;// (almost 1.5 sigma)
   const double pipi_MAX = 0.510;// (almost 1.5 sigma)
-  int pipimin = MMnmiss_IMpippim_dE_rdata->GetXaxis()->FindBin(pipi_MIN);
-  int pipimax = MMnmiss_IMpippim_dE_rdata->GetXaxis()->FindBin(pipi_MAX);
-  TH1D* MMnmiss_rdata = (TH1D*) MMnmiss_IMpippim_dE_rdata->ProjectionY("MMnmiss_rdata",pipimin,pipimax) ;
+  const int pipimin = MMnmiss_IMpippim_dE_rdata->GetXaxis()->FindBin(pipi_MIN);
+  const int pipimax = MMnmiss_IMpippim_dE_rdata->GetXaxis()->FindBin(pipi_MAX);
+  TH1D* MMnmiss_rdata = (TH1D*)MMnmiss_IMpippim_dE_rdata->ProjectionY("MMnmiss_rdata",pipimin,pipimax) ;
 
-  //K-p -> K0n -> n-n elastic
+  //MC K-p -> K0n (n_s), n-n -> n-n elastic 2-step process
   TFile *_file1 = TFile::Open("simIMpisigma_K0_nnts_pippimn_v10_outncutK015.root");
-  TFile *_file1_1 = TFile::Open("simIMpisigma_K0_nnts_v10.root");
   TH2F* q_IMpippim_n_nnts = (TH2F*)_file1->Get("q_IMpippim_n");
   TH2F* nmom_IMnpipi_wK0_n_nnts = (TH2F*)_file1->Get("nmom_IMnpipi_wK0_n");
   TH2F* q_IMnpipi_wK0_n_nnts = (TH2F*)_file1->Get("q_IMnpipi_wK0_n");
@@ -38,14 +37,12 @@ void plot_K0()
   TH1D* IMpippim_nnts = (TH1D*)q_IMpippim_n_nnts->ProjectionX("IMpippim_nnts");
   TH1D* IMnpipi_nnts = (TH1D*) nmom_IMnpipi_wK0_n_nnts->ProjectionX("IMnpipi_nnts");
   TH1D* nmom_IMnpipi_wK0_n_nnts_py = (TH1D*)nmom_IMnpipi_wK0_n_nnts->ProjectionY("nmom_IMnpipi_wK0_n_nnts_py");
-  
   TH1D* q_nnts = (TH1D*)q_IMnpipi_wK0_n_nnts->ProjectionY("q_nnts");
-  
-  TH1D* Mompippim_nnts = (TH1D*) Mompippim_IMnpipi_dE_wK0_n_nnts->ProjectionY("Mompippim_nnts");
-  TH1D* MMnmiss_nnts = (TH1D*) MMnmiss_IMpippim_dE_nnts->ProjectionY("MMnmiss_nnts",pipimin,pipimax);
+  TH1D* Mompippim_nnts = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_nnts->ProjectionY("Mompippim_nnts");
+  TH1D* MMnmiss_nnts = (TH1D*)MMnmiss_IMpippim_dE_nnts->ProjectionY("MMnmiss_nnts",pipimin,pipimax);
 
   
-  //K-p -> K0n (ns)
+  //K-p -> K0n (ns) 1NA process
   TFile *_file2 = TFile::Open("simIMpisigma_K0n_ns_pippimn_v12_outncutK015.root");
   TH2F* q_IMpippim_n_ns = (TH2F*)_file2->Get("q_IMpippim_n");
   TH2F* nmom_IMnpipi_wK0_n_ns = (TH2F*)_file2->Get("nmom_IMnpipi_wK0_n");
@@ -55,19 +52,19 @@ void plot_K0()
 
   //projection
   TH1D* IMpippim_ns = (TH1D*)q_IMpippim_n_ns->ProjectionX("IMpippim_ns");
-  TH1D* IMnpipi_ns = (TH1D*) nmom_IMnpipi_wK0_n_ns->ProjectionX();
-  TH1D* nmom_IMnpipi_wK0_n_ns_py = (TH1D*) nmom_IMnpipi_wK0_n_ns->ProjectionY("nmom_IMnpipi_wK0_n_ns_py"); 
-  TH1D* q_ns = (TH1D*) q_IMnpipi_wK0_n_ns->ProjectionY("q_ns");
+  TH1D* IMnpipi_ns = (TH1D*)nmom_IMnpipi_wK0_n_ns->ProjectionX();
+  TH1D* nmom_IMnpipi_wK0_n_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_ns->ProjectionY("nmom_IMnpipi_wK0_n_ns_py"); 
+  TH1D* q_ns = (TH1D*)q_IMnpipi_wK0_n_ns->ProjectionY("q_ns");
   TH1D* Mompippim_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_ns->ProjectionY("Mompippim_ns");
-  TH1D* MMnmiss_ns = (TH1D*) MMnmiss_IMpippim_dE_ns->ProjectionY("MMnmiss_ns",pipimin,pipimax);
+  TH1D* MMnmiss_ns = (TH1D*)MMnmiss_IMpippim_dE_ns->ProjectionY("MMnmiss_ns",pipimin,pipimax);
   
   TFile *_file2_1 = TFile::Open("simIMpisigma_K0n_ns_v12.root");
   TH1F* Reactmom_0_K0n_ns = (TH1F*)_file2_1->Get("Reactmom_0");
   const double ngen_K0n_ns = Reactmom_0_K0n_ns->GetEntries();
-  std::cout << "ngen K0n_ns " << ngen_K0n_ns << std::endl;
+  std::cout << "MC ngen K0n_ns " << ngen_K0n_ns << std::endl;
 
 
-  //K-d -> K0nn phase space
+  //K-d -> K0nn phase space 2NA
   TFile *_file3 = TFile::Open("simIMpisigma_K0nn_pippimn_v7_outncutK015.root");
   //TFile *_file3 = TFile::Open("simIMpisigma_K0nn_pippimn_v5_outncutK015.root");
   TH2F* q_IMpippim_n_K0nn = (TH2F*)_file3->Get("q_IMpippim_n");
@@ -76,12 +73,12 @@ void plot_K0()
   TH2F* Mompippim_IMnpipi_dE_wK0_n_K0nn = (TH2F*)_file3->Get("Mompippim_IMnpipi_dE_wK0_n");
   TH2F* MMnmiss_IMpippim_dE_K0nn = (TH2F*)_file3->Get("MMnmiss_IMpippim_dE");
 
-  TH1D* IMpippim_K0nn = (TH1D*) q_IMpippim_n_K0nn->ProjectionX("IMpippim_K0nn");
-  TH1D* IMnpipi_K0nn = (TH1D*) nmom_IMnpipi_wK0_n_K0nn->ProjectionX("IMnpipi_K0nn");
+  TH1D* IMpippim_K0nn = (TH1D*)q_IMpippim_n_K0nn->ProjectionX("IMpippim_K0nn");
+  TH1D* IMnpipi_K0nn = (TH1D*)nmom_IMnpipi_wK0_n_K0nn->ProjectionX("IMnpipi_K0nn");
   TH1D* nmom_IMnpipi_wK0_n_K0nn_py = (TH1D*)nmom_IMnpipi_wK0_n_K0nn->ProjectionY("nmom_IMnpipi_wK0_n_K0nn_py");
-  TH1D* q_K0nn = (TH1D*) q_IMnpipi_wK0_n_K0nn->ProjectionY("q_K0nn");
-  TH1D* Mompippim_K0nn = (TH1D*) Mompippim_IMnpipi_dE_wK0_n_K0nn->ProjectionY("Mompippim_K0nn");
-  TH1D* MMnmiss_K0nn = (TH1D*) MMnmiss_IMpippim_dE_K0nn->ProjectionY("MMnmiss_K0nn",pipimin,pipimax);
+  TH1D* q_K0nn = (TH1D*)q_IMnpipi_wK0_n_K0nn->ProjectionY("q_K0nn");
+  TH1D* Mompippim_K0nn = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_K0nn->ProjectionY("Mompippim_K0nn");
+  TH1D* MMnmiss_K0nn = (TH1D*)MMnmiss_IMpippim_dE_K0nn->ProjectionY("MMnmiss_K0nn",pipimin,pipimax);
 
   //K-p -> K0n (n_s),  K0n->K0 n (two step reaction)
   TFile *_file4 = TFile::Open("simIMpisigma_K0_Knts_pippimn_v3_outncutK015.root");
@@ -91,12 +88,12 @@ void plot_K0()
   TH2F* Mompippim_IMnpipi_dE_wK0_n_Knts = (TH2F*)_file4->Get("Mompippim_IMnpipi_dE_wK0_n");
   TH2F* MMnmiss_IMpippim_dE_Knts = (TH2F*)_file4->Get("MMnmiss_IMpippim_dE");
 
-  TH1D* IMpippim_Knts = (TH1D*) q_IMpippim_n_Knts->ProjectionX("IMpippim_Knts");
-  TH1D* IMnpipi_Knts = (TH1D*) nmom_IMnpipi_wK0_n_Knts->ProjectionX("IMnpipi_Knts");
+  TH1D* IMpippim_Knts = (TH1D*)q_IMpippim_n_Knts->ProjectionX("IMpippim_Knts");
+  TH1D* IMnpipi_Knts = (TH1D*)nmom_IMnpipi_wK0_n_Knts->ProjectionX("IMnpipi_Knts");
   TH1D* nmom_IMnpipi_wK0_n_Knts_py = (TH1D*)nmom_IMnpipi_wK0_n_Knts->ProjectionY("nmom_IMnpipi_wK0_n_Knts_py");
   TH1D* q_Knts = q_IMnpipi_wK0_n_Knts->ProjectionY("q_Knts");
   TH1D* Mompippim_Knts = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_Knts->ProjectionY("Mompippim_Knts");
-  TH1D* MMnmiss_Knts = (TH1D*) MMnmiss_IMpippim_dE_Knts->ProjectionY("MMnmiss_Knts",pipimin,pipimax);
+  TH1D* MMnmiss_Knts = (TH1D*)MMnmiss_IMpippim_dE_Knts->ProjectionY("MMnmiss_Knts",pipimin,pipimax);
   
   //K-n -> K-n (p_s,elastic),  K-p->K0 n (two step reaction)
   TFile *_file5 = TFile::Open("simIMpisigma_K0_Kmpts_pippimn_v1_outncutK015.root");
@@ -106,12 +103,12 @@ void plot_K0()
   TH2F* Mompippim_IMnpipi_dE_wK0_n_Kmpts = (TH2F*)_file5->Get("Mompippim_IMnpipi_dE_wK0_n");
   TH2F* MMnmiss_IMpippim_dE_Kmpts = (TH2F*)_file5->Get("MMnmiss_IMpippim_dE");
   //projection
-  TH1D* IMpippim_Kmpts = (TH1D*) q_IMpippim_n_Kmpts->ProjectionX("IMpippim_Kmpts");
-  TH1D* IMnpipi_Kmpts = (TH1D*) nmom_IMnpipi_wK0_n_Kmpts->ProjectionX("IMnpipi_Kmpts");
+  TH1D* IMpippim_Kmpts = (TH1D*)q_IMpippim_n_Kmpts->ProjectionX("IMpippim_Kmpts");
+  TH1D* IMnpipi_Kmpts = (TH1D*)nmom_IMnpipi_wK0_n_Kmpts->ProjectionX("IMnpipi_Kmpts");
   TH1D* nmom_IMnpipi_wK0_n_Kmpts_py = (TH1D*)nmom_IMnpipi_wK0_n_Kmpts->ProjectionY("nmom_IMnpipi_wK0_n_Kmpts_py");
   TH1D* q_Kmpts = q_IMnpipi_wK0_n_Kmpts->ProjectionY("q_Kmpts");
   TH1D* Mompippim_Kmpts = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_Kmpts->ProjectionY("Mompippim_Kmpts");
-  TH1D* MMnmiss_Kmpts = (TH1D*) MMnmiss_IMpippim_dE_Kmpts->ProjectionY("MMnmiss_Kmpts",pipimin,pipimax);
+  TH1D* MMnmiss_Kmpts = (TH1D*)MMnmiss_IMpippim_dE_Kmpts->ProjectionY("MMnmiss_Kmpts",pipimin,pipimax);
   
   //K-d -> npi+pi-L (4-body phase space)
   TFile *_file6 = TFile::Open("simIMpisigma_npipiL_pippimn_v18_outncutK015.root");
@@ -121,8 +118,8 @@ void plot_K0()
   TH2F* Mompippim_IMnpipi_dE_wK0_n_npipiL = (TH2F*)_file6->Get("Mompippim_IMnpipi_dE_wK0_n");
   TH2F* MMnmiss_IMpippim_dE_npipiL = (TH2F*)_file6->Get("MMnmiss_IMpippim_dE");
   //projection
-  TH1D* IMpippim_npipiL = (TH1D*) q_IMpippim_n_npipiL->ProjectionX("IMpippim_npipiL");
-  TH1D* IMnpipi_npipiL = (TH1D*) nmom_IMnpipi_wK0_n_npipiL->ProjectionX("IMnpipi_npipiL");
+  TH1D* IMpippim_npipiL = (TH1D*)q_IMpippim_n_npipiL->ProjectionX("IMpippim_npipiL");
+  TH1D* IMnpipi_npipiL = (TH1D*)nmom_IMnpipi_wK0_n_npipiL->ProjectionX("IMnpipi_npipiL");
   TH1D* nmom_IMnpipi_wK0_n_npipiL_py = (TH1D*)nmom_IMnpipi_wK0_n_npipiL->ProjectionY("nmom_IMnpipi_wK0_n_npipiL_py");
   TH1D* q_npipiL = (TH1D*)q_IMnpipi_wK0_n_npipiL->ProjectionY("q_npipiL");
   TH1D* Mompippim_npipiL = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_npipiL->ProjectionY("Mompippim_npipiL");
@@ -136,8 +133,8 @@ void plot_K0()
   TH2F* Mompippim_IMnpipi_dE_wK0_n_pipiL_ns = (TH2F*)_file7->Get("Mompippim_IMnpipi_dE_wK0_n");
   TH2F* MMnmiss_IMpippim_dE_pipiL_ns = (TH2F*)_file7->Get("MMnmiss_IMpippim_dE");
   //projection
-  TH1D* IMpippim_pipiL_ns = (TH1D*) q_IMpippim_n_pipiL_ns->ProjectionX("IMpippim_pipiL_ns");
-  TH1D* IMnpipi_pipiL_ns = (TH1D*) nmom_IMnpipi_wK0_n_pipiL_ns->ProjectionX("IMnpipi_pipiL_ns");
+  TH1D* IMpippim_pipiL_ns = (TH1D*)q_IMpippim_n_pipiL_ns->ProjectionX("IMpippim_pipiL_ns");
+  TH1D* IMnpipi_pipiL_ns = (TH1D*)nmom_IMnpipi_wK0_n_pipiL_ns->ProjectionX("IMnpipi_pipiL_ns");
   TH1D* nmom_IMnpipi_wK0_n_pipiL_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_pipiL_ns->ProjectionY("nmom_IMnpipi_wK0_n_pipiL_ns_py");
   TH1D* q_pipiL_ns = (TH1D*)q_IMnpipi_wK0_n_pipiL_ns->ProjectionY("q_pipiL_ns");
   TH1D* Mompippim_pipiL_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_pipiL_ns->ProjectionY("Mompippim_pipiL_ns");
@@ -146,7 +143,7 @@ void plot_K0()
   TFile *_file7_1 = TFile::Open("simIMpisigma_pipiL_ns_v1.root");
   TH1F* Reactmom_0_pipiL_ns = (TH1F*)_file7_1->Get("Reactmom_0");
   const double ngen_pipiL_ns = Reactmom_0_pipiL_ns->GetEntries();
-  std::cout << "ngen pipiL_ns " << ngen_pipiL_ns << std::endl;
+  std::cout << "MC ngen pipiL_ns " << ngen_pipiL_ns << std::endl;
 
   //K-p -> pi+S(1385)- (n_s)  1.99+-0.19 mb
   TFile *_file8 = TFile::Open("simIMpisigma_pipS1385m_ns_pippimn_v1_outncutK015.root");
@@ -156,8 +153,8 @@ void plot_K0()
   TH2F* Mompippim_IMnpipi_dE_wK0_n_pipS1385m_ns = (TH2F*)_file8->Get("Mompippim_IMnpipi_dE_wK0_n");
   TH2F* MMnmiss_IMpippim_dE_pipS1385m_ns = (TH2F*)_file8->Get("MMnmiss_IMpippim_dE");
   //projection
-  TH1D* IMpippim_pipS1385m_ns = (TH1D*) q_IMpippim_n_pipS1385m_ns->ProjectionX("IMpippim_pipS1385m_ns");
-  TH1D* IMnpipi_pipS1385m_ns = (TH1D*) nmom_IMnpipi_wK0_n_pipS1385m_ns->ProjectionX("IMnpipi_pipS1385m_ns");
+  TH1D* IMpippim_pipS1385m_ns = (TH1D*)q_IMpippim_n_pipS1385m_ns->ProjectionX("IMpippim_pipS1385m_ns");
+  TH1D* IMnpipi_pipS1385m_ns = (TH1D*)nmom_IMnpipi_wK0_n_pipS1385m_ns->ProjectionX("IMnpipi_pipS1385m_ns");
   TH1D* nmom_IMnpipi_wK0_n_pipS1385m_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_pipS1385m_ns->ProjectionY("nmom_IMnpipi_wK0_n_pipS1385m_ns_py");
   TH1D* q_pipS1385m_ns = (TH1D*)q_IMnpipi_wK0_n_pipS1385m_ns->ProjectionY("q_pipS1385m_ns");
   TH1D* Mompippim_pipS1385m_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_pipS1385m_ns->ProjectionY("Mompippim_pipS1385m_ns");
@@ -166,7 +163,7 @@ void plot_K0()
   TFile *_file8_1 = TFile::Open("simIMpisigma_pipS1385m_ns_v1.root");
   TH1F* Reactmom_0_pipS1385m_ns = (TH1F*)_file8_1->Get("Reactmom_0");
   const double ngen_pipS1385m_ns = Reactmom_0_pipS1385m_ns->GetEntries();
-  std::cout << "ngen pipS1385m_ns " << ngen_pipS1385m_ns << std::endl;
+  std::cout << "MC ngen pipS1385m_ns " << ngen_pipS1385m_ns << std::endl;
 
   //K-p -> pi-S(1385)+ (n_s)  1.12+-0.12 mb
   TFile *_file9 = TFile::Open("simIMpisigma_pimS1385p_ns_pippimn_v1_outncutK015.root");
@@ -186,7 +183,7 @@ void plot_K0()
   TFile *_file9_1 = TFile::Open("simIMpisigma_pimS1385p_ns_v1.root");
   TH1F* Reactmom_0_pimS1385p_ns = (TH1F*)_file9_1->Get("Reactmom_0");
   const double ngen_pimS1385p_ns = Reactmom_0_pimS1385p_ns->GetEntries();
-  std::cout << "ngen pimS1385p_ns " << ngen_pimS1385p_ns << std::endl;
+  std::cout << "MC ngen pimS1385p_ns " << ngen_pimS1385p_ns << std::endl;
   
   //K-p -> pi+pi- S0 (n_s) 
   TFile *_file10 = TFile::Open("simIMpisigma_S0pippim_ns_pippimn_v1_outncutK015.root");
@@ -196,8 +193,8 @@ void plot_K0()
   TH2F* Mompippim_IMnpipi_dE_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("Mompippim_IMnpipi_dE_wK0_n");
   TH2F* MMnmiss_IMpippim_dE_S0pippim_ns = (TH2F*)_file10->Get("MMnmiss_IMpippim_dE");
   //projection
-  TH1D* IMpippim_S0pippim_ns = (TH1D*) q_IMpippim_n_S0pippim_ns->ProjectionX("IMpippim_S0pippim_ns");
-  TH1D* IMnpipi_S0pippim_ns = (TH1D*) nmom_IMnpipi_wK0_n_S0pippim_ns->ProjectionX("IMnpipi_S0pippim_ns");
+  TH1D* IMpippim_S0pippim_ns = (TH1D*)q_IMpippim_n_S0pippim_ns->ProjectionX("IMpippim_S0pippim_ns");
+  TH1D* IMnpipi_S0pippim_ns = (TH1D*)nmom_IMnpipi_wK0_n_S0pippim_ns->ProjectionX("IMnpipi_S0pippim_ns");
   TH1D* nmom_IMnpipi_wK0_n_S0pippim_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_S0pippim_ns->ProjectionY("nmom_IMnpipi_wK0_n_S0pippim_ns_py");
   TH1D* q_S0pippim_ns = (TH1D*)q_IMnpipi_wK0_n_S0pippim_ns->ProjectionY("q_S0pippim_ns");
   TH1D* Mompippim_S0pippim_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_S0pippim_ns->ProjectionY("Mompippim_S0pippim_ns");
@@ -206,7 +203,7 @@ void plot_K0()
   TFile *_file10_1 = TFile::Open("simIMpisigma_S0pippim_ns_v1.root");
   TH1F* Reactmom_0_S0pippim_ns = (TH1F*)_file10_1->Get("Reactmom_0");
   const double ngen_S0pippim_ns = Reactmom_0_S0pippim_ns->GetEntries();
-  std::cout << "ngen S0pippim_ns " << ngen_S0pippim_ns << std::endl;
+  std::cout << "MC ngen S0pippim_ns " << ngen_S0pippim_ns << std::endl;
    
   //K-p -> L1520 pi0 (ns)-> nK0 pi0 (ns) BR45% or Sigma^{+/-} pi^{-/+} pi0 (ns) 
   TFile *_file11 = TFile::Open("simIMpisigma_L1520pi0_ns_pippimn_v1_outncutK015.root");
@@ -216,8 +213,8 @@ void plot_K0()
   TH2F* Mompippim_IMnpipi_dE_wK0_n_L1520pi0_ns = (TH2F*)_file11->Get("Mompippim_IMnpipi_dE_wK0_n");
   TH2F* MMnmiss_IMpippim_dE_L1520pi0_ns = (TH2F*)_file11->Get("MMnmiss_IMpippim_dE");
   //projection
-  TH1D* IMpippim_L1520pi0_ns = (TH1D*) q_IMpippim_n_L1520pi0_ns->ProjectionX("IMpippim_L1520pi0_ns");
-  TH1D* IMnpipi_L1520pi0_ns = (TH1D*) nmom_IMnpipi_wK0_n_L1520pi0_ns->ProjectionX("IMnpipi_L1520pi0_ns");
+  TH1D* IMpippim_L1520pi0_ns = (TH1D*)q_IMpippim_n_L1520pi0_ns->ProjectionX("IMpippim_L1520pi0_ns");
+  TH1D* IMnpipi_L1520pi0_ns = (TH1D*)nmom_IMnpipi_wK0_n_L1520pi0_ns->ProjectionX("IMnpipi_L1520pi0_ns");
   TH1D* nmom_IMnpipi_wK0_n_L1520pi0_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_L1520pi0_ns->ProjectionY("nmom_IMnpipi_wK0_n_L1520pi0_ns_py");
   TH1D* q_L1520pi0_ns = (TH1D*)q_IMnpipi_wK0_n_L1520pi0_ns->ProjectionY("q_L1520pi0_ns");
   TH1D* Mompippim_L1520pi0_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_L1520pi0_ns->ProjectionY("Mompippim_L1520pi0_ns");
@@ -226,7 +223,7 @@ void plot_K0()
   TFile *_file11_1 = TFile::Open("simIMpisigma_L1520pi0_ns_v1.root");
   TH1F* Reactmom_0_L1520pi0_ns = (TH1F*)_file11_1->Get("Reactmom_0");
   const double ngen_L1520pi0_ns = Reactmom_0_L1520pi0_ns->GetEntries();
-  std::cout << "ngen L1520pi0_ns " << ngen_L1520pi0_ns << std::endl;
+  std::cout << "MC ngen L1520pi0_ns " << ngen_L1520pi0_ns << std::endl;
   
 
   //K-p -> S+pi- (ns)
@@ -237,8 +234,8 @@ void plot_K0()
   TH2F* Mompippim_IMnpipi_dE_wK0_n_Sppim_ns = (TH2F*)_file12->Get("Mompippim_IMnpipi_dE_wK0_n");
   TH2F* MMnmiss_IMpippim_dE_Sppim_ns = (TH2F*)_file12->Get("MMnmiss_IMpippim_dE");
   //projection
-  TH1D* IMpippim_Sppim_ns = (TH1D*) q_IMpippim_n_Sppim_ns->ProjectionX("IMpippim_Sppim_ns");
-  TH1D* IMnpipi_Sppim_ns = (TH1D*) nmom_IMnpipi_wK0_n_Sppim_ns->ProjectionX("IMnpipi_Sppim_ns");
+  TH1D* IMpippim_Sppim_ns = (TH1D*)q_IMpippim_n_Sppim_ns->ProjectionX("IMpippim_Sppim_ns");
+  TH1D* IMnpipi_Sppim_ns = (TH1D*)nmom_IMnpipi_wK0_n_Sppim_ns->ProjectionX("IMnpipi_Sppim_ns");
   TH1D* nmom_IMnpipi_wK0_n_Sppim_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_Sppim_ns->ProjectionY("nmom_IMnpipi_wK0_n_Sppim_ns_py");
   TH1D* q_Sppim_ns = (TH1D*)q_IMnpipi_wK0_n_Sppim_ns->ProjectionY("q_Sppim_ns");
   TH1D* Mompippim_Sppim_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_Sppim_ns->ProjectionY("Mompippim_Sppim_ns");
@@ -247,7 +244,7 @@ void plot_K0()
   TFile *_file12_1 = TFile::Open("simIMpisigma_Sppim_ns_v2.root");
   TH1F* Reactmom_0_Sppim_ns = (TH1F*)_file12_1->Get("Reactmom_0");
   const double ngen_Sppim_ns = Reactmom_0_Sppim_ns->GetEntries();
-  std::cout << "ngen Sppim_ns " << ngen_Sppim_ns << std::endl;
+  std::cout << "MC ngen Sppim_ns " << ngen_Sppim_ns << std::endl;
 
   //K-p -> S-pi+ (ns)
   TFile *_file13 = TFile::Open("simIMpisigma_Smpip_ns_pippimn_v2_outncutK015.root");
@@ -257,8 +254,8 @@ void plot_K0()
   TH2F* Mompippim_IMnpipi_dE_wK0_n_Smpip_ns = (TH2F*)_file13->Get("Mompippim_IMnpipi_dE_wK0_n");
   TH2F* MMnmiss_IMpippim_dE_Smpip_ns = (TH2F*)_file13->Get("MMnmiss_IMpippim_dE");
   //projection
-  TH1D* IMpippim_Smpip_ns = (TH1D*) q_IMpippim_n_Smpip_ns->ProjectionX("IMpippim_Smpip_ns");
-  TH1D* IMnpipi_Smpip_ns = (TH1D*) nmom_IMnpipi_wK0_n_Smpip_ns->ProjectionX("IMnpipi_Smpip_ns");
+  TH1D* IMpippim_Smpip_ns = (TH1D*)q_IMpippim_n_Smpip_ns->ProjectionX("IMpippim_Smpip_ns");
+  TH1D* IMnpipi_Smpip_ns = (TH1D*)nmom_IMnpipi_wK0_n_Smpip_ns->ProjectionX("IMnpipi_Smpip_ns");
   TH1D* nmom_IMnpipi_wK0_n_Smpip_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_Smpip_ns->ProjectionY("nmom_IMnpipi_wK0_n_Smpip_ns_py");
   TH1D* q_Smpip_ns = (TH1D*)q_IMnpipi_wK0_n_Smpip_ns->ProjectionY("q_Smpip_ns");
   TH1D* Mompippim_Smpip_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_Smpip_ns->ProjectionY("Mompippim_Smpip_ns");
@@ -267,11 +264,9 @@ void plot_K0()
   TFile *_file13_1 = TFile::Open("simIMpisigma_Smpip_ns_v2.root");
   TH1F* Reactmom_0_Smpip_ns = (TH1F*)_file13_1->Get("Reactmom_0");
   const double ngen_Smpip_ns = Reactmom_0_Smpip_ns->GetEntries();
-  std::cout << "ngen Smpip_ns " << ngen_Smpip_ns << std::endl;
+  std::cout << "MC ngen Smpip_ns " << ngen_Smpip_ns << std::endl;
 
 
-  const double cs_ns = 6.454; //elementary CS [mb] 
-  const double csError_ns = 0.042;//elementary CS [mb]
   const double scale_ns = 0.38;
   const double scale_nnts = 0.01;
   const double scale_Knts = 0.03;
@@ -282,10 +277,11 @@ void plot_K0()
   const double scale_S0pipi_ns = 0.8;
   const double scale_L1520pi0_ns = 0.1;
   
+  const double cs_ns = 6.454; //elementary CS [mb] 
+  const double csError_ns = 0.042;//elementary CS [mb]
   const double cs_S0pipi_ns = 0.53;
   const double csError_S0pipi_ns = 0.05;
-  
-  const double cs_pipiL_ns_total = 4.05;//CS total [mb]
+  //const double cs_pipiL_ns_total = 4.05;//CS total [mb]
   const double cs_pipiL_ns = 0.94;//prompt K-p -> pi+pi-L or rho L
   const double csError_pipiL_ns = 0.13;//prompt K-p -> pi+pi-L or rho L
   const double cs_pipS1385m_ns = 1.99;//CS [mb]
