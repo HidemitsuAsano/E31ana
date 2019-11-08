@@ -485,17 +485,64 @@ void plot_K0()
   IMpippim_1NA->Add(IMpippim_fSigma_ns_sum);
   IMpippim_1NA->Add(IMpippim_pipiL_ns_sum);
   
+  //checking MC 
+  TCanvas *cIMpippim_1NA = new TCanvas("cIMpippim_1NA","cIMpippim_1NA");
+  cIMpippim_1NA->cd();
+  TH1D* IMpippim_1NA_clone = (TH1D*) IMpippim_1NA->Clone("IMpippim_1NA_clone");
+  IMpippim_1NA_clone->Draw("HE");
+  IMpippim_ns->SetLineColor(2);
+  IMpippim_ns->Draw("HEsame");
+  IMpippim_S0pippim_ns->SetLineColor(3);
+  IMpippim_S0pippim_ns->Draw("HEsame");
+  IMpippim_L1520pi0_ns->SetLineColor(4);
+  IMpippim_L1520pi0_ns->Draw("HEsame");
+  IMpippim_fSigma_ns_sum->SetLineColor(5);
+  IMpippim_fSigma_ns_sum->Draw("HEsame");
+  IMpippim_pipiL_ns_sum->SetLineColor(6);
+  IMpippim_pipiL_ns_sum->Draw("HEsame");
+
+
   TH1D* IMnpipi_1NA = (TH1D*)IMnpipi_ns->Clone("IMnpipi_1NA");
   IMnpipi_1NA->Add(IMnpipi_S0pippim_ns);
   IMnpipi_1NA->Add(IMnpipi_L1520pi0_ns);
   IMnpipi_1NA->Add(IMnpipi_fSigma_ns_sum);
   IMnpipi_1NA->Add(IMnpipi_pipiL_ns_sum);
-  
+   
+  //checking MC
+  TCanvas *cIMnpipi_1NA = new TCanvas("cIMnpipi_1NA","cIMnpipi_1NA");
+  cIMnpipi_1NA->cd();
+  TH1D* IMnpipi_1NA_clone = (TH1D*) IMnpipi_1NA->Clone("IMnpipi_1NA_clone");
+  IMnpipi_1NA_clone->Draw("HE");
+  IMnpipi_ns->SetLineColor(2);
+  IMnpipi_ns->Draw("HEsame");
+  IMnpipi_S0pippim_ns->SetLineColor(3);
+  IMnpipi_S0pippim_ns->Draw("HEsame");
+  IMnpipi_L1520pi0_ns->SetLineColor(4);
+  IMnpipi_L1520pi0_ns->Draw("HEsame");
+  IMnpipi_fSigma_ns_sum->SetLineColor(5);
+  IMnpipi_fSigma_ns_sum->Draw("HEsame");
+  IMnpipi_pipiL_ns_sum->SetLineColor(6);
+  IMnpipi_pipiL_ns_sum->Draw("HEsame");
+
   TH1D* nmom_1NA = (TH1D*)nmom_IMnpipi_wK0_n_ns_py->Clone("nmom_1NA");
   nmom_1NA->Add(nmom_IMnpipi_wK0_n_S0pippim_ns_py);
   nmom_1NA->Add(nmom_IMnpipi_wK0_n_L1520pi0_ns_py);
   nmom_1NA->Add(nmom_fSigma_ns_sum);
   nmom_1NA->Add(nmom_pipiL_ns_sum);
+
+  //checking MC
+  TH1D* nmom_1NA_clone = (TH1D*)nmom_1NA->Clone("nmom_1NA_clone");
+  nmom_1NA_clone->Draw("HE");
+  nmom_IMnpipi_wK0_n_ns_py->SetLineColor(2);
+  nmom_IMnpipi_wK0_n_ns_py->Draw("HEsame");
+  nmom_IMnpipi_wK0_n_S0pippim_ns_py->SetLineColor(3);
+  nmom_IMnpipi_wK0_n_S0pippim_ns_py->Draw("HEsame");
+  nmom_IMnpipi_wK0_n_L1520pi0_ns_py->SetLineColor(4);
+  nmom_IMnpipi_wK0_n_L1520pi0_ns_py->Draw("HEsame");
+  nmom_fSigma_ns_sum->SetLineColor(5);
+  nmom_fSigma_ns_sum->Draw("HEsame");
+  nmom_pipiL_ns_sum->SetLineColor(6);
+  nmom_pipiL_ns_sum->Draw("HEsame");
 
   TH1D* q_1NA = (TH1D*)q_ns->Clone("q_1NA");
   q_1NA->Add(q_S0pippim_ns);
