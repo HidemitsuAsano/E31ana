@@ -531,6 +531,8 @@ void plot_K0()
   nmom_1NA->Add(nmom_pipiL_ns_sum);
 
   //checking MC
+  TCanvas *cnmom_1NA = new TCanvas("cnmom_1NA","cnmom_1NA");
+  cnmom_1NA->cd();
   TH1D* nmom_1NA_clone = (TH1D*)nmom_1NA->Clone("nmom_1NA_clone");
   nmom_1NA_clone->Draw("HE");
   nmom_IMnpipi_wK0_n_ns_py->SetLineColor(2);
@@ -550,18 +552,67 @@ void plot_K0()
   q_1NA->Add(q_fSigma_ns_sum);   
   q_1NA->Add(q_pipiL_ns_sum);
 
+  //checking MC
+  TCanvas *cq_1NA = new TCanvas("cq_1NA","cq_1NA");
+  cq_1NA->cd();
+  TH1D* q_1NA_clone = (TH1D*)q_1NA->Clone("q_1NA_clone");
+  q_1NA_clone->Draw("HE");
+  q_ns->SetLineColor(2);
+  q_ns->Draw("HEsame");
+  q_S0pippim_ns->SetLineColor(3);
+  q_S0pippim_ns->Draw("HEsame");
+  q_L1520pi0_ns->SetLineColor(4);
+  q_L1520pi0_ns->Draw("HEsame");
+  q_fSigma_ns_sum->SetLineColor(5);
+  q_fSigma_ns_sum->Draw("HEsame");
+  q_pipiL_ns_sum->SetLineColor(6);
+  q_pipiL_ns_sum->Draw("HEsame");
+
+
   TH1D* Mompippim_1NA = (TH1D*)Mompippim_ns->Clone("Mompippim_1NA");
   Mompippim_1NA->Add(Mompippim_S0pippim_ns);
   Mompippim_1NA->Add(Mompippim_L1520pi0_ns);
   Mompippim_1NA->Add(Mompippim_fSigma_ns_sum);
   Mompippim_1NA->Add(Mompippim_pipiL_ns_sum);
   
+  //checking MC
+  TCanvas *cMompippim_1NA = new TCanvas("cMompippim_1NA","cMompippim_1NA");
+  cMompippim_1NA->cd();
+  TH1D* Mompippim_1NA_clone = (TH1D*)Mompippim_1NA->Clone("Mompippim_1NA_clone");
+  Mompippim_1NA_clone->Draw("HE");
+  Mompippim_ns->SetLineColor(2);
+  Mompippim_ns->Draw("HEsame");
+  Mompippim_S0pippim_ns->SetLineColor(3);
+  Mompippim_S0pippim_ns->Draw("HEsame");
+  Mompippim_L1520pi0_ns->SetLineColor(4);
+  Mompippim_L1520pi0_ns->Draw("HEsame");
+  Mompippim_fSigma_ns_sum->SetLineColor(5);
+  Mompippim_fSigma_ns_sum->Draw("HEsame");
+  Mompippim_pipiL_ns_sum->SetLineColor(6);
+  Mompippim_pipiL_ns_sum->Draw("HEsame");
+
+
   TH1D* MMnmiss_1NA = (TH1D*)MMnmiss_ns->Clone("MMnmiss_1NA");
   MMnmiss_1NA->Add(MMnmiss_S0pippim_ns);
   MMnmiss_1NA->Add(MMnmiss_L1520pi0_ns);
   MMnmiss_1NA->Add(MMnmiss_fSigma_ns_sum);
   MMnmiss_1NA->Add(MMnmiss_pipiL_ns_sum);
-
+  
+  //checking MC
+  TCanvas *cMMnmiss_1NA = new TCanvas("cMMnmiss_1NA","cMMnmiss_1NA");
+  cMMnmiss_1NA->cd();
+  TH1D* MMnmiss_1NA_clone = (TH1D*)MMnmiss_1NA->Clone("MMnmiss_1NA_clone");
+  MMnmiss_1NA_clone->Draw("HE");
+  MMnmiss_ns->SetLineColor(2);
+  MMnmiss_ns->Draw("HEsame");
+  MMnmiss_S0pippim_ns->SetLineColor(3);
+  MMnmiss_S0pippim_ns->Draw("HEsame");
+  MMnmiss_L1520pi0_ns->SetLineColor(4);
+  MMnmiss_L1520pi0_ns->Draw("HEsame");
+  MMnmiss_fSigma_ns_sum->SetLineColor(5);
+  MMnmiss_fSigma_ns_sum->Draw("HEsame");
+  MMnmiss_pipiL_ns_sum->SetLineColor(6);
+  MMnmiss_pipiL_ns_sum->Draw("HEsame");
 
   //////////////////////////
   //plot all cocktail
