@@ -514,7 +514,6 @@ void plot_K0()
   Mompippim_1NA->Add(Mompippim_fSigma_ns_sum);
   Mompippim_1NA->Add(Mompippim_pipiL_ns_sum);
   
-  
   TH1D* MMnmiss_1NA = (TH1D*)MMnmiss_ns->Clone("MMnmiss_1NA");
   MMnmiss_1NA->Add(MMnmiss_S0pippim_ns);
   MMnmiss_1NA->Add(MMnmiss_L1520pi0_ns);
@@ -531,9 +530,12 @@ void plot_K0()
   TCanvas *cMom_ncds = new TCanvas("cMom_ncds","cMom_ncds");
   cMom_ncds->cd();
   nmom_IMnpipi_wK0_n_rdata_py->Draw("HE");
-  nmom_IMnpipi_wK0_n_ns_py->SetLineColor(2);//1NA
+  //nmom_IMnpipi_wK0_n_ns_py->SetLineColor(2);//1NA
   //nmom_IMnpipi_wK0_n_ns_py->Scale(scale_1NA);
-  nmom_IMnpipi_wK0_n_ns_py->Draw("HEsame");
+  //nmom_IMnpipi_wK0_n_ns_py->Draw("HEsame");
+  nmom_1NA->SetLineLineColor(2);// 1NA processes with C.S scaling
+  nmom_1NA->Scale(scale_1NA);
+  nmom_1NA->Draw("HE");
   nmom_IMnpipi_wK0_n_nnts_py->SetLineColor(3);//n-n 2-step
   nmom_IMnpipi_wK0_n_nnts_py->Scale(scale_nnts);
   nmom_IMnpipi_wK0_n_nnts_py->Draw("HEsame");
