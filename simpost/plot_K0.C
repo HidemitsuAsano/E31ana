@@ -1,7 +1,6 @@
 //plot K0 spectrucm 
 //H.Asano
 
-
 #include "../src/GlobalVariables.h"
 
 void plot_K0()
