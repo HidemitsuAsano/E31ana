@@ -340,6 +340,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* IMpippim_IMnpipi_n_wSid;
   TH2F* IMpippim_IMnpip_n;
   TH2F* IMpippim_IMnpim_n;
+  TH2F* IMpippim_IMnpip_n_cross;
+  TH2F* IMpippim_IMnpim_n_cross;
   TH2F* Mompippim_IMnpipi_dE_wK0_n;
   TH2F* Mompippim_nmom_dE_wK0_n;
   TH2F* Mompippim_IMnpipi_dE_wK0_n_Sp;
@@ -1019,9 +1021,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMpippim_IMnpip_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMpippim_IMnpip_n->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   
+  IMpippim_IMnpip_n_cross = new TH2F("IMpippim_IMnpip_n_cross","IMpippim_IMnpip_n_cross",nbinIMnpi,1,2,nbinpippim,0,1);
+  IMpippim_IMnpip_n_cross->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  IMpippim_IMnpip_n_cross->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  
   IMpippim_IMnpim_n = new TH2F("IMpippim_IMnpim_n","IMpippim_IMnpim_n",nbinIMnpi,1,2,nbinpippim,0,1);
   IMpippim_IMnpim_n->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   IMpippim_IMnpim_n->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  
+  IMpippim_IMnpim_n_cross = new TH2F("IMpippim_IMnpim_n_cross","IMpippim_IMnpim_n_cross",nbinIMnpi,1,2,nbinpippim,0,1);
+  IMpippim_IMnpim_n_cross->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  IMpippim_IMnpim_n_cross->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   
   Mompippim_IMnpipi_dE_wK0_n = new TH2F("Mompippim_IMnpipi_dE_wK0_n","Mompippim_IMnpipi_dE_wK0_n",nbinIMnpipi,1,2,50,0,1);
   Mompippim_IMnpipi_dE_wK0_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -1891,6 +1901,13 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       IMpippim_IMnpipi_n->Fill(LVec_pip_pim_n.M(), LVec_pip_pim.M());
       IMpippim_IMnpip_n->Fill(LVec_pip_n.M(),LVec_pip_pim.M());
       IMpippim_IMnpim_n->Fill(LVec_pim_n.M(),LVec_pip_pim.M());
+      if(!K0rejectFlag || SigmaPFlag){
+        IMpippim_IMnpip_n_cross->Fill(LVec_pip_n.M(),LVec_pip_pim.M());
+      }
+      if(!K0rejectFlag || SigmaMFlag){
+        IMpippim_IMnpim_n_cross->Fill(LVec_pim_n.M(),LVec_pip_pim.M());
+      }
+
       if(!K0rejectFlag){
         nmom_cosnlab_K0_n->Fill(cos_nlab,(*LVec_n).P());
         nmom_IMnpipi_wK0_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P());
