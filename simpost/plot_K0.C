@@ -295,7 +295,7 @@ void plot_K0()
   const double cs_Smpip_ns = 1.53 ;//CS [mb]
   const double csError_Smpip_ns = 0.09 ;//CS [mb]
   
-  const double scale_1NA = 0.08;
+  const double scale_1NA = 0.06;
   //
   //Lambda pi+ pi+ cocktail check.
   //
@@ -622,6 +622,7 @@ void plot_K0()
   //neutron momentum dist.
   TCanvas *cMom_ncds = new TCanvas("cMom_ncds","cMom_ncds");
   cMom_ncds->cd();
+  nmom_IMnpipi_wK0_n_rdata_py->SetMaximum(600);
   nmom_IMnpipi_wK0_n_rdata_py->Draw("HE");
   //nmom_IMnpipi_wK0_n_ns_py->SetLineColor(2);//1NA
   //nmom_IMnpipi_wK0_n_ns_py->Scale(scale_1NA);
@@ -895,6 +896,9 @@ void plot_K0()
   //IMpippim_sum->Add(IMpippim_S0pippim_ns);
   IMpippim_sum->SetLineColor(6);
   IMpippim_sum->Draw("HEsame");
+  
+  
+
 
 
   return;
