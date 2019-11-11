@@ -329,6 +329,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* nmom_IMnpipi_woK0_wSid_n_Sm;
   //K0 study
   TH2F* nmom_IMnpipi_wK0_n;
+  TH2F* nmom_IMnpipi_wK0_wSid_n;
   TH2F* nmom_cosnlab_K0_n;//ncds mom. vs cos ncdds lab. frame K0
   TH2F* nmom_IMpippim_n;
   TH2F* nmom_IMpippim_wSid_n;
@@ -960,6 +961,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   nmom_IMnpipi_wK0_n = new TH2F(Form("nmom_IMnpipi_wK0_n"),Form("nmom_IMnpipi_wK0_n"), nbinIMnpipi,1,2,100,0,1.0);
   nmom_IMnpipi_wK0_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   nmom_IMnpipi_wK0_n->SetYTitle("nmom  [GeV/c]");
+  
+  nmom_IMnpipi_wK0_wSid_n = new TH2F(Form("nmom_IMnpipi_wK0_wSid_n"),Form("nmom_IMnpipi_wK0_wSid_n"), nbinIMnpipi,1,2,100,0,1.0);
+  nmom_IMnpipi_wK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  nmom_IMnpipi_wK0_wSid_n->SetYTitle("nmom  [GeV/c]");
   
   nmom_CDHphi = new TH2F("nmom_CDHphi","nmom_CDHphi",100,-3.14,3.14,100,0,1.0);
   nmom_CDHphi->SetXTitle("CDH phi");
@@ -1911,6 +1916,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       if(!K0rejectFlag){
         nmom_cosnlab_K0_n->Fill(cos_nlab,(*LVec_n).P());
         nmom_IMnpipi_wK0_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P());
+        if(SigmaPFlag || SigmaMFlag){
+          nmom_IMnpipi_wK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P());
+        }
       }
       nmom_IMpippim_n->Fill(LVec_pip_pim.M(),(*LVec_n).P());
       mnmom_IMpippim_n->Fill(LVec_pip_pim.M(),(LVec_nmiss).P());
