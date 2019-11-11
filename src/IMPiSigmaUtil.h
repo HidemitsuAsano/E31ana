@@ -2,6 +2,7 @@
 #define IMPISIGMAUTIL 1
 
 #include <iostream>
+#include <cmath>
 #include "ConfMan.h"
 #include "HitMan.h"
 #include "CDSHitMan.h"
@@ -79,7 +80,10 @@ namespace Util
    double FillAncestryVertexR(MCData *mcdata,DetectorHit *dhit,double dE);
    Track *FindTrackFromMcIndex(MCData *mcdata, int trackid);
    bool IsFromSigma(MCData *mcdata,DetectorHit *dhit);
-   TLorentzVector *GetForwardNeutralLVec(BeamLineHitMan *blman, TVector3 *vtxpos,double t0time);
+   TLorentzVector *GetForwardNeutralLVec(BeamLineHitMan *blman,const TVector3 *vtxpos,const double t0time,const double beamtof, const double thre);
+   
+   std::vector<std::vector<HodoscopeLikeHit*> > getNChits(BeamLineHitMan *blman);
+   std::vector<HodoscopeLikeHit*>  getHodo(BeamLineHitMan *blman);
 
 };
 

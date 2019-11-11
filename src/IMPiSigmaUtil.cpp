@@ -1300,31 +1300,92 @@ bool Util::IsFromSigma(MCData *mcdata,DetectorHit *dhit)
 
 
 
-TLorentzVector *Util::GetForwardNeutralLVec(BeamLineHitMan *blman, TVector3 *vtxpos,double t0time)
+TLorentzVector* Util::GetForwardNeutralLVec(BeamLineHitMan *blman,const TVector3 *vtxpos, const double t0time,const double beamtof,const double thre)
 {
   TLorentzVector *fNLVec = NULL;
-
-  /*
+  
   double fTime=0.0;
   TVector3 fHitPos;
-
-  TVector3 vtxbline, vtxbhelix ,vtxb; //,vtxb;
-  if(MCFlag){
-    TVector3 Pos_T0;
-    confman->GetGeomMapManager()->GetPos( CID_T0, 0, Pos_T0 );
-    const double zPos_T0 = Pos_T0.Z();
-    track->GetVertex( bpctrack->GetPosatZ(zPos_T0), bpctrack->GetMomDir(), vtxbline, vtxbhelix );
-  }else{
-    track->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtxbline, vtxbhelix );
+  std::vector<std::vector<HodoscopeLikeHit*> > NChits=Util::getNChits(blman);
+  std::vector<HodoscopeLikeHit*>  NChits2=Util::getHodo(blman);
+  
+  HodoscopeLikeHit *nc_hit=0;
+  for( int lay=0; lay<(int)NChits.size(); lay++ ){
+    //    cout<<"NC layer"<<lay<<" search "<<endl;
+    double time=DBL_MAX;
+    for( int i=0; i<(int)NChits[lay].size(); i++ ){
+      if( NChits[lay][i]->emean()>thre && NChits[lay][i]->ctmean()<time ){
+        time=NChits[lay][i]->ctmean();
+        nc_hit=NChits[lay][i];
+      }
+    }
+    if( nc_hit ) break;
   }
-  vtxb = 0.5*(vtxbline+vtxbhelix);
-  ELossTools::CalcElossBeamTGeo( bpc->GetPosatZ(z_pos), vtxb,
-  double ForwardNTof = fTime-t0time-tmp_tof;
-  double ForwardTof = (fHitPos-vtxpos).Mag();
-  */
+
+  if( !nc_hit ) return fNLVec;
+
+  std::vector<int> nc_seg;
+  bool isAdd=true;
+  nc_seg.push_back(nc_hit->seg());
+  while(isAdd){
+    isAdd=false;
+    for(int ihit=0;ihit<(int)NChits2.size();ihit++){
+      int seg=NChits2[ihit]->seg();
+      int lay=(seg-1)/16;
+      int seg2=seg-16*lay;
+      for(int jhit=0;jhit<(int)nc_seg.size();jhit++){
+        int cl_lay=(nc_seg[jhit]-1)/16;
+        int cl_seg2=nc_seg[jhit]-16*cl_lay;
+        if(seg==nc_seg[jhit]){
+          isAdd=false;
+          break;
+        }
+        if( abs(lay-cl_lay)==1 && cl_seg2==seg2) isAdd=true;
+        if( lay==cl_lay && abs(cl_seg2-seg2)==1) isAdd=true;
+      }
+      if(isAdd){
+        nc_seg.push_back(seg);
+        break;
+      }
+    }
+  }
+
+  
+  double ForwardNTof = fTime-t0time-beamtof;
+  double ForwardTof = (nc_hit->pos()-vtxpos).Mag();
+  
 
 
 
 
   return fNLVec;
+}
+
+
+  
+std::vector<std::vector<HodoscopeLikeHit*> > Util::getNChits(BeamLineHitMan *blman)
+{
+  std::vector<std::vector<HodoscopeLikeHit*> > nchit(7);
+  for( int i=0; i<blman->nNC(); i++ ){
+    if( blman->NC(i)->CheckRange() ){
+      int seg=blman->NC(i)->seg();
+      int lay=(seg-1)/16;
+      if( 7<lay ) std::cout<<"  !!! NC layer>7    "<<lay<<" !!!"<<std::endl;
+      nchit[lay].push_back(blman->NC(i));
+    }
+  }
+  return nchit;
+}
+
+std::vector<HodoscopeLikeHit*> Util::getHodo(BeamLineHitMan *blman)
+{
+  std::vector<HodoscopeLikeHit*> hits;
+  for( int i=0; i<blman->nHodo(CID_NC); i++ ){
+    HodoscopeLikeHit *hit=blman->Hodoi(CID_NC, i);
+    //    cout<<"hit="<<hit<<endl;
+    if( hit-> CheckRange() ){
+      hits.push_back(hit);
+    }
+  }
+  return hits;
 }
