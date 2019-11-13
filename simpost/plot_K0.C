@@ -265,7 +265,26 @@ void plot_K0()
   TH1F* Reactmom_0_Smpip_ns = (TH1F*)_file13_1->Get("Reactmom_0");
   const double ngen_Smpip_ns = Reactmom_0_Smpip_ns->GetEntries();
   std::cout << "MC ngen Smpip_ns " << ngen_Smpip_ns << std::endl;
+  
+  //K-p ->K0n , K0n->pipiL
+  TFile *_file14 = TFile::Open("simIMpisigma_npipiL_ts_pippimn_v1_outncutK015.root");
+  TH2F* q_IMpippim_n_npipiL_ts = (TH2F*)_file14->Get("q_IMpippim_n");
+  TH2F* nmom_IMnpipi_wK0_n_npipiL_ts = (TH2F*)_file14->Get("nmom_IMnpipi_wK0_n");
+  TH2F* q_IMnpipi_wK0_n_npipiL_ts = (TH2F*)_file14->Get("q_IMnpipi_wK0_n");
+  TH2F* Mompippim_IMnpipi_dE_wK0_n_npipiL_ts = (TH2F*)_file14->Get("Mompippim_IMnpipi_dE_wK0_n");
+  TH2F* MMnmiss_IMpippim_dE_npipiL_ts = (TH2F*)_file14->Get("MMnmiss_IMpippim_dE");
+  //projection
+  TH1D* IMpippim_npipiL_ts = (TH1D*)q_IMpippim_n_npipiL_ts->ProjectionX("IMpippim_npipiL_ts");
+  TH1D* IMnpipi_npipiL_ts = (TH1D*)nmom_IMnpipi_wK0_n_npipiL_ts->ProjectionX("IMnpipi_npipiL_ts");
+  TH1D* nmom_IMnpipi_wK0_n_npipiL_ts_py = (TH1D*)nmom_IMnpipi_wK0_n_npipiL_ts->ProjectionY("nmom_IMnpipi_wK0_n_npipiL_ts_py");
+  TH1D* q_npipiL_ts = (TH1D*)q_IMnpipi_wK0_n_npipiL_ts->ProjectionY("q_npipiL_ts");
+  TH1D* Mompippim_npipiL_ts = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_npipiL_ts->ProjectionY("Mompippim_npipiL_ts");
+  TH1D* MMnmiss_npipiL_ts = (TH1D*)MMnmiss_IMpippim_dE_npipiL_ts->ProjectionY("MMnmiss_npipiL_ts",pipimin,pipimax);
 
+  TFile *_file14_1 = TFile::Open("simIMpisigma_npipiL_ts_v1.root");
+  TH1F* Reactmom_0_npipiL_ts = (TH1F*)_file14_1->Get("Reactmom_0");
+  const double ngen_npipiL_ts = Reactmom_0_npipiL_ts->GetEntries();
+  std::cout << "MC ngen npipiL_ts " << ngen_npipiL_ts << std::endl;
 
   const double scale_ns = 0.38;
   const double scale_nnts = 0.01;
@@ -276,7 +295,8 @@ void plot_K0()
   const double scale_pipiL_ns_sum = 3.5;
   const double scale_S0pipi_ns = 0.8;
   const double scale_L1520pi0_ns = 0.1;
-  
+  const double scale_npipiL_ts = 0.1;
+
   const double cs_ns = 6.454; //elementary CS [mb] 
   const double csError_ns = 0.042;//elementary CS [mb]
   const double cs_S0pipi_ns = 0.53;
@@ -534,6 +554,7 @@ void plot_K0()
   TCanvas *cnmom_1NA = new TCanvas("cnmom_1NA","cnmom_1NA");
   cnmom_1NA->cd();
   TH1D* nmom_1NA_clone = (TH1D*)nmom_1NA->Clone("nmom_1NA_clone");
+  nmom_1NA_clone->SetLineColor(1);
   nmom_1NA_clone->Draw("HE");
   nmom_IMnpipi_wK0_n_ns_py->SetLineColor(2);
   nmom_IMnpipi_wK0_n_ns_py->Draw("HEsame");
@@ -545,6 +566,17 @@ void plot_K0()
   nmom_fSigma_ns_sum->Draw("HEsame");
   nmom_pipiL_ns_sum->SetLineColor(6);
   nmom_pipiL_ns_sum->Draw("HEsame");
+  
+  TLegend *tl_1NA = new TLegend(0.6,0.68,0.89,0.89);
+  tl_1NA->SetTextFont(133);
+  tl_1NA->AddEntry(nmom_1NA_clone, "1NA MC sum","l");
+  tl_1NA->AddEntry(nmom_IMnpipi_wK0_n_ns_py, "1NA K0n","l");
+  tl_1NA->AddEntry(nmom_IMnpipi_wK0_n_S0pippim_ns_py, "1NA Sigma0 #pi^{+}#pi^{-}","l");
+  tl_1NA->AddEntry(nmom_IMnpipi_wK0_n_L1520pi0_ns_py, "1NA L1520 pi0","l");
+  tl_1NA->AddEntry(nmom_fSigma_ns_sum, "1NA #pi#Sigma","l");
+  tl_1NA->AddEntry(nmom_pipiL_ns_sum, "1NA #pi#pi#Lambda","l");
+  tl_1NA->Draw();
+
 
   TH1D* q_1NA = (TH1D*)q_ns->Clone("q_1NA");
   q_1NA->Add(q_S0pippim_ns);
@@ -666,8 +698,6 @@ void plot_K0()
   nmom_sum->Add(nmom_IMnpipi_wK0_n_Knts_py);
   nmom_sum->Add(nmom_IMnpipi_wK0_n_Kmpts_py);
   nmom_sum->Add(nmom_IMnpipi_wK0_n_npipiL_py);//2NA phase space
-  //nmom_sum->Add(nmom_pipiL_ns_sum);//1NA Fermi motion
-  //nmom_sum->Add(nmom_IMnpipi_wK0_n_S0pippim_ns_py);//1NA Fermi motion
   nmom_sum->SetLineColor(6);
   nmom_sum->Draw("HEsame");
 
