@@ -1267,6 +1267,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     TLorentzVector LVec_n_CM = *LVec_n;
     LVec_n_CM.Boost(-boost);
     double cos_ncdsCM = LVec_n_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_n_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
+    
 
     if(SimSpmode || SimSmmode){
       TVector3 boost_mc =  (*LVec_target+*mcmom_beam).BoostVector();
@@ -1291,6 +1292,13 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     if(SimSpmode || SimSmmode){
       LVec_pip_pim_mc = *mcmom_pip+*mcmom_pim; 
     }
+    TLorentzVector LVec_pip_pim_CM = LVec_pip_pim;
+    LVec_pip_pim_CM.Boost(-boost);
+    double cos_pippimCM = LVec_pip_pim_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pip_pim_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
+    
+    double cos_pippim_ncds_CM = LVec_pip_pim_CM.Vect().Dot(LVec_n_CM.Vect())/(LVec_pip_pim_CM.Vect().Mag()*LVec_n_CM.Vect().Mag());  
+    double cos_nmiss_ncds_CM = LVec_nmiss_CM.Vect().Dot(LVec_n_CM.Vect())/(LVec_nmiss_CM.Vect().Mag()*LVec_n_CM.Vect().Mag()); 
+
     // calc pi+n //
     TLorentzVector LVec_pip_n = *LVec_pip+*LVec_n;
     TLorentzVector LVec_pip_n_mc;
