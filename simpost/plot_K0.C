@@ -16,7 +16,13 @@ void plot_K0()
   TH2F* MMnmiss_IMpippim_dE_rdata = (TH2F*)_file0->Get("MMnmiss_IMpippim_dE");
   
   TH2F* nmom_cosn_wK0_n_rdata = (TH2F*)_file0->Get("nmom_cosn_wK0_n");
+  TH2F* nmom_cosn_wK0_n_forward_rdata = (TH2F*)_file0->Get("nmom_cosn_wK0_n_forward");
+  TH2F* nmom_cosK0_wK0_n_rdata = (TH2F*)_file0->Get("nmom_cosK0_wK0_n");
+  TH2F* nmom_cosK0n_wK0_n_rdata = (TH2F*)_file0->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnnmiss_wK0_n_rdata = (TH2F*)_file0->Get("nmom_cosnnmiss_wK0_n");
+  TH2F* K0mom_cosK0_wK0_n_rdata = (TH2F*)_file0->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_rdata = (TH2F*)_file0->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* nmissmom_cosK0nmiss_wK0_n_rdata = (TH2F*)_file0->Get("nmissmom_cosK0nmiss_wK0_n");
   TH2F* nmom_K0mom_n_rdata = (TH2F*)_file0->Get("nmom_K0mom_n");
   TH2F* nmissmom_K0mom_n_rdata = (TH2F*)_file0->Get("nmissmom_K0mom_n");
   TH2F* nmom_nmissmom_wK0_n_rdata = (TH2F*)_file0->Get("nmom_nmissmom_wK0_n");
@@ -43,7 +49,13 @@ void plot_K0()
   TH2F* MMnmiss_IMpippim_dE_nnts = (TH2F*)_file1->Get("MMnmiss_IMpippim_dE");
   
   TH2F* nmom_cosn_wK0_n_nnts = (TH2F*)_file1->Get("nmom_cosn_wK0_n");
+  TH2F* nmom_cosn_wK0_n_forward_nnts = (TH2F*)_file1->Get("nmom_cosn_wK0_n_forward");
+  TH2F* nmom_cosK0_wK0_n_nnts = (TH2F*)_file1->Get("nmom_cosK0_wK0_n");
+  TH2F* nmom_cosK0n_wK0_n_nnts = (TH2F*)_file1->Get("nmom_cosK0n_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_nnts = (TH2F*)_file1->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* K0mom_cosK0_wK0_n_nnts = (TH2F*)_file1->Get("K0mom_cosK0_wK0_n");
+  TH2F* nmissmom_cosnmiss_wK0_n_nnts = (TH2F*)_file1->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* nmissmom_cosK0nmiss_wK0_n_nnts = (TH2F*)_file1->Get("nmissmom_cosK0nmiss_wK0_n");
   TH2F* nmom_K0mom_n_nnts = (TH2F*)_file1->Get("nmom_K0mom_n");
   TH2F* nmissmom_K0mom_n_nnts = (TH2F*)_file1->Get("nmissmom_K0mom_n");
   TH2F* nmom_nmissmom_wK0_n_nnts = (TH2F*)_file1->Get("nmom_nmissmom_wK0_n");
@@ -65,10 +77,17 @@ void plot_K0()
   TH2F* MMnmiss_IMpippim_dE_ns = (TH2F*)_file2->Get("MMnmiss_IMpippim_dE");
   
   TH2F* nmom_cosn_wK0_n_ns = (TH2F*)_file2->Get("nmom_cosn_wK0_n");
+  TH2F* nmom_cosn_wK0_n_forward_ns = (TH2F*)_file2->Get("nmom_cosn_wK0_n_forward");
+  TH2F* nmom_cosK0_wK0_n_ns = (TH2F*)_file2->Get("nmom_cosK0_wK0_n");
+  TH2F* nmom_cosK0n_wK0_n_ns = (TH2F*)_file2->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnnmiss_wK0_n_ns = (TH2F*)_file2->Get("nmom_cosnnmiss_wK0_n");
+  TH2F* K0mom_cosK0_wK0_n_ns = (TH2F*)_file2->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_ns = (TH2F*)_file2->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* nmissmom_cosK0nmiss_wK0_n_ns = (TH2F*)_file2->Get("nmissmom_cosK0nmiss_wK0_n");
   TH2F* nmom_K0mom_n_ns = (TH2F*)_file2->Get("nmom_K0mom_n");
   TH2F* nmissmom_K0mom_n_ns = (TH2F*)_file2->Get("nmissmom_K0mom_n");
   TH2F* nmom_nmissmom_wK0_n_ns = (TH2F*)_file2->Get("nmom_nmissmom_wK0_n");
+ 
 
   //projection
   TH1D* IMpippim_ns = (TH1D*)q_IMpippim_n_ns->ProjectionX("IMpippim_ns");
@@ -94,7 +113,13 @@ void plot_K0()
   TH2F* MMnmiss_IMpippim_dE_K0nn = (TH2F*)_file3->Get("MMnmiss_IMpippim_dE");
   
   TH2F* nmom_cosn_wK0_n_K0nn = (TH2F*)_file3->Get("nmom_cosn_wK0_n");
+  TH2F* nmom_cosn_wK0_n_forward_K0nn = (TH2F*)_file3->Get("nmom_cosn_wK0_n_forward");
+  TH2F* nmom_cosK0_wK0_n_K0nn = (TH2F*)_file3->Get("nmom_cosK0_wK0_n");
+  TH2F* nmom_cosK0n_wK0_n_K0nn = (TH2F*)_file3->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnnmiss_wK0_n_K0nn = (TH2F*)_file3->Get("nmom_cosnnmiss_wK0_n");
+  TH2F* K0mom_cosK0_wK0_n_K0nn = (TH2F*)_file3->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_K0nn = (TH2F*)_file3->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* nmissmom_cosK0nmiss_wK0_n_K0nn = (TH2F*)_file3->Get("nmissmom_cosK0nmiss_wK0_n");
   TH2F* nmom_K0mom_n_K0nn = (TH2F*)_file3->Get("nmom_K0mom_n");
   TH2F* nmissmom_K0mom_n_K0nn = (TH2F*)_file3->Get("nmissmom_K0mom_n");
   TH2F* nmom_nmissmom_wK0_n_K0nn = (TH2F*)_file3->Get("nmom_nmissmom_wK0_n");
@@ -115,7 +140,13 @@ void plot_K0()
   TH2F* MMnmiss_IMpippim_dE_Knts = (TH2F*)_file4->Get("MMnmiss_IMpippim_dE");
   
   TH2F* nmom_cosn_wK0_n_Knts = (TH2F*)_file4->Get("nmom_cosn_wK0_n");
+  TH2F* nmom_cosn_wK0_n_forward_Knts = (TH2F*)_file4->Get("nmom_cosn_wK0_n_forward");
+  TH2F* nmom_cosK0_wK0_n_Knts = (TH2F*)_file4->Get("nmom_cosK0_wK0_n");
+  TH2F* nmom_cosK0n_wK0_n_Knts = (TH2F*)_file4->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnnmiss_wK0_n_Knts = (TH2F*)_file4->Get("nmom_cosnnmiss_wK0_n");
+  TH2F* K0mom_cosK0_wK0_n_Knts = (TH2F*)_file4->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_Knts = (TH2F*)_file4->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* nmissmom_cosK0nmiss_wK0_n_Knts = (TH2F*)_file4->Get("nmissmom_cosK0nmiss_wK0_n");
   TH2F* nmom_K0mom_n_Knts = (TH2F*)_file4->Get("nmom_K0mom_n");
   TH2F* nmissmom_K0mom_n_Knts = (TH2F*)_file4->Get("nmissmom_K0mom_n");
   TH2F* nmom_nmissmom_wK0_n_Knts = (TH2F*)_file4->Get("nmom_nmissmom_wK0_n");
@@ -136,7 +167,13 @@ void plot_K0()
   TH2F* MMnmiss_IMpippim_dE_Kmpts = (TH2F*)_file5->Get("MMnmiss_IMpippim_dE");
   
   TH2F* nmom_cosn_wK0_n_Kmpts = (TH2F*)_file5->Get("nmom_cosn_wK0_n");
+  TH2F* nmom_cosn_wK0_n_forward_Kmpts = (TH2F*)_file5->Get("nmom_cosn_wK0_n_forward");
+  TH2F* nmom_cosK0_wK0_n_Kmpts = (TH2F*)_file5->Get("nmom_cosK0_wK0_n");
+  TH2F* nmom_cosK0n_wK0_n_Kmpts = (TH2F*)_file5->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnnmiss_wK0_n_Kmpts = (TH2F*)_file5->Get("nmom_cosnnmiss_wK0_n");
+  TH2F* K0mom_cosK0_wK0_n_Kmpts = (TH2F*)_file5->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_Kmpts = (TH2F*)_file5->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* nmissmom_cosK0nmiss_wK0_n_Kmpts = (TH2F*)_file5->Get("nmissmom_cosK0nmiss_wK0_n");
   TH2F* nmom_K0mom_n_Kmpts = (TH2F*)_file5->Get("nmom_K0mom_n");
   TH2F* nmissmom_K0mom_n_Kmpts = (TH2F*)_file5->Get("nmissmom_K0mom_n");
   TH2F* nmom_nmissmom_wK0_n_Kmpts = (TH2F*)_file5->Get("nmom_nmissmom_wK0_n");
@@ -157,7 +194,13 @@ void plot_K0()
   TH2F* MMnmiss_IMpippim_dE_npipiL = (TH2F*)_file6->Get("MMnmiss_IMpippim_dE");
   
   TH2F* nmom_cosn_wK0_n_npipiL = (TH2F*)_file6->Get("nmom_cosn_wK0_n");
+  TH2F* nmom_cosn_wK0_n_forward_npipiL = (TH2F*)_file6->Get("nmom_cosn_wK0_n_forward");
+  TH2F* nmom_cosK0_wK0_n_npipiL = (TH2F*)_file6->Get("nmom_cosK0_wK0_n");
+  TH2F* nmom_cosK0n_wK0_n_npipiL = (TH2F*)_file6->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnnmiss_wK0_n_npipiL = (TH2F*)_file6->Get("nmom_cosnnmiss_wK0_n");
+  TH2F* K0mom_cosK0_wK0_n_npipiL = (TH2F*)_file6->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_npipiL = (TH2F*)_file6->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* nmissmom_cosK0nmiss_wK0_n_npipiL = (TH2F*)_file6->Get("nmissmom_cosK0nmiss_wK0_n");
   TH2F* nmom_K0mom_n_npipiL = (TH2F*)_file6->Get("nmom_K0mom_n");
   TH2F* nmissmom_K0mom_n_npipiL = (TH2F*)_file6->Get("nmissmom_K0mom_n");
   TH2F* nmom_nmissmom_wK0_n_npipiL = (TH2F*)_file6->Get("nmom_nmissmom_wK0_n");
@@ -178,7 +221,13 @@ void plot_K0()
   TH2F* MMnmiss_IMpippim_dE_pipiL_ns = (TH2F*)_file7->Get("MMnmiss_IMpippim_dE");
   
   TH2F* nmom_cosn_wK0_n_pipiL_ns = (TH2F*)_file7->Get("nmom_cosn_wK0_n");
+  TH2F* nmom_cosn_wK0_n_forward_pipiL_ns = (TH2F*)_file7->Get("nmom_cosn_wK0_n_forward");
+  TH2F* nmom_cosK0_wK0_n_pipiL_ns = (TH2F*)_file7->Get("nmom_cosK0_wK0_n");
+  TH2F* nmom_cosK0n_wK0_n_pipiL_ns = (TH2F*)_file7->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnnmiss_wK0_n_pipiL_ns = (TH2F*)_file7->Get("nmom_cosnnmiss_wK0_n");
+  TH2F* K0mom_cosK0_wK0_n_pipiL_ns = (TH2F*)_file7->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_pipiL_ns = (TH2F*)_file7->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* nmissmom_cosK0nmiss_wK0_n_pipiL_ns = (TH2F*)_file7->Get("nmissmom_cosK0nmiss_wK0_n");
   TH2F* nmom_K0mom_n_pipiL_ns = (TH2F*)_file7->Get("nmom_K0mom_n");
   TH2F* nmissmom_K0mom_n_pipiL_ns = (TH2F*)_file7->Get("nmissmom_K0mom_n");
   TH2F* nmom_nmissmom_wK0_n_pipiL_ns = (TH2F*)_file7->Get("nmom_nmissmom_wK0_n");
@@ -204,7 +253,13 @@ void plot_K0()
   TH2F* MMnmiss_IMpippim_dE_pipS1385m_ns = (TH2F*)_file8->Get("MMnmiss_IMpippim_dE");
   
   TH2F* nmom_cosn_wK0_n_pipS1385m_ns = (TH2F*)_file8->Get("nmom_cosn_wK0_n");
+  TH2F* nmom_cosn_wK0_n_forward_pipS1385m_ns = (TH2F*)_file8->Get("nmom_cosn_wK0_n_forward");
+  TH2F* nmom_cosK0_wK0_n_pipS1385m_ns = (TH2F*)_file8->Get("nmom_cosK0_wK0_n");
+  TH2F* nmom_cosK0n_wK0_n_pipS1385m_ns = (TH2F*)_file8->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnnmiss_wK0_n_pipS1385m_ns = (TH2F*)_file8->Get("nmom_cosnnmiss_wK0_n");
+  TH2F* K0mom_cosK0_wK0_n_pipS1385m_ns = (TH2F*)_file8->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_pipS1385m_ns = (TH2F*)_file8->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* nmissmom_cosK0nmiss_wK0_n_pipS1385m_ns = (TH2F*)_file8->Get("nmissmom_cosK0nmiss_wK0_n");
   TH2F* nmom_K0mom_n_pipS1385m_ns = (TH2F*)_file8->Get("nmom_K0mom_n");
   TH2F* nmissmom_K0mom_n_pipS1385m_ns = (TH2F*)_file8->Get("nmissmom_K0mom_n");
   TH2F* nmom_nmissmom_wK0_n_pipS1385m_ns = (TH2F*)_file8->Get("nmom_nmissmom_wK0_n");
@@ -230,7 +285,13 @@ void plot_K0()
   TH2F* MMnmiss_IMpippim_dE_pimS1385p_ns = (TH2F*)_file9->Get("MMnmiss_IMpippim_dE");
   
   TH2F* nmom_cosn_wK0_n_pimS1385p_ns = (TH2F*)_file9->Get("nmom_cosn_wK0_n");
+  TH2F* nmom_cosn_wK0_n_forward_pimS1385p_ns = (TH2F*)_file9->Get("nmom_cosn_wK0_n_forward");
+  TH2F* nmom_cosK0_wK0_n_pimS1385p_ns = (TH2F*)_file9->Get("nmom_cosK0_wK0_n");
+  TH2F* nmom_cosK0n_wK0_n_pimS1385p_ns = (TH2F*)_file9->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnnmiss_wK0_n_pimS1385p_ns = (TH2F*)_file9->Get("nmom_cosnnmiss_wK0_n");
+  TH2F* K0mom_cosK0_wK0_n_pimS1385p_ns = (TH2F*)_file9->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_pimS1385p_ns = (TH2F*)_file9->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* nmissmom_cosK0nmiss_wK0_n_pimS1385p_ns = (TH2F*)_file9->Get("nmissmom_cosK0nmiss_wK0_n");
   TH2F* nmom_K0mom_n_pimS1385p_ns = (TH2F*)_file9->Get("nmom_K0mom_n");
   TH2F* nmissmom_K0mom_n_pimS1385p_ns = (TH2F*)_file9->Get("nmissmom_K0mom_n");
   TH2F* nmom_nmissmom_wK0_n_pimS1385p_ns = (TH2F*)_file9->Get("nmom_nmissmom_wK0_n");
@@ -256,7 +317,13 @@ void plot_K0()
   TH2F* MMnmiss_IMpippim_dE_S0pippim_ns = (TH2F*)_file10->Get("MMnmiss_IMpippim_dE");
   
   TH2F* nmom_cosn_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("nmom_cosn_wK0_n");
+  TH2F* nmom_cosn_wK0_n_forward_S0pippim_ns = (TH2F*)_file10->Get("nmom_cosn_wK0_n_forward");
+  TH2F* nmom_cosK0_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("nmom_cosK0_wK0_n");
+  TH2F* nmom_cosK0n_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnnmiss_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("nmom_cosnnmiss_wK0_n");
+  TH2F* K0mom_cosK0_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* nmissmom_cosK0nmiss_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("nmissmom_cosK0nmiss_wK0_n");
   TH2F* nmom_K0mom_n_S0pippim_ns = (TH2F*)_file10->Get("nmom_K0mom_n");
   TH2F* nmissmom_K0mom_n_S0pippim_ns = (TH2F*)_file10->Get("nmissmom_K0mom_n");
   TH2F* nmom_nmissmom_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("nmom_nmissmom_wK0_n");
@@ -282,7 +349,13 @@ void plot_K0()
   TH2F* MMnmiss_IMpippim_dE_L1520pi0_ns = (TH2F*)_file11->Get("MMnmiss_IMpippim_dE");
   
   TH2F* nmom_cosn_wK0_n_L1520pi0_ns = (TH2F*)_file11->Get("nmom_cosn_wK0_n");
+  TH2F* nmom_cosn_wK0_n_forward_L1520pi0_ns = (TH2F*)_file11->Get("nmom_cosn_wK0_n_forward");
+  TH2F* nmom_cosK0_wK0_n_L1520pi0_ns = (TH2F*)_file11->Get("nmom_cosK0_wK0_n");
+  TH2F* nmom_cosK0n_wK0_n_L1520pi0_ns = (TH2F*)_file11->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnnmiss_wK0_n_L1520pi0_ns = (TH2F*)_file11->Get("nmom_cosnnmiss_wK0_n");
+  TH2F* K0mom_cosK0_wK0_n_L1520pi0_ns = (TH2F*)_file11->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_L1520pi0_ns = (TH2F*)_file11->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* nmissmom_cosK0nmiss_wK0_n_L1520pi0_ns = (TH2F*)_file11->Get("nmissmom_cosK0nmiss_wK0_n");
   TH2F* nmom_K0mom_n_L1520pi0_ns = (TH2F*)_file11->Get("nmom_K0mom_n");
   TH2F* nmissmom_K0mom_n_L1520pi0_ns = (TH2F*)_file11->Get("nmissmom_K0mom_n");
   TH2F* nmom_nmissmom_wK0_n_L1520pi0_ns = (TH2F*)_file11->Get("nmom_nmissmom_wK0_n");
@@ -309,7 +382,13 @@ void plot_K0()
   TH2F* MMnmiss_IMpippim_dE_Sppim_ns = (TH2F*)_file12->Get("MMnmiss_IMpippim_dE");
   
   TH2F* nmom_cosn_wK0_n_Sppim_ns = (TH2F*)_file12->Get("nmom_cosn_wK0_n");
+  TH2F* nmom_cosn_wK0_n_forward_Sppim_ns = (TH2F*)_file12->Get("nmom_cosn_wK0_n_forward");
+  TH2F* nmom_cosK0_wK0_n_Sppim_ns = (TH2F*)_file12->Get("nmom_cosK0_wK0_n");
+  TH2F* nmom_cosK0n_wK0_n_Sppim_ns = (TH2F*)_file12->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnnmiss_wK0_n_Sppim_ns = (TH2F*)_file12->Get("nmom_cosnnmiss_wK0_n");
+  TH2F* K0mom_cosK0_wK0_n_Sppim_ns = (TH2F*)_file12->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_Sppim_ns = (TH2F*)_file12->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* nmissmom_cosK0nmiss_wK0_n_Sppim_ns = (TH2F*)_file12->Get("nmissmom_cosK0nmiss_wK0_n");
   TH2F* nmom_K0mom_n_Sppim_ns = (TH2F*)_file12->Get("nmom_K0mom_n");
   TH2F* nmissmom_K0mom_n_Sppim_ns = (TH2F*)_file12->Get("nmissmom_K0mom_n");
   TH2F* nmom_nmissmom_wK0_n_Sppim_ns = (TH2F*)_file12->Get("nmom_nmissmom_wK0_n");
@@ -335,7 +414,13 @@ void plot_K0()
   TH2F* MMnmiss_IMpippim_dE_Smpip_ns = (TH2F*)_file13->Get("MMnmiss_IMpippim_dE");
   
   TH2F* nmom_cosn_wK0_n_Smpip_ns = (TH2F*)_file13->Get("nmom_cosn_wK0_n");
+  TH2F* nmom_cosn_wK0_n_forward_Smpip_ns = (TH2F*)_file13->Get("nmom_cosn_wK0_n_forward");
+  TH2F* nmom_cosK0_wK0_n_Smpip_ns = (TH2F*)_file13->Get("nmom_cosK0_wK0_n");
+  TH2F* nmom_cosK0n_wK0_n_Smpip_ns = (TH2F*)_file13->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnnmiss_wK0_n_Smpip_ns = (TH2F*)_file13->Get("nmom_cosnnmiss_wK0_n");
+  TH2F* K0mom_cosK0_wK0_n_Smpip_ns = (TH2F*)_file13->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_Smpip_ns = (TH2F*)_file13->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* nmissmom_cosK0nmiss_wK0_n_Smpip_ns = (TH2F*)_file13->Get("nmissmom_cosK0nmiss_wK0_n");
   TH2F* nmom_K0mom_n_Smpip_ns = (TH2F*)_file13->Get("nmom_K0mom_n");
   TH2F* nmissmom_K0mom_n_Smpip_ns = (TH2F*)_file13->Get("nmissmom_K0mom_n");
   TH2F* nmom_nmissmom_wK0_n_Smpip_ns = (TH2F*)_file13->Get("nmom_nmissmom_wK0_n");
@@ -361,7 +446,13 @@ void plot_K0()
   TH2F* MMnmiss_IMpippim_dE_npipiL_ts = (TH2F*)_file14->Get("MMnmiss_IMpippim_dE");
   
   TH2F* nmom_cosn_wK0_n_npipiL_ts = (TH2F*)_file14->Get("nmom_cosn_wK0_n");
+  TH2F* nmom_cosn_wK0_n_forward_npipiL_ts = (TH2F*)_file14->Get("nmom_cosn_wK0_n_forward");
+  TH2F* nmom_cosK0_wK0_n_npipiL_ts = (TH2F*)_file14->Get("nmom_cosK0_wK0_n");
+  TH2F* nmom_cosK0n_wK0_n_npipiL_ts = (TH2F*)_file14->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnnmiss_wK0_n_npipiL_ts = (TH2F*)_file14->Get("nmom_cosnnmiss_wK0_n");
+  TH2F* K0mom_cosK0_wK0_n_npipiL_ts = (TH2F*)_file14->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_npipiL_ts = (TH2F*)_file14->Get("nmissmom_cosnmiss_wK0_n");
+  TH2F* nmissmom_cosK0nmiss_wK0_n_npipiL_ts = (TH2F*)_file14->Get("nmissmom_cosK0nmiss_wK0_n");
   TH2F* nmom_K0mom_n_npipiL_ts = (TH2F*)_file14->Get("nmom_K0mom_n");
   TH2F* nmissmom_K0mom_n_npipiL_ts = (TH2F*)_file14->Get("nmissmom_K0mom_n");
   TH2F* nmom_nmissmom_wK0_n_npipiL_ts = (TH2F*)_file14->Get("nmom_nmissmom_wK0_n");
@@ -514,6 +605,38 @@ void plot_K0()
   TH1D* MMnmiss_pipiL_ns_sum = (TH1D*)MMnmiss_pipS1385m_ns->Clone("MMnmiss_pipiL_ns_sum");
   MMnmiss_pipiL_ns_sum->Add(MMnmiss_pimS1385p_ns);
   MMnmiss_pipiL_ns_sum->Add(MMnmiss_pipiL_ns);
+  
+  TH2F* nmom_cosn_wK0_n_pipiL_ns_sum = (TH2F*)nmom_cosn_wK0_n_pipS1385m_ns->Clone("nmom_cosn_wK0_n_pipiL_ns_sum");
+  nmom_cosn_wK0_n_pipiL_ns_sum->Add(nmom_cosn_wK0_n_pimS1385p_ns);
+  nmom_cosn_wK0_n_pipiL_ns_sum->Add(nmom_cosn_wK0_n_pipiL_ns);
+  
+  TH2F* nmom_cosn_wK0_n_forward_pipiL_ns_sum = (TH2F*) nmom_cosn_wK0_n_forward_pipS1385m_ns->Clone("nmom_cosn_wK0_n_forward_pipiL_ns_sum");
+  nmom_cosn_wK0_n_forward_pipiL_ns_sum->Add(nmom_cosn_wK0_n_forward_pimS1385p_ns);
+  nmom_cosn_wK0_n_forward_pipiL_ns_sum->Add(nmom_cosn_wK0_n_forward_pipiL_ns);
+
+  TH2F* nmom_cosK0_wK0_n_pipiL_ns_sum = (TH2F*)nmom_cosK0_wK0_n_pipS1385m_ns->Clone("nmom_cosK0_wK0_n_pipiL_ns_sum");
+  nmom_cosK0_wK0_n_pipiL_ns_sum->Add(nmom_cosK0_wK0_n_pimS1385p_ns);
+  nmom_cosK0_wK0_n_pipiL_ns_sum->Add(nmom_cosK0_wK0_n_pipiL_ns);
+  
+  TH2F* nmom_cosK0n_wK0_n_pipiL_ns_sum = (TH2F*)nmom_cosK0n_wK0_n_pipS1385m_ns->Clone("nmom_cosK0n_wK0_n_pipiL_ns");
+  nmom_cosK0n_wK0_n_pipiL_ns_sum->Add(nmom_cosK0n_wK0_n_pimS1385p_ns);
+  nmom_cosK0n_wK0_n_pipiL_ns_sum->Add(nmom_cosK0n_wK0_n_pipiL_ns);
+
+  TH2F* nmom_cosnnmiss_wK0_n_pipiL_ns_sum = (TH2F*)nmom_cosnnmiss_wK0_n_pipS1385m_ns->Clone("nmom_cosnnmiss_wK0_n_pipiL_ns_sum");
+  nmom_cosnnmiss_wK0_n_pipiL_ns_sum->Add(nmom_cosnnmiss_wK0_n_pimS1385p_ns);
+  nmom_cosnnmiss_wK0_n_pipiL_ns_sum->Add(nmom_cosnnmiss_wK0_n_pipiL_ns);
+   
+  TH2F* K0mom_cosK0_wK0_n_pipiL_ns_sum = (TH2F*)K0mom_cosK0_wK0_n_pipS1385m_ns->Clone("K0mom_cosK0_wK0_n_pipiL_ns_sum");
+  K0mom_cosK0_wK0_n_pipiL_ns_sum->Add(K0mom_cosK0_wK0_n_pimS1385p_ns);
+  K0mom_cosK0_wK0_n_pipiL_ns_sum->Add(K0mom_cosK0_wK0_n_pipiL_ns);
+  
+  TH2F* nmissmom_cosnmiss_wK0_n_pipiL_ns_sum = (TH2F*)nmissmom_cosnmiss_wK0_n_pipS1385m_ns->Clone("nmissmom_cosnmiss_wK0_n_pipiL_ns_sum");
+  nmissmom_cosnmiss_wK0_n_pipiL_ns_sum->Add(nmissmom_cosnmiss_wK0_n_pimS1385p_ns);
+  nmissmom_cosnmiss_wK0_n_pipiL_ns_sum->Add(nmissmom_cosnmiss_wK0_n_pipiL_ns);
+
+  TH2F*
+
+  
   
   //
   //Forward Sigma (1NA) cocktail 
