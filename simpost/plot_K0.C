@@ -30,6 +30,7 @@ void plot_K0()
   TH1D* IMpippim_rdata = (TH1D*)q_IMpippim_n_rdata->ProjectionX("IMpippim_rdata");
   TH1D* IMnpipi_rdata = (TH1D*)nmom_IMnpipi_wK0_n_rdata->ProjectionX("IMnpipi_rdata");
   TH1D* nmom_IMnpipi_wK0_n_rdata_py = (TH1D*)nmom_IMnpipi_wK0_n_rdata->ProjectionY("nmom_IMnpipi_wK0_n_rdata_py");
+  TH1D* nmom_forward_rdata = (TH1D*)nmom_cosn_wK0_n_forward_rdata->ProjectionY("nmom_forward_rdata");
   TH1D* q_rdata = (TH1D*)q_IMnpipi_wK0_n_rdata->ProjectionY("q_rdata");
   TH1D* Mompippim_rdata = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_rdata->ProjectionY("Mompippim_rdata"); 
    
@@ -63,6 +64,7 @@ void plot_K0()
   TH1D* IMpippim_nnts = (TH1D*)q_IMpippim_n_nnts->ProjectionX("IMpippim_nnts");
   TH1D* IMnpipi_nnts = (TH1D*) nmom_IMnpipi_wK0_n_nnts->ProjectionX("IMnpipi_nnts");
   TH1D* nmom_IMnpipi_wK0_n_nnts_py = (TH1D*)nmom_IMnpipi_wK0_n_nnts->ProjectionY("nmom_IMnpipi_wK0_n_nnts_py");
+  TH1D* nmom_forward_nnts = (TH1D*)nmom_cosn_wK0_n_forward_nnts->ProjectionY("nmom_forward_nnts");
   TH1D* q_nnts = (TH1D*)q_IMnpipi_wK0_n_nnts->ProjectionY("q_nnts");
   TH1D* Mompippim_nnts = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_nnts->ProjectionY("Mompippim_nnts");
   TH1D* MMnmiss_nnts = (TH1D*)MMnmiss_IMpippim_dE_nnts->ProjectionY("MMnmiss_nnts",pipimin,pipimax);
@@ -93,6 +95,7 @@ void plot_K0()
   TH1D* IMpippim_ns = (TH1D*)q_IMpippim_n_ns->ProjectionX("IMpippim_ns");
   TH1D* IMnpipi_ns = (TH1D*)nmom_IMnpipi_wK0_n_ns->ProjectionX();
   TH1D* nmom_IMnpipi_wK0_n_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_ns->ProjectionY("nmom_IMnpipi_wK0_n_ns_py"); 
+  TH1D* nmom_forward_ns = (TH1D*)nmom_cosn_wK0_n_forward_ns->ProjectionY("nmom_forward_ns");
   TH1D* q_ns = (TH1D*)q_IMnpipi_wK0_n_ns->ProjectionY("q_ns");
   TH1D* Mompippim_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_ns->ProjectionY("Mompippim_ns");
   TH1D* MMnmiss_ns = (TH1D*)MMnmiss_IMpippim_dE_ns->ProjectionY("MMnmiss_ns",pipimin,pipimax);
@@ -1017,9 +1020,6 @@ void plot_K0()
   cMom_ncds->cd();
   nmom_IMnpipi_wK0_n_rdata_py->SetMaximum(600);
   nmom_IMnpipi_wK0_n_rdata_py->Draw("HE");
-  //nmom_IMnpipi_wK0_n_ns_py->SetLineColor(2);//1NA
-  //nmom_IMnpipi_wK0_n_ns_py->Scale(scale_1NA);
-  //nmom_IMnpipi_wK0_n_ns_py->Draw("HEsame");
   nmom_1NA->SetLineColor(2);// 1NA processes with C.S scaling
   nmom_1NA->Scale(scale_1NA);
   nmom_1NA->Draw("HEsame");
@@ -1065,6 +1065,7 @@ void plot_K0()
   nmom_sum->SetLineColor(6);
   nmom_sum->Draw("HEsame");
 
+
   TLegend *tl = new TLegend(0.8,0.68,0.99,0.99);
   tl->AddEntry(nmom_IMnpipi_wK0_n_rdata_py, "real data","l");
   //tl->AddEntry(nmom_IMnpipi_wK0_n_ns_py, "1NA","l");
@@ -1078,6 +1079,74 @@ void plot_K0()
   //tl->AddEntry(nmom_pipiL_ns_sum,"1NA #pi^{+}#pi^{-}#Lambda","l");
   //tl->AddEntry(nmom_IMnpipi_wK0_n_S0pippim_ns_py,"1NA #pi^{+}#pi^{-}#Sigma^0","l");
   tl->Draw();
+   
+
+  //neutron momentum dist. w/ forward neutron
+  TCanvas *cMom_ncds_forward = new TCanvas("cMom_ncds_forward","cMom_ncds_forward");
+  cMom_ncds_forward->cd();
+  nmom_IMnpipi_wK0_n_rdata_py->SetMaximum(600);
+  nmom_IMnpipi_wK0_n_rdata_py->Draw("HE");
+  nmom_1NA->SetLineColor(2);// 1NA processes with C.S scaling
+  nmom_1NA->Scale(scale_1NA);
+  nmom_1NA->Draw("HEsame");
+  nmom_IMnpipi_wK0_n_nnts_py->SetLineColor(3);//n-n 2-step
+  nmom_IMnpipi_wK0_n_nnts_py->Scale(scale_nnts);
+  nmom_IMnpipi_wK0_n_nnts_py->Draw("HEsame");
+  nmom_IMnpipi_wK0_n_K0nn_py->Scale(scale_K0nn);//K0nn phase space
+  nmom_IMnpipi_wK0_n_K0nn_py->SetLineColor(4);
+  nmom_IMnpipi_wK0_n_K0nn_py->Draw("HEsame");
+  nmom_IMnpipi_wK0_n_Knts_py->Scale(scale_Knts);//K0-n 2-step
+  nmom_IMnpipi_wK0_n_Knts_py->SetLineColor(5);
+  nmom_IMnpipi_wK0_n_Knts_py->Draw("HEsame");
+  nmom_IMnpipi_wK0_n_Kmpts_py->Scale(scale_Knts);//K-p 2-step
+  nmom_IMnpipi_wK0_n_Kmpts_py->SetLineColor(8);
+  nmom_IMnpipi_wK0_n_Kmpts_py->Draw("HEsame");
+  nmom_IMnpipi_wK0_n_npipiL_py->Scale(scale_npipiL);//npi+pi-L phase space
+  nmom_IMnpipi_wK0_n_npipiL_py->SetLineColor(7);
+  nmom_IMnpipi_wK0_n_npipiL_py->Draw("HEsame");
+  nmom_IMnpipi_wK0_n_npipiL_ts_py->Scale(scale_npipiL_ts);//npi+pi-L two-step
+  nmom_IMnpipi_wK0_n_npipiL_ts_py->SetLineColor(9);
+  nmom_IMnpipi_wK0_n_npipiL_ts_py->Draw("HEsame");
+  //TH1D* nmom_IMnpipi_wK0_n_npipiL_py_zoom = (TH1D*)nmom_IMnpipi_wK0_n_npipiL_py->Clone("zoom1");
+  //nmom_IMnpipi_wK0_n_npipiL_py_zoom->Scale(5.0);
+  //nmom_IMnpipi_wK0_n_npipiL_py_zoom->Draw("HEsame");
+
+  //nmom_IMnpipi_wK0_n_S0pippim_ns_py->Scale(scale_1NA);
+  //nmom_IMnpipi_wK0_n_S0pippim_ns_py->SetLineColor(11);
+  //nmom_IMnpipi_wK0_n_S0pippim_ns_py->Draw("HEsame");
+  
+  //nmom_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);//npi+pi-L phase space
+  //nmom_pipiL_ns_sum->SetLineColor(9);
+  //nmom_pipiL_ns_sum->Draw("HEsame");
+  //TH1D* nmom_pipiL_ns_sum_zoom = (TH1D*)nmom_pipiL_ns_sum->Clone("zoom2");
+  //nmom_pipiL_ns_sum_zoom->Scale(5.0);
+  //nmom_pipiL_ns_sum_zoom->Draw("HEsame");
+  //TH1D* nmom_sum = (TH1D*)nmom_IMnpipi_wK0_n_ns_py->Clone("nmom_sum");
+  TH1D* nmom_sum = (TH1D*)nmom_1NA->Clone("nmom_sum");
+  //nmom_sum->Add(nmom_IMnpipi_wK0_n_nnts_py);
+  nmom_sum->Add(nmom_IMnpipi_wK0_n_K0nn_py);
+  nmom_sum->Add(nmom_IMnpipi_wK0_n_Knts_py);
+  nmom_sum->Add(nmom_IMnpipi_wK0_n_Kmpts_py);
+  nmom_sum->Add(nmom_IMnpipi_wK0_n_npipiL_py);//2NA phase space
+  nmom_sum->SetLineColor(6);
+  nmom_sum->Draw("HEsame");
+
+
+  TLegend *tl = new TLegend(0.8,0.68,0.99,0.99);
+  tl->AddEntry(nmom_IMnpipi_wK0_n_rdata_py, "real data","l");
+  //tl->AddEntry(nmom_IMnpipi_wK0_n_ns_py, "1NA","l");
+  tl->AddEntry(nmom_1NA, "1NA","l");
+  tl->AddEntry(nmom_IMnpipi_wK0_n_nnts_py, "two step n-n scat.","l");
+  tl->AddEntry(nmom_IMnpipi_wK0_n_K0nn_py, "K0nn phase space","l");
+  tl->AddEntry(nmom_IMnpipi_wK0_n_Knts_py, "K-p->K0n, K0n->K0n","l");
+  tl->AddEntry(nmom_IMnpipi_wK0_n_Kmpts_py, "K-n->K-n, K-p->K0n","l");
+  tl->AddEntry(nmom_IMnpipi_wK0_n_npipiL_py,"2NA n#pi^{+}#pi^{-}#Lambda phase space","l");
+  tl->AddEntry(nmom_IMnpipi_wK0_n_npipiL_ts_py," n#pi^{+}#pi^{-}#Lambda two-step","l");
+  //tl->AddEntry(nmom_pipiL_ns_sum,"1NA #pi^{+}#pi^{-}#Lambda","l");
+  //tl->AddEntry(nmom_IMnpipi_wK0_n_S0pippim_ns_py,"1NA #pi^{+}#pi^{-}#Sigma^0","l");
+  tl->Draw();
+
+
 
   //K0 momentum dist.
   TCanvas *cMom_K0 = new TCanvas("cMom_K0","cMom_K0");
