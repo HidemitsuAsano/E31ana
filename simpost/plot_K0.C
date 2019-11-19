@@ -526,9 +526,27 @@ void plot_K0()
   nmom_cosn_wK0_n_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);  
   nmom_cosn_wK0_n_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);  
   nmom_cosn_wK0_n_pipiL_ns->Scale(cs_pipiL_ns);    
+  nmom_cosn_wK0_n_forward_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);  
+  nmom_cosn_wK0_n_forward_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);  
+  nmom_cosn_wK0_n_forward_pipiL_ns->Scale(cs_pipiL_ns);    
+  nmom_cosK0_wK0_n_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  nmom_cosK0_wK0_n_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  nmom_cosK0_wK0_n_pipiL_ns->Scale(cs_pipiL_ns);
+  nmom_cosK0n_wK0_n_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  nmom_cosK0n_wK0_n_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  nmom_cosK0n_wK0_n_pipiL_ns->Scale(cs_pipiL_ns);
+  nmom_cosnnmiss_wK0_n_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  nmom_cosnnmiss_wK0_n_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  nmom_cosnnmiss_wK0_n_pipiL_ns->Scale(cs_pipiL_ns);
+  K0mom_cosK0_wK0_n_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  K0mom_cosK0_wK0_n_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  K0mom_cosK0_wK0_n_pipiL_ns->Scale(cs_pipiL_ns);
   nmissmom_cosnmiss_wK0_n_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);   
   nmissmom_cosnmiss_wK0_n_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);   
   nmissmom_cosnmiss_wK0_n_pipiL_ns->Scale(cs_pipiL_ns);     
+  nmissmom_cosK0nmiss_wK0_n_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);   
+  nmissmom_cosK0nmiss_wK0_n_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);   
+  nmissmom_cosK0nmiss_wK0_n_pipiL_ns->Scale(cs_pipiL_ns);   
   nmom_K0mom_n_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);
   nmom_K0mom_n_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);
   nmom_K0mom_n_pipiL_ns->Scale(cs_pipiL_ns);
@@ -609,16 +627,24 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_pipiL_ns_sum = (TH2F*)nmom_cosn_wK0_n_pipS1385m_ns->Clone("nmom_cosn_wK0_n_pipiL_ns_sum");
   nmom_cosn_wK0_n_pipiL_ns_sum->Add(nmom_cosn_wK0_n_pimS1385p_ns);
   nmom_cosn_wK0_n_pipiL_ns_sum->Add(nmom_cosn_wK0_n_pipiL_ns);
-  
+
+  TCanvas *cnmom_cosn_wK0_n_pipiL_ns_sum = new TCanvas("cnmom_cosn_wK0_n_pipiL_ns_sum","nmom_cosn_wK0_n_pipiL_ns_sum");
+  cnmom_cosn_wK0_n_pipiL_ns_sum->cd();
+  nmom_cosn_wK0_n_pipiL_ns_sum->Draw("colz");
+
   TH2F* nmom_cosn_wK0_n_forward_pipiL_ns_sum = (TH2F*) nmom_cosn_wK0_n_forward_pipS1385m_ns->Clone("nmom_cosn_wK0_n_forward_pipiL_ns_sum");
   nmom_cosn_wK0_n_forward_pipiL_ns_sum->Add(nmom_cosn_wK0_n_forward_pimS1385p_ns);
   nmom_cosn_wK0_n_forward_pipiL_ns_sum->Add(nmom_cosn_wK0_n_forward_pipiL_ns);
+  
+  TCanvas *cnmom_cosn_wK0_n_forward_pipiL_ns_sum = new TCanvas("cnmom_cosn_wK0_n_forward_pipiL_ns_sum","nmom_cosn_wK0_n_forward_pipiL_ns_sum");
+  cnmom_cosn_wK0_n_forward_pipiL_ns_sum->cd();
+  nmom_cosn_wK0_n_forward_pipiL_ns_sum->Draw("colz");
 
   TH2F* nmom_cosK0_wK0_n_pipiL_ns_sum = (TH2F*)nmom_cosK0_wK0_n_pipS1385m_ns->Clone("nmom_cosK0_wK0_n_pipiL_ns_sum");
   nmom_cosK0_wK0_n_pipiL_ns_sum->Add(nmom_cosK0_wK0_n_pimS1385p_ns);
   nmom_cosK0_wK0_n_pipiL_ns_sum->Add(nmom_cosK0_wK0_n_pipiL_ns);
   
-  TH2F* nmom_cosK0n_wK0_n_pipiL_ns_sum = (TH2F*)nmom_cosK0n_wK0_n_pipS1385m_ns->Clone("nmom_cosK0n_wK0_n_pipiL_ns");
+  TH2F* nmom_cosK0n_wK0_n_pipiL_ns_sum = (TH2F*)nmom_cosK0n_wK0_n_pipS1385m_ns->Clone("nmom_cosK0n_wK0_n_pipiL_ns_sum");
   nmom_cosK0n_wK0_n_pipiL_ns_sum->Add(nmom_cosK0n_wK0_n_pimS1385p_ns);
   nmom_cosK0n_wK0_n_pipiL_ns_sum->Add(nmom_cosK0n_wK0_n_pipiL_ns);
 
@@ -630,14 +656,33 @@ void plot_K0()
   K0mom_cosK0_wK0_n_pipiL_ns_sum->Add(K0mom_cosK0_wK0_n_pimS1385p_ns);
   K0mom_cosK0_wK0_n_pipiL_ns_sum->Add(K0mom_cosK0_wK0_n_pipiL_ns);
   
+  TCanvas *cK0mom_cosK0_wK0_n_pipiL_ns_sum = new TCanvas("cK0mom_cosK0_wK0_n_pipiL_ns_sum","cK0mom_cosK0_wK0_n_pipiL_ns_sum");
+  cK0mom_cosK0_wK0_n_pipiL_ns_sum->cd();
+  K0mom_cosK0_wK0_n_pipiL_ns_sum->Draw("colz");
+
+
   TH2F* nmissmom_cosnmiss_wK0_n_pipiL_ns_sum = (TH2F*)nmissmom_cosnmiss_wK0_n_pipS1385m_ns->Clone("nmissmom_cosnmiss_wK0_n_pipiL_ns_sum");
   nmissmom_cosnmiss_wK0_n_pipiL_ns_sum->Add(nmissmom_cosnmiss_wK0_n_pimS1385p_ns);
   nmissmom_cosnmiss_wK0_n_pipiL_ns_sum->Add(nmissmom_cosnmiss_wK0_n_pipiL_ns);
 
-  TH2F*
+  TH2F* nmissmom_cosK0nmiss_wK0_n_pipiL_ns_sum = (TH2F*)nmissmom_cosK0nmiss_wK0_n_pipS1385m_ns->Clone("nmissmom_cosK0nmiss_wK0_n_pipiL_ns_sum");
+  nmissmom_cosK0nmiss_wK0_n_pipiL_ns_sum->Add(nmissmom_cosK0nmiss_wK0_n_pimS1385p_ns);
+  nmissmom_cosK0nmiss_wK0_n_pipiL_ns_sum->Add(nmissmom_cosK0nmiss_wK0_n_pipiL_ns);
 
-  
-  
+  TH2F* nmom_K0mom_n_pipiL_ns_sum = (TH2F*) nmom_K0mom_n_pipS1385m_ns->Clone("nmom_K0mom_n_pipiL_ns_sum");
+  nmom_K0mom_n_pipiL_ns_sum->Add(nmom_K0mom_n_pimS1385p_ns);
+  nmom_K0mom_n_pipiL_ns_sum->Add(nmom_K0mom_n_pipiL_ns);
+
+  TH2F* nmissmom_K0mom_n_pipiL_ns_sum = (TH2F*) nmissmom_K0mom_n_pipS1385m_ns->Clone("nmissmom_K0mom_n_pipiL_ns_sum");
+  nmissmom_K0mom_n_pipiL_ns_sum->Add(nmissmom_K0mom_n_pimS1385p_ns);
+  nmissmom_K0mom_n_pipiL_ns_sum->Add(nmissmom_K0mom_n_pipiL_ns);
+
+  TH2F* nmom_nmissmom_wK0_n_pipiL_ns_sum = (TH2F*) nmom_nmissmom_wK0_n_pipS1385m_ns->Clone("nmom_nmissmom_wK0_n_pipiL_ns_sum");
+  nmom_nmissmom_wK0_n_pipiL_ns_sum->Add(nmom_nmissmom_wK0_n_pimS1385p_ns);
+  nmom_nmissmom_wK0_n_pipiL_ns_sum->Add(nmom_nmissmom_wK0_n_pipiL_ns);
+ 
+   
+
   //
   //Forward Sigma (1NA) cocktail 
   //
@@ -648,10 +693,22 @@ void plot_K0()
   Mompippim_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns);
   MMnmiss_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns);
   MMnmiss_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns);
-  nmom_cosn_wK0_n_pipS1385m_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns);  
-  nmom_cosn_wK0_n_pimS1385p_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns);  
+  nmom_cosn_wK0_n_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns);  
+  nmom_cosn_wK0_n_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns);  
+  nmom_cosn_wK0_n_forward_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns);  
+  nmom_cosn_wK0_n_forward_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns);  
+  nmom_cosK0_wK0_n_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns); 
+  nmom_cosK0_wK0_n_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns); 
+  nmom_cosK0n_wK0_n_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns); 
+  nmom_cosK0n_wK0_n_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns); 
+  nmom_cosnnmiss_wK0_n_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns); 
+  nmom_cosnnmiss_wK0_n_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns); 
+  K0mom_cosK0_wK0_n_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns); 
+  K0mom_cosK0_wK0_n_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns); 
   nmissmom_cosnmiss_wK0_n_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns);   
   nmissmom_cosnmiss_wK0_n_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns);   
+  nmissmom_cosK0nmiss_wK0_n_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns);   
+  nmissmom_cosK0nmiss_wK0_n_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns);   
   nmom_K0mom_n_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns);
   nmom_K0mom_n_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns);
   nmissmom_K0mom_n_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns);
@@ -698,7 +755,7 @@ void plot_K0()
   
   TH1D* nmom_fSigma_ns_sum = (TH1D*) nmom_IMnpipi_wK0_n_Sppim_ns_py->Clone("nmom_fSigma_ns_sum");
   nmom_fSigma_ns_sum->Add(nmom_IMnpipi_wK0_n_Smpip_ns_py);
-  
+
   TH1D* q_fSigma_ns_sum = (TH1D*)q_Sppim_ns->Clone("q_fSigma_ns_sum");
   q_fSigma_ns_sum->Add(q_Smpip_ns);
   
@@ -708,6 +765,38 @@ void plot_K0()
   TH1D* MMnmiss_fSigma_ns_sum = (TH1D*)MMnmiss_Sppim_ns->Clone("MMnmiss_fSigma_ns_sum");
   MMnmiss_fSigma_ns_sum->Add(MMnmiss_Smpip_ns);
   
+  TH2F* nmom_cosn_wK0_n_fSigma_ns_sum = (TH2F*)nmom_cosn_wK0_n_Sppim_ns->Clone("nmom_cosn_wK0_n_fSigma_ns_sum");
+  nmom_cosn_wK0_n_fSigma_ns_sum->Add(nmom_cosn_wK0_n_Smpip_ns);
+  
+  TH2F* nmom_cosn_wK0_n_forward_fSigma_ns_sum = (TH2F*) nmom_cosn_wK0_n_forward_Sppim_ns->Clone("nmom_cosn_wK0_n_forward_fSigma_ns_sum");
+  nmom_cosn_wK0_n_forward_fSigma_ns_sum->Add(nmom_cosn_wK0_n_forward_Smpip_ns);
+
+  TH2F* nmom_cosK0_wK0_n_fSigma_ns_sum = (TH2F*)nmom_cosK0_wK0_n_Sppim_ns->Clone("nmom_cosK0_wK0_n_fSigma_ns_sum");
+  nmom_cosK0_wK0_n_fSigma_ns_sum->Add(nmom_cosK0_wK0_n_Smpip_ns);
+  
+  TH2F* nmom_cosK0n_wK0_n_fSigma_ns_sum = (TH2F*)nmom_cosK0n_wK0_n_Sppim_ns->Clone("nmom_cosK0n_wK0_n_fSigma_ns");
+  nmom_cosK0n_wK0_n_fSigma_ns_sum->Add(nmom_cosK0n_wK0_n_Smpip_ns);
+
+  TH2F* nmom_cosnnmiss_wK0_n_fSigma_ns_sum = (TH2F*)nmom_cosnnmiss_wK0_n_Sppim_ns->Clone("nmom_cosnnmiss_wK0_n_fSigma_ns_sum");
+  nmom_cosnnmiss_wK0_n_fSigma_ns_sum->Add(nmom_cosnnmiss_wK0_n_Smpip_ns);
+   
+  TH2F* K0mom_cosK0_wK0_n_fSigma_ns_sum = (TH2F*)K0mom_cosK0_wK0_n_Sppim_ns->Clone("K0mom_cosK0_wK0_n_fSigma_ns_sum");
+  K0mom_cosK0_wK0_n_fSigma_ns_sum->Add(K0mom_cosK0_wK0_n_Smpip_ns);
+  
+  TH2F* nmissmom_cosnmiss_wK0_n_fSigma_ns_sum = (TH2F*)nmissmom_cosnmiss_wK0_n_Sppim_ns->Clone("nmissmom_cosnmiss_wK0_n_fSigma_ns_sum");
+  nmissmom_cosnmiss_wK0_n_fSigma_ns_sum->Add(nmissmom_cosnmiss_wK0_n_Smpip_ns);
+
+  TH2F* nmissmom_cosK0nmiss_wK0_n_fSigma_ns_sum = (TH2F*)nmissmom_cosK0nmiss_wK0_n_Sppim_ns->Clone("nmissmom_cosK0nmiss_wK0_n_fSigma_ns_sum");
+  nmissmom_cosK0nmiss_wK0_n_fSigma_ns_sum->Add(nmissmom_cosK0nmiss_wK0_n_Smpip_ns);
+
+  TH2F* nmom_K0mom_n_fSigma_ns_sum = (TH2F*) nmom_K0mom_n_Sppim_ns->Clone("nmom_K0mom_n_fSigma_ns_sum");
+  nmom_K0mom_n_fSigma_ns_sum->Add(nmom_K0mom_n_Smpip_ns);
+
+  TH2F* nmissmom_K0mom_n_fSigma_ns_sum = (TH2F*) nmissmom_K0mom_n_Sppim_ns->Clone("nmissmom_K0mom_n_fSigma_ns_sum");
+  nmissmom_K0mom_n_fSigma_ns_sum->Add(nmissmom_K0mom_n_Smpip_ns);
+
+  TH2F* nmom_nmissmom_wK0_n_fSigma_ns_sum = (TH2F*) nmom_nmissmom_wK0_n_Sppim_ns->Clone("nmom_nmissmom_wK0_n_fSigma_ns_sum");
+  nmom_nmissmom_wK0_n_fSigma_ns_sum->Add(nmom_nmissmom_wK0_n_Smpip_ns);
 
   //
   //1 NA cocktail 
@@ -721,7 +810,12 @@ void plot_K0()
   Mompippim_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns); 
   MMnmiss_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns);
   nmom_cosn_wK0_n_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns);  
+  nmom_cosn_wK0_n_forward_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns);  
+  nmom_cosK0_wK0_n_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns);  
+  nmom_cosK0n_wK0_n_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns);  
+  K0mom_cosK0_wK0_n_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns);  
   nmissmom_cosnmiss_wK0_n_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns);   
+  nmissmom_cosK0nmiss_wK0_n_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns);   
   nmom_K0mom_n_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns);
   nmissmom_K0mom_n_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns);
   nmom_nmissmom_wK0_n_ns->Scale(cs_ns/ngen_K0n_ns*ngen_pipiL_ns);   
@@ -734,7 +828,13 @@ void plot_K0()
   Mompippim_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns); 
   MMnmiss_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
   nmom_cosn_wK0_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);  
+  nmom_cosn_wK0_n_forward_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);  
+  nmom_cosK0_wK0_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
+  nmom_cosK0n_wK0_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
+  nmom_cosnnmiss_wK0_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
+  K0mom_cosK0_wK0_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
   nmissmom_cosnmiss_wK0_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);   
+  nmissmom_cosK0nmiss_wK0_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);   
   nmom_K0mom_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
   nmissmom_K0mom_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
   nmom_nmissmom_wK0_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);   
@@ -746,11 +846,17 @@ void plot_K0()
   q_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns); 
   Mompippim_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns); 
   MMnmiss_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
-  nmom_cosn_wK0_n_L1520pi0_ns->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);  
-  nmissmom_cosnmiss_wK0_n_L1520pi0_ns->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);   
-  nmom_K0mom_n_L1520pi0_ns->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
-  nmissmom_K0mom_n_L1520pi0_ns->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
-  nmom_nmissmom_wK0_n_L1520pi0_ns->Scale(cs_S0pipi_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);   
+  nmom_cosn_wK0_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);  
+  nmom_cosn_wK0_n_forward_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);  
+  nmom_cosK0_wK0_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns); 
+  nmom_cosK0n_wK0_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns); 
+  nmom_cosnnmiss_wK0_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns); 
+  K0mom_cosK0_wK0_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);   
+  nmissmom_cosnmiss_wK0_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);   
+  nmissmom_cosK0nmiss_wK0_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);   
+  nmom_K0mom_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
+  nmissmom_K0mom_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);
+  nmom_nmissmom_wK0_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);   
 
   
   //adding 1NA process after scaling 
@@ -1216,11 +1322,8 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_1NA = (TH2F*)nmom_cosn_wK0_n_ns->Clone("nmom_cosn_wK0_n_1NA");
   nmom_cosn_wK0_n_1NA->Add(nmom_cosn_wK0_n_S0pippim_ns);
   nmom_cosn_wK0_n_1NA->Add(nmom_cosn_wK0_n_L1520pi0_ns);
-  nmom_cosn_wK0_n_1NA->Add(nmom_cosn_wK0_n_Sppim_ns);
-  nmom_cosn_wK0_n_1NA->Add(nmom_cosn_wK0_n_Smpip_ns);
-  nmom_cosn_wK0_n_1NA->Add(nmom_cosn_wK0_n_pipS1385m_ns);
-  nmom_cosn_wK0_n_1NA->Add(nmom_cosn_wK0_n_pimS1385p_ns);
-  nmom_cosn_wK0_n_1NA->Add(nmom_cosn_wK0_n_pipiL_ns);
+  nmom_cosn_wK0_n_1NA->Add(nmom_cosn_wK0_n_fSigma_ns_sum);
+  nmom_cosn_wK0_n_1NA->Add(nmom_cosn_wK0_n_pipiL_ns_sum);
   nmom_cosn_wK0_n_1NA->SetYTitle("nCDS mom. [GeV/c]");   
   nmom_cosn_wK0_n_1NA->SetXTitle("nCDS cos#theta_cm");   
   nmom_cosn_wK0_n_1NA->Scale(scale_1NA);
@@ -1249,11 +1352,8 @@ void plot_K0()
   TH2F* nmom_K0mom_n_1NA = (TH2F*)nmom_K0mom_n_ns->Clone("nmom_K0mom_n_1NA");
   nmom_K0mom_n_1NA->Add(nmom_K0mom_n_S0pippim_ns);
   nmom_K0mom_n_1NA->Add(nmom_K0mom_n_L1520pi0_ns);
-  nmom_K0mom_n_1NA->Add(nmom_K0mom_n_Sppim_ns);
-  nmom_K0mom_n_1NA->Add(nmom_K0mom_n_Smpip_ns);
-  nmom_K0mom_n_1NA->Add(nmom_K0mom_n_pipS1385m_ns);
-  nmom_K0mom_n_1NA->Add(nmom_K0mom_n_pimS1385p_ns);
-  nmom_K0mom_n_1NA->Add(nmom_K0mom_n_pipiL_ns);
+  nmom_K0mom_n_1NA->Add(nmom_K0mom_n_fSigma_ns_sum);
+  nmom_K0mom_n_1NA->Add(nmom_K0mom_n_pipiL_ns_sum);
   nmom_K0mom_n_1NA->Scale(scale_1NA);
   nmom_K0mom_n_1NA->SetXTitle("K0 mom. [GeV/c]");
   nmom_K0mom_n_1NA->SetYTitle("nCDS mom. [GeV/c]");
@@ -1276,11 +1376,8 @@ void plot_K0()
   TH2F* nmom_nmissmom_wK0_n_1NA = (TH2F*)nmom_nmissmom_wK0_n_ns->Clone("nmom_nmissmom_wK0_n_1NA");
   nmom_nmissmom_wK0_n_1NA->Add(nmom_nmissmom_wK0_n_S0pippim_ns);    
   nmom_nmissmom_wK0_n_1NA->Add(nmom_nmissmom_wK0_n_L1520pi0_ns);    
-  nmom_nmissmom_wK0_n_1NA->Add(nmom_nmissmom_wK0_n_Sppim_ns);    
-  nmom_nmissmom_wK0_n_1NA->Add(nmom_nmissmom_wK0_n_Smpip_ns);    
-  nmom_nmissmom_wK0_n_1NA->Add(nmom_nmissmom_wK0_n_pipS1385m_ns);    
-  nmom_nmissmom_wK0_n_1NA->Add(nmom_nmissmom_wK0_n_pimS1385p_ns);    
-  nmom_nmissmom_wK0_n_1NA->Add(nmom_nmissmom_wK0_n_pipiL_ns);    
+  nmom_nmissmom_wK0_n_1NA->Add(nmom_nmissmom_wK0_n_fSigma_ns_sum);    
+  nmom_nmissmom_wK0_n_1NA->Add(nmom_nmissmom_wK0_n_pipiL_ns_sum);    
   nmom_nmissmom_wK0_n_1NA->Scale(scale_1NA);    
   nmom_nmissmom_wK0_n_1NA->SetXTitle("Miss. Mom. [GeV/c]");
   nmom_nmissmom_wK0_n_1NA->SetYTitle("nCDS mom. [GeV/c]");
