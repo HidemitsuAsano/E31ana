@@ -130,6 +130,7 @@ void plot_K0()
   TH1D* IMpippim_K0nn = (TH1D*)q_IMpippim_n_K0nn->ProjectionX("IMpippim_K0nn");
   TH1D* IMnpipi_K0nn = (TH1D*)nmom_IMnpipi_wK0_n_K0nn->ProjectionX("IMnpipi_K0nn");
   TH1D* nmom_IMnpipi_wK0_n_K0nn_py = (TH1D*)nmom_IMnpipi_wK0_n_K0nn->ProjectionY("nmom_IMnpipi_wK0_n_K0nn_py");
+  TH1D* nmom_forward_K0nn = (TH1D*)nmom_cosn_wK0_n_forward_K0nn->ProjectionY("nmom_forward_K0nn");
   TH1D* q_K0nn = (TH1D*)q_IMnpipi_wK0_n_K0nn->ProjectionY("q_K0nn");
   TH1D* Mompippim_K0nn = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_K0nn->ProjectionY("Mompippim_K0nn");
   TH1D* MMnmiss_K0nn = (TH1D*)MMnmiss_IMpippim_dE_K0nn->ProjectionY("MMnmiss_K0nn",pipimin,pipimax);
@@ -157,6 +158,7 @@ void plot_K0()
   TH1D* IMpippim_Knts = (TH1D*)q_IMpippim_n_Knts->ProjectionX("IMpippim_Knts");
   TH1D* IMnpipi_Knts = (TH1D*)nmom_IMnpipi_wK0_n_Knts->ProjectionX("IMnpipi_Knts");
   TH1D* nmom_IMnpipi_wK0_n_Knts_py = (TH1D*)nmom_IMnpipi_wK0_n_Knts->ProjectionY("nmom_IMnpipi_wK0_n_Knts_py");
+  TH1D* nmom_forward_Knts = (TH1D*)nmom_cosn_wK0_n_forward_Knts->ProjectionY("nmom_forward_Knts");
   TH1D* q_Knts = q_IMnpipi_wK0_n_Knts->ProjectionY("q_Knts");
   TH1D* Mompippim_Knts = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_Knts->ProjectionY("Mompippim_Knts");
   TH1D* MMnmiss_Knts = (TH1D*)MMnmiss_IMpippim_dE_Knts->ProjectionY("MMnmiss_Knts",pipimin,pipimax);
@@ -184,6 +186,7 @@ void plot_K0()
   TH1D* IMpippim_Kmpts = (TH1D*)q_IMpippim_n_Kmpts->ProjectionX("IMpippim_Kmpts");
   TH1D* IMnpipi_Kmpts = (TH1D*)nmom_IMnpipi_wK0_n_Kmpts->ProjectionX("IMnpipi_Kmpts");
   TH1D* nmom_IMnpipi_wK0_n_Kmpts_py = (TH1D*)nmom_IMnpipi_wK0_n_Kmpts->ProjectionY("nmom_IMnpipi_wK0_n_Kmpts_py");
+  TH1D* nmom_forward_Kmpts = (TH1D*)nmom_cosn_wK0_n_forward_Kmpts->ProjectionY("nmom_forward_Kmpts");
   TH1D* q_Kmpts = q_IMnpipi_wK0_n_Kmpts->ProjectionY("q_Kmpts");
   TH1D* Mompippim_Kmpts = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_Kmpts->ProjectionY("Mompippim_Kmpts");
   TH1D* MMnmiss_Kmpts = (TH1D*)MMnmiss_IMpippim_dE_Kmpts->ProjectionY("MMnmiss_Kmpts",pipimin,pipimax);
@@ -211,6 +214,7 @@ void plot_K0()
   TH1D* IMpippim_npipiL = (TH1D*)q_IMpippim_n_npipiL->ProjectionX("IMpippim_npipiL");
   TH1D* IMnpipi_npipiL = (TH1D*)nmom_IMnpipi_wK0_n_npipiL->ProjectionX("IMnpipi_npipiL");
   TH1D* nmom_IMnpipi_wK0_n_npipiL_py = (TH1D*)nmom_IMnpipi_wK0_n_npipiL->ProjectionY("nmom_IMnpipi_wK0_n_npipiL_py");
+  TH1D* nmom_forward_npipiL = (TH1D*)nmom_cosn_wK0_n_forward_npipiL->ProjectionY("nmom_forward_npipiL");
   TH1D* q_npipiL = (TH1D*)q_IMnpipi_wK0_n_npipiL->ProjectionY("q_npipiL");
   TH1D* Mompippim_npipiL = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_npipiL->ProjectionY("Mompippim_npipiL");
   TH1D* MMnmiss_npipiL = (TH1D*)MMnmiss_IMpippim_dE_npipiL->ProjectionY("MMnmiss_npipiL",pipimin,pipimax);
@@ -238,6 +242,7 @@ void plot_K0()
   TH1D* IMpippim_pipiL_ns = (TH1D*)q_IMpippim_n_pipiL_ns->ProjectionX("IMpippim_pipiL_ns");
   TH1D* IMnpipi_pipiL_ns = (TH1D*)nmom_IMnpipi_wK0_n_pipiL_ns->ProjectionX("IMnpipi_pipiL_ns");
   TH1D* nmom_IMnpipi_wK0_n_pipiL_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_pipiL_ns->ProjectionY("nmom_IMnpipi_wK0_n_pipiL_ns_py");
+  TH1D* nmom_forward_pipiL_ns = (TH1D*)nmom_cosn_wK0_n_forward_pipiL_ns->ProjectionY("nmom_forward_pipiL_ns");
   TH1D* q_pipiL_ns = (TH1D*)q_IMnpipi_wK0_n_pipiL_ns->ProjectionY("q_pipiL_ns");
   TH1D* Mompippim_pipiL_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_pipiL_ns->ProjectionY("Mompippim_pipiL_ns");
   TH1D* MMnmiss_pipiL_ns = (TH1D*)MMnmiss_IMpippim_dE_pipiL_ns->ProjectionY("MMnmiss_pipiL_ns",pipimin,pipimax);
@@ -270,6 +275,7 @@ void plot_K0()
   TH1D* IMpippim_pipS1385m_ns = (TH1D*)q_IMpippim_n_pipS1385m_ns->ProjectionX("IMpippim_pipS1385m_ns");
   TH1D* IMnpipi_pipS1385m_ns = (TH1D*)nmom_IMnpipi_wK0_n_pipS1385m_ns->ProjectionX("IMnpipi_pipS1385m_ns");
   TH1D* nmom_IMnpipi_wK0_n_pipS1385m_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_pipS1385m_ns->ProjectionY("nmom_IMnpipi_wK0_n_pipS1385m_ns_py");
+  TH1D* nmom_forward_pipS1385m_ns = (TH1D*)nmom_cosn_wK0_n_forward_pipS1385m_ns->ProjectionY("nmom_forward_pipS1385m_ns");
   TH1D* q_pipS1385m_ns = (TH1D*)q_IMnpipi_wK0_n_pipS1385m_ns->ProjectionY("q_pipS1385m_ns");
   TH1D* Mompippim_pipS1385m_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_pipS1385m_ns->ProjectionY("Mompippim_pipS1385m_ns");
   TH1D* MMnmiss_pipS1385m_ns = (TH1D*)MMnmiss_IMpippim_dE_pipS1385m_ns->ProjectionY("MMnmiss_pipS1385m_ns",pipimin,pipimax);
@@ -302,6 +308,7 @@ void plot_K0()
   TH1D* IMpippim_pimS1385p_ns = (TH1D*) q_IMpippim_n_pimS1385p_ns->ProjectionX("IMpippim_pimS1385p_ns");
   TH1D* IMnpipi_pimS1385p_ns = (TH1D*) nmom_IMnpipi_wK0_n_pimS1385p_ns->ProjectionX("IMnpipi_pimS1385p_ns");
   TH1D* nmom_IMnpipi_wK0_n_pimS1385p_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_pimS1385p_ns->ProjectionY("nmom_IMnpipi_wK0_n_pimS1385p_ns_py");
+  TH1D* nmom_forward_pimS1385p_ns = (TH1D*)nmom_cosn_wK0_n_forward_pimS1385p_ns->ProjectionY("nmom_forward_pimS1385p_ns");
   TH1D* q_pimS1385p_ns = (TH1D*)q_IMnpipi_wK0_n_pimS1385p_ns->ProjectionY("q_pimS1385p_ns");
   TH1D* Mompippim_pimS1385p_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_pimS1385p_ns->ProjectionY("Mompippim_pimS1385p_ns");
   TH1D* MMnmiss_pimS1385p_ns = (TH1D*)MMnmiss_IMpippim_dE_pimS1385p_ns->ProjectionY("MMnmiss_pimS1385p_ns",pipimin,pipimax);
@@ -334,6 +341,7 @@ void plot_K0()
   TH1D* IMpippim_S0pippim_ns = (TH1D*)q_IMpippim_n_S0pippim_ns->ProjectionX("IMpippim_S0pippim_ns");
   TH1D* IMnpipi_S0pippim_ns = (TH1D*)nmom_IMnpipi_wK0_n_S0pippim_ns->ProjectionX("IMnpipi_S0pippim_ns");
   TH1D* nmom_IMnpipi_wK0_n_S0pippim_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_S0pippim_ns->ProjectionY("nmom_IMnpipi_wK0_n_S0pippim_ns_py");
+  TH1D* nmom_forward_S0pippim_ns = (TH1D*)nmom_cosn_wK0_n_forward_S0pippim_ns->ProjectionY("nmom_forward_S0pippim_ns");
   TH1D* q_S0pippim_ns = (TH1D*)q_IMnpipi_wK0_n_S0pippim_ns->ProjectionY("q_S0pippim_ns");
   TH1D* Mompippim_S0pippim_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_S0pippim_ns->ProjectionY("Mompippim_S0pippim_ns");
   TH1D* MMnmiss_S0pippim_ns = (TH1D*)MMnmiss_IMpippim_dE_S0pippim_ns->ProjectionY("MMnmiss_S0pippim_ns",pipimin,pipimax);
@@ -366,6 +374,7 @@ void plot_K0()
   TH1D* IMpippim_L1520pi0_ns = (TH1D*)q_IMpippim_n_L1520pi0_ns->ProjectionX("IMpippim_L1520pi0_ns");
   TH1D* IMnpipi_L1520pi0_ns = (TH1D*)nmom_IMnpipi_wK0_n_L1520pi0_ns->ProjectionX("IMnpipi_L1520pi0_ns");
   TH1D* nmom_IMnpipi_wK0_n_L1520pi0_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_L1520pi0_ns->ProjectionY("nmom_IMnpipi_wK0_n_L1520pi0_ns_py");
+  TH1D* nmom_forward_L1520pi0_ns = (TH1D*)nmom_cosn_wK0_n_forward_L1520pi0_ns->ProjectionY("nmom_forward_L1520pi0_ns");
   TH1D* q_L1520pi0_ns = (TH1D*)q_IMnpipi_wK0_n_L1520pi0_ns->ProjectionY("q_L1520pi0_ns");
   TH1D* Mompippim_L1520pi0_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_L1520pi0_ns->ProjectionY("Mompippim_L1520pi0_ns");
   TH1D* MMnmiss_L1520pi0_ns = (TH1D*)MMnmiss_IMpippim_dE_L1520pi0_ns->ProjectionY("MMnmiss_L1520pi0_ns",pipimin,pipimax);
@@ -399,6 +408,7 @@ void plot_K0()
   TH1D* IMpippim_Sppim_ns = (TH1D*)q_IMpippim_n_Sppim_ns->ProjectionX("IMpippim_Sppim_ns");
   TH1D* IMnpipi_Sppim_ns = (TH1D*)nmom_IMnpipi_wK0_n_Sppim_ns->ProjectionX("IMnpipi_Sppim_ns");
   TH1D* nmom_IMnpipi_wK0_n_Sppim_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_Sppim_ns->ProjectionY("nmom_IMnpipi_wK0_n_Sppim_ns_py");
+  TH1D* nmom_forward_Sppim_ns = (TH1D*)nmom_cosn_wK0_n_forward_Sppim_ns->ProjectionY("nmom_forward_Sppim_ns");
   TH1D* q_Sppim_ns = (TH1D*)q_IMnpipi_wK0_n_Sppim_ns->ProjectionY("q_Sppim_ns");
   TH1D* Mompippim_Sppim_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_Sppim_ns->ProjectionY("Mompippim_Sppim_ns");
   TH1D* MMnmiss_Sppim_ns = (TH1D*)MMnmiss_IMpippim_dE_Sppim_ns->ProjectionY("MMnmiss_Sppim_ns",pipimin,pipimax);
@@ -431,6 +441,7 @@ void plot_K0()
   TH1D* IMpippim_Smpip_ns = (TH1D*)q_IMpippim_n_Smpip_ns->ProjectionX("IMpippim_Smpip_ns");
   TH1D* IMnpipi_Smpip_ns = (TH1D*)nmom_IMnpipi_wK0_n_Smpip_ns->ProjectionX("IMnpipi_Smpip_ns");
   TH1D* nmom_IMnpipi_wK0_n_Smpip_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_Smpip_ns->ProjectionY("nmom_IMnpipi_wK0_n_Smpip_ns_py");
+  TH1D* nmom_forward_Smpip_ns = (TH1D*)nmom_cosn_wK0_n_forward_Smpip_ns->ProjectionY("nmom_forward_Smpip_ns");
   TH1D* q_Smpip_ns = (TH1D*)q_IMnpipi_wK0_n_Smpip_ns->ProjectionY("q_Smpip_ns");
   TH1D* Mompippim_Smpip_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_Smpip_ns->ProjectionY("Mompippim_Smpip_ns");
   TH1D* MMnmiss_Smpip_ns = (TH1D*)MMnmiss_IMpippim_dE_Smpip_ns->ProjectionY("MMnmiss_Smpip_ns",pipimin,pipimax);
@@ -463,6 +474,7 @@ void plot_K0()
   TH1D* IMpippim_npipiL_ts = (TH1D*)q_IMpippim_n_npipiL_ts->ProjectionX("IMpippim_npipiL_ts");
   TH1D* IMnpipi_npipiL_ts = (TH1D*)nmom_IMnpipi_wK0_n_npipiL_ts->ProjectionX("IMnpipi_npipiL_ts");
   TH1D* nmom_IMnpipi_wK0_n_npipiL_ts_py = (TH1D*)nmom_IMnpipi_wK0_n_npipiL_ts->ProjectionY("nmom_IMnpipi_wK0_n_npipiL_ts_py");
+  TH1D* nmom_forward_npipiL_ts = (TH1D*)nmom_cosn_wK0_n_forward_npipiL_ts->ProjectionY("nmom_forward_npipiL_ts");
   TH1D* q_npipiL_ts = (TH1D*)q_IMnpipi_wK0_n_npipiL_ts->ProjectionY("q_npipiL_ts");
   TH1D* Mompippim_npipiL_ts = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_npipiL_ts->ProjectionY("Mompippim_npipiL_ts");
   TH1D* MMnmiss_npipiL_ts = (TH1D*)MMnmiss_IMpippim_dE_npipiL_ts->ProjectionY("MMnmiss_npipiL_ts",pipimin,pipimax);
