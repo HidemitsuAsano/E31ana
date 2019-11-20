@@ -330,6 +330,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* nmom_cosK0_wK0_n;
   TH2F* nmom_cosK0n_wK0;// cosK0n = CDH neutron angle to K0
   TH2F* nmom_cosK0n_wK0_n;//
+  TH2F* nmom_cosnmiss_wK0_n;//
   TH2F* nmom_cosnnmiss_wK0_n;//
   TH2F* K0mom_cosK0_wK0;
   TH2F* K0mom_cosK0_wK0_n;
@@ -1005,6 +1006,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   nmom_cosK0n_wK0 = new TH2F("nmom_cosK0n_wK0","nmom_cosK0n_wK0",100,-1.0,1.0,100,0,1.0);
 
   nmom_cosK0n_wK0_n = new TH2F("nmom_cosK0n_wK0_n","nmom_cosK0n_wK0_n",100,-1.0,1.0,100,0,1.0);
+  
+  nmom_cosnmiss_wK0_n = new TH2F("nmom_cosnmiss_wK0_n","nmom_cosnmiss_wK0_n",100,-1.0,1.0,100,0,1.0);
   
   nmom_cosnnmiss_wK0_n = new TH2F("nmom_cosnnmiss_wK0_n","nmom_cosnnmiss_wK0_n",100,-1.0,1.0,100,0,1.0);
   
@@ -1884,6 +1887,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         }
         nmom_cosK0_wK0_n->Fill(cos_pippimCM,(*LVec_n).P());
         nmom_cosK0n_wK0_n->Fill(cos_pippim_ncds_CM,(*LVec_n).P());
+        nmom_cosnmiss_wK0_n->Fill(cos_nmiss,(*LVec_n).P());
         nmom_cosnnmiss_wK0_n->Fill(cos_nmiss_ncds_CM,(*LVec_n).P());
         K0mom_cosK0_wK0_n->Fill(cos_pippimCM,LVec_pip_pim.P());
         nmissmom_cosnmiss_wK0_n->Fill(cos_nmiss,LVec_nmiss.P());
@@ -4638,8 +4642,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   
   TIter nexthist2(gDirectory->GetList());
   TString outname = std::string(filename);
-  //outname.Replace(std::string(filename).size()-5,5,"_K015_out.root");
-  outname.Replace(std::string(filename).size()-5,5,"_outncutK015.root");
+  outname.Replace(std::string(filename).size()-5,5,"_out.root");
+  //outname.Replace(std::string(filename).size()-5,5,"_outncutK015.root");
   TFile *fout = new TFile(outname.Data(),"RECREATE");
   while( (obj = (TObject*)nexthist2())!=nullptr  ){
     obj->Write();
