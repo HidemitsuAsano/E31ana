@@ -2079,7 +2079,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       q_IMnpipi_wK0_n->Fill(LVec_pip_pim_n.M(),qkn.P());
       
       if(SigmaPFlag || SigmaMFlag){
-        q_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),qkn.P());
+        q_IMnpipi_wK0_wSid_n->Fill(LVec_pip_pim_n.M(),qkn.P());
       }
       if(SigmaPcutFlag[sigmacuttype]){
         Mompippim_IMnpipi_dE_wK0_n_Sp->Fill(LVec_pip_pim_n.M(),LVec_pip_pim.P());
