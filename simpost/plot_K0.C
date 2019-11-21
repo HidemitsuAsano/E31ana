@@ -19,6 +19,7 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_forward_rdata = (TH2F*)_file0->Get("nmom_cosn_wK0_n_forward");
   TH2F* nmom_cosK0_wK0_n_rdata = (TH2F*)_file0->Get("nmom_cosK0_wK0_n");
   TH2F* nmom_cosK0n_wK0_n_rdata = (TH2F*)_file0->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnmiss_wK0_n_rdata = (TH2F*)_file0->Get("nmom_cosnmiss_wK0_n");
   TH2F* nmom_cosnnmiss_wK0_n_rdata = (TH2F*)_file0->Get("nmom_cosnnmiss_wK0_n");
   TH2F* K0mom_cosK0_wK0_n_rdata = (TH2F*)_file0->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_rdata = (TH2F*)_file0->Get("nmissmom_cosnmiss_wK0_n");
@@ -30,7 +31,6 @@ void plot_K0()
   TH1D* IMpippim_rdata = (TH1D*)q_IMpippim_n_rdata->ProjectionX("IMpippim_rdata");
   TH1D* IMnpipi_rdata = (TH1D*)nmom_IMnpipi_wK0_n_rdata->ProjectionX("IMnpipi_rdata");
   TH1D* nmom_IMnpipi_wK0_n_rdata_py = (TH1D*)nmom_IMnpipi_wK0_n_rdata->ProjectionY("nmom_IMnpipi_wK0_n_rdata_py");
-  TH1D* nmom_forward_rdata = (TH1D*)nmom_cosn_wK0_n_forward_rdata->ProjectionY("nmom_forward_rdata");
   TH1D* q_rdata = (TH1D*)q_IMnpipi_wK0_n_rdata->ProjectionY("q_rdata");
   TH1D* Mompippim_rdata = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_rdata->ProjectionY("Mompippim_rdata"); 
    
@@ -64,7 +64,6 @@ void plot_K0()
   TH1D* IMpippim_nnts = (TH1D*)q_IMpippim_n_nnts->ProjectionX("IMpippim_nnts");
   TH1D* IMnpipi_nnts = (TH1D*) nmom_IMnpipi_wK0_n_nnts->ProjectionX("IMnpipi_nnts");
   TH1D* nmom_IMnpipi_wK0_n_nnts_py = (TH1D*)nmom_IMnpipi_wK0_n_nnts->ProjectionY("nmom_IMnpipi_wK0_n_nnts_py");
-  TH1D* nmom_forward_nnts = (TH1D*)nmom_cosn_wK0_n_forward_nnts->ProjectionY("nmom_forward_nnts");
   TH1D* q_nnts = (TH1D*)q_IMnpipi_wK0_n_nnts->ProjectionY("q_nnts");
   TH1D* Mompippim_nnts = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_nnts->ProjectionY("Mompippim_nnts");
   TH1D* MMnmiss_nnts = (TH1D*)MMnmiss_IMpippim_dE_nnts->ProjectionY("MMnmiss_nnts",pipimin,pipimax);
@@ -82,6 +81,7 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_forward_ns = (TH2F*)_file2->Get("nmom_cosn_wK0_n_forward");
   TH2F* nmom_cosK0_wK0_n_ns = (TH2F*)_file2->Get("nmom_cosK0_wK0_n");
   TH2F* nmom_cosK0n_wK0_n_ns = (TH2F*)_file2->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnmiss_wK0_n_ns = (TH2F*)_file2->Get("nmom_cosnmiss_wK0_n");
   TH2F* nmom_cosnnmiss_wK0_n_ns = (TH2F*)_file2->Get("nmom_cosnnmiss_wK0_n");
   TH2F* K0mom_cosK0_wK0_n_ns = (TH2F*)_file2->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_ns = (TH2F*)_file2->Get("nmissmom_cosnmiss_wK0_n");
@@ -95,7 +95,6 @@ void plot_K0()
   TH1D* IMpippim_ns = (TH1D*)q_IMpippim_n_ns->ProjectionX("IMpippim_ns");
   TH1D* IMnpipi_ns = (TH1D*)nmom_IMnpipi_wK0_n_ns->ProjectionX();
   TH1D* nmom_IMnpipi_wK0_n_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_ns->ProjectionY("nmom_IMnpipi_wK0_n_ns_py"); 
-  TH1D* nmom_forward_ns = (TH1D*)nmom_cosn_wK0_n_forward_ns->ProjectionY("nmom_forward_ns");
   TH1D* q_ns = (TH1D*)q_IMnpipi_wK0_n_ns->ProjectionY("q_ns");
   TH1D* Mompippim_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_ns->ProjectionY("Mompippim_ns");
   TH1D* MMnmiss_ns = (TH1D*)MMnmiss_IMpippim_dE_ns->ProjectionY("MMnmiss_ns",pipimin,pipimax);
@@ -119,6 +118,7 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_forward_K0nn = (TH2F*)_file3->Get("nmom_cosn_wK0_n_forward");
   TH2F* nmom_cosK0_wK0_n_K0nn = (TH2F*)_file3->Get("nmom_cosK0_wK0_n");
   TH2F* nmom_cosK0n_wK0_n_K0nn = (TH2F*)_file3->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnmiss_wK0_n_K0nn = (TH2F*)_file3->Get("nmom_cosnmiss_wK0_n");
   TH2F* nmom_cosnnmiss_wK0_n_K0nn = (TH2F*)_file3->Get("nmom_cosnnmiss_wK0_n");
   TH2F* K0mom_cosK0_wK0_n_K0nn = (TH2F*)_file3->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_K0nn = (TH2F*)_file3->Get("nmissmom_cosnmiss_wK0_n");
@@ -130,7 +130,6 @@ void plot_K0()
   TH1D* IMpippim_K0nn = (TH1D*)q_IMpippim_n_K0nn->ProjectionX("IMpippim_K0nn");
   TH1D* IMnpipi_K0nn = (TH1D*)nmom_IMnpipi_wK0_n_K0nn->ProjectionX("IMnpipi_K0nn");
   TH1D* nmom_IMnpipi_wK0_n_K0nn_py = (TH1D*)nmom_IMnpipi_wK0_n_K0nn->ProjectionY("nmom_IMnpipi_wK0_n_K0nn_py");
-  TH1D* nmom_forward_K0nn = (TH1D*)nmom_cosn_wK0_n_forward_K0nn->ProjectionY("nmom_forward_K0nn");
   TH1D* q_K0nn = (TH1D*)q_IMnpipi_wK0_n_K0nn->ProjectionY("q_K0nn");
   TH1D* Mompippim_K0nn = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_K0nn->ProjectionY("Mompippim_K0nn");
   TH1D* MMnmiss_K0nn = (TH1D*)MMnmiss_IMpippim_dE_K0nn->ProjectionY("MMnmiss_K0nn",pipimin,pipimax);
@@ -147,6 +146,7 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_forward_Knts = (TH2F*)_file4->Get("nmom_cosn_wK0_n_forward");
   TH2F* nmom_cosK0_wK0_n_Knts = (TH2F*)_file4->Get("nmom_cosK0_wK0_n");
   TH2F* nmom_cosK0n_wK0_n_Knts = (TH2F*)_file4->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnmiss_wK0_n_Knts = (TH2F*)_file4->Get("nmom_cosnmiss_wK0_n");
   TH2F* nmom_cosnnmiss_wK0_n_Knts = (TH2F*)_file4->Get("nmom_cosnnmiss_wK0_n");
   TH2F* K0mom_cosK0_wK0_n_Knts = (TH2F*)_file4->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_Knts = (TH2F*)_file4->Get("nmissmom_cosnmiss_wK0_n");
@@ -158,7 +158,6 @@ void plot_K0()
   TH1D* IMpippim_Knts = (TH1D*)q_IMpippim_n_Knts->ProjectionX("IMpippim_Knts");
   TH1D* IMnpipi_Knts = (TH1D*)nmom_IMnpipi_wK0_n_Knts->ProjectionX("IMnpipi_Knts");
   TH1D* nmom_IMnpipi_wK0_n_Knts_py = (TH1D*)nmom_IMnpipi_wK0_n_Knts->ProjectionY("nmom_IMnpipi_wK0_n_Knts_py");
-  TH1D* nmom_forward_Knts = (TH1D*)nmom_cosn_wK0_n_forward_Knts->ProjectionY("nmom_forward_Knts");
   TH1D* q_Knts = q_IMnpipi_wK0_n_Knts->ProjectionY("q_Knts");
   TH1D* Mompippim_Knts = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_Knts->ProjectionY("Mompippim_Knts");
   TH1D* MMnmiss_Knts = (TH1D*)MMnmiss_IMpippim_dE_Knts->ProjectionY("MMnmiss_Knts",pipimin,pipimax);
@@ -175,6 +174,7 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_forward_Kmpts = (TH2F*)_file5->Get("nmom_cosn_wK0_n_forward");
   TH2F* nmom_cosK0_wK0_n_Kmpts = (TH2F*)_file5->Get("nmom_cosK0_wK0_n");
   TH2F* nmom_cosK0n_wK0_n_Kmpts = (TH2F*)_file5->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnmiss_wK0_n_Kmpts = (TH2F*)_file5->Get("nmom_cosnmiss_wK0_n");
   TH2F* nmom_cosnnmiss_wK0_n_Kmpts = (TH2F*)_file5->Get("nmom_cosnnmiss_wK0_n");
   TH2F* K0mom_cosK0_wK0_n_Kmpts = (TH2F*)_file5->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_Kmpts = (TH2F*)_file5->Get("nmissmom_cosnmiss_wK0_n");
@@ -186,7 +186,6 @@ void plot_K0()
   TH1D* IMpippim_Kmpts = (TH1D*)q_IMpippim_n_Kmpts->ProjectionX("IMpippim_Kmpts");
   TH1D* IMnpipi_Kmpts = (TH1D*)nmom_IMnpipi_wK0_n_Kmpts->ProjectionX("IMnpipi_Kmpts");
   TH1D* nmom_IMnpipi_wK0_n_Kmpts_py = (TH1D*)nmom_IMnpipi_wK0_n_Kmpts->ProjectionY("nmom_IMnpipi_wK0_n_Kmpts_py");
-  TH1D* nmom_forward_Kmpts = (TH1D*)nmom_cosn_wK0_n_forward_Kmpts->ProjectionY("nmom_forward_Kmpts");
   TH1D* q_Kmpts = q_IMnpipi_wK0_n_Kmpts->ProjectionY("q_Kmpts");
   TH1D* Mompippim_Kmpts = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_Kmpts->ProjectionY("Mompippim_Kmpts");
   TH1D* MMnmiss_Kmpts = (TH1D*)MMnmiss_IMpippim_dE_Kmpts->ProjectionY("MMnmiss_Kmpts",pipimin,pipimax);
@@ -203,6 +202,7 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_forward_npipiL = (TH2F*)_file6->Get("nmom_cosn_wK0_n_forward");
   TH2F* nmom_cosK0_wK0_n_npipiL = (TH2F*)_file6->Get("nmom_cosK0_wK0_n");
   TH2F* nmom_cosK0n_wK0_n_npipiL = (TH2F*)_file6->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnmiss_wK0_n_npipiL = (TH2F*)_file6->Get("nmom_cosnmiss_wK0_n");
   TH2F* nmom_cosnnmiss_wK0_n_npipiL = (TH2F*)_file6->Get("nmom_cosnnmiss_wK0_n");
   TH2F* K0mom_cosK0_wK0_n_npipiL = (TH2F*)_file6->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_npipiL = (TH2F*)_file6->Get("nmissmom_cosnmiss_wK0_n");
@@ -214,7 +214,6 @@ void plot_K0()
   TH1D* IMpippim_npipiL = (TH1D*)q_IMpippim_n_npipiL->ProjectionX("IMpippim_npipiL");
   TH1D* IMnpipi_npipiL = (TH1D*)nmom_IMnpipi_wK0_n_npipiL->ProjectionX("IMnpipi_npipiL");
   TH1D* nmom_IMnpipi_wK0_n_npipiL_py = (TH1D*)nmom_IMnpipi_wK0_n_npipiL->ProjectionY("nmom_IMnpipi_wK0_n_npipiL_py");
-  TH1D* nmom_forward_npipiL = (TH1D*)nmom_cosn_wK0_n_forward_npipiL->ProjectionY("nmom_forward_npipiL");
   TH1D* q_npipiL = (TH1D*)q_IMnpipi_wK0_n_npipiL->ProjectionY("q_npipiL");
   TH1D* Mompippim_npipiL = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_npipiL->ProjectionY("Mompippim_npipiL");
   TH1D* MMnmiss_npipiL = (TH1D*)MMnmiss_IMpippim_dE_npipiL->ProjectionY("MMnmiss_npipiL",pipimin,pipimax);
@@ -231,6 +230,7 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_forward_pipiL_ns = (TH2F*)_file7->Get("nmom_cosn_wK0_n_forward");
   TH2F* nmom_cosK0_wK0_n_pipiL_ns = (TH2F*)_file7->Get("nmom_cosK0_wK0_n");
   TH2F* nmom_cosK0n_wK0_n_pipiL_ns = (TH2F*)_file7->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnmiss_wK0_n_pipiL_ns = (TH2F*)_file7->Get("nmom_cosnmiss_wK0_n");
   TH2F* nmom_cosnnmiss_wK0_n_pipiL_ns = (TH2F*)_file7->Get("nmom_cosnnmiss_wK0_n");
   TH2F* K0mom_cosK0_wK0_n_pipiL_ns = (TH2F*)_file7->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_pipiL_ns = (TH2F*)_file7->Get("nmissmom_cosnmiss_wK0_n");
@@ -242,7 +242,6 @@ void plot_K0()
   TH1D* IMpippim_pipiL_ns = (TH1D*)q_IMpippim_n_pipiL_ns->ProjectionX("IMpippim_pipiL_ns");
   TH1D* IMnpipi_pipiL_ns = (TH1D*)nmom_IMnpipi_wK0_n_pipiL_ns->ProjectionX("IMnpipi_pipiL_ns");
   TH1D* nmom_IMnpipi_wK0_n_pipiL_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_pipiL_ns->ProjectionY("nmom_IMnpipi_wK0_n_pipiL_ns_py");
-  TH1D* nmom_forward_pipiL_ns = (TH1D*)nmom_cosn_wK0_n_forward_pipiL_ns->ProjectionY("nmom_forward_pipiL_ns");
   TH1D* q_pipiL_ns = (TH1D*)q_IMnpipi_wK0_n_pipiL_ns->ProjectionY("q_pipiL_ns");
   TH1D* Mompippim_pipiL_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_pipiL_ns->ProjectionY("Mompippim_pipiL_ns");
   TH1D* MMnmiss_pipiL_ns = (TH1D*)MMnmiss_IMpippim_dE_pipiL_ns->ProjectionY("MMnmiss_pipiL_ns",pipimin,pipimax);
@@ -264,6 +263,7 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_forward_pipS1385m_ns = (TH2F*)_file8->Get("nmom_cosn_wK0_n_forward");
   TH2F* nmom_cosK0_wK0_n_pipS1385m_ns = (TH2F*)_file8->Get("nmom_cosK0_wK0_n");
   TH2F* nmom_cosK0n_wK0_n_pipS1385m_ns = (TH2F*)_file8->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnmiss_wK0_n_pipS1385m_ns = (TH2F*)_file8->Get("nmom_cosnmiss_wK0_n");
   TH2F* nmom_cosnnmiss_wK0_n_pipS1385m_ns = (TH2F*)_file8->Get("nmom_cosnnmiss_wK0_n");
   TH2F* K0mom_cosK0_wK0_n_pipS1385m_ns = (TH2F*)_file8->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_pipS1385m_ns = (TH2F*)_file8->Get("nmissmom_cosnmiss_wK0_n");
@@ -275,7 +275,6 @@ void plot_K0()
   TH1D* IMpippim_pipS1385m_ns = (TH1D*)q_IMpippim_n_pipS1385m_ns->ProjectionX("IMpippim_pipS1385m_ns");
   TH1D* IMnpipi_pipS1385m_ns = (TH1D*)nmom_IMnpipi_wK0_n_pipS1385m_ns->ProjectionX("IMnpipi_pipS1385m_ns");
   TH1D* nmom_IMnpipi_wK0_n_pipS1385m_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_pipS1385m_ns->ProjectionY("nmom_IMnpipi_wK0_n_pipS1385m_ns_py");
-  TH1D* nmom_forward_pipS1385m_ns = (TH1D*)nmom_cosn_wK0_n_forward_pipS1385m_ns->ProjectionY("nmom_forward_pipS1385m_ns");
   TH1D* q_pipS1385m_ns = (TH1D*)q_IMnpipi_wK0_n_pipS1385m_ns->ProjectionY("q_pipS1385m_ns");
   TH1D* Mompippim_pipS1385m_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_pipS1385m_ns->ProjectionY("Mompippim_pipS1385m_ns");
   TH1D* MMnmiss_pipS1385m_ns = (TH1D*)MMnmiss_IMpippim_dE_pipS1385m_ns->ProjectionY("MMnmiss_pipS1385m_ns",pipimin,pipimax);
@@ -297,6 +296,7 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_forward_pimS1385p_ns = (TH2F*)_file9->Get("nmom_cosn_wK0_n_forward");
   TH2F* nmom_cosK0_wK0_n_pimS1385p_ns = (TH2F*)_file9->Get("nmom_cosK0_wK0_n");
   TH2F* nmom_cosK0n_wK0_n_pimS1385p_ns = (TH2F*)_file9->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnmiss_wK0_n_pimS1385p_ns = (TH2F*)_file9->Get("nmom_cosnmiss_wK0_n");
   TH2F* nmom_cosnnmiss_wK0_n_pimS1385p_ns = (TH2F*)_file9->Get("nmom_cosnnmiss_wK0_n");
   TH2F* K0mom_cosK0_wK0_n_pimS1385p_ns = (TH2F*)_file9->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_pimS1385p_ns = (TH2F*)_file9->Get("nmissmom_cosnmiss_wK0_n");
@@ -308,7 +308,6 @@ void plot_K0()
   TH1D* IMpippim_pimS1385p_ns = (TH1D*) q_IMpippim_n_pimS1385p_ns->ProjectionX("IMpippim_pimS1385p_ns");
   TH1D* IMnpipi_pimS1385p_ns = (TH1D*) nmom_IMnpipi_wK0_n_pimS1385p_ns->ProjectionX("IMnpipi_pimS1385p_ns");
   TH1D* nmom_IMnpipi_wK0_n_pimS1385p_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_pimS1385p_ns->ProjectionY("nmom_IMnpipi_wK0_n_pimS1385p_ns_py");
-  TH1D* nmom_forward_pimS1385p_ns = (TH1D*)nmom_cosn_wK0_n_forward_pimS1385p_ns->ProjectionY("nmom_forward_pimS1385p_ns");
   TH1D* q_pimS1385p_ns = (TH1D*)q_IMnpipi_wK0_n_pimS1385p_ns->ProjectionY("q_pimS1385p_ns");
   TH1D* Mompippim_pimS1385p_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_pimS1385p_ns->ProjectionY("Mompippim_pimS1385p_ns");
   TH1D* MMnmiss_pimS1385p_ns = (TH1D*)MMnmiss_IMpippim_dE_pimS1385p_ns->ProjectionY("MMnmiss_pimS1385p_ns",pipimin,pipimax);
@@ -330,6 +329,7 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_forward_S0pippim_ns = (TH2F*)_file10->Get("nmom_cosn_wK0_n_forward");
   TH2F* nmom_cosK0_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("nmom_cosK0_wK0_n");
   TH2F* nmom_cosK0n_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnmiss_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("nmom_cosnmiss_wK0_n");
   TH2F* nmom_cosnnmiss_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("nmom_cosnnmiss_wK0_n");
   TH2F* K0mom_cosK0_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_S0pippim_ns = (TH2F*)_file10->Get("nmissmom_cosnmiss_wK0_n");
@@ -341,7 +341,6 @@ void plot_K0()
   TH1D* IMpippim_S0pippim_ns = (TH1D*)q_IMpippim_n_S0pippim_ns->ProjectionX("IMpippim_S0pippim_ns");
   TH1D* IMnpipi_S0pippim_ns = (TH1D*)nmom_IMnpipi_wK0_n_S0pippim_ns->ProjectionX("IMnpipi_S0pippim_ns");
   TH1D* nmom_IMnpipi_wK0_n_S0pippim_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_S0pippim_ns->ProjectionY("nmom_IMnpipi_wK0_n_S0pippim_ns_py");
-  TH1D* nmom_forward_S0pippim_ns = (TH1D*)nmom_cosn_wK0_n_forward_S0pippim_ns->ProjectionY("nmom_forward_S0pippim_ns");
   TH1D* q_S0pippim_ns = (TH1D*)q_IMnpipi_wK0_n_S0pippim_ns->ProjectionY("q_S0pippim_ns");
   TH1D* Mompippim_S0pippim_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_S0pippim_ns->ProjectionY("Mompippim_S0pippim_ns");
   TH1D* MMnmiss_S0pippim_ns = (TH1D*)MMnmiss_IMpippim_dE_S0pippim_ns->ProjectionY("MMnmiss_S0pippim_ns",pipimin,pipimax);
@@ -363,6 +362,7 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_forward_L1520pi0_ns = (TH2F*)_file11->Get("nmom_cosn_wK0_n_forward");
   TH2F* nmom_cosK0_wK0_n_L1520pi0_ns = (TH2F*)_file11->Get("nmom_cosK0_wK0_n");
   TH2F* nmom_cosK0n_wK0_n_L1520pi0_ns = (TH2F*)_file11->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnmiss_wK0_n_L1520pi0_ns = (TH2F*)_file11->Get("nmom_cosnmiss_wK0_n");
   TH2F* nmom_cosnnmiss_wK0_n_L1520pi0_ns = (TH2F*)_file11->Get("nmom_cosnnmiss_wK0_n");
   TH2F* K0mom_cosK0_wK0_n_L1520pi0_ns = (TH2F*)_file11->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_L1520pi0_ns = (TH2F*)_file11->Get("nmissmom_cosnmiss_wK0_n");
@@ -374,7 +374,6 @@ void plot_K0()
   TH1D* IMpippim_L1520pi0_ns = (TH1D*)q_IMpippim_n_L1520pi0_ns->ProjectionX("IMpippim_L1520pi0_ns");
   TH1D* IMnpipi_L1520pi0_ns = (TH1D*)nmom_IMnpipi_wK0_n_L1520pi0_ns->ProjectionX("IMnpipi_L1520pi0_ns");
   TH1D* nmom_IMnpipi_wK0_n_L1520pi0_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_L1520pi0_ns->ProjectionY("nmom_IMnpipi_wK0_n_L1520pi0_ns_py");
-  TH1D* nmom_forward_L1520pi0_ns = (TH1D*)nmom_cosn_wK0_n_forward_L1520pi0_ns->ProjectionY("nmom_forward_L1520pi0_ns");
   TH1D* q_L1520pi0_ns = (TH1D*)q_IMnpipi_wK0_n_L1520pi0_ns->ProjectionY("q_L1520pi0_ns");
   TH1D* Mompippim_L1520pi0_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_L1520pi0_ns->ProjectionY("Mompippim_L1520pi0_ns");
   TH1D* MMnmiss_L1520pi0_ns = (TH1D*)MMnmiss_IMpippim_dE_L1520pi0_ns->ProjectionY("MMnmiss_L1520pi0_ns",pipimin,pipimax);
@@ -397,6 +396,7 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_forward_Sppim_ns = (TH2F*)_file12->Get("nmom_cosn_wK0_n_forward");
   TH2F* nmom_cosK0_wK0_n_Sppim_ns = (TH2F*)_file12->Get("nmom_cosK0_wK0_n");
   TH2F* nmom_cosK0n_wK0_n_Sppim_ns = (TH2F*)_file12->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnmiss_wK0_n_Sppim_ns = (TH2F*)_file12->Get("nmom_cosnmiss_wK0_n");
   TH2F* nmom_cosnnmiss_wK0_n_Sppim_ns = (TH2F*)_file12->Get("nmom_cosnnmiss_wK0_n");
   TH2F* K0mom_cosK0_wK0_n_Sppim_ns = (TH2F*)_file12->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_Sppim_ns = (TH2F*)_file12->Get("nmissmom_cosnmiss_wK0_n");
@@ -408,7 +408,6 @@ void plot_K0()
   TH1D* IMpippim_Sppim_ns = (TH1D*)q_IMpippim_n_Sppim_ns->ProjectionX("IMpippim_Sppim_ns");
   TH1D* IMnpipi_Sppim_ns = (TH1D*)nmom_IMnpipi_wK0_n_Sppim_ns->ProjectionX("IMnpipi_Sppim_ns");
   TH1D* nmom_IMnpipi_wK0_n_Sppim_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_Sppim_ns->ProjectionY("nmom_IMnpipi_wK0_n_Sppim_ns_py");
-  TH1D* nmom_forward_Sppim_ns = (TH1D*)nmom_cosn_wK0_n_forward_Sppim_ns->ProjectionY("nmom_forward_Sppim_ns");
   TH1D* q_Sppim_ns = (TH1D*)q_IMnpipi_wK0_n_Sppim_ns->ProjectionY("q_Sppim_ns");
   TH1D* Mompippim_Sppim_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_Sppim_ns->ProjectionY("Mompippim_Sppim_ns");
   TH1D* MMnmiss_Sppim_ns = (TH1D*)MMnmiss_IMpippim_dE_Sppim_ns->ProjectionY("MMnmiss_Sppim_ns",pipimin,pipimax);
@@ -430,6 +429,7 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_forward_Smpip_ns = (TH2F*)_file13->Get("nmom_cosn_wK0_n_forward");
   TH2F* nmom_cosK0_wK0_n_Smpip_ns = (TH2F*)_file13->Get("nmom_cosK0_wK0_n");
   TH2F* nmom_cosK0n_wK0_n_Smpip_ns = (TH2F*)_file13->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnmiss_wK0_n_Smpip_ns = (TH2F*)_file13->Get("nmom_cosnmiss_wK0_n");
   TH2F* nmom_cosnnmiss_wK0_n_Smpip_ns = (TH2F*)_file13->Get("nmom_cosnnmiss_wK0_n");
   TH2F* K0mom_cosK0_wK0_n_Smpip_ns = (TH2F*)_file13->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_Smpip_ns = (TH2F*)_file13->Get("nmissmom_cosnmiss_wK0_n");
@@ -441,7 +441,6 @@ void plot_K0()
   TH1D* IMpippim_Smpip_ns = (TH1D*)q_IMpippim_n_Smpip_ns->ProjectionX("IMpippim_Smpip_ns");
   TH1D* IMnpipi_Smpip_ns = (TH1D*)nmom_IMnpipi_wK0_n_Smpip_ns->ProjectionX("IMnpipi_Smpip_ns");
   TH1D* nmom_IMnpipi_wK0_n_Smpip_ns_py = (TH1D*)nmom_IMnpipi_wK0_n_Smpip_ns->ProjectionY("nmom_IMnpipi_wK0_n_Smpip_ns_py");
-  TH1D* nmom_forward_Smpip_ns = (TH1D*)nmom_cosn_wK0_n_forward_Smpip_ns->ProjectionY("nmom_forward_Smpip_ns");
   TH1D* q_Smpip_ns = (TH1D*)q_IMnpipi_wK0_n_Smpip_ns->ProjectionY("q_Smpip_ns");
   TH1D* Mompippim_Smpip_ns = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_Smpip_ns->ProjectionY("Mompippim_Smpip_ns");
   TH1D* MMnmiss_Smpip_ns = (TH1D*)MMnmiss_IMpippim_dE_Smpip_ns->ProjectionY("MMnmiss_Smpip_ns",pipimin,pipimax);
@@ -463,6 +462,7 @@ void plot_K0()
   TH2F* nmom_cosn_wK0_n_forward_npipiL_ts = (TH2F*)_file14->Get("nmom_cosn_wK0_n_forward");
   TH2F* nmom_cosK0_wK0_n_npipiL_ts = (TH2F*)_file14->Get("nmom_cosK0_wK0_n");
   TH2F* nmom_cosK0n_wK0_n_npipiL_ts = (TH2F*)_file14->Get("nmom_cosK0n_wK0_n");//
+  TH2F* nmom_cosnmiss_wK0_n_npipiL_ts = (TH2F*)_file14->Get("nmom_cosnmiss_wK0_n");
   TH2F* nmom_cosnnmiss_wK0_n_npipiL_ts = (TH2F*)_file14->Get("nmom_cosnnmiss_wK0_n");
   TH2F* K0mom_cosK0_wK0_n_npipiL_ts = (TH2F*)_file14->Get("K0mom_cosK0_wK0_n");
   TH2F* nmissmom_cosnmiss_wK0_n_npipiL_ts = (TH2F*)_file14->Get("nmissmom_cosnmiss_wK0_n");
@@ -474,7 +474,6 @@ void plot_K0()
   TH1D* IMpippim_npipiL_ts = (TH1D*)q_IMpippim_n_npipiL_ts->ProjectionX("IMpippim_npipiL_ts");
   TH1D* IMnpipi_npipiL_ts = (TH1D*)nmom_IMnpipi_wK0_n_npipiL_ts->ProjectionX("IMnpipi_npipiL_ts");
   TH1D* nmom_IMnpipi_wK0_n_npipiL_ts_py = (TH1D*)nmom_IMnpipi_wK0_n_npipiL_ts->ProjectionY("nmom_IMnpipi_wK0_n_npipiL_ts_py");
-  TH1D* nmom_forward_npipiL_ts = (TH1D*)nmom_cosn_wK0_n_forward_npipiL_ts->ProjectionY("nmom_forward_npipiL_ts");
   TH1D* q_npipiL_ts = (TH1D*)q_IMnpipi_wK0_n_npipiL_ts->ProjectionY("q_npipiL_ts");
   TH1D* Mompippim_npipiL_ts = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_npipiL_ts->ProjectionY("Mompippim_npipiL_ts");
   TH1D* MMnmiss_npipiL_ts = (TH1D*)MMnmiss_IMpippim_dE_npipiL_ts->ProjectionY("MMnmiss_npipiL_ts",pipimin,pipimax);
@@ -550,6 +549,9 @@ void plot_K0()
   nmom_cosK0n_wK0_n_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);
   nmom_cosK0n_wK0_n_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);
   nmom_cosK0n_wK0_n_pipiL_ns->Scale(cs_pipiL_ns);
+  nmom_cosnmiss_wK0_n_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);
+  nmom_cosnmiss_wK0_n_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);
+  nmom_cosnmiss_wK0_n_pipiL_ns->Scale(cs_pipiL_ns);
   nmom_cosnnmiss_wK0_n_pipS1385m_ns->Scale(cs_pipS1385m_ns/ngen_pipS1385m_ns*ngen_pipiL_ns);
   nmom_cosnnmiss_wK0_n_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);
   nmom_cosnnmiss_wK0_n_pipiL_ns->Scale(cs_pipiL_ns);
@@ -572,22 +574,6 @@ void plot_K0()
   nmom_nmissmom_wK0_n_pimS1385p_ns->Scale(cs_pimS1385p_ns/ngen_pimS1385p_ns*ngen_pipiL_ns);  
   nmom_nmissmom_wK0_n_pipiL_ns->Scale(cs_pipiL_ns);
   
-  //
-  TCanvas *cMom_ncds_pipiL = new TCanvas("cMom_ncds_pipiL","cMom_ncds_pipiL");
-  cMom_ncds_pipiL->cd();
-  nmom_IMnpipi_wK0_n_pipS1385m_ns_py->SetLineColor(2);
-  nmom_IMnpipi_wK0_n_pipS1385m_ns_py->Draw("HE");
-  nmom_IMnpipi_wK0_n_pimS1385p_ns_py->SetLineColor(3);
-  nmom_IMnpipi_wK0_n_pimS1385p_ns_py->Draw("HEsame");
-  nmom_IMnpipi_wK0_n_pipiL_ns_py->SetLineColor(4);
-  nmom_IMnpipi_wK0_n_pipiL_ns_py->Draw("HEsame");
-
-  TLegend *tl_pipiL = new TLegend(0.6,0.68,0.89,0.89);
-  tl_pipiL->SetTextFont(133);
-  tl_pipiL->AddEntry(nmom_IMnpipi_wK0_n_pipS1385m_ns_py, "#pi^{+}#Sigma(1385)^{-}","l");
-  tl_pipiL->AddEntry(nmom_IMnpipi_wK0_n_pimS1385p_ns_py, "#pi^{-}#Sigma(1385)^{+}","l");
-  tl_pipiL->AddEntry(nmom_IMnpipi_wK0_n_pipiL_ns_py, "#pi^{-}#pi^{+}#Lambda (3-body P.S.)","l");
-  tl_pipiL->Draw();
   
   TCanvas *cMom_K0_pipiL = new TCanvas("cMom_K0_pipiL","cMom_K0_pipiL");
   cMom_K0_pipiL->cd();
@@ -663,6 +649,10 @@ void plot_K0()
   nmom_cosK0n_wK0_n_pipiL_ns_sum->Add(nmom_cosK0n_wK0_n_pimS1385p_ns);
   nmom_cosK0n_wK0_n_pipiL_ns_sum->Add(nmom_cosK0n_wK0_n_pipiL_ns);
 
+  TH2F* nmom_cosnmiss_wK0_n_pipiL_ns_sum = (TH2F*)nmom_cosnmiss_wK0_n_pipS1385m_ns->Clone("nmom_cosnmiss_wK0_n_pipiL_ns_sum");
+  nmom_cosnmiss_wK0_n_pipiL_ns_sum->Add(nmom_cosnmiss_wK0_n_pimS1385p_ns);
+  nmom_cosnmiss_wK0_n_pipiL_ns_sum->Add(nmom_cosnmiss_wK0_n_pipiL_ns);
+  
   TH2F* nmom_cosnnmiss_wK0_n_pipiL_ns_sum = (TH2F*)nmom_cosnnmiss_wK0_n_pipS1385m_ns->Clone("nmom_cosnnmiss_wK0_n_pipiL_ns_sum");
   nmom_cosnnmiss_wK0_n_pipiL_ns_sum->Add(nmom_cosnnmiss_wK0_n_pimS1385p_ns);
   nmom_cosnnmiss_wK0_n_pipiL_ns_sum->Add(nmom_cosnnmiss_wK0_n_pipiL_ns);
@@ -716,6 +706,8 @@ void plot_K0()
   nmom_cosK0_wK0_n_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns); 
   nmom_cosK0n_wK0_n_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns); 
   nmom_cosK0n_wK0_n_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns); 
+  nmom_cosnmiss_wK0_n_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns); 
+  nmom_cosnmiss_wK0_n_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns); 
   nmom_cosnnmiss_wK0_n_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns); 
   nmom_cosnnmiss_wK0_n_Smpip_ns->Scale(cs_Smpip_ns*ngen_pipiL_ns/ngen_Smpip_ns); 
   K0mom_cosK0_wK0_n_Sppim_ns->Scale(cs_Sppim_ns*ngen_pipiL_ns/ngen_Sppim_ns); 
@@ -792,6 +784,9 @@ void plot_K0()
   TH2F* nmom_cosK0n_wK0_n_fSigma_ns_sum = (TH2F*)nmom_cosK0n_wK0_n_Sppim_ns->Clone("nmom_cosK0n_wK0_n_fSigma_ns");
   nmom_cosK0n_wK0_n_fSigma_ns_sum->Add(nmom_cosK0n_wK0_n_Smpip_ns);
 
+  TH2F* nmom_cosnmiss_wK0_n_fSigma_ns_sum = (TH2F*)nmom_cosnmiss_wK0_n_Sppim_ns->Clone("nmom_cosnmiss_wK0_n_fSigma_ns_sum");
+  nmom_cosnmiss_wK0_n_fSigma_ns_sum->Add(nmom_cosnmiss_wK0_n_Smpip_ns);
+  
   TH2F* nmom_cosnnmiss_wK0_n_fSigma_ns_sum = (TH2F*)nmom_cosnnmiss_wK0_n_Sppim_ns->Clone("nmom_cosnnmiss_wK0_n_fSigma_ns_sum");
   nmom_cosnnmiss_wK0_n_fSigma_ns_sum->Add(nmom_cosnnmiss_wK0_n_Smpip_ns);
    
@@ -846,6 +841,7 @@ void plot_K0()
   nmom_cosn_wK0_n_forward_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);  
   nmom_cosK0_wK0_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
   nmom_cosK0n_wK0_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
+  nmom_cosnmiss_wK0_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
   nmom_cosnnmiss_wK0_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
   K0mom_cosK0_wK0_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);
   nmissmom_cosnmiss_wK0_n_S0pippim_ns->Scale(cs_S0pipi_ns/ngen_S0pippim_ns*ngen_pipiL_ns);   
@@ -865,6 +861,7 @@ void plot_K0()
   nmom_cosn_wK0_n_forward_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);  
   nmom_cosK0_wK0_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns); 
   nmom_cosK0n_wK0_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns); 
+  nmom_cosnmiss_wK0_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns); 
   nmom_cosnnmiss_wK0_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns); 
   K0mom_cosK0_wK0_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);   
   nmissmom_cosnmiss_wK0_n_L1520pi0_ns->Scale(cs_L1520pi0_ns/ngen_L1520pi0_ns*ngen_pipiL_ns);   
@@ -952,6 +949,37 @@ void plot_K0()
   tl_1NA->AddEntry(nmom_fSigma_ns_sum, "1NA #pi#Sigma","l");
   tl_1NA->AddEntry(nmom_pipiL_ns_sum, "1NA #pi#pi#Lambda","l");
   tl_1NA->Draw();
+
+
+
+  //
+  TCanvas *cMom_ncds_pipiL = new TCanvas("cMom_ncds_pipiL","cMom_ncds_pipiL");
+  cMom_ncds_pipiL->cd();
+  nmom_IMnpipi_wK0_n_pipS1385m_ns_py->SetLineColor(2);
+  nmom_IMnpipi_wK0_n_pipS1385m_ns_py->Draw("HE");
+  nmom_IMnpipi_wK0_n_pimS1385p_ns_py->SetLineColor(3);
+  nmom_IMnpipi_wK0_n_pimS1385p_ns_py->Draw("HEsame");
+  nmom_IMnpipi_wK0_n_pipiL_ns_py->SetLineColor(4);
+  nmom_IMnpipi_wK0_n_pipiL_ns_py->Draw("HEsame");
+
+  TLegend *tl_pipiL = new TLegend(0.6,0.68,0.89,0.89);
+  tl_pipiL->SetTextFont(133);
+  tl_pipiL->AddEntry(nmom_IMnpipi_wK0_n_pipS1385m_ns_py, "#pi^{+}#Sigma(1385)^{-}","l");
+  tl_pipiL->AddEntry(nmom_IMnpipi_wK0_n_pimS1385p_ns_py, "#pi^{-}#Sigma(1385)^{+}","l");
+  tl_pipiL->AddEntry(nmom_IMnpipi_wK0_n_pipiL_ns_py, "#pi^{-}#pi^{+}#Lambda (3-body P.S.)","l");
+  tl_pipiL->Draw();
+  
+  TCanvas *cnmom_otherMC = new TCanvas("cnmom_otherMC","cnmom_otherMC");
+  cnmom_otherMC->cd();
+  nmom_IMnpipi_wK0_n_L1520pi0_ns_py->SetLineColor(2);
+  nmom_IMnpipi_wK0_n_L1520pi0_ns_py->Draw("HE");
+  nmom_IMnpipi_wK0_n_S0pippim_ns_py->SetLineColor(3);
+  nmom_IMnpipi_wK0_n_S0pippim_ns_py->Draw("HEsame");
+  nmom_IMnpipi_wK0_n_Sppim_ns_py->SetLineColor(4);
+  nmom_IMnpipi_wK0_n_Sppim_ns_py->Draw("HEsame");
+  nmom_IMnpipi_wK0_n_Smpip_ns_py->SetLineColor(5);
+  nmom_IMnpipi_wK0_n_Smpip_ns_py->Draw("HEsame");
+
 
 
   TH1D* q_1NA = (TH1D*)q_ns->Clone("q_1NA");
@@ -1092,73 +1120,40 @@ void plot_K0()
   //tl->AddEntry(nmom_IMnpipi_wK0_n_S0pippim_ns_py,"1NA #pi^{+}#pi^{-}#Sigma^0","l");
   tl->Draw();
    
-
-  //neutron momentum dist. w/ forward neutron
-  TCanvas *cMom_ncds_forward = new TCanvas("cMom_ncds_forward","cMom_ncds_forward");
-  cMom_ncds_forward->cd();
-  nmom_IMnpipi_wK0_n_rdata_py->SetMaximum(600);
-  nmom_IMnpipi_wK0_n_rdata_py->Draw("HE");
-  nmom_1NA->SetLineColor(2);// 1NA processes with C.S scaling
-  nmom_1NA->Scale(scale_1NA);
-  nmom_1NA->Draw("HEsame");
-  nmom_IMnpipi_wK0_n_nnts_py->SetLineColor(3);//n-n 2-step
-  nmom_IMnpipi_wK0_n_nnts_py->Scale(scale_nnts);
-  nmom_IMnpipi_wK0_n_nnts_py->Draw("HEsame");
-  nmom_IMnpipi_wK0_n_K0nn_py->Scale(scale_K0nn);//K0nn phase space
-  nmom_IMnpipi_wK0_n_K0nn_py->SetLineColor(4);
-  nmom_IMnpipi_wK0_n_K0nn_py->Draw("HEsame");
-  nmom_IMnpipi_wK0_n_Knts_py->Scale(scale_Knts);//K0-n 2-step
-  nmom_IMnpipi_wK0_n_Knts_py->SetLineColor(5);
-  nmom_IMnpipi_wK0_n_Knts_py->Draw("HEsame");
-  nmom_IMnpipi_wK0_n_Kmpts_py->Scale(scale_Knts);//K-p 2-step
-  nmom_IMnpipi_wK0_n_Kmpts_py->SetLineColor(8);
-  nmom_IMnpipi_wK0_n_Kmpts_py->Draw("HEsame");
-  nmom_IMnpipi_wK0_n_npipiL_py->Scale(scale_npipiL);//npi+pi-L phase space
-  nmom_IMnpipi_wK0_n_npipiL_py->SetLineColor(7);
-  nmom_IMnpipi_wK0_n_npipiL_py->Draw("HEsame");
-  nmom_IMnpipi_wK0_n_npipiL_ts_py->Scale(scale_npipiL_ts);//npi+pi-L two-step
-  nmom_IMnpipi_wK0_n_npipiL_ts_py->SetLineColor(9);
-  nmom_IMnpipi_wK0_n_npipiL_ts_py->Draw("HEsame");
-  //TH1D* nmom_IMnpipi_wK0_n_npipiL_py_zoom = (TH1D*)nmom_IMnpipi_wK0_n_npipiL_py->Clone("zoom1");
-  //nmom_IMnpipi_wK0_n_npipiL_py_zoom->Scale(5.0);
-  //nmom_IMnpipi_wK0_n_npipiL_py_zoom->Draw("HEsame");
-
-  //nmom_IMnpipi_wK0_n_S0pippim_ns_py->Scale(scale_1NA);
-  //nmom_IMnpipi_wK0_n_S0pippim_ns_py->SetLineColor(11);
-  //nmom_IMnpipi_wK0_n_S0pippim_ns_py->Draw("HEsame");
   
-  //nmom_pipiL_ns_sum->Scale(scale_pipiL_ns_sum);//npi+pi-L phase space
-  //nmom_pipiL_ns_sum->SetLineColor(9);
-  //nmom_pipiL_ns_sum->Draw("HEsame");
-  //TH1D* nmom_pipiL_ns_sum_zoom = (TH1D*)nmom_pipiL_ns_sum->Clone("zoom2");
-  //nmom_pipiL_ns_sum_zoom->Scale(5.0);
-  //nmom_pipiL_ns_sum_zoom->Draw("HEsame");
-  //TH1D* nmom_sum = (TH1D*)nmom_IMnpipi_wK0_n_ns_py->Clone("nmom_sum");
-  TH1D* nmom_sum = (TH1D*)nmom_1NA->Clone("nmom_sum");
-  //nmom_sum->Add(nmom_IMnpipi_wK0_n_nnts_py);
-  nmom_sum->Add(nmom_IMnpipi_wK0_n_K0nn_py);
-  nmom_sum->Add(nmom_IMnpipi_wK0_n_Knts_py);
-  nmom_sum->Add(nmom_IMnpipi_wK0_n_Kmpts_py);
-  nmom_sum->Add(nmom_IMnpipi_wK0_n_npipiL_py);//2NA phase space
-  nmom_sum->SetLineColor(6);
-  nmom_sum->Draw("HEsame");
 
-
-  TLegend *tl = new TLegend(0.8,0.68,0.99,0.99);
-  tl->AddEntry(nmom_IMnpipi_wK0_n_rdata_py, "real data","l");
-  //tl->AddEntry(nmom_IMnpipi_wK0_n_ns_py, "1NA","l");
-  tl->AddEntry(nmom_1NA, "1NA","l");
-  tl->AddEntry(nmom_IMnpipi_wK0_n_nnts_py, "two step n-n scat.","l");
-  tl->AddEntry(nmom_IMnpipi_wK0_n_K0nn_py, "K0nn phase space","l");
-  tl->AddEntry(nmom_IMnpipi_wK0_n_Knts_py, "K-p->K0n, K0n->K0n","l");
-  tl->AddEntry(nmom_IMnpipi_wK0_n_Kmpts_py, "K-n->K-n, K-p->K0n","l");
-  tl->AddEntry(nmom_IMnpipi_wK0_n_npipiL_py,"2NA n#pi^{+}#pi^{-}#Lambda phase space","l");
-  tl->AddEntry(nmom_IMnpipi_wK0_n_npipiL_ts_py," n#pi^{+}#pi^{-}#Lambda two-step","l");
-  //tl->AddEntry(nmom_pipiL_ns_sum,"1NA #pi^{+}#pi^{-}#Lambda","l");
-  //tl->AddEntry(nmom_IMnpipi_wK0_n_S0pippim_ns_py,"1NA #pi^{+}#pi^{-}#Sigma^0","l");
-  tl->Draw();
-
-
+  //forward neutron projection
+  TCanvas *cnforward = new TCanvas("cnforward","cnforward");
+  cnforward->cd();
+  TH1D* nmom_forward_rdata = (TH1D*)nmom_cosn_wK0_n_forward_rdata->ProjectionY("nmom_forward_rdata");
+  nmom_forward_rdata->Draw("HE");
+  TH1D* nmom_forward_nnts = (TH1D*)nmom_cosn_wK0_n_forward_nnts->ProjectionY("nmom_forward_nnts");
+  TH1D* nmom_forward_ns = (TH1D*)nmom_cosn_wK0_n_forward_ns->ProjectionY("nmom_forward_ns");
+  TH1D* nmom_forward_K0nn = (TH1D*)nmom_cosn_wK0_n_forward_K0nn->ProjectionY("nmom_forward_K0nn");
+  TH1D* nmom_forward_Knts = (TH1D*)nmom_cosn_wK0_n_forward_Knts->ProjectionY("nmom_forward_Knts");
+  TH1D* nmom_forward_Kmpts = (TH1D*)nmom_cosn_wK0_n_forward_Kmpts->ProjectionY("nmom_forward_Kmpts");
+  TH1D* nmom_forward_npipiL = (TH1D*)nmom_cosn_wK0_n_forward_npipiL->ProjectionY("nmom_forward_npipiL");
+  TH1D* nmom_forward_pipiL_ns = (TH1D*)nmom_cosn_wK0_n_forward_pipiL_ns->ProjectionY("nmom_forward_pipiL_ns");
+  TH1D* nmom_forward_pipS1385m_ns = (TH1D*)nmom_cosn_wK0_n_forward_pipS1385m_ns->ProjectionY("nmom_forward_pipS1385m_ns");
+  TH1D* nmom_forward_pimS1385p_ns = (TH1D*)nmom_cosn_wK0_n_forward_pimS1385p_ns->ProjectionY("nmom_forward_pimS1385p_ns");
+  TH1D* nmom_forward_S0pippim_ns = (TH1D*)nmom_cosn_wK0_n_forward_S0pippim_ns->ProjectionY("nmom_forward_S0pippim_ns");
+  TH1D* nmom_forward_L1520pi0_ns = (TH1D*)nmom_cosn_wK0_n_forward_L1520pi0_ns->ProjectionY("nmom_forward_L1520pi0_ns");
+  TH1D* nmom_forward_Sppim_ns = (TH1D*)nmom_cosn_wK0_n_forward_Sppim_ns->ProjectionY("nmom_forward_Sppim_ns");
+  TH1D* nmom_forward_Smpip_ns = (TH1D*)nmom_cosn_wK0_n_forward_Smpip_ns->ProjectionY("nmom_forward_Smpip_ns");
+  TH1D* nmom_forward_npipiL_ts = (TH1D*)nmom_cosn_wK0_n_forward_npipiL_ts->ProjectionY("nmom_forward_npipiL_ts");
+  
+  //1NA forward neutron mom. sum
+  TH1D* nmom_forward_1NA = (TH1D*)nmom_forward_ns->Clone("nmom_forward_1NA");
+  nmom_forward_1NA->Add(nmom_forward_pipiL_ns);
+  nmom_forward_1NA->Add(nmom_forward_pipS1385m_ns);
+  nmom_forward_1NA->Add(nmom_forward_pimS1385p_ns);
+  nmom_forward_1NA->Add(nmom_forward_S0pippim_ns);
+  nmom_forward_1NA->Add(nmom_forward_L1520pi0_ns);
+  nmom_forward_1NA->Add(nmom_forward_Sppim_ns);
+  nmom_forward_1NA->Add(nmom_forward_Smpip_ns);
+  nmom_forward_1NA->SetLineColor(2);
+  nmom_forward_1NA->Scale(scale_1NA);
+  nmom_forward_1NA->Draw("HEsame");
 
   //K0 momentum dist.
   TCanvas *cMom_K0 = new TCanvas("cMom_K0","cMom_K0");
@@ -1464,7 +1459,105 @@ void plot_K0()
   nmom_nmissmom_wK0_n_1NA->SetYTitle("nCDS mom. [GeV/c]");
   nmom_nmissmom_wK0_n_1NA->Draw("colz");    
 
+  
+  TCanvas *c6 = new TCanvas("c6","c6");
+  c6->cd();
+  nmom_cosK0_wK0_n_rdata->SetXTitle("cosK0");
+  nmom_cosK0_wK0_n_rdata->SetYTitle("nCDS mom. [GeV/c]");
+  nmom_cosK0_wK0_n_rdata->Draw("colz");
+  
+  TCanvas *c6_px = new TCanvas("c6_px","c6_px");
+  c6_px->cd();
+  nmom_cosK0_wK0_n_rdata->ProjectionX()->Draw();
+  const int bin200MeVc = nmom_cosK0_wK0_n_rdata->GetYaxis()->FindBin(0.2);
+  TH1D* py200b =  (TH1D*)nmom_cosK0_wK0_n_rdata->ProjectionX("py200b",0,bin200MeVc);
+  py200b->SetLineColor(2);
+  py200b->Draw("HEsame");
+  TH1D* py200a =  (TH1D*)nmom_cosK0_wK0_n_rdata->ProjectionX("py200a",bin200MeVc+1,100000);
+  py200a->SetLineColor(3);
+  py200a->Draw("HEsame");
 
+  TCanvas *c6_1NA = new TCanvas("c6_1NA","c6_1NA");
+  c6_1NA->cd();
+  TH2F* nmom_cosK0_wK0_n_1NA = (TH2F*)nmom_cosK0_wK0_n_ns->Clone("nmom_cosK0_wK0_n_1NA");
+  nmom_cosK0_wK0_n_1NA->Add(nmom_cosK0_wK0_n_S0pippim_ns);
+  nmom_cosK0_wK0_n_1NA->Add(nmom_cosK0_wK0_n_L1520pi0_ns);
+  nmom_cosK0_wK0_n_1NA->Add(nmom_cosK0_wK0_n_fSigma_ns_sum);
+  nmom_cosK0_wK0_n_1NA->Add(nmom_cosK0_wK0_n_pipiL_ns_sum);
+  nmom_cosK0_wK0_n_1NA->SetXTitle("cosK0");
+  nmom_cosK0_wK0_n_1NA->SetYTitle("nCDS mom. [GeV/c]");
+  nmom_cosK0_wK0_n_1NA->Draw("colz");
+  
+  TCanvas *c6_1NA_px = new TCanvas("c6_1NA_px","c6_1NA_px");
+  c6_1NA_px->cd();
+  nmom_cosK0_wK0_n_1NA->ProjectionX()->Draw();
+  TH1D* py200b_1NA =  (TH1D*)nmom_cosK0_wK0_n_1NA->ProjectionX("py200b_1NA",0,bin200MeVc);
+  py200b_1NA->SetLineColor(2);
+  py200b_1NA->Draw("HEsame");
+  TH1D* py200a_1NA =  (TH1D*)nmom_cosK0_wK0_n_1NA->ProjectionX("py200a_1NA",bin200MeVc+1,100000);
+  py200a_1NA->SetLineColor(3);
+  py200a_1NA->Draw("HEsame");
 
+  TCanvas *c6_pipiL = new TCanvas("c6_pipiL","c6_pipiL");
+  c6_pipiL->cd();
+  nmom_cosK0_wK0_n_pipiL_ns_sum->SetXTitle("cosK0");
+  nmom_cosK0_wK0_n_pipiL_ns_sum->SetYTitle("nCDS mom. [GeV/c]");
+  nmom_cosK0_wK0_n_pipiL_ns_sum->Draw("colz");
+  
+  TCanvas *c6_pipiL_px = new TCanvas("c6_pipiL_px","c6_pipiL_px");
+  c6_pipiL_px->cd();
+  nmom_cosK0_wK0_n_pipiL_ns_sum->ProjectionX()->Draw();
+  
+  TCanvas *c7 = new TCanvas("c7","c7");
+  c7->cd();
+  nmom_cosnmiss_wK0_n_rdata->SetXTitle("cos_miss");
+  nmom_cosnmiss_wK0_n_rdata->SetYTitle("nCDS mom. [GeV/c]");
+  nmom_cosnmiss_wK0_n_rdata->GetXaxis()->SetRangeUser(-0.2,1);
+  nmom_cosnmiss_wK0_n_rdata->Draw("colz");
+
+  TCanvas *c7_px = new TCanvas("c7_px","c7_px");
+  c7_px->cd();
+  nmom_cosnmiss_wK0_n_rdata->ProjectionX()->Draw();
+  const int bin200MeVc_2 = nmom_cosnmiss_wK0_n_rdata->GetYaxis()->FindBin(0.2);
+  TH1D* pxcosnmissb = nmom_cosnmiss_wK0_n_rdata->ProjectionX("cosnmissb",0,bin200MeVc_2);
+  pxcosnmissb->SetLineColor(2);
+  pxcosnmissb->Draw("same");
+  TH1D* pxcosnmissa = nmom_cosnmiss_wK0_n_rdata->ProjectionX("cosnmissa",bin200MeVc_2,100000000);
+  pxcosnmissa->SetLineColor(3);
+  pxcosnmissa->Draw("same");
+
+  TCanvas *c7_1NA = new TCanvas("c7_1NA","c7_1NA");
+  c7_1NA->cd();
+  TH2F* nmom_cosnmiss_wK0_n_1NA = (TH2F*)nmom_cosnmiss_wK0_n_ns->Clone("nmom_cosnmiss_wK0_n_1NA");
+  nmom_cosnmiss_wK0_n_1NA->Add(nmom_cosnmiss_wK0_n_S0pippim_ns);
+  nmom_cosnmiss_wK0_n_1NA->Add(nmom_cosnmiss_wK0_n_L1520pi0_ns);
+  nmom_cosnmiss_wK0_n_1NA->Add(nmom_cosnmiss_wK0_n_fSigma_ns_sum);
+  nmom_cosnmiss_wK0_n_1NA->Add(nmom_cosnmiss_wK0_n_pipiL_ns_sum);
+  nmom_cosnmiss_wK0_n_1NA->SetXTitle("cos_miss");
+  nmom_cosnmiss_wK0_n_1NA->SetYTitle("nCDS mom. [GeV/c]");
+  nmom_cosnmiss_wK0_n_1NA->GetXaxis()->SetRangeUser(-0.2,1);
+  nmom_cosnmiss_wK0_n_1NA->Draw("colz");
+  
+  TCanvas *c7_1NA_px = new TCanvas("c7_1NA_px","c7_1NA_px");
+  c7_1NA_px->cd();
+  nmom_cosnmiss_wK0_n_1NA->ProjectionX()->Draw();
+  TH1D* pxcosnmissb_1NA = nmom_cosnmiss_wK0_n_1NA->ProjectionX("cosnmissb_1NA",0,bin200MeVc_2);
+  pxcosnmissb_1NA->SetLineColor(2);
+  pxcosnmissb_1NA->Draw("same");
+  TH1D* pxcosnmissa_1NA = nmom_cosnmiss_wK0_n_1NA->ProjectionX("cosnmissa_1NA",bin200MeVc_2,100000000);
+  pxcosnmissa_1NA->SetLineColor(3);
+  pxcosnmissa_1NA->Draw("same");
+
+  TCanvas *c8 = new TCanvas("c8","c8");
+  c8->cd();
+  nmom_K0mom_n_pipiL_ns_sum->SetXTitle("K0 mom. [GeV/c]");
+  nmom_K0mom_n_pipiL_ns_sum->SetYTitle("nCDS mom. [GeV/c]");
+  nmom_K0mom_n_pipiL_ns_sum->Draw("colz");
+
+  TCanvas *c8_px = new TCanvas("c8_px","c8_px");
+  c8_px->cd();
+  nmom_K0mom_n_pipiL_ns_sum->ProjectionX()->Draw();
+
+  
   return;
 }
