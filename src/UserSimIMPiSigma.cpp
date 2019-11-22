@@ -48,7 +48,7 @@ const bool DoCDCRetiming = false;
 const double MOM_RES = 2.0; // MeV/c
 const bool IsVtxDoubleCheck = false;
 const bool UseDecayVtx = true;
-const bool IsolationCutFlag = 1;
+const int IsolationCutFlag = 2;
 // momentum resolution of the beam-line spectrometer
 // was evaluated to be 2.0 +/- 0.5 MeV/c (Hashimoto-D p.58)
 
