@@ -1406,7 +1406,7 @@ void plot_K0()
   //nmom_cosn_wK0_n_1NA->Scale(nmom_cosn_wK0_n_rdata->Integral()/nmom_cosn_wK0_n_1NA->Integral());
   nmom_cosn_wK0_n_1NA->RebinX(2);
   nmom_cosn_wK0_n_1NA->GetXaxis()->SetRangeUser(-1,0.2);
-  nmom_cosn_wK0_n_1NA->Draw("colz");                     
+  nmom_cosn_wK0_n_1NA->Draw("colz");
   
   TCanvas *cnmom_cosn_wK0_n_1NA_py = new TCanvas("cnmom_cosn_wK0_n_1NA_py","nmom_cosn_wK0_n_1NA_py");
   nmom_cosn_wK0_n_rdata->ProjectionX()->Draw("HE");
