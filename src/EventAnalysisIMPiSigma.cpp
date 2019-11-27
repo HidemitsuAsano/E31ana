@@ -110,7 +110,6 @@ private:
   int nFill_pippim;
   int nFill_npippim;
   //** counters for event abort **//
-  int nAbort_Trigger;
   int nAbort_nGoodTrack;
   int nAbort_CDSPID;
   int nAbort_nCDH;
@@ -138,9 +137,11 @@ private:
   TLorentzVector mom_pip;    // 4-momentum(pi+)
   TLorentzVector mom_pim;    // 4-momentum(pi-)
   TLorentzVector mom_n;      // 4-momentum(neutron)
+  TLorentzVector mom_n_beam;      // 4-momentum(neutron)
   TLorentzVector mom_n_Sp;  // 4-momentum(neutron),Sp mode assumption
   TLorentzVector mom_n_Sm;  // 4-momentum(neutron),Sm mode assumption
   double NeutralBetaCDH; // velocity of neutral particle on CDH from decay vtx 
+  double NeutralBetaCDH_beam; // velocity of neutral particle on CDH from decay vtx 
   double NeutralBetaCDH_vtx[2];//1:pip_vtx,2:pim_vtx  
   double dE;   // energy deposit on CDH [MeVee] (neutral candidate)
   int neutralseg;   //neutral candidate segment
@@ -313,9 +314,11 @@ void EventAnalysis::Initialize( ConfMan *conf )
   npippimTree->Branch( "mom_pip", &mom_pip );
   npippimTree->Branch( "mom_pim", &mom_pim );
   npippimTree->Branch( "mom_n", &mom_n );
+  npippimTree->Branch( "mom_n_beam", &mom_n_beam );
   npippimTree->Branch( "mom_n_Sp", &mom_n_Sp );
   npippimTree->Branch( "mom_n_Sm", &mom_n_Sm );
   npippimTree->Branch( "NeutralBetaCDH", &NeutralBetaCDH );
+  npippimTree->Branch( "NeutralBetaCDH_beam", &NeutralBetaCDH_beam );
   npippimTree->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
   npippimTree->Branch( "dE", &dE );
   npippimTree->Branch( "neutralseg", &neutralseg );
@@ -523,7 +526,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   CDC_Event_Number++;
   header->SetRunNumber(0);
   header->SetEventNumber(Event_Number);
-  
 
   //** copy class CDSTrackingMan objects **//
   *trackMan = *trackMan_CDC;
@@ -533,40 +535,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   cdsMan->Convert( tko, confMan );
   blMan->Convert( tko, confMan );
   trackMan->Calc( cdsMan, confMan, true);
-  
-  // Trigger Pattern
-  bool FiredTrigger[20]={false};
-  for( int i=0; i<20; i++ ){
-    int val = header->pattern(i);
-    if( 0<val && val<4095 ){
-      //std::cout << "trig. " << i << std::endl;
-      Tools::H1("Pattern",i,21,-0.5,20.5);
-      Tools::H1(Form("TPattern%d",i),val,4196,-0.5,4195.5);
-      FiredTrigger[i]=true;
-    }
-  }
 
-
-  for(int i=0;i<20;i++){
-    if(header->trigmode(i))  Tools::H1("TrigMode",i, 21,-0.5,20.5); 
-  }
-  int DAQFLAG=0;
-  for(int i=0;i<20;i++){
-    if(header->trigmode2(i)) 
-      {
-	Tools::H1("DAQMode",i,21,-0.5,20.5); 
-	DAQFLAG++;
-      }
-  }
-  if(DAQFLAG==0)  Tools::H1("DAQMode",18,21,-0.5,20.5); 
-  if(DAQFLAG==1)  Tools::H1("DAQMode",19,21,-0.5,20.5); 
-  if(DAQFLAG>1)   Tools::H1("DAQMode",20,21,-0.5,20.5); 
-  
-  if( !FiredTrigger[Trig_KCDH3] ){
-    Clear(nAbort_Trigger);
-    return true; 
-  }
-   
   const int nGoodTrack = trackMan->nGoodTrack();
   const int nallTrack = trackMan->nTrack();
   AllGoodTrack += nGoodTrack;
@@ -580,11 +549,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
   //CDH emean recalibrator
   static bool isState=false;
-  if(!isState){
-    std::cout << "***********************************************" << std::endl;
+  if(!isState){ 
+    std::cout << "***********************************************" << std::endl;   
     std::cout << "L." << __LINE__ << " CDH emean is recalibrated " << std::endl;
     std::cout << "correction factor " << cdscuts::CDHemeanCal << std::endl;
-    std::cout << "***********************************************" << std::endl;
+    std::cout << "***********************************************" << std::endl;   
     isState=true;
   }
   for( int i=0; i<cdsMan->nCDH(); i++ ){
@@ -598,11 +567,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     return true;
   }
   Tools::Fill1D( Form("EventCheck"), 2 );
-  
-  
+
   //** # of good CDS tracks cut **//
-  //if( nGoodTrack!=cdscuts::cds_ngoodtrack  ) { //require pi+,pi-
-  if( nGoodTrack!=cdscuts::cds_ngoodtrack && nallTrack!=cdscuts::cds_ngoodtrack ) { //require pi+,pi-
+  if( nGoodTrack!=cdscuts::cds_ngoodtrack  ) { //require pi+,pi-
+  //if( nGoodTrack!=cdscuts::cds_ngoodtrack && nallTrack!=cdscuts::cds_ngoodtrack ) { //require pi+,pi-
     Clear( nAbort_nGoodTrack );
     return true;
   }
@@ -614,6 +582,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   //** BLDC tracking **//
   bltrackMan->DoTracking(blMan,confMan,true,true);
   //Get T0
+  int t0seg=-1;
+  ctmT0 = Util::AnalyzeT0(blMan,confMan,t0seg);
   if(ctmT0<-9000){
     Clear( nAbort_nT0 );
     Tools::Fill1D( Form("EventCheck"), 15 );
@@ -627,23 +597,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     return true;
   }
   Tools::Fill1D( Form("EventCheck"), 4 );
-
-  double firsthittime=-1.;
-  double lasthittime=0.;
-  for( int i=0; i<cdsMan->nCDH(); i++ ){
-    if((cdsMan->CDH(i)->CheckRange()) && (cdsMan->CDH(i)->ctmean()<cdscuts::tdc_cdh_max)){
-
-      if(lasthittime< cdsMan->CDH(i)->ctmean()) lasthittime = cdsMan->CDH(i)->ctmean();
-      if(firsthittime<0.0){
-        firsthittime = cdsMan->CDH(i)->ctmean();
-      }else if(firsthittime>cdsMan->CDH(i)->ctmean()){
-        firsthittime = cdsMan->CDH(i)->ctmean();
-      }
-    }
-  }
-  int t0seg=-1;
-  ctmT0 = Util::AnalyzeT0(blMan,confMan,t0seg);
-  Tools::H2("T0lasttimeCDH",lasthittime-firsthittime ,lasthittime-ctmT0,500,0,100,500,0,100);
 
   const int blstatus = Util::EveSelectBeamline(bltrackMan,trackMan,confMan,blc1GoodTrackID,blc2GoodTrackID,bpcGoodTrackID);
   
@@ -672,7 +625,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   }
   
   Tools::Fill1D( Form("EventCheck"), 5 );
-  
 
 
   //BLC1-D5-BLC2 analysis and chi2 selection
@@ -986,18 +938,22 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       double nlen_vtx[2];
       if(UseDecayVtx) nlen = (Pos_CDH-vtx_dis).Mag();  
       else nlen = (Pos_CDH-vtx_react).Mag();
+      
+      Tools::Fill2D(Form("ntof_nlen"),ntof,nlen);
       //nlen_vtx[0] = (Pos_CDH-vtx_pip).Mag();
       //nlen_vtx[1] = (Pos_CDH-vtx_pim).Mag();
-      
+      double nlen_beam = (Pos_CDH-vtx_beam).Mag();
+
       nlen_vtx[0] = (Pos_CDH-CA_pip_pippim).Mag();
       nlen_vtx[1] = (Pos_CDH-CA_pim_pippim).Mag();
-      Tools::Fill2D(Form("ntof_nlen"),ntof,nlen);
       if(Verbosity>10) std::cout << "L." << __LINE__ << " flight length " << nlen << std::endl;
       NeutralBetaCDH = nlen/ntof/(Const*100.);
+      NeutralBetaCDH_beam = nlen_beam/ntof/(Const*100.);
       for(int ivtx=0;ivtx<2;ivtx++){
         NeutralBetaCDH_vtx[ivtx] = nlen_vtx[ivtx]/ntof_vtx[ivtx]/(Const*100.);
       }
       double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0;
+      double tmp_mom_beam = NeutralBetaCDH_beam<1. ? nMass*NeutralBetaCDH_beam/sqrt(1.-NeutralBetaCDH_beam*NeutralBetaCDH_beam) : 0;
       double tmp_mom_vtx[2];
       for(int ivtx=0;ivtx<2;ivtx++){
         tmp_mom_vtx[ivtx] = NeutralBetaCDH_vtx[ivtx]<1. ? nMass*NeutralBetaCDH_vtx[ivtx]/sqrt(1.-NeutralBetaCDH_vtx[ivtx]*NeutralBetaCDH_vtx[ivtx]) : 0;
@@ -1014,6 +970,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       TLorentzVector LVec_pim; // 4-Momentum(pi-)
       TLorentzVector LVec_pip; // 4-Momentum(pi+)
       TLorentzVector LVec_n;   // 4-Momentum(n) (CDS)
+      TLorentzVector LVec_n_beam;   // 4-Momentum(n) (CDS)
       TLorentzVector LVec_n_vtx[2];   // 4-Momentum(n) (CDS) //decay vertex 0: pip (Spmode), 1:pim (Smmode)
       TLorentzVector LVec_nmiss; // 4-Momentum(n_miss)
       TLorentzVector LVec_nmiss_vtx[2]; // 4-Momentum(n_miss)
@@ -1034,6 +991,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       }else{
         P_n = tmp_mom*((Pos_CDH-vtx_react).Unit());
       }
+      TVector3 P_n_beam = tmp_mom_beam*((Pos_CDH-vtx_beam).Unit());
       TVector3 P_n_vtx[2];
       //P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-vtx_pip).Unit());
       //P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-vtx_pim).Unit());
@@ -1043,6 +1001,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       LVec_pim.SetVectM( P_pim, piMass );
       LVec_pip.SetVectM( P_pip, piMass );
       LVec_n.SetVectM(   P_n,   nMass );//CDS n
+      LVec_n_beam.SetVectM(   P_n_beam,   nMass );//CDS n
       for(int ivtx=0;ivtx<2;ivtx++){
         LVec_n_vtx[ivtx].SetVectM(  P_n_vtx[ivtx],   nMass );//CDS n
       }
@@ -1139,11 +1098,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         Tools::Fill2D(Form("Vtx_XY_fid"),vtxpim_mean.X(),vtxpim_mean.Y());
 
 
+        Tools::Fill2D( Form("NMomCDHtime"),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
+        Tools::Fill2D( Form("NMomCDHtime%d",CDHSeg),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
         Tools::Fill2D( Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
         Tools::Fill2D( Form("CDHzNeutraltime"),Pos_CDH.z(),ncdhhit->ctmean()-ctmT0-beamtof);
         Tools::Fill2D( Form("CDH%dzNeutraltime",CDHSeg),Pos_CDH.z(),ncdhhit->ctmean()-ctmT0-beamtof);
-        Tools::Fill2D( Form("NMomCDHtime"),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
-        Tools::Fill2D( Form("NMomCDHtime%d",CDHSeg),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
         Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
         Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
 
@@ -1228,8 +1187,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             // K0 selection
             Tools::Fill2D( Form("dE_betainv_fid_beta_dE_wK0"), 1./NeutralBetaCDH, ncdhhit->emean() );
             Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_wK0"), mm_mass, P_missn.Mag() );
-            Tools::Fill2D( Form("NMomCDHtime_wK0"),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
-            Tools::Fill2D( Form("NMomCDHtime%d_wK0",CDHSeg),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
           }//K0 rejection
 
           if(K0rejectFlag && MissNFlag) {
@@ -1261,12 +1218,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
           if( MissNFlag ) {
             Tools::Fill1D( Form("IMnpipi_n"), (LVec_n+LVec_pim+LVec_pip).M() );
-            Tools::Fill2D( Form("MMnmiss_IMnpipi_n"),(LVec_n+LVec_pim+LVec_pip).M(), LVec_nmiss.M());
+            Tools::Fill2D( Form("MMnmiss_IMnpipi_n"),(LVec_n+LVec_pim+LVec_pip).M(), LVec_nmiss.Mag());
           }
 
           if( MissNFlag && (SigmaPFlag || SigmaMFlag)) {
             Tools::Fill1D( Form("IMnpipi_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M() );
-            Tools::Fill2D( Form("MMnmiss_IMnpipi_wSid_n"),(LVec_n+LVec_pim+LVec_pip).M(), LVec_nmiss.M());
+            Tools::Fill2D( Form("MMnmiss_IMnpipi_wSid_n"),(LVec_n+LVec_pim+LVec_pip).M(), LVec_nmiss.Mag());
           }
 
           if( MissNFlag && K0rejectFlag && (SigmaPFlag || SigmaMFlag)) {
@@ -1280,7 +1237,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             //cos theta
             Tools::Fill2D( Form("Cosn_IMnpipi_woK0_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M(), cos_n );
             //
-            Tools::Fill2D( Form("MMnmiss_IMnpipi_woK0_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M(), LVec_nmiss.M());
+            Tools::Fill2D( Form("MMnmiss_IMnpipi_woK0_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M(), LVec_nmiss.Mag());
             Tools::Fill2D( Form("nmom_IMnpipi_woK0_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M(), LVec_n.P());
 
             //momentum transfer
@@ -1475,6 +1432,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         mom_pip = LVec_pip;        // 4-momentum(pi+)
         mom_pim = LVec_pim;        // 4-momentum(pi-)
         mom_n = LVec_n;            // 4-momentum(neutron)
+        mom_n_beam = LVec_n_beam;            // 4-momentum(neutron)
         mom_n_Sp = LVec_n_vtx[0];
         mom_n_Sm = LVec_n_vtx[1];
         dE = ncdhhit->emean();
@@ -1533,7 +1491,6 @@ void EventAnalysis::Finalize()
   }
 
   std::cout<<"====== Abort counter ========="<<std::endl;
-  std::cout<<" nAbort_Trigger       = "<<nAbort_Trigger << std::endl;
   std::cout<<" nAbort_nGoodTrack    = "<<nAbort_nGoodTrack<<std::endl;
   std::cout<<" nAbort_CDSPID        = "<<nAbort_CDSPID<<std::endl;
   std::cout<<" nAbort_nCDH          = "<<nAbort_nCDH<<std::endl;
@@ -1651,6 +1608,7 @@ void EventAnalysis::Clear( int &nAbort)
 
   //CDS
   NeutralBetaCDH=-9999.;
+  NeutralBetaCDH_beam=-9999.;
   NeutralBetaCDH_vtx[0]=-9999.;
   NeutralBetaCDH_vtx[1]=-9999.;
 

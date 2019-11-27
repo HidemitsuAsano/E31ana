@@ -1299,13 +1299,12 @@ bool Util::IsFromSigma(MCData *mcdata,DetectorHit *dhit)
 }
 
 
-
-TLorentzVector* Util::GetForwardNeutralLVec(BeamLineHitMan *blman,const TVector3 *vtxpos, const double t0time,const double beamtof,const double thre)
+/*
+TLorentzVector* Util::GetForwardNeutralLVec(BeamLineHitMan *blman,const TVector3 vtxpos, const double t0time,const double beamtof,const double thre)
 {
   TLorentzVector *fNLVec = NULL;
   
   double fTime=0.0;
-  TVector3 fHitPos;
   std::vector<std::vector<HodoscopeLikeHit*> > NChits=Util::getNChits(blman);
   std::vector<HodoscopeLikeHit*>  NChits2=Util::getHodo(blman);
   
@@ -1350,13 +1349,19 @@ TLorentzVector* Util::GetForwardNeutralLVec(BeamLineHitMan *blman,const TVector3
     }
   }
 
-  
+  TVector3 NChitPos = nc_hit->pos();
   double ForwardNTof = fTime-t0time-beamtof;
-  double ForwardTof = (nc_hit->pos()-vtxpos).Mag();
+  double Forwardl = (NChitPos-vtxpos).Mag();
+  if(MCFlag)Forwardl-=2.5;
+  double ForwardBeta=Forwardl/(ForwardNTof*100.*Const);
+  //Neutron
+  Tools::H1("ForwardBetaInv",1/ForwardBeata);
+  TVector3 momvec;
+  double mom=nMass*ForwardBeta/sqrt(1.0-ForwardBeta*ForwardBeata);
+  momvec = NhitPos-vtxpos;
+  momvec.SetMag(mom);
+
   
-
-
-
 
   return fNLVec;
 }
@@ -1388,4 +1393,4 @@ std::vector<HodoscopeLikeHit*> Util::getHodo(BeamLineHitMan *blman)
     }
   }
   return hits;
-}
+}*/

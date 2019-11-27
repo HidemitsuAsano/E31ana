@@ -80,7 +80,7 @@ namespace Util
    double FillAncestryVertexR(MCData *mcdata,DetectorHit *dhit,double dE);
    Track *FindTrackFromMcIndex(MCData *mcdata, int trackid);
    bool IsFromSigma(MCData *mcdata,DetectorHit *dhit);
-   TLorentzVector *GetForwardNeutralLVec(BeamLineHitMan *blman,const TVector3 *vtxpos,const double t0time,const double beamtof, const double thre);
+   TLorentzVector *GetForwardNeutralLVec(BeamLineHitMan *blman,const TVector3 vtxpos,const double t0time,const double beamtof, const double thre);
    
    std::vector<std::vector<HodoscopeLikeHit*> > getNChits(BeamLineHitMan *blman);
    std::vector<HodoscopeLikeHit*>  getHodo(BeamLineHitMan *blman);
