@@ -48,7 +48,7 @@ const bool DoCDCRetiming = false;
 const double MOM_RES = 2.0; // MeV/c
 const bool IsVtxDoubleCheck = false;
 const bool UseDecayVtx = true;
-const int IsolationCutFlag = 2;
+const int IsolationCutFlag = 1;
 // momentum resolution of the beam-line spectrometer
 // was evaluated to be 2.0 +/- 0.5 MeV/c (Hashimoto-D p.58)
 
@@ -75,9 +75,11 @@ TLorentzVector mom_target; // 4-momentum(target)
 TLorentzVector mom_pip;    // 4-momentum(pi+)
 TLorentzVector mom_pim;    // 4-momentum(pi-)
 TLorentzVector mom_n;      // 4-momentum(neutron)
+TLorentzVector mom_n_beam;      // 4-momentum(neutron)
 TLorentzVector mom_n_Sp;      // 4-momentum(neutron)
 TLorentzVector mom_n_Sm;      // 4-momentum(neutron)
 double NeutralBetaCDH; // veracity of neutral particle on CDH
+double NeutralBetaCDH_beam; // veracity of neutral particle on CDH
 double NeutralBetaCDH_vtx[2]; // veracity of neutral particle on CDH
 double dE;   // energy deposit on CDH
 int neutralseg;   // energy deposit on CDH
@@ -89,6 +91,8 @@ TVector3 vtx_pim_cdc;
 TVector3 CA_pip;
 TVector3 CA_pim;
 TVector3 CDH_Pos;
+TVector3 CDH_Pos_pip;
+TVector3 CDH_Pos_pim;
 int run_num;   // run number
 int event_num; // event number
 int block_num; // block number
@@ -271,9 +275,11 @@ int main( int argc, char** argv )
   npippimTree->Branch( "mom_pip", &mom_pip );
   npippimTree->Branch( "mom_pim", &mom_pim );
   npippimTree->Branch( "mom_n", &mom_n );
+  npippimTree->Branch( "mom_n_beam", &mom_n_beam );
   npippimTree->Branch( "mom_n_Sp", &mom_n_Sp );
   npippimTree->Branch( "mom_n_Sm", &mom_n_Sm );
   npippimTree->Branch( "NeutralBetaCDH", &NeutralBetaCDH );
+  npippimTree->Branch( "NeutralBetaCDH_beam", &NeutralBetaCDH_beam );
   npippimTree->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx);
   npippimTree->Branch( "dE", &dE );
   npippimTree->Branch( "neutralseg", &neutralseg );
@@ -285,6 +291,8 @@ int main( int argc, char** argv )
   npippimTree->Branch( "CA_pip",&CA_pip);
   npippimTree->Branch( "CA_pim",&CA_pim);
   npippimTree->Branch( "CDH_Pos",&CDH_Pos);
+  npippimTree->Branch( "CDH_Pos_pim",&CDH_Pos_pim);
+  npippimTree->Branch( "CDH_Pos_pip",&CDH_Pos_pip);
   //npippimTree->Branch( "run_num", &run_num );
   //npippimTree->Branch( "event_num", &event_num );
   //npippimTree->Branch( "block_num", &block_num );
@@ -960,11 +968,13 @@ int main( int argc, char** argv )
     
     std::vector <int> vCDHseg;
     int nIDedTrack=0;
+    TVector3 pim_cdhprojected;
+    TVector3 pip_cdhprojected;
     if(IsrecoPassed){
           nIDedTrack = Util::CDSChargedAna(
           DoCDCRetiming,
           bpctrack, cdsMan, cdstrackMan, confMan, blMan,
-          LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,true);
+          LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,pim_cdhprojected,pip_cdhprojected,true);
       if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
       if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );
       if(nIDedTrack==-9){
@@ -1082,13 +1092,13 @@ int main( int argc, char** argv )
       // isolation cut //
       int flag_isolation = 0;
       if(IsolationCutFlag==2){
-        flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan);
-        flag_isolation+= Util::GetCDHTwoSegAwayNHits(NeutralCDHseg,CDHhit_list);
+        flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan,true);
+        flag_isolation+= Util::GetCDHTwoSegAwayNHits(NeutralCDHseg,CDHhit_list,true);
       }else if(IsolationCutFlag==1){
-        flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan);
+        flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan,true);
       }else{
         //check cdh hit position anyway, but don't apply isolation cuts 
-        flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan);
+        flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan,true);
         flag_isolation = 0;
       }
       if( flag_isolation ){
@@ -1212,6 +1222,7 @@ int main( int argc, char** argv )
         //double ntof = ncdhhit->ctmean();
         const double ntof_vtx[2] = {ncdhhit->ctmean()-ctmT0-beamtof_vtx[0], ncdhhit->ctmean()-ctmT0-beamtof_vtx[1]};
         double nlen = (Pos_CDH-vtx_dis).Mag();
+        double nlen_beam = (Pos_CDH-vtx_beam).Mag();
         double nlen_vtx[2];
         Tools::Fill2D(Form("ntof_nlen"),ntof,nlen);
         //nlen_vtx[0] = (Pos_CDH-vtx_pip).Mag();
@@ -1219,10 +1230,12 @@ int main( int argc, char** argv )
         nlen_vtx[0] = (Pos_CDH-CA_pip_pippim).Mag();
         nlen_vtx[1] = (Pos_CDH-CA_pim_pippim).Mag();
         NeutralBetaCDH = nlen/ntof/(Const*100.);
+        NeutralBetaCDH_beam = nlen_beam/ntof/(Const*100.);
         for(int ivtx=0;ivtx<2;ivtx++){
           NeutralBetaCDH_vtx[ivtx] = nlen_vtx[ivtx]/ntof_vtx[ivtx]/(Const*100.);
         }
         double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0.;
+        double tmp_mom_beam = NeutralBetaCDH_beam<1. ? nMass*NeutralBetaCDH_beam/sqrt(1.-NeutralBetaCDH_beam*NeutralBetaCDH_beam) : 0.;
         double tmp_mom_vtx[2];
         for(int ivtx=0;ivtx<2;ivtx++){
           tmp_mom_vtx[ivtx] = NeutralBetaCDH_vtx[ivtx]<1. ? nMass*NeutralBetaCDH_vtx[ivtx]/sqrt(1.-NeutralBetaCDH_vtx[ivtx]*NeutralBetaCDH_vtx[ivtx]) : 0;
@@ -1238,6 +1251,7 @@ int main( int argc, char** argv )
         TLorentzVector LVec_pim; // 4-Momentum(pi-)
         TLorentzVector LVec_pip; // 4-Momentum(pi+)
         TLorentzVector LVec_n;   // 4-Momentum(n)
+        TLorentzVector LVec_n_beam;   // 4-Momentum(n)
         TLorentzVector LVec_n_vtx[2];   // 4-Momentum(n)
         TLorentzVector LVec_nmiss; // 4-Momentum(n_miss)
         TLorentzVector LVec_nmiss_vtx[2]; // 4-Momentum(n_miss)
@@ -1249,6 +1263,7 @@ int main( int argc, char** argv )
           std::cout<<" !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
         }
         TVector3 P_n = tmp_mom*((Pos_CDH-vtx_dis).Unit());
+        TVector3 P_n_beam = tmp_mom_beam*((Pos_CDH-vtx_beam).Unit());
 	
         if(Verbosity_) std::cout << tmp_mom<<" ("<<P_n.CosTheta()<<" , "<<P_n.Phi()*360./TwoPi<<")"<<std::endl;
 
@@ -1261,6 +1276,7 @@ int main( int argc, char** argv )
         LVec_pim.SetVectM( P_pim, piMass );
         LVec_pip.SetVectM( P_pip, piMass );
         LVec_n.SetVectM(   P_n,   nMass );//CDS n
+        LVec_n_beam.SetVectM(   P_n_beam,   nMass );//CDS n
         for(int ivtx=0;ivtx<2;ivtx++){
           LVec_n_vtx[ivtx].SetVectM(  P_n_vtx[ivtx],   nMass );//CDS n
         }
@@ -1822,6 +1838,7 @@ int main( int argc, char** argv )
             mom_pip = LVec_pip;        // 4-momentum(pi+)
             mom_pim = LVec_pim;        // 4-momentum(pi-)
             mom_n = LVec_n;            // 4-momentum(neutron)
+            mom_n_beam = LVec_n_beam;            // 4-momentum(neutron)
             // beta is already filled
             vtx_reaction = vtx_react; // vertex(reaction)
             vtx_pip_beam = vtx_beam_wpip;
@@ -1831,6 +1848,8 @@ int main( int argc, char** argv )
             CA_pip = CA_pip_pippim;
             CA_pim = CA_pim_pippim;
             CDH_Pos = Pos_CDH;
+            CDH_Pos_pim = pim_cdhprojected;
+            CDH_Pos_pip = pip_cdhprojected;
             TLorentzVector mcmom_ncdspi = TL_gene[genID[kin::ncds]]+TL_gene[kin::pip_g2];
             //std::cout << __LINE__ << mcmom_ncdspi.M() << std::endl;
             mc_nparticle = nparticle;
@@ -1951,6 +1970,7 @@ void InitTreeVal()
   mom_pip.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);   // 4-momentum(pi+)
   mom_pim.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);    // 4-momentum(pi-)
   mom_n.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // 4-momentum(neutron)
+  mom_n_beam.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // 4-momentum(neutron)
   mom_n_Sp.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.) ;      // 4-momentum(neutron)
   mom_n_Sm.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.) ;      // 4-momentum(neutron)
   NeutralBetaCDH=-9999.; // veracity of neutral particle on CDH
@@ -1966,6 +1986,8 @@ void InitTreeVal()
   CA_pip.SetXYZ(-9999., -9999., -9999.);
   CA_pim.SetXYZ(-9999., -9999., -9999.);
   CDH_Pos.SetXYZ(-9999., -9999., -9999.);
+  CDH_Pos_pim.SetXYZ(-9999., -9999., -9999.);
+  CDH_Pos_pip.SetXYZ(-9999., -9999., -9999.);
   run_num=-9999;   // run number
   event_num=-9999; // event number
   block_num=-9999; // block number
