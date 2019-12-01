@@ -152,7 +152,9 @@ private:
   TVector3 vtx_pim_cdc;//
   TVector3 CA_pip;//Closest Approach Point of CDS pip-pim tracks
   TVector3 CA_pim;//Closest Approach Point of CDS pip-pim tracks
-  TVector3 CDH_Pos;
+  TVector3 CDH_Pos;//neutron candidate
+  TVector3 CDH_Pos_pim;//pim CDC track projected position at CDH
+  TVector3 CDH_Pos_pip;//pip CDC track projected position at CDH
   int run_num;   // run number
   int event_num; // event number
   int block_num; // block number
@@ -330,6 +332,8 @@ void EventAnalysis::Initialize( ConfMan *conf )
   npippimTree->Branch( "CA_pip",&CA_pip);
   npippimTree->Branch( "CA_pim",&CA_pim);
   npippimTree->Branch( "CDH_Pos",&CDH_Pos);
+  npippimTree->Branch( "CDH_Pos_pip",&CDH_Pos_pip);
+  npippimTree->Branch( "CDH_Pos_pim",&CDH_Pos_pim);
   //npippimTree->Branch( "run_num", &run_num );
   //npippimTree->Branch( "event_num", &event_num );
   //npippimTree->Branch( "block_num", &block_num );
@@ -686,10 +690,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
   std::vector <int> vCDHseg;//vector of CDH seg. 
   // PID of CDS tracks //
+  TVector3 pim_cdhprojected;
+  TVector3 pip_cdhprojected;
   const int nIDedTrack = Util::CDSChargedAna(
     DoCDCRetiming,
     bpctrack, cdsMan, trackMan, confMan,blMan, 
-    LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID);
+    LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,pim_cdhprojected,pip_cdhprojected);
   if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
   if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );
   if(nIDedTrack==-9) Tools::Fill1D( Form("EventCheck"), 9 );
@@ -723,6 +729,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         Tools::Fill2D( Form("CDHdE_pippim"),cdsMan->CDH(i)->seg(),cdsMan->CDH(i)->emean());
       }
     }
+
     //added Jul.28th,2019
     //purpose 
     for( int it=0; it<trackMan->nGoodTrack(); it++ ) {
@@ -800,7 +807,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         }
         std::cerr<<std::endl;
       }//if Verbosity
-    }
+    }//NeutralCDHseg check
     
     //** isolation cut **//
     int flag_isolation = 0;
@@ -1445,7 +1452,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         vtx_pim_cdc = vtx_pim;
         CA_pip = CA_pip_pippim;
         CA_pim = CA_pim_pippim;
-        CDH_Pos = Pos_CDH;
+        CDH_Pos = Pos_CDH;//neutron hit pos
+        CDH_Pos_pim = pim_cdhprojected;
+        CDH_Pos_pip = pip_cdhprojected;
         run_num   = confMan->GetRunNumber(); // run number
         event_num = Event_Number;            // event number
         block_num = Block_Event_Number;      // block number
@@ -1622,7 +1631,8 @@ void EventAnalysis::Clear( int &nAbort)
   CA_pip.SetXYZ(-9999.,-9999.,-9999.);
   CA_pim.SetXYZ(-9999.,-9999.,-9999.);
   CDH_Pos.SetXYZ(-9999.,-9999.,-9999.);
-
+  CDH_Pos_pim.SetXYZ(-9999.,-9999.,-9999.);
+  CDH_Pos_pip.SetXYZ(-9999.,-9999.,-9999.);
 
   return;
 }

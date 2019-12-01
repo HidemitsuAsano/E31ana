@@ -89,7 +89,8 @@ bool Util::IsForwardCharge(BeamLineHitMan *blman)
 //4, cdsman
 //returns # of neighboring hits of CDH segments listed in vector cdhseg
 //used for Isolation cuts of neutral particle candidates
-int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector <int> &segall, const std::vector <int> &pippimhit,CDSHitMan *cdsman )
+int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector <int> &segall, 
+                                 const std::vector <int> &pippimhit,CDSHitMan *cdsman, bool MCFlag )
 {
   int NNeighboringHits=0;
   for( int ineuseg=0; ineuseg<(int)seg.size(); ineuseg++ ) {
@@ -108,6 +109,10 @@ int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector
         HodoscopeLikeHit *pippimcdhhit = cdsman->CDH(cdhpippimhit);
         double ncdhz = -1.0*ncdhhit->hitpos();
         double pippimcdhz = -1.0*pippimcdhhit->hitpos();
+        if(MCFlag){
+          ncdhz *= -1.0;
+          pippimcdhz *= -1.0;
+        }
         Tools::Fill2D( Form("diff2D_CDH"), seg[ineuseg]-pippimhit[iseg],ncdhz-pippimcdhz );
       }
       //CDH has 36 segments. # of hits on neghiboring cdh segments
@@ -136,6 +141,10 @@ int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector
         HodoscopeLikeHit *pippimcdhhit = cdsman->CDH(cdhpippimhit);
         double ncdhz = -1.0*ncdhhit->hitpos();
         double pippimcdhz = -1.0*pippimcdhhit->hitpos();
+        if(MCFlag){
+          ncdhz *= -1.0;
+          pippimcdhz *= -1.0;
+        }
         Tools::Fill2D( Form("diff2D_CDH_pippim"), seg[ineuseg]-pippimhit[iseg],ncdhz-pippimcdhz );
       }
     }
@@ -147,7 +156,7 @@ int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector
 //returns # of CDH hits which is 2 segment away from 
 //CDH segments listed in vector cdhseg
 //used for Isolation cuts of neutral particle candidates
-int Util::GetCDHTwoSegAwayNHits(const std::vector <int> &seg, const std::vector <int> &segall )
+int Util::GetCDHTwoSegAwayNHits(const std::vector <int> &seg, const std::vector <int> &segall, bool MCFlag )
 {
   int NTwoSegAwayHits=0;
   for( int ineuseg=0; ineuseg<(int)seg.size(); ineuseg++ ) {
@@ -273,7 +282,7 @@ double Util::AnaBeamSpec(ConfMan *confman, BeamLineTrackMan *bltrackman,const in
 //output
 //1. cdhseg: vector of CDH segment # which is used for charged particle analysys
 //2. pimid,pipid, kmid, protonid : vector of track ID which is IDed to pi-,pii+,K-,proton respectively 
-//
+//3. pim_projected, pip_projected: CDC track projected position on the CDH segment
 
 int Util::CDSChargedAna(const bool docdcretiming, 
                         LocalTrack* bpctrack,
@@ -288,6 +297,8 @@ int Util::CDSChargedAna(const bool docdcretiming,
                         std::vector <int> &pipid,
                         std::vector <int> &kmid,
                         std::vector <int> &protonid,
+                        TVector3 &pim_projected,
+                        TVector3 &pip_projected,
                         const bool MCFlag)
 {
   int CDHseg=-1;
@@ -442,7 +453,8 @@ int Util::CDSChargedAna(const bool docdcretiming,
       EnergyLossOK = false;
       continue;
     }
-
+    
+    TVector3 cdh_projected;
     if(
        chi2OK && 
        CDHseg1hitOK && 
@@ -452,7 +464,9 @@ int Util::CDSChargedAna(const bool docdcretiming,
        EnergyLossOK && 
       ( (pid==CDS_PiMinus) || (pid==CDS_PiPlus) || (pid==CDS_Proton)) 
       ){
-        Util::AnaCDHHitPos(tof,beta_calc,bpctrack,LVecbeam,ctmt0,track,cdsman,confman,blman,correctedtof,pid,MCFlag);
+        Util::AnaCDHHitPos(tof,beta_calc,bpctrack,LVecbeam,ctmt0,track,cdsman,confman,blman,correctedtof,pid,cdh_projected,MCFlag);
+        if(pid==CDS_PiMinus) pim_projected = cdh_projected;
+        else if(pid==CDS_PiPlus) pip_projected = cdh_projected;
     }
 
     if( pid==CDS_PiMinus ) {
@@ -698,11 +712,13 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
                  BeamLineHitMan *blman,
                  const double correctedtof,
                  const int pid,
+                 TVector3 &cdh_projected,
                  const bool MCFlag
                  )
 {
   //projected position of the track at the CDH segment at the surface (r=54.4 cm)
   TVector3 track_pos = track->CDHVertex();
+  cdh_projected = track_pos;
   TVector3 hit_pos;
   if( track->nCDHHit()!=1 ){
     std::cerr<<" #of CDH hit / track is not 1 !!! continue;"<<std::endl;
@@ -929,11 +945,13 @@ void Util::AnaMcData(MCData *mcdata,
     int parentProcessID;
     double dE;
     double mom;
+    TVector3 calc_mom;
     double vtx_r;
     double vtx_r_g1parent;
     double vtx_r_g2parent;
     DetectorHit *dhitncan;
     double time;
+    bool IsFromDecay;
     NcanInfo(){
       pdg=-9999;
       parentpdg=-9999;
@@ -942,11 +960,13 @@ void Util::AnaMcData(MCData *mcdata,
       parentProcessID=-1;
       dE=0.0;
       mom=0.0;
+      calc_mom.SetXYZ(999.,999.,999.);
       vtx_r=0.0;
       vtx_r_g1parent=0.0;
       vtx_r_g2parent=0.0;
       dhitncan=NULL;
       time=0.0;
+      IsFromDecay=false;
     }
   };
   

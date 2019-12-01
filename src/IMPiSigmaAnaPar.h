@@ -94,10 +94,20 @@ namespace anacuts {
   const double neutron_MIN = 0.85;
   const double neutron_MAX = 1.03;
 
-  const double Sigmap_MIN = 1.17;
-  const double Sigmap_MAX = 1.21;
-  const double Sigmam_MIN = 1.18;
-  const double Sigmam_MAX = 1.22;
+  const double nmomcut = 0.14;
+  //const double Sigmap_MIN = 1.17;
+  //const double Sigmap_MAX = 1.21;
+  //const double Sigmam_MIN = 1.18;
+  //const double Sigmam_MAX = 1.22;
+  const double Sigma_NSigmacut = 2.0;
+  const double Sigmap_center = 1.18911;
+  const double Sigmap_sigma = 0.00540844;
+  const double Sigmap_MIN = Sigmap_center-Sigma_NSigmacut*Sigmap_sigma;   
+  const double Sigmap_MAX = Sigmap_center+Sigma_NSigmacut*Sigmap_sigma;
+  const double Sigmam_center = 1.19723;
+  const double Sigmam_sigma = 0.00601265;
+  const double Sigmam_MIN = Sigmam_center-Sigma_NSigmacut*Sigmam_sigma;
+  const double Sigmam_MAX = Sigmam_center+Sigma_NSigmacut*Sigmam_sigma;  
 }
 
 namespace anacuts_lpim {

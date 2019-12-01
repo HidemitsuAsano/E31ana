@@ -22,9 +22,10 @@ namespace Util
 
   int GetCDHMul(CDSHitMan *cdsman,const int ntrack=0, const bool MCFlag=false);
   bool IsForwardCharge(BeamLineHitMan *blman);
-  int GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector <int> &allhit, const std::vector <int> &pippimseg,CDSHitMan *cdsman);
+  int GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector <int> &allhit, 
+  const std::vector <int> &pippimseg,CDSHitMan *cdsman, bool MCFlag=false);
   
-  int GetCDHTwoSegAwayNHits(const std::vector <int> &seg, const std::vector <int> &allhit);
+  int GetCDHTwoSegAwayNHits(const std::vector <int> &seg, const std::vector <int> &allhit, bool MCFlag=false);
   
   
   int GetNHitsCDCOuter(TVector3 PosCDH, CDSHitMan *cdsman, const double rangedeg=15.0);
@@ -45,6 +46,8 @@ namespace Util
                     std::vector <int> &pipid,
                     std::vector <int> &kmid,
                     std::vector <int> &protonid,
+                    TVector3 &pim_projected,
+                    TVector3 &pip_projected,
                     const bool MCFlag=false
                     );
   double AnalyzeT0(BeamLineHitMan *blman, ConfMan *confman,int &t0seg);
@@ -66,6 +69,7 @@ namespace Util
                  BeamLineHitMan *blman,
                  const double correctedtof,
                  const int pid,
+                 TVector3 &pos_cdhprojected,
                  const bool MCFlag=false
                  );
    //MC only
