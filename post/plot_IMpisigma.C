@@ -133,9 +133,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   tree->SetBranchAddress( "mom_pip", &LVec_pip );
   tree->SetBranchAddress( "mom_pim", &LVec_pim );
   tree->SetBranchAddress( "mom_n", &LVec_n );
+  tree->SetBranchAddress( "mom_n_beam", &LVec_n_beam );//from v192
   tree->SetBranchAddress( "mom_n_Sp", &LVec_n_Sp );
   tree->SetBranchAddress( "mom_n_Sm", &LVec_n_Sm );
   tree->SetBranchAddress( "NeutralBetaCDH", &NeutralBetaCDH );
+  tree->SetBranchAddress( "NeutralBetaCDH_beam", &NeutralBetaCDH_beam );//from v192
   tree->SetBranchAddress( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
   tree->SetBranchAddress( "dE", &dE );
   tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
@@ -146,6 +148,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   tree->SetBranchAddress( "CA_pip",&CA_pip);
   tree->SetBranchAddress( "CA_pim",&CA_pim);
   tree->SetBranchAddress( "CDH_Pos",&CDH_Pos);
+  tree->SetBranchAddress( "CDH_Pos_pim",&CDH_Pos_pim);//from v193
+  tree->SetBranchAddress( "CDH_Pos_pip",&CDH_Pos_pip);//from v193
   //tree->SetBranchAddress( "run_num", &run_num );
   //tree->SetBranchAddress( "event_num", &event_num );
   //tree->SetBranchAddress( "block_num", &block_num );
@@ -370,6 +374,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* nmom_K0mom_n;//K0 selection, missing neutron cut
   TH2F* nmom_nmissmom_wK0;//K0 selection
   TH2F* nmom_nmissmom_wK0_n;//K0 selection, missing neutron cut
+  TH2F* nmom_nmissmom_wK0_wSid;//Sigma selection, missing neutron cut
+  TH2F* nmom_nmissmom_woK0_wSid;//Sigma selection, missing neutron cut
+  TH2F* nmom_nmissmom_wK0_wSid_n;//Sigma selection, missing neutron cut
+  TH2F* nmom_nmissmom_woK0_wSid_n;//Sigma selection, missing neutron cut
   TH2F* nmissmom_K0mom;
   TH2F* nmissmom_K0mom_n;
   
@@ -405,6 +413,12 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* Mompippim_nmom_dE_wK0_n;
   TH2F* Mompippim_IMnpipi_dE_wK0_n_Sp;
   TH2F* Mompippim_IMnpipi_dE_wK0_n_Sm;
+  TH2F* diff2d_CDC_CDH_pim_woK0_wSid;//neutral hit - pim track projected position
+  TH2F* diff2d_CDC_CDH_pip_woK0_wSid;//neutral hit - pip track projected position
+  TH2F* MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid;
+  TH2F* MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid;
+  TH2F* MMnmiss_diffz_CDC_CDH_pim_woK0_wSid;
+  TH2F* MMnmiss_diffz_CDC_CDH_pip_woK0_wSid;
 
   const int nbinIMnpipi = 100;//1-2 GeV/c^2
   const int nbinq = 25;//0-1.5 GeV/c
@@ -1183,10 +1197,18 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   
   nmom_K0mom_n = new TH2F("nmom_K0mom_n","nmom_K0mom_n",100,0,1.0,100,0,1.0);
  
-  nmom_nmissmom_wK0 = new TH2F("nmom_nmissmom_wK0","nmom_nmissmom_wK0",100,0,1.5,100,0,1.0);
+  nmom_nmissmom_wK0 = new TH2F("nmom_nmissmom_wK0","nmom_nmissmom_wK0",100,0,1.5,100,0,1.0);//
   
-  nmom_nmissmom_wK0_n = new TH2F("nmom_nmissmom_wK0_n","nmom_nmissmom_wK0_n",100,0,1.5,100,0,1.0);
+  nmom_nmissmom_wK0_wSid = new TH2F("nmom_nmissmom_wK0_wSid","nmom_nmissmom_wK0_wSid",100,0,1.5,100,0,1.0);//
+  
+  nmom_nmissmom_woK0_wSid = new TH2F("nmom_nmissmom_woK0_wSid","nmom_nmissmom_woK0_wSid",100,0,1.5,100,0,1.0);//
+  
+  nmom_nmissmom_wK0_n = new TH2F("nmom_nmissmom_wK0_n","nmom_nmissmom_wK0_n",100,0,1.5,100,0,1.0);//
 
+  nmom_nmissmom_wK0_wSid_n = new TH2F("nmom_nmissmom_wK0_wSid_n","nmom_nmissmom_wK0_wSid_n",100,0,1.5,100,0,1.0);//
+  
+  nmom_nmissmom_woK0_wSid_n = new TH2F("nmom_nmissmom_woK0_wSid_n","nmom_nmissmom_woK0_wSid_n",100,0,1.5,100,0,1.0);
+  
   nmissmom_K0mom = new TH2F("nmissmom_K0mom","nmissmom_K0mom",100,0,1.0,100,0,1.5);
   
   nmissmom_K0mom_n = new TH2F("nmissmom_K0mom_n","nmissmom_K0mom_n",100,0,1.0,100,0,1.5);
@@ -1294,6 +1316,36 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   Mompippim_IMnpipi_dE_wK0_n_Sm = new TH2F("Mompippim_IMnpipi_dE_wK0_n_Sm","Mompippim_IMnpipi_dE_wK0_n_Sm",nbinIMnpipi,1,2,50,0,1);
   Mompippim_IMnpipi_dE_wK0_n_Sm->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   Mompippim_IMnpipi_dE_wK0_n_Sm->SetYTitle("Mom(#pi^{+}#pi^{-}) [GeV/c]");
+  
+  diff2d_CDC_CDH_pim_woK0_wSid = new TH2F("diff2d_CDC_CDH_pim_woK0_wSid","diff2d_CDC_CDH_pim_woK0_wSid",500,-3.14,3.14,100,-50,50);
+  diff2d_CDC_CDH_pim_woK0_wSid->SetXTitle("CDH hit - #pi^{-} track (phi) [radian]");
+  diff2d_CDC_CDH_pim_woK0_wSid->SetYTitle("CDH hit - #pi^{-} track (z) [cm]");
+
+  diff2d_CDC_CDH_pip_woK0_wSid = new TH2F("diff2d_CDC_CDH_pip_woK0_wSid","diff2d_CDC_CDH_pip_woK0_wSid",500,-3.14,3.14,100,-50,50);
+  diff2d_CDC_CDH_pip_woK0_wSid->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
+  diff2d_CDC_CDH_pip_woK0_wSid->SetYTitle("CDH hit - #pi^{+} track (z) [cm]");
+
+
+  MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid
+  = new TH2F("MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid","MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid",500,-3.14,3.14,100,0.4,1.9);
+  MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid->SetXTitle("CDH hit - #pi^{-} track (phi) [radian]");
+  MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid->SetXTitle("Miss. Mass [GeV/c^{2}]");
+
+  MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid
+  = new TH2F("MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid","MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid",500,-3.14,3.14,100,0.4,1.9); 
+  MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
+  MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid->SetXTitle("Miss. Mass [GeV/c^{2}]");
+  
+  MMnmiss_diffz_CDC_CDH_pim_woK0_wSid
+  = new TH2F("MMnmiss_diffz_CDC_CDH_pim_woK0_wSid","MMnmiss_diffz_CDC_CDH_pim_woK0_wSid",500,-3.14,3.14,100,0.4,1.9);
+  MMnmiss_diffz_CDC_CDH_pim_woK0_wSid->SetXTitle("CDH hit - #pi^{-} track (z) [cm]");
+  MMnmiss_diffz_CDC_CDH_pim_woK0_wSid->SetXTitle("Miss. Mass [GeV/c^{2}]");
+
+  MMnmiss_diffz_CDC_CDH_pip_woK0_wSid
+  = new TH2F("MMnmiss_diffz_CDC_CDH_pip_woK0_wSid","MMnmiss_diffz_CDC_CDH_pip_woK0_wSid",500,-3.14,3.14,100,0.4,1.9); 
+  MMnmiss_diffz_CDC_CDH_pip_woK0_wSid->SetXTitle("CDH hit - #pi^{+} track (z) [cm]");
+  MMnmiss_diffz_CDC_CDH_pip_woK0_wSid->SetXTitle("Miss. Mass [GeV/c^{2}]");
+
 
   //
   TH1F *nmom = new TH1F("nmom", "nmom", 50, 0, 1.0);
@@ -1402,7 +1454,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   diff_q_woK0_wSid_n_Sm = new TH2F(Form("diff_q_woK0_wSid_n_Sm"),Form("diff_q_woK0_wSid_n_Sm"),nbinq,0,1,600,-0.3,0.3);
   diff_q_woK0_wSid_n_Sm->SetXTitle("Mom. Transfer [GeV/c]");
   diff_q_woK0_wSid_n_Sm->SetYTitle("reco. - gen. [GeV/c^]");
+   
   
+
+
   //reading TTree
   Int_t nevent = tree->GetEntries();
   std::cerr<<"# of events = "<<nevent<<std::endl;
@@ -2058,6 +2113,14 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
        if(!SigmaPFlag && !SigmaMFlag){
          nmom_MMnmiss_wK0_woSid->Fill(nmiss_mass,(*LVec_n).P());
        }
+       if(SigmaPFlag || SigmaMFlag){
+         nmom_nmissmom_wK0_wSid->Fill(LVec_nmiss.P(),(*LVec_n).P());
+       }
+     }
+     if(K0rejectFlag){
+       if(SigmaPFlag || SigmaMFlag){
+         nmom_nmissmom_woK0_wSid->Fill(LVec_nmiss.P(),(*LVec_n).P());
+       }
      }
    }
 
@@ -2253,6 +2316,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
      IMpippim_DCApipibeam_wK0_n->Fill(dca_pipibeam,LVec_pip_pim.M());
      if(SigmaPFlag || SigmaMFlag){
        nmom_IMnpipi_wK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P());
+       nmom_nmissmom_wK0_wSid_n->Fill(LVec_nmiss.P(),(*LVec_n).P());
      }
      if(!SigmaPFlag && !SigmaMFlag){
        IMpippim_DCApipibeam_wK0_woSid_n->Fill(dca_pipibeam,LVec_pip_pim.M());
@@ -2399,6 +2463,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
        DCA_pip_pim->Fill(dca_pip_pim);
        pipmom_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_pip).P());
        pimmom_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_pim).P());
+       nmom_nmissmom_woK0_wSid_n->Fill(LVec_nmiss.P(),(*LVec_n).P());
      }
 
 
@@ -4862,8 +4927,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
   TIter nexthist2(gDirectory->GetList());
   TString outname = std::string(filename);
-  //outname.Replace(std::string(filename).size()-5,5,"_out.root");
-  outname.Replace(std::string(filename).size()-5,5,"_outncutK015.root");
+  outname.Replace(std::string(filename).size()-5,5,"_out.root");
+  //outname.Replace(std::string(filename).size()-5,5,"_outncutK015.root");
   TFile *fout = new TFile(outname.Data(),"RECREATE");
   while( (obj = (TObject*)nexthist2())!=nullptr  ){
     obj->Write();
