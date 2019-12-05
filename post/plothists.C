@@ -91,12 +91,12 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
     if(obj->InheritsFrom("TH1F")){
       h1 = (TH1F*) obj;
       //h1->SetFillStyle(3004);
-      h1->SetFillStyle(3004);
+      //h1->SetFillStyle(3004);
       h1->GetXaxis()->CenterTitle();
     }
     if(obj->InheritsFrom("TH1D")){
       h1d = (TH1D*) obj;
-      h1d->SetFillStyle(3004);
+      //h1d->SetFillStyle(3004);
       h1d->GetXaxis()->CenterTitle();
     }
     if(obj->InheritsFrom("TH2")){
@@ -395,9 +395,12 @@ void QACDS(TFile *f){
 
   TCanvas *cdiff_CDH = new TCanvas("cdiff_CDH","diff_CDH");
   TH1F* h1_diff_CDH = (TH1F*)f->Get("diff_CDH");
-  h1_diff_CDH->SetTitle("Not used CDH segment # - CDH seg# used for charged");
-  h1_diff_CDH->SetXTitle("diff of CDH seg#");
+  h1_diff_CDH->SetXTitle("CDH hit seg. # - CDH seg# used for #pi+/- track");
   h1_diff_CDH->Draw();
+  TH1F* h1_diff_CDH_cut = (TH1F*)h1_diff_CDH->Clone("h1_diff_CDH_cut");
+  h1_diff_CDH_cut->GetXaxis()->SetRangeUser(-1,1);
+  h1_diff_CDH_cut->SetFillColor(3);
+  h1_diff_CDH_cut->Draw("same");
   
   TCanvas *cdiff_CDH_CDC = new TCanvas("cdiff_CDH_CDC","diff_CDH_CDC");
   TH1F* h1_diff_CDH_CDC = (TH1F*)f->Get("diff_CDH_CDC");
