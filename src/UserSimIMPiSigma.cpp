@@ -1009,8 +1009,9 @@ int main( int argc, char** argv )
         flagbmom && 
         (pim_ID.size()==1) && 
         (pip_ID.size()==1) && 
-        (cdstrackMan->nGoodTrack()==cdscuts::cds_ngoodtrack) &&
-        !forwardcharge ){
+        (cdstrackMan->nGoodTrack()==cdscuts::cds_ngoodtrack) 
+        && !forwardcharge 
+        ){
         
       nFill_pippim++;
       
@@ -1091,15 +1092,17 @@ int main( int argc, char** argv )
       
       // isolation cut //
       int flag_isolation = 0;
-      if(IsolationCutFlag==2){
-        flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan,true);
-        flag_isolation+= Util::GetCDHTwoSegAwayNHits(NeutralCDHseg,CDHhit_list,true);
-      }else if(IsolationCutFlag==1){
-        flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan,true);
-      }else{
-        //check cdh hit position anyway, but don't apply isolation cuts 
-        flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan,true);
-        flag_isolation = 0;
+      if(IsrecoPassed){
+        if(IsolationCutFlag==2){
+          flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan,true);
+          flag_isolation+= Util::GetCDHTwoSegAwayNHits(NeutralCDHseg,CDHhit_list,true);
+        }else if(IsolationCutFlag==1){
+          flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan,true);
+        }else{
+          //check cdh hit position anyway, but don't apply isolation cuts 
+          flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan,true);
+          flag_isolation = 0;
+        }
       }
       if( flag_isolation ){
         if(Verbosity_>100)std::cout<< "L."<< __LINE__ << " Event Number: " <<iev <<  " CDH hit candidate is NOT isolated !!!"<<std::endl;
@@ -1124,9 +1127,11 @@ int main( int argc, char** argv )
       if(Verbosity_) std::cout<<"CDH candidate seg = "<<ncdhhit->seg()<<" -> "<<Pos_CDH.Phi()/TwoPi*360<<" deg"<<std::endl;
       
 
-      const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
-      Util::AnaPipPimCDCCDH(Pos_CDH,NeutralCDHseg,pip_ID[0],pim_ID[0],cdsMan,cdstrackMan);
-      
+      int nCDCforVeto = 0;
+      if(IsrecoPassed){
+        nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
+        Util::AnaPipPimCDCCDH(Pos_CDH,NeutralCDHseg,pip_ID[0],pim_ID[0],cdsMan,cdstrackMan);
+      }
       //Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is wrong in SIM [20170925]
       Pos_CDH.SetZ(ncdhhit->hitpos());
       
@@ -1139,7 +1144,7 @@ int main( int argc, char** argv )
       }
          
 
-      //** neutral particle in CDH **//
+      // neutral particle in CDH //
       if( !nCDCforVeto && !flag_isolation ){
         if(NeutralCDHseg.size()!=1) {
           std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
@@ -1416,7 +1421,7 @@ int main( int argc, char** argv )
           //Sigma- production in CDS
           if( (anacuts::Sigmam_MIN<(LVec_n+LVec_pim).M() && (LVec_n+LVec_pim).M()<anacuts::Sigmam_MAX)) SigmaMFlag=true;
 
-          if( NBetaOK && NdEOK ){
+          if( NBetaOK && NdEOK && IsrecoPassed){
             //K0rejection 
             if(K0rejectFlag){
               // K0 rejection

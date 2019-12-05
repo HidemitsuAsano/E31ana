@@ -454,7 +454,6 @@ int Util::CDSChargedAna(const bool docdcretiming,
       continue;
     }
     
-    TVector3 cdh_projected;
     if(
        chi2OK && 
        CDHseg1hitOK && 
@@ -464,11 +463,13 @@ int Util::CDSChargedAna(const bool docdcretiming,
        EnergyLossOK && 
       ( (pid==CDS_PiMinus) || (pid==CDS_PiPlus) || (pid==CDS_Proton)) 
       ){
-        Util::AnaCDHHitPos(tof,beta_calc,bpctrack,LVecbeam,ctmt0,track,cdsman,confman,blman,correctedtof,pid,cdh_projected,MCFlag);
-        if(pid==CDS_PiMinus) pim_projected = cdh_projected;
-        else if(pid==CDS_PiPlus) pip_projected = cdh_projected;
+        Util::AnaCDHHitPos(tof,beta_calc,bpctrack,LVecbeam,ctmt0,track,cdsman,confman,blman,correctedtof,pid,MCFlag);
     }
 
+    TVector3 cdh_projected = track->CDHVertex();
+    if(pid==CDS_PiMinus) pim_projected = cdh_projected;
+    else if(pid==CDS_PiPlus) pip_projected = cdh_projected;
+    
     if( pid==CDS_PiMinus ) {
       pimid.push_back( trackman->GoodTrackID(it) );
     } else if( pid==CDS_PiPlus ) {
@@ -504,6 +505,7 @@ int Util::CDSChargedAna(const bool docdcretiming,
   if(!EnergyLossOK) {
     return -12;
   }
+  
 
   return pimid.size()+pipid.size()+protonid.size()+kmid.size();
 }
@@ -712,13 +714,11 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
                  BeamLineHitMan *blman,
                  const double correctedtof,
                  const int pid,
-                 TVector3 &cdh_projected,
                  const bool MCFlag
                  )
 {
   //projected position of the track at the CDH segment at the surface (r=54.4 cm)
   TVector3 track_pos = track->CDHVertex();
-  cdh_projected = track_pos;
   TVector3 hit_pos;
   if( track->nCDHHit()!=1 ){
     std::cerr<<" #of CDH hit / track is not 1 !!! continue;"<<std::endl;

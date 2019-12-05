@@ -69,7 +69,6 @@ namespace Util
                  BeamLineHitMan *blman,
                  const double correctedtof,
                  const int pid,
-                 TVector3 &pos_cdhprojected,
                  const bool MCFlag=false
                  );
    //MC only

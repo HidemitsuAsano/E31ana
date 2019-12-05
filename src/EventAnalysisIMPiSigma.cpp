@@ -822,14 +822,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       flag_isolation = 0;
     }
 
-    if( flag_isolation ) {
-      //if(Verbosity) std::cerr<<"CDH neutral hit candidate is NOT isolated !!!"<<std::endl;
-      Clear( nAbort_CDHiso );
-      return true;
-    } else {
-      if(Verbosity) std::cerr<<"CDH isolation cuts : OK " << std::endl;
-      Tools::Fill1D( Form("EventCheck"), 14 );
-    }
 
     // copy neutral CDH hit candidate
     int cdhcan = -1;
@@ -848,11 +840,20 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     }
     
     // charge veto using CDC
-    Pos_CDH.SetZ(-1.*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
-    const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
     Util::AnaPipPimCDCCDH(Pos_CDH,NeutralCDHseg,pip_ID[0],pim_ID[0],cdsMan,trackMan);
     
     //std::cout << __LINE__ << "  "  << -1.*ncdhhit->hitpos() << std::endl;
+    if( flag_isolation ) {
+      //if(Verbosity) std::cerr<<"CDH neutral hit candidate is NOT isolated !!!"<<std::endl;
+      Clear( nAbort_CDHiso );
+      return true;
+    } else {
+      if(Verbosity) std::cerr<<"CDH isolation cuts : OK " << std::endl;
+      Tools::Fill1D( Form("EventCheck"), 14 );
+    }
+
+    const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
+    Pos_CDH.SetZ(-1.*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
 
     //** neutral particle in CDH **//
     if( !nCDCforVeto ) {
@@ -1225,12 +1226,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
           if( MissNFlag ) {
             Tools::Fill1D( Form("IMnpipi_n"), (LVec_n+LVec_pim+LVec_pip).M() );
-            Tools::Fill2D( Form("MMnmiss_IMnpipi_n"),(LVec_n+LVec_pim+LVec_pip).M(), LVec_nmiss.Mag());
+            Tools::Fill2D( Form("MMnmiss_IMnpipi_n"),(LVec_n+LVec_pim+LVec_pip).M(), LVec_nmiss.M());
           }
 
           if( MissNFlag && (SigmaPFlag || SigmaMFlag)) {
             Tools::Fill1D( Form("IMnpipi_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M() );
-            Tools::Fill2D( Form("MMnmiss_IMnpipi_wSid_n"),(LVec_n+LVec_pim+LVec_pip).M(), LVec_nmiss.Mag());
+            Tools::Fill2D( Form("MMnmiss_IMnpipi_wSid_n"),(LVec_n+LVec_pim+LVec_pip).M(), LVec_nmiss.M());
           }
 
           if( MissNFlag && K0rejectFlag && (SigmaPFlag || SigmaMFlag)) {
@@ -1244,7 +1245,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
             //cos theta
             Tools::Fill2D( Form("Cosn_IMnpipi_woK0_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M(), cos_n );
             //
-            Tools::Fill2D( Form("MMnmiss_IMnpipi_woK0_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M(), LVec_nmiss.Mag());
+            Tools::Fill2D( Form("MMnmiss_IMnpipi_woK0_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M(), LVec_nmiss.M());
             Tools::Fill2D( Form("nmom_IMnpipi_woK0_wSid_n"), (LVec_n+LVec_pim+LVec_pip).M(), LVec_n.P());
 
             //momentum transfer
