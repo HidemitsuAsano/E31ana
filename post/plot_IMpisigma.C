@@ -27,7 +27,7 @@
 
 const double pvalcut = 0.005;
 const bool gridon=true;
-const bool staton=true;
+const bool staton=false;
 const bool UseKinFit = false;
 const bool UseKinFitVal = true;
 const double lumi = 56.0e9; // rough value
@@ -415,10 +415,22 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* Mompippim_IMnpipi_dE_wK0_n_Sm;
   TH2F* diff2d_CDC_CDH_pim_woK0_wSid;//neutral hit - pim track projected position
   TH2F* diff2d_CDC_CDH_pip_woK0_wSid;//neutral hit - pip track projected position
+  TH2F* diff2d_CDC_CDH_pim_woK0_wSid_n;//neutral hit - pim track projected position
+  TH2F* diff2d_CDC_CDH_pip_woK0_wSid_n;//neutral hit - pip track projected position
+  
   TH2F* MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid;
   TH2F* MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid;
   TH2F* MMnmiss_diffz_CDC_CDH_pim_woK0_wSid;
   TH2F* MMnmiss_diffz_CDC_CDH_pip_woK0_wSid;
+  TH2F* pimmom_diffphi_CDC_CDH_pim_woK0_wSid;
+  TH2F* pipmom_diffphi_CDC_CDH_pip_woK0_wSid;
+  TH2F* pimmom_diffz_CDC_CDH_pim_woK0_wSid;
+  TH2F* pipmom_diffz_CDC_CDH_pip_woK0_wSid;
+  TH2F* nmom_diffphi_CDC_CDH_pim_woK0_wSid;
+  TH2F* nmom_diffphi_CDC_CDH_pip_woK0_wSid;
+  TH2F* nmom_diffz_CDC_CDH_pim_woK0_wSid;
+  TH2F* nmom_diffz_CDC_CDH_pip_woK0_wSid;
+
 
   const int nbinIMnpipi = 100;//1-2 GeV/c^2
   const int nbinq = 25;//0-1.5 GeV/c
@@ -427,7 +439,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   const int nbindE = 200;
   const int nbinpippim = 500;
   
-  CDHphi_betainv_fid = new TH2F("CDHphi_betainv_fid","CDHphi_betainv_fid",1000,0,10,100,-3.14,3.14);
+  CDHphi_betainv_fid = new TH2F("CDHphi_betainv_fid","CDHphi_betainv_fid",1000,0,10,100,-TMath::Pi(),TMath::Pi());
   CDHphi_betainv_fid->SetXTitle("1/#beta");
   CDHphi_betainv_fid->SetYTitle("CDH phi");
 
@@ -1317,34 +1329,41 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   Mompippim_IMnpipi_dE_wK0_n_Sm->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   Mompippim_IMnpipi_dE_wK0_n_Sm->SetYTitle("Mom(#pi^{+}#pi^{-}) [GeV/c]");
   
-  diff2d_CDC_CDH_pim_woK0_wSid = new TH2F("diff2d_CDC_CDH_pim_woK0_wSid","diff2d_CDC_CDH_pim_woK0_wSid",500,-3.14,3.14,100,-50,50);
+  diff2d_CDC_CDH_pim_woK0_wSid = new TH2F("diff2d_CDC_CDH_pim_woK0_wSid","diff2d_CDC_CDH_pim_woK0_wSid",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
   diff2d_CDC_CDH_pim_woK0_wSid->SetXTitle("CDH hit - #pi^{-} track (phi) [radian]");
   diff2d_CDC_CDH_pim_woK0_wSid->SetYTitle("CDH hit - #pi^{-} track (z) [cm]");
 
-  diff2d_CDC_CDH_pip_woK0_wSid = new TH2F("diff2d_CDC_CDH_pip_woK0_wSid","diff2d_CDC_CDH_pip_woK0_wSid",500,-3.14,3.14,100,-50,50);
+  diff2d_CDC_CDH_pip_woK0_wSid = new TH2F("diff2d_CDC_CDH_pip_woK0_wSid","diff2d_CDC_CDH_pip_woK0_wSid",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
   diff2d_CDC_CDH_pip_woK0_wSid->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
   diff2d_CDC_CDH_pip_woK0_wSid->SetYTitle("CDH hit - #pi^{+} track (z) [cm]");
 
+  diff2d_CDC_CDH_pim_woK0_wSid_n = new TH2F("diff2d_CDC_CDH_pim_woK0_wSid_n","diff2d_CDC_CDH_pim_woK0_wSid_n",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
+  diff2d_CDC_CDH_pim_woK0_wSid_n->SetXTitle("CDH hit - #pi^{-} track (phi) [radian]");
+  diff2d_CDC_CDH_pim_woK0_wSid_n->SetYTitle("CDH hit - #pi^{-} track (z) [cm]");
+
+  diff2d_CDC_CDH_pip_woK0_wSid_n = new TH2F("diff2d_CDC_CDH_pip_woK0_wSid_n","diff2d_CDC_CDH_pip_woK0_wSid_n",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
+  diff2d_CDC_CDH_pip_woK0_wSid_n->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
+  diff2d_CDC_CDH_pip_woK0_wSid_n->SetYTitle("CDH hit - #pi^{+} track (z) [cm]");
 
   MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid
-  = new TH2F("MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid","MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid",500,-3.14,3.14,100,0.4,1.9);
+  = new TH2F("MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid","MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid",100,-1.*TMath::Pi(),TMath::Pi(),100,0.4,1.9);
   MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid->SetXTitle("CDH hit - #pi^{-} track (phi) [radian]");
-  MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid->SetXTitle("Miss. Mass [GeV/c^{2}]");
+  MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid->SetYTitle("Miss. Mass [GeV/c^{2}]");
 
   MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid
-  = new TH2F("MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid","MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid",500,-3.14,3.14,100,0.4,1.9); 
+  = new TH2F("MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid","MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid",100,-1.*TMath::Pi(),TMath::Pi(),100,0.4,1.9); 
   MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
-  MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid->SetXTitle("Miss. Mass [GeV/c^{2}]");
+  MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid->SetYTitle("Miss. Mass [GeV/c^{2}]");
   
   MMnmiss_diffz_CDC_CDH_pim_woK0_wSid
-  = new TH2F("MMnmiss_diffz_CDC_CDH_pim_woK0_wSid","MMnmiss_diffz_CDC_CDH_pim_woK0_wSid",500,-3.14,3.14,100,0.4,1.9);
+  = new TH2F("MMnmiss_diffz_CDC_CDH_pim_woK0_wSid","MMnmiss_diffz_CDC_CDH_pim_woK0_wSid",100,-100,100,100,0.4,1.9);
   MMnmiss_diffz_CDC_CDH_pim_woK0_wSid->SetXTitle("CDH hit - #pi^{-} track (z) [cm]");
-  MMnmiss_diffz_CDC_CDH_pim_woK0_wSid->SetXTitle("Miss. Mass [GeV/c^{2}]");
+  MMnmiss_diffz_CDC_CDH_pim_woK0_wSid->SetYTitle("Miss. Mass [GeV/c^{2}]");
 
   MMnmiss_diffz_CDC_CDH_pip_woK0_wSid
-  = new TH2F("MMnmiss_diffz_CDC_CDH_pip_woK0_wSid","MMnmiss_diffz_CDC_CDH_pip_woK0_wSid",500,-3.14,3.14,100,0.4,1.9); 
+  = new TH2F("MMnmiss_diffz_CDC_CDH_pip_woK0_wSid","MMnmiss_diffz_CDC_CDH_pip_woK0_wSid",100,-100,100,100,0.4,1.9); 
   MMnmiss_diffz_CDC_CDH_pip_woK0_wSid->SetXTitle("CDH hit - #pi^{+} track (z) [cm]");
-  MMnmiss_diffz_CDC_CDH_pip_woK0_wSid->SetXTitle("Miss. Mass [GeV/c^{2}]");
+  MMnmiss_diffz_CDC_CDH_pip_woK0_wSid->SetYTitle("Miss. Mass [GeV/c^{2}]");
 
 
   //
@@ -1487,7 +1506,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //------------------------//
   for ( Int_t i=0; i<nevent; i++ ) {
     tree->GetEvent(i);
-    if(i%50000==0) std::cout << "Event# " << i << std::endl; 
+    //if(i%50000==0) std::cout << "Event# " << i << std::endl; 
     TVector3 vtx_pip = *vtx_pip_cdc ;
     TVector3 vtx_pim = *vtx_pim_cdc ;
     // calc missing n //
@@ -1821,7 +1840,28 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
    if(anacuts::dE_MIN<dE) NdEOK=true;
    double MassNPip= (*LVec_n+*LVec_pip).M();
    double MassNPim= (*LVec_n+*LVec_pim).M();
-
+   
+   //std::cout << "pim phi" << (*CDH_Pos_pim).Phi() << std::endl;
+   //std::cout << "pim z" << (*CDH_Pos_pim).z() << std::endl;
+   //std::cout << "CDH phi " << (*CDH_Pos).Phi() << std::endl;
+   //std::cout << "CDH z " << (*CDH_Pos).z() << std::endl;
+   TVector3 diffpim = (*CDH_Pos)-(*CDH_Pos_pim);
+   double diffphipim = (*CDH_Pos).Phi()-(*CDH_Pos_pim).Phi();
+   if(diffphipim<-2.0*TMath::Pi()) diffphipim += 2.0*TMath::Pi();
+   else if(diffphipim>2.0*TMath::Pi()) diffphipim -= 2.0*TMath::Pi();
+   if(0< diffphipim && diffphipim <0.5) continue;
+   if(-0.5< diffphipim && diffphipim <0.) continue;
+   //if(0< diffphipim && diffphipim <1) continue;
+   //if(-1.< diffphipim && diffphipim <0.) continue;
+   TVector3 diffpip = (*CDH_Pos)-(*CDH_Pos_pip);
+   double diffphipip = (*CDH_Pos).Phi()-(*CDH_Pos_pip).Phi();   
+   if(diffphipip<-2.0*TMath::Pi()) diffphipip += 2.0*TMath::Pi();
+   else if(diffphipip>2.0*TMath::Pi()) diffphipip -= 2.0*TMath::Pi();
+   //if(0< diffphipip && diffphipip <0.5) continue;
+   //if(-0.5< diffphipip && diffphipip <0.) continue;
+   //if(0< diffphipip && diffphipip <1.0) continue;
+   //if(-1.0< diffphipip && diffphipip <0.) continue;
+   
    //Sigma+ production in CDS
    //band cut for signal
    if( (anacuts::Sigmap_MIN<MassNPip && MassNPip<anacuts::Sigmap_MAX)) SigmaPFlag=true;
@@ -2047,7 +2087,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
    //K0 rejection using original momentum
    if( (LVec_pip_pim.M()<anacuts::pipi_MIN || anacuts::pipi_MAX<LVec_pip_pim.M())) K0rejectFlag=true;
    //---end of Flag definition-----------------------------------------------------
-
    //w/o kinfit
    //---including K0 --------------------------------------------------------------
 
@@ -2076,6 +2115,12 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
      dE_IMnpip_n->Fill(LVec_pip_n.M(),dE);
    }
    if(NBetaOK && NdEOK){
+     
+     //std::cout << (*LVec_beam).Px()<< "    " << (*LVec_beam).Py()<< "   " << (*LVec_beam).Pz() << std::endl;
+     //std::cout << (*LVec_pip).Px() << "    " << (*LVec_pip).Py() << "   " << (*LVec_pip).Pz() << std::endl;
+     //std::cout << (*LVec_pim).Px() << "    " << (*LVec_pim).Py() << "   " << (*LVec_pim).Pz() << std::endl;
+     //std::cout << (*LVec_n).Px()   << "    " << (*LVec_n).Py() << "   " << (*LVec_n).Pz() << std::endl;
+     //std::cout << std::endl;
      CDHz_nmom_fid->Fill((*LVec_n).P() ,(*CDH_Pos).z());
      MMom_MMass->Fill(LVec_nmiss.M(),LVec_nmiss.P());
      IMnpim_IMnpip_dE->Fill(LVec_pip_n.M(),LVec_pim_n.M());
@@ -2120,6 +2165,12 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
      if(K0rejectFlag){
        if(SigmaPFlag || SigmaMFlag){
          nmom_nmissmom_woK0_wSid->Fill(LVec_nmiss.P(),(*LVec_n).P());
+         diff2d_CDC_CDH_pim_woK0_wSid->Fill(diffphipim,diffpim.z());
+         diff2d_CDC_CDH_pip_woK0_wSid->Fill(diffphipip,diffpip.z());
+         MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid->Fill(diffphipim, nmiss_mass);
+         MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid->Fill(diffphipip, nmiss_mass);
+         MMnmiss_diffz_CDC_CDH_pim_woK0_wSid->Fill(diffpim.z(), nmiss_mass);
+         MMnmiss_diffz_CDC_CDH_pip_woK0_wSid->Fill(diffpip.z(), nmiss_mass);
        }
      }
    }
@@ -2464,6 +2515,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
        pipmom_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_pip).P());
        pimmom_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_pim).P());
        nmom_nmissmom_woK0_wSid_n->Fill(LVec_nmiss.P(),(*LVec_n).P());
+       diff2d_CDC_CDH_pim_woK0_wSid_n->Fill(diffphipim,diffpim.z());
+       diff2d_CDC_CDH_pip_woK0_wSid_n->Fill(diffphipip,diffpip.z());
      }
 
 
@@ -2612,11 +2665,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0_n_px_cut->SetFillColor(2);
   IMnpim_IMnpip_dE_woK0_n_px_cut->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
   IMnpim_IMnpip_dE_woK0_n_px_cut->Draw("HEsame");
-  TH1D* IMnpim_IMnpip_dE_woK0_n_px_Sm = (TH1D*)IMnpim_IMnpip_dE_woK0_n->ProjectionX("IMnpim_IMnpip_dE_woK0_n_px_Sm",
-      IMnpim_IMnpip_dE_woK0_n->GetYaxis()->FindBin(anacuts::Sigmam_MIN),
-      IMnpim_IMnpip_dE_woK0_n->GetYaxis()->FindBin(anacuts::Sigmam_MAX)); 
-  IMnpim_IMnpip_dE_woK0_n_px_Sm->SetFillColor(3);
-  IMnpim_IMnpip_dE_woK0_n_px_Sm->Draw("HEsame");
+ // TH1D* IMnpim_IMnpip_dE_woK0_n_px_Sm = (TH1D*)IMnpim_IMnpip_dE_woK0_n->ProjectionX("IMnpim_IMnpip_dE_woK0_n_px_Sm",
+ //     IMnpim_IMnpip_dE_woK0_n->GetYaxis()->FindBin(anacuts::Sigmam_MIN),
+ //     IMnpim_IMnpip_dE_woK0_n->GetYaxis()->FindBin(anacuts::Sigmam_MAX)); 
+ // IMnpim_IMnpip_dE_woK0_n_px_Sm->SetFillColor(3);
+ // IMnpim_IMnpip_dE_woK0_n_px_Sm->Draw("HEsame");
 
 
   TCanvas *cIMnpim_IMnpip_dE_woK0_n_py = new TCanvas("cIMnpim_IMnpip_dE_woK0_n_py","IMnpim_IMnpip_dE_woK0_n_py");
@@ -2627,11 +2680,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0_n_py_cut->SetFillColor(3);
   IMnpim_IMnpip_dE_woK0_n_py_cut->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
   IMnpim_IMnpip_dE_woK0_n_py_cut->Draw("HEsame");
-  TH1D* IMnpim_IMnpip_dE_woK0_n_py_Sp = (TH1D*)IMnpim_IMnpip_dE_woK0_n->ProjectionY("IMnpim_IMnpip_dE_woK0_n_py_Sp",
-      IMnpim_IMnpip_dE_woK0_n->GetXaxis()->FindBin(anacuts::Sigmap_MIN),
-      IMnpim_IMnpip_dE_woK0_n->GetXaxis()->FindBin(anacuts::Sigmap_MAX)); 
-  IMnpim_IMnpip_dE_woK0_n_py_Sp->SetFillColor(2);
-  IMnpim_IMnpip_dE_woK0_n_py_Sp->Draw("HEsame");
+//  TH1D* IMnpim_IMnpip_dE_woK0_n_py_Sp = (TH1D*)IMnpim_IMnpip_dE_woK0_n->ProjectionY("IMnpim_IMnpip_dE_woK0_n_py_Sp",
+//      IMnpim_IMnpip_dE_woK0_n->GetXaxis()->FindBin(anacuts::Sigmap_MIN),
+//      IMnpim_IMnpip_dE_woK0_n->GetXaxis()->FindBin(anacuts::Sigmap_MAX)); 
+//  IMnpim_IMnpip_dE_woK0_n_py_Sp->SetFillColor(2);
+//  IMnpim_IMnpip_dE_woK0_n_py_Sp->Draw("HEsame");
 
   //TCanvas *cCDHphi_betainv_fid = new TCanvas("cCDHphi_betainv_fid","CDHphi_betainv_fid");
   //cCDHphi_betainv_fid->cd();
@@ -2973,17 +3026,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //IMnpim_IMnpip_dE_woK0_n_Sp_side_1_px->SetFillStyle(3009);
   //IMnpim_IMnpip_dE_woK0_n_Sp_side_1_px->Draw("HEsame");
 
-  std::cout << "Sigma+ signal region:    " << IMnpim_IMnpip_dE_woK0_n_px_1->Integral() << std::endl;
-  std::cout << "Sigma+ sideband low:     " << IMnpim_IMnpip_dE_woK0_n_px_2->Integral() << std::endl;
+  //std::cout << "Sigma+ signal region:    " << IMnpim_IMnpip_dE_woK0_n_px_1->Integral() << std::endl;
+  //std::cout << "Sigma+ sideband low:     " << IMnpim_IMnpip_dE_woK0_n_px_2->Integral() << std::endl;
   ///std::cout << "Sigma+ sideband low cut: " << IMnpim_IMnpip_dE_woK0_n_Sp_side_0_px->Integral() << std::endl;
-  std::cout << "Sigma+ sideband high:    " << IMnpim_IMnpip_dE_woK0_n_px_3->Integral() << std::endl;
+  //std::cout << "Sigma+ sideband high:    " << IMnpim_IMnpip_dE_woK0_n_px_3->Integral() << std::endl;
   //std::cout << "Sigma+ sideband high cut:" << IMnpim_IMnpip_dE_woK0_n_Sp_side_1_px->Integral() << std::endl;
-  std::cout << "bg (Integral)           :" << bgsp       << std::endl;
-  std::cout << "bg (Integral)/binw      :" << bgsp/IMnpim_IMnpip_dE_woK0_n_px_1->GetBinWidth(100) << std::endl;
+  //std::cout << "bg (Integral)           :" << bgsp       << std::endl;
+  //std::cout << "bg (Integral)/binw      :" << bgsp/IMnpim_IMnpip_dE_woK0_n_px_1->GetBinWidth(100) << std::endl;
   double trapezoidbgSp = (fbgSp->Eval(anacuts::Sigmap_MIN)+fbgSp->Eval(anacuts::Sigmap_MAX))*
     (anacuts::Sigmap_MAX-anacuts::Sigmap_MIN)
     /IMnpim_IMnpip_dE_woK0_n_px_1->GetBinWidth(100)/2.0;
-  std::cout << "bg (trapezoid)          :" << trapezoidbgSp << std::endl;
+  //std::cout << "bg (trapezoid)          :" << trapezoidbgSp << std::endl;
 
 
 
@@ -3038,17 +3091,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //IMnpim_IMnpip_dE_woK0_n_Sm_side_1_py->SetFillStyle(3009);
   //IMnpim_IMnpip_dE_woK0_n_Sm_side_1_py->Draw("HEsame");
 
-  std::cout << "Sigma- signal region:    " << IMnpim_IMnpip_dE_woK0_n_py_1->Integral() << std::endl;
-  std::cout << "Sigma- sideband low:     " << IMnpim_IMnpip_dE_woK0_n_py_2->Integral() << std::endl;
+  //std::cout << "Sigma- signal region:    " << IMnpim_IMnpip_dE_woK0_n_py_1->Integral() << std::endl;
+  //std::cout << "Sigma- sideband low:     " << IMnpim_IMnpip_dE_woK0_n_py_2->Integral() << std::endl;
   //std::cout << "Sigma- sideband low cut: " << IMnpim_IMnpip_dE_woK0_n_Sm_side_0_py->Integral() << std::endl;
-  std::cout << "Sigma- sideband high:    " << IMnpim_IMnpip_dE_woK0_n_py_3->Integral() << std::endl;
+  //std::cout << "Sigma- sideband high:    " << IMnpim_IMnpip_dE_woK0_n_py_3->Integral() << std::endl;
   //std::cout << "Sigma- sideband high cut:" << IMnpim_IMnpip_dE_woK0_n_Sm_side_1_py->Integral() << std::endl;
-  std::cout << "bg (Integral)           :" << bgsm << std::endl;
-  std::cout << "bg (Integral)/binw      :" << bgsm/IMnpim_IMnpip_dE_woK0_n_py_1->GetBinWidth(100)  << std::endl;
+  //std::cout << "bg (Integral)           :" << bgsm << std::endl;
+  //std::cout << "bg (Integral)/binw      :" << bgsm/IMnpim_IMnpip_dE_woK0_n_py_1->GetBinWidth(100)  << std::endl;
   double trapezoidbgSm = (fbgSm->Eval(anacuts::Sigmam_MIN)+fbgSm->Eval(anacuts::Sigmam_MAX))*
     (anacuts::Sigmam_MAX-anacuts::Sigmam_MIN)
     /IMnpim_IMnpip_dE_woK0_n_py_1->GetBinWidth(100)/2.0;
-  std::cout << "bg (trapezoid)          :" << trapezoidbgSm    << std::endl;
+  //std::cout << "bg (trapezoid)          :" << trapezoidbgSm    << std::endl;
 
   /*
      TCanvas *cq_IMnpipi_woK0_wSid_n_px_side = new TCanvas("cq_IMnpipi_woK0_wSid_n_px_side","q_IMnpipi_woK0_wSid_n_px_side"); 
@@ -4927,7 +4980,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
   TIter nexthist2(gDirectory->GetList());
   TString outname = std::string(filename);
-  outname.Replace(std::string(filename).size()-5,5,"_out.root");
+  //outname.Replace(std::string(filename).size()-5,5,"_out.root");
+  outname.Replace(std::string(filename).size()-5,5,"_out_iso.root");
+  //outname.Replace(std::string(filename).size()-5,5,"_out_iso2.root");
   //outname.Replace(std::string(filename).size()-5,5,"_outncutK015.root");
   TFile *fout = new TFile(outname.Data(),"RECREATE");
   while( (obj = (TObject*)nexthist2())!=nullptr  ){
