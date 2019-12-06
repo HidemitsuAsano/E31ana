@@ -401,6 +401,15 @@ void QACDS(TFile *f){
   h1_diff_CDH_cut->GetXaxis()->SetRangeUser(-1,1);
   h1_diff_CDH_cut->SetFillColor(3);
   h1_diff_CDH_cut->Draw("same");
+
+  TCanvas *cdiff_CDH_pippim = new TCanvas("cdiff_CDH_pippim","diff_CDH_pippim");
+  TH1F* h1_diff_CDH_pim = (TH1F*)f->Get("diff_CDH_pim");
+  h1_diff_CDH_pim->SetXTitle("CDH hit seg. # - CDH seg# used for #pi+/- track");
+  h1_diff_CDH_pim->SetLineColor(2);
+  h1_diff_CDH_pim->Draw();
+  TH1F* h1_diff_CDH_pip = (TH1F*)f->Get("diff_CDH_pip");
+  h1_diff_CDH_pip->SetLineColor(3);
+  h1_diff_CDH_pip->Draw("same");
   
   TCanvas *cdiff_CDH_CDC = new TCanvas("cdiff_CDH_CDC","diff_CDH_CDC");
   TH1F* h1_diff_CDH_CDC = (TH1F*)f->Get("diff_CDH_CDC");
