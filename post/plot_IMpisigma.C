@@ -50,6 +50,8 @@ const unsigned int sigmacuttype=0;
 //2:5 sigma cut
 const unsigned int sidebandtype=0;
 
+const unsigned int IsolationFlag=0;
+
 //color def. 
 //Sp mode Signal :2 (red)
 //Sm mode Signal :3 (green)
@@ -1849,18 +1851,25 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
    double diffphipim = (*CDH_Pos).Phi()-(*CDH_Pos_pim).Phi();
    if(diffphipim<-2.0*TMath::Pi()) diffphipim += 2.0*TMath::Pi();
    else if(diffphipim>2.0*TMath::Pi()) diffphipim -= 2.0*TMath::Pi();
-   if(0< diffphipim && diffphipim <0.5) continue;
-   if(-0.5< diffphipim && diffphipim <0.) continue;
-   //if(0< diffphipim && diffphipim <1) continue;
-   //if(-1.< diffphipim && diffphipim <0.) continue;
+   if(IsolationFlag==1){
+     if(0< diffphipim && diffphipim <0.5) continue;
+     if(-0.5< diffphipim && diffphipim <0.) continue;
+   }else if(IsolationFlag==2){
+     if(0< diffphipim && diffphipim <1) continue;
+     if(-1.< diffphipim && diffphipim <0.) continue;
+   }
    TVector3 diffpip = (*CDH_Pos)-(*CDH_Pos_pip);
    double diffphipip = (*CDH_Pos).Phi()-(*CDH_Pos_pip).Phi();   
    if(diffphipip<-2.0*TMath::Pi()) diffphipip += 2.0*TMath::Pi();
    else if(diffphipip>2.0*TMath::Pi()) diffphipip -= 2.0*TMath::Pi();
-   //if(0< diffphipip && diffphipip <0.5) continue;
-   //if(-0.5< diffphipip && diffphipip <0.) continue;
-   //if(0< diffphipip && diffphipip <1.0) continue;
-   //if(-1.0< diffphipip && diffphipip <0.) continue;
+   
+   if(IsolationFlag==1){
+     if(0< diffphipip && diffphipip <0.5) continue;
+     if(-0.5< diffphipip && diffphipip <0.) continue;
+   }else if(IsolationFlag==2){
+     if(0< diffphipip && diffphipip <1.0) continue;
+     if(-1.0< diffphipip && diffphipip <0.) continue;
+   }
    
    //Sigma+ production in CDS
    //band cut for signal
@@ -4980,14 +4989,15 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
   TIter nexthist2(gDirectory->GetList());
   TString outname = std::string(filename);
-  //outname.Replace(std::string(filename).size()-5,5,"_out.root");
-  outname.Replace(std::string(filename).size()-5,5,"_out_iso.root");
-  //outname.Replace(std::string(filename).size()-5,5,"_out_iso2.root");
+  if(IsolationFlag==0) outname.Replace(std::string(filename).size()-5,5,"_out.root");
+  else if(IsolationFlag==1) outname.Replace(std::string(filename).size()-5,5,"_out_iso.root");
+  else if(IsolationFlag==2) outname.Replace(std::string(filename).size()-5,5,"_out_iso2.root");
   //outname.Replace(std::string(filename).size()-5,5,"_outncutK015.root");
   TFile *fout = new TFile(outname.Data(),"RECREATE");
   while( (obj = (TObject*)nexthist2())!=nullptr  ){
     obj->Write();
   }
+  fout->Print();
   fout->cd();
   fout->Close();
 
