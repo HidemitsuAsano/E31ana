@@ -16,4 +16,28 @@ void plot_isolationCut(){
   diff2d_CDC_CDH_pip->ProjectionY("pippy");
   pippy->SetLineColor(2);
   pippy->Draw("HEsame");
+
+  TCanvas *c5 = new TCanvas("c5","c5");
+  MMnmiss_diffphi_CDC_CDH_pim->Draw("colz");
+
+  TCanvas *c6 = new TCanvas("c6","c6");
+  MMnmiss_diffphi_CDC_CDH_pip->Draw("colz");
+  
+  TCanvas *c7 = new TCanvas("c7","c7");
+  MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid->Draw("colz");
+
+  TCanvas *c8 = new TCanvas("c8","c8");
+  MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid->Draw("colz");
+  
+  TCanvas *c9 = new TCanvas("c9","c9");
+  pimmom_diffphi_CDC_CDH_pim->Draw("colz");
+  
+  TCanvas *c10 = new TCanvas("c10","c10");
+  pipmom_diffphi_CDC_CDH_pip->Draw("colz");
+
+  TCanvas *c11 = new TCanvas("c11","c11");
+  nmom_diffphi_CDC_CDH_pim->Draw("colz");
+
+  TCanvas *c12 = new TCanvas("c12","c12");
+  nmom_diffphi_CDC_CDH_pip->Draw("colz");
 }
