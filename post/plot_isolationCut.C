@@ -40,4 +40,10 @@ void plot_isolationCut(){
 
   TCanvas *c12 = new TCanvas("c12","c12");
   nmom_diffphi_CDC_CDH_pip->Draw("colz");
+  
+  TCanvas *c13 = new TCanvas("c13","c13");
+  nmom_diffphi_CDC_CDH_pim_woK0_wSid->Draw("colz");
+
+  TCanvas *c14 = new TCanvas("c14","c14");
+  nmom_diffphi_CDC_CDH_pip_woK0_wSid->Draw("colz");
 }
