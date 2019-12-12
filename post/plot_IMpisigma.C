@@ -423,7 +423,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* diff2d_CDC_CDH_pip_woK0_wSid;//neutral hit - pip track projected position
   TH2F* diff2d_CDC_CDH_pim_woK0_wSid_n;//neutral hit - pim track projected position
   TH2F* diff2d_CDC_CDH_pip_woK0_wSid_n;//neutral hit - pip track projected position
-
+  TH2F* dE_diffphi_CDC_CDH_pim;
+  TH2F* dE_diffphi_CDC_CDH_pip;
+  TH2F* MMnmiss_dE;
   TH2F* MMnmiss_diffphi_CDC_CDH_pim;
   TH2F* MMnmiss_diffphi_CDC_CDH_pip;
   TH2F* MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid;
@@ -1376,6 +1378,18 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   diff2d_CDC_CDH_pip_woK0_wSid_n = new TH2F("diff2d_CDC_CDH_pip_woK0_wSid_n","diff2d_CDC_CDH_pip_woK0_wSid_n",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
   diff2d_CDC_CDH_pip_woK0_wSid_n->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
   diff2d_CDC_CDH_pip_woK0_wSid_n->SetYTitle("CDH hit - #pi^{+} track (z) [cm]");
+  
+  dE_diffphi_CDC_CDH_pim = new TH2F("dE_diffphi_CDC_CDH_pim","dE_diffphi_CDC_CDH_pim",100,-1.*TMath::Pi(),TMath::Pi(),nbindE,0,50);
+  dE_diffphi_CDC_CDH_pim->SetXTitle("CDH hit - #pi^{-} track (phi) [radian]");
+  dE_diffphi_CDC_CDH_pim->SetYTitle("CDH dE [MeVee]");
+  
+  dE_diffphi_CDC_CDH_pip = new TH2F("dE_diffphi_CDC_CDH_pip","dE_diffphi_CDC_CDH_pip",100,-1.*TMath::Pi(),TMath::Pi(),nbindE,0,50);
+  dE_diffphi_CDC_CDH_pip->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
+  dE_diffphi_CDC_CDH_pip->SetYTitle("CDH dE [MeVee]");
+  
+  MMnmiss_dE = new TH2F("MMnmiss_dE","MMnmiss_dE",nbindE,0,50,100,0.4,1.9);
+  MMnmiss_dE->SetXTitle("CDH dE [MeVee]");
+  MMnmiss_dE->SetYTitle("Miss. Mass [GeV/c^{2}]");
 
   MMnmiss_diffphi_CDC_CDH_pim
   = new TH2F("MMnmiss_diffphi_CDC_CDH_pim","MMnmiss_diffphi_CDC_CDH_pim",100,-1.*TMath::Pi(),TMath::Pi(),100,0.4,1.9);
@@ -1415,11 +1429,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   pipmom_diffphi_CDC_CDH_pip->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
   pipmom_diffphi_CDC_CDH_pip->SetYTitle("#pi^{+} mom. [GeV/c]");
   
-  pimmom_diffz_CDC_CDH_pim = new TH2F("pimmom_diffz_CDC_CDH_pim","pimmom_diffz_CDC_CDH_pim",100,-1.*TMath::Pi(),TMath::Pi(), 200,0,1);
+  pimmom_diffz_CDC_CDH_pim = new TH2F("pimmom_diffz_CDC_CDH_pim","pimmom_diffz_CDC_CDH_pim",100,-100,100, 200,0,1);
   pimmom_diffz_CDC_CDH_pim->SetXTitle("CDH hit - #pi^{-} track (z) [cm]");
   pimmom_diffz_CDC_CDH_pim->SetYTitle("#pi^{-} mom. [GeV/c]");
 
-  pipmom_diffz_CDC_CDH_pip = new TH2F("pipmom_diffz_CDC_CDH_pip","pipmom_diffz_CDC_CDH_pip",100,-1.*TMath::Pi(),TMath::Pi(), 200,0,1);
+  pipmom_diffz_CDC_CDH_pip = new TH2F("pipmom_diffz_CDC_CDH_pip","pipmom_diffz_CDC_CDH_pip",100,-100,100, 200,0,1);
   pipmom_diffz_CDC_CDH_pip->SetXTitle("CDH hit - #pi^{+} track (z) [cm]");
   pipmom_diffz_CDC_CDH_pip->SetYTitle("#pi^{+} mom. [GeV/c]");
 
@@ -1431,11 +1445,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   nmom_diffphi_CDC_CDH_pip->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
   nmom_diffphi_CDC_CDH_pip->SetYTitle("nmom.  [GeV/c]");
   
-  nmom_diffz_CDC_CDH_pim = new TH2F("nmom_diffz_CDC_CDH_pim","nmom_diffz_CDC_CDH_pim",100,-1.*TMath::Pi(),TMath::Pi(),100,0,1);
+  nmom_diffz_CDC_CDH_pim = new TH2F("nmom_diffz_CDC_CDH_pim","nmom_diffz_CDC_CDH_pim",100,-100,100,100,0,1);
   nmom_diffz_CDC_CDH_pim->SetXTitle("CDH hit - #pi^{-} track (z) [cm]");
   nmom_diffz_CDC_CDH_pim->SetYTitle("nmom.  [GeV/c]");
   
-  nmom_diffz_CDC_CDH_pip = new TH2F("nmom_diffz_CDC_CDH_pip","nmom_diffz_CDC_CDH_pip",100,-1.*TMath::Pi(),TMath::Pi(),100,0,1);
+  nmom_diffz_CDC_CDH_pip = new TH2F("nmom_diffz_CDC_CDH_pip","nmom_diffz_CDC_CDH_pip",100,-100,100,100,0,1);
   nmom_diffz_CDC_CDH_pip->SetXTitle("CDH hit - #pi^{+} track (z) [cm]");
   nmom_diffz_CDC_CDH_pip->SetYTitle("nmom.  [GeV/c]");
 
@@ -1448,11 +1462,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   pipmom_diffphi_CDC_CDH_pip_woK0_wSid->SetYTitle("#pi^{+} mom. [GeV/c]");
   
 
-  pimmom_diffz_CDC_CDH_pim_woK0_wSid = new TH2F("pimmom_diffz_CDC_CDH_pim_woK0_wSid","pimmom_diffz_CDC_CDH_pim_woK0_wSid",100,-1.*TMath::Pi(),TMath::Pi(), 200,0,1);
+  pimmom_diffz_CDC_CDH_pim_woK0_wSid = new TH2F("pimmom_diffz_CDC_CDH_pim_woK0_wSid","pimmom_diffz_CDC_CDH_pim_woK0_wSid",100,-100,100, 200,0,1);
   pimmom_diffz_CDC_CDH_pim_woK0_wSid->SetXTitle("CDH hit - #pi^{-} track (z) [cm]");
   pimmom_diffz_CDC_CDH_pim_woK0_wSid->SetYTitle("#pi^{-} mom. [GeV/c]");
 
-  pipmom_diffz_CDC_CDH_pip_woK0_wSid = new TH2F("pipmom_diffz_CDC_CDH_pip_woK0_wSid","pipmom_diffz_CDC_CDH_pip_woK0_wSid",100,-1.*TMath::Pi(),TMath::Pi(), 200,0,1);
+  pipmom_diffz_CDC_CDH_pip_woK0_wSid = new TH2F("pipmom_diffz_CDC_CDH_pip_woK0_wSid","pipmom_diffz_CDC_CDH_pip_woK0_wSid",100,-100,100, 200,0,1);
   pipmom_diffz_CDC_CDH_pip_woK0_wSid->SetXTitle("CDH hit - #pi^{+} track (z) [cm]");
   pipmom_diffz_CDC_CDH_pip_woK0_wSid->SetYTitle("#pi^{+} mom. [GeV/c]");
   
@@ -1466,11 +1480,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   nmom_diffphi_CDC_CDH_pip_woK0_wSid->SetYTitle("nmom.  [GeV/c]");
   
   
-  nmom_diffz_CDC_CDH_pim_woK0_wSid = new TH2F("nmom_diffz_CDC_CDH_pim_woK0_wSid","nmom_diffz_CDC_CDH_pim_woK0_wSid",100,-1.*TMath::Pi(),TMath::Pi(),100,0,1);
+  nmom_diffz_CDC_CDH_pim_woK0_wSid = new TH2F("nmom_diffz_CDC_CDH_pim_woK0_wSid","nmom_diffz_CDC_CDH_pim_woK0_wSid",100,-100,100,100,0,1);
   nmom_diffz_CDC_CDH_pim_woK0_wSid->SetXTitle("CDH hit - #pi^{-} track (z) [cm]");
   nmom_diffz_CDC_CDH_pim_woK0_wSid->SetYTitle("nmom.  [GeV/c]");
   
-  nmom_diffz_CDC_CDH_pip_woK0_wSid = new TH2F("nmom_diffz_CDC_CDH_pip_woK0_wSid","nmom_diffz_CDC_CDH_pip_woK0_wSid",100,-1.*TMath::Pi(),TMath::Pi(),100,0,1);
+  nmom_diffz_CDC_CDH_pip_woK0_wSid = new TH2F("nmom_diffz_CDC_CDH_pip_woK0_wSid","nmom_diffz_CDC_CDH_pip_woK0_wSid",100,-100,100,100,0,1);
   nmom_diffz_CDC_CDH_pip_woK0_wSid->SetXTitle("CDH hit - #pi^{+} track (z) [cm]");
   nmom_diffz_CDC_CDH_pip_woK0_wSid->SetYTitle("nmom.  [GeV/c]");
   
@@ -2260,6 +2274,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
      IMnpim_DCApipibeam->Fill(dca_pipibeam,LVec_pim_n.M());
      diff2d_CDC_CDH_pim->Fill(diffphipim,diffpim.z());
      diff2d_CDC_CDH_pip->Fill(diffphipip,diffpip.z());
+     dE_diffphi_CDC_CDH_pim->Fill(diffphipim,dE);
+     dE_diffphi_CDC_CDH_pip->Fill(diffphipip,dE);
+     MMnmiss_dE->Fill(dE, nmiss_mass);
      MMnmiss_diffphi_CDC_CDH_pim->Fill(diffphipim, nmiss_mass);
      MMnmiss_diffphi_CDC_CDH_pip->Fill(diffphipip, nmiss_mass);
      pimmom_diffphi_CDC_CDH_pim->Fill(diffphipim,(*LVec_pim).P());
