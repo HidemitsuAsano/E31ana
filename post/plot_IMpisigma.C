@@ -27,7 +27,7 @@
 
 const double pvalcut = 0.005;
 const bool gridon=true;
-const bool staton=false;
+const bool staton=true;
 const bool UseKinFit = false;
 const bool UseKinFitVal = true;
 const double lumi = 56.0e9; // rough value
