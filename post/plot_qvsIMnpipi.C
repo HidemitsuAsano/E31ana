@@ -117,11 +117,16 @@ void plot_qvsIMnpipi()
   TH2F* q_IMnpipi_wK0_wSid_n_Sp_K0n_ns_sim = (TH2F*)fileK0n_ns->Get("q_IMnpipi_wK0_wSid_n_Sp");
   TH2F* q_IMnpipi_wK0_wSid_n_Sm_K0n_ns_sim = (TH2F*)fileK0n_ns->Get("q_IMnpipi_wK0_wSid_n_Sm");
   
+  const double cs_ns = 6.454; //elementary CS [mb] 
+  const double scale_1NA = 0.06;
+  q_IMnpipi_wSid_n_Sp_K0n_ns_sim->Scale(cs_ns*scale_1NA);
+  q_IMnpipi_wSid_n_Sm_K0n_ns_sim->Scale(cs_ns*scale_1NA); 
+  q_IMnpipi_wK0_wSid_n_Sp_K0n_ns_sim->Scale(cs_ns*scale_1NA);   
+  q_IMnpipi_wK0_wSid_n_Sm_K0n_ns_sim->Scale(cs_ns*scale_1NA);   
+  
+  
   TCanvas *c14 = new TCanvas("c14","c14");
   q_IMnpipi_wK0_wSid_n_Sp_K0n_ns_sim->Draw("colz");
-  TCanvas *c15 = new TCanvas("c15","c15");
-  q_IMnpipi_wK0_wSid_n_Sm_K0n_ns_sim->Draw("colz");
-  
   const double Kp_mass = pMass + kpMass;  
   TF1 *fkp = new TF1("f", "sqrt(((x*x-[0]*[0]-[1]*[1])/(2*[0]))*((x*x-[0]*[0]-[1]*[1])/(2*[0]))-[1]*[1])",Kp_mass-0.0001,2);
   fkp->SetParameter(0,nMass);
@@ -131,6 +136,10 @@ void plot_qvsIMnpipi()
   fkp->SetLineStyle(4);
   fkp->SetLineColorAlpha(kPink, 0.35);
   fkp->Draw("same");
+  TCanvas *c15 = new TCanvas("c15","c15");
+  q_IMnpipi_wK0_wSid_n_Sm_K0n_ns_sim->Draw("colz");
+  fkp->Draw("same");
+  
 
 
   TCanvas *c16 = new TCanvas("c16","c16");
@@ -141,6 +150,25 @@ void plot_qvsIMnpipi()
   TH1D* IMnpipi_Sm_K0n_ns_sim = q_IMnpipi_wSid_n_Sm_K0n_ns_sim->ProjectionX("IMnpipi_Sm_K0n_ns_sim");
   IMnpipi_Sm_K0n_ns_sim->SetLineColor(3);
   IMnpipi_Sm_K0n_ns_sim->Draw("HEsame");
+  
+  TCanvas *c17 = new TCanvas("c17","c17");
+  c17->cd();
+  TH1D* IMnpipi_Sp_K0n_ns_sim_0_300 = q_IMnpipi_wSid_n_Sp_K0n_ns_sim->ProjectionX("IMnpipi_Sp_K0n_ns_sim_0_300",0,binq300-1);
+  IMnpipi_Sp_K0n_ns_sim_0_300->SetLineColor(2);
+  IMnpipi_Sp_K0n_ns_sim_0_300->Draw("HE");
+  TH1D* IMnpipi_Sm_K0n_ns_sim_0_300 = q_IMnpipi_wSid_n_Sm_K0n_ns_sim->ProjectionX("IMnpipi_Sm_K0n_ns_sim_0_300",0,binq300-1);
+  IMnpipi_Sm_K0n_ns_sim_0_300->SetLineColor(3);
+  IMnpipi_Sm_K0n_ns_sim_0_300->Draw("HEsame");
 
+  TCanvas *c18 = new TCanvas("c18","c18");
+  c18->cd();
+  TH1D* IMnpipi_Sp_K0n_ns_sim_300 = q_IMnpipi_wSid_n_Sp_K0n_ns_sim->ProjectionX("IMnpipi_Sp_K0n_ns_sim_300",binq300,100);
+  IMnpipi_Sp_K0n_ns_sim_300->SetLineColor(2);
+  IMnpipi_Sp_K0n_ns_sim_300->Draw("HE");
+  TH1D* IMnpipi_Sm_K0n_ns_sim_300 = q_IMnpipi_wSid_n_Sm_K0n_ns_sim->ProjectionX("IMnpipi_Sm_K0n_ns_sim_300",binq300,100);
+  IMnpipi_Sm_K0n_ns_sim_300->SetLineColor(3);
+  IMnpipi_Sm_K0n_ns_sim_300->Draw("HEsame");
+
+  
 
 }
