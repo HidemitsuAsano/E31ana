@@ -46,7 +46,7 @@ void plot_qvsIMnpipi()
 
   TCanvas *c6 = new TCanvas("c6","c6");
   c6->cd();
-  const int binq300 = q_IMnpipi_wSid_n_Sp->GetYaxis()->FindBin(0.3);
+  const int binq300 = q_IMnpipi_wSid_n_Sp->GetYaxis()->FindBin(0.35);
   TH1D* IMnpipi_Sp_0_300 = q_IMnpipi_wSid_n_Sp->ProjectionX("IMnpipi_Sp_0_300",0,binq300-1);
   IMnpipi_Sp_0_300->SetLineColor(2);
   IMnpipi_Sp_0_300->Draw("HE");

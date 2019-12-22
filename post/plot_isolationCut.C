@@ -46,4 +46,16 @@ void plot_isolationCut(){
 
   TCanvas *c14 = new TCanvas("c14","c14");
   nmom_diffphi_CDC_CDH_pip_woK0_wSid->Draw("colz");
+
+  TCanvas *c15 = new TCanvas("c15","c15");
+  pimmom_diffz_CDC_CDH_pim->Draw("colz");
+
+  TCanvas *c16 = new TCanvas("c16","c16");
+  pipmom_diffz_CDC_CDH_pip->Draw("colz");
+
+  TCanvas *c17 = new TCanvas("c17","c17");
+  nmom_diffz_CDC_CDH_pim->Draw("colz");
+  
+  TCanvas *c18 = new TCanvas("c18","c18");
+  nmom_diffz_CDC_CDH_pip->Draw("colz");
 }
