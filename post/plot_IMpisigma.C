@@ -2343,34 +2343,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
          nmom_nmissmom_wK0_wSid->Fill(LVec_nmiss.P(),(*LVec_n).P());
        }
      }
-     if(K0rejectFlag){
-       if(SigmaPFlag || SigmaMFlag){
-         nmom_nmissmom_woK0_wSid->Fill(LVec_nmiss.P(),(*LVec_n).P());
-         diff2d_CDC_CDH_pim_woK0_wSid->Fill(diffphipim,diffpim.z());
-         diff2d_CDC_CDH_pip_woK0_wSid->Fill(diffphipip,diffpip.z());
-         MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid->Fill(diffphipim, nmiss_mass);
-         MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid->Fill(diffphipip, nmiss_mass);
-         MMnmiss_diffz_CDC_CDH_pim_woK0_wSid->Fill(diffpim.z(), nmiss_mass);
-         MMnmiss_diffz_CDC_CDH_pip_woK0_wSid->Fill(diffpip.z(), nmiss_mass);
-         pimmom_diffphi_CDC_CDH_pim_woK0_wSid->Fill(diffphipim,(*LVec_pim).P());
-         pipmom_diffphi_CDC_CDH_pip_woK0_wSid->Fill(diffphipip,(*LVec_pip).P());
-         nmom_diffphi_CDC_CDH_pim_woK0_wSid->Fill(diffphipim,(*LVec_n).P());
-         nmom_diffphi_CDC_CDH_pip_woK0_wSid->Fill(diffphipip,(*LVec_n).P());
-         nmom_diffz_CDC_CDH_pim_woK0_wSid->Fill(diffpim.z(),(*LVec_n).P());
-         nmom_diffz_CDC_CDH_pip_woK0_wSid->Fill(diffpip.z(),(*LVec_n).P());
-       }
-       if(!SigmaPFlag && !SigmaMFlag){
-         MMnmiss_IMpippim_dE_woK0_woSid->Fill(LVec_pip_pim.M(),nmiss_mass);
-         IMnpim_IMnpip_dE_woK0_woSid->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-         q_IMnpipi_woK0_woSid->Fill(LVec_pip_pim_n.M(),qkn.P());
-         if(!MissNFlag){
-           MMnmiss_IMpippim_dE_woK0_woSid_won->Fill(LVec_pip_pim.M(),nmiss_mass);
-           IMnpim_IMnpip_dE_woK0_woSid_won->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-           q_IMnpipi_woK0_woSid_won->Fill(LVec_pip_pim_n.M(),qkn.P());
-         }
-       }//Sigma+/Sigma- reject
-     }//K0 reject
    }
+
 
 
    if(NBetaOK && NdEOK && MissNFlag){
@@ -2618,9 +2592,31 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
        MMnmiss_IMpippim_dE_woK0_wSid->Fill(LVec_pip_pim.M(),nmiss_mass);
        MMnmiss_DCApipibeam_woK0_wSid->Fill(dca_pipibeam,nmiss_mass);
        nmom_MMnmiss_woK0_wSid->Fill(nmiss_mass,(*LVec_n).P());
+       nmom_nmissmom_woK0_wSid->Fill(LVec_nmiss.P(),(*LVec_n).P());
+       diff2d_CDC_CDH_pim_woK0_wSid->Fill(diffphipim,diffpim.z());
+       diff2d_CDC_CDH_pip_woK0_wSid->Fill(diffphipip,diffpip.z());
+       MMnmiss_diffphi_CDC_CDH_pim_woK0_wSid->Fill(diffphipim, nmiss_mass);
+       MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid->Fill(diffphipip, nmiss_mass);
+       MMnmiss_diffz_CDC_CDH_pim_woK0_wSid->Fill(diffpim.z(), nmiss_mass);
+       MMnmiss_diffz_CDC_CDH_pip_woK0_wSid->Fill(diffpip.z(), nmiss_mass);
+       pimmom_diffphi_CDC_CDH_pim_woK0_wSid->Fill(diffphipim,(*LVec_pim).P());
+       pipmom_diffphi_CDC_CDH_pip_woK0_wSid->Fill(diffphipip,(*LVec_pip).P());
+       nmom_diffphi_CDC_CDH_pim_woK0_wSid->Fill(diffphipim,(*LVec_n).P());
+       nmom_diffphi_CDC_CDH_pip_woK0_wSid->Fill(diffphipip,(*LVec_n).P());
+       nmom_diffz_CDC_CDH_pim_woK0_wSid->Fill(diffpim.z(),(*LVec_n).P());
+       nmom_diffz_CDC_CDH_pip_woK0_wSid->Fill(diffpip.z(),(*LVec_n).P());
      }
      if(!SigmaPFlag && !SigmaMFlag){
        nmom_MMnmiss_woK0_woSid->Fill(nmiss_mass,(*LVec_n).P());
+     
+       MMnmiss_IMpippim_dE_woK0_woSid->Fill(LVec_pip_pim.M(),nmiss_mass);
+       IMnpim_IMnpip_dE_woK0_woSid->Fill(LVec_pip_n.M(),LVec_pim_n.M());
+       q_IMnpipi_woK0_woSid->Fill(LVec_pip_pim_n.M(),qkn.P());
+       if(!MissNFlag){
+         MMnmiss_IMpippim_dE_woK0_woSid_won->Fill(LVec_pip_pim.M(),nmiss_mass);
+         IMnpim_IMnpip_dE_woK0_woSid_won->Fill(LVec_pip_n.M(),LVec_pim_n.M());
+         q_IMnpipi_woK0_woSid_won->Fill(LVec_pip_pim_n.M(),qkn.P());
+       }
      }
      if(SigmaPcutFlag[sigmacuttype]){
        MMnmiss_IMnpipi_woK0_wSid_Sp->Fill(LVec_pip_pim_n.M(), nmiss_mass);
