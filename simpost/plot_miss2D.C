@@ -1,7 +1,7 @@
 void plot_miss2D()
 {
   //Lambda
-  TFile *_file0 = TFile::Open("simIMpisigma_npipiL_pippimn_v18_out.root");
+  TFile *_file0 = TFile::Open("simIMpisigma_npipiL_pippimn_v23_out.root");
   //Sp
   TH2D* MMnmiss_IMnpipi_woK0_wSid_lmiss_Sp = (TH2D*) _file0->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
   TH1D* lmiss_Sp =  (TH1D*) MMnmiss_IMnpipi_woK0_wSid_lmiss_Sp->ProjectionY("lmiss_Sp");
@@ -15,7 +15,7 @@ void plot_miss2D()
   
 
   //Sigma+
-  TFile *_file1 = TFile::Open("simIMpisigma_nSppim_pippimn_v77_out.root");
+  TFile *_file1 = TFile::Open("simIMpisigma_nSppim_pippimn_v107_out.root");
   //Sp
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sigmap_Sp = (TH2D*) _file1->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
   TH1D* Sigmap_Sp =  (TH1D*) MMnmiss_IMnpipi_woK0_wSid_Sigmap_Sp->ProjectionY("Sigmap_Sp");
@@ -29,7 +29,7 @@ void plot_miss2D()
 
 
   //Sigma-
-  TFile *_file2 = TFile::Open("simIMpisigma_nSmpip_pippimn_v77_out.root");
+  TFile *_file2 = TFile::Open("simIMpisigma_nSmpip_pippimn_v107_out.root");
   //Sp
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sigmam_Sp = (TH2D*) _file2->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
   TH1D* Sigmam_Sp =  (TH1D*) MMnmiss_IMnpipi_woK0_wSid_Sigmam_Sp->ProjectionY("Sigmam_Sp");
@@ -82,7 +82,7 @@ void plot_miss2D()
   Smpi0_Sm->SetLineColor(9);
   double nSmpi0_Sm = Smpi0_Sm->Integral();
 
-  TFile *_file4 = TFile::Open("../post/evanaIMpisigma_npippim_v162_out.root");
+  TFile *_file4 = TFile::Open("../post/evanaIMpisigma_npippim_v196_out.root");
   //Sp
   TH2D* MMnmiss_IMnpipi_woK0_wSid_rdata_Sp = (TH2D*) _file4->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
   TH1D* rdata_Sp = (TH1D*) MMnmiss_IMnpipi_woK0_wSid_rdata_Sp->ProjectionY("real_Sp");
@@ -117,7 +117,8 @@ void plot_miss2D()
   S0miss_Sp->Draw("HEsame");
   Sppi0_Sp->Draw("HEsame");
   Smpi0_Sp->Draw("HEsame");
-
+  
+  TCanvas *cmiss_Sp_woK0_woSidn = new TCanvas("miss_Sp_woK0_woSidn","miss_Sp_woK0_woSidn");
 
 
   TCanvas *miss_Sm = new TCanvas("miss_Sm","miss_Sm",800,0,800,800);
@@ -150,21 +151,37 @@ void plot_miss2D()
   //Lambda
   TH2D *MMnmiss_IMnpip_dE_woK0_lmiss = (TH2D*)_file0->Get("MMnmiss_IMnpip_dE_woK0");
   TH2D *MMnmiss_IMnpim_dE_woK0_lmiss = (TH2D*)_file0->Get("MMnmiss_IMnpim_dE_woK0");
+  TH2D *MMnmiss_IMnpip_dE_woK0_woSm_lmiss = (TH2D*)_file0->Get("MMnmiss_IMnpip_dE_woK0_woSm");
+  TH2D *MMnmiss_IMnpim_dE_woK0_woSp_lmiss = (TH2D*)_file0->Get("MMnmiss_IMnpim_dE_woK0_woSp");
+  TH2D *MMnmiss_IMnpip_dE_woK0_woSidn_lmiss = (TH2D*)_file0->Get("MMnmiss_IMnpip_dE_woK0_woSidn");
+  TH2D *MMnmiss_IMnpim_dE_woK0_woSidn_lmiss = (TH2D*)_file0->Get("MMnmiss_IMnpim_dE_woK0_woSidn");
   double Nnpip_lmiss = MMnmiss_IMnpip_dE_woK0_lmiss->Integral();
   double Nnpim_lmiss = MMnmiss_IMnpim_dE_woK0_lmiss->Integral();
-  //SigmaP
+  //nSppi-
   TH2D *MMnmiss_IMnpip_dE_woK0_Sigmap = (TH2D*)_file1->Get("MMnmiss_IMnpip_dE_woK0");
   TH2D *MMnmiss_IMnpim_dE_woK0_Sigmap = (TH2D*)_file1->Get("MMnmiss_IMnpim_dE_woK0");
+  TH2D *MMnmiss_IMnpip_dE_woK0_woSm_Sigmap = (TH2D*)_file1->Get("MMnmiss_IMnpip_dE_woK0_woSm");
+  TH2D *MMnmiss_IMnpim_dE_woK0_woSp_Sigmap = (TH2D*)_file1->Get("MMnmiss_IMnpim_dE_woK0_woSp");
+  TH2D *MMnmiss_IMnpip_dE_woK0_woSm_woSidn_Sigmap = (TH2D*)_file1->Get("MMnmiss_IMnpip_dE_woK0_woSidn");
+  TH2D *MMnmiss_IMnpim_dE_woK0_woSp_woSidn_Sigmap = (TH2D*)_file1->Get("MMnmiss_IMnpim_dE_woK0_woSidn");
   double Nnpip_Sigmap = MMnmiss_IMnpip_dE_woK0_Sigmap->Integral();
   double Nnpim_Sigmap = MMnmiss_IMnpim_dE_woK0_Sigmap->Integral();
-  //SigmaM
+  //nSmpi+
   TH2D *MMnmiss_IMnpip_dE_woK0_Sigmam = (TH2D*)_file2->Get("MMnmiss_IMnpip_dE_woK0");
   TH2D *MMnmiss_IMnpim_dE_woK0_Sigmam = (TH2D*)_file2->Get("MMnmiss_IMnpim_dE_woK0");
+  TH2D *MMnmiss_IMnpip_dE_woK0_woSm_Sigmam = (TH2D*)_file2->Get("MMnmiss_IMnpip_dE_woK0_woSm");
+  TH2D *MMnmiss_IMnpim_dE_woK0_woSp_Sigmam = (TH2D*)_file2->Get("MMnmiss_IMnpim_dE_woK0_woSp");
+  TH2D *MMnmiss_IMnpip_dE_woK0_woSm_woSidn_Sigmam = (TH2D*)_file2->Get("MMnmiss_IMnpip_dE_woK0_woSidn");
+  TH2D *MMnmiss_IMnpim_dE_woK0_woSp_woSidn_Sigmam = (TH2D*)_file2->Get("MMnmiss_IMnpim_dE_woK0_woSidn");
   double Nnpip_Sigmam = MMnmiss_IMnpip_dE_woK0_Sigmam->Integral();
   double Nnpim_Sigmam = MMnmiss_IMnpim_dE_woK0_Sigmam->Integral();
   //Sigma0
   TH2D *MMnmiss_IMnpip_dE_woK0_S0 = (TH2D*)_file3->Get("MMnmiss_IMnpip_dE_woK0");
   TH2D *MMnmiss_IMnpim_dE_woK0_S0 = (TH2D*)_file3->Get("MMnmiss_IMnpim_dE_woK0");
+  TH2D *MMnmiss_IMnpip_dE_woK0_woSm_S0 = (TH2D*)_file3->Get("MMnmiss_IMnpip_dE_woK0_woSm");
+  TH2D *MMnmiss_IMnpim_dE_woK0_woSp_S0 = (TH2D*)_file3->Get("MMnmiss_IMnpim_dE_woK0_woSp");
+  TH2D *MMnmiss_IMnpip_dE_woK0_woSidn_S0 = (TH2D*)_file3->Get("MMnmiss_IMnpip_dE_woK0_woSidn");
+  TH2D *MMnmiss_IMnpim_dE_woK0_woSidn_S0 = (TH2D*)_file3->Get("MMnmiss_IMnpim_dE_woK0_woSidn");
   double Nnpip_S0 = MMnmiss_IMnpip_dE_woK0_S0->Integral();
   double Nnpim_S0 = MMnmiss_IMnpim_dE_woK0_S0->Integral();
   //Sppi0
@@ -183,13 +200,27 @@ void plot_miss2D()
   double Nnpip_rdata = MMnmiss_IMnpip_dE_woK0_rdata->Integral();
   double Nnpim_rdata = MMnmiss_IMnpim_dE_woK0_rdata->Integral();
   
-  
+  //normalization 
   MMnmiss_IMnpip_dE_woK0_lmiss->Scale(0.40*nrdata_Sp/nlmiss_Sp);
   MMnmiss_IMnpip_dE_woK0_Sigmap->Scale(0.18*nrdata_Sp/nSigmap_Sp);
   MMnmiss_IMnpip_dE_woK0_Sigmam->Scale(0.01*nrdata_Sp/nSigmam_Sp);
   MMnmiss_IMnpip_dE_woK0_S0->Scale(0.24*nrdata_Sp/nS0miss_Sp);
   MMnmiss_IMnpip_dE_woK0_Sppi0->Scale(0.03*nrdata_Sp/nSppi0_Sp);
   MMnmiss_IMnpip_dE_woK0_Smpi0->Scale(0.03*nrdata_Sp/nSmpi0_Sp);
+  
+  MMnmiss_IMnpip_dE_woK0_woSm_lmiss->Scale(0.40*nrdata_Sp/nlmiss_Sp);
+  MMnmiss_IMnpip_dE_woK0_woSm_Sigmap->Scale(0.18*nrdata_Sp/nSigmap_Sp);
+  MMnmiss_IMnpip_dE_woK0_woSm_Sigmam->Scale(0.01*nrdata_Sp/nSigmam_Sp);
+  MMnmiss_IMnpip_dE_woK0_woSm_S0->Scale(0.24*nrdata_Sp/nS0miss_Sp);
+  //MMnmiss_IMnpip_dE_woK0_woSm_Sppi0->Scale(0.03*nrdata_Sp/nSppi0_Sp);
+  //MMnmiss_IMnpip_dE_woK0_woSm_Smpi0->Scale(0.03*nrdata_Sp/nSmpi0_Sp);
+  
+  MMnmiss_IMnpip_dE_woK0_wSidn_lmiss->Scale(0.40*nrdata_Sp/nlmiss_Sp);
+  MMnmiss_IMnpip_dE_woK0_wSidn_Sigmap->Scale(0.18*nrdata_Sp/nSigmap_Sp);
+  MMnmiss_IMnpip_dE_woK0_wSidn_Sigmam->Scale(0.01*nrdata_Sp/nSigmam_Sp);
+  MMnmiss_IMnpip_dE_woK0_wSidn_S0->Scale(0.24*nrdata_Sp/nS0miss_Sp);
+  //MMnmiss_IMnpip_dE_woK0_wSidn_Sppi0->Scale(0.03*nrdata_Sp/nSppi0_Sp);
+  //MMnmiss_IMnpip_dE_woK0_wSidn_Smpi0->Scale(0.03*nrdata_Sp/nSmpi0_Sp);
 
   TH2D *MMnmiss_IMnpip_mc = (TH2D*)MMnmiss_IMnpip_dE_woK0_lmiss->Clone();
   MMnmiss_IMnpip_mc->Add(MMnmiss_IMnpip_dE_woK0_Sigmap);
@@ -214,6 +245,20 @@ void plot_miss2D()
   MMnmiss_IMnpim_dE_woK0_S0->Scale(0.2*nrdata_Sm/nS0miss_Sm);
   MMnmiss_IMnpim_dE_woK0_Sppi0->Scale(0.03*nrdata_Sm/nSppi0_Sm);
   MMnmiss_IMnpim_dE_woK0_Smpi0->Scale(0.03*nrdata_Sm/nSmpi0_Sm);
+  
+  MMnmiss_IMnpim_dE_woK0_woSp_lmiss->Scale(0.40*nrdata_Sm/nlmiss_Sm);
+  MMnmiss_IMnpim_dE_woK0_woSp_Sigmap->Scale(0.01*nrdata_Sm/nSigmap_Sm);
+  MMnmiss_IMnpim_dE_woK0_woSp_Sigmam->Scale(0.21*nrdata_Sm/nSigmam_Sm);
+  MMnmiss_IMnpim_dE_woK0_woSp_S0->Scale(0.2*nrdata_Sm/nS0miss_Sm);
+  //MMnmiss_IMnpim_dE_woK0_woSp_Sppi0->Scale(0.03*nrdata_Sm/nSppi0_Sm);
+  //MMnmiss_IMnpim_dE_woK0_woSp_Smpi0->Scale(0.03*nrdata_Sm/nSmpi0_Sm);
+  
+  MMnmiss_IMnpim_dE_woK0_wSidn_lmiss->Scale(0.40*nrdata_Sm/nlmiss_Sm);
+  MMnmiss_IMnpim_dE_woK0_wSidn_Sigmap->Scale(0.01*nrdata_Sm/nSigmap_Sm);
+  MMnmiss_IMnpim_dE_woK0_wSidn_Sigmam->Scale(0.21*nrdata_Sm/nSigmam_Sm);
+  MMnmiss_IMnpim_dE_woK0_wSidn_S0->Scale(0.2*nrdata_Sm/nS0miss_Sm);
+  //MMnmiss_IMnpim_dE_woK0_wSidn_Sppi0->Scale(0.03*nrdata_Sm/nSppi0_Sm);
+  //MMnmiss_IMnpim_dE_woK0_wSidn_Smpi0->Scale(0.03*nrdata_Sm/nSmpi0_Sm);
 
   TH2D *MMnmiss_IMnpim_mc = (TH2D*)MMnmiss_IMnpim_dE_woK0_lmiss->Clone();
   MMnmiss_IMnpim_mc->Add(MMnmiss_IMnpim_dE_woK0_Sigmap);
