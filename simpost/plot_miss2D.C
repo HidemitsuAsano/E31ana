@@ -1,5 +1,6 @@
 void plot_miss2D()
 {
+  TH1::SetDefaultSumw2();
   //Lambda
   TFile *_file0 = TFile::Open("simIMpisigma_npipiL_pippimn_v23_out.root");
   //Sp
@@ -152,6 +153,10 @@ void plot_miss2D()
   TH2D *MMnmiss_IMnpim_dE_woK0_woSp_lmiss = (TH2D*)_file0->Get("MMnmiss_IMnpim_dE_woK0_woSp");
   TH2D *MMnmiss_IMnpip_dE_woK0_woSidn_lmiss = (TH2D*)_file0->Get("MMnmiss_IMnpip_dE_woK0_woSidn");
   TH2D *MMnmiss_IMnpim_dE_woK0_woSidn_lmiss = (TH2D*)_file0->Get("MMnmiss_IMnpim_dE_woK0_woSidn");
+  TH2D *MMnmiss_IMpippim_dE_lmiss = (TH2D*)_file0->Get("MMnmiss_IMpippim_dE");
+  TH2D *MMnmiss_IMpippim_dE_wSid_lmiss = (TH2D*)_file0->Get("MMnmiss_IMpippim_wSid_dE");
+  TH2D *MMnmiss_IMpippim_dE_woK0_woSidn_lmiss = (TH2D*)_file0->Get("MMnmiss_IMpippim_dE_woK0_woSidn");
+  //TH2D *IMnpim_IMnpip_dE_lmiss = (TH2D*)_file0->Get("IMnpim_IMnpip_dE");
   double Nnpip_lmiss = MMnmiss_IMnpip_dE_woK0_lmiss->Integral();
   double Nnpim_lmiss = MMnmiss_IMnpim_dE_woK0_lmiss->Integral();
   //nSppi-
@@ -222,6 +227,7 @@ void plot_miss2D()
   MMnmiss_IMnpip_dE_woK0_woSidn_S0->Scale(0.24*nrdata_Sp/nS0miss_Sp);
   //MMnmiss_IMnpip_dE_woK0_wSidn_Sppi0->Scale(0.03*nrdata_Sp/nSppi0_Sp);
   //MMnmiss_IMnpip_dE_woK0_wSidn_Smpi0->Scale(0.03*nrdata_Sp/nSmpi0_Sp);
+  
 
   TH2D *MMnmiss_IMnpip_mc = (TH2D*)MMnmiss_IMnpip_dE_woK0_lmiss->Clone("MMnmiss_IMnpip_mc");
   MMnmiss_IMnpip_mc->Add(MMnmiss_IMnpip_dE_woK0_Sigmap);
@@ -280,6 +286,7 @@ void plot_miss2D()
   TH1D* MMnmiss_woSidn_mc = (TH1D*)MMnmiss_IMnpip_woSidn_mc->ProjectionY("MMnmiss_IMnpip_woSidn_mc_py");
   MMnmiss_woSidn_mc->SetLineColor(6);
   MMnmiss_woSidn_mc->Draw("HEsame");
+
   TH1D* MMnmiss_woSidn_lmiss = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSidn_lmiss->ProjectionY("MMnmiss_IMnpip_dE_woK0_woSidn_lmiss_py");
   MMnmiss_woSidn_lmiss->SetLineColor(4); 
   MMnmiss_woSidn_lmiss->Draw("HEsame"); 
@@ -292,6 +299,12 @@ void plot_miss2D()
   TH1D* MMnmiss_woSidn_Sigmam = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSidn_Sigmam->ProjectionY("MMnmiss_IMnpip_dE_woK0_woSidn_Sigmam_py");
   MMnmiss_woSidn_Sigmam->SetLineColor(3); 
   MMnmiss_woSidn_Sigmam->Draw("HEsame"); 
+
+  TCanvas *cMMnmiss_woSidn_ratio = new TCanvas("cMMnmiss_woSidn_ratio","cMMnmiss_woSid_ratio");
+  TH1D* MMnmiss_woSidn_ratio = MMnmiss_woSidn_mc->Clone("MMnmiss_woSidn_ratio");
+  MMnmiss_woSidn_ratio->Divide(MMnmiss_IMnpip_dE_woK0_woSidn_rdata_py);
+  MMnmiss_woSidn_ratio->Draw("HE");
+
   
   //projection to IMnpip (miss n & Sigma+/-)
   TCanvas *cIMnpip_woSidn = new TCanvas("cIMnpip_woSidn","cIMnpip_woSidn");
@@ -389,6 +402,23 @@ void plot_miss2D()
   IMnpim_woSidn_Sigmam->Draw("HEsame"); 
 
 
+  //weighting and decomposition of BG
+  int nbinx_lmiss = MMnmiss_IMnpip_dE_woK0_woSidn_lmiss->GetNbinsX();
+  int nbiny_lmiss = MMnmiss_IMnpip_dE_woK0_woSidn_lmiss->GetNbinsY();
+  int nbinx_S0 = MMnmiss_IMnpip_dE_woK0_woSidn_S0->GetNbinsX();
+  int nbiny_S0 = MMnmiss_IMnpip_dE_woK0_woSidn_S0->GetNbinsY();
+  TH2D* MMnmiss_IMnpip_dE_woK0_woSidn_lmiss_mod = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSidn_lmiss->Clone("MMnmiss_IMnpip_dE_woK0_woSidn_lmiss_mod");
+  TH2D* MMnmiss_IMnpim_dE_woK0_woSidn_lmiss_mod = (TH1D*)MMnmiss_IMnpim_dE_woK0_woSidn_lmiss->Clone("MMnmiss_IMnpim_dE_woK0_woSidn_lmiss_mod");
+  TH2D* MMnmiss_IMnpip_dE_woK0_woSidn_S0_mod = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSidn_S0->Clone("MMnmiss_IMnpip_dE_woK0_woSidn_S0_mod");
+  TH2D* MMnmiss_IMnpim_dE_woK0_woSidn_S0_mod = (TH1D*)MMnmiss_IMnpim_dE_woK0_woSidn_S0->Clone("MMnmiss_IMnpim_dE_woK0_woSidn_S0_mod");
+  
+  for(int ix=0;ix<nbinx_lmiss;ix++){
+    for(int iy=0;iy<nbiny_lmiss;iy++){
+      double cont = MMnmiss_IMnpip_dE_woK0_woSidn_lmiss_mod->GetBinContent(ix,iy);
+      double weight = 
+      
+    }
+  }
 
 
 
