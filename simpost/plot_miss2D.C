@@ -311,7 +311,8 @@ void plot_miss2D()
   //projection to IMnpip (miss n & Sigma+/-)
   TCanvas *cIMnpip_woSidn = new TCanvas("cIMnpip_woSidn","cIMnpip_woSidn");
   cIMnpip_woSidn->cd();
-  MMnmiss_IMnpip_dE_woK0_woSidn_rdata->ProjectionX("MMnmiss_IMnpip_dE_woK0_woSidn_rdata_px")->Draw("HE");
+  TH1D* IMnpip_woSidn_rdata = (TH1D*) MMnmiss_IMnpip_dE_woK0_woSidn_rdata->ProjectionX("IMnpip_dE_woK0_woSidn_rdata");
+  IMnpip_woSidn_rdata->Draw("HE");
   TH1D* IMnpip_woSidn_mc = (TH1D*)MMnmiss_IMnpip_woSidn_mc->ProjectionX("MMnmiss_IMnpip_woSidn_mc_px");
   IMnpip_woSidn_mc->SetLineColor(6);
   IMnpip_woSidn_mc->Draw("HEsame");
@@ -328,7 +329,12 @@ void plot_miss2D()
   IMnpip_woSidn_Sigmam->SetLineColor(3); 
   IMnpip_woSidn_Sigmam->Draw("HEsame"); 
 
-
+   
+  TCanvas *cIMnpip_woSidn_ratio = new TCanvas("cIMnpip_woSidn_ratio","cIMnpip_woSidn_ratio");
+  cIMnpip_woSidn_ratio->cd();
+  TH1D* IMnpip_woSidn_mc_ratio = IMnpip_woSidn_mc->Clone("");
+  IMnpip_woSidn_mc_ratio->Divide(IMnpip_woSidn_rdata);
+  IMnpip_woSidn_mc_ratio->Draw("HE");
 
   //Sigma-
   MMnmiss_IMnpim_dE_woK0_lmiss->Scale(0.40*nrdata_Sm/nlmiss_Sm);
