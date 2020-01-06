@@ -706,6 +706,7 @@ void plot_miss2D()
   TH1D* MMnmiss_dE_woK0_woSidn_mc_mod_ratio = (TH1D*)MMnmiss_woK0_woSidn[0]->Clone("MMnmiss_woK0_woSidn_mod_ratio");
   MMnmiss_dE_woK0_woSidn_mc_mod_ratio->Divide(MMnmiss_dE_woK0_woSidn_mc_mod);
   MMnmiss_dE_woK0_woSidn_mc_mod_ratio->SetTitle("MMnmiss_dE_woK0_woSidn Data/MC");
+  MMnmiss_dE_woK0_woSidn_mc_mod_ratio->GetYaxis()->SetRangeUser(-0.1,3);
   MMnmiss_dE_woK0_woSidn_mc_mod_ratio->Draw("HE");
 
   
