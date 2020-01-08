@@ -803,6 +803,38 @@ void plot_miss2D()
   MMnmiss_woK0_woSidn_mc_mod_ratio->SetTitle("MMnmiss_woK0_woSidn Data/MC");
   MMnmiss_woK0_woSidn_mc_mod_ratio->GetYaxis()->SetRangeUser(-0.1,3);
   MMnmiss_woK0_woSidn_mc_mod_ratio->Draw("HE");
+ 
+
+  TCanvas *cIMnpip_woK0_woSidn_mod = new TCanvas("cIMnpip_woK0_woSidn_mod","cIMnpip_woK0_woSidn_mod");
+  cIMnpip_woK0_woSidn_mod->cd();
+  TH1D* IMnpip_woK0_woSidn_mod[8];
+  for(int i=0;i<8;i++){
+    IMnpip_woK0_woSidn_mod[i] = (TH1D*)MMnmiss_IMnpip_woK0_woSidn_mod[i]->ProjectionX(Form("IMnpip_woK0_woSidn_mod_%s",name[i]));
+    IMnpip_woK0_woSidn_mod[i]->SetLineColor(colordef[i]);
+  }
+  IMnpip_woK0_woSidn[0]->Draw("HE");
+  TH1D* IMnpip_woK0_woSidn_mc_mod = (TH1D*)MMnmiss_IMnpip_woK0_woSidn_mc_mod->ProjectionX("IMnpip_woK0_woSidn_mc_mod");
+  IMnpip_woK0_woSidn_mc_mod->SetLineColor(6);
+  IMnpip_woK0_woSidn_mc_mod->Draw("HEsame");
+  for(int i=1;i<8;i++){
+    IMnpip_woK0_woSidn_mod[i]->Draw("HEsame");
+  }
+
+
+  TCanvas *cIMnpim_woK0_woSidn_mod = new TCanvas("cIMnpim_woK0_woSidn_mod","cIMnpim_woK0_woSidn_mod");
+  cIMnpim_woK0_woSidn_mod->cd();
+  TH1D* IMnpim_woK0_woSidn_mod[8];
+  for(int i=0;i<8;i++){
+    IMnpim_woK0_woSidn_mod[i] = (TH1D*)MMnmiss_IMnpim_woK0_woSidn_mod[i]->ProjectionX(Form("IMnpim_woK0_woSidn_mod_%s",name[i]));
+    IMnpim_woK0_woSidn_mod[i]->SetLineColor(colordef[i]);
+  }
+  IMnpim_woK0_woSidn[0]->Draw("HE");
+  TH1D* IMnpim_woK0_woSidn_mc_mod = (TH1D*)MMnmiss_IMnpim_woK0_woSidn_mc_mod->ProjectionX("IMnpim_woK0_woSidn_mc_mod");
+  IMnpim_woK0_woSidn_mc_mod->SetLineColor(6);
+  IMnpim_woK0_woSidn_mc_mod->Draw("HEsame");
+  for(int i=1;i<8;i++){
+    IMnpim_woK0_woSidn_mod[i]->Draw("HEsame");
+  }
 
   
   TCanvas *c = NULL;
