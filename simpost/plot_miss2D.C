@@ -819,6 +819,15 @@ void plot_miss2D()
   for(int i=1;i<8;i++){
     IMnpip_woK0_woSidn_mod[i]->Draw("HEsame");
   }
+  
+  TCanvas *cIMnpip_woK0_woSidn_mod_ratio = new TCanvas("cIMnpip_woK0_woSidn_mod_ratio","cIMnpip_woK0_woSidn_mod_ratio");
+  cIMnpip_woK0_woSidn_mod_ratio->cd();
+  TH1D* IMnpip_woK0_woSidn_mod_ratio = (TH1D*)IMnpip_woK0_woSidn[0]->Clone("IMnpip_woK0_woSidn_mod_ratio");
+  IMnpip_woK0_woSidn_mod_ratio->Divide(IMnpip_woK0_woSidn_mc_mod);
+  IMnpip_woK0_woSidn_mod_ratio->SetTitle("IMnpip_woK0_woSidn_mod_ratio Data/MC");
+  IMnpip_woK0_woSidn_mod_ratio->GetYaxis()->SetRangeUser(-0.1,3);
+  IMnpip_woK0_woSidn_mod_ratio->Draw("HE");
+
 
 
   TCanvas *cIMnpim_woK0_woSidn_mod = new TCanvas("cIMnpim_woK0_woSidn_mod","cIMnpim_woK0_woSidn_mod");
@@ -835,7 +844,14 @@ void plot_miss2D()
   for(int i=1;i<8;i++){
     IMnpim_woK0_woSidn_mod[i]->Draw("HEsame");
   }
-
+  
+  TCanvas *cIMnpim_woK0_woSidn_mod_ratio = new TCanvas("cIMnpim_woK0_woSidn_mod_ratio","cIMnpim_woK0_woSidn_mod_ratio");
+  cIMnpim_woK0_woSidn_mod_ratio->cd();
+  TH1D* IMnpim_woK0_woSidn_mod_ratio = (TH1D*)IMnpim_woK0_woSidn[0]->Clone("IMnpim_woK0_woSidn_mod_ratio");
+  IMnpim_woK0_woSidn_mod_ratio->Divide(IMnpim_woK0_woSidn_mc_mod);
+  IMnpim_woK0_woSidn_mod_ratio->SetTitle("IMnpim_woK0_woSidn_mod_ratio Data/MC");
+  IMnpim_woK0_woSidn_mod_ratio->GetYaxis()->SetRangeUser(-0.1,3);
+  IMnpim_woK0_woSidn_mod_ratio->Draw("HE");
   
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
