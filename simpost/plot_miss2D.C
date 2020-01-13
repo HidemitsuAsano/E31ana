@@ -573,13 +573,24 @@ void plot_miss2D()
   MMnmiss_woK0_woSidn_ratio->SetTitle("Data/MC");
   MMnmiss_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,3);
   MMnmiss_woK0_woSidn_ratio->Draw("HE");
+  
 
-  TF1 *fgaus_MMnmiss = new TF1("fgaus_MMnmiss","gaus",0,1.0);
-  fgaus_MMnmiss->SetParameter(0,1.82171e+00); 
-  fgaus_MMnmiss->SetParameter(1,8.56016e-01); 
-  fgaus_MMnmiss->SetParameter(2,6.81677e-01); 
-  fgaus_MMnmiss->SetLineColor(2);
-  MMnmiss_woK0_woSidn_ratio->Fit("fgaus_MMnmiss","","",0.,1.0);
+
+  TF1 *sgf_MMnmiss = new TF1("sgf_MMnmiss","[0]*exp(-0.5*pow((x-[1])/([2]+(x<[1])*[3]*(x-[1])),2))");    
+  //TF1 *fgaus_MMnmiss = new TF1("fgaus_MMnmiss","gaus",0,1.0);
+  //fgaus_MMnmiss->SetParameter(0,1.82171e+00); 
+  //fgaus_MMnmiss->SetParameter(1,8.56016e-01); 
+  //fgaus_MMnmiss->SetParameter(2,6.81677e-01); 
+  //fgaus_MMnmiss->SetLineColor(2);
+  sgf_MMnmiss->SetParameter(0,1.82171e+00); 
+  sgf_MMnmiss->SetParameter(1,8.56016e-01); 
+  sgf_MMnmiss->SetParameter(2,6.81677e-01); 
+  sgf_MMnmiss->SetLineColor(2);
+
+  //MMnmiss_woK0_woSidn_ratio->Fit("fgaus_MMnmiss","","",0.,1.0);
+  MMnmiss_woK0_woSidn_ratio->Fit("sgf_MMnmiss","","",0.,1.15);
+  double param_sgf_MMnmiss[4];
+  for(int ipar=0;ipar<4;ipar++) param_sgf_MMnmiss[ipar] = sgf_MMnmiss->GetParameter(ipar);
 
   //projection to IMnpip (miss n & Sigma+/-)
   TCanvas *cIMnpip_woK0_woSidn = new TCanvas("cIMnpip_woK0_woSidn","cIMnpip_woK0_woSidn");
@@ -767,9 +778,14 @@ void plot_miss2D()
   fgaus_MMnmiss_mod->SetParameter(1,8.56016e-01); 
   fgaus_MMnmiss_mod->SetParameter(2,6.81677e-01); 
   
+  TF1 *sgf_MMnmiss_mod = new TF1("sgf_MMnmiss_mod","[0]*exp(-0.5*pow((x-[1])/([2]+(x<[1])*[3]*(x-[1])),2))");
+  for(int ipar=0;ipar<4;ipar++) sgf_MMnmiss_mod->SetParameter(ipar, param_sgf_MMnmiss[ipar]);
+  sgf_MMnmiss_mod->SetLineColor(3);
+
   TCanvas *cfgaus_MMnmiss_mod = new TCanvas("cfgaus_MMnmiss_mod","cfgaus_MMnmiss_mod");
   cfgaus_MMnmiss_mod->cd();
   fgaus_MMnmiss_mod->Draw("");
+  sgf_MMnmiss_mod->Draw("same");
   
   
   TH2D* MMnmiss_IMnpip_woK0_woSidn_mc_mod = (TH2D*)MMnmiss_IMnpip_woK0_woSidn_mod[1]->Clone("MMnmiss_IMnpip_woK0_woSidn_mc_mod");
@@ -794,8 +810,9 @@ void plot_miss2D()
         contIMnpim_mc = MMnmiss_IMnpim_woK0_woSidn_mc->GetBinContent(ix,iy);
       }
       double weight = 1.0;
-      if(yval<1.0){
-        weight = fgaus_MMnmiss_mod->Eval(yval);
+      if(yval<1.15){
+        //weight = fgaus_MMnmiss_mod->Eval(yval);sgf_MMnmiss_mod
+        weight = sgf_MMnmiss_mod->Eval(yval);
       }else{
         weight = 1.0;
       }
@@ -926,3 +943,4 @@ void plot_miss2D()
   fout->cd();
   fout->Close();
 }
+
