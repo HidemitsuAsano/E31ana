@@ -621,6 +621,12 @@ void plot_miss2D()
     MMnmiss_IMnpip_woK0_woSm_n[i]->Scale(scaleFactor[i]);
     MMnmiss_IMnpip_woK0_woSidn[i]->Scale(scaleFactor[i]);
     MMnmiss_IMnpip_wK0_woSid_won[i]->Scale(scaleFactor[i]);
+    MMnmiss_IMnpipi_woK0_wSid_Sm[i]->Scale(scaleFactor[i]);
+    MMnmiss_IMnpim_woK0[i]->Scale(scaleFactor[i]);
+    MMnmiss_IMnpim_woK0_woSp[i]->Scale(scaleFactor[i]);
+    MMnmiss_IMnpim_woK0_woSp_n[i]->Scale(scaleFactor[i]);
+    MMnmiss_IMnpim_woK0_woSidn[i]->Scale(scaleFactor[i]);
+    MMnmiss_IMnpim_wK0_woSid_won[i]->Scale(scaleFactor[i]);
     MMnmiss_IMpippim_wSid[i]->Scale(scaleFactor[i]);
     MMnmiss_IMpippim_woK0_woSidn[i]->Scale(scaleFactor[i]);
     MMnmiss_IMpippim_wK0_woSid_won[i]->Scale(scaleFactor[i]);
@@ -628,12 +634,12 @@ void plot_miss2D()
     q_IMnpipi_wK0_woSid_won[i]->Scale(scaleFactor[i]);
     MMnmiss_Mompippim_woK0_woSidn[i]->Scale(scaleFactor[i]);
     MMnmiss_Mompippim_wK0_woSid_won[i]->Scale(scaleFactor[i]);
-    MMnmiss_IMnpipi_woK0_wSid_Sm[i]->Scale(scaleFactor[i]);
-    MMnmiss_IMnpim_woK0[i]->Scale(scaleFactor[i]);
-    MMnmiss_IMnpim_woK0_woSp[i]->Scale(scaleFactor[i]);
-    MMnmiss_IMnpim_woK0_woSp_n[i]->Scale(scaleFactor[i]);
-    MMnmiss_IMnpim_woK0_woSidn[i]->Scale(scaleFactor[i]);
-    MMnmiss_IMnpim_wK0_woSid_won[i]->Scale(scaleFactor[i]);
+    pipmom_MMnmiss_woK0_woSidn[i]->Scale(scaleFactor[i]);
+    pipmom_MMnmiss_wK0_woSid_won[i]->Scale(scaleFactor[i]);
+    pimmom_MMnmiss_woK0_woSidn[i]->Scale(scaleFactor[i]);
+    pimmom_MMnmiss_wK0_woSid_won[i]->Scale(scaleFactor[i]);
+    MMom_MMass_woK0_woSidn[i]->Scale(scaleFactor[i]);
+    MMom_MMass_wK0_woSid_won[i]->Scale(scaleFactor[i]);
   }
   
   
