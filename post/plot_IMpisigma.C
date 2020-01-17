@@ -186,6 +186,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     tree->SetBranchAddress( "kf_flag", &kf_flag );
   }
   
+  //weight function of BG evaluation for MC
+  TF1 *fweight_MMnmiss = new TF1("fweight_MMmiss",func_MMnmiss,0,1.5,7);
+  fweight_MMnmiss->SetParameters(param_MMnmiss);
+
+
   // w/o kinematic fit 
   TH2F* CDHphi_betainv_fid;
   TH2F* CDHz_betainv_fid;
@@ -1816,6 +1821,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       }
     }
     double nmiss_mass = LVec_nmiss.M();
+    double weight = 1.0;
+    if(SimSpmode || SimSmmode || SimK0nnmode || SimnpipiLmode || SimnS0pippimmode || SimSppi0mode || SimSmpi0mode){
+      weight = fweight_MMnmiss->Eval(nmiss_mass);
+    }
     double nmiss_mass_vtx[2]={LVec_nmiss_vtx[0].M(),LVec_nmiss_vtx[1].M()};
     double nmiss_mom = LVec_nmiss.P();
 
@@ -2481,17 +2490,18 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
        if(!SigmaPFlag && !SigmaMFlag){
          nmom_MMnmiss_wK0_woSid->Fill(nmiss_mass,(*LVec_n).P());
          if(!MissNFlag){
-           MMnmiss_IMnpip_dE_wK0_woSid_won->Fill(LVec_pip_n.M(),nmiss_mass);
-           MMnmiss_IMnpim_dE_wK0_woSid_won->Fill(LVec_pim_n.M(),nmiss_mass);
-           MMnmiss_IMpippim_dE_wK0_woSid_won->Fill(LVec_pip_pim.M(),nmiss_mass);
-           IMnpim_IMnpip_dE_wK0_woSid_won->Fill( LVec_pip_n.M(), LVec_pim_n.M());
-           MMnmiss_IMnpipi_wK0_woSid_won->Fill(LVec_pip_pim_n.M(),nmiss_mass);
-           q_IMnpipi_wK0_woSid_won->Fill(LVec_pip_pim_n.M(),qkn.P());
-           nmom_MMnmiss_wK0_woSid_won->Fill(nmiss_mass,(*LVec_n).P());
-           MMnmiss_Mompippim_dE_wK0_woSid_won->Fill(LVec_pip_pim.P(),nmiss_mass);
-           MMom_MMass_wK0_woSid_won->Fill(LVec_nmiss.M(),LVec_nmiss.P());
-           pipmom_MMnmiss_dE_wK0_woSid_won->Fill(nmiss_mass,(*LVec_pip).P());
-           pimmom_MMnmiss_dE_wK0_woSid_won->Fill(nmiss_mass,(*LVec_pim).P());
+           MMnmiss_IMnpip_dE_wK0_woSid_won->Fill(LVec_pip_n.M(),nmiss_mass,weight);
+
+           MMnmiss_IMnpim_dE_wK0_woSid_won->Fill(LVec_pim_n.M(),nmiss_mass,weight);
+           MMnmiss_IMpippim_dE_wK0_woSid_won->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
+           IMnpim_IMnpip_dE_wK0_woSid_won->Fill( LVec_pip_n.M(), LVec_pim_n.M(),weight);
+           MMnmiss_IMnpipi_wK0_woSid_won->Fill(LVec_pip_pim_n.M(),nmiss_mass,weight);
+           q_IMnpipi_wK0_woSid_won->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+           nmom_MMnmiss_wK0_woSid_won->Fill(nmiss_mass,(*LVec_n).P(),weight);
+           MMnmiss_Mompippim_dE_wK0_woSid_won->Fill(LVec_pip_pim.P(),nmiss_mass,weight);
+           MMom_MMass_wK0_woSid_won->Fill(LVec_nmiss.M(),LVec_nmiss.P(),weight);
+           pipmom_MMnmiss_dE_wK0_woSid_won->Fill(nmiss_mass,(*LVec_pip).P(),weight);
+           pimmom_MMnmiss_dE_wK0_woSid_won->Fill(nmiss_mass,(*LVec_pim).P(),weight);
          }
        }
        if(SigmaPFlag || SigmaMFlag){
@@ -2747,17 +2757,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
        MMnmiss_IMnpip_dE_woK0_woSm->Fill(LVec_pip_n.M(),nmiss_mass);
      }
      if( !(SigmaPFlag && MissNFlag) && !(SigmaMFlag && MissNFlag)){
-       MMnmiss_IMnpip_dE_woK0_woSidn->Fill(LVec_pip_n.M(),nmiss_mass);
-       MMnmiss_IMnpim_dE_woK0_woSidn->Fill(LVec_pim_n.M(),nmiss_mass);
-       MMnmiss_IMpippim_dE_woK0_woSidn->Fill(LVec_pip_pim.M(),nmiss_mass);
-       IMnpim_IMnpip_dE_woK0_woSidn->Fill(LVec_pip_n.M(),LVec_pim_n.M());
-       MMnmiss_IMnpipi_woK0_woSidn->Fill(LVec_pip_pim_n.M(),nmiss_mass);
-       q_IMnpipi_woK0_woSidn->Fill(LVec_pip_pim_n.M(),qkn.P());
-       nmom_MMnmiss_woK0_woSidn->Fill(nmiss_mass,(*LVec_n).P());
-       MMnmiss_Mompippim_dE_woK0_woSidn->Fill(LVec_pip_pim.P(),nmiss_mass);
-       MMom_MMass_woK0_woSidn->Fill(LVec_nmiss.M(),LVec_nmiss.P());
-       pipmom_MMnmiss_dE_woK0_woSidn->Fill(nmiss_mass,(*LVec_pip).P());
-       pimmom_MMnmiss_dE_woK0_woSidn->Fill(nmiss_mass,(*LVec_pim).P());
+       MMnmiss_IMnpip_dE_woK0_woSidn->Fill(LVec_pip_n.M(),nmiss_mass,weight);
+       MMnmiss_IMnpim_dE_woK0_woSidn->Fill(LVec_pim_n.M(),nmiss_mass,weight);
+       MMnmiss_IMpippim_dE_woK0_woSidn->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
+       IMnpim_IMnpip_dE_woK0_woSidn->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
+       MMnmiss_IMnpipi_woK0_woSidn->Fill(LVec_pip_pim_n.M(),nmiss_mass,weight);
+       q_IMnpipi_woK0_woSidn->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+       nmom_MMnmiss_woK0_woSidn->Fill(nmiss_mass,(*LVec_n).P()),weight;
+       MMnmiss_Mompippim_dE_woK0_woSidn->Fill(LVec_pip_pim.P(),nmiss_mass,weight);
+       MMom_MMass_woK0_woSidn->Fill(LVec_nmiss.M(),LVec_nmiss.P(),weight);
+       pipmom_MMnmiss_dE_woK0_woSidn->Fill(nmiss_mass,(*LVec_pip).P(),weight);
+       pimmom_MMnmiss_dE_woK0_woSidn->Fill(nmiss_mass,(*LVec_pim).P(),weight);
      }
      MMnmiss_IMpippim_dE_woK0->Fill(LVec_pip_pim.M(),nmiss_mass);
      if(SigmaPFlag || SigmaMFlag){
