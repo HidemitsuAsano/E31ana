@@ -24,6 +24,7 @@
 #include "../src/GlobalVariables.h"
 #include "anacuts.h"
 #include "globalana.h"
+#include "weightfunc.h"
 
 const double pvalcut = 0.005;
 const bool gridon=true;
