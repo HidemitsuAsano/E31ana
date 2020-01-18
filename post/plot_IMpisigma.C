@@ -53,6 +53,8 @@ const unsigned int sidebandtype=0;
 
 const unsigned int IsolationFlag=0;
 
+const bool IsMCweighting = true;
+
 //color def. 
 //Sp mode Signal :2 (red)
 //Sm mode Signal :3 (green)
@@ -106,6 +108,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   std::cout << std::endl;
   std::cout << "neutron momentum cut below:  " << anacuts::nmomcut  << std::endl;
   std::cout << std::endl;
+  
+  std::cout << "MC weighting ? " << std::endl;
+  if(IsMCweighting) std::cout << "Yes" << std::endl;
+  else              std::cout << "No"  << std::endl;
 
   bool SimSpmode = (std::string(filename).find("Sp")!= std::string::npos);
   bool SimSmmode = (std::string(filename).find("Sm")!= std::string::npos);
@@ -189,7 +195,12 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //weight function of BG evaluation for MC
   TF1 *fweight_MMnmiss = new TF1("fweight_MMmiss",func_MMnmiss,0,1.5,7);
   fweight_MMnmiss->SetParameters(param_MMnmiss);
-
+  
+  TF1 *fweight_IMnpip  = new TF1("fweight_IMnpip",func_IMnpip,1.06,2.0,8);
+  fweight_IMnpip->SetParameters(param_IMnpip);
+  
+  TF1 *fweight_IMnpim  = new TF1("fweight_IMnpim",func_IMnpim,1.06,2.0,8);
+  fweight_IMnpip->SetParameters(param_IMnpip);
 
   // w/o kinematic fit 
   TH2F* CDHphi_betainv_fid;
@@ -1821,10 +1832,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       }
     }
     double nmiss_mass = LVec_nmiss.M();
-    double weight = 1.0;
-    if(SimSpmode || SimSmmode || SimK0nnmode || SimnpipiLmode || SimnS0pippimmode || SimSppi0mode || SimSmpi0mode){
-      weight = fweight_MMnmiss->Eval(nmiss_mass);
-    }
     double nmiss_mass_vtx[2]={LVec_nmiss_vtx[0].M(),LVec_nmiss_vtx[1].M()};
     double nmiss_mom = LVec_nmiss.P();
 
@@ -1976,6 +1983,15 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
    TLorentzVector LVec_pip_pim_n_CM = LVec_pip_pim_n;
    LVec_pip_pim_n_CM.Boost(-boost);
    //double cos_X = LVec_pip_pim_n_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pip_pim_n_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
+   
+   double weight = 1.0;
+   if(IsMCweighting)
+     if(SimSpmode || SimSmmode || SimK0nnmode || SimnpipiLmode || SimnS0pippimmode || SimSppi0mode || SimSmpi0mode){
+       weight = fweight_MMnmiss->Eval(nmiss_mass);
+       weight *= fweight_IMnpip->Eval(LVec_pip_n.M());
+       weight *= fweight_IMnpim->Eval(LVec_pim_n.M());
+     }
+   }
 
    if( (qkn.P()>=anacuts::qvalcut) && (qvalcutflag==1) ) continue;
    if( (qkn.P()<anacuts::qvalcut) && (qvalcutflag==2) ) continue;
