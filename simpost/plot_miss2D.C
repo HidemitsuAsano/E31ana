@@ -915,6 +915,37 @@ void plot_miss2D()
   evalf_MMnmiss->Draw("same");
   evalf_MMnmiss->Print();
 
+  
+  TH2D *MMom_MMass_woK0_woSidn_mc = MMom_MMass_woK0_woSidn[1]->Clone("MMom_MMass_woK0_woSidn_mc");
+  for(int i=2;i<8;i++) MMom_MMass_woK0_woSidn_mc->Add(MMom_MMass_woK0_woSidn[i]);
+  TCanvas *cMMom_MMass_woK0_woSidn = new TCanvas("cMMom_MMass_woK0_woSidn","cMMom_MMass_woK0_woSidn");
+  cMMom_MMass_woK0_woSidn->Divide(2,1);
+  cMMom_MMass_woK0_woSidn->cd(1);
+  cMMom_MMass_woK0_woSidn[0]->Draw("colz");
+  cMMom_MMass_woK0_woSidn->cd(2);
+  cMMom_MMass_woK0_woSidn_mc->Draw("colz");
+  
+  TH1D* MMom_woK0_woSidn_mc = MMom_MMass_woK0_woSidn_mc->ProjectionY("MMom_woK0_woSidn_mc");
+  TH1D* MMom_woK0_woSidn[8];
+  for(int i=0;i<8;i++){
+    MMom_woK0_woSidn->ProjectionY("MMom_woK0_woSidn_%s",name[i]);
+    MMom_woK0_woSidn->SetLineColor(colordef[i]);
+  }
+  TCanvas *cMMom_woK0_woSidn = new TCanvas("cMMom_woK0_woSidn","cMMom_woK0_woSidn");
+  MMom_woK0_woSidn[0]->Draw("HE");
+  MMom_woK0_woSidn_mc->SetLineColor(6);
+  MMom_woK0_woSidn_mc->Draw("HEsame");
+  for(int i=1;i<8;i++)MMom_woK0_woSidn[i]->Draw("HEsame");
+
+
+  TCanvas *cMMom_woK0_woSidn_ratio = new TCanvas("cMMom_woK0_woSidn_ratio","cMMom_woK0_woSidn_ratio");
+  cMMom_woK0_woSidn_ratio->cd();
+  TH1D* MMom_woK0_woSidn_ratio = (TH1D*)MMom_woK0_woSidn[0]->Clone("MMom_woK0_woSidn_ratio");
+  MMom_woK0_woSidn_ratio->Divide(MMom_woK0_woSidn_mc);
+  MMom_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,5);
+  MMom_woK0_woSidn_ratio->SetTitle("Data/MC");
+  MMom_woK0_woSidn_ratio->Draw("HE");
+
   //projection to IMnpip (miss n & Sigma+/-)
   TCanvas *cIMnpip_woK0_woSidn = new TCanvas("cIMnpip_woK0_woSidn","cIMnpip_woK0_woSidn");
   cIMnpip_woK0_woSidn->cd();
