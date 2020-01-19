@@ -1,5 +1,52 @@
 //plot_miss2D
 //purpose : plot Missing mass, IM(npip) and so on. BG fit by modifying MC data.
+#include "TH1.h"
+#include "TF1.h"
+#include "TROOT.h"
+#include "TStyle.h"
+#include "TMath.h"
+
+Double_t func_MMnmiss(Double_t *x,Double_t *par)
+{
+  if(x[0]<1.116){
+    return par[0]*exp(-0.5*pow((x[0]-par[1])/(par[2]+(x[0]<par[1])*par[3]*(x[0]-par[1])),2.0)); 
+  }else if(1.116<=x[0] && x[0]<1.5){
+    return par[4]*exp(-0.5*((x[0]-par[5])/par[6])**2.0); 
+  }else{
+    return 0.;
+  }
+}
+
+
+
+Double_t func_IMnpip(Double_t *x ,Double_t *par)
+{
+  if(x[0]<1.08){
+    return 0.;
+  } else if(1.08 <= x[0] && x[0]<1.10){
+    return par[0]*exp(-0.5*((x[0]-par[1])/par[2])**2.0); 
+  } else if(1.10 <= x[0] && x[0]<1.25){
+    return exp(par[3]+par[4]*x[0]); 
+  } else if(1.25 <= x[0] && x[0]<2.0){
+    return par[5]*exp(-0.5*((x[0]-par[6])/par[7])**2.0); 
+  } else {
+    return 0.;
+  }
+}
+
+Double_t func_IMnpim(Double_t *x ,Double_t *par)
+{
+  if(x[0]<1.07){
+    return 0.;
+  } else if(1.07 <= x[0] && x[0]<1.10){
+    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0);
+  } else if(1.10 <= x[0] && x[0]<2.00){
+    return par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0);
+  } else {
+    return 0.;
+  }
+}
+
 
 void plot_miss2D()
 {
@@ -12,77 +59,77 @@ void plot_miss2D()
   TFile *filerdata = TFile::Open("../post/evanaIMpisigma_npippim_v196_out.root");
   //Sp
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_rdata = (TH2D*) filerdata->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
-  double  nrdata_Sp = MMnmiss_IMnpipi_woK0_wSid_Sp_rdata->Integral();
+  double  nrdata_Sp = MMnmiss_IMnpipi_woK0_wSid_Sp_rdata->GetEntries();
   //Sm
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sm_rdata = (TH2D*) filerdata->Get("MMnmiss_IMnpipi_woK0_wSid_Sm");
-  double nrdata_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_rdata->Integral();
+  double nrdata_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_rdata->GetEntries();
   
   //Lambda pi+ pi- n sim.
   TFile *fileLambda = TFile::Open("simIMpisigma_npipiL_pippimn_v23_out.root");
   //Sp
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_Lambda = (TH2D*) fileLambda->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
-  double nLambda_Sp = MMnmiss_IMnpipi_woK0_wSid_Sp_Lambda->Integral();
+  double nLambda_Sp = MMnmiss_IMnpipi_woK0_wSid_Sp_Lambda->GetEntries();
   //Sm
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sm_Lambda = (TH2D*) fileLambda->Get("MMnmiss_IMnpipi_woK0_wSid_Sm");
-  double nLambda_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_Lambda->Integral();
+  double nLambda_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_Lambda->GetEntries();
   
 
   //Sigma+ mode sim. ,flat dist in q vs IMnpi+pi-
   TFile *filenSp = TFile::Open("simIMpisigma_nSppim_pippimn_v108_out.root");
   //Sp
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_Sigmap = (TH2D*) filenSp->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
-  double nSigmap_Sp = MMnmiss_IMnpipi_woK0_wSid_Sp_Sigmap->Integral();
+  double nSigmap_Sp = MMnmiss_IMnpipi_woK0_wSid_Sp_Sigmap->GetEntries();
   //Sm
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sm_Sigmap = (TH2D*) filenSp->Get("MMnmiss_IMnpipi_woK0_wSid_Sm");
-  double nSigmap_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_Sigmap->Integral();
+  double nSigmap_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_Sigmap->GetEntries();
 
 
   //Sigma- mode sim. flat. dist in q vs IMnpi+pi-
   TFile *filenSm = TFile::Open("simIMpisigma_nSmpip_pippimn_v108_out.root");
   //Sp
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_Sigmam = (TH2D*) filenSm->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
-  double nSigmam_Sp = MMnmiss_IMnpipi_woK0_wSid_Sp_Sigmam->Integral();
+  double nSigmam_Sp = MMnmiss_IMnpipi_woK0_wSid_Sp_Sigmam->GetEntries();
   //Sm
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sm_Sigmam = (TH2D*) filenSm->Get("MMnmiss_IMnpipi_woK0_wSid_Sm");
-  double nSigmam_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_Sigmam->Integral();
+  double nSigmam_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_Sigmam->GetEntries();
   
 
   //nS0pi+pi-
   TFile *fileS0pipi = TFile::Open("simIMpisigma_nS0pippim_pippimn_v5_out.root");
   //Sp
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_S0 = (TH2D*) fileS0pipi->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
-  double nS0miss_Sp = MMnmiss_IMnpipi_woK0_wSid_Sp_S0->Integral();
+  double nS0miss_Sp = MMnmiss_IMnpipi_woK0_wSid_Sp_S0->GetEntries();
   //Sm
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sm_S0 = (TH2D*) fileS0pipi->Get("MMnmiss_IMnpipi_woK0_wSid_Sm");
-  double nS0miss_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_S0->Integral();
+  double nS0miss_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_S0->GetEntries();
 
   
   //nSppi-pi0
   TFile *fileSppi0 = TFile::Open("simIMpisigma_nSppimpi0_pippimn_v4_out.root");
   //Sp
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_Sppi0 = (TH2D*) fileSppi0->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
-  double nSppi0_Sp= MMnmiss_IMnpipi_woK0_wSid_Sp_Sppi0->Integral();
+  double nSppi0_Sp= MMnmiss_IMnpipi_woK0_wSid_Sp_Sppi0->GetEntries();
   //Sm
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sm_Sppi0 = (TH2D*) fileSppi0->Get("MMnmiss_IMnpipi_woK0_wSid_Sm");
-  double nSppi0_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_Sppi0->Integral();
+  double nSppi0_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_Sppi0->GetEntries();
   
   //nSmpi+pi0
   TFile *fileSmpi0 = TFile::Open("simIMpisigma_nSmpippi0_pippimn_v4_out.root");
   //Sp
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_Smpi0 = (TH2D*) fileSmpi0->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
-  double nSmpi0_Sp = MMnmiss_IMnpipi_woK0_wSid_Sp_Smpi0->Integral();
+  double nSmpi0_Sp = MMnmiss_IMnpipi_woK0_wSid_Sp_Smpi0->GetEntries();
   //Sm
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sm_Smpi0 = (TH2D*) fileSmpi0->Get("MMnmiss_IMnpipi_woK0_wSid_Sm");
-  double nSmpi0_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_Smpi0->Integral();
+  double nSmpi0_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_Smpi0->GetEntries();
   
   //K0nn
   TFile *fileK0nn = TFile::Open("simIMpisigma_K0nn_pippimn_v8_out.root");
   //Sp
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_K0nn = (TH2D*) fileK0nn->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
-  double K0nn_Sp = MMnmiss_IMnpipi_woK0_wSid_Sp_K0nn->Integral();
+  double K0nn_Sp = MMnmiss_IMnpipi_woK0_wSid_Sp_K0nn->GetEntries();
   //Sm
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sm_K0nn = (TH2D*) fileK0nn->Get("MMnmiss_IMnpipi_woK0_wSid_Sm");
-  double K0nn_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_K0nn->Integral();
+  double K0nn_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_K0nn->GetEntries();
 
   
 
@@ -114,8 +161,8 @@ void plot_miss2D()
   TH2D *pimmom_MMnmiss_wK0_woSid_won_Lambda = (TH2D*)fileLambda->Get("pimmom_MMnmiss_dE_wK0_woSid_won");
   TH2D *MMom_MMass_woK0_woSidn_Lambda = (TH2D*)fileLambda->Get("MMom_MMass_woK0_woSidn");
   TH2D *MMom_MMass_wK0_woSid_won_Lambda = (TH2D*)fileLambda->Get("MMom_MMass_wK0_woSid_won");
-  double Nnpip_Lambda = MMnmiss_IMnpip_woK0_Lambda->Integral();
-  double Nnpim_Lambda = MMnmiss_IMnpim_woK0_Lambda->Integral();
+  double Nnpip_Lambda = MMnmiss_IMnpip_woK0_Lambda->GetEntries();
+  double Nnpim_Lambda = MMnmiss_IMnpim_woK0_Lambda->GetEntries();
   //nSppi-
   TH2D *MMnmiss_IMnpip_woK0_Sigmap = (TH2D*)filenSp->Get("MMnmiss_IMnpip_dE_woK0");
   TH2D *MMnmiss_IMnpim_woK0_Sigmap = (TH2D*)filenSp->Get("MMnmiss_IMnpim_dE_woK0");
@@ -143,8 +190,8 @@ void plot_miss2D()
   TH2D *pimmom_MMnmiss_wK0_woSid_won_Sigmap = (TH2D*)filenSp->Get("pimmom_MMnmiss_dE_wK0_woSid_won");
   TH2D *MMom_MMass_woK0_woSidn_Sigmap = (TH2D*)filenSp->Get("MMom_MMass_woK0_woSidn");
   TH2D *MMom_MMass_wK0_woSid_won_Sigmap = (TH2D*)filenSp->Get("MMom_MMass_wK0_woSid_won");
-  double Nnpip_Sigmap = MMnmiss_IMnpip_woK0_Sigmap->Integral();
-  double Nnpim_Sigmap = MMnmiss_IMnpim_woK0_Sigmap->Integral();
+  double Nnpip_Sigmap = MMnmiss_IMnpip_woK0_Sigmap->GetEntries();
+  double Nnpim_Sigmap = MMnmiss_IMnpim_woK0_Sigmap->GetEntries();
   //nSmpi+
   TH2D *MMnmiss_IMnpip_woK0_Sigmam = (TH2D*)filenSm->Get("MMnmiss_IMnpip_dE_woK0");
   TH2D *MMnmiss_IMnpim_woK0_Sigmam = (TH2D*)filenSm->Get("MMnmiss_IMnpim_dE_woK0");
@@ -172,8 +219,8 @@ void plot_miss2D()
   TH2D *pimmom_MMnmiss_wK0_woSid_won_Sigmam = (TH2D*)filenSm->Get("pimmom_MMnmiss_dE_wK0_woSid_won");
   TH2D *MMom_MMass_woK0_woSidn_Sigmam = (TH2D*)filenSm->Get("MMom_MMass_woK0_woSidn");
   TH2D *MMom_MMass_wK0_woSid_won_Sigmam = (TH2D*)filenSm->Get("MMom_MMass_wK0_woSid_won");
-  double Nnpip_Sigmam = MMnmiss_IMnpip_woK0_Sigmam->Integral();
-  double Nnpim_Sigmam = MMnmiss_IMnpim_woK0_Sigmam->Integral();
+  double Nnpip_Sigmam = MMnmiss_IMnpip_woK0_Sigmam->GetEntries();
+  double Nnpim_Sigmam = MMnmiss_IMnpim_woK0_Sigmam->GetEntries();
   //Sigma0
   TH2D *MMnmiss_IMnpip_woK0_S0 = (TH2D*)fileS0pipi->Get("MMnmiss_IMnpip_dE_woK0");
   TH2D *MMnmiss_IMnpim_woK0_S0 = (TH2D*)fileS0pipi->Get("MMnmiss_IMnpim_dE_woK0");
@@ -201,8 +248,8 @@ void plot_miss2D()
   TH2D *pimmom_MMnmiss_wK0_woSid_won_S0 = (TH2D*)fileS0pipi->Get("pimmom_MMnmiss_dE_wK0_woSid_won");
   TH2D *MMom_MMass_woK0_woSidn_S0 = (TH2D*)fileS0pipi->Get("MMom_MMass_woK0_woSidn");
   TH2D *MMom_MMass_wK0_woSid_won_S0 = (TH2D*)fileS0pipi->Get("MMom_MMass_wK0_woSid_won");
-  double Nnpip_S0 = MMnmiss_IMnpip_woK0_S0->Integral();
-  double Nnpim_S0 = MMnmiss_IMnpim_woK0_S0->Integral();
+  double Nnpip_S0 = MMnmiss_IMnpip_woK0_S0->GetEntries();
+  double Nnpim_S0 = MMnmiss_IMnpim_woK0_S0->GetEntries();
   //Sppi0
   TH2D *MMnmiss_IMnpip_woK0_Sppi0 = (TH2D*)fileSppi0->Get("MMnmiss_IMnpip_dE_woK0");
   TH2D *MMnmiss_IMnpim_woK0_Sppi0 = (TH2D*)fileSppi0->Get("MMnmiss_IMnpim_dE_woK0");
@@ -230,8 +277,8 @@ void plot_miss2D()
   TH2D *pimmom_MMnmiss_wK0_woSid_won_Sppi0 = (TH2D*)fileSppi0->Get("pimmom_MMnmiss_dE_wK0_woSid_won");
   TH2D *MMom_MMass_woK0_woSidn_Sppi0 = (TH2D*)fileSppi0->Get("MMom_MMass_woK0_woSidn");
   TH2D *MMom_MMass_wK0_woSid_won_Sppi0 = (TH2D*)fileSppi0->Get("MMom_MMass_wK0_woSid_won");
-  double Nnpip_Sppi0 = MMnmiss_IMnpip_woK0_Sppi0->Integral();
-  double Nnpim_Sppi0 = MMnmiss_IMnpim_woK0_Sppi0->Integral();
+  double Nnpip_Sppi0 = MMnmiss_IMnpip_woK0_Sppi0->GetEntries();
+  double Nnpim_Sppi0 = MMnmiss_IMnpim_woK0_Sppi0->GetEntries();
   //Smpi0
   TH2D *MMnmiss_IMnpip_woK0_Smpi0 = (TH2D*)fileSmpi0->Get("MMnmiss_IMnpip_dE_woK0");
   TH2D *MMnmiss_IMnpim_woK0_Smpi0 = (TH2D*)fileSmpi0->Get("MMnmiss_IMnpim_dE_woK0");
@@ -259,8 +306,8 @@ void plot_miss2D()
   TH2D *pimmom_MMnmiss_wK0_woSid_won_Smpi0 = (TH2D*)fileSmpi0->Get("pimmom_MMnmiss_dE_wK0_woSid_won");
   TH2D *MMom_MMass_woK0_woSidn_Smpi0 = (TH2D*)fileSmpi0->Get("MMom_MMass_woK0_woSidn");
   TH2D *MMom_MMass_wK0_woSid_won_Smpi0 = (TH2D*)fileSmpi0->Get("MMom_MMass_wK0_woSid_won");
-  double Nnpip_Smpi0 = MMnmiss_IMnpip_woK0_Smpi0->Integral();
-  double Nnpim_Smpi0 = MMnmiss_IMnpim_woK0_Smpi0->Integral();
+  double Nnpip_Smpi0 = MMnmiss_IMnpip_woK0_Smpi0->GetEntries();
+  double Nnpim_Smpi0 = MMnmiss_IMnpim_woK0_Smpi0->GetEntries();
   //K0nn
   TH2D *MMnmiss_IMnpip_woK0_K0nn = (TH2D*)fileK0nn->Get("MMnmiss_IMnpip_dE_woK0");
   TH2D *MMnmiss_IMnpim_woK0_K0nn = (TH2D*)fileK0nn->Get("MMnmiss_IMnpim_dE_woK0");
@@ -288,8 +335,8 @@ void plot_miss2D()
   TH2D *pimmom_MMnmiss_wK0_woSid_won_K0nn = (TH2D*)fileK0nn->Get("pimmom_MMnmiss_dE_wK0_woSid_won");
   TH2D *MMom_MMass_woK0_woSidn_K0nn = (TH2D*)fileK0nn->Get("MMom_MMass_woK0_woSidn");
   TH2D *MMom_MMass_wK0_woSid_won_K0nn = (TH2D*)fileK0nn->Get("MMom_MMass_wK0_woSid_won");
-  double Nnpip_K0nn = MMnmiss_IMnpip_woK0_K0nn->Integral();
-  double Nnpim_K0nn = MMnmiss_IMnpim_woK0_K0nn->Integral();
+  double Nnpip_K0nn = MMnmiss_IMnpip_woK0_K0nn->GetEntries();
+  double Nnpim_K0nn = MMnmiss_IMnpim_woK0_K0nn->GetEntries();
   //real data
   TH2D *MMnmiss_IMnpip_woK0_rdata = (TH2D*)filerdata->Get("MMnmiss_IMnpip_dE_woK0");
   TH2D *MMnmiss_IMnpim_woK0_rdata = (TH2D*)filerdata->Get("MMnmiss_IMnpim_dE_woK0");
@@ -317,8 +364,8 @@ void plot_miss2D()
   TH2D *pimmom_MMnmiss_wK0_woSid_won_rdata = (TH2D*)filerdata->Get("pimmom_MMnmiss_dE_wK0_woSid_won");
   TH2D *MMom_MMass_woK0_woSidn_rdata = (TH2D*)filerdata->Get("MMom_MMass_woK0_woSidn");
   TH2D *MMom_MMass_wK0_woSid_won_rdata = (TH2D*)filerdata->Get("MMom_MMass_wK0_woSid_won");
-  double Nnpip_rdata = MMnmiss_IMnpip_woK0_rdata->Integral();
-  double Nnpim_rdata = MMnmiss_IMnpim_woK0_rdata->Integral();
+  double Nnpip_rdata = MMnmiss_IMnpip_woK0_rdata->GetEntries();
+  double Nnpim_rdata = MMnmiss_IMnpim_woK0_rdata->GetEntries();
   /*
   // v1 Jan. 9th, 2020 
   const double scaleFactor[8]={1.0,
@@ -809,28 +856,23 @@ void plot_miss2D()
   MMnmiss_woK0_woSidn_ratio->Draw("HE");
   
 
-
   TF1 *sgf_MMnmiss = new TF1("sgf_MMnmiss","[0]*exp(-0.5*pow((x-[1])/([2]+(x<[1])*[3]*(x-[1])),2))");    
   TF1 *fgaus_MMnmiss_high = new TF1("fgaus_MMnmiss_high","gaus");
-  //TF1 *fgaus_MMnmiss = new TF1("fgaus_MMnmiss","gaus",0,1.0);
-  //fgaus_MMnmiss->SetParameter(0,1.82171e+00); 
-  //fgaus_MMnmiss->SetParameter(1,8.56016e-01); 
-  //fgaus_MMnmiss->SetParameter(2,6.81677e-01); 
-  //fgaus_MMnmiss->SetLineColor(2);
   sgf_MMnmiss->SetParameter(0,1.82171e+00); 
   sgf_MMnmiss->SetParameter(1,8.56016e-01); 
   sgf_MMnmiss->SetParameter(2,6.81677e-01); 
   sgf_MMnmiss->SetLineColor(2);
 
-  //MMnmiss_woK0_woSidn_ratio->Fit("fgaus_MMnmiss","","",0.,1.0);
-  MMnmiss_woK0_woSidn_ratio->Fit("sgf_MMnmiss","","",0.,1.116);
-  MMnmiss_woK0_woSidn_ratio->Fit("fgaus_MMnmiss_high","","",1.116,1.5);
-  double param_sgf_MMnmiss[4];
-  for(int ipar=0;ipar<4;ipar++) param_sgf_MMnmiss[ipar] = sgf_MMnmiss->GetParameter(ipar);
-  double param_fgaus_MMnmiss_high[3];
-  for(int ipar=0;ipar<3;ipar++) param_fgaus_MMnmiss_high[ipar] = fgaus_MMnmiss_high->GetParameter(ipar);
-  sgf_MMnmiss->SetLineColor(3);
-  sgf_MMnmiss->Draw("same");
+  MMnmiss_woK0_woSidn_ratio->Fit("sgf_MMnmiss","R","",0.,1.116);
+  MMnmiss_woK0_woSidn_ratio->Fit("fgaus_MMnmiss_high","R+","",1.116,1.5);
+  Double_t param_MMnmiss[7];
+  sgf_MMnmiss->GetParameters(&param_MMnmiss[0]);
+  fgaus_MMnmiss_high->GetParameters(&param_MMnmiss[4]);
+  TF1 *evalf_MMnmiss = new TF1("evalf_MMnmiss",func_MMnmiss,0,1.5,7);
+  evalf_MMnmiss->SetParameters(param_MMnmiss);
+  evalf_MMnmiss->SetLineColor(4);
+  evalf_MMnmiss->Draw("same");
+  evalf_MMnmiss->Print();
 
   //projection to IMnpip (miss n & Sigma+/-)
   TCanvas *cIMnpip_woK0_woSidn = new TCanvas("cIMnpip_woK0_woSidn","cIMnpip_woK0_woSidn");
@@ -853,14 +895,44 @@ void plot_miss2D()
   IMnpip_woK0_woSidn_ratio->SetTitle("IMnpip_woK0_woSidn Data/MC");
   IMnpip_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,3);
   IMnpip_woK0_woSidn_ratio->Draw("HE");
-  /*
-  TF1* IMnpip_mod_gaus = new TF1("IMnpip_mod_gaus","gaus",1.1,1.7);
-  IMnpip_mod_gaus->SetParameters(0,0.8);
-  IMnpip_mod_gaus->SetParameters(1,1.2);
-  IMnpip_mod_gaus->SetParameters(2,0.2);
-  IMnpip_mod_gaus->SetLineColor(3);
-  IMnpip_woK0_woSidn_ratio->Fit("IMnpip_mod_gaus","","",1.1,1.7);
-  */
+  
+  TF1* fgaus_IMnpip_1 = new TF1("fgaus_IMnpip_1","gaus",1.06,1.10);
+  fgaus_IMnpip_1->SetParameters(0,1.636);
+  fgaus_IMnpip_1->SetParameters(1,1.102);
+  fgaus_IMnpip_1->SetParameters(2,0.02845);
+  IMnpip_woK0_woSidn_ratio->Fit("fgaus_IMnpip_1","R","",1.08,1.10);
+  
+  TF1* fexpo_IMnpip_2 = new TF1("fexpo_IMnpip_2","expo",1.10,1.25);
+  fexpo_IMnpip_2->SetParameters(0,1.667);
+  fexpo_IMnpip_2->SetParameters(1,-1.117);
+  IMnpip_woK0_woSidn_ratio->Fit("fexpo_IMnpip_2","R+","",1.10,1.25);
+  
+  TF1* fgaus_IMnpip_3 = new TF1("fgaus_IMnpip_3","gaus",1.25,2.0);
+  fgaus_IMnpip_3->SetParameters(0,10.83);
+  fgaus_IMnpip_3->SetParameters(1,5.094);
+  fgaus_IMnpip_3->SetParameters(2,1.87);
+  IMnpip_woK0_woSidn_ratio->Fit("fgaus_IMnpip_3","R+","",1.25,2.0);
+  
+  Double_t param_IMnpip[8];
+  fgaus_IMnpip_1->GetParameters(&param_IMnpip[0]);
+  fexpo_IMnpip_2->GetParameters(&param_IMnpip[3]);
+  fgaus_IMnpip_3->GetParameters(&param_IMnpip[5]);
+
+  TF1 *evalf_IMnpip = new TF1("evalf_IMnpip",func_IMnpip,1.06,2.0,8);
+  evalf_IMnpip->SetParameters(param_IMnpip);
+  evalf_IMnpip->SetLineColor(4);
+  evalf_IMnpip->Draw("same");
+
+  //TF1 *sgf_IMnpip_1 = new TF1("sgf_IMnpip_1","[0]*exp(-0.5*pow((x-[1])/([2]+(x<[1])*[3]*(x-[1])),2))");    
+  //sgf_IMnpip_1->SetParameter(0,1.52);
+  //sgf_IMnpip_1->SetParLimits(0,1.50,1.6);
+  //sgf_IMnpip_1->SetParameter(1,1.084);
+  //sgf_IMnpip_1->SetParLimits(1,1.0,1.1);
+  //sgf_IMnpip_1->SetParameter(2,0.267927);
+  //sgf_IMnpip_1->SetParLimits(2,0.20,0.28);
+  //sgf_IMnpip_1->SetParameter(3,9.52356);
+  //sgf_IMnpip_1->SetParLimits(3,-3.014e5,-2.0e5);
+  //IMnpip_woK0_woSidn_ratio->Fit("sgf_IMnpip_1","","",1.07,1.24);
 
   //
   //Sigma-
@@ -945,6 +1017,29 @@ void plot_miss2D()
   IMnpim_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,3);
   IMnpim_woK0_woSidn_ratio->Draw("HE");
    
+  TF1* pol3_IMnpim_1 = new TF1("pol3_IMnpim_1","pol3",1.00,1.10);
+  pol3_IMnpim_1->SetParameter(0,-32074.9);
+  pol3_IMnpim_1->SetParameter(1,85205.3);
+  pol3_IMnpim_1->SetParameter(2,-75374.);
+  pol3_IMnpim_1->SetParameter(3,22204.);
+  IMnpim_woK0_woSidn_ratio->Fit("pol3_IMnpim_1","R","",1.07,1.10);
+  
+  TF1* pol3_IMnpim_2 = new TF1("pol3_IMnpim_2","pol3",1.10,2.00);
+  pol3_IMnpim_2->SetParameter(0,38.13);
+  pol3_IMnpim_2->SetParameter(1,-62.3139);
+  pol3_IMnpim_2->SetParameter(2,32.172);
+  pol3_IMnpim_2->SetParameter(3,-4.81);
+  IMnpim_woK0_woSidn_ratio->Fit("pol3_IMnpim_2","R+","",1.10,2.00);
+   
+  Double_t param_IMnpim[8];
+  pol3_IMnpim_1->GetParameters(&param_IMnpim[0]);
+  pol3_IMnpim_2->GetParameters(&param_IMnpim[4]);
+  TF1 *evalf_IMnpim = new TF1("evalf_IMnpim",func_IMnpim,1.00,2.00,8);
+  evalf_IMnpim->SetParameters(param_IMnpim);
+  evalf_IMnpim->SetLineColor(4);
+  evalf_IMnpim->Draw("same");
+
+
   //MMnmiss vs IMpippim wSid
   TH2D* MMnmiss_IMpippim_wSid_mc = MMnmiss_IMpippim_wSid[1]->Clone("MMnmiss_IMpippim_wSid_mc");
   for(int i=2;i<8;i++) MMnmiss_IMpippim_wSid_mc->Add(MMnmiss_IMpippim_wSid[i]);
@@ -1062,8 +1157,13 @@ void plot_miss2D()
     Mompippim_woK0_woSidn[i]->SetLineColor(colordef[i]);
     Mompippim_woK0_woSidn[i]->Draw("HEsame");
   }
+  
+  //pipmom 
+  TH2D* pipmom_MMnmiss_woK0_woSidn_mc = (TH2D*)pipmom_MMnmiss_woK0_woSidn[1]->Clone("pipmom_MMnmiss_woK0_woSidn_mc");
+  for(int i=2;i<8;i++) pipmom_MMnmiss_woK0_woSidn_mc->Add(pipmom_MMnmiss_woK0_woSidn[i]);
 
 
+  /*
   //weighting and decomposition of BG
   int nbinx_MM_npip = MMnmiss_IMnpip_woK0_woSidn[0]->GetNbinsX();
   int nbiny_MM_npip = MMnmiss_IMnpip_woK0_woSidn[0]->GetNbinsY();
@@ -1078,27 +1178,6 @@ void plot_miss2D()
    // MMnmiss_IMnpip_woK0_woSidn_mod[i]->Reset("ICESM");
    // MMnmiss_IMnpim_woK0_woSidn_mod[i]->Reset("ICESM");
   }
-  
-  /*
-  TF1 *fgaus_MMnmiss_mod = new TF1("fgaus_MMnmiss_mod","gaus",0,1.0);
-  fgaus_MMnmiss_mod->SetParameter(0,1.82171e+00); 
-  fgaus_MMnmiss_mod->SetParameter(1,8.56016e-01); 
-  fgaus_MMnmiss_mod->SetParameter(2,6.81677e-01); 
-  */
-
-  TF1 *sgf_MMnmiss_mod = new TF1("sgf_MMnmiss_mod","[0]*exp(-0.5*pow((x-[1])/([2]+(x<[1])*[3]*(x-[1])),2))",0,1.115);
-  for(int ipar=0;ipar<4;ipar++) sgf_MMnmiss_mod->SetParameter(ipar, param_sgf_MMnmiss[ipar]);
-  sgf_MMnmiss_mod->SetLineColor(3);
-
-  TF1 *fgaus_MMnmiss_high_mod = new TF1("fgaus_MMnmiss_high_mod","gaus",0,1.5);
-  for(int ipar=0;ipar<3;ipar++) fgaus_MMnmiss_high_mod->SetParameter(ipar,param_fgaus_MMnmiss_high[ipar]);
-  
-  TCanvas *cfgaus_MMnmiss_mod = new TCanvas("cfgaus_MMnmiss_mod","cfgaus_MMnmiss_mod");
-  cfgaus_MMnmiss_mod->cd();
-  fgaus_MMnmiss_high_mod->Draw("");
-  sgf_MMnmiss_mod->Draw("same");
-
-
   
   TH2D* MMnmiss_IMnpip_woK0_woSidn_mc_mod = (TH2D*)MMnmiss_IMnpip_woK0_woSidn_mod[1]->Clone("MMnmiss_IMnpip_woK0_woSidn_mc_mod");
   TH2D* MMnmiss_IMnpim_woK0_woSidn_mc_mod = (TH2D*)MMnmiss_IMnpim_woK0_woSidn_mod[1]->Clone("MMnmiss_IMnpim_woK0_woSidn_mc_mod");
@@ -1122,14 +1201,12 @@ void plot_miss2D()
         contIMnpip_mc = MMnmiss_IMnpip_woK0_woSidn_mc->GetBinContent(ix,iy);
         contIMnpim_mc = MMnmiss_IMnpim_woK0_woSidn_mc->GetBinContent(ix,iy);
       }
-      double weight = 1.0;
-      if(yval<=1.115){
-        weight = sgf_MMnmiss_mod->Eval(yval);
-      }else{
-        weight = fgaus_MMnmiss_high_mod->Eval(yval);
-      }
-        MMnmiss_IMnpip_woK0_woSidn_mc_mod->SetBinContent(ix,iy,contIMnpip_mc*weight);
-        MMnmiss_IMnpim_woK0_woSidn_mc_mod->SetBinContent(ix,iy,contIMnpim_mc*weight);
+      double weight = 1.0/2.0;
+      weight *= evalf_MMnmiss->Eval(yval);
+      //weight *= evalf_IMnpip->Eval(xval);
+      //weight *= evalf_IMnpim->Eval(xval);
+      MMnmiss_IMnpip_woK0_woSidn_mc_mod->SetBinContent(ix,iy,contIMnpip_mc*weight);
+      MMnmiss_IMnpim_woK0_woSidn_mc_mod->SetBinContent(ix,iy,contIMnpim_mc*weight);
     }
   }
   
@@ -1181,7 +1258,7 @@ void plot_miss2D()
   MMnmiss_woK0_woSidn_mc_mod_ratio->GetYaxis()->SetRangeUser(-0.1,3);
   MMnmiss_woK0_woSidn_mc_mod_ratio->Draw("HE");
   
-
+  
   TCanvas *cIMnpip_woK0_woSidn_mod = new TCanvas("cIMnpip_woK0_woSidn_mod","cIMnpip_woK0_woSidn_mod");
   cIMnpip_woK0_woSidn_mod->cd();
   TH1D* IMnpip_woK0_woSidn_mod[8];
@@ -1208,10 +1285,6 @@ void plot_miss2D()
   IMnpip_woK0_woSidn_mod_ratio->GetYaxis()->SetRangeUser(-0.1,3);
   IMnpip_woK0_woSidn_mod_ratio->Draw("HE");
   
-  TF1 *sgf_IMnpip_mod1 = new TF1("sgf_IMnpip_mod1","[0]*exp(-0.5*pow((x-[1])/([2]+(x<[1])*[3]*(x-[1])),2))");    
-  sgf_IMnpip_mod1->SetParameter(1,1.2);
-  IMnpip_woK0_woSidn_mod_ratio->Fit("sgf_IMnpip_mod1","","",1.1,1.6);
-
 
   TCanvas *cIMnpim_woK0_woSidn_mod = new TCanvas("cIMnpim_woK0_woSidn_mod","cIMnpim_woK0_woSidn_mod");
   cIMnpim_woK0_woSidn_mod->cd();
@@ -1235,7 +1308,7 @@ void plot_miss2D()
   IMnpim_woK0_woSidn_mod_ratio->SetTitle("IMnpim_woK0_woSidn_mod_ratio Data/MC");
   IMnpim_woK0_woSidn_mod_ratio->GetYaxis()->SetRangeUser(-0.1,3);
   IMnpim_woK0_woSidn_mod_ratio->Draw("HE");
-  
+  */ 
 
 
   TCanvas *c = NULL;
@@ -1258,6 +1331,9 @@ void plot_miss2D()
   while( (obj = (TObject*)nexthist2())!=NULL ){
     obj->Write();
   }
+  evalf_MMnmiss->Write();
+  evalf_IMnpip->Write();
+  evalf_IMnpim->Write();
   fout->Print();
   fout->cd();
   fout->Close();
