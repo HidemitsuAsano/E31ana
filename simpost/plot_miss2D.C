@@ -405,8 +405,8 @@ void plot_miss2D()
   
   //v2 2020113
   const double scaleFactor[8]={1.0,
-    0.175*nrdata_Sp/nSigmap_Sp,
-    0.035*nrdata_Sp/nSigmam_Sp,
+    0.085*nrdata_Sp/nSigmap_Sp,
+    0.017*nrdata_Sp/nSigmam_Sp,
     0.40*nrdata_Sp/nLambda_Sp,//  
     0.08*nrdata_Sp/nS0miss_Sp,//  
     0.02*nrdata_Sp/nSppi0_Sp,
@@ -921,15 +921,15 @@ void plot_miss2D()
   TCanvas *cMMom_MMass_woK0_woSidn = new TCanvas("cMMom_MMass_woK0_woSidn","cMMom_MMass_woK0_woSidn");
   cMMom_MMass_woK0_woSidn->Divide(2,1);
   cMMom_MMass_woK0_woSidn->cd(1);
-  cMMom_MMass_woK0_woSidn[0]->Draw("colz");
+  MMom_MMass_woK0_woSidn[0]->Draw("colz");
   cMMom_MMass_woK0_woSidn->cd(2);
-  cMMom_MMass_woK0_woSidn_mc->Draw("colz");
+  MMom_MMass_woK0_woSidn_mc->Draw("colz");
   
   TH1D* MMom_woK0_woSidn_mc = MMom_MMass_woK0_woSidn_mc->ProjectionY("MMom_woK0_woSidn_mc");
   TH1D* MMom_woK0_woSidn[8];
   for(int i=0;i<8;i++){
-    MMom_woK0_woSidn->ProjectionY("MMom_woK0_woSidn_%s",name[i]);
-    MMom_woK0_woSidn->SetLineColor(colordef[i]);
+    MMom_woK0_woSidn[i] = (TH1D*)MMom_MMass_woK0_woSidn[i]->ProjectionY(Form("MMom_woK0_woSidn_%s",name[i]));
+    MMom_woK0_woSidn[i]->SetLineColor(colordef[i]);
   }
   TCanvas *cMMom_woK0_woSidn = new TCanvas("cMMom_woK0_woSidn","cMMom_woK0_woSidn");
   MMom_woK0_woSidn[0]->Draw("HE");
@@ -945,6 +945,12 @@ void plot_miss2D()
   MMom_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,5);
   MMom_woK0_woSidn_ratio->SetTitle("Data/MC");
   MMom_woK0_woSidn_ratio->Draw("HE");
+  
+  Double_t param_MMom[5];
+  TF1 *evalf_MMom = new TF1("evalf_MMom","pol5",0.4,1.5);
+  evalf_MMom->SetLineColor(4);
+  MMom_woK0_woSidn_ratio->Fit("evalf_MMom","","",0.4,1.5);
+
 
   //projection to IMnpip (miss n & Sigma+/-)
   TCanvas *cIMnpip_woK0_woSidn = new TCanvas("cIMnpip_woK0_woSidn","cIMnpip_woK0_woSidn");
@@ -1241,6 +1247,17 @@ void plot_miss2D()
     Mompippim_woK0_woSidn[i]->Draw("HEsame");
   }
   
+  TCanvas *cMompippim_woK0_woSidn_ratio = new TCanvas("cMompippim_woK0_woSidn_ratio","cMompippim_woK0_woSidn_ratio");
+  TH1D* Mompippim_woK0_woSidn_ratio = Mompippim_woK0_woSidn[0]->Clone("Mompippim_woK0_woSidn_ratio");
+  Mompippim_woK0_woSidn_ratio->Divide(Mompippim_woK0_woSidn_mc);
+  Mompippim_woK0_woSidn_ratio->SetTitle("Data/MC");
+  Mompippim_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,3);
+  Mompippim_woK0_woSidn_ratio->Draw("HE");
+  
+  TF1 *evalf_Mompippim = new TF1("pol3_Mompippim","pol3",0,1);
+  Mompippim_woK0_woSidn_ratio->Fit("pol3_Mompippim","","",0,0.97);
+
+  
   //pipmom 
   TH2D* pipmom_MMnmiss_woK0_woSidn_mc = (TH2D*)pipmom_MMnmiss_woK0_woSidn[1]->Clone("pipmom_MMnmiss_woK0_woSidn_mc");
   for(int i=2;i<8;i++) pipmom_MMnmiss_woK0_woSidn_mc->Add(pipmom_MMnmiss_woK0_woSidn[i]);
@@ -1262,9 +1279,12 @@ void plot_miss2D()
   cpipmom_woK0_woSidn_ratio->cd();
   TH1D* pipmom_woK0_woSidn_ratio = pipmom_woK0_woSidn[0]->Clone("pipmom_woK0_woSidn_ratio");
   pipmom_woK0_woSidn_ratio->Divide(pipmom_woK0_woSidn_mc);
-  pipmom_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(-1,4);
+  pipmom_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(-1,6);
   pipmom_woK0_woSidn_ratio->SetTitle("Data/MC");
   pipmom_woK0_woSidn_ratio->Draw("HEsame");
+  
+  TF1 *evalf_pipmom = new TF1("pol8_pipmom","pol8",0.08,0.7);
+  pipmom_woK0_woSidn_ratio->Fit("pol8_pipmom","","",0.08,0.7);
 
   //pimmom 
   TH2D* pimmom_MMnmiss_woK0_woSidn_mc = (TH2D*)pimmom_MMnmiss_woK0_woSidn[1]->Clone("pimmom_MMnmiss_woK0_woSidn_mc");
@@ -1287,10 +1307,12 @@ void plot_miss2D()
   cpimmom_woK0_woSidn_ratio->cd();
   TH1D* pimmom_woK0_woSidn_ratio = pimmom_woK0_woSidn[0]->Clone("pimmom_woK0_woSidn_ratio");
   pimmom_woK0_woSidn_ratio->Divide(pimmom_woK0_woSidn_mc);
-  pimmom_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(-1,4);
+  pimmom_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(-1,6);
   pimmom_woK0_woSidn_ratio->SetTitle("Data/MC");
   pimmom_woK0_woSidn_ratio->Draw("HEsame");
 
+  TF1 *evalf_pimmom = new TF1("pol8_pimmom","pol8",0.06,0.73);
+  pimmom_woK0_woSidn_ratio->Fit("pol8_pimmom","","",0.06,0.73);
   
   //nCDSmom
   TH2D* nmom_MMnmiss_woK0_woSidn_mc = (TH2D*)nmom_MMnmiss_woK0_woSidn[1]->Clone("nmom_MMnmiss_woK0_woSidn_mc");
@@ -1317,7 +1339,8 @@ void plot_miss2D()
   nmom_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(-1,4);
   nmom_woK0_woSidn_ratio->Draw("HEsame");
 
-  
+  TF1 *evalf_nmom = new TF1("evalf_nmom","pol8",0.14,1);
+  nmom_woK0_woSidn_ratio->Fit("evalf_nmom","","",0.14,1);
 
 
 
@@ -1490,6 +1513,11 @@ void plot_miss2D()
     obj->Write();
   }
   evalf_MMnmiss->Write();
+  evalf_MMom->Write();
+  evalf_nmom->Write();
+  evalf_pipmom->Write();
+  evalf_pimmom->Write();
+  evalf_Mompippim->Write();
   evalf_IMnpip->Write();
   evalf_IMnpim->Write();
   fout->Print();
