@@ -2,23 +2,27 @@ namespace anacuts {
   const double beta_MAX = 0.728786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
   //const double beta_MAX = 0.628786; // p = 1.0 GeV/c for neutron & 1/beta = 1.372
   const double beta_MIN = 0.000000001;
-  const double dE_MIN = 2.0/0.88;
-  //const double dE_MIN = 2.0;
+  //const double dE_MIN = 2.0/0.88;
+  const double dE_MIN = 2.0;
 
-  const double pipi_NSigmacut=3.0;
-  const double pipi_MIN = 0.475;
-  const double pipi_MAX = 0.522;
+  const double K0_NSigmacut=3.0;
+  const double K0_center = 0.497855;
+  const double K0_sigma = 0.0074845;
+  const double pipi_MIN = K0_center - K0_NSigmacut*K0_sigma;
+  const double pipi_MAX = K0_center + K0_NSigmacut*K0_sigma;
+  //const double pipi_MIN = 0.475;
+  //const double pipi_MAX = 0.522;
   //const double pipi_MIN = 0.487;// (almost 1.5 sigma)
   //const double pipi_MAX = 0.510;// (almost 1.5 sigma)
   
   const double neutron_NSigmacut = 1.5;//+/- N sigma
-  const double neutron_NSigmacut_wide = 3.0;//+/- N sigma
+  const double neutron_NSigmacut_wide = 2.5;//+/- N sigma
   const double neutron_center = 0.939161;
   const double neutron_sigma = 0.0308562;
   const double neutron_MIN = neutron_center-neutron_NSigmacut*neutron_sigma;
   const double neutron_MAX = neutron_center+neutron_NSigmacut*neutron_sigma;
   const double neutron_MIN_wide = neutron_center-neutron_NSigmacut_wide*neutron_sigma; 
-  const double neutron_MIN_wide = neutron_center+neutron_NSigmacut_wide*neutron_sigma; 
+  const double neutron_MAX_wide = neutron_center+neutron_NSigmacut_wide*neutron_sigma; 
 
   //neutron cut of CDS, this is necesarry due to the range of CDH3 trigger
   const double nmomcut = 0.14;
@@ -33,7 +37,7 @@ namespace anacuts {
   const double Sigmam_MIN = Sigmam_center-Sigma_NSigmacut*Sigmam_sigma;
   const double Sigmam_MAX = Sigmam_center+Sigma_NSigmacut*Sigmam_sigma;  
   
-  const double Sigma_wideNSigmacut = 3.0;
+  const double Sigma_wideNSigmacut = 2.5;
   const double Sigmap_MIN_wide = Sigmap_center-Sigma_wideNSigmacut*Sigmap_sigma;   
   const double Sigmap_MAX_wide = Sigmap_center+Sigma_wideNSigmacut*Sigmap_sigma;   
   const double Sigmam_MIN_wide = Sigmam_center-Sigma_wideNSigmacut*Sigmam_sigma;
