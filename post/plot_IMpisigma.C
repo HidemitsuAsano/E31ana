@@ -1567,10 +1567,12 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   nmom_cospim_wK0_woSid_won->SetYTitle("nCDS mom [GeV/c]");
   
   nmom_phinpip_woK0_woSidn = new TH2F("nmom_phinpip_woK0_woSidn","nmom_phinpip_woK0_woSidn",100,-1.0*TMath::Pi(),TMath::Pi(),100,0.,1.0);
+  //nmom_phinpip_woK0_woSidn = new TH2F("nmom_phinpip_woK0_woSidn","nmom_phinpip_woK0_woSidn",100,-1.0*3.2,3.2,100,0.,1.0);
   nmom_phinpip_woK0_woSidn->SetXTitle("Phi (nCDS-#pi^{+}) [radian]");
   nmom_phinpip_woK0_woSidn->SetYTitle("nCDS mom [GeV/c]");
 
   nmom_phinpip_wK0_woSid_won = new TH2F("nmom_phinpip_wK0_woSid_won","nmom_phinpip_wK0_woSid_won",100,-1.0*TMath::Pi(),TMath::Pi(),100,0.,1.0);
+//  nmom_phinpip_wK0_woSid_won = new TH2F("nmom_phinpip_wK0_woSid_won","nmom_phinpip_wK0_woSid_won",100,-3.2,3.2,100,0.,1.0);
   nmom_phinpip_wK0_woSid_won->SetXTitle("Phi (nCDS-#pi^{+}) [radian]");
   nmom_phinpip_wK0_woSid_won->SetYTitle("nCDS mom [GeV/c]");
 
@@ -2123,9 +2125,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     // calc pi+n //
     TLorentzVector LVec_pip_n = *LVec_pip+*LVec_n;
     double phi_npip = (*LVec_n).Phi()-(*LVec_pip).Phi();
-    if(phi_npip<-2.0*TMath::Pi()) phi_npip += 2.0*TMath::Pi();
-    else if(phi_npip>2.0*TMath::Pi()) phi_npip -= 2.0*TMath::Pi();
+    if(phi_npip<-1.0*TMath::Pi()) phi_npip += 2.0*TMath::Pi();
+    else if(phi_npip>1.0*TMath::Pi()) phi_npip -= 2.0*TMath::Pi();
     
+
     TLorentzVector LVec_pip_n_mc;
     if(SimSpmode || SimSmmode){
      LVec_pip_n_mc  = *mcmom_pip+*mcmom_ncds;
@@ -2143,8 +2146,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     // calc pi-n //
     TLorentzVector LVec_pim_n = *LVec_pim+*LVec_n;
     double phi_npim = (*LVec_n).Phi()-(*LVec_pim).Phi();
-    if(phi_npim<-2.0*TMath::Pi()) phi_npim += 2.0*TMath::Pi();
-    else if(phi_npim>2.0*TMath::Pi()) phi_npim -= 2.0*TMath::Pi();
+    if(phi_npim<-1.0*TMath::Pi()) phi_npim += 2.0*TMath::Pi();
+    else if(phi_npim>1.0*TMath::Pi()) phi_npim -= 2.0*TMath::Pi();
     TLorentzVector LVec_pim_n_mc;
     if(SimSpmode || SimSmmode){
       LVec_pim_n_mc = *mcmom_pim+*mcmom_ncds;
@@ -2405,8 +2408,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
    //std::cout << "CDH z " << (*CDH_Pos).z() << std::endl;
    TVector3 diffpim = (*CDH_Pos)-(*CDH_Pos_pim);
    double diffphipim = (*CDH_Pos).Phi()-(*CDH_Pos_pim).Phi();
-   if(diffphipim<-2.0*TMath::Pi()) diffphipim += 2.0*TMath::Pi();
-   else if(diffphipim>2.0*TMath::Pi()) diffphipim -= 2.0*TMath::Pi();
+   if(diffphipim<-1.0*TMath::Pi()) diffphipim += 2.0*TMath::Pi();
+   else if(diffphipim>1.0*TMath::Pi()) diffphipim -= 2.0*TMath::Pi();
    if(IsolationFlag==1){
      if(0< diffphipim && diffphipim <0.5) continue;
      if(-0.5< diffphipim && diffphipim <0.) continue;
@@ -2416,8 +2419,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
    }
    TVector3 diffpip = (*CDH_Pos)-(*CDH_Pos_pip);
    double diffphipip = (*CDH_Pos).Phi()-(*CDH_Pos_pip).Phi();   
-   if(diffphipip<-2.0*TMath::Pi()) diffphipip += 2.0*TMath::Pi();
-   else if(diffphipip>2.0*TMath::Pi()) diffphipip -= 2.0*TMath::Pi();
+   if(diffphipip<-1.0*TMath::Pi()) diffphipip += 2.0*TMath::Pi();
+   else if(diffphipip>1.0*TMath::Pi()) diffphipip -= 2.0*TMath::Pi();
    
    if(IsolationFlag==1){
      if(0< diffphipip && diffphipip <0.5) continue;
