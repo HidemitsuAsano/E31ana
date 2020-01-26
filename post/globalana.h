@@ -7,6 +7,7 @@
   TLorentzVector *LVec_pip=NULL;    // 4-momentum(pi+)
   TLorentzVector *LVec_pim=NULL;    // 4-momentum(pi-)
   TLorentzVector *LVec_n=NULL;      // 4-momentum(neutron)
+  TLorentzVector *LVec_n_beam=NULL;      // 4-momentum(neutron)
   TLorentzVector *LVec_n_Sp=NULL;      // 4-momentum(neutron),Sp mode assumption
   TLorentzVector *LVec_n_Sm=NULL;      // 4-momentum(neutron),Sm mode assumption
   TLorentzVector *mcmom_beam=NULL;   // generated 4-momentum(beam)
@@ -18,6 +19,7 @@
   TLorentzVector *react_Sigma=NULL;      // generated 4-momentum(neutron)
   TLorentzVector *react_pi=NULL;      // generated 4-momentum(neutron)
   double NeutralBetaCDH; // velocity of neutral particle on CDH
+  double NeutralBetaCDH_beam; // velocity of neutral particle on CDH
   double NeutralBetaCDH_vtx[2]; // velocity of neutral particle on CDH,0: Spmode 1:Smmode
   double dE;   // energy deposit on CDH
   TVector3 *vtx_reaction = NULL; // vertex(reaction) 
@@ -28,6 +30,8 @@
   TVector3 *CA_pip = NULL;//C.A.P of pip-pim pip side
   TVector3 *CA_pim = NULL;//C.A.P of pip-pim pim side
   TVector3 *CDH_Pos = NULL;
+  TVector3 *CDH_Pos_pim = NULL;
+  TVector3 *CDH_Pos_pip = NULL;
   //int run_num;   // run number
   //int event_num; // event number
   //int block_num; // block number
