@@ -30,7 +30,7 @@ const bool staton=false;
 const bool UseKinFitVal = true;
 
 //mode 0: Sigma+ ,1: Sigma- 
-void plot_IMLambdaPim(const char* filename="")
+void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
 {
 
   //gROOT->SetStyle("Plain");
@@ -44,17 +44,22 @@ void plot_IMLambdaPim(const char* filename="")
   gStyle->SetPalette(1);
   gStyle->SetStatBorderSize(1);
   gStyle->SetCanvasDefH(800); gStyle->SetCanvasDefW(900);
+  gStyle->SetPadRightMargin(0.15);
+  gStyle->SetPadLeftMargin(0.12);
   //gStyle->SetTitleFontSize(0.1);
   
+  TH1::SetDefaultSumw2();
 
   std::cout << "infile " << filename <<std::endl;
   TString pdfname = std::string(filename);
-  pdfname.Replace(std::string(filename).size()-4,5,"pdf");
+  if(qvalcutflag==0) pdfname.Replace(std::string(filename).size()-4,5,"pdf");
+  if(qvalcutflag==1) pdfname.Replace(std::string(filename).size()-5,8,"_1.pdf");
+  if(qvalcutflag==2) pdfname.Replace(std::string(filename).size()-5,8,"_2.pdf");
   std::cout << "pdfname: " << pdfname << std::endl;
   std::cout << std::endl;
   std::cout << "Use Kin Fit Val ? " << std::endl;
 
-  bool Spmode = (std::string(filename).find("Sp")!= std::string::npos);
+  bool SimMode = (std::string(filename).find("sim")!= std::string::npos);
 
   if(UseKinFitVal) std::cout << "Yes" << std::endl;
   else             std::cout << "No"  << std::endl;
@@ -111,8 +116,11 @@ void plot_IMLambdaPim(const char* filename="")
   tree->SetBranchAddress( "mom_pim2", &LVec_pim2 );
   tree->SetBranchAddress( "mom_p", &LVec_p );
   tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
-  //tree->SetBranchAddress( "vtx_pip_beam",&vtx_pip_beam);
-  //tree->SetBranchAddress( "vtx_pim_beam",&vtx_pim_beam);
+  tree->SetBranchAddress( "vtx_pim1_beam",&vtx_pim1_beam);
+  tree->SetBranchAddress( "vtx_pim2_beam",&vtx_pim2_beam);
+  tree->SetBranchAddress( "vtx_pim1_cdc",&vtx_pim1_cdc);
+  tree->SetBranchAddress( "vtx_pim2_cdc",&vtx_pim2_cdc);
+
   //tree->SetBranchAddress( "vtx_pip_cdc",&vtx_pip_cdc);
   //tree->SetBranchAddress( "vtx_pim_cdc",&vtx_pim_cdc);
   //tree->SetBranchAddress( "CA_pip",&CA_pip);
