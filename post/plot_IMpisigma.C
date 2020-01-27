@@ -1568,20 +1568,20 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   
   nmom_phinpip_woK0_woSidn = new TH2F("nmom_phinpip_woK0_woSidn","nmom_phinpip_woK0_woSidn",100,-1.0*TMath::Pi(),TMath::Pi(),100,0.,1.0);
   //nmom_phinpip_woK0_woSidn = new TH2F("nmom_phinpip_woK0_woSidn","nmom_phinpip_woK0_woSidn",100,-1.0*3.2,3.2,100,0.,1.0);
-  nmom_phinpip_woK0_woSidn->SetXTitle("Phi (nCDS-#pi^{+}) [radian]");
+  nmom_phinpip_woK0_woSidn->SetXTitle("#Delta#phi (nCDS-#pi^{+}) [radian]");
   nmom_phinpip_woK0_woSidn->SetYTitle("nCDS mom [GeV/c]");
 
   nmom_phinpip_wK0_woSid_won = new TH2F("nmom_phinpip_wK0_woSid_won","nmom_phinpip_wK0_woSid_won",100,-1.0*TMath::Pi(),TMath::Pi(),100,0.,1.0);
 //  nmom_phinpip_wK0_woSid_won = new TH2F("nmom_phinpip_wK0_woSid_won","nmom_phinpip_wK0_woSid_won",100,-3.2,3.2,100,0.,1.0);
-  nmom_phinpip_wK0_woSid_won->SetXTitle("Phi (nCDS-#pi^{+}) [radian]");
+  nmom_phinpip_wK0_woSid_won->SetXTitle("#Delta#phi (nCDS-#pi^{+}) [radian]");
   nmom_phinpip_wK0_woSid_won->SetYTitle("nCDS mom [GeV/c]");
 
   nmom_phinpim_woK0_woSidn = new TH2F("nmom_phinpim_woK0_woSidn","nmom_phinpim_woK0_woSidn",100,-1.0*TMath::Pi(),TMath::Pi(),100,0.,1.0);
-  nmom_phinpim_woK0_woSidn->SetXTitle("Phi (nCDS-#pi^{-}) [radian]");
+  nmom_phinpim_woK0_woSidn->SetXTitle("#Delta#phi (nCDS-#pi^{-}) [radian]");
   nmom_phinpim_woK0_woSidn->SetYTitle("nCDS mom [GeV/c]");
 
   nmom_phinpim_wK0_woSid_won = new TH2F("nmom_phinpim_wK0_woSid_won","nmom_phinpim_wK0_woSid_won",100,-1.0*TMath::Pi(),TMath::Pi(),100,0.,1.0);
-  nmom_phinpim_wK0_woSid_won->SetXTitle("Phi (nCDS-#pi^{-}) [radian]");
+  nmom_phinpim_wK0_woSid_won->SetXTitle("#Delta#phi (nCDS-#pi^{-}) [radian]");
   nmom_phinpim_wK0_woSid_won->SetYTitle("nCDS mom [GeV/c]");
 
   nmom_pipmom_woK0_woSidn = new TH2F("nmom_pipmom_woK0_woSidn","nmom_pipmom_woK0_woSidn",200,0,1.0,100,0,1.0);
