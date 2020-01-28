@@ -7,30 +7,41 @@ void comp_mat(){
   //TH1D* px0 =  (TH1D*) MMom_MMass_fid_beta_dE_woK0_wSid_0->ProjectionX("px0");
 
   //bobbin + Coil + Iron
-  TFile *_file1 = TFile::Open("simIMpisigma_nSmpip_v56.root");
+  TFile *_file1 = TFile::Open("simIMpisigma_nSmpip_v67.root");
   TH1D* mul_CDH1 = _file1->Get("mul_CDH");
   TH2D* MMom_MMass_fid_beta_dE_woK0_wSid_1 = (TH2D*) _file1->Get("MMom_MMass_fid_beta_dE_woK0_wSid");
   TH1D* px1 =  (TH1D*) MMom_MMass_fid_beta_dE_woK0_wSid_1->ProjectionX("px1");
 
+  //yoke
+  TFile *_file4 = TFile::Open("simIMpisigma_nSmpip_v56.root");
+  TH1D* mul_CDH4 = _file4->Get("mul_CDH");
+  TH2D* MMom_MMass_fid_beta_dE_woK0_wSid_4 = (TH2D*) _file4->Get("MMom_MMass_fid_beta_dE_woK0_wSid");
+  TH1D* px4 =  (TH1D*) MMom_MMass_fid_beta_dE_woK0_wSid_4->ProjectionX("px4");
+  
   //All Iron
-  TFile *_file2 = TFile::Open("simIMpisigma_nSmpip_v55.root");
+  TFile *_file2 = TFile::Open("simIMpisigma_nSmpip_v69.root");
   TH1D* mul_CDH2 = _file2->Get("mul_CDH");
   TH2D* MMom_MMass_fid_beta_dE_woK0_wSid_2 = (TH2D*) _file2->Get("MMom_MMass_fid_beta_dE_woK0_wSid");
   TH1D* px2 =  (TH1D*) MMom_MMass_fid_beta_dE_woK0_wSid_2->ProjectionX("px2");
 
   //DoraAir 
-  TFile *_file3 = TFile::Open("simIMpisigma_nSmpip_DoraAir_v70.root");
+  TFile *_file3 = TFile::Open("simIMpisigma_nSmpip_v70.root");
   TH1D* mul_CDH3 = _file3->Get("mul_CDH");
   TH2D* MMom_MMass_fid_beta_dE_woK0_wSid_3 = (TH2D*) _file3->Get("MMom_MMass_fid_beta_dE_woK0_wSid");
   TH1D* px3 =  (TH1D*) MMom_MMass_fid_beta_dE_woK0_wSid_3->ProjectionX("px3");
 
   TCanvas *cmul = new TCanvas("cmul","cmul");
   cmul->cd();
+  double n3 = mul_CDH3->GetEntries();
+  double n2 = mul_CDH2->GetEntries();
+  double n1 = mul_CDH1->GetEntries();
   mul_CDH3->SetXTitle("CDH nhits");
+  mul_CDH3->Scale(n1/n3);
   mul_CDH3->Draw("HE");
   mul_CDH2->SetLineColor(4);
   mul_CDH2->SetMarkerStyle(22);
   mul_CDH2->SetMarkerColor(4);
+  mul_CDH2->Scale(n1/n2);
   mul_CDH2->Draw("HEsame");
   mul_CDH1->SetLineColor(2);
   mul_CDH1->SetMarkerStyle(22);
@@ -50,14 +61,18 @@ void comp_mat(){
   cmiss->cd();
   px3->SetXTitle("Missing Mass [GeV/c^{2}]");
   px3->Draw("HE");
+  double max4 = px4->GetMaximum();
   double max3 = px3->GetMaximum();
   double max2 = px2->GetMaximum();
   double max1 = px1->GetMaximum();
   //double max0 = px0->GetMaximum();
+  px4->Scale(max4/max2);
+  px4->SetLineColor(6);
+  //px4->Draw("HEsame");
   px2->Scale(max3/max2);
-  px2->SetLineColor(2);
+  px2->SetLineColor(4);
   px2->Draw("HEsame");
-  px1->SetLineColor(4);
+  px1->SetLineColor(2);
   px1->Scale(max3/max1);
   px1->Draw("HEsame");
   //px0->SetLineColor(3);
