@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
-set Version="101"
-set DSTVersion="24"
+set Version="108"
+set DSTVersion="26"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 set CDSDIRSUB="${CDSDIR}simDST${DSTVersion}"
@@ -36,7 +36,7 @@ ln -s $OUTDIRSUB/simIMpisigma_nSppim_pippimn_all.root simpost/simIMpisigma_nSppi
 ln -s $OUTDIRSUB/simIMpisigma_nSmpip_pippimn_all.root simpost/simIMpisigma_nSmpip_pippimn_v${Version}.root
 
 @ i = 0
-while ($i < 400)   
+while ($i < 800)   
 
   set EXEC___="./bin/simIMPiSigma"
   set CONF___="conf/Run78/analyzer_kwsk_sim.conf"

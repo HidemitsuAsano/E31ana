@@ -1,10 +1,10 @@
 #!/bin/tcsh -f
-set Version="23"
-set DSTVersion="6"
-set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simnpipiL${DSTVersion}/"
+set Version="1"
+set DSTVersion="1"
+set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simnpipiL_Vacuum${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
-set CDSDIRSUB="${CDSDIR}simDSTnpipiL${DSTVersion}"
-set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simIMPiSigma_npipiL/"
+set CDSDIRSUB="${CDSDIR}simDSTnpipiL_Vacuum${DSTVersion}"
+set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simIMPiSigma_npipiL_Vacuum/"
 
 set starttime=`date '+%y/%m/%d %H:%M:%S'`
 set logbasedir="/home/had/hiasano/logs/"
@@ -32,15 +32,15 @@ cp $SRCDIR/IMPiSigmaHist.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaUtil.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaUtil.cpp $OUTDIRSUB/
 #set CONF___="conf/Run78/analyzer_kwsk_sim_DoraAir.conf"
-set CONF___="conf/Run78/analyzer_kwsk_sim.conf"
+set CONF___="conf/Run78/analyzer_kwsk_sim_Vacuum.conf"
 cp $CONF___ $OUTDIRSUB
 
 cp hadd_simhist_npipiL.csh $OUTDIRSUB/
 cp hadd_sim_pippimn_npipiL.csh $OUTDIRSUB/
 #ln -s $OUTDIRSUB/simIMpisigma_npipiL_all.root simpost/simIMpisigma_npipiL_DoraAir_v${Version}.root
 #ln -s $OUTDIRSUB/simIMpisigma_npipiL_pippimn_all.root simpost/simIMpisigma_npipiL_pippimn_DoraAir_v${Version}.root
-ln -s $OUTDIRSUB/simIMpisigma_npipiL_all.root simpost/simIMpisigma_npipiL_v${Version}.root
-ln -s $OUTDIRSUB/simIMpisigma_npipiL_pippimn_all.root simpost/simIMpisigma_npipiL_pippimn_v${Version}.root
+ln -s $OUTDIRSUB/simIMpisigma_npipiL_all.root simpost/simIMpisigma_npipiL_Vacuum_v${Version}.root
+ln -s $OUTDIRSUB/simIMpisigma_npipiL_pippimn_all.root simpost/simIMpisigma_npipiL_pippimn_Vacuum_v${Version}.root
 
 @ i = 0
 while ($i < 400)   

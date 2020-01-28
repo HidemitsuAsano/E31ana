@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="190"
+set Version="196"
 set DATADIR="/group/had/knucl/e15/data/Run78/"
 set OUTDIR="/group/had/knucl/e15/asano/Run78/"
 set KWSKDIR="/group/had/knucl/e15/shinngo/Run78/evtracking/"
@@ -71,6 +71,10 @@ while (1)
   sleep 60
 end
 
+cd post/
+set histname = "evanaIMpisigma_v${Version}.root"
+root -l -q -b  'plothists.C("'"${histname}"'")'
+cd - 
 echo "aggrigation is finished"
 echo "start time ${starttime}"
 echo "end time `date '+%y/%m/%d %H:%M:%S'`"
