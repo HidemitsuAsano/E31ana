@@ -2660,27 +2660,18 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
    if(IsMCweighting){
      if(SimSpmode || SimSmmode || SimK0nnmode || SimnpipiLmode || SimnS0pippimmode || SimSppi0mode || SimSmpi0mode){
        if(K0rejectFlag ){
-         /*
-         weight = fweight_MMnmiss->Eval(nmiss_mass);
-         weight *= fweight_MMom->Eval(LVec_nmiss.P());
-         
-         weight *= fweight_nmom->Eval((*LVec_n).P());
-         
-         weight *= fweight_pimmom->Eval((*LVec_pim).P());
-         
-         weight *= fweight_pipmom->Eval((*LVec_pip).P());
-         
-         weight *= fweight_Mompippim->Eval(LVec_pip_pim.P());
-         
-         weight *= fweight_IMpippim->Eval(LVec_pip_pim.M());
-         
-         weight *= fweight_IMnpipi->Eval(LVec_pip_pim_n.M());
-         
+         //weight = fweight_MMnmiss->Eval(nmiss_mass);
+         //weight *= fweight_MMom->Eval(LVec_nmiss.P());
+         //weight *= fweight_nmom->Eval((*LVec_n).P());
+         //weight *= fweight_pimmom->Eval((*LVec_pim).P());
+         //weight *= fweight_pipmom->Eval((*LVec_pip).P());
+         //weight *= fweight_Mompippim->Eval(LVec_pip_pim.P());
+         //weight *= fweight_IMpippim->Eval(LVec_pip_pim.M());
+         //weight *= fweight_IMnpipi->Eval(LVec_pip_pim_n.M());
          //weight *= fweight_IMnpip->Eval(LVec_pip_n.M());
-         weight *= fweight_IMnpim->Eval(LVec_pim_n.M());
-         weight *= fweight_MMom_corr->Eval(LVec_nmiss.P());
+         //weight *= fweight_IMnpim->Eval(LVec_pim_n.M());
+         //weight *= fweight_MMom_corr->Eval(LVec_nmiss.P());
          //weight *= fweight_MMnmiss_corr->Eval(nmiss_mass);
-         */
        }else{//wK0
          //weight *= fweight_MMom_wK0->Eval(LVec_nmiss.P());
          //weight *= fweight_nmom_wK0->Eval((*LVec_n).P());
