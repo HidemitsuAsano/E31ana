@@ -333,32 +333,32 @@ void QACDS(TFile *f){
   h2_Vtx_XY_fid->RebinY(10);
   h2_Vtx_XY_fid->Draw("box same");
     
-  /*
+  
   //fiducial cuts
-  TCanvas *cVtx_ZX_fid  = new TCanvas("Vtx_ZX_fid","Vtx_ZX_fid");
-  TH2F *h2_Vtx_ZX_fid = (TH2F*)f->Get("Vtx_ZX_fid");
-  h2_Vtx_ZX_fid->SetTitle("CDS Vertex");
-  h2_Vtx_ZX_fid->GetXaxis()->SetTitle("Z Vertex [cm]");
-  h2_Vtx_ZX_fid->GetYaxis()->SetTitle("X Vertex [cm]");
-  h2_Vtx_ZX_fid->SetMaximum(maxZX);
-  h2_Vtx_ZX_fid->Draw("colz");
+  TCanvas *cVtx_ZX_primfid  = new TCanvas("Vtx_ZX_primfid","Vtx_ZX_primfid");
+  TH2F *h2_Vtx_ZX_primfid = (TH2F*)f->Get("Vtx_ZX_primfid");
+  h2_Vtx_ZX_primfid->SetTitle("CDS Vertex");
+  h2_Vtx_ZX_primfid->GetXaxis()->SetTitle("Z Vertex [cm]");
+  h2_Vtx_ZX_primfid->GetYaxis()->SetTitle("X Vertex [cm]");
+  //h2_Vtx_ZX_primfid->SetMaximum(maxZX);
+  h2_Vtx_ZX_primfid->Draw("colz");
   
-  TCanvas *cVtx_ZY_fid  = new TCanvas("Vtx_ZY_fid","Vtx_ZY_fid");
-  TH2F *h2_Vtx_ZY_fid = (TH2F*)f->Get("Vtx_ZY_fid");
-  h2_Vtx_ZY_fid->SetTitle("CDS Vertex");
-  h2_Vtx_ZY_fid->GetXaxis()->SetTitle("Z Vertex [cm]");
-  h2_Vtx_ZY_fid->GetYaxis()->SetTitle("Y Vertex [cm]");
-  h2_Vtx_ZY_fid->SetMaximum(maxZY);
-  h2_Vtx_ZY_fid->Draw("colz");
+  TCanvas *cVtx_ZY_primfid  = new TCanvas("Vtx_ZY_primfid","Vtx_ZY_primfid");
+  TH2F *h2_Vtx_ZY_primfid = (TH2F*)f->Get("Vtx_ZY_primfid");
+  h2_Vtx_ZY_primfid->SetTitle("CDS Vertex");
+  h2_Vtx_ZY_primfid->GetXaxis()->SetTitle("Z Vertex [cm]");
+  h2_Vtx_ZY_primfid->GetYaxis()->SetTitle("Y Vertex [cm]");
+  //h2_Vtx_ZY_primfid->SetMaximum(maxZY);
+  h2_Vtx_ZY_primfid->Draw("colz");
   
-  TCanvas *cVtx_XY_fid  = new TCanvas("Vtx_XY_fid","Vtx_XY_fid");
-  TH2F *h2_Vtx_XY_fid = (TH2F*) f->Get("Vtx_XY_fid");
-  h2_Vtx_XY_fid->SetTitle("CDS Vertex");
-  h2_Vtx_XY_fid->GetXaxis()->SetTitle("X Vertex [cm]");
-  h2_Vtx_XY_fid->GetYaxis()->SetTitle("Y Vertex [cm]");
-  h2_Vtx_XY_fid->SetMaximum(maxXY);
-  h2_Vtx_XY_fid->Draw("colz");
-  */
+  TCanvas *cVtx_XY_primfid  = new TCanvas("Vtx_XY_primfid","Vtx_XY_primfid");
+  TH2F *h2_Vtx_XY_primfid = (TH2F*) f->Get("Vtx_XY_primfid");
+  h2_Vtx_XY_primfid->SetTitle("CDS Vertex");
+  h2_Vtx_XY_primfid->GetXaxis()->SetTitle("X Vertex [cm]");
+  h2_Vtx_XY_primfid->GetYaxis()->SetTitle("Y Vertex [cm]");
+  //h2_Vtx_XY_primfid->SetMaximum(maxXY);
+  h2_Vtx_XY_primfid->Draw("colz");
+ 
 
   /*
   TCanvas *cVtx_X_center  = new TCanvas("Vtx_X_center","Vtx_X_center");
