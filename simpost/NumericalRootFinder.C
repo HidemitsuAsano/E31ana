@@ -10,7 +10,9 @@
 #if 1
 const double d_mass  = 1.87561;
 const double K_mass    = 0.493677;
+const double K0_mass   = 0.497611;
 const double n_mass    = 0.939565;
+const double K0n_mass  = K0_mass + n_mass;
 const double piSp_mass = 1.18937+0.13957;
 const double piSm_mass = 1.197449+0.13957;
 #endif
@@ -39,9 +41,10 @@ int NumericalRootFinder()
 
   const double COS_MIN = -1;
   const double COS_MAX = 1;
-  const int    COS_BIN = 6;
+  const int    COS_BIN = 1;
 
-  const double M_MIN = piSp_mass;
+  //const double M_MIN = piSp_mass;
+  const double M_MIN = K0n_mass;
   const double M_MAX = sys.M()-n_mass+0.00001;
   const int    M_BIN = 10000;
   cerr<<M_MIN<<" "<<M_MAX<<endl;
@@ -113,7 +116,7 @@ int NumericalRootFinder()
   }
   gr_th->Draw("same");
 
-  TFile *out = new TFile("NumericalRootFinder.root", "recreate");
+  TFile *out = new TFile("NumericalRootFinder_K0n.root", "recreate");
   for( int i=0; i<COS_BIN+1; i++ ){
     gr[i]->Write();
   }
