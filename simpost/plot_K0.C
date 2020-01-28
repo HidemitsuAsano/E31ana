@@ -11,6 +11,8 @@ void plot_K0()
   _file0->cd();
   TH2F* q_IMpippim_n_rdata = (TH2F*)_file0->Get("q_IMpippim_n");
   TH2F* nmom_IMnpipi_wK0_n_rdata = (TH2F*)_file0->Get("nmom_IMnpipi_wK0_n");
+  TH2F* nmom_IMnpipi_woK0_wSid_n_rdata = (TH2F*)_file0->Get("nmom_IMnpipi_woK0_wSid_n");
+  TH2F* nmom_IMnpipi_wK0_wSid_n_rdata = (TH2F*)_file0->Get("nmom_IMnpipi_wK0_wSid_n");
   TH2F* q_IMnpipi_wK0_n_rdata = (TH2F*)_file0->Get("q_IMnpipi_wK0_n");
   TH2F* Mompippim_IMnpipi_dE_wK0_n_rdata = (TH2F*)_file0->Get("Mompippim_IMnpipi_dE_wK0_n");
   TH2F* MMnmiss_IMpippim_dE_rdata = (TH2F*)_file0->Get("MMnmiss_IMpippim_dE");
@@ -30,7 +32,9 @@ void plot_K0()
 
   TH1D* IMpippim_rdata = (TH1D*)q_IMpippim_n_rdata->ProjectionX("IMpippim_rdata");
   TH1D* IMnpipi_rdata = (TH1D*)nmom_IMnpipi_wK0_n_rdata->ProjectionX("IMnpipi_rdata");
-  TH1D* nmom_IMnpipi_wK0_n_rdata_py = (TH1D*)nmom_IMnpipi_wK0_n_rdata->ProjectionY("nmom_IMnpipi_wK0_n_rdata_py");
+  TH1D* nmom_wK0_n_rdata = (TH1D*)nmom_IMnpipi_wK0_n_rdata->ProjectionY("nmom_wK0_n_rdata");
+  TH1D* nmom_woK0_wSid_n_rdata = (TH1D*)nmom_IMnpipi_woK0_wSid_n_rdata->ProjectionY("nmom_woK0_wSid_n_rdata");
+  TH1D* nmom_wK0_wSid_n_rdata = (TH1D*)nmom_IMnpipi_wK0_wSid_n_rdata->ProjectionY("nmom_wK0_wSid_n_rdata");
   TH1D* q_rdata = (TH1D*)q_IMnpipi_wK0_n_rdata->ProjectionY("q_rdata");
   TH1D* Mompippim_rdata = (TH1D*)Mompippim_IMnpipi_dE_wK0_n_rdata->ProjectionY("Mompippim_rdata"); 
    
@@ -1058,8 +1062,8 @@ void plot_K0()
   //neutron momentum dist.
   TCanvas *cMom_ncds = new TCanvas("cMom_ncds","cMom_ncds");
   cMom_ncds->cd();
-  nmom_IMnpipi_wK0_n_rdata_py->SetMaximum(600);
-  nmom_IMnpipi_wK0_n_rdata_py->Draw("HE");
+  nmom_wK0_n_rdata->SetMaximum(600);
+  nmom_wK0_n_rdata->Draw("HE");
   nmom_1NA->SetLineColor(2);// 1NA processes with C.S scaling
   nmom_1NA->Scale(scale_1NA);
   nmom_1NA->Draw("HEsame");
@@ -1107,7 +1111,7 @@ void plot_K0()
 
 
   TLegend *tl = new TLegend(0.8,0.68,0.99,0.99);
-  tl->AddEntry(nmom_IMnpipi_wK0_n_rdata_py, "real data","l");
+  tl->AddEntry(nmom_wK0_n_rdata, "real data","l");
   //tl->AddEntry(nmom_IMnpipi_wK0_n_ns_py, "1NA","l");
   tl->AddEntry(nmom_1NA, "1NA","l");
   tl->AddEntry(nmom_IMnpipi_wK0_n_nnts_py, "two step n-n scat.","l");
@@ -1514,7 +1518,7 @@ void plot_K0()
   nmom_cosnmiss_wK0_n_rdata->SetYTitle("nCDS mom. [GeV/c]");
   nmom_cosnmiss_wK0_n_rdata->GetXaxis()->SetRangeUser(-0.2,1);
   nmom_cosnmiss_wK0_n_rdata->Draw("colz");
-
+  /*
   TCanvas *c7_px = new TCanvas("c7_px","c7_px");
   c7_px->cd();
   nmom_cosnmiss_wK0_n_rdata->ProjectionX()->Draw();
@@ -1557,6 +1561,28 @@ void plot_K0()
   TCanvas *c8_px = new TCanvas("c8_px","c8_px");
   c8_px->cd();
   nmom_K0mom_n_pipiL_ns_sum->ProjectionX()->Draw();
+  */ 
+  //neutron momentum cocktail 
+  TCanvas *cnmom = new TCanvas("cnmom","cnmom");
+  cnmom->cd();
+  nmom_wK0_n_rdata->Draw("HE");
+  nmom_1NA->Scale(0.85);
+  nmom_1NA->Draw("same");
+  nmom_woK0_wSid_n_rdata->SetLineColor(3);
+  nmom_woK0_wSid_n_rdata->Scale(0.72);
+  nmom_woK0_wSid_n_rdata->Draw("HEsame");
+  nmom_wK0_wSid_n_rdata->SetLineColor(4);
+  nmom_wK0_wSid_n_rdata->Draw("HEsame");
+  
+  TH1F* nmom_1NA_wSid_sum = (TH1F*)nmom_1NA->Clone("nmom_1NA_wSid_sum");
+  nmom_1NA_wSid_sum->Add(nmom_woK0_wSid_n_rdata);
+  nmom_1NA_wSid_sum->SetLineColor(6);
+  nmom_1NA_wSid_sum->Draw("same");
+
+  
+  TCanvas *cnmom_nmiss = new TCanvas("cnmom_nmiss","cnmom_nmiss");
+
+
 
   
   return;
