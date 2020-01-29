@@ -50,6 +50,26 @@ Double_t func_IMnpim(Double_t *x,Double_t *par)
   }
 }
 
+Double_t func_cosn(Double_t *x,Double_t *p)
+{
+  if(x[0]<-0.9){
+    return TMath::Exp(p[0]+p[1]*x[0]);
+  }else{
+    return (p[2]+p[3]*x[0]+p[4]*TMath::Power(x[0],2)+p[5]*TMath::Power(x[0],3)) ; 
+  }
+}
+
+
+Double_t func_cospip(Double_t *x,Double_t *p)
+{
+  if(x[0]<-0.76){
+    return TMath::Exp(p[0]+p[1]*x[0]);
+  }else{
+    return (p[2]+p[3]*x[0]+p[4]*TMath::Power(x[0],2)+p[5]*TMath::Power(x[0],3)) ;
+  }
+}
+
+
 
 void plot_miss2D()
 {
@@ -1604,7 +1624,21 @@ void plot_miss2D()
   cosn_woK0_woSidn_ratio->SetTitle("Data/MC");
   cosn_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,4);
   cosn_woK0_woSidn_ratio->Draw("HE");
+  
+  TF1 *evalf_cosn_1 = new TF1("evalf_cosn_1","expo",-1,-0.9);
+  cosn_woK0_woSidn_ratio->Fit(evalf_cosn_1,"R","",-1,-0.9);
+   
+  TF1 *evalf_cosn_2 = new TF1("evalf_cosn_2","pol3",-0.9,0.3);
+  cosn_woK0_woSidn_ratio->Fit(evalf_cosn_2,"R+","",-0.9,0.3);
 
+  Double_t param_cosn[6];
+  evalf_cosn_1->GetParameters(&param_cosn[0]);
+  evalf_cosn_2->GetParameters(&param_cosn[2]);
+  TF1 *evalf_cosn = new TF1("evalf_cosn",func_cosn,-1.00,0.3,6);
+  evalf_cosn->SetParameters(param_cosn);
+  evalf_cosn->SetLineColor(3);
+  evalf_cosn->Draw("same");
+  
 
   //
   TH2D* nmom_cospip_woK0_woSidn_mc = (TH2D*)nmom_cospip_woK0_woSidn[1]->Clone("nmom_cospip_woK0_woSidn_mc");
@@ -1634,6 +1668,10 @@ void plot_miss2D()
   cospip_woK0_woSidn_ratio->SetTitle("Data/MC");
   cospip_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,4);
   cospip_woK0_woSidn_ratio->Draw("HE");
+  
+  TF1 *evalf_cospip = new TF1("evalf_cospip",func_cospip,-1.0,0.6); 
+  cospip_woK0_woSidn_ratio->Fit("evalf_cospip","","",-1.0,0.6);
+
 
   //
   TH2D* nmom_cospim_woK0_woSidn_mc = (TH2D*)nmom_cospim_woK0_woSidn[1]->Clone("nmom_cospim_woK0_woSidn_mc");
@@ -1663,7 +1701,10 @@ void plot_miss2D()
   cospim_woK0_woSidn_ratio->SetTitle("Data/MC");
   cospim_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,4);
   cospim_woK0_woSidn_ratio->Draw("HE");
-  
+   
+  TF1 *evalf_cospim = new TF1("evalf_cospim","pol8",-0.92,0.50);
+  cospim_woK0_woSidn_ratio->Fit(evalf_cospim,"","",-0.92,0.50);
+ 
   //
   TH2D* nmom_phinpip_woK0_woSidn_mc = (TH2D*)nmom_phinpip_woK0_woSidn[1]->Clone("nmom_phinpip_woK0_woSidn_mc");
   for(int i=2;i<6;i++)nmom_phinpip_woK0_woSidn_mc->Add(nmom_phinpip_woK0_woSidn[i]);
@@ -2181,6 +2222,15 @@ void plot_miss2D()
   cosn_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,4);
   cosn_wK0_woSid_won_ratio->Draw("HE");
 
+  //TF1 *evalf_cosn_wK0 = new TF1("evalf_cosn_wK0","pol8",-1,1);
+  //cosn_wK0_woSid_won_ratio->Fit(evalf_cosn_wK0,"","",-1,0.2);
+  
+  TF1 *evalf_cosn_wK0 = new TF1("evalf_cosn_wK0",func_cosn,-1.00,0.3,6);
+  evalf_cosn_wK0->SetParameters(param_cosn);
+  evalf_cosn_wK0->SetLineColor(3);
+  cosn_wK0_woSid_won_ratio->Fit(evalf_cosn,"","",-1,0.2);
+  
+
 
   //
   TH2D* nmom_cospip_wK0_woSid_won_mc = (TH2D*)nmom_cospip_wK0_woSid_won[1]->Clone("nmom_cospip_wK0_woSid_won_mc");
@@ -2210,6 +2260,11 @@ void plot_miss2D()
   cospip_wK0_woSid_won_ratio->SetTitle("Data/MC");
   cospip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,4);
   cospip_wK0_woSid_won_ratio->Draw("HE");
+  
+  TF1 *evalf_cospip_wK0 = new TF1("evalf_cospip_wK0","pol5",-1.0,0.6); 
+  cospip_woK0_woSidn_ratio->Fit("evalf_cospip_wK0","","",-1.0,0.6);
+
+
 
   //
   TH2D* nmom_cospim_wK0_woSid_won_mc = (TH2D*)nmom_cospim_wK0_woSid_won[1]->Clone("nmom_cospim_wK0_woSid_won_mc");
@@ -2239,7 +2294,10 @@ void plot_miss2D()
   cospim_wK0_woSid_won_ratio->SetTitle("Data/MC");
   cospim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,4);
   cospim_wK0_woSid_won_ratio->Draw("HE");
-  
+   
+  TF1 *evalf_cospim_wK0 = new TF1("evalf_cospim_wK0","pol8",-0.92,0.55);
+  cospim_wK0_woSid_won_ratio->Fit(evalf_cospim_wK0,"","",-0.92,0.55);
+
   //
   TH2D* nmom_phinpip_wK0_woSid_won_mc = (TH2D*)nmom_phinpip_wK0_woSid_won[1]->Clone("nmom_phinpip_wK0_woSid_won_mc");
   for(int i=2;i<6;i++)nmom_phinpip_wK0_woSid_won_mc->Add(nmom_phinpip_wK0_woSid_won[i]);
@@ -2419,6 +2477,10 @@ void plot_miss2D()
 //  evalf_MMom_wK0->Write();
   evalf_pipmom_wK0->Write();
   evalf_pimmom_wK0->Write();
+  evalf_cosn->Write();
+  evalf_cosn_wK0->Write();
+  evalf_cospim->Write();
+  evalf_cospim_wK0->Write();
 //  evalf_IMnpipi_wK0->Write();
 //  evalf_IMnpip_wK0->Write();
 //  evalf_IMnpim_wK0->Write();
