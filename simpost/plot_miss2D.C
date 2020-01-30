@@ -62,10 +62,41 @@ Double_t func_cosn(Double_t *x,Double_t *p)
 
 Double_t func_cospip(Double_t *x,Double_t *p)
 {
-  if(x[0]<-0.76){
+  if(-0.92<x[0] && x[0]<-0.75){
     return TMath::Exp(p[0]+p[1]*x[0]);
   }else{
     return (p[2]+p[3]*x[0]+p[4]*TMath::Power(x[0],2)+p[5]*TMath::Power(x[0],3)) ;
+  }
+}
+
+Double_t func_phinpip(Double_t *x,Double_t *par)
+{
+  if(x[0]<-0.4){
+    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0);
+  }else{
+    return par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0);
+  }
+}
+
+
+Double_t func_phinpim(Double_t *x,Double_t *par)
+{
+  if(x[0]<0.5){
+    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
+    +par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0);
+  }else{
+    return par[6]+par[7]*x[0]+par[8]*pow(x[0],2.0)+par[9]*pow(x[0],3.0);
+  }
+}
+
+
+Double_t func_phinpim_wK0(Double_t *x,Double_t *par)
+{
+  if(x[0]<0.3){
+    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
+    +par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0);
+  }else{
+    return par[6]+par[7]*x[0]+par[8]*pow(x[0],2.0)+par[9]*pow(x[0],3.0);
   }
 }
 
@@ -1734,6 +1765,10 @@ void plot_miss2D()
   phinpip_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,4);
   phinpip_woK0_woSidn_ratio->Draw("HE");
    
+  TF1 *evalf_phinpip = new TF1("evalf_phinpip",func_phinpip,-1.0*TMath::Pi(),TMath::Pi(),8);
+  phinpip_woK0_woSidn_ratio->Fit(evalf_phinpip);
+
+
   //
   TH2D* nmom_phinpim_woK0_woSidn_mc = (TH2D*)nmom_phinpim_woK0_woSidn[1]->Clone("nmom_phinpim_woK0_woSidn_mc");
   for(int i=2;i<6;i++)nmom_phinpim_woK0_woSidn_mc->Add(nmom_phinpim_woK0_woSidn[i]);
@@ -1763,6 +1798,8 @@ void plot_miss2D()
   phinpim_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,4);
   phinpim_woK0_woSidn_ratio->Draw("HE");
 
+  TF1 *evalf_phinpim = new TF1("evalf_phinpim",func_phinpim,-1.0*TMath::Pi(),TMath::Pi(),10);
+  phinpim_woK0_woSidn_ratio->Fit(evalf_phinpim);
 
 
 
@@ -2262,7 +2299,7 @@ void plot_miss2D()
   cospip_wK0_woSid_won_ratio->Draw("HE");
   
   TF1 *evalf_cospip_wK0 = new TF1("evalf_cospip_wK0","pol5",-1.0,0.6); 
-  cospip_woK0_woSidn_ratio->Fit("evalf_cospip_wK0","","",-1.0,0.6);
+  cospip_wK0_woSid_won_ratio->Fit("evalf_cospip_wK0","","",-1.0,0.6);
 
 
 
@@ -2327,6 +2364,11 @@ void plot_miss2D()
   phinpip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,4);
   phinpip_wK0_woSid_won_ratio->Draw("HE");
    
+  TF1 *evalf_phinpip_wK0 = new TF1("evalf_phinpip_wK0",func_phinpip,-1.0*TMath::Pi(),TMath::Pi(),8);
+  phinpip_wK0_woSid_won_ratio->Fit(evalf_phinpip_wK0);
+
+
+
   //
   TH2D* nmom_phinpim_wK0_woSid_won_mc = (TH2D*)nmom_phinpim_wK0_woSid_won[1]->Clone("nmom_phinpim_wK0_woSid_won_mc");
   for(int i=2;i<6;i++)nmom_phinpim_wK0_woSid_won_mc->Add(nmom_phinpim_wK0_woSid_won[i]);
@@ -2356,6 +2398,8 @@ void plot_miss2D()
   phinpim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,4);
   phinpim_wK0_woSid_won_ratio->Draw("HE");
 
+  TF1 *evalf_phinpim_wK0 = new TF1("evalf_phinpim_wK0",func_phinpim_wK0,-1.0*TMath::Pi(),TMath::Pi(),10);
+  phinpim_wK0_woSid_won_ratio->Fit(evalf_phinpim_wK0);
 
 
   //Signal check
@@ -2466,23 +2510,27 @@ void plot_miss2D()
  // evalf_MMnmiss->Write();
  // evalf_MMom->Write();
   evalf_nmom->Write();
+  evalf_nmom_wK0->Write();
   evalf_pipmom->Write();
+  evalf_pipmom_wK0->Write();
   evalf_pimmom->Write();
 //  evalf_IMpippim->Write();
 //  evalf_Mompippim->Write();
 //  evalf_IMnpipi->Write();
 //  evalf_IMnpip->Write();
 //  evalf_IMnpim->Write();
-  evalf_nmom_wK0->Write();
 //  evalf_MMom_wK0->Write();
-  evalf_pipmom_wK0->Write();
   evalf_pimmom_wK0->Write();
   evalf_cosn->Write();
   evalf_cosn_wK0->Write();
   evalf_cospip->Write();
-  evalf_cospim->Write();
   evalf_cospip_wK0->Write();
+  evalf_cospim->Write();
   evalf_cospim_wK0->Write();
+  evalf_phinpip->Write();
+  evalf_phinpip_wK0->Write();
+  evalf_phinpim->Write();
+  evalf_phinpim_wK0->Write();
 //  evalf_IMnpipi_wK0->Write();
 //  evalf_IMnpip_wK0->Write();
 //  evalf_IMnpim_wK0->Write();
