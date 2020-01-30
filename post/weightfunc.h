@@ -492,6 +492,47 @@ Double_t param_cosn_wK0[6]={
 
 
 
+Double_t func_cospip(Double_t *x,Double_t *p)
+{
+  if(x[0]<-0.92){
+    return 1.0;
+  }else if(-0.92<=x[0] && x[0]<-0.75){
+    return TMath::Exp(p[0]+p[1]*x[0]);
+  }else{
+    return (p[2]+p[3]*x[0]+p[4]*TMath::Power(x[0],2)+p[5]*TMath::Power(x[0],3)) ;
+  }
+}
+
+Double_t param_cospip[6]={
+  -9.694997,
+ -12.635173,
+   0.967719,
+  -0.043963,
+   0.362578,
+   0.364421 
+};
+
+
+Double_t func_cospip_wK0(Double_t *x,Double_t *par)
+{
+  if(0.5<x[0]){
+    return 1.0;
+  }else{
+    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)+par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0);
+  }
+}
+
+Double_t param_cospip_wK0[6]={
+  0.940005,
+  0.225100, 
+  0.179505, 
+  -0.567310, 
+  4.950085, 
+  6.509011 
+};
+
+
+
 
 Double_t func_cospim(Double_t *x,Double_t *p)
 {

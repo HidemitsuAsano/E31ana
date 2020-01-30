@@ -269,6 +269,14 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1 *fweight_IMnpim_wK0  = new TF1("fweight_IMnpim_wK0",func_IMnpim,1.06,2.0,8);
   fweight_IMnpim_wK0->SetParameters(param_IMnpim_wK0);
 
+  TF1 *fweight_cospip = new TF1("fweight_cospip",func_cospip,-1.0,1.0,6);
+  fweight_cospip->SetParameters(param_cospip);
+  fweight_cospip->Print("v");
+
+  TF1 *fweight_cospip_wK0 = new TF1("fweight_cospip_wK0",func_cospip_wK0,-1.0,1.0,6);
+  fweight_cospip_wK0->SetParameters(param_cospip_wK0);
+  fweight_cospip_wK0->Print("v");
+  
   TF1 *fweight_cospim = new TF1("fweight_cospim",func_cospim,-1.0,1.0,9);
   fweight_cospim->SetParameters(param_cospim);
   fweight_cospim->Print("v");
@@ -2697,6 +2705,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
          weight *= fweight_cosn->Eval(cos_ncdsCM);
          //weight *= fweight_cospim->Eval(cos_pimCM);
          weight *= fweight_pipmom->Eval((*LVec_pip).P());
+         weight *= fweight_cospip->Eval(cos_pipCM);
          //weight *= fweight_pimmom->Eval((*LVec_pim).P());
          //weight *= fweight_Mompippim->Eval(LVec_pip_pim.P());
          //weight *= fweight_IMpippim->Eval(LVec_pip_pim.M());
@@ -2711,6 +2720,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
          weight *= fweight_cosn_wK0->Eval(cos_ncdsCM);
          //weight *= fweight_cospim_wK0->Eval(cos_pimCM);
          weight *= fweight_pipmom_wK0->Eval((*LVec_pip).P());
+         weight *= fweight_cospip_wK0->Eval(cos_pipCM);
          //weight *= fweight_pimmom_wK0->Eval((*LVec_pim).P());
          //weight *= fweight_IMnpipi_wK0->Eval(LVec_pip_pim_n.M());
          //weight *= fweight_IMnpim_wK0->Eval(LVec_pim_n.M());
