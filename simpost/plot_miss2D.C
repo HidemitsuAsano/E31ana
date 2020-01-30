@@ -1669,7 +1669,7 @@ void plot_miss2D()
   cospip_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,4);
   cospip_woK0_woSidn_ratio->Draw("HE");
   
-  TF1 *evalf_cospip = new TF1("evalf_cospip",func_cospip,-1.0,0.6); 
+  TF1 *evalf_cospip = new TF1("evalf_cospip",func_cospip,-1.0,0.6,6); 
   cospip_woK0_woSidn_ratio->Fit("evalf_cospip","","",-1.0,0.6);
 
 
@@ -2479,7 +2479,9 @@ void plot_miss2D()
   evalf_pimmom_wK0->Write();
   evalf_cosn->Write();
   evalf_cosn_wK0->Write();
+  evalf_cospip->Write();
   evalf_cospim->Write();
+  evalf_cospip_wK0->Write();
   evalf_cospim_wK0->Write();
 //  evalf_IMnpipi_wK0->Write();
 //  evalf_IMnpip_wK0->Write();
