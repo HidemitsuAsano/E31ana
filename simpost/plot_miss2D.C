@@ -970,6 +970,7 @@ void plot_miss2D()
   MMnmiss_IMnpipi_woK0_wSid_Sp[0]->Draw("colz");
   cMMnmiss_IMnpipi_woK0_wSid_Sp->cd(2);
   MMnmiss_IMnpipi_woK0_wSid_Sp_mc->SetTitle("#splitline{MMnmiss_IMnpipi_woK0_wSid_Sp}{  MC sum}");
+  MMnmiss_IMnpipi_woK0_wSid_Sp_mc->SetMaximum(MMnmiss_IMnpipi_woK0_wSid_Sp[0]->GetMaximum());
   MMnmiss_IMnpipi_woK0_wSid_Sp_mc->SetMinimum(1);
   MMnmiss_IMnpipi_woK0_wSid_Sp_mc->Draw("colz");
 
@@ -1011,6 +1012,7 @@ void plot_miss2D()
   MMnmiss_IMnpipi_woK0_wSid_Sm[0]->Draw("colz");
   cMMnmiss_IMnpipi_woK0_wSid_Sm->cd(2);
   MMnmiss_IMnpipi_woK0_wSid_Sm_mc->SetTitle("#splitline{MMnmiss_IMnpipi_woK0_wSid_Sm}{  MC sum}");
+  MMnmiss_IMnpipi_woK0_wSid_Sm_mc->SetMaximum(MMnmiss_IMnpipi_woK0_wSid_Sm[0]->GetMaximum());
   MMnmiss_IMnpipi_woK0_wSid_Sm_mc->SetMinimum(1);
   MMnmiss_IMnpipi_woK0_wSid_Sm_mc->Draw("colz");
 
@@ -1059,6 +1061,7 @@ void plot_miss2D()
   MMnmiss_IMnpip_woK0_rdata->Draw("colz");
   cMMnmiss_IMnpip_woK0->cd(2);
   MMnmiss_IMnpip_woK0_mc->SetTitle("#splitline{MMnmiss_IMnpip_woK0}{  MC sum}");
+  MMnmiss_IMnpip_woK0_mc->SetMaximum(MMnmiss_IMnpip_woK0_rdata->GetMaximum());
   MMnmiss_IMnpip_woK0_mc->SetMinimum(1);
   MMnmiss_IMnpip_woK0_mc->Draw("colz");
 
@@ -1080,6 +1083,7 @@ void plot_miss2D()
   cMMnmiss_IMnpip_woK0_woSm->cd(2);
   MMnmiss_IMnpip_woK0_woSm_mc->SetTitle("#splitline{MMnmiss_IMnpip_woK0_woSm}{  MC sum}");
   MMnmiss_IMnpip_woK0_woSm_mc->SetMinimum(1);
+  MMnmiss_IMnpip_woK0_woSm_mc->SetMaximum(MMnmiss_IMnpip_woK0_woSm_rdata->GetMaximum());
   MMnmiss_IMnpip_woK0_woSm_mc->Draw("colz");
 
   TCanvas *cIMnpip_woK0_woSm_n = new TCanvas("cIMnpip_woK0_woSm_n","cIMnpip_woK0_woSm_n");
@@ -1108,6 +1112,7 @@ void plot_miss2D()
   cMMnmiss_IMnpip_woSidn->cd(2);
   MMnmiss_IMnpip_woK0_woSidn_mc->SetTitle("#splitline{MMnmiss_IMnpip_woK0_woSidn}{  MC sum}");
   MMnmiss_IMnpip_woK0_woSidn_mc->SetMinimum(1);
+  MMnmiss_IMnpip_woK0_woSidn_mc->SetMaximum(MMnmiss_IMnpip_woK0_woSidn_rdata->GetMaximum());
   MMnmiss_IMnpip_woK0_woSidn_mc->Draw("colz");
 
   //projection to Missing mass (miss n & Sigma+/-)
@@ -1162,6 +1167,7 @@ void plot_miss2D()
   MMom_MMass_woK0_woSidn[0]->Draw("colz");
   cMMom_MMass_woK0_woSidn->cd(2);
   MMom_MMass_woK0_woSidn_mc->SetMinimum(1);
+  MMom_MMass_woK0_woSidn_mc->SetMaximum(MMom_MMass_woK0_woSidn[0]->GetMaximum());
   MMom_MMass_woK0_woSidn_mc->Draw("colz");
 
   TH1D* MMom_woK0_woSidn_mc = MMom_MMass_woK0_woSidn_mc->ProjectionY("MMom_woK0_woSidn_mc");
@@ -1256,6 +1262,7 @@ void plot_miss2D()
   cMMnmiss_IMnpim_woK0->cd(2);
   MMnmiss_IMnpim_woK0_mc->SetTitle("#splitline{MMnmiss_IMnpim_woK0}{ MC sum}");
   MMnmiss_IMnpim_woK0_mc->SetMinimum(1);
+  MMnmiss_IMnpim_woK0_mc->SetMaximum(MMnmiss_IMnpim_woK0_rdata->GetMaximum());
   MMnmiss_IMnpim_woK0_mc->Draw("colz");
 
   //w/o K0, w/o Sp mode
@@ -1278,6 +1285,7 @@ void plot_miss2D()
   cMMnmiss_IMnpim_woK0_woSp->cd(2);
   MMnmiss_IMnpim_woK0_woSp_mc->SetTitle("#splitline{MMnmiss_IMnpim_woK0_woSp}{  MC sum}");
   MMnmiss_IMnpim_woK0_woSp_mc->SetMinimum(1);
+  MMnmiss_IMnpim_woK0_woSp_mc->SetMaximum(MMnmiss_IMnpim_woK0_woSp_rdata->GetMaximum());
   MMnmiss_IMnpim_woK0_woSp_mc->Draw("colz");
 
   TCanvas *cIMnpim_woK0_woSp_n = new TCanvas("cIMnpim_woK0_woSp_n","cIMnpim_woK0_woSp_n");
@@ -1307,6 +1315,7 @@ void plot_miss2D()
   cMMnmiss_IMnpim_woK0_woSidn->cd(2);
   MMnmiss_IMnpim_woK0_woSidn_mc->SetTitle("#splitline{MMnmiss_IMnpim_woK0_woSidn}{  MC sum}");
   MMnmiss_IMnpim_woK0_woSidn_mc->SetMinimum(1);
+  MMnmiss_IMnpim_woK0_woSidn_mc->SetMaximum(MMnmiss_IMnpim_woK0_woSidn_rdata->GetMaximum());
   MMnmiss_IMnpim_woK0_woSidn_mc->Draw("colz");
 
   TCanvas *cIMnpim_woK0_woSidn = new TCanvas("IMnpim_woK0_woSidn","IMnpim_woK0_woSidn");
@@ -1367,6 +1376,7 @@ void plot_miss2D()
   cMMnmiss_IMpippim_wSid->cd(2);
   MMnmiss_IMpippim_wSid_mc->SetTitle("#splitline{MMnmiss_IMpippim_wSid}{  MC sum}");
   MMnmiss_IMpippim_wSid_mc->SetMinimum(1);
+  MMnmiss_IMpippim_wSid_mc->SetMaximum(MMnmiss_IMpippim_wSid[0]->GetMaximum());
   MMnmiss_IMpippim_wSid_mc->Draw("colz");
 
   TH1D* IMpippim_wSid_mc = (TH1D*)MMnmiss_IMpippim_wSid_mc->ProjectionX("IMpippim_wSid_mc");
@@ -1396,6 +1406,7 @@ void plot_miss2D()
   cMMnmiss_IMpippim_woK0_woSidn->cd(2);
   MMnmiss_IMpippim_woK0_woSidn_mc->SetTitle("#splitline{MMnmiss_IMpippim_woK0_woSidn}{  MC sum}");
   MMnmiss_IMpippim_woK0_woSidn_mc->SetMinimum(1);
+  MMnmiss_IMpippim_woK0_woSidn_mc->SetMaximum(MMnmiss_IMpippim_woK0_woSidn[0]->GetMaximum());
   MMnmiss_IMpippim_woK0_woSidn_mc->Draw("colz");
 
   TH1D* IMpippim_woK0_woSidn_mc = (TH1D*)MMnmiss_IMpippim_woK0_woSidn_mc->ProjectionX("IMpippim_woK0_woSidn_mc");
@@ -1436,6 +1447,7 @@ void plot_miss2D()
   cq_IMnpipi_woK0_woSidn->cd(2);
   q_IMnpipi_woK0_woSidn_mc->SetTitle("#splitline{q_IMnpipi_woK0_woSidn}{  MC sum}");
   q_IMnpipi_woK0_woSidn_mc->SetMinimum(1);
+  q_IMnpipi_woK0_woSidn_mc->SetMaximum(q_IMnpipi_woK0_woSidn[0]->GetMaximum());
   q_IMnpipi_woK0_woSidn_mc->Draw("colz");
 
   TH1D* IMnpipi_woK0_woSidn_mc = (TH1D*)q_IMnpipi_woK0_woSidn_mc->ProjectionX("IMnpipi_woK0_woSidn_mc");
@@ -1489,7 +1501,8 @@ void plot_miss2D()
   MMnmiss_Mompippim_woK0_woSidn[0]->Draw("colz");
   cMMnmiss_Mompippim_woK0_woSidn->cd(2);
   MMnmiss_Mompippim_woK0_woSidn_mc->SetTitle("#splitline{MMnmiss_Mompippim_woK0_woSidn}{  MC sum}");
-  MMnmiss_Mompippim_woK0_woSidn_mc->SetMinimum(1);;
+  MMnmiss_Mompippim_woK0_woSidn_mc->SetMinimum(1);
+  MMnmiss_Mompippim_woK0_woSidn_mc->SetMaximum(MMnmiss_Mompippim_woK0_woSidn[0]->GetMaximum());  
   MMnmiss_Mompippim_woK0_woSidn_mc->Draw("colz");
 
   TH1D* Mompippim_woK0_woSidn_mc = (TH1D*)MMnmiss_Mompippim_woK0_woSidn_mc->ProjectionX("Mompippim_woK0_woSidn_mc");
@@ -1526,6 +1539,8 @@ void plot_miss2D()
   cIMnpim_IMnpip_woK0_woSidn->cd(1);
   IMnpim_IMnpip_woK0_woSidn[0]->Draw("colz");
   cIMnpim_IMnpip_woK0_woSidn->cd(2);
+  IMnpim_IMnpip_woK0_woSidn_mc->SetMinimum(1);
+  IMnpim_IMnpip_woK0_woSidn_mc->SetMaximum(IMnpim_IMnpip_woK0_woSidn[0]->GetMaximum());
   IMnpim_IMnpip_woK0_woSidn_mc->Draw("colz");
 
   //pipmom
@@ -1565,6 +1580,8 @@ void plot_miss2D()
   cpipmom_pimmom_woK0_woSidn->cd(1);
   pipmom_pimmom_woK0_woSidn[0]->Draw("colz");
   cpipmom_pimmom_woK0_woSidn->cd(2);
+  pipmom_pimmom_woK0_woSidn_mc->SetMinimum(1);
+  pipmom_pimmom_woK0_woSidn_mc->SetMaximum(pipmom_pimmom_woK0_woSidn[0]->GetMaximum());
   pipmom_pimmom_woK0_woSidn_mc->Draw("colz");
 
 
@@ -1636,6 +1653,8 @@ void plot_miss2D()
   nmom_cosn_woK0_woSidn[0]->Draw("colz");
   cnmom_cosn_woK0_woSidn->cd(2);
   nmom_cosn_woK0_woSidn_mc->SetTitle("#splitline{nmom_cosn_woK0_woSidn}{MC}");
+  nmom_cosn_woK0_woSidn_mc->SetMinimum(1);
+  nmom_cosn_woK0_woSidn_mc->SetMaximum(nmom_cosn_woK0_woSidn[0]->GetMaximum());
   nmom_cosn_woK0_woSidn_mc->Draw("colz");
 
   TCanvas *ccosn_woK0_woSidn = new TCanvas("ccosn_woK0_woSidn","ccosn_woK0_woSidn");
@@ -1681,6 +1700,8 @@ void plot_miss2D()
   nmom_cospip_woK0_woSidn[0]->Draw("colz");
   cnmom_cospip_woK0_woSidn->cd(2);
   nmom_cospip_woK0_woSidn_mc->SetTitle("#splitline{nmom_cospip_woK0_woSidn}{MC}");
+  nmom_cospip_woK0_woSidn_mc->SetMinimum(1);
+  nmom_cospip_woK0_woSidn_mc->SetMaximum(nmom_cospip_woK0_woSidn[0]->GetMaximum());
   nmom_cospip_woK0_woSidn_mc->Draw("colz");
 
   TCanvas *ccospip_woK0_woSidn = new TCanvas("ccospip_woK0_woSidn","ccospip_woK0_woSidn");
@@ -1714,6 +1735,8 @@ void plot_miss2D()
   nmom_cospim_woK0_woSidn[0]->Draw("colz");
   cnmom_cospim_woK0_woSidn->cd(2);
   nmom_cospim_woK0_woSidn_mc->SetTitle("#splitline{nmom_cospim_woK0_woSidn}{MC}");
+  nmom_cospim_woK0_woSidn_mc->SetMinimum(1);
+  nmom_cospim_woK0_woSidn_mc->SetMaximum(nmom_cospim_woK0_woSidn[0]->GetMaximum());
   nmom_cospim_woK0_woSidn_mc->Draw("colz");
 
   TCanvas *ccospim_woK0_woSidn = new TCanvas("ccospim_woK0_woSidn","ccospim_woK0_woSidn");
@@ -1746,6 +1769,8 @@ void plot_miss2D()
   nmom_phinpip_woK0_woSidn[0]->Draw("colz");
   cnmom_phinpip_woK0_woSidn->cd(2);
   nmom_phinpip_woK0_woSidn_mc->SetTitle("#splitline{nmom_phinpip_woK0_woSidn}{MC}");
+  nmom_phinpip_woK0_woSidn_mc->SetMaximum(nmom_phinpip_woK0_woSidn[0]->GetMaximum());
+  nmom_phinpip_woK0_woSidn_mc->SetMinimum(1);
   nmom_phinpip_woK0_woSidn_mc->Draw("colz");
 
   TCanvas *cphinpip_woK0_woSidn = new TCanvas("cphinpip_woK0_woSidn","cphinpip_woK0_woSidn");
@@ -1779,6 +1804,8 @@ void plot_miss2D()
   nmom_phinpim_woK0_woSidn[0]->Draw("colz");
   cnmom_phinpim_woK0_woSidn->cd(2);
   nmom_phinpim_woK0_woSidn_mc->SetTitle("#splitline{nmom_phinpim_woK0_woSidn}{MC}");
+  nmom_phinpim_woK0_woSidn_mc->SetMinimum(1);
+  nmom_phinpim_woK0_woSidn_mc->SetMaximum(nmom_phinpim_woK0_woSidn[0]->GetMaximum());
   nmom_phinpim_woK0_woSidn_mc->Draw("colz");
 
   TCanvas *cphinpim_woK0_woSidn = new TCanvas("cphinpim_woK0_woSidn","cphinpim_woK0_woSidn");
@@ -1819,6 +1846,8 @@ void plot_miss2D()
   MMnmiss_IMnpip_wK0_woSid_won_rdata->Draw("colz");
   cMMnmiss_IMnpip_wK0_woSid_won->cd(2);
   MMnmiss_IMnpip_wK0_woSid_won_mc->SetTitle("#splitline{MMnmiss_IMnpip_wK0_woSid_won}{  MC sum}");
+  MMnmiss_IMnpip_wK0_woSid_won_mc->SetMinimum(1);
+  MMnmiss_IMnpip_wK0_woSid_won_mc->SetMaximum(MMnmiss_IMnpip_wK0_woSid_won_rdata->GetMaximum());
   MMnmiss_IMnpip_wK0_woSid_won_mc->Draw("colz");
 
   //projection to Missing mass (miss n & Sigma+/-)
@@ -1871,6 +1900,8 @@ void plot_miss2D()
   cMMom_MMass_wK0_woSid_won->cd(1);
   MMom_MMass_wK0_woSid_won[0]->Draw("colz");
   cMMom_MMass_wK0_woSid_won->cd(2);
+  MMom_MMass_wK0_woSid_won_mc->SetMinimum(1);
+  MMom_MMass_wK0_woSid_won_mc->SetMaximum(MMom_MMass_wK0_woSid_won[0]->GetMaximum());
   MMom_MMass_wK0_woSid_won_mc->Draw("colz");
 
   TH1D* MMom_wK0_woSid_won_mc = (TH1D*)MMom_MMass_wK0_woSid_won_mc->ProjectionY("MMom_wK0_woSid_won_mc");
@@ -1961,6 +1992,8 @@ void plot_miss2D()
   MMnmiss_IMnpim_wK0_woSid_won_rdata->Draw("colz");
   cMMnmiss_IMnpim_wK0_woSid_won->cd(2);
   MMnmiss_IMnpim_wK0_woSid_won_mc->SetTitle("#splitline{MMnmiss_IMnpim_wK0_woSid_won}{  MC sum}");
+  MMnmiss_IMnpim_wK0_woSid_won_mc->SetMinimum(1);
+  MMnmiss_IMnpim_wK0_woSid_won_mc->SetMaximum(MMnmiss_IMnpim_wK0_woSid_won_rdata->GetMaximum());
   MMnmiss_IMnpim_wK0_woSid_won_mc->Draw("colz");
 
   TCanvas *cIMnpim_wK0_woSid_won = new TCanvas("IMnpim_wK0_woSid_won","IMnpim_wK0_woSid_won");
@@ -2018,6 +2051,8 @@ void plot_miss2D()
   MMnmiss_IMpippim_wK0_woSid_won[0]->Draw("colz");
   cMMnmiss_IMpippim_wK0_woSid_won->cd(2);
   MMnmiss_IMpippim_wK0_woSid_won_mc->SetTitle("#splitline{MMnmiss_IMpippim_wK0_woSid_won}{  MC sum}");
+  MMnmiss_IMpippim_wK0_woSid_won_mc->SetMinimum(1);
+  MMnmiss_IMpippim_wK0_woSid_won_mc->SetMaximum(MMnmiss_IMpippim_wK0_woSid_won[0]->GetMaximum());
   MMnmiss_IMpippim_wK0_woSid_won_mc->Draw("colz");
 
   TH1D* IMpippim_wK0_woSid_won_mc = (TH1D*)MMnmiss_IMpippim_wK0_woSid_won_mc->ProjectionX("IMpippim_wK0_woSid_won_mc");
@@ -2055,6 +2090,8 @@ void plot_miss2D()
   q_IMnpipi_wK0_woSid_won[0]->Draw("colz");
   cq_IMnpipi_wK0_woSid_won->cd(2);
   q_IMnpipi_wK0_woSid_won_mc->SetTitle("#splitline{q_IMnpipi_wK0_woSid_won}{  MC sum}");
+  q_IMnpipi_wK0_woSid_won_mc->SetMinimum(1);
+  q_IMnpipi_wK0_woSid_won_mc->SetMaximum(q_IMnpipi_wK0_woSid_won[0]->GetMaximum());
   q_IMnpipi_wK0_woSid_won_mc->Draw("colz");
 
   TH1D* IMnpipi_wK0_woSid_won_mc = (TH1D*)q_IMnpipi_wK0_woSid_won_mc->ProjectionX("IMnpipi_wK0_woSid_won_mc");
@@ -2106,6 +2143,8 @@ void plot_miss2D()
   MMnmiss_Mompippim_wK0_woSid_won[0]->Draw("colz");
   cMMnmiss_Mompippim_wK0_woSid_won->cd(2);
   MMnmiss_Mompippim_wK0_woSid_won_mc->SetTitle("#splitline{MMnmiss_Mompippim_wK0_woSid_won}{  MC sum}");
+  MMnmiss_Mompippim_wK0_woSid_won_mc->SetMinimum(1);
+  MMnmiss_Mompippim_wK0_woSid_won_mc->SetMaximum(MMnmiss_Mompippim_wK0_woSid_won[0]->GetMaximum());
   MMnmiss_Mompippim_wK0_woSid_won_mc->Draw("colz");
 
   TH1D* Mompippim_wK0_woSid_won_mc = (TH1D*)MMnmiss_Mompippim_wK0_woSid_won_mc->ProjectionX("Mompippim_wK0_woSid_won_mc");
@@ -2153,7 +2192,7 @@ void plot_miss2D()
   cpipmom_wK0_woSid_won_ratio->cd();
   TH1D* pipmom_wK0_woSid_won_ratio = (TH1D*)pipmom_wK0_woSid_won[0]->Clone("pipmom_wK0_woSid_won_ratio");
   pipmom_wK0_woSid_won_ratio->Divide(pipmom_wK0_woSid_won_mc);
-  pipmom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(-1,6);
+  pipmom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(-1,4);
   pipmom_wK0_woSid_won_ratio->SetTitle("Data/MC");
   pipmom_wK0_woSid_won_ratio->Draw("HEsame");
 
@@ -2168,6 +2207,8 @@ void plot_miss2D()
   cpipmom_pimmom_wK0_woSid_won->cd(1);
   pipmom_pimmom_wK0_woSid_won[0]->Draw("colz");
   cpipmom_pimmom_wK0_woSid_won->cd(2);
+  pipmom_pimmom_wK0_woSid_won_mc->SetMinimum(1);
+  pipmom_pimmom_wK0_woSid_won_mc->SetMaximum(pipmom_pimmom_wK0_woSid_won[0]->GetMaximum());
   pipmom_pimmom_wK0_woSid_won_mc->Draw("colz");
   
   
@@ -2239,6 +2280,8 @@ void plot_miss2D()
   nmom_cosn_wK0_woSid_won[0]->Draw("colz");
   cnmom_cosn_wK0_woSid_won->cd(2);
   nmom_cosn_wK0_woSid_won_mc->SetTitle("#splitline{nmom_cosn_wK0_woSid_won}{MC}");
+  nmom_cosn_wK0_woSid_won_mc->SetMinimum(1);
+  nmom_cosn_wK0_woSid_won_mc->SetMaximum(nmom_cosn_wK0_woSid_won[0]->GetMaximum());
   nmom_cosn_wK0_woSid_won_mc->Draw("colz");
 
   TCanvas *ccosn_wK0_woSid_won = new TCanvas("ccosn_wK0_woSid_won","ccosn_wK0_woSid_won");
@@ -2279,6 +2322,8 @@ void plot_miss2D()
   nmom_cospip_wK0_woSid_won[0]->Draw("colz");
   cnmom_cospip_wK0_woSid_won->cd(2);
   nmom_cospip_wK0_woSid_won_mc->SetTitle("#splitline{nmom_cospip_wK0_woSid_won}{MC}");
+  nmom_cospip_wK0_woSid_won_mc->SetMinimum(1);
+  nmom_cospip_wK0_woSid_won_mc->SetMaximum(nmom_cospip_wK0_woSid_won[0]->GetMaximum());
   nmom_cospip_wK0_woSid_won_mc->Draw("colz");
 
   TCanvas *ccospip_wK0_woSid_won = new TCanvas("ccospip_wK0_woSid_won","ccospip_wK0_woSid_won");
@@ -2313,6 +2358,8 @@ void plot_miss2D()
   nmom_cospim_wK0_woSid_won[0]->Draw("colz");
   cnmom_cospim_wK0_woSid_won->cd(2);
   nmom_cospim_wK0_woSid_won_mc->SetTitle("#splitline{nmom_cospim_wK0_woSid_won}{MC}");
+  nmom_cospim_wK0_woSid_won_mc->SetMinimum(1);
+  nmom_cospim_wK0_woSid_won_mc->SetMaximum(nmom_cospim_wK0_woSid_won[0]->GetMaximum());
   nmom_cospim_wK0_woSid_won_mc->Draw("colz");
 
   TCanvas *ccospim_wK0_woSid_won = new TCanvas("ccospim_wK0_woSid_won","ccospim_wK0_woSid_won");
@@ -2345,6 +2392,8 @@ void plot_miss2D()
   nmom_phinpip_wK0_woSid_won[0]->Draw("colz");
   cnmom_phinpip_wK0_woSid_won->cd(2);
   nmom_phinpip_wK0_woSid_won_mc->SetTitle("#splitline{nmom_phinpip_wK0_woSid_won}{MC}");
+  nmom_phinpip_wK0_woSid_won_mc->SetMinimum(1);
+  nmom_phinpip_wK0_woSid_won_mc->SetMaximum(nmom_phinpip_wK0_woSid_won[0]->GetMaximum());
   nmom_phinpip_wK0_woSid_won_mc->Draw("colz");
 
   TCanvas *cphinpip_wK0_woSid_won = new TCanvas("cphinpip_wK0_woSid_won","cphinpip_wK0_woSid_won");
@@ -2379,6 +2428,8 @@ void plot_miss2D()
   nmom_phinpim_wK0_woSid_won[0]->Draw("colz");
   cnmom_phinpim_wK0_woSid_won->cd(2);
   nmom_phinpim_wK0_woSid_won_mc->SetTitle("#splitline{nmom_phinpim_wK0_woSid_won}{MC}");
+  nmom_phinpim_wK0_woSid_won_mc->SetMinimum(1);
+  nmom_phinpim_wK0_woSid_won_mc->SetMaximum(nmom_phinpim_wK0_woSid_won[0]->GetMaximum());
   nmom_phinpim_wK0_woSid_won_mc->Draw("colz");
 
   TCanvas *cphinpim_wK0_woSid_won = new TCanvas("cphinpim_wK0_woSid_won","cphinpim_wK0_woSid_won");
