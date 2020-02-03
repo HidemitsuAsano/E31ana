@@ -196,6 +196,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1 *fweight_MMnmiss = new TF1("fweight_MMmiss",func_MMnmiss,0,1.5,7);
   fweight_MMnmiss->SetParameters(param_MMnmiss);
   
+  TF1 *fweight_MMnmiss_wK0 = new TF1("fweight_MMmiss_wK0",func_MMnmiss_wK0,0,1.5,7);
+  fweight_MMnmiss_wK0->SetParameters(param_MMnmiss_wK0);
+  
   TF1 *fweight_MMom = new TF1("fweight_MMom",func_MMom,0,1.5,6);
   fweight_MMom->SetParameters(param_MMom);
   
@@ -2721,16 +2724,16 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
    if(IsMCweighting){
      if(SimSpmode || SimSmmode || SimK0nnmode || SimnpipiLmode || SimnS0pippimmode || SimSppi0mode || SimSmpi0mode){
        if(K0rejectFlag){//w/o K0
-         //weight = fweight_MMnmiss->Eval(nmiss_mass);
+         weight = fweight_MMnmiss->Eval(nmiss_mass);
          //weight *= fweight_MMom->Eval(LVec_nmiss.P());
-         weight *= fweight_nmom->Eval((*LVec_n).P());
-         weight *= fweight_cosn->Eval(cos_ncdsCM);
-         weight *= fweight_pipmom->Eval((*LVec_pip).P());
-         weight *= fweight_cospip->Eval(cos_pipCM);
-         weight *= fweight_pimmom->Eval((*LVec_pim).P());
-         weight *= fweight_cospim->Eval(cos_pimCM);
-         weight *= fweight_phinpip->Eval(phi_npip);
-         weight *= fweight_phinpim->Eval(phi_npim);
+         //weight *= fweight_nmom->Eval((*LVec_n).P());
+         //weight *= fweight_cosn->Eval(cos_ncdsCM);
+         //weight *= fweight_pipmom->Eval((*LVec_pip).P());
+         //weight *= fweight_cospip->Eval(cos_pipCM);
+         //weight *= fweight_pimmom->Eval((*LVec_pim).P());
+         //weight *= fweight_cospim->Eval(cos_pimCM);
+         //weight *= fweight_phinpip->Eval(phi_npip);
+         //weight *= fweight_phinpim->Eval(phi_npim);
          //weight *= fweight_Mompippim->Eval(LVec_pip_pim.P());
          //weight *= fweight_IMpippim->Eval(LVec_pip_pim.M());
          //weight *= fweight_IMnpipi->Eval(LVec_pip_pim_n.M());
@@ -2739,15 +2742,16 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
          //weight *= fweight_MMom_corr->Eval(LVec_nmiss.P());
          //weight *= fweight_MMnmiss_corr->Eval(nmiss_mass);
        }else{//wK0
+         weight = fweight_MMnmiss_wK0->Eval(nmiss_mass);
          //weight *= fweight_MMom_wK0->Eval(LVec_nmiss.P());
-         weight *= fweight_nmom_wK0->Eval((*LVec_n).P());
-         weight *= fweight_cosn_wK0->Eval(cos_ncdsCM);
-         weight *= fweight_pipmom_wK0->Eval((*LVec_pip).P());
-         weight *= fweight_cospip_wK0->Eval(cos_pipCM);
-         weight *= fweight_pimmom_wK0->Eval((*LVec_pim).P());
-         weight *= fweight_cospim_wK0->Eval(cos_pimCM);
-         weight *= fweight_phinpip_wK0->Eval(phi_npip);
-         weight *= fweight_phinpim_wK0->Eval(phi_npim);
+         //weight *= fweight_nmom_wK0->Eval((*LVec_n).P());
+         //weight *= fweight_cosn_wK0->Eval(cos_ncdsCM);
+         //weight *= fweight_pipmom_wK0->Eval((*LVec_pip).P());
+         //weight *= fweight_cospip_wK0->Eval(cos_pipCM);
+         //weight *= fweight_pimmom_wK0->Eval((*LVec_pim).P());
+         //weight *= fweight_cospim_wK0->Eval(cos_pimCM);
+         //weight *= fweight_phinpip_wK0->Eval(phi_npip);
+         //weight *= fweight_phinpim_wK0->Eval(phi_npim);
          //weight *= fweight_IMnpipi_wK0->Eval(LVec_pip_pim_n.M());
          //weight *= fweight_IMnpim_wK0->Eval(LVec_pim_n.M());
          //weight *= fweight_pipmom_wK0_corr->Eval((*LVec_pip).P());
