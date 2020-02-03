@@ -9,6 +9,7 @@
 #include "TFile.h"
 #include "TCanvas.h"
 
+/*
 Double_t func_MMnmiss(Double_t *x,Double_t *par)
 {
   if(x[0]<1.116) {
@@ -17,6 +18,33 @@ Double_t func_MMnmiss(Double_t *x,Double_t *par)
     return par[4]*exp(-0.5*pow((x[0]-par[5])/par[6],2.0));
   } else {
     return 0.;
+  }
+}*/
+
+
+Double_t func_MMnmiss(Double_t *x,Double_t *par)
+{
+  if(x[0]<1.12) {
+    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
+    +par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0);
+  } else if(1.12<=x[0] && x[0]<1.5) {
+    return par[6]+par[7]*x[0]+par[8]*pow(x[0],2.0)+par[9]*pow(x[0],3.0)
+    +par[10]*pow(x[0],4.0)+par[11]*pow(x[0],5.0);
+  } else {
+    return 1.;
+  }
+}
+
+Double_t func_MMnmiss_wK0(Double_t *x,Double_t *par)
+{
+  if(x[0]<1.05){
+    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
+    +par[4]*pow(x[0],4.0);
+  }else if(1.05<=x[0] && x[0]<1.50) {
+    return par[5]+par[6]*x[0]+par[7]*pow(x[0],2.0)+par[8]*pow(x[0],3.0)
+    +par[9]*pow(x[0],4.0);
+  }else{ 
+    return 1.;
   }
 }
 
@@ -471,7 +499,7 @@ void plot_miss2D()
                                 0.085*nrdata_Sp/nSigmap_Sp,
                                 0.010*nrdata_Sp/nSigmam_Sp,
                                 0.40*nrdata_Sp/nLambda_Sp,//
-                                0.08*nrdata_Sp/nS0miss_Sp,//
+                                0.00*nrdata_Sp/nS0miss_Sp,//
                                 0.015*nrdata_Sp/K0nn_Sp
                                };
 
@@ -1151,8 +1179,10 @@ void plot_miss2D()
   Double_t param_MMnmiss[7];
   sgf_MMnmiss->GetParameters(&param_MMnmiss[0]);
   fgaus_MMnmiss_high->GetParameters(&param_MMnmiss[4]);
-  TF1 *evalf_MMnmiss = new TF1("evalf_MMnmiss",func_MMnmiss,0,1.5,7);
-  evalf_MMnmiss->SetParameters(param_MMnmiss);
+  //TF1 *evalf_MMnmiss = new TF1("evalf_MMnmiss",func_MMnmiss,0,1.5,7);
+  TF1 *evalf_MMnmiss = new TF1("evalf_MMnmiss",func_MMnmiss,0,1.5,12);
+  //evalf_MMnmiss->SetParameters(param_MMnmiss)
+  MMnmiss_woK0_woSidn_ratio->Fit("evalf_MMnmiss");
   evalf_MMnmiss->SetLineColor(4);
   evalf_MMnmiss->Draw("same");
   evalf_MMnmiss->Print();
@@ -1874,20 +1904,22 @@ void plot_miss2D()
   MMnmiss_wK0_woSid_won_ratio->Draw("HE");
 
 
-  TF1 *sgf_MMnmiss_wK0 = new TF1("sgf_MMnmiss_wK0","[0]*exp(-0.5*pow((x-[1])/([2]+(x<[1])*[3]*(x-[1])),2))");
-  TF1 *fgaus_MMnmiss_wK0_high = new TF1("fgaus_MMnmiss_wK0_high","gaus");
-  sgf_MMnmiss_wK0->SetParameter(0,1.82171e+00);
-  sgf_MMnmiss_wK0->SetParameter(1,8.56016e-01);
-  sgf_MMnmiss_wK0->SetParameter(2,6.81677e-01);
-  sgf_MMnmiss_wK0->SetLineColor(2);
+  //TF1 *sgf_MMnmiss_wK0 = new TF1("sgf_MMnmiss_wK0","[0]*exp(-0.5*pow((x-[1])/([2]+(x<[1])*[3]*(x-[1])),2))");
+  //TF1 *fgaus_MMnmiss_wK0_high = new TF1("fgaus_MMnmiss_wK0_high","gaus");
+  //sgf_MMnmiss_wK0->SetParameter(0,1.82171e+00);
+  //sgf_MMnmiss_wK0->SetParameter(1,8.56016e-01);
+  //sgf_MMnmiss_wK0->SetParameter(2,6.81677e-01);
+  //sgf_MMnmiss_wK0->SetLineColor(2);
 
-  MMnmiss_wK0_woSid_won_ratio->Fit("sgf_MMnmiss_wK0","R","",0.,1.116);
-  MMnmiss_wK0_woSid_won_ratio->Fit("fgaus_MMnmiss_wK0_high","R+","",1.116,1.5);
-  Double_t param_MMnmiss_wK0[7];
-  sgf_MMnmiss_wK0->GetParameters(&param_MMnmiss_wK0[0]);
-  fgaus_MMnmiss_wK0_high->GetParameters(&param_MMnmiss_wK0[4]);
-  TF1 *evalf_MMnmiss_wK0 = new TF1("evalf_MMnmiss_wK0",func_MMnmiss,0,1.5,7);
-  evalf_MMnmiss_wK0->SetParameters(param_MMnmiss_wK0);
+  //MMnmiss_wK0_woSid_won_ratio->Fit("sgf_MMnmiss_wK0","R","",0.,1.116);
+  //MMnmiss_wK0_woSid_won_ratio->Fit("fgaus_MMnmiss_wK0_high","R+","",1.116,1.5);
+  //Double_t param_MMnmiss_wK0[7];
+  //sgf_MMnmiss_wK0->GetParameters(&param_MMnmiss_wK0[0]);
+  //fgaus_MMnmiss_wK0_high->GetParameters(&param_MMnmiss_wK0[4]);
+  //TF1 *evalf_MMnmiss_wK0 = new TF1("evalf_MMnmiss_wK0",func_MMnmiss,0,1.5,7);
+  TF1 *evalf_MMnmiss_wK0 = new TF1("evalf_MMnmiss_wK0",func_MMnmiss_wK0,0,1.5,10);
+  MMnmiss_wK0_woSid_won_ratio->Fit("evalf_MMnmiss_wK0");
+  //evalf_MMnmiss_wK0->SetParameters(param_MMnmiss_wK0);
   evalf_MMnmiss_wK0->SetLineColor(4);
   evalf_MMnmiss_wK0->Draw("same");
   evalf_MMnmiss_wK0->Print();
@@ -2558,7 +2590,8 @@ void plot_miss2D()
     obj->Write();
   }
 
- // evalf_MMnmiss->Write();
+  evalf_MMnmiss->Write();
+  evalf_MMnmiss_wK0->Write();
  // evalf_MMom->Write();
   evalf_nmom->Write();
   evalf_nmom_wK0->Write();
