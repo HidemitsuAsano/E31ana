@@ -193,11 +193,23 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   }
   
   //weight function of BG evaluation for MC
-  TF1 *fweight_MMnmiss = new TF1("fweight_MMmiss",func_MMnmiss,0,1.5,7);
+  TF1 *fweight_MMnmiss = new TF1("fweight_MMnmiss",func_MMnmiss,0,1.5,12);
   fweight_MMnmiss->SetParameters(param_MMnmiss);
   
-  TF1 *fweight_MMnmiss_wK0 = new TF1("fweight_MMmiss_wK0",func_MMnmiss_wK0,0,1.5,7);
+  TF1 *fweight_MMnmiss_corr = new TF1("fweight_MMnmiss_corr",func_MMnmiss_corr,0,1.5,7);
+  fweight_MMnmiss_corr->SetParameters(param_MMnmiss_corr);
+  
+  TF1 *fweight_MMnmiss_corr2 = new TF1("fweight_MMnmiss_corr2",func_MMnmiss_corr2,0,1.5,7);
+  fweight_MMnmiss_corr2->SetParameters(param_MMnmiss_corr2);
+  
+  TF1 *fweight_MMnmiss_wK0 = new TF1("fweight_MMnmiss_wK0",func_MMnmiss_wK0,0,1.5,10);
   fweight_MMnmiss_wK0->SetParameters(param_MMnmiss_wK0);
+  
+  TF1 *fweight_MMnmiss_wK0_corr = new TF1("fweight_MMnmiss_wK0_corr",func_MMnmiss_wK0,0,1.5,10);
+  fweight_MMnmiss_wK0_corr->SetParameters(param_MMnmiss_wK0_corr);
+  
+  TF1 *fweight_MMnmiss_wK0_corr2 = new TF1("fweight_MMnmiss_wK0_corr2",func_MMnmiss_wK0,0,1.5,10);
+  fweight_MMnmiss_wK0_corr2->SetParameters(param_MMnmiss_wK0_corr2);
   
   TF1 *fweight_MMom = new TF1("fweight_MMom",func_MMom,0,1.5,6);
   fweight_MMom->SetParameters(param_MMom);
@@ -215,9 +227,16 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   fweight_nmom->SetParameters(param_nmom);
   fweight_nmom->Print("v");
   
+  TF1 *fweight_nmom_corr = new TF1("fweight_nmom_corr",func_nmom,0,1.0,9);
+  fweight_nmom_corr->SetParameters(param_nmom_corr);
+  fweight_nmom_corr->Print("v");
+  
 
   TF1 *fweight_nmom_wK0 = new TF1("fweight_nmom_wK0",func_nmom,0,1.0,9);
   fweight_nmom_wK0->SetParameters(param_nmom_wK0);
+  
+  TF1 *fweight_nmom_wK0_corr = new TF1("fweight_nmom_wK0_corr",func_nmom,0,1.0,9);
+  fweight_nmom_wK0_corr->SetParameters(param_nmom_wK0_corr);
   
   //TF1 *fweight_cosn = new TF1("fweight_cosn",func_cosn,-1,1.0,9);
   TF1 *fweight_cosn = new TF1("fweight_cosn",func_cosn,-1,1.0,6);
@@ -258,8 +277,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1 *fweight_IMnpipi_wK0 = new TF1("fweight_IMnpipi_wK0",func_IMnpipi_wK0,1.0,2,5);
   fweight_IMnpipi_wK0->SetParameters(param_IMnpipi_wK0);
   
-  TF1 *fweight_MMnmiss_corr = new TF1("fweight_MMmiss_corr",func_MMnmiss,0,1.5,7);
-  fweight_MMnmiss_corr->SetParameters(param_MMnmiss_corr);
+  //TF1 *fweight_MMnmiss_corr = new TF1("fweight_MMmiss_corr",func_MMnmiss,0,1.5,7);
+  //fweight_MMnmiss_corr->SetParameters(param_MMnmiss_corr);
   
 
   TF1 *fweight_IMnpip  = new TF1("fweight_IMnpip",func_IMnpip,1.06,2.0,8);
@@ -2725,33 +2744,38 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
      if(SimSpmode || SimSmmode || SimK0nnmode || SimnpipiLmode || SimnS0pippimmode || SimSppi0mode || SimSmpi0mode){
        if(K0rejectFlag){//w/o K0
          weight = fweight_MMnmiss->Eval(nmiss_mass);
+         weight *= fweight_MMnmiss_corr->Eval(nmiss_mass);
+         weight *= fweight_MMnmiss_corr2->Eval(nmiss_mass);
          //weight *= fweight_MMom->Eval(LVec_nmiss.P());
-         //weight *= fweight_nmom->Eval((*LVec_n).P());
-         //weight *= fweight_cosn->Eval(cos_ncdsCM);
-         //weight *= fweight_pipmom->Eval((*LVec_pip).P());
-         //weight *= fweight_cospip->Eval(cos_pipCM);
-         //weight *= fweight_pimmom->Eval((*LVec_pim).P());
-         //weight *= fweight_cospim->Eval(cos_pimCM);
-         //weight *= fweight_phinpip->Eval(phi_npip);
-         //weight *= fweight_phinpim->Eval(phi_npim);
+         weight *= fweight_nmom->Eval((*LVec_n).P());
+         weight *= fweight_nmom_corr->Eval((*LVec_n).P());
+         weight *= fweight_cosn->Eval(cos_ncdsCM);
+         weight *= fweight_pipmom->Eval((*LVec_pip).P());
+         weight *= fweight_cospip->Eval(cos_pipCM);
+         weight *= fweight_pimmom->Eval((*LVec_pim).P());
+         weight *= fweight_cospim->Eval(cos_pimCM);
+         weight *= fweight_phinpip->Eval(phi_npip);
+         weight *= fweight_phinpim->Eval(phi_npim);
          //weight *= fweight_Mompippim->Eval(LVec_pip_pim.P());
          //weight *= fweight_IMpippim->Eval(LVec_pip_pim.M());
          //weight *= fweight_IMnpipi->Eval(LVec_pip_pim_n.M());
          //weight *= fweight_IMnpip->Eval(LVec_pip_n.M());
          //weight *= fweight_IMnpim->Eval(LVec_pim_n.M());
          //weight *= fweight_MMom_corr->Eval(LVec_nmiss.P());
-         //weight *= fweight_MMnmiss_corr->Eval(nmiss_mass);
        }else{//wK0
          weight = fweight_MMnmiss_wK0->Eval(nmiss_mass);
+         weight = fweight_MMnmiss_wK0_corr->Eval(nmiss_mass);
+         weight = fweight_MMnmiss_wK0_corr2->Eval(nmiss_mass);
          //weight *= fweight_MMom_wK0->Eval(LVec_nmiss.P());
-         //weight *= fweight_nmom_wK0->Eval((*LVec_n).P());
-         //weight *= fweight_cosn_wK0->Eval(cos_ncdsCM);
-         //weight *= fweight_pipmom_wK0->Eval((*LVec_pip).P());
-         //weight *= fweight_cospip_wK0->Eval(cos_pipCM);
-         //weight *= fweight_pimmom_wK0->Eval((*LVec_pim).P());
-         //weight *= fweight_cospim_wK0->Eval(cos_pimCM);
-         //weight *= fweight_phinpip_wK0->Eval(phi_npip);
-         //weight *= fweight_phinpim_wK0->Eval(phi_npim);
+         weight *= fweight_nmom_wK0->Eval((*LVec_n).P());
+         weight *= fweight_nmom_wK0_corr->Eval((*LVec_n).P());
+         weight *= fweight_cosn_wK0->Eval(cos_ncdsCM);
+         weight *= fweight_pipmom_wK0->Eval((*LVec_pip).P());
+         weight *= fweight_cospip_wK0->Eval(cos_pipCM);
+         weight *= fweight_pimmom_wK0->Eval((*LVec_pim).P());
+         weight *= fweight_cospim_wK0->Eval(cos_pimCM);
+         weight *= fweight_phinpip_wK0->Eval(phi_npip);
+         weight *= fweight_phinpim_wK0->Eval(phi_npim);
          //weight *= fweight_IMnpipi_wK0->Eval(LVec_pip_pim_n.M());
          //weight *= fweight_IMnpim_wK0->Eval(LVec_pim_n.M());
          //weight *= fweight_pipmom_wK0_corr->Eval((*LVec_pip).P());
@@ -5662,6 +5686,21 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     grsigma_q->SetMarkerStyle(20);
     grsigma_q->Draw("APE");
   }//if SimSmmode
+  
+  TCanvas *cfweight_MMnmiss = new TCanvas("cfweight_MMnmiss","cfweight_MMnmiss");
+  cfweight_MMnmiss->Divide(2,2);
+  cfweight_MMnmiss->cd(1);
+  fweight_MMnmiss->Draw();
+  cfweight_MMnmiss->cd(2);
+  fweight_MMnmiss_corr->Draw();
+  cfweight_MMnmiss->cd(3);
+  TF1 *fweight_MMnmiss_mul = new TF1("fweight_MMnmiss_mul;",func_MMnmiss_mul,0,1.5,26);
+  double par_MMnmiss_mul[26];
+  fweight_MMnmiss->GetParameters(&par_MMnmiss_mul[0]);
+  fweight_MMnmiss_corr->GetParameters(&par_MMnmiss_mul[12]);
+  fweight_MMnmiss_corr2->GetParameters(&par_MMnmiss_mul[19]);
+  fweight_MMnmiss_mul->SetParameters(par_MMnmiss_mul);
+  fweight_MMnmiss_mul->Draw();
 
 
   //centering title of all histograms 
