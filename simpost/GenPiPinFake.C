@@ -167,7 +167,7 @@ void GenPiPinFake(){
     TLorentzVector *LVec_n   = event.GetDecay(2);//lab
     TLorentzVector *LVec_miss = event.GetDecay(3);//lab
     bool flag_acc = checkAcceptance(LVec_pip,LVec_pim,LVec_n);
-    
+    if(!flag_acc) continue;
     //fake beam mom. calculated from missing mom.
     TLorentzVector LVec_beam = *LVec_miss - *LVec_pip - *LVec_pim - *LVec_n;
     
@@ -183,27 +183,11 @@ void GenPiPinFake(){
     npippimTree->Fill();
   }
 
+  npippimTree->Write();
+  treefile->Write();
+  treefile->Close();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  return;
 };
 
 bool checkAcceptance(TLorentzVector* pip,TLorentzVector *pim,TLorentzVector *n){
