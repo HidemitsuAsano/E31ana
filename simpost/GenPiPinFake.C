@@ -150,7 +150,7 @@ void GenPiPinFake(){
   npippimTree->Branch( "kf_flag", &kf_flag );
 
 
-  const unsigned int EventNum=1e8; 
+  const unsigned int EventNum=1e6; 
 	TGenPhaseSpace event;
   TRandom3 *rand3 = new TRandom3();
   rand3->SetSeed(1);
@@ -169,7 +169,7 @@ void GenPiPinFake(){
     bool flag_acc = checkAcceptance(LVec_pip,LVec_pim,LVec_n);
     if(!flag_acc) continue;
     //fake beam mom. calculated from missing mom.
-    TLorentzVector LVec_beam = *LVec_miss - *LVec_pip - *LVec_pim - *LVec_n;
+    TLorentzVector LVec_beam = *LVec_pip + *LVec_pim + *LVec_n - *LVec_miss - *target ;
     
 
     //fillTree
