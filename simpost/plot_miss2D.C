@@ -119,6 +119,19 @@ Double_t func_cosn(Double_t *x,Double_t *p)
 }
 
 
+Double_t func_cosn_corr(Double_t *x,Double_t *par)
+{
+  if(-1.0<=x[0] && x[0]<0.90){
+    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)+par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0);
+  }else{
+    return 1.0;
+  }
+}
+
+
+
+
+
 Double_t func_cospip(Double_t *x,Double_t *p)
 {
   if(-0.92<x[0] && x[0]<-0.75){
@@ -1269,7 +1282,7 @@ void plot_miss2D()
   cMMom_woK0_woSidn_ratio->cd();
   TH1D* MMom_woK0_woSidn_ratio = (TH1D*)MMom_woK0_woSidn[0]->Clone("MMom_woK0_woSidn_ratio");
   MMom_woK0_woSidn_ratio->Divide(MMom_woK0_woSidn_mc);
-  MMom_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,5);
+  MMom_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,3);
   MMom_woK0_woSidn_ratio->SetTitle("Data/MC");
   MMom_woK0_woSidn_ratio->Draw("HE");
 
@@ -1509,7 +1522,7 @@ void plot_miss2D()
   TH1D* IMpippim_woK0_woSidn_ratio = (TH1D*)IMpippim_woK0_woSidn[0]->Clone("IMpippim_woK0_woSidn_ratio");
   IMpippim_woK0_woSidn_ratio->Divide(IMpippim_woK0_woSidn_mc);
   IMpippim_woK0_woSidn_ratio->SetTitle("Data/MC");
-  IMpippim_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,5);
+  IMpippim_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,3);
   IMpippim_woK0_woSidn_ratio->Draw("HE");
 
   TF1 *evalf_IMpippim = new TF1("evalf_IMpippim","pol6",0,1);
@@ -1646,7 +1659,7 @@ void plot_miss2D()
   cpipmom_woK0_woSidn_ratio->cd();
   TH1D* pipmom_woK0_woSidn_ratio = (TH1D*)pipmom_woK0_woSidn[0]->Clone("pipmom_woK0_woSidn_ratio");
   pipmom_woK0_woSidn_ratio->Divide(pipmom_woK0_woSidn_mc);
-  pipmom_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(-1,3);
+  pipmom_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,3);
   pipmom_woK0_woSidn_ratio->SetTitle("Data/MC");
   pipmom_woK0_woSidn_ratio->Draw("HEsame");
 
@@ -1688,7 +1701,7 @@ void plot_miss2D()
   cpimmom_woK0_woSidn_ratio->cd();
   TH1D* pimmom_woK0_woSidn_ratio = (TH1D*)pimmom_woK0_woSidn[0]->Clone("pimmom_woK0_woSidn_ratio");
   pimmom_woK0_woSidn_ratio->Divide(pimmom_woK0_woSidn_mc);
-  pimmom_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(-1,3);
+  pimmom_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,3);
   pimmom_woK0_woSidn_ratio->SetTitle("Data/MC");
   pimmom_woK0_woSidn_ratio->Draw("HEsame");
 
@@ -1718,7 +1731,7 @@ void plot_miss2D()
   TH1D* nmom_woK0_woSidn_ratio = (TH1D*)nmom_woK0_woSidn[0]->Clone("nmom_woK0_woSidn_ratio");
   nmom_woK0_woSidn_ratio->Divide(nmom_woK0_woSidn_mc);
   nmom_woK0_woSidn_ratio->SetTitle("Data/MC");
-  nmom_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(-1,3);
+  nmom_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,3);
   nmom_woK0_woSidn_ratio->Draw("HEsame");
 
   TF1 *evalf_nmom = new TF1("evalf_nmom","pol8",0.14,1);
@@ -1754,7 +1767,7 @@ void plot_miss2D()
   TH1D* cosn_woK0_woSidn_ratio = (TH1D*)cosn_woK0_woSidn[0]->Clone("cosn_woK0_woSidn_ratio");
   cosn_woK0_woSidn_ratio->Divide(cosn_woK0_woSidn_mc);
   cosn_woK0_woSidn_ratio->SetTitle("Data/MC");
-  cosn_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,4);
+  cosn_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,3);
   cosn_woK0_woSidn_ratio->Draw("HE");
   
   TF1 *evalf_cosn_1 = new TF1("evalf_cosn_1","expo",-1,-0.9);
@@ -1771,6 +1784,11 @@ void plot_miss2D()
   evalf_cosn->SetLineColor(3);
   evalf_cosn->Draw("same");
   
+  TF1 *evalf_cosn_corr = new TF1("evalf_cosn_corr",func_cosn_corr,-1.00,1.0,6);
+  //evalf_cosn->SetParameters(param_cosn);
+  cosn_woK0_woSidn_ratio->Fit("evalf_cosn_corr");
+  evalf_cosn->SetLineColor(3);
+  evalf_cosn->Draw("same");
 
   //
   TH2D* nmom_cospip_woK0_woSidn_mc = (TH2D*)nmom_cospip_woK0_woSidn[1]->Clone("nmom_cospip_woK0_woSidn_mc");
@@ -1800,7 +1818,7 @@ void plot_miss2D()
   TH1D* cospip_woK0_woSidn_ratio = (TH1D*)cospip_woK0_woSidn[0]->Clone("cospip_woK0_woSidn_ratio");
   cospip_woK0_woSidn_ratio->Divide(cospip_woK0_woSidn_mc);
   cospip_woK0_woSidn_ratio->SetTitle("Data/MC");
-  cospip_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,4);
+  cospip_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,3);
   cospip_woK0_woSidn_ratio->Draw("HE");
   
   TF1 *evalf_cospip = new TF1("evalf_cospip",func_cospip,-1.0,0.6,6); 
@@ -1835,7 +1853,7 @@ void plot_miss2D()
   TH1D* cospim_woK0_woSidn_ratio = (TH1D*)cospim_woK0_woSidn[0]->Clone("cospim_woK0_woSidn_ratio");
   cospim_woK0_woSidn_ratio->Divide(cospim_woK0_woSidn_mc);
   cospim_woK0_woSidn_ratio->SetTitle("Data/MC");
-  cospim_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,4);
+  cospim_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,3);
   cospim_woK0_woSidn_ratio->Draw("HE");
    
   TF1 *evalf_cospim = new TF1("evalf_cospim","pol8",-0.92,0.50);
@@ -1869,7 +1887,7 @@ void plot_miss2D()
   TH1D* phinpip_woK0_woSidn_ratio = (TH1D*)phinpip_woK0_woSidn[0]->Clone("phinpip_woK0_woSidn_ratio");
   phinpip_woK0_woSidn_ratio->Divide(phinpip_woK0_woSidn_mc);
   phinpip_woK0_woSidn_ratio->SetTitle("Data/MC");
-  phinpip_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,4);
+  phinpip_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,3);
   phinpip_woK0_woSidn_ratio->Draw("HE");
    
   TF1 *evalf_phinpip = new TF1("evalf_phinpip",func_phinpip,-1.0*TMath::Pi(),TMath::Pi(),8);
@@ -1904,7 +1922,7 @@ void plot_miss2D()
   TH1D* phinpim_woK0_woSidn_ratio = (TH1D*)phinpim_woK0_woSidn[0]->Clone("phinpim_woK0_woSidn_ratio");
   phinpim_woK0_woSidn_ratio->Divide(phinpim_woK0_woSidn_mc);
   phinpim_woK0_woSidn_ratio->SetTitle("Data/MC");
-  phinpim_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,4);
+  phinpim_woK0_woSidn_ratio->GetYaxis()->SetRangeUser(0,3);
   phinpim_woK0_woSidn_ratio->Draw("HE");
 
   TF1 *evalf_phinpim = new TF1("evalf_phinpim",func_phinpim,-1.0*TMath::Pi(),TMath::Pi(),10);
@@ -2005,7 +2023,7 @@ void plot_miss2D()
   cMMom_wK0_woSid_won_ratio->cd();
   TH1D* MMom_wK0_woSid_won_ratio = (TH1D*)MMom_wK0_woSid_won[0]->Clone("MMom_wK0_woSid_won_ratio");
   MMom_wK0_woSid_won_ratio->Divide(MMom_wK0_woSid_won_mc);
-  MMom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,5);
+  MMom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   MMom_wK0_woSid_won_ratio->SetTitle("Data/MC");
   MMom_wK0_woSid_won_ratio->Draw("HE");
 
@@ -2157,7 +2175,7 @@ void plot_miss2D()
   TH1D* IMpippim_wK0_woSid_won_ratio = (TH1D*)IMpippim_wK0_woSid_won[0]->Clone("IMpippim_wK0_woSid_won_ratio");
   IMpippim_wK0_woSid_won_ratio->Divide(IMpippim_wK0_woSid_won_mc);
   IMpippim_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  IMpippim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,5);
+  IMpippim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   IMpippim_wK0_woSid_won_ratio->Draw("HE");
 
   TF1 *evalf_IMpippim_wK0 = new TF1("evalf_IMpippim_wK0","pol6",0,1);
@@ -2276,7 +2294,7 @@ void plot_miss2D()
   cpipmom_wK0_woSid_won_ratio->cd();
   TH1D* pipmom_wK0_woSid_won_ratio = (TH1D*)pipmom_wK0_woSid_won[0]->Clone("pipmom_wK0_woSid_won_ratio");
   pipmom_wK0_woSid_won_ratio->Divide(pipmom_wK0_woSid_won_mc);
-  pipmom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(-1,4);
+  pipmom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   pipmom_wK0_woSid_won_ratio->SetTitle("Data/MC");
   pipmom_wK0_woSid_won_ratio->Draw("HEsame");
 
@@ -2317,7 +2335,7 @@ void plot_miss2D()
   cpimmom_wK0_woSid_won_ratio->cd();
   TH1D* pimmom_wK0_woSid_won_ratio = (TH1D*)pimmom_wK0_woSid_won[0]->Clone("pimmom_wK0_woSid_won_ratio");
   pimmom_wK0_woSid_won_ratio->Divide(pimmom_wK0_woSid_won_mc);
-  pimmom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(-1,6);
+  pimmom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   pimmom_wK0_woSid_won_ratio->SetTitle("Data/MC");
   pimmom_wK0_woSid_won_ratio->Draw("HEsame");
 
@@ -2346,7 +2364,7 @@ void plot_miss2D()
   TH1D* nmom_wK0_woSid_won_ratio = (TH1D*)nmom_wK0_woSid_won[0]->Clone("nmom_wK0_woSid_won_ratio");
   nmom_wK0_woSid_won_ratio->Divide(nmom_wK0_woSid_won_mc);
   nmom_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  nmom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(-1,4);
+  nmom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   nmom_wK0_woSid_won_ratio->Draw("HEsame");
 
   TF1 *evalf_nmom_wK0 = new TF1("evalf_nmom_wK0","pol8",0.14,1);
@@ -2383,7 +2401,7 @@ void plot_miss2D()
   TH1D* cosn_wK0_woSid_won_ratio = (TH1D*)cosn_wK0_woSid_won[0]->Clone("cosn_wK0_woSid_won_ratio");
   cosn_wK0_woSid_won_ratio->Divide(cosn_wK0_woSid_won_mc);
   cosn_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  cosn_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,4);
+  cosn_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   cosn_wK0_woSid_won_ratio->Draw("HE");
 
   //TF1 *evalf_cosn_wK0 = new TF1("evalf_cosn_wK0","pol8",-1,1);
@@ -2424,7 +2442,7 @@ void plot_miss2D()
   TH1D* cospip_wK0_woSid_won_ratio = (TH1D*)cospip_wK0_woSid_won[0]->Clone("cospip_wK0_woSid_won_ratio");
   cospip_wK0_woSid_won_ratio->Divide(cospip_wK0_woSid_won_mc);
   cospip_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  cospip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,4);
+  cospip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   cospip_wK0_woSid_won_ratio->Draw("HE");
   
   TF1 *evalf_cospip_wK0 = new TF1("evalf_cospip_wK0","pol5",-1.0,0.6); 
@@ -2460,7 +2478,7 @@ void plot_miss2D()
   TH1D* cospim_wK0_woSid_won_ratio = (TH1D*)cospim_wK0_woSid_won[0]->Clone("cospim_wK0_woSid_won_ratio");
   cospim_wK0_woSid_won_ratio->Divide(cospim_wK0_woSid_won_mc);
   cospim_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  cospim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,4);
+  cospim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   cospim_wK0_woSid_won_ratio->Draw("HE");
    
   TF1 *evalf_cospim_wK0 = new TF1("evalf_cospim_wK0","pol8",-0.92,0.55);
@@ -2494,7 +2512,7 @@ void plot_miss2D()
   TH1D* phinpip_wK0_woSid_won_ratio = (TH1D*)phinpip_wK0_woSid_won[0]->Clone("phinpip_wK0_woSid_won_ratio");
   phinpip_wK0_woSid_won_ratio->Divide(phinpip_wK0_woSid_won_mc);
   phinpip_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  phinpip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,4);
+  phinpip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   phinpip_wK0_woSid_won_ratio->Draw("HE");
    
   TF1 *evalf_phinpip_wK0 = new TF1("evalf_phinpip_wK0",func_phinpip,-1.0*TMath::Pi(),TMath::Pi(),8);
@@ -2530,7 +2548,7 @@ void plot_miss2D()
   TH1D* phinpim_wK0_woSid_won_ratio = (TH1D*)phinpim_wK0_woSid_won[0]->Clone("phinpim_wK0_woSid_won_ratio");
   phinpim_wK0_woSid_won_ratio->Divide(phinpim_wK0_woSid_won_mc);
   phinpim_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  phinpim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,4);
+  phinpim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   phinpim_wK0_woSid_won_ratio->Draw("HE");
 
   TF1 *evalf_phinpim_wK0 = new TF1("evalf_phinpim_wK0",func_phinpim_wK0,-1.0*TMath::Pi(),TMath::Pi(),10);
@@ -2673,6 +2691,7 @@ void plot_miss2D()
 //  evalf_MMom_wK0->Write();
   evalf_pimmom_wK0->Write();
   evalf_cosn->Write();
+  evalf_cosn_corr->Write();
   evalf_cosn_wK0->Write();
   evalf_cospip->Write();
   evalf_cospip_wK0->Write();
