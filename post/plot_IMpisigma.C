@@ -124,7 +124,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   bool SimSmpi0mode = (std::string(filename).find("Smpippi0")!=std::string::npos);
   bool SimSp_nsmode = (std::string(filename).find("Sppim_ns")!=std::string::npos);
   bool SimSm_nsmode = (std::string(filename).find("Smpip_ns")!=std::string::npos);
-
+  bool SimFakemode  = (std::string(filename).find("fake")!=std::string::npos);
   //= = = = pipipnn final-sample tree = = = =//
   
   TFile *f = new TFile(filename);
@@ -2129,7 +2129,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //------------------------//
   for ( Int_t i=0; i<nevent; i++ ) {
     tree->GetEvent(i);
-    //if(i%50000==0) std::cout << "Event# " << i << std::endl; 
+    if(i%50000==0) std::cout << "Event# " << i << std::endl; 
     TVector3 vtx_pip = *vtx_pip_cdc ;
     TVector3 vtx_pim = *vtx_pim_cdc ;
     // calc missing n //
@@ -2741,7 +2741,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
    
    double weight = 1.0;
    if(IsMCweighting){
-     if(SimSpmode || SimSmmode || SimK0nnmode || SimnpipiLmode || SimnS0pippimmode || SimSppi0mode || SimSmpi0mode){
+     if(SimSpmode || SimSmmode || SimK0nnmode || SimnpipiLmode || SimnS0pippimmode || SimSppi0mode || SimSmpi0mode || SimFakemode){
        if(K0rejectFlag){//w/o K0
          weight = fweight_MMnmiss->Eval(nmiss_mass);
          weight *= fweight_MMnmiss_corr->Eval(nmiss_mass);
@@ -5794,6 +5794,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     }else if(SimSm_nsmode){
       pt->SetFillColor(kAzure-4);
       pt->AddText("MC #Sigma-#pi+#pi- 1NA");
+    }else if(SimFakemode){
+      pt->SetFillColor(kAzure-4);
+      pt->AddText("MC Fake");
     }
     else{
       pt->AddText("Real Data");
@@ -5812,18 +5815,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   }
   std::cout << "closing pdf " << std::endl;
  
-
-  TIter nexthist2(gDirectory->GetList());
   TString outname = std::string(filename);
   if(IsolationFlag==0) outname.Replace(std::string(filename).size()-5,5,"_out.root");
   else if(IsolationFlag==1) outname.Replace(std::string(filename).size()-5,5,"_out_iso.root");
   else if(IsolationFlag==2) outname.Replace(std::string(filename).size()-5,5,"_out_iso2.root");
   //outname.Replace(std::string(filename).size()-5,5,"_outncutK015.root");
   TFile *fout = new TFile(outname.Data(),"RECREATE");
+  TIter nexthist2(gDirectory->GetList());
   while( (obj = (TObject*)nexthist2())!=nullptr  ){
     obj->Write();
   }
-  fweight_IMnpipi_wK0->Write();
+  //fweight_IMnpipi_wK0->Write();
   fout->Print();
   fout->cd();
   fout->Close();
