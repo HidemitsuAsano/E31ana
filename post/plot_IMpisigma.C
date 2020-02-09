@@ -492,6 +492,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* MMnmiss_IMnpipi_wK0_woSid_won;
   TH2F* MMnmiss_IMnpipi_wK0_woSidn_won;
   TH2F* MMnmiss_IMnpipi_woK0_woSidn;
+  TH2F* MMnmiss_IMnpipi_woK0_woSid_won;
   TH2F* q_IMnpipi_wSid_n;
   TH2F* q_IMnpipi_woK0_wSid_n;
   TH2F* q_IMnpipi_wK0_wSid_n;
@@ -617,6 +618,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* nmom_MMnmiss_woK0_wSid_Sm;//
   TH2F* nmom_MMnmiss_woK0_woSid;
   TH2F* nmom_MMnmiss_woK0_woSidn;
+  TH2F* nmom_MMnmiss_woK0_woSid_won;
   //K0 study
   TH2F* nmom_IMnpipi_wK0_n;
   TH2F* nmom_IMnpipi_wK0_wSid_n;
@@ -1350,6 +1352,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMnmiss_IMnpipi_woK0_woSidn->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMnpipi_woK0_woSidn->SetYTitle("Miss. Mass. [GeV/c^{2}]");
 
+  MMnmiss_IMnpipi_woK0_woSid_won = new TH2F("MMnmiss_IMnpipi_woK0_woSid_won","MMnmiss_IMnpipi_woK0_woSid_won",nbinIMnpipi,1,2,nbinnmiss,0,1.5);
+  MMnmiss_IMnpipi_woK0_woSid_won->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  MMnmiss_IMnpipi_woK0_woSid_won->SetYTitle("Miss. Mass. [GeV/c^{2}]");
+  
   q_IMnpipi_wSid_n = new TH2F(Form("q_IMnpipi_wSid_n"),Form("q_IMnpipi_wSid_n"),nbinIMnpipi,1,2,nbinq,0,1.5);
   q_IMnpipi_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_wSid_n->SetYTitle("Mom. Transfer [GeV/c]");
@@ -1835,6 +1841,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   nmom_MMnmiss_woK0_woSidn = new TH2F("nmom_MMnmiss_woK0_woSidn","nmom_MMnmiss_woK0_woSidn", 100,0.4,1.9,100,0,1.0);
   nmom_MMnmiss_woK0_woSidn->SetXTitle("Miss. Mass [GeV/c^{2}]");
   nmom_MMnmiss_woK0_woSidn->SetYTitle("nmom  [GeV/c]");
+  
+  nmom_MMnmiss_woK0_woSid_won = new TH2F("nmom_MMnmiss_woK0_woSid_won","nmom_MMnmiss_woK0_woSid_won", 100,0.4,1.9,100,0,1.0);
+  nmom_MMnmiss_woK0_woSid_won->SetXTitle("Miss. Mass [GeV/c^{2}]");
+  nmom_MMnmiss_woK0_woSid_won->SetYTitle("nmom  [GeV/c]");
    
   nmom_cosnlab_K0_n = new TH2F(Form("nmom_cosnlab_K0_n"),Form("nmom_cosnlab_K0_n"), 200,-1,1,100,0,1.0);
   nmom_cosnlab_K0_n->SetXTitle("cos_n (lab.)");
@@ -3304,16 +3314,18 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
        IMnpim_IMnpip_dE_woK0_woSid->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
        q_IMnpipi_woK0_woSid->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
        if(!MissNFlag){
-         MMom_MMass_woK0_woSid_won->Fill(LVec_nmiss.M(),LVec_nmiss.P(),weight);
-         MMnmiss_IMpippim_dE_woK0_woSid_won->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
-         IMnpim_IMnpip_dE_woK0_woSid_won->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
-         pipmom_MMnmiss_dE_woK0_woSid_won->Fill(nmiss_mass,(*LVec_pip).P(),weight);
-         pimmom_MMnmiss_dE_woK0_woSid_won->Fill(nmiss_mass,(*LVec_pim).P(),weight);
-         pipmom_pimmom_dE_woK0_woSid_won->Fill((*LVec_pim).P(), (*LVec_pip).P(),weight);
-         MMnmiss_Mompippim_dE_woK0_woSid_won->Fill(LVec_pip_pim.P(),nmiss_mass,weight);
          MMnmiss_IMnpip_dE_woK0_woSid_won->Fill(LVec_pip_n.M(),nmiss_mass,weight);
          MMnmiss_IMnpim_dE_woK0_woSid_won->Fill(LVec_pim_n.M(),nmiss_mass,weight);
+         MMnmiss_IMpippim_dE_woK0_woSid_won->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
+         IMnpim_IMnpip_dE_woK0_woSid_won->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
+         MMnmiss_IMnpipi_woK0_woSid_won->Fill(LVec_pip_pim_n.M(),nmiss_mass,weight);
          q_IMnpipi_woK0_woSid_won->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+         nmom_MMnmiss_woK0_woSid_won->Fill(nmiss_mass,(*LVec_n).P(),weight);
+         MMnmiss_Mompippim_dE_woK0_woSid_won->Fill(LVec_pip_pim.P(),nmiss_mass,weight);
+         MMom_MMass_woK0_woSid_won->Fill(LVec_nmiss.M(),LVec_nmiss.P(),weight);
+         pipmom_MMnmiss_dE_woK0_woSid_won->Fill(nmiss_mass,(*LVec_pip).P(),weight);
+         pipmom_pimmom_dE_woK0_woSid_won->Fill((*LVec_pim).P(), (*LVec_pip).P(),weight);
+         pimmom_MMnmiss_dE_woK0_woSid_won->Fill(nmiss_mass,(*LVec_pim).P(),weight);
          nmom_cosn_woK0_woSid_won->Fill(cos_ncdsCM,(*LVec_n).P(),weight);
          nmom_cospip_woK0_woSid_won->Fill(cos_pipCM,(*LVec_n).P(),weight);
          nmom_cospim_woK0_woSid_won->Fill(cos_pimCM,(*LVec_n).P(),weight);
