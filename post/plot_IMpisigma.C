@@ -5915,18 +5915,19 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   }
   std::cout << "closing pdf " << std::endl;
  
+  TIter nexthist2(gDirectory->GetList());
   TString outname = std::string(filename);
   if(IsolationFlag==0) outname.Replace(std::string(filename).size()-5,5,"_out.root");
   else if(IsolationFlag==1) outname.Replace(std::string(filename).size()-5,5,"_out_iso.root");
   else if(IsolationFlag==2) outname.Replace(std::string(filename).size()-5,5,"_out_iso2.root");
   //outname.Replace(std::string(filename).size()-5,5,"_outncutK015.root");
   TFile *fout = new TFile(outname.Data(),"RECREATE");
-  TIter nexthist2(gDirectory->GetList());
-  while( (obj = (TObject*)nexthist2())!=nullptr  ){
+  fout->Print();
+  fout->cd();
+  while( (obj = (TObject*)nexthist2())!=nullptr){
     obj->Write();
   }
   //fweight_IMnpipi_wK0->Write();
-  fout->Print();
   fout->cd();
   fout->Close();
 
