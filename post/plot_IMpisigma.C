@@ -2246,7 +2246,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     LVec_beam_CM.Boost(-boost);
     double cos_nmiss = LVec_nmiss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_nmiss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
     //cos(theta) of n_cds in lab
-    double cos_ncdslab = LVec_n->Vect().Dot(LVec_beam->Vect())/(LVec_n->Vect().Mag()*LVec_beam->Vect().Mag());
+    double cos_ncdslab = (*LVec_n).CosTheta();         //LVec_n->Vect().Dot(LVec_beam->Vect())/(LVec_n->Vect().Mag()*LVec_beam->Vect().Mag());
     TLorentzVector LVec_n_CM = *LVec_n;
     LVec_n_CM.Boost(-boost);
     double cos_ncdsCM = LVec_n_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_n_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
