@@ -72,15 +72,16 @@ double kf_pvalue_Smmode; // p-value of kinematical refit
 int kf_flag; // flag of correct pair reconstruction, etc
 const double MinMomentumPi = 0.06;// GeV/c
 const double MinMomentumN = 0.14;// GeV/c
+const double MaxMomentumN = 1.0;
 const double cdhL = 79.0;//cm
 const double cdhLV = -14.3; //cm/ns
 const double cdhR = 56.0; //cm
 const double costheta_max = cdhL/2.0/sqrt(cdhLV*cdhLV/4.0+cdhR*cdhR);
 const double costheta_min = -costheta_max;
 
-bool checkAcceptance(TLorentzVector* pip,TLorentzVector *pim,TLorentzVector *n);
+bool checkAcceptance(TLorentzVector* pip,TLorentzVector *pim,TLorentzVector *n,TLorentzVector *beam);
 
-void GenPiPinFake(){
+void GenPiPinFake(int seed=1){
 
 	if (!gROOT->GetClass("TGenPhaseSpace")) gSystem->Load("libPhysics");
 
@@ -89,8 +90,9 @@ void GenPiPinFake(){
   TLorentzVector* beam = new TLorentzVector(0.0, 0.0, mombeam, sqrt(mombeam*mombeam+kpMass*kpMass));
 	TLorentzVector* W = new TLorentzVector(*target + *beam);
    
-  std::string treefile_name("fakepippimn_pippimn.root");
-  TFile *treefile = new TFile( treefile_name.c_str(), "recreate" );
+  // std::string treefile_name("fakepippimn_pippimn.root");
+  TFile *treefile = new TFile( Form("fakepippim_pippimn%d.root",seed), "recreate");
+  std::cout << treefile->GetName() << std::endl;
   treefile->cd();
   TTree *npippimTree = new TTree( "EventTree", "EventTree");
   npippimTree->Branch( "mom_beam",   &mom_beam );//
@@ -150,12 +152,26 @@ void GenPiPinFake(){
   npippimTree->Branch( "kf_flag", &kf_flag );
 
 
-  const unsigned int EventNum=1e6; 
+  const unsigned int EventNum=1e7; 
 	TGenPhaseSpace event;
-  TRandom3 *rand3 = new TRandom3();
-  rand3->SetSeed(1);
+  TRandom3 *rand3 = new TRandom3(seed);
+  //rand3->SetSeed(seed);
+  //checking histograms.
+  TH2D *h2pippimmom = new TH2D("h2pippimmom","pippimmom.",1000,0,2,1000,0,2);
+  h2pippimmom->SetXTitle("pip mom");
+  h2pippimmom->SetYTitle("pim mom");
+  TH2D *h2nmissmom = new TH2D("h2nmissmom","nmissmom.",1000,0,2,1000,0,2);
+  h2nmissmom->SetXTitle("nmom");
+  h2nmissmom->SetYTitle("miss. mom.");
+  
+  TH2D *h2IMnpimIMnpip = new TH2D("h2IMnpimIMnpip","IMnpim vs IMnpip",1000,1,2,1000,1,2);
+  TH2D *h2qIMnpipi = new TH2D("h2qIMnpipi","h2qIMnpipi",1000,1,2,1000,0,2);
+  TH2D *h2qIMnpipi_w = new TH2D("h2qIMnpipi_w","h2qIMnpipi_w",1000,1,2,1000,0,2);
+  TH1D* h1missmass = new TH1D("h1missmass","miss. mass",1500,0,1.5);
+  TH1D* h1coslabpim = new TH1D("h1coslabpim","h1coslabpim",100,-1,1);
+
   for(unsigned int ievt=0;ievt<EventNum;ievt++){
-    if(ievt%5000000==0) std::cout << ievt << std::endl;
+    if(ievt%500000==0) std::cout << ievt << std::endl;
     double MissMass = rand3->Uniform(0,1.5);//MAX 1.5GeV
     //std::cout << "MissMass " << MissMass << std::endl;
 
@@ -166,8 +182,9 @@ void GenPiPinFake(){
     TLorentzVector *LVec_pim = event.GetDecay(1);//lab
     TLorentzVector *LVec_n   = event.GetDecay(2);//lab
     TLorentzVector *LVec_miss = event.GetDecay(3);//lab
-    bool flag_acc = checkAcceptance(LVec_pip,LVec_pim,LVec_n);
+    bool flag_acc = checkAcceptance(LVec_pip,LVec_pim,LVec_n,beam);
     if(!flag_acc) continue;
+    h1coslabpim->Fill((*LVec_pim).CosTheta());
     //fake beam mom. calculated from missing mom.
     TLorentzVector LVec_beam = *LVec_pip + *LVec_pim + *LVec_n - *LVec_miss - *target ;
     
@@ -181,19 +198,36 @@ void GenPiPinFake(){
     dE = 5.0;
     NeutralBetaCDH = 0.5;
     npippimTree->Fill();
+    h2pippimmom->Fill((*LVec_pip).P(),(*LVec_pim).P());
+    h2nmissmom->Fill((*LVec_n).P(),(*LVec_miss).P());
+    h1missmass->Fill((*LVec_miss).M());
+    TLorentzVector LVec_n_pip = *LVec_pip + *LVec_n;
+    TLorentzVector LVec_n_pim = *LVec_pim + *LVec_n;
+    h2IMnpimIMnpip->Fill(LVec_n_pip.M(),LVec_n_pim.M());
+    TLorentzVector LVec_n_pip_pim = *LVec_pip + *LVec_pim + *LVec_n;
+    TLorentzVector q = *beam - *LVec_miss;
+    h2qIMnpipi->Fill(LVec_n_pip_pim.M(),q.P());
+    h2qIMnpipi_w->Fill(LVec_n_pip_pim.M(),q.P(),weight);
   }
-
+  
+  h2pippimmom->Write();
+  h2nmissmom->Write();
+  h1missmass->Write();
   npippimTree->Write();
+  h2IMnpimIMnpip->Write();
+  h2qIMnpipi->Write();
+  h2qIMnpipi_w->Write();
   treefile->Write();
   treefile->Close();
 
   return;
 };
 
-bool checkAcceptance(TLorentzVector* pip,TLorentzVector *pim,TLorentzVector *n){
+bool checkAcceptance(TLorentzVector* pip,TLorentzVector *pim,TLorentzVector *n,TLorentzVector *beam){
 	
   double momPiP = pip->P();
 	double costhetaPiP = pip->CosTheta();	
+
 	if(momPiP<=MinMomentumPi) return false;
 	if(costhetaPiP<=costheta_min || costheta_max<=costhetaPiP) return false;
 
@@ -206,6 +240,7 @@ bool checkAcceptance(TLorentzVector* pip,TLorentzVector *pim,TLorentzVector *n){
   double momN = n->P();
   double costhetaN = n->CosTheta();
   if(momN<MinMomentumN) return false;
+  if(momN>MaxMomentumN) return false;
   if(costhetaN<=costheta_min || costheta_max<=costhetaN) return false;
 
 
