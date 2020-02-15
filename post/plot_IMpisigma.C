@@ -191,7 +191,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     tree->SetBranchAddress( "kfSmmode_pvalue", &kfSmmode_pvalue );
     tree->SetBranchAddress( "kf_flag", &kf_flag );
   }
-  
+  /*
   //weight function of BG evaluation for MC
   TF1 *fweight_MMnmiss = new TF1("fweight_MMnmiss",func_MMnmiss,0,1.5,12);
   fweight_MMnmiss->SetParameters(param_MMnmiss);
@@ -325,10 +325,29 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1 *fweight_phinpim_wK0 = new TF1("fweight_phinpim_wK0",func_phinpim,-1.0*TMath::Pi(),TMath::Pi(),10);
   fweight_phinpim_wK0->SetParameters(param_phinpim_wK0);
   fweight_phinpim_wK0->Print("v");
+  */
+  
+  TFile *fweight_v1 = new TFile("../simpost/comp_fakedata_out_v1.root","READ");
+  fweight_v1->cd();
+  TH1 *fweight_pipmom_v1 = (TH1D*)fweight_v1->Get("pipmom_woK0_woSid_won_ratio");  
+  fweight_pipmom_v1->SetName("fweight_pipmom_v1");
+  fweight_pipmom_v1->Smooth();
+  TH1 *fweight_pipmom_wK0_v1 = (TH1D*)fweight_v1->Get("pipmom_wK0_woSid_won_ratio");  
+  fweight_pipmom_wK0_v1->SetName("fweight_pipmom_wK0_v1");
+  fweight_pipmom_wK0_v1->Smooth();
+  
+  //v2
+  TFile *fweight_v2 = new TFile("../simpost/comp_fakedata_out_v2.root","READ");
+  fweight_v2->cd();
+  TH1 *fweight_cospip_v2 = (TH1D*)fweight_v2->Get("cospip_woK0_woSid_won_ratio");
+  fweight_cospip_v2->SetName("fweight_cospip_v2");
+  fweight_cospip_v2->Smooth();
+  TH1 *fweight_cospip_wK0_v2 = (TH1D*)fweight_v2->Get("cospip_wK0_woSid_won_ratio");
+  fweight_cospip_wK0_v2->SetName("fweight_cospip_wK0_v2");
+  fweight_cospip_wK0_v2->Smooth();
 
-
-
-
+  
+  f->cd();
   // w/o kinematic fit 
   TH2F* CDHphi_betainv_fid;
   TH2F* CDHz_betainv_fid;
@@ -592,6 +611,15 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* nmom_phinpip_woK0_woSidn;//cosn = CDH neutron angle to beam axis.
   TH2F* nmom_phinpip_woK0_woSid_won;//cosn = CDH neutron angle to beam axis.
   TH2F* nmom_phinpip_wK0_woSid_won;//cosn = CDH neutron angle to beam axis.
+  TH2F* nmom_phipim_woK0_woSidn;//cosn = CDH neutron angle to beam axis.
+  TH2F* nmom_phipim_woK0_woSid_won;//cosn = CDH neutron angle to beam axis.
+  TH2F* nmom_phipim_wK0_woSid_won;//cosn = CDH neutron angle to beam axis.
+  TH2F* nmom_phipip_woK0_woSidn;//cosn = CDH neutron angle to beam axis.
+  TH2F* nmom_phipip_woK0_woSid_won;//cosn = CDH neutron angle to beam axis.
+  TH2F* nmom_phipip_wK0_woSid_won;//cosn = CDH neutron angle to beam axis.
+  TH2F* nmom_phin_woK0_woSidn;//cosn = CDH neutron angle to beam axis.
+  TH2F* nmom_phin_woK0_woSid_won;//cosn = CDH neutron angle to beam axis.
+  TH2F* nmom_phin_wK0_woSid_won;//cosn = CDH neutron angle to beam axis.
   TH2F* K0mom_cosK0_wK0;
   TH2F* K0mom_cosK0_wK0_n;
   TH2F* nmissmom_cosnmiss_wK0;// cosnmiss = missing neutron angle to beam axis.
@@ -2246,14 +2274,14 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     LVec_beam_CM.Boost(-boost);
     double cos_nmiss = LVec_nmiss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_nmiss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
     //cos(theta) of n_cds in lab
-    double cos_ncdslab = (*LVec_n).CosTheta();         //LVec_n->Vect().Dot(LVec_beam->Vect())/(LVec_n->Vect().Mag()*LVec_beam->Vect().Mag());
+    double cos_ncdslab = SimFakemode ?  (*LVec_n).CosTheta() : LVec_n->Vect().Dot(LVec_beam->Vect())/(LVec_n->Vect().Mag()*LVec_beam->Vect().Mag());
     TLorentzVector LVec_n_CM = *LVec_n;
     LVec_n_CM.Boost(-boost);
     double cos_ncdsCM = LVec_n_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_n_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
     
 
-    double cos_pim = (*LVec_pim).CosTheta(); //(*LVec_pim).Vect().Dot((*LVec_beam).Vect())/((*LVec_pim).Vect().Mag()*(*LVec_beam).Vect().Mag());
-    double cos_pip = (*LVec_pip).CosTheta(); //(*LVec_pim).Vect().Dot((*LVec_beam).Vect())/((*LVec_pim).Vect().Mag()*(*LVec_beam).Vect().Mag());
+    double cos_pim = SimFakemode ? (*LVec_pim).CosTheta() : (*LVec_pim).Vect().Dot((*LVec_beam).Vect())/((*LVec_pim).Vect().Mag()*(*LVec_beam).Vect().Mag());
+    double cos_pip = SimFakemode ? (*LVec_pip).CosTheta() : (*LVec_pip).Vect().Dot((*LVec_beam).Vect())/((*LVec_pip).Vect().Mag()*(*LVec_beam).Vect().Mag());
 
     TLorentzVector LVec_pim_CM = *LVec_pim;
     LVec_pim_CM.Boost(-boost);
@@ -2301,6 +2329,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     // calc pi+n //
     TLorentzVector LVec_pip_n = *LVec_pip+*LVec_n;
     double phi_npip = (*LVec_n).Phi()-(*LVec_pip).Phi();
+    double phi_pip = (*LVec_pip).Phi();
+    double phi_n = (*LVec_n).Phi();
+
     if(phi_npip<-1.0*TMath::Pi()) phi_npip += 2.0*TMath::Pi();
     else if(phi_npip>1.0*TMath::Pi()) phi_npip -= 2.0*TMath::Pi();
     
@@ -2322,6 +2353,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     // calc pi-n //
     TLorentzVector LVec_pim_n = *LVec_pim+*LVec_n;
     double phi_npim = (*LVec_n).Phi()-(*LVec_pim).Phi();
+    double phi_pim = (*LVec_pim).Phi();
+
     if(phi_npim<-1.0*TMath::Pi()) phi_npim += 2.0*TMath::Pi();
     else if(phi_npim>1.0*TMath::Pi()) phi_npim -= 2.0*TMath::Pi();
     TLorentzVector LVec_pim_n_mc;
@@ -2844,7 +2877,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
          //weight *= fweight_nmom_corr->Eval((*LVec_n).P());
          //weight *= fweight_cosn->Eval(cos_ncdsCM);
          //weight *= fweight_pipmom->Eval((*LVec_pip).P());
-         //weight *= fweight_cospip->Eval(cos_pipCM);
+         weight *= fweight_pipmom_v1->Interpolate((*LVec_pip).P());
+         weight *= fweight_cospip_v2->Interpolate(cos_pip);
          //weight *= fweight_pimmom->Eval((*LVec_pim).P());
          //weight *= fweight_cospim->Eval(cos_pimCM);
          //weight *= fweight_phinpip->Eval(phi_npip);
@@ -2864,7 +2898,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
          //weight *= fweight_nmom_wK0_corr->Eval((*LVec_n).P());
          //weight *= fweight_cosn_wK0->Eval(cos_ncdsCM);
          //weight *= fweight_pipmom_wK0->Eval((*LVec_pip).P());
-         //weight *= fweight_cospip_wK0->Eval(cos_pipCM);
+         weight *= fweight_pipmom_wK0_v1->Interpolate((*LVec_pip).P());
+         weight *= fweight_cospip_wK0_v2->Interpolate(cos_pip);
          //weight *= fweight_pimmom_wK0->Eval((*LVec_pim).P());
          //weight *= fweight_cospim_wK0->Eval(cos_pimCM);
          //weight *= fweight_phinpip_wK0->Eval(phi_npip);
@@ -4480,12 +4515,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //TMultiGraph *mg = (TMultiGraph*)fnu->Get("mg"); 
   //mg->Draw("c");
   f->cd();
-  //TCanvas *ctest = new TCanvas("ctest","ctezst");
-  //TLatex *tex = new TLatex();
-  //tex->SetTextSize(0.04);
-  //tex->SetTextAngle(60);
-  //tex->DrawLatexNDC( 0.90, 0.90, "M_{F}(q)" );
-  //tex->SetTextAngle(0);
 
   //TCanvas *cq_IMnpipi_woK0_wSid_n_side = new TCanvas("cq_IMnpipi_woK0_wSid_n_side","q_IMnpipi_woK0_wSid_n_side");
   //cq_IMnpipi_woK0_wSid_n_side->cd();
@@ -4945,53 +4974,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   cMMom_MMass_woK0_py->cd();
   MMom_MMass_woK0_wSid_py_clone->SetTitle("Missing Mom. d(K^{-},#pi^{+}#pi^{-}n)\"X\"");
   MMom_MMass_woK0_wSid_py_clone->Draw("");
-
-  //TCanvas *cdE_CDHphi = new TCanvas("cdE_CDHphi","cdE_CDHphi");
-  //cdE_CDHphi->cd();
-  //dE_CDHphi->Draw("colz");
-
-  //TCanvas *cdE_CDHz = new TCanvas("cdE_CDHz","cdE_CDHz");
-  //cdE_CDHz->cd();
-  //dE_CDHz->Draw("colz");
-  /*
-     TCanvas *cdE_IMnpim_woK0_n = new TCanvas("cdE_IMnpim_woK0_n","dE_IMnpim_woK0_n");
-     cdE_IMnpim_woK0_n->cd();
-     dE_IMnpim_woK0_n->Draw("colz");
-
-     TCanvas *cdE_IMnpip_woK0_n = new TCanvas("cdE_IMnpip_woK0_n","dE_IMnpip_woK0_n");
-     cdE_IMnpip_woK0_n->cd();
-     dE_IMnpip_woK0_n->Draw("colz");
-     */
-
-  //TCanvas *cIMnpim_IMnpip_dE_woK0_px = new TCanvas("cIMnpim_IMnpip_dE_woK0_px","IMnpim_IMnpip_dE_woK0_px");
-  //cIMnpim_IMnpip_dE_woK0_px->cd();
-  //TH1D *IMnpim_IMnpip_dE_woK0_px = IMnpim_IMnpip_dE_woK0->ProjectionX();
-  //IMnpim_IMnpip_dE_woK0_px->Draw("EH");
-
-  //TCanvas *cIMnpim_IMnpip_dE_woK0_py = new TCanvas("cIMnpim_IMnpip_dE_woK0_py","IMnpim_IMnpip_dE_woK0_py");
-  //cIMnpim_IMnpip_dE_woK0_py->cd();
-  //TH1D *IMnpim_IMnpip_dE_woK0_py = IMnpim_IMnpip_dE_woK0->ProjectionY();
-  //IMnpim_IMnpip_dE_woK0_py->Draw("HE");
-
-  /*
-     TCanvas *c_DCA = new TCanvas("c_DCA","c_DCA");
-     c_DCA->cd();
-     DCA_pip_beam->Draw("");
-     std::cout << DCA_pip_beam->Integral() << std::endl;
-     DCA_pim_beam->SetLineColor(2);
-     DCA_pim_beam->Draw("same");
-     std::cout << DCA_pim_beam->Integral() << std::endl;
-     DCA_pip_pim->SetLineColor(3);
-     DCA_pip_pim->Draw("same");
-     std::cout << DCA_pip_pim->Integral() << std::endl;
-
-
-     TCanvas *c_DCA_Sp = new TCanvas("c_DCA_Sp","c_DCA_Sp");
-     c_DCA_Sp->cd();
-
-     TCanvas *c_DCA_Sm = new TCanvas("c_DCA_Sm","c_DCA_Sm");
-     c_DCA_Sm->cd();
-     */
 
   //acceptance calculation
   TFile *facc_Sp = new TFile("../simpost/acc_Sp.root","READ");
@@ -5797,10 +5779,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     grsigma_q->Draw("APE");
   }//if SimSmmode
   
+  /*
   TCanvas *cfweight_MMnmiss = new TCanvas("cfweight_MMnmiss","cfweight_MMnmiss");
   cfweight_MMnmiss->Divide(2,2);
   cfweight_MMnmiss->cd(1);
-  fweight_MMnmiss->Draw();
+  //fweight_MMnmiss->Draw();
   cfweight_MMnmiss->cd(2);
   fweight_MMnmiss_corr->Draw();
   cfweight_MMnmiss->cd(3);
@@ -5811,7 +5794,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   fweight_MMnmiss_corr2->GetParameters(&par_MMnmiss_mul[19]);
   fweight_MMnmiss_mul->SetParameters(par_MMnmiss_mul);
   fweight_MMnmiss_mul->Draw();
-
+  */
 
   //centering title of all histograms 
   f->cd();
@@ -5937,7 +5920,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   while( (obj = (TObject*)nexthist2())!=nullptr){
     obj->Write();
   }
-  //fweight_IMnpipi_wK0->Write();
   fout->cd();
   fout->Close();
 
