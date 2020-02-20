@@ -191,11 +191,13 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     tree->SetBranchAddress( "kfSmmode_pvalue", &kfSmmode_pvalue );
     tree->SetBranchAddress( "kf_flag", &kf_flag );
   }
-  /*
   //weight function of BG evaluation for MC
-  TF1 *fweight_MMnmiss = new TF1("fweight_MMnmiss",func_MMnmiss,0,1.5,12);
+  TF1 *fweight_MMnmiss = new TF1("fweight_MMnmiss",func_MMnmiss,0,1.5,18);
   fweight_MMnmiss->SetParameters(param_MMnmiss);
   
+  TF1 *fweight_MMnmiss_wK0 = new TF1("fweight_MMnmiss_wK0",func_MMnmiss_wK0,0,1.5,10);
+  fweight_MMnmiss_wK0->SetParameters(param_MMnmiss_wK0);
+  /*
   TF1 *fweight_MMnmiss_corr = new TF1("fweight_MMnmiss_corr",func_MMnmiss_corr,0,1.5,7);
   fweight_MMnmiss_corr->SetParameters(param_MMnmiss_corr);
   
@@ -384,29 +386,62 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   fweight_v11->cd();
   TH1 *fweight_cosn_v11 = (TH1D*)fweight_v11->Get("cosn_woK0_woSid_won_ratio");
   fweight_cosn_v11->SetName("fweight_cosn_v11");
-  fweight_cosn_v11->Smooth();// -> did not work due to the edge of 0.14 GeV/c
+  fweight_cosn_v11->Smooth();// 
   TH1 *fweight_cosn_wK0_v11 = (TH1D*)fweight_v11->Get("cosn_wK0_woSid_won_ratio");
   fweight_cosn_wK0_v11->SetName("fweight_cosn_wK0_v11");
-  fweight_cosn_wK0_v11->Smooth(); //-> did not work due to the edge of 0.14 GeV/c   
+  fweight_cosn_wK0_v11->Smooth(); // 
   
-  //v13
+  //v12
   TFile *fweight_v12 = new TFile("../simpost/comp_fakedata_out_v12.root","READ");
   fweight_v12->cd();
   TH1 *fweight_phinpip_v12 = (TH1D*)fweight_v12->Get("phinpip_woK0_woSid_won_ratio");
   fweight_phinpip_v12->SetName("fweight_phinpip_v12");
-  fweight_phinpip_v12->Smooth();// -> did not work due to the edge of 0.14 GeV/c
+  fweight_phinpip_v12->Smooth();// 
   TH1 *fweight_phinpip_wK0_v12 = (TH1D*)fweight_v12->Get("phinpip_wK0_woSid_won_ratio");
   fweight_phinpip_wK0_v12->SetName("fweight_phinpip_wK0_v12");
-  fweight_phinpip_wK0_v12->Smooth(); //-> did not work due to the edge of 0.14 GeV/c   
-
+  fweight_phinpip_wK0_v12->Smooth(); //
+  
+  //v13
   TFile *fweight_v13 = new TFile("../simpost/comp_fakedata_out_v13.root","READ");
   fweight_v13->cd();
   TH1 *fweight_phinpim_v13 = (TH1D*)fweight_v13->Get("phinpim_woK0_woSid_won_ratio");
   fweight_phinpim_v13->SetName("fweight_phinpim_v13");
-  fweight_phinpim_v13->Smooth();// -> did not work due to the edge of 0.14 GeV/c
+  fweight_phinpim_v13->Smooth();// 
   TH1 *fweight_phinpim_wK0_v13 = (TH1D*)fweight_v13->Get("phinpim_wK0_woSid_won_ratio");
   fweight_phinpim_wK0_v13->SetName("fweight_phinpim_wK0_v13");
-  fweight_phinpim_wK0_v13->Smooth(); //-> did not work due to the edge of 0.14 GeV/c   
+  fweight_phinpim_wK0_v13->Smooth(); //
+  
+  TFile *fweight_v15 = new TFile("../simpost/comp_fakedata_out_v15.root","READ");
+  fweight_v15->cd();
+  TH1 *fweight_pipmom_v15 = (TH1D*)fweight_v15->Get("pipmom_woK0_woSid_won_ratio");
+  fweight_pipmom_v15->SetName("fweight_pipmom_v15");
+  fweight_pipmom_v15->Smooth();// 
+  TH1 *fweight_pimmom_v15 = (TH1D*)fweight_v15->Get("pimmom_woK0_woSid_won_ratio");
+  fweight_pimmom_v15->SetName("fweight_pimmom_v15");
+  fweight_pimmom_v15->Smooth();// 
+  TH1 *fweight_pipmom_wK0_v15 = (TH1D*)fweight_v15->Get("pipmom_wK0_woSid_won_ratio");
+  fweight_pipmom_wK0_v15->SetName("fweight_pipmom_wK0_v15");
+  fweight_pipmom_wK0_v15->Smooth(); //
+  TH1 *fweight_pimmom_wK0_v15 = (TH1D*)fweight_v15->Get("pimmom_wK0_woSid_won_ratio");
+  fweight_pimmom_wK0_v15->SetName("fweight_pimmom_wK0_v15");
+  fweight_pimmom_wK0_v15->Smooth(); //
+  
+  
+  TFile *fweight_v16 = new TFile("../simpost/comp_fakedata_out_v16.root","READ");
+  fweight_v16->cd();
+  TH1 *fweight_cospim_v16 = (TH1D*)fweight_v16->Get("cospim_woK0_woSid_won_ratio");
+  fweight_cospim_v16->SetName("fweight_cospim_v16");
+  fweight_cospim_v16->Smooth();// 
+  TH1 *fweight_pipmom_wK0_v16 = (TH1D*)fweight_v16->Get("pipmom_wK0_woSid_won_ratio");
+  fweight_pipmom_wK0_v16->SetName("fweight_pipmom_wK0_v16");
+  fweight_pipmom_wK0_v16->Smooth(); // 
+  TH1 *fweight_pimmom_wK0_v16 = (TH1D*)fweight_v16->Get("pimmom_wK0_woSid_won_ratio");
+  fweight_pimmom_wK0_v16->SetName("fweight_pimmom_wK0_v16");
+  fweight_pimmom_wK0_v16->Smooth(); // 
+  
+
+
+
   /*
   //v3
   TFile *fweight_v3 = new TFile("../simpost/comp_fakedata_out_v3.root","READ");
@@ -3007,7 +3042,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
    if(IsMCweighting){
      if(SimSpmode || SimSmmode || SimK0nnmode || SimnpipiLmode || SimnS0pippimmode || SimSppi0mode || SimSmpi0mode || SimFakemode){
        if(K0rejectFlag){//w/o K0
-         //weight = fweight_MMnmiss->Eval(nmiss_mass);
+         weight = fweight_MMnmiss->Eval(nmiss_mass);
          //weight *= fweight_MMnmiss_corr->Eval(nmiss_mass);
          //weight *= fweight_MMnmiss_corr2->Eval(nmiss_mass);
          //weight *= fweight_MMom->Eval(LVec_nmiss.P());
@@ -3023,6 +3058,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
          weight *= fweight_cosn_v11->Interpolate(cos_ncdslab);
          weight *= fweight_phinpip_v12->Interpolate(phi_npip);
          weight *= fweight_phinpim_v13->Interpolate(phi_npim);
+         weight *= fweight_pipmom_v15->Interpolate((*LVec_pip).P());
+         weight *= fweight_pimmom_v15->Interpolate((*LVec_pim).P());
+         weight *= fweight_cospim_v16->Interpolate(cos_pim);
          //weight *= fweight_phinpip_v3->Interpolate(phi_npip);
          //weight *= fweight_pimmom_v5->Interpolate((*LVec_pim).P());
          //weight *= fweight_cospim_v6->Interpolate(cos_pim);
@@ -3038,7 +3076,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
          //weight *= fweight_IMnpim->Eval(LVec_pim_n.M());
          //weight *= fweight_MMom_corr->Eval(LVec_nmiss.P());
        }else{//wK0
-         //weight = fweight_MMnmiss_wK0->Eval(nmiss_mass);
+         weight = fweight_MMnmiss_wK0->Eval(nmiss_mass);
          //weight = fweight_MMnmiss_wK0_corr->Eval(nmiss_mass);
          //weight = fweight_MMnmiss_wK0_corr2->Eval(nmiss_mass);
          //weight *= fweight_MMom_wK0->Eval(LVec_nmiss.P());
@@ -3054,6 +3092,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
          weight *= fweight_cosn_wK0_v11->Interpolate(cos_ncdslab);
          weight *= fweight_phinpip_wK0_v12->Interpolate(phi_npip);
          weight *= fweight_phinpim_wK0_v13->Interpolate(phi_npim);
+         weight *= fweight_pipmom_wK0_v15->Interpolate((*LVec_pip).P());
+         weight *= fweight_pimmom_wK0_v15->Interpolate((*LVec_pim).P());
+         weight *= fweight_pipmom_wK0_v16->Interpolate((*LVec_pip).P());
+         weight *= fweight_pimmom_wK0_v16->Interpolate((*LVec_pim).P());
          //weight *= fweight_phinpip_wK0_v3->Interpolate(phi_npip);
          //weight *= fweight_pimmom_wK0_v5->Interpolate((*LVec_pim).P());
          //weight *= fweight_cospim_wK0_v6->Interpolate(cos_pim);
