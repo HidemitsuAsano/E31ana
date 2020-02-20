@@ -21,7 +21,7 @@ Double_t func_MMnmiss(Double_t *x,Double_t *par)
   }
 }*/
 
-
+/*
 Double_t func_MMnmiss(Double_t *x,Double_t *par)
 {
   if( x[0]<1.12) {
@@ -33,7 +33,25 @@ Double_t func_MMnmiss(Double_t *x,Double_t *par)
   } else {
     return 1.;
   }
+}*/
+
+Double_t func_MMnmiss(Double_t *x,Double_t *par)
+{
+   if(0.0<x[0] && x[0]<1.06){
+     return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
+       +par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0)+par[6]*pow(x[0],6.0)
+       +par[7]*pow(x[0],7.0)+par[8]*pow(x[0],8.0)+par[9]*pow(x[0],9.0);
+   }else if(1.06<=x[0] && x[0]<1.115 ){
+     return par[10]+par[11]*x[0]+par[12]*pow(x[0],2.0);
+   }else if(1.115<x[0] && x[0]<1.5){
+     return par[13]+par[14]*x[0]+par[15]*pow(x[0],2.0)+par[16]*pow(x[0],3.0)+par[17]*pow(x[0],4.0);
+   }else{
+     return 0;
+   }
 }
+
+
+
 
 Double_t func_MMnmiss_corr(Double_t *x,Double_t *par)
 {
@@ -71,11 +89,11 @@ Double_t func_MMnmiss_wK0(Double_t *x,Double_t *par)
   if(x[0]<1.05){
     return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
     +par[4]*pow(x[0],4.0);
-  }else if(1.05<=x[0] && x[0]<1.50) {
+  }else if(1.05<=x[0] && x[0]<1.40) {
     return par[5]+par[6]*x[0]+par[7]*pow(x[0],2.0)+par[8]*pow(x[0],3.0)
     +par[9]*pow(x[0],4.0);
   }else{ 
-    return 1.;
+    return 0.;
   }
 }
 
@@ -988,23 +1006,40 @@ void comp_fakedata()
 
 
   TF1 *sgf_MMnmiss = new TF1("sgf_MMnmiss","[0]*exp(-0.5*pow((x-[1])/([2]+(x<[1])*[3]*(x-[1])),2))");
-  TF1 *fgaus_MMnmiss_high = new TF1("fgaus_MMnmiss_high","gaus");
-  sgf_MMnmiss->SetParameter(0,1.82171e+00);
-  sgf_MMnmiss->SetParameter(1,8.56016e-01);
-  sgf_MMnmiss->SetParameter(2,6.81677e-01);
-  sgf_MMnmiss->SetLineColor(2);
+  //TF1 *fgaus_MMnmiss_high = new TF1("fgaus_MMnmiss_high","gaus");
+  //sgf_MMnmiss->SetParameter(0,1.82171e+00);
+  //sgf_MMnmiss->SetParameter(1,8.56016e-01);
+  //sgf_MMnmiss->SetParameter(2,6.81677e-01);
+  //sgf_MMnmiss->SetLineColor(2);
 
-  MMnmiss_woK0_woSid_won_ratio->Fit("sgf_MMnmiss","R","",0.,1.116);
-  MMnmiss_woK0_woSid_won_ratio->Fit("fgaus_MMnmiss_high","R+","",1.116,1.5);
+  MMnmiss_woK0_woSid_won_ratio->Fit("sgf_MMnmiss","R","",1.06,1.5);
+  //MMnmiss_woK0_woSid_won_ratio->Fit("fgaus_MMnmiss_high","R+","",1.116,1.5);
   Double_t param_MMnmiss[7];
   sgf_MMnmiss->GetParameters(&param_MMnmiss[0]);
-  fgaus_MMnmiss_high->GetParameters(&param_MMnmiss[4]);
+  //fgaus_MMnmiss_high->GetParameters(&param_MMnmiss[4]);
   
+
+
   //first fit
-  TF1 *evalf_MMnmiss = new TF1("evalf_MMnmiss",func_MMnmiss,0,1.5,12);
+  TF1 *evalf_MMnmiss = new TF1("evalf_MMnmiss",func_MMnmiss,0,1.5,18);
+  /*
+  evalf_MMnmiss->SetParameter(0,0.002689);
+  evalf_MMnmiss->SetParameter(1,1.115);
+  evalf_MMnmiss->SetParameter(2,2.171);
+  evalf_MMnmiss->SetParameter(3,-5.516);
+  evalf_MMnmiss->SetParameter(4,0.002196);
+  evalf_MMnmiss->SetParameter(5,5.456);
+  evalf_MMnmiss->SetParameter(6,3.889);
+  evalf_MMnmiss->SetParameter(7,-2.033);
+  evalf_MMnmiss->SetParameter(8,-5.099);
+  evalf_MMnmiss->SetParameter(9,1.647);
+  evalf_MMnmiss->SetParameter(10,10);
+  evalf_MMnmiss->SetParameter(11,1.115);
+  */
+
   MMnmiss_woK0_woSid_won_ratio->Fit("evalf_MMnmiss");
   evalf_MMnmiss->SetLineColor(4);
-  //evalf_MMnmiss->Draw("same");
+  evalf_MMnmiss->Draw("same");
   //evalf_MMnmiss->Print();
   
   //second fit 
@@ -1016,7 +1051,7 @@ void comp_fakedata()
   evalf_MMnmiss_corr->SetParameter(4,-49941.3);
   evalf_MMnmiss_corr->SetParameter(5,17554.7);
   evalf_MMnmiss_corr->SetParameter(6,-2556.0);
-  MMnmiss_woK0_woSid_won_ratio->Fit("evalf_MMnmiss_corr");
+  //MMnmiss_woK0_woSid_won_ratio->Fit("evalf_MMnmiss_corr");
   
   TF1 *evalf_MMnmiss_corr2 = new TF1("evalf_MMnmiss_corr2",func_MMnmiss_corr2,0.0,1.50,7);
   evalf_MMnmiss_corr2->SetParameter(0,-856.526);
@@ -1026,7 +1061,7 @@ void comp_fakedata()
   evalf_MMnmiss_corr2->SetParameter(4,-10014.4);
   evalf_MMnmiss_corr2->SetParameter(5,3663.12);
   evalf_MMnmiss_corr2->SetParameter(6,-552.666);
-  MMnmiss_woK0_woSid_won_ratio->Fit("evalf_MMnmiss_corr2");
+  //MMnmiss_woK0_woSid_won_ratio->Fit("evalf_MMnmiss_corr2");
 
 
   TH2D *MMom_MMass_woK0_woSid_won_mc = (TH2D*)MMom_MMass_woK0_woSid_won[1]->Clone("MMom_MMass_woK0_woSid_won_mc");
@@ -2505,10 +2540,10 @@ void comp_fakedata()
     obj->Write();
   }
 
-//  evalf_MMnmiss->Write();
+  evalf_MMnmiss->Write();
 //  evalf_MMnmiss_corr->Write();
 //  evalf_MMnmiss_corr2->Write();
-//  evalf_MMnmiss_wK0->Write();
+  evalf_MMnmiss_wK0->Write();
  // evalf_MMom->Write();
 //  evalf_nmom->Write();
 //  evalf_nmom_wK0->Write();
