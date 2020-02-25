@@ -85,7 +85,7 @@ void GenPiPinFake(int seed=1){
 
 	if (!gROOT->GetClass("TGenPhaseSpace")) gSystem->Load("libPhysics");
 
-  static const double mombeam   = 1.05;
+  static const double mombeam   = 1.00;
   TLorentzVector* target = new TLorentzVector(0.0, 0.0, 0.0, dMass);
   TLorentzVector* beam = new TLorentzVector(0.0, 0.0, mombeam, sqrt(mombeam*mombeam+kpMass*kpMass));
 	TLorentzVector* W = new TLorentzVector(*target + *beam);
