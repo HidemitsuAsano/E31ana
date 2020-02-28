@@ -87,7 +87,7 @@ void GenPiPinFakeK0(int seed=1){
 
    
   // std::string treefile_name("fakepippimn_pippimn.root");
-  TFile *treefile = new TFile( Form("fakepippimK0_pippimn%d.root",seed), "recreate");
+  TFile *treefile = new TFile( Form("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippimK0_pippimn%d.root",seed), "recreate");
   std::cout << treefile->GetName() << std::endl;
   treefile->cd();
   TTree *npippimTree = new TTree( "EventTree", "EventTree");
@@ -148,8 +148,9 @@ void GenPiPinFakeK0(int seed=1){
   npippimTree->Branch( "kf_flag", &kf_flag );
 
 
-  const unsigned int EventNum=1e6; 
+  const unsigned int EventNum=5e6; 
 	TGenPhaseSpace event;
+	TGenPhaseSpace event_2decay;
   TRandom3 *rand3 = new TRandom3(seed);
   //rand3->SetSeed(seed);
   //checking histograms.
@@ -177,7 +178,8 @@ void GenPiPinFakeK0(int seed=1){
   TLorentzVector* beam = new TLorentzVector(0.0, 0.0, mombeam, sqrt(mombeam*mombeam+kpMass*kpMass));
 	TLorentzVector* W = new TLorentzVector(*target + *beam);
   
-  for(unsigned int ievt=0;ievt<EventNum;ievt++){
+  unsigned int ievt=0;
+  while(ievt<EventNum){
     if(ievt%500000==0) std::cout << ievt << std::endl;
     double MissMass = rand3->Uniform(0,1.5);//MAX 1.5GeV
     //std::cout << "MissMass " << MissMass << std::endl;
@@ -190,10 +192,10 @@ void GenPiPinFakeK0(int seed=1){
     TLorentzVector *LVec_n   = event.GetDecay(1);//lab
     TLorentzVector *LVec_miss = event.GetDecay(2);//lab
     Double_t masses_2decay[2] = {piMass,piMass};
-    event.SetDecay(*LVec_K0,2, masses_2decay);
-    Double_t weight_2body = event.Generate();
-    TLorentzVector *LVec_pip = event.GetDecay(0);//lab
-    TLorentzVector *LVec_pim = event.GetDecay(1);//lab
+    event_2decay.SetDecay(*LVec_K0,2, masses_2decay);
+    Double_t weight_2body = event_2decay.Generate();
+    TLorentzVector *LVec_pip = event_2decay.GetDecay(0);//lab
+    TLorentzVector *LVec_pim = event_2decay.GetDecay(1);//lab
     h2pippimmom_gen->Fill((*LVec_pip).P(),(*LVec_pim).P());
     bool flag_acc = checkAcceptance(LVec_pip,LVec_pim,LVec_n);
     if(!flag_acc) continue;
@@ -203,7 +205,6 @@ void GenPiPinFakeK0(int seed=1){
     h1Mompippim->Fill((*LVec_pip+*LVec_pim).P());
     //fake beam mom. calculated from missing mom.
     TLorentzVector LVec_beam = *LVec_pip + *LVec_pim + *LVec_n - *LVec_miss - *target ;
-    
 
     //fillTree
     mom_beam = LVec_beam;
@@ -224,6 +225,7 @@ void GenPiPinFakeK0(int seed=1){
     TLorentzVector q = *beam - *LVec_miss;
     h2qIMnpipi->Fill(LVec_n_pip_pim.M(),q.P());
     h2qIMnpipi_w->Fill(LVec_n_pip_pim.M(),q.P(),weight);
+    ievt++;
   }
   
   h2pippimmom->Write();
@@ -242,9 +244,6 @@ void GenPiPinFakeK0(int seed=1){
 
 bool checkAcceptance(TLorentzVector *pip,TLorentzVector *pim,TLorentzVector *n)
 {
-	std::cout << "pip " << pip->M() << std::endl;
-	std::cout << "pim " << pim->M() << std::endl;
-	std::cout << "n   " << n->M() << std::endl;
 
   double momPiP = pip->P();
 	double costhetaPiP = pip->CosTheta();	
