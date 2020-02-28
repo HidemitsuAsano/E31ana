@@ -79,15 +79,15 @@ const double cdhR = 56.0; //cm
 const double costheta_max = cdhL/2.0/sqrt(cdhLV*cdhLV/4.0+cdhR*cdhR);
 const double costheta_min = -costheta_max;
 
-bool checkAcceptance(TLorentzVector* pip,TLorentzVector *pim,TLorentzVector *n,TLorentzVector *beam);
+bool checkAcceptance(TLorentzVector* pip,TLorentzVector *pim,TLorentzVector *n);
 
-void GenPiPinFake(int seed=1){
+void GenPiPinFakeK0(int seed=1){
 
 	if (!gROOT->GetClass("TGenPhaseSpace")) gSystem->Load("libPhysics");
 
    
   // std::string treefile_name("fakepippimn_pippimn.root");
-  TFile *treefile = new TFile( Form("fakepippim_pippimn%d.root",seed), "recreate");
+  TFile *treefile = new TFile( Form("fakepippimK0_pippimn%d.root",seed), "recreate");
   std::cout << treefile->GetName() << std::endl;
   treefile->cd();
   TTree *npippimTree = new TTree( "EventTree", "EventTree");
@@ -148,11 +148,14 @@ void GenPiPinFake(int seed=1){
   npippimTree->Branch( "kf_flag", &kf_flag );
 
 
-  const unsigned int EventNum=1e7; 
+  const unsigned int EventNum=1e6; 
 	TGenPhaseSpace event;
   TRandom3 *rand3 = new TRandom3(seed);
   //rand3->SetSeed(seed);
   //checking histograms.
+  TH2D *h2pippimmom_gen = new TH2D("h2pippimmom_gen","pippimmom.",1000,0,2,1000,0,2);
+  h2pippimmom_gen->SetXTitle("pip mom");
+  h2pippimmom_gen->SetYTitle("pim mom");
   TH2D *h2pippimmom = new TH2D("h2pippimmom","pippimmom.",1000,0,2,1000,0,2);
   h2pippimmom->SetXTitle("pip mom");
   h2pippimmom->SetYTitle("pim mom");
@@ -160,10 +163,13 @@ void GenPiPinFake(int seed=1){
   h2nmissmom->SetXTitle("nmom");
   h2nmissmom->SetYTitle("miss. mom.");
   
-  TH2D *h2IMnpimIMnpip = new TH2D("h2IMnpimIMnpip","IMnpim vs IMnpip",1000,1,2,1000,1,2);
-  TH2D *h2qIMnpipi = new TH2D("h2qIMnpipi","h2qIMnpipi",1000,1,2,1000,0,2);
-  TH2D *h2qIMnpipi_w = new TH2D("h2qIMnpipi_w","h2qIMnpipi_w",1000,1,2,1000,0,2);
+  TH2D* h2IMnpimIMnpip = new TH2D("h2IMnpimIMnpip","IMnpim vs IMnpip",1000,1,2,1000,1,2);
+  TH2D* h2qIMnpipi = new TH2D("h2qIMnpipi","h2qIMnpipi",1000,1,2,1000,0,2);
+  TH2D* h2qIMnpipi_w = new TH2D("h2qIMnpipi_w","h2qIMnpipi_w",1000,1,2,1000,0,2);
   TH1D* h1missmass = new TH1D("h1missmass","miss. mass",1500,0,1.5);
+  TH1D* h1IMpippim = new TH1D("h1IMpippim","IMpippim",500,0,1);
+  TH1D* h1Mompippim = new TH1D("h1Mompippim","Mompippim",500,0,1);
+  TH1D* h1coslabpip = new TH1D("h1coslabpip","coslabpip",100,-1,1);
   TH1D* h1coslabpim = new TH1D("h1coslabpim","h1coslabpim",100,-1,1);
 
   static const double mombeam   = 1.00;
@@ -175,22 +181,26 @@ void GenPiPinFake(int seed=1){
     if(ievt%500000==0) std::cout << ievt << std::endl;
     double MissMass = rand3->Uniform(0,1.5);//MAX 1.5GeV
     //std::cout << "MissMass " << MissMass << std::endl;
-
-    Double_t masses[3] = {k0Mass, nMass, MissMass};
+    
+    double k0Massres = k0Mass+gRandom->Gaus(0,0.0074845);
+    Double_t masses[3] = {k0Massres, nMass, MissMass};
     event.SetDecay(*W,3, masses);
     Double_t weight = event.Generate();
     TLorentzVector *LVec_K0 = event.GetDecay(0);//lab
     TLorentzVector *LVec_n   = event.GetDecay(1);//lab
     TLorentzVector *LVec_miss = event.GetDecay(2);//lab
     Double_t masses_2decay[2] = {piMass,piMass};
-    event.SetDecay(LVec_K0,2, masses_2decay};
+    event.SetDecay(*LVec_K0,2, masses_2decay);
+    Double_t weight_2body = event.Generate();
     TLorentzVector *LVec_pip = event.GetDecay(0);//lab
     TLorentzVector *LVec_pim = event.GetDecay(1);//lab
-
-    
-    bool flag_acc = checkAcceptance(LVec_pip,LVec_pim,LVec_n,beam);
+    h2pippimmom_gen->Fill((*LVec_pip).P(),(*LVec_pim).P());
+    bool flag_acc = checkAcceptance(LVec_pip,LVec_pim,LVec_n);
     if(!flag_acc) continue;
+    h1coslabpip->Fill((*LVec_pip).CosTheta());
     h1coslabpim->Fill((*LVec_pim).CosTheta());
+    h1IMpippim->Fill((*LVec_pip+*LVec_pim).M());
+    h1Mompippim->Fill((*LVec_pip+*LVec_pim).P());
     //fake beam mom. calculated from missing mom.
     TLorentzVector LVec_beam = *LVec_pip + *LVec_pim + *LVec_n - *LVec_miss - *target ;
     
@@ -229,11 +239,15 @@ void GenPiPinFake(int seed=1){
   return;
 };
 
-bool checkAcceptance(TLorentzVector* pip,TLorentzVector *pim,TLorentzVector *n,TLorentzVector *beam){
-	
+
+bool checkAcceptance(TLorentzVector *pip,TLorentzVector *pim,TLorentzVector *n)
+{
+	std::cout << "pip " << pip->M() << std::endl;
+	std::cout << "pim " << pim->M() << std::endl;
+	std::cout << "n   " << n->M() << std::endl;
+
   double momPiP = pip->P();
 	double costhetaPiP = pip->CosTheta();	
-
 	if(momPiP<=MinMomentumPi) return false;
 	if(costhetaPiP<=costheta_min || costheta_max<=costhetaPiP) return false;
 
@@ -241,7 +255,6 @@ bool checkAcceptance(TLorentzVector* pip,TLorentzVector *pim,TLorentzVector *n,T
 	double costhetaPiM = pim->CosTheta();	
 	if(momPiM<=MinMomentumPi) return false;
 	if(costhetaPiM<=costheta_min || costheta_max<=costhetaPiM) return false;
-
 
   double momN = n->P();
   double costhetaN = n->CosTheta();
