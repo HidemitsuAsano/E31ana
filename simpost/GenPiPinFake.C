@@ -92,6 +92,7 @@ void GenPiPinFake(int seed=1){
    
   // std::string treefile_name("fakepippimn_pippimn.root");
   TFile *treefile = new TFile( Form("fakepippim_pippimn%d.root",seed), "recreate");
+  //TFile *treefile = new TFile( Form("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippim_pippimn%d.root",seed), "recreate");
   std::cout << treefile->GetName() << std::endl;
   treefile->cd();
   TTree *npippimTree = new TTree( "EventTree", "EventTree");
@@ -152,7 +153,7 @@ void GenPiPinFake(int seed=1){
   npippimTree->Branch( "kf_flag", &kf_flag );
 
 
-  const unsigned int EventNum=1e7; 
+  const unsigned int EventNum=5e6; 
 	TGenPhaseSpace event;
   TRandom3 *rand3 = new TRandom3(seed);
   //rand3->SetSeed(seed);
@@ -170,7 +171,9 @@ void GenPiPinFake(int seed=1){
   TH1D* h1missmass = new TH1D("h1missmass","miss. mass",1500,0,1.5);
   TH1D* h1coslabpim = new TH1D("h1coslabpim","h1coslabpim",100,-1,1);
 
-  for(unsigned int ievt=0;ievt<EventNum;ievt++){
+//  for(unsigned int ievt=0;ievt<EventNum;ievt++){
+  unsigned int ievt=0;
+  while(ievt<EventNum){
     if(ievt%500000==0) std::cout << ievt << std::endl;
     double MissMass = rand3->Uniform(0,1.5);//MAX 1.5GeV
     //std::cout << "MissMass " << MissMass << std::endl;
@@ -208,6 +211,7 @@ void GenPiPinFake(int seed=1){
     TLorentzVector q = *beam - *LVec_miss;
     h2qIMnpipi->Fill(LVec_n_pip_pim.M(),q.P());
     h2qIMnpipi_w->Fill(LVec_n_pip_pim.M(),q.P(),weight);
+    ievt++;
   }
   
   h2pippimmom->Write();
