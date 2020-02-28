@@ -91,8 +91,8 @@ void GenPiPinFake(int seed=1){
 	TLorentzVector* W = new TLorentzVector(*target + *beam);
    
   // std::string treefile_name("fakepippimn_pippimn.root");
-  TFile *treefile = new TFile( Form("fakepippim_pippimn%d.root",seed), "recreate");
-  //TFile *treefile = new TFile( Form("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippim_pippimn%d.root",seed), "recreate");
+  //TFile *treefile = new TFile( Form("fakepippim_pippimn%d.root",seed), "recreate");
+  TFile *treefile = new TFile( Form("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippim_pippimn%d.root",seed), "recreate");
   std::cout << treefile->GetName() << std::endl;
   treefile->cd();
   TTree *npippimTree = new TTree( "EventTree", "EventTree");
