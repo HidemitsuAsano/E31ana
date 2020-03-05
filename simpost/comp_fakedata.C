@@ -386,7 +386,7 @@ void comp_fakedata()
    
   //v2 2020113
   const double scaleFactor[2]= {1.0,
-                                nrdata_Sp/fake_Sp
+                                0.3*nrdata_Sp/fake_Sp
                                };
 
 
@@ -1406,7 +1406,20 @@ void comp_fakedata()
   TH1D* q_woK0_woSid_won[2];
   for(int i=0; i<2; i++) q_woK0_woSid_won[i] = (TH1D*)q_IMnpipi_woK0_woSid_won[i]->ProjectionY(Form("q_woK0_woSid_won_%s",name[i]));
   q_woK0_woSid_won[0]->Draw("HE");
+  q_woK0_woSid_won_mc->SetLineColor(6);
   q_woK0_woSid_won_mc->Draw("HEsame");
+   
+  TCanvas *cq_woK0_woSid_won_ratio = new TCanvas("cq_woK0_woSid_won_ratio","cq_woK0_woSid_won_ratio");
+  TH1D* q_woK0_woSid_won_ratio = (TH1D*)q_woK0_woSid_won[0]->Clone("q_woK0_woSid_won_ratio");
+  q_woK0_woSid_won_ratio->Divide(q_woK0_woSid_won_mc);
+  q_woK0_woSid_won_ratio->SetTitle("Data/MC");
+  q_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  q_woK0_woSid_won_ratio->Draw("HE");
+
+  
+  TF1* evalf_q = new TF1("evalf_q","pol7",0,1.5);
+  q_woK0_woSid_won_ratio->Fit("evalf_q");
+
 
   //missing mass vs Mom(pi+pi-) w/o K0 w/o (Sid & n)
   TH2D* MMnmiss_Mompippim_woK0_woSid_won_mc = (TH2D*)MMnmiss_Mompippim_woK0_woSid_won[1]->Clone("MMnmiss_Mompippim_woK0_woSid_won_mc");
@@ -2125,7 +2138,20 @@ void comp_fakedata()
   TH1D* q_wK0_woSid_won[2];
   for(int i=0; i<2; i++) q_wK0_woSid_won[i] = (TH1D*)q_IMnpipi_wK0_woSid_won[i]->ProjectionY(Form("q_wK0_woSid_won_%s",name[i]));
   q_wK0_woSid_won[0]->Draw("HE");
+  q_wK0_woSid_won_mc->SetLineColor(6);
   q_wK0_woSid_won_mc->Draw("HEsame");
+ 
+
+  TCanvas *cq_wK0_woSid_won_ratio = new TCanvas("cq_wK0_woSid_won_ratio","cq_wK0_woSid_won_ratio");
+  TH1D* q_wK0_woSid_won_ratio = (TH1D*)q_wK0_woSid_won[0]->Clone("q_wK0_woSid_won_ratio");
+  q_wK0_woSid_won_ratio->Divide(q_wK0_woSid_won_mc);
+  q_wK0_woSid_won_ratio->SetTitle("Data/MC");
+  q_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  q_wK0_woSid_won_ratio->Draw("HE");
+  
+  TF1 *evalf_q_wK0 = new TF1("evalf_q_wK0","pol7",0,1.5);
+  q_wK0_woSid_won_ratio->Fit("evalf_q_wK0");
+
 
   //missing mass vs Mom(pi+pi-) w/o K0 w/o (Sid & n)
   TH2D* MMnmiss_Mompippim_wK0_woSid_won_mc = (TH2D*)MMnmiss_Mompippim_wK0_woSid_won[1]->Clone("MMnmiss_Mompippim_wK0_woSid_won_mc");
@@ -2710,6 +2736,8 @@ void comp_fakedata()
 //  evalf_IMnpip->Write();
     evalf_IMnpim->Write();
     evalf_IMnpim_wK0->Write();
+    evalf_q->Write();
+    evalf_q_wK0->Write();
 //  evalf_MMom_wK0->Write();
 //  evalf_pimmom_wK0->Write();
 //  evalf_cosn->Write();
