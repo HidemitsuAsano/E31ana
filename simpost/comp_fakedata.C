@@ -1525,9 +1525,9 @@ void comp_fakedata()
   Mompippim_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   Mompippim_woK0_woSid_won_ratio->Draw("HE");
 
-  TF1 *evalf_Mompippim = new TF1("evalf_Mompippim","pol3",0,1);
+  TF1 *evalf_Mompippim = new TF1("evalf_Mompippim","pol5",0,1);
   evalf_Mompippim->SetTitle("Mompippim");
-  Mompippim_woK0_woSid_won_ratio->Fit("evalf_Mompippim","","",0,0.97);
+  Mompippim_woK0_woSid_won_ratio->Fit("evalf_Mompippim","","",0,1.0);
   
 
   //
@@ -2293,7 +2293,7 @@ void comp_fakedata()
   Mompippim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   Mompippim_wK0_woSid_won_ratio->Draw("HE");
 
-  TF1 *evalf_Mompippim_wK0 = new TF1("evalf_Mompippim_wK0","pol3",0,1);
+  TF1 *evalf_Mompippim_wK0 = new TF1("evalf_Mompippim_wK0","pol5",0,1);
   Mompippim_wK0_woSid_won_ratio->Fit("evalf_Mompippim_wK0","","",0,0.97);
 
 
@@ -2844,7 +2844,9 @@ void comp_fakedata()
 //  evalf_pimmom->Write();
 //  evalf_IMpippim->Write();
     evalf_IMpippim->Write();
-//  evalf_Mompippim->Write();
+    evalf_IMpippim_wK0->Write();
+    evalf_Mompippim->Write();
+    evalf_Mompippim_wK0->Write();
 //  evalf_IMnpipi->Write();
 //  evalf_IMnpip->Write();
     evalf_IMnpim->Write();
