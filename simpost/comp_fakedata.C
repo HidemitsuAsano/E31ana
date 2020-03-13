@@ -9,31 +9,6 @@
 #include "TFile.h"
 #include "TCanvas.h"
 
-/*
-Double_t func_MMnmiss(Double_t *x,Double_t *par)
-{
-  if(x[0]<1.116) {
-    return par[0]*exp(-0.5*pow((x[0]-par[1])/(par[2]+(x[0]<par[1])*par[3]*(x[0]-par[1])),2.0));
-  } else if(1.116<=x[0] && x[0]<1.5) {
-    return par[4]*exp(-0.5*pow((x[0]-par[5])/par[6],2.0));
-  } else {
-    return 0.;
-  }
-}*/
-
-/*
-Double_t func_MMnmiss(Double_t *x,Double_t *par)
-{
-  if( x[0]<1.12) {
-    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
-    +par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0);
-  } else if(1.12<=x[0] && x[0]<1.5) {
-    return par[6]+par[7]*x[0]+par[8]*pow(x[0],2.0)+par[9]*pow(x[0],3.0)
-    +par[10]*pow(x[0],4.0)+par[11]*pow(x[0],5.0);
-  } else {
-    return 1.;
-  }
-}*/
 
 Double_t func_MMnmiss(Double_t *x,Double_t *par)
 {
@@ -98,7 +73,7 @@ Double_t func_MMnmiss_wK0(Double_t *x,Double_t *par)
 }
 
 
-
+/*
 Double_t func_IMnpip(Double_t *x,Double_t *par)
 {
   if(x[0]<1.08) {
@@ -112,18 +87,28 @@ Double_t func_IMnpip(Double_t *x,Double_t *par)
   } else {
     return 0.;
   }
+}*/
+
+Double_t func_IMnpip(Double_t *x,Double_t *par)
+{
+  if(1.06<=x[0] && x[0]<1.25){
+    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0);
+  }else if(1.25<=x[0] && x[0]<1.92) {
+    return par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0)
+    +par[8]*pow(x[0],4.0);
+  }else{ 
+    return 1.;
+  }
 }
 
 Double_t func_IMnpim(Double_t *x,Double_t *par)
 {
-  if(x[0]<1.07) {
-    return 0.;
-  } else if(1.07 <= x[0] && x[0]<1.10) {
+  if(1.07 <= x[0] && x[0]<1.10) {
     return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0);
-  } else if(1.10 <= x[0] && x[0]<2.00) {
-    return par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0);
+  } else if(1.10 <= x[0] && x[0]<1.68) {
+    return par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0)+par[8]*pow(x[0],4.0);
   } else {
-    return 0.;
+    return 1.;
   }
 }
 
@@ -1185,34 +1170,34 @@ void comp_fakedata()
   IMnpip_woK0_woSid_won_ratio->SetTitle("IMnpip_woK0_woSid_won Data/MC");
   IMnpip_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   IMnpip_woK0_woSid_won_ratio->Draw("HE");
+  
+  TF1* evalf_IMnpip_1 = new TF1("evalf_IMnpip_1","pol3",1.06,1.25);
+  evalf_IMnpip_1->SetParameters(0,-637.17);
+  evalf_IMnpip_1->SetParameters(1,1569.29);
+  evalf_IMnpip_1->SetParameters(2,-1285.33);
+  evalf_IMnpip_1->SetParameters(3,350.673);
+  IMnpip_woK0_woSid_won_ratio->Fit("evalf_IMnpip_1","R","",1.06,1.25);
 
-  TF1* fgaus_IMnpip_1 = new TF1("fgaus_IMnpip_1","gaus",1.06,1.10);
-  fgaus_IMnpip_1->SetParameters(0,1.636);
-  fgaus_IMnpip_1->SetParameters(1,1.102);
-  fgaus_IMnpip_1->SetParameters(2,0.02845);
-  IMnpip_woK0_woSid_won_ratio->Fit("fgaus_IMnpip_1","R","",1.08,1.10);
-
-  TF1* fexpo_IMnpip_2 = new TF1("fexpo_IMnpip_2","expo",1.10,1.25);
-  fexpo_IMnpip_2->SetParameters(0,1.667);
-  fexpo_IMnpip_2->SetParameters(1,-1.117);
-  IMnpip_woK0_woSid_won_ratio->Fit("fexpo_IMnpip_2","R+","",1.10,1.25);
-
-  TF1* fgaus_IMnpip_3 = new TF1("fgaus_IMnpip_3","gaus",1.25,2.0);
-  fgaus_IMnpip_3->SetParameters(0,10.83);
-  fgaus_IMnpip_3->SetParameters(1,5.094);
-  fgaus_IMnpip_3->SetParameters(2,1.87);
-  IMnpip_woK0_woSid_won_ratio->Fit("fgaus_IMnpip_3","R+","",1.25,2.0);
-
-  Double_t param_IMnpip[8];
-  fgaus_IMnpip_1->GetParameters(&param_IMnpip[0]);
-  fexpo_IMnpip_2->GetParameters(&param_IMnpip[3]);
-  fgaus_IMnpip_3->GetParameters(&param_IMnpip[5]);
-
-  TF1 *evalf_IMnpip = new TF1("evalf_IMnpip",func_IMnpip,1.06,2.0,8);
+  TF1* evalf_IMnpip_2 = new TF1("evalf_IMnpip_2","pol4",1.25,1.92);
+  evalf_IMnpip_2->SetParameters(0,-278.204);
+  evalf_IMnpip_2->SetParameters(1,740.381);
+  evalf_IMnpip_2->SetParameters(2,-731.261);
+  evalf_IMnpip_2->SetParameters(3,318.682);
+  evalf_IMnpip_2->SetParameters(4,-51.6284);
+  IMnpip_woK0_woSid_won_ratio->Fit("evalf_IMnpip_2","R+","",1.25,1.92);
+  Double_t param_IMnpip[9];
+  evalf_IMnpip_1->GetParameters(&param_IMnpip[0]);
+  evalf_IMnpip_2->GetParameters(&param_IMnpip[4]);
+  
+  TF1 *evalf_IMnpip = new TF1("evalf_IMnpip",func_IMnpip,1.06,1.92,9);
   evalf_IMnpip->SetParameters(param_IMnpip);
   evalf_IMnpip->SetLineColor(4);
+  //IMnpip_woK0_woSid_won_ratio->Fit(evalf_IMnpip,"R+");
   evalf_IMnpip->Draw("same");
   
+
+
+
   //
   TCanvas *cMomnpip_woK0_woSid_won = new TCanvas("cMomnpip_woK0_woSid_won","cMomnpip_woK0_woSid_won");
   cMomnpip_woK0_woSid_won->cd();
@@ -1315,27 +1300,30 @@ void comp_fakedata()
   IMnpim_woK0_woSid_won_ratio->Draw("HE");
   
   TF1* pol3_IMnpim_1 = new TF1("pol3_IMnpim_1","pol3",1.00,1.10);
-  pol3_IMnpim_1->SetParameter(0,-32074.9);
-  pol3_IMnpim_1->SetParameter(1,85205.3);
-  pol3_IMnpim_1->SetParameter(2,-75374.);
-  pol3_IMnpim_1->SetParameter(3,22204.);
+  pol3_IMnpim_1->SetParameter(0,-390570.);
+  pol3_IMnpim_1->SetParameter(1,107320);
+  pol3_IMnpim_1->SetParameter(2,-982998);
+  pol3_IMnpim_1->SetParameter(3,300137.);
   IMnpim_woK0_woSid_won_ratio->Fit("pol3_IMnpim_1","R","",1.07,1.10);
 
-  TF1* pol3_IMnpim_2 = new TF1("pol3_IMnpim_2","pol3",1.10,2.00);
-  pol3_IMnpim_2->SetParameter(0,38.13);
-  pol3_IMnpim_2->SetParameter(1,-62.3139);
-  pol3_IMnpim_2->SetParameter(2,32.172);
-  pol3_IMnpim_2->SetParameter(3,-4.81);
-  IMnpim_woK0_woSid_won_ratio->Fit("pol3_IMnpim_2","R+","",1.10,2.00);
-
-  Double_t param_IMnpim[8];
+  TF1* pol4_IMnpim_2 = new TF1("pol4_IMnpim_2","pol4",1.10,1.68);
+  pol4_IMnpim_2->SetParameter(0,204.9);
+  pol4_IMnpim_2->SetParameter(1,-545.6);
+  pol4_IMnpim_2->SetParameter(2,550.8);
+  pol4_IMnpim_2->SetParameter(3,-249.5);
+  pol4_IMnpim_2->SetParameter(4,42.7915);
+  IMnpim_woK0_woSid_won_ratio->Fit("pol4_IMnpim_2","R+","",1.10,1.68);
+  
+  double param_IMnpim[9];
   pol3_IMnpim_1->GetParameters(&param_IMnpim[0]);
-  pol3_IMnpim_2->GetParameters(&param_IMnpim[4]);
-  TF1 *evalf_IMnpim = new TF1("evalf_IMnpim",func_IMnpim,1.00,2.00,8);
+  pol4_IMnpim_2->GetParameters(&param_IMnpim[4]);
+  TF1 *evalf_IMnpim = new TF1("evalf_IMnpim",func_IMnpim,1.07,2.0,9);
   evalf_IMnpim->SetParameters(param_IMnpim);
-  evalf_IMnpim->SetTitle("IMnpim");
   evalf_IMnpim->SetLineColor(4);
   evalf_IMnpim->Draw("same");
+  //IMnpim_woK0_woSid_won_ratio->Fit("evalf_IMnpim","","",1.07,1.68);
+
+
   
   TCanvas *cMomnpim_woK0_woSid_won = new TCanvas("Momnpim_woK0_woSid_won","Momnpim_woK0_woSid_won");
   cMomnpim_woK0_woSid_won->cd();
@@ -1464,10 +1452,15 @@ void comp_fakedata()
   IMnpipi_woK0_woSid_won_ratio->SetTitle("Data/MC");
   IMnpipi_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   IMnpipi_woK0_woSid_won_ratio->Draw("HE");
+  
+  //TF1 *evalf_IMnpipi_1 = new TF1("evalf_IMnpipi_1","expo",1.26,1.35);
+  //IMnpipi_woK0_woSid_won_ratio->Fit("evalf_IMnpipi_1","R","",1.26,1.35);
+  //TF1 *evalf_IMnpipi_2 = new TF1("evalf_IMnpipi_2","pol5",1.35,2.00);
+  //IMnpipi_woK0_woSid_won_ratio->Fit("evalf_IMnpipi_2","R+","",1.35,2.0);
 
-  TF1 *evalf_IMnpipi = new TF1("evalf_IMnpipi","pol5",1.22,2.00);
-  evalf_IMnpipi->SetTitle("IMnpipi");
-  IMnpipi_woK0_woSid_won_ratio->Fit("evalf_IMnpipi","","",1.22,2.00);
+  TF1 *evalf_IMnpipi = new TF1("evalf_IMnpipi","pol7",1.26,1.80);
+  //evalf_IMnpipi->SetTitle("IMnpipi");
+  IMnpipi_woK0_woSid_won_ratio->Fit("evalf_IMnpipi","","",1.26,1.80);
 
 
   TH1D* q_woK0_woSid_won_mc = (TH1D*)q_IMnpipi_woK0_woSid_won_mc->ProjectionY("q_woK0_woSid_won_mc");
@@ -1972,7 +1965,8 @@ void comp_fakedata()
   MMnmiss_wK0_woSid_won_ratio->Draw("HE");
 
 
-  TF1 *evalf_MMnmiss_wK0 = new TF1("evalf_MMnmiss_wK0",func_MMnmiss_wK0,0,1.5,10);
+  //TF1 *evalf_MMnmiss_wK0 = new TF1("evalf_MMnmiss_wK0",func_MMnmiss_wK0,0,1.5,10);
+  TF1 *evalf_MMnmiss_wK0 = new TF1("evalf_MMnmiss_wK0",func_MMnmiss,0,1.5,18);
   MMnmiss_wK0_woSid_won_ratio->Fit("evalf_MMnmiss_wK0");
   evalf_MMnmiss_wK0->SetLineColor(4);
   evalf_MMnmiss_wK0->Draw("same");
@@ -2032,7 +2026,25 @@ void comp_fakedata()
   IMnpip_wK0_woSid_won_ratio->SetTitle("IMnpip_wK0_woSid_won Data/MC");
   IMnpip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   IMnpip_wK0_woSid_won_ratio->Draw("HE");
+  
+  //TF1* evalf_IMnpip_wK0 = new TF1("evalf_IMnpip_wK0","pol6",1.07,1.7);
+  //IMnpip_wK0_woSid_won_ratio->Fit("evalf_IMnpip_wK0","","",1.07,1.7);
 
+  TF1* evalf_IMnpip_wK0_1 = new TF1("evalf_IMnpip_wK0_1","pol3",1.06,1.25);
+  IMnpip_wK0_woSid_won_ratio->Fit("evalf_IMnpip_wK0_1","R","",1.06,1.25);
+
+  TF1* evalf_IMnpip_wK0_2 = new TF1("evalf_IMnpip_wK0_2","pol4",1.25,1.92);
+  IMnpip_wK0_woSid_won_ratio->Fit("evalf_IMnpip_wK0_2","R+","",1.25,1.92);
+  Double_t param_IMnpip_wK0[9];
+  evalf_IMnpip_wK0_1->GetParameters(&param_IMnpip_wK0[0]);
+  evalf_IMnpip_wK0_2->GetParameters(&param_IMnpip_wK0[4]);
+  
+  TF1 *evalf_IMnpip_wK0 = new TF1("evalf_IMnpip_wK0",evalf_IMnpip,1.06,2.0,9);
+  evalf_IMnpip_wK0->SetParameters(param_IMnpip_wK0);
+  evalf_IMnpip_wK0->SetLineColor(4);
+  evalf_IMnpip_wK0->Draw("same");
+  
+  /*
   TF1* fgaus_IMnpip_wK0_1 = new TF1("fgaus_IMnpip_wK0_1","gaus",1.06,1.10);
   fgaus_IMnpip_wK0_1->SetParameters(0,1.636);
   fgaus_IMnpip_wK0_1->SetParameters(1,1.102);
@@ -2054,11 +2066,7 @@ void comp_fakedata()
   fgaus_IMnpip_wK0_1->GetParameters(&param_IMnpip_wK0[0]);
   fexpo_IMnpip_wK0_2->GetParameters(&param_IMnpip_wK0[3]);
   fgaus_IMnpip_wK0_3->GetParameters(&param_IMnpip_wK0[5]);
-
-  TF1 *evalf_IMnpip_wK0 = new TF1("evalf_IMnpip_wK0",func_IMnpip,1.06,2.0,8);
-  evalf_IMnpip_wK0->SetParameters(param_IMnpip_wK0);
-  evalf_IMnpip_wK0->SetLineColor(4);
-  evalf_IMnpip_wK0->Draw("same");
+  */
   
   TCanvas *cMomnpip_wK0_woSid_won = new TCanvas("cMomnpip_wK0_woSid_won","cMomnpip_wK0_woSid_won");
   cMomnpip_wK0_woSid_won->cd();
@@ -2110,24 +2118,20 @@ void comp_fakedata()
   IMnpim_wK0_woSid_won_ratio->Draw("HE");
   
   
-  TF1* pol3_IMnpim_wK0_1 = new TF1("pol3_IMnpim_wK0_1","pol3",1.00,1.10);
+  TF1* pol3_IMnpim_wK0_1 = new TF1("pol3_IMnpim_wK0_1","pol3",1.07,1.10);
   pol3_IMnpim_wK0_1->SetParameter(0,-32074.9);
   pol3_IMnpim_wK0_1->SetParameter(1,85205.3);
   pol3_IMnpim_wK0_1->SetParameter(2,-75374.);
   pol3_IMnpim_wK0_1->SetParameter(3,22204.);
   IMnpim_wK0_woSid_won_ratio->Fit("pol3_IMnpim_wK0_1","R","",1.07,1.10);
 
-  TF1* pol3_IMnpim_wK0_2 = new TF1("pol3_IMnpim_wK0_2","pol3",1.10,2.00);
-  pol3_IMnpim_wK0_2->SetParameter(0,38.13);
-  pol3_IMnpim_wK0_2->SetParameter(1,-62.3139);
-  pol3_IMnpim_wK0_2->SetParameter(2,32.172);
-  pol3_IMnpim_wK0_2->SetParameter(3,-4.81);
-  IMnpim_wK0_woSid_won_ratio->Fit("pol3_IMnpim_wK0_2","R+","",1.10,2.00);
+  TF1* pol4_IMnpim_wK0_2 = new TF1("pol4_IMnpim_wK0_2","pol4",1.10,2.00);
+  IMnpim_wK0_woSid_won_ratio->Fit("pol4_IMnpim_wK0_2","R+","",1.10,2.00);
 
-  Double_t param_IMnpim_wK0[8];
+  Double_t param_IMnpim_wK0[9];
   pol3_IMnpim_wK0_1->GetParameters(&param_IMnpim_wK0[0]);
-  pol3_IMnpim_wK0_2->GetParameters(&param_IMnpim_wK0[4]);
-  TF1 *evalf_IMnpim_wK0 = new TF1("evalf_IMnpim_wK0",func_IMnpim,1.00,2.00,8);
+  pol4_IMnpim_wK0_2->GetParameters(&param_IMnpim_wK0[4]);
+  TF1 *evalf_IMnpim_wK0 = new TF1("evalf_IMnpim_wK0",func_IMnpim,1.00,2.00,9);
   evalf_IMnpim_wK0->SetParameters(param_IMnpim_wK0);
   evalf_IMnpim_wK0->SetLineColor(4);
   evalf_IMnpim_wK0->Draw("same");
@@ -2236,8 +2240,8 @@ void comp_fakedata()
   IMnpipi_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   IMnpipi_wK0_woSid_won_ratio->Draw("HE");
 
-  TF1 *evalf_IMnpipi_wK0 = new TF1("evalf_IMnpipi_wK0","pol4",1.0,2.00);
-  IMnpipi_wK0_woSid_won_ratio->Fit("evalf_IMnpipi_wK0","","",1.0,2.00);
+  TF1 *evalf_IMnpipi_wK0 = new TF1("evalf_IMnpipi_wK0","pol5",1.4,2.00);
+  IMnpipi_wK0_woSid_won_ratio->Fit("evalf_IMnpipi_wK0","","",1.4,2.00);
 
 
   TH1D* q_wK0_woSid_won_mc = (TH1D*)q_IMnpipi_wK0_woSid_won_mc->ProjectionY("q_wK0_woSid_won_mc");
@@ -2837,8 +2841,8 @@ void comp_fakedata()
 //  evalf_MMnmiss_corr2->Write();
   evalf_MMnmiss_wK0->Write();
  // evalf_MMom->Write();
-//  evalf_nmom->Write();
-//  evalf_nmom_wK0->Write();
+  evalf_nmom->Write();
+  evalf_nmom_wK0->Write();
 //  evalf_pipmom->Write();
 //  evalf_pipmom_wK0->Write();
 //  evalf_pimmom->Write();
@@ -2847,8 +2851,10 @@ void comp_fakedata()
     evalf_IMpippim_wK0->Write();
     evalf_Mompippim->Write();
     evalf_Mompippim_wK0->Write();
-//  evalf_IMnpipi->Write();
-//  evalf_IMnpip->Write();
+    evalf_IMnpipi->Write();
+    evalf_IMnpip_1->Write();
+    evalf_IMnpip_2->Write();
+    evalf_IMnpip->Write();
     evalf_IMnpim->Write();
     evalf_IMnpim_wK0->Write();
     evalf_q->Write();
@@ -2866,8 +2872,8 @@ void comp_fakedata()
 //  evalf_phinpip_wK0->Write();
 //  evalf_phinpim->Write();
 //  evalf_phinpim_wK0->Write();
-//  evalf_IMnpipi_wK0->Write();
-//  evalf_IMnpip_wK0->Write();
+  evalf_IMnpipi_wK0->Write();
+  evalf_IMnpip_wK0->Write();
   fout->Print();
   fout->cd();
   fout->Close();
