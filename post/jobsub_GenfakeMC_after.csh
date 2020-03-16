@@ -51,7 +51,7 @@ while (1)
   if ( $njob < 1 ) then 
     hadd -f -T fakepippim_pippimn_out_sum.root fakepippim_pippimn[1-9]_out.root fakepippim_pippimn1[0-9]_out.root fakepippim_pippimn20_out.root
     hadd -f -T fakepippimK0_pippimn_out_sum.root fakepippimK0_pippimn[1-9]_out.root fakepippimK0_pippimn1[0-9]_out.root fakepippimK0_pippimn20_out.root
-    cd -
+    cd /gpfs/home/had/hiasano/ana/k18ana/simpost/
     root -b -q comp_fakedata.C+
     break
   endif
