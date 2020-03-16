@@ -212,15 +212,41 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1* fweight_q_wK0_v302 = new TF1("fweight_q_wK0_v302",func_q,0,1.5,8);
   fweight_q_wK0_v302->SetParameters(param_q_wK0_corr);
 
-  TFile *fweight_v303 = new TFile("../simpost/comp_fakedata_out_v303.root","READ");
-  fweight_v303->cd();
-  TH1 *fweight_IMnpipi_v303 = (TH1D*)fweight_v303->Get("IMnpipi_woK0_woSid_won_ratio");
-  fweight_IMnpipi_v303->SetName("fweight_IMnpipi_v303");
-  fweight_IMnpipi_v303->Smooth(2);
-  TH1 *fweight_IMnpipi_wK0_v303 = (TH1D*)fweight_v303->Get("IMnpipi_wK0_woSid_won_ratio");
-  fweight_IMnpipi_wK0_v303->SetName("fweight_IMnpipi_wK0_v303");
-  fweight_IMnpipi_wK0_v303->Smooth(2);
+  TF1* fweight_nmom_v303 = new TF1("fweight_nmom_v303",func_nmom,0,1.0,9);
+  fweight_nmom_v303->SetParameters(param_nmom);
+  TF1* fweight_nmom_wK0_v303 = new TF1("fweight_nmom_wK0_v303",func_nmom,0,1.0,9);
+  fweight_nmom_wK0_v303->SetParameters(param_nmom_wK0);
+  
+  TF1* fweight_q_v304 = new TF1("fweight_q_v304",func_q,0,1.5,8);
+  fweight_q_v304->SetParameters(param_q_corr2);
+  TF1* fweight_q_wK0_v304 = new TF1("fweight_q_wK0_v304",func_q,0,1.5,8);
+  fweight_q_wK0_v304->SetParameters(param_q_wK0_corr2);
 
+  TF1* fweight_nmom_v305 = new TF1("fweight_nmom_v305",func_nmom,0,1.0,9);
+  fweight_nmom_v305->SetParameters(param_nmom_v305);
+  TF1* fweight_nmom_wK0_v305 = new TF1("fweight_nmom_wK0_v305",func_nmom,0,1.0,9);
+  fweight_nmom_wK0_v305->SetParameters(param_nmom_wK0_v305);
+ 
+  //v307 apply only nonK0-BG
+  TF1* fweight_IMpippim_v306 = new TF1("fweight_IMpippim_v306",func_IMpippim,0,1.0,7);
+  fweight_IMpippim_v306->SetParameters(param_IMpippim);
+  
+  TF1* fweight_IMnpip_v307 = new TF1("fweight_IMnpip_v307",func_IMnpip,1,2.0,9);
+  fweight_IMnpip_v307->SetParameters(param_IMnpip);
+  TF1* fweight_IMnpip_wK0_v307 = new TF1("fweight_IMnpip_wK0_v307",func_IMnpip,1,2.0,9);
+  fweight_IMnpip_wK0_v307->SetParameters(param_IMnpip_wK0);
+
+  TF1* fweight_IMnpim_v308 = new TF1("fweight_IMnpim_v308",func_IMnpim,1,2.0,8);
+  fweight_IMnpim_v308->SetParameters(param_IMnpim);
+  TF1* fweight_IMnpim_wK0_v308 = new TF1("fweight_IMnpim_wK0_v308",func_IMnpim_wK0,1,2.0,9);
+  fweight_IMnpim_wK0_v308->SetParameters(param_IMnpim_wK0);
+
+  //TF1 *fweight_IMnpipi_v307 = new TF1("fweight_IMnpipi_v307",func_IMnpipi,1,2.0,12);
+  //fweight_IMnpipi_v307->SetParameters(param_IMnpipi);
+  //TF1 *fweight_IMnpipi_wK0_v307 = new TF1("fweight_IMnpipi_wK0_v307",func_IMnpipi_wK0,1,2.0,6);
+  //fweight_IMnpipi_wK0_v307->SetParameters(param_IMnpipi_wK0);
+  
+  /*
   TF1* fweight_q_v304 = new TF1("fweight_q_v304",func_q,0,1.5,8);
   fweight_q_v304->SetParameters(param_q_corr2);
   
@@ -239,6 +265,74 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1* fweight_q_wK0_v306 = new TF1("fweight_q_wK0_v306",func_q,0,1.5,8);
   fweight_q_wK0_v306->SetParameters(param_q_wK0_corr3);
   
+  //v307 apply only nonK0-BG
+  TF1* fweight_IMpippim_v307 = new TF1("fweight_IMpippim_v307",func_IMpippim,0,1.0,7);
+  fweight_IMpippim_v307->SetParameters(param_IMpippim);
+   
+
+  TF1* fweight_nmom_v308 = new TF1("fweight_nmom_v308",func_nmom,0,1.0,9);
+  fweight_nmom_v308->SetParameters(param_nmom);
+
+  TF1* fweight_nmom_wK0_v308 = new TF1("fweight_nmom_wK0_v308",func_nmom,0,1.0,9);
+  fweight_nmom_wK0_v308->SetParameters(param_nmom_wK0);
+
+  TF1* fweight_q_v309 = new TF1("fweight_q_v309",func_q,0,1.5,8);
+  fweight_q_v309->SetParameters(param_q_corr4);
+  TF1* fweight_q_wK0_v309 = new TF1("fweight_q_wK0_v309",func_q,0,1.5,8);
+  fweight_q_wK0_v309->SetParameters(param_q_wK0_corr4);
+ 
+  TF1 *fweight_MMnmiss_v310 = new TF1("fweight_MMnmiss_v310",func_MMnmiss,0,1.5,18);
+  fweight_MMnmiss_v310->SetParameters(param_MMnmiss_corr2);
+  TF1 *fweight_MMnmiss_wK0_v310 = new TF1("fweight_MMnmiss_wK0_v310",func_MMnmiss_wK0,0,1.5,10);
+  fweight_MMnmiss_wK0_v310->SetParameters(param_MMnmiss_wK0_corr2);
+
+  TF1* fweight_IMnpip_v311 = new TF1("fweight_IMnpip_v311",func_IMnpip,1,2.0,9);
+  fweight_IMnpip_v311->SetParameters(param_IMnpip);
+  TF1* fweight_IMnpip_wK0_v311 = new TF1("fweight_IMnpip_wK0_v311",func_IMnpip,1,2.0,9);
+  fweight_IMnpip_wK0_v311->SetParameters(param_IMnpip_wK0);
+
+  TF1* fweight_IMnpim_v312 = new TF1("fweight_IMnpim_v312",func_IMnpim,1,2.0,9);
+  fweight_IMnpim_v312->SetParameters(param_IMnpim);
+  TF1* fweight_IMnpim_wK0_v312 = new TF1("fweight_IMnpim_wK0_v312",func_IMnpim,1,2.0,9);
+  fweight_IMnpim_wK0_v312->SetParameters(param_IMnpim_wK0);
+  
+  TF1* fweight_q_v313 = new TF1("fweight_q_v313",func_q,0,1.5,8);
+  fweight_q_v313->SetParameters(param_q_corr5);
+  TF1* fweight_q_wK0_v313 = new TF1("fweight_q_wK0_v313",func_q,0,1.5,8);
+  fweight_q_wK0_v313->SetParameters(param_q_wK0_corr5);
+  
+  TF1 *fweight_MMnmiss_v314 = new TF1("fweight_MMnmiss_v314",func_MMnmiss,0,1.5,18);
+  fweight_MMnmiss_v314->SetParameters(param_MMnmiss_corr3);
+  //change function from this version
+  TF1 *fweight_MMnmiss_wK0_v314 = new TF1("fweight_MMnmiss_wK0_v314",func_MMnmiss,0,1.5,18);
+  fweight_MMnmiss_wK0_v314->SetParameters(param_MMnmiss_wK0_corr3);
+  
+  //TF1 *fweight_IMnpipi_v315 = new TF1("fweight_IMnpipi_v315",func_IMnpipi,1,2.0,10);
+  //fweight_IMnpipi_v315->SetParameters(param_IMnpipi);
+  TF1 *fweight_IMnpipi_wK0_v315 = new TF1("fweight_IMnpipi_wK0_v315",func_IMnpipi_wK0,1,2.0,6);
+  fweight_IMnpipi_wK0_v315->SetParameters(param_IMnpipi_wK0);
+
+  TFile *fweight_v315 = new TFile("../simpost/comp_fakedata_out_v315.root","READ");
+  fweight_v315->cd();
+  TH1 *fweight_IMnpipi_v315 = (TH1D*)fweight_v315->Get("IMnpipi_woK0_woSid_won_ratio");
+  fweight_IMnpipi_v315->SetName("fweight_IMnpipi_v315");
+  
+  
+  TF1* fweight_nmom_v316 = new TF1("fweight_nmom_v316",func_nmom,0,1.0,9);
+  fweight_nmom_v316->SetParameters(param_nmom_corr);
+  TF1* fweight_nmom_wK0_v316 = new TF1("fweight_nmom_wK0_v316",func_nmom,0,1.0,9);
+  fweight_nmom_wK0_v316->SetParameters(param_nmom_wK0_corr);
+  
+  
+  TF1* fweight_q_v317 = new TF1("fweight_q_v317",func_q,0,1.5,8);
+  fweight_q_v317->SetParameters(param_q_corr6);
+  TF1* fweight_q_wK0_v317 = new TF1("fweight_q_wK0_v317",func_q,0,1.5,8);
+  fweight_q_wK0_v317->SetParameters(param_q_wK0_corr6);
+  
+  //TH1 *fweight_IMnpipi_wK0_v315 = (TH1D*)fweight_v315->Get("IMnpipi_wK0_woSid_won_ratio");
+  //fweight_IMnpipi_wK0_v303->SetName("fweight_IMnpipi_wK0_v303");
+  */ 
+  /*
   TF1* fweight_Mompippim_v307 = new TF1("fweight_Mompippim_v307",func_Mompippim,0,1.0,6);
   fweight_Mompippim_v307->SetParameters(param_Mompippim);
 
@@ -253,7 +347,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
   TF1* fweight_q_v309 = new TF1("fweight_q_v309",func_q,0,1.5,8);
   fweight_q_v309->SetParameters(param_q_corr4);
-  
   TF1* fweight_q_wK0_v309 = new TF1("fweight_q_wK0_v309",func_q,0,1.5,8);
   fweight_q_wK0_v309->SetParameters(param_q_wK0_corr4);
 
@@ -267,527 +360,28 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   fweight_IMnpipi_wK0_v310->Smooth(2);
 
 
+  TF1* fweight_Mompippim_v311 = new TF1("fweight_Mompippim_v311",func_Mompippim,0,1.0,6);
+  fweight_Mompippim_v311->SetParameters(param_Mompippim_corr);
+  TF1* fweight_Mompippim_wK0_v311 = new TF1("fweight_Mompippim_wK0_v311",func_Mompippim,0,1.0,6);
+  fweight_Mompippim_wK0_v311->SetParameters(param_Mompippim_wK0_corr);
 
+  TF1* fweight_IMnpip_v312 = new TF1("fweight_IMnpip_v312",func_IMnpip,1,2.0,9);
+  fweight_IMnpip_v312->SetParameters(param_IMnpip);
+  TF1* fweight_IMnpip_wK0_v312 = new TF1("fweight_IMnpip_wK0_v312",func_IMnpip,1,2.0,9);
+  fweight_IMnpip_wK0_v312->SetParameters(param_IMnpip_wK0);
 
-  /*
-  TF1 *fweight_MMnmiss_corr = new TF1("fweight_MMnmiss_corr",func_MMnmiss_corr,0,1.5,7);
-  fweight_MMnmiss_corr->SetParameters(param_MMnmiss_corr);
+  TF1* fweight_q_v313 = new TF1("fweight_q_v313",func_q,0,1.5,8);
+  fweight_q_v313->SetParameters(param_q_corr5);
+  TF1* fweight_q_wK0_v313 = new TF1("fweight_q_wK0_v313",func_q,0,1.5,8);
+  fweight_q_wK0_v313->SetParameters(param_q_wK0_corr5);
+  
 
-  TF1 *fweight_MMnmiss_corr2 = new TF1("fweight_MMnmiss_corr2",func_MMnmiss_corr2,0,1.5,7);
-  fweight_MMnmiss_corr2->SetParameters(param_MMnmiss_corr2);
-
-  TF1 *fweight_MMnmiss_wK0 = new TF1("fweight_MMnmiss_wK0",func_MMnmiss_wK0,0,1.5,10);
-  fweight_MMnmiss_wK0->SetParameters(param_MMnmiss_wK0);
-
-  TF1 *fweight_MMnmiss_wK0_corr = new TF1("fweight_MMnmiss_wK0_corr",func_MMnmiss_wK0,0,1.5,10);
-  fweight_MMnmiss_wK0_corr->SetParameters(param_MMnmiss_wK0_corr);
-
-  TF1 *fweight_MMnmiss_wK0_corr2 = new TF1("fweight_MMnmiss_wK0_corr2",func_MMnmiss_wK0,0,1.5,10);
-  fweight_MMnmiss_wK0_corr2->SetParameters(param_MMnmiss_wK0_corr2);
-
-  TF1 *fweight_MMom = new TF1("fweight_MMom",func_MMom,0,1.5,6);
-  fweight_MMom->SetParameters(param_MMom);
-
-  TF1 *fweight_MMom_corr = new TF1("fweight_MMom_corr",func_MMom,0,1.5,6);
-  fweight_MMom_corr->SetParameters(param_MMom_corr);
-
-  TF1 *fweight_MMom_wK0 = new TF1("fweight_MMom_wK0",func_MMom,0,1.5,6);
-  fweight_MMom_wK0->SetParameters(param_MMom_wK0);
-
-  TF1 *fweight_MMom_wK0_corr = new TF1("fweight_MMom_wK0_corr",func_MMom,0,1.5,6);
-  fweight_MMom_wK0_corr->SetParameters(param_MMom_wK0_corr);
-
-  TF1 *fweight_nmom = new TF1("fweight_nmom",func_nmom,0,1.0,9);
-  fweight_nmom->SetParameters(param_nmom);
-  fweight_nmom->Print("v");
-
-  TF1 *fweight_nmom_corr = new TF1("fweight_nmom_corr",func_nmom,0,1.0,9);
-  fweight_nmom_corr->SetParameters(param_nmom_corr);
-  fweight_nmom_corr->Print("v");
-
-
-  TF1 *fweight_nmom_wK0 = new TF1("fweight_nmom_wK0",func_nmom,0,1.0,9);
-  fweight_nmom_wK0->SetParameters(param_nmom_wK0);
-
-  TF1 *fweight_nmom_wK0_corr = new TF1("fweight_nmom_wK0_corr",func_nmom,0,1.0,9);
-  fweight_nmom_wK0_corr->SetParameters(param_nmom_wK0_corr);
-
-  //TF1 *fweight_cosn = new TF1("fweight_cosn",func_cosn,-1,1.0,9);
-  TF1 *fweight_cosn = new TF1("fweight_cosn",func_cosn,-1,1.0,6);
-  fweight_cosn->SetParameters(param_cosn);
-  fweight_cosn->Print("v");
-
-  //TF1 *fweight_cosn_wK0 = new TF1("fweight_cosn_wK0",func_cosn_wK0,-1,1.0,9);
-  TF1 *fweight_cosn_wK0 = new TF1("fweight_cosn_wK0",func_cosn_wK0,-1,1.0,6);
-  fweight_cosn_wK0->SetParameters(param_cosn_wK0);
-  fweight_cosn_wK0->Print("v");
-
-  TF1 *fweight_pimmom = new TF1("fweight_pimmom",func_pimmom,0,1.0,9);
-  fweight_pimmom->SetParameters(param_pimmom);
-  fweight_pimmom->Print("v");
-
-  TF1 *fweight_pimmom_wK0 = new TF1("fweight_pimmom_wK0",func_pimmom,0,1.0,9);
-  fweight_pimmom_wK0->SetParameters(param_pimmom_wK0);
-  fweight_pimmom_wK0->Print("v");
-
-  TF1 *fweight_pipmom = new TF1("fweight_pipmom",func_pipmom,0,1.0,9);
-  fweight_pipmom->SetParameters(param_pipmom);
-
-  TF1 *fweight_pipmom_wK0 = new TF1("fweight_pipmom_wK0",func_pipmom,0,1.0,9);
-  fweight_pipmom_wK0->SetParameters(param_pipmom_wK0);
-
-  TF1 *fweight_pipmom_wK0_corr = new TF1("fweight_pipmom_wK0_corr",func_pipmom,0,1.0,9);
-  fweight_pipmom_wK0_corr->SetParameters(param_pipmom_wK0_corr);
-
-  TF1 *fweight_Mompippim = new TF1("fweight_Mompippim",func_Mompippim,0,0.98,4);
-  fweight_Mompippim->SetParameters(param_Mompippim);
-
-
-  TF1 *fweight_IMnpipi = new TF1("fweight_IMnpipi",func_IMnpipi,1,2,6);
-  fweight_IMnpipi->SetParameters(param_IMnpipi);
-
-  TF1 *fweight_IMnpipi_wK0 = new TF1("fweight_IMnpipi_wK0",func_IMnpipi_wK0,1.0,2,5);
-  fweight_IMnpipi_wK0->SetParameters(param_IMnpipi_wK0);
-
-  //TF1 *fweight_MMnmiss_corr = new TF1("fweight_MMmiss_corr",func_MMnmiss,0,1.5,7);
-  //fweight_MMnmiss_corr->SetParameters(param_MMnmiss_corr);
-
-
-  TF1 *fweight_IMnpip  = new TF1("fweight_IMnpip",func_IMnpip,1.06,2.0,8);
-  fweight_IMnpip->SetParameters(param_IMnpip);
-
-  TF1 *fweight_IMnpip_wK0  = new TF1("fweight_IMnpip_wK0",func_IMnpip,1.06,2.0,8);
-  fweight_IMnpip_wK0->SetParameters(param_IMnpip_wK0);
-
-  TF1 *fweight_IMnpim  = new TF1("fweight_IMnpim",func_IMnpim,1.06,2.0,8);
-  fweight_IMnpim->SetParameters(param_IMnpim);
-
-  TF1 *fweight_IMnpim_wK0  = new TF1("fweight_IMnpim_wK0",func_IMnpim,1.06,2.0,8);
-  fweight_IMnpim_wK0->SetParameters(param_IMnpim_wK0);
-
-  TF1 *fweight_cospip = new TF1("fweight_cospip",func_cospip,-1.0,1.0,6);
-  fweight_cospip->SetParameters(param_cospip);
-  fweight_cospip->Print("v");
-
-  TF1 *fweight_cospip_wK0 = new TF1("fweight_cospip_wK0",func_cospip_wK0,-1.0,1.0,6);
-  fweight_cospip_wK0->SetParameters(param_cospip_wK0);
-  fweight_cospip_wK0->Print("v");
-
-  TF1 *fweight_cospim = new TF1("fweight_cospim",func_cospim,-1.0,1.0,9);
-  fweight_cospim->SetParameters(param_cospim);
-  fweight_cospim->Print("v");
-
-  TF1 *fweight_cospim_wK0 = new TF1("fweight_cospim_wK0",func_cospim_wK0,-1.0,1.0,9);
-  fweight_cospim_wK0->SetParameters(param_cospim_wK0);
-  fweight_cospim_wK0->Print("v");
-
-  TF1 *fweight_phinpip = new TF1("fweight_phinpip",func_phinpip,-1.0*TMath::Pi(),TMath::Pi(),8);
-  fweight_phinpip->SetParameters(param_phinpip);
-  fweight_phinpip->Print("v");
-
-  TF1 *fweight_phinpip_wK0 = new TF1("fweight_phinpip_wK0",func_phinpip,-1.0*TMath::Pi(),TMath::Pi(),8);
-  fweight_phinpip_wK0->SetParameters(param_phinpip_wK0);
-  fweight_phinpip_wK0->Print("v");
-
-
-  TF1 *fweight_phinpim = new TF1("fweight_phinpim",func_phinpim,-1.0*TMath::Pi(),TMath::Pi(),10);
-  fweight_phinpim->SetParameters(param_phinpim);
-  fweight_phinpim->Print("v");
-
-  TF1 *fweight_phinpim_wK0 = new TF1("fweight_phinpim_wK0",func_phinpim,-1.0*TMath::Pi(),TMath::Pi(),10);
-  fweight_phinpim_wK0->SetParameters(param_phinpim_wK0);
-  fweight_phinpim_wK0->Print("v");
+  TF1* fweight_IMnpim_v314 = new TF1("fweight_IMnpim_v314",func_IMnpim,1,2.0,9);
+  fweight_IMnpim_v314->SetParameters(param_IMnpim);
+  TF1* fweight_IMnpim_wK0_v314 = new TF1("fweight_IMnpim_wK0_v314",func_IMnpim,1,2.0,9);
+  fweight_IMnpim_wK0_v314->SetParameters(param_IMnpim_wK0);
   */
 
-  //v1
-  TFile *fweight_v1 = new TFile("../simpost/comp_fakedata_out_v1.root","READ");
-  fweight_v1->cd();
-  TH1 *fweight_pipmom_v1 = (TH1D*)fweight_v1->Get("pipmom_woK0_woSid_won_ratio");
-  fweight_pipmom_v1->SetName("fweight_pipmom_v1");
-  fweight_pipmom_v1->Smooth();
-  TH1 *fweight_pipmom_wK0_v1 = (TH1D*)fweight_v1->Get("pipmom_wK0_woSid_won_ratio");
-  fweight_pipmom_wK0_v1->SetName("fweight_pipmom_wK0_v1");
-  fweight_pipmom_wK0_v1->Smooth();
-
-  //v2
-  TFile *fweight_v2 = new TFile("../simpost/comp_fakedata_out_v2.root","READ");
-  fweight_v2->cd();
-  TH1 *fweight_cospip_v2 = (TH1D*)fweight_v2->Get("cospip_woK0_woSid_won_ratio");
-  fweight_cospip_v2->SetName("fweight_cospip_v2");
-  fweight_cospip_v2->Smooth();
-  TH1 *fweight_cospip_wK0_v2 = (TH1D*)fweight_v2->Get("cospip_wK0_woSid_won_ratio");
-  fweight_cospip_wK0_v2->SetName("fweight_cospip_wK0_v2");
-  fweight_cospip_wK0_v2->Smooth();
-
-  //v3
-  TFile *fweight_v3 = new TFile("../simpost/comp_fakedata_out_v3.root","READ");
-  fweight_v3->cd();
-  TH1 *fweight_pimmom_v3 = (TH1D*)fweight_v3->Get("pimmom_woK0_woSid_won_ratio");
-  fweight_pimmom_v3->SetName("fweight_pimmom_v3");
-  fweight_pimmom_v3->Smooth();
-  TH1 *fweight_pimmom_wK0_v3 = (TH1D*)fweight_v3->Get("pimmom_wK0_woSid_won_ratio");
-  fweight_pimmom_wK0_v3->SetName("fweight_pimmom_wK0_v3");
-  fweight_pimmom_wK0_v3->Smooth();
-
-  //v9
-  TFile *fweight_v9 = new TFile("../simpost/comp_fakedata_out_v9.root","READ");
-  fweight_v9->cd();
-  TH1 *fweight_cospim_v9 = (TH1D*)fweight_v9->Get("cospim_woK0_woSid_won_ratio");
-  fweight_cospim_v9->SetName("fweight_cospim_v9");
-  fweight_cospim_v9->Smooth();
-  TH1 *fweight_cospim_wK0_v9 = (TH1D*)fweight_v9->Get("cospim_wK0_woSid_won_ratio");
-  fweight_cospim_wK0_v9->SetName("fweight_cospim_wK0_v9");
-  fweight_cospim_wK0_v9->Smooth();
-
-
-
-  //v10
-  TFile *fweight_v10 = new TFile("../simpost/comp_fakedata_out_v10.root","READ");
-  fweight_v10->cd();
-  TH1 *fweight_nmom_v10 = (TH1D*)fweight_v10->Get("nmom_woK0_woSid_won_ratio");
-  fweight_nmom_v10->SetName("fweight_nmom_v10");
-  //fweight_nmom_v10->Smooth();// -> did not work due to the edge of 0.14 GeV/c
-  TH1 *fweight_nmom_wK0_v10 = (TH1D*)fweight_v10->Get("nmom_wK0_woSid_won_ratio");
-  fweight_nmom_wK0_v10->SetName("fweight_nmom_wK0_v10");
-  //fweight_nmom_wK0_v10->Smooth(); -> did not work due to the edge of 0.14 GeV/c
-
-  //v11
-  TFile *fweight_v11 = new TFile("../simpost/comp_fakedata_out_v11.root","READ");
-  fweight_v11->cd();
-  TH1 *fweight_cosn_v11 = (TH1D*)fweight_v11->Get("cosn_woK0_woSid_won_ratio");
-  fweight_cosn_v11->SetName("fweight_cosn_v11");
-  fweight_cosn_v11->Smooth();//
-  TH1 *fweight_cosn_wK0_v11 = (TH1D*)fweight_v11->Get("cosn_wK0_woSid_won_ratio");
-  fweight_cosn_wK0_v11->SetName("fweight_cosn_wK0_v11");
-  fweight_cosn_wK0_v11->Smooth(); //
-
-  //v12
-  TFile *fweight_v12 = new TFile("../simpost/comp_fakedata_out_v12.root","READ");
-  fweight_v12->cd();
-  TH1 *fweight_phinpip_v12 = (TH1D*)fweight_v12->Get("phinpip_woK0_woSid_won_ratio");
-  fweight_phinpip_v12->SetName("fweight_phinpip_v12");
-  fweight_phinpip_v12->Smooth();//
-  TH1 *fweight_phinpip_wK0_v12 = (TH1D*)fweight_v12->Get("phinpip_wK0_woSid_won_ratio");
-  fweight_phinpip_wK0_v12->SetName("fweight_phinpip_wK0_v12");
-  fweight_phinpip_wK0_v12->Smooth(); //
-
-  //v13
-  TFile *fweight_v13 = new TFile("../simpost/comp_fakedata_out_v13.root","READ");
-  fweight_v13->cd();
-  TH1 *fweight_phinpim_v13 = (TH1D*)fweight_v13->Get("phinpim_woK0_woSid_won_ratio");
-  fweight_phinpim_v13->SetName("fweight_phinpim_v13");
-  fweight_phinpim_v13->Smooth();//
-  TH1 *fweight_phinpim_wK0_v13 = (TH1D*)fweight_v13->Get("phinpim_wK0_woSid_won_ratio");
-  fweight_phinpim_wK0_v13->SetName("fweight_phinpim_wK0_v13");
-  fweight_phinpim_wK0_v13->Smooth(); //
-
-  TFile *fweight_v15 = new TFile("../simpost/comp_fakedata_out_v15.root","READ");
-  fweight_v15->cd();
-  TH1 *fweight_pipmom_v15 = (TH1D*)fweight_v15->Get("pipmom_woK0_woSid_won_ratio");
-  fweight_pipmom_v15->SetName("fweight_pipmom_v15");
-  fweight_pipmom_v15->Smooth();//
-  TH1 *fweight_pimmom_v15 = (TH1D*)fweight_v15->Get("pimmom_woK0_woSid_won_ratio");
-  fweight_pimmom_v15->SetName("fweight_pimmom_v15");
-  fweight_pimmom_v15->Smooth();//
-  TH1 *fweight_pipmom_wK0_v15 = (TH1D*)fweight_v15->Get("pipmom_wK0_woSid_won_ratio");
-  fweight_pipmom_wK0_v15->SetName("fweight_pipmom_wK0_v15");
-  fweight_pipmom_wK0_v15->Smooth(); //
-  TH1 *fweight_pimmom_wK0_v15 = (TH1D*)fweight_v15->Get("pimmom_wK0_woSid_won_ratio");
-  fweight_pimmom_wK0_v15->SetName("fweight_pimmom_wK0_v15");
-  fweight_pimmom_wK0_v15->Smooth(); //
-
-
-  TFile *fweight_v16 = new TFile("../simpost/comp_fakedata_out_v16.root","READ");
-  fweight_v16->cd();
-  TH1 *fweight_cospim_v16 = (TH1D*)fweight_v16->Get("cospim_woK0_woSid_won_ratio");
-  fweight_cospim_v16->SetName("fweight_cospim_v16");
-  fweight_cospim_v16->Smooth();//
-  TH1 *fweight_pipmom_wK0_v16 = (TH1D*)fweight_v16->Get("pipmom_wK0_woSid_won_ratio");
-  fweight_pipmom_wK0_v16->SetName("fweight_pipmom_wK0_v16");
-  fweight_pipmom_wK0_v16->Smooth(); //
-  TH1 *fweight_pimmom_wK0_v16 = (TH1D*)fweight_v16->Get("pimmom_wK0_woSid_won_ratio");
-  fweight_pimmom_wK0_v16->SetName("fweight_pimmom_wK0_v16");
-  fweight_pimmom_wK0_v16->Smooth(); //
-
-
-  TFile *fweight_v17 = new TFile("../simpost/comp_fakedata_out_v17.root","READ");
-  fweight_v17->cd();
-  TH1 *fweight_IMpippim_wK0_v17 = (TH1D*)fweight_v17->Get("IMpippim_wK0_woSid_won_ratio");
-  fweight_IMpippim_wK0_v17->SetName("fweight_IMpippim_wK0_v17");
-  fweight_IMpippim_wK0_v17->Smooth(); //
-
-  TFile *fweight_v18 = new TFile("../simpost/comp_fakedata_out_v18.root","READ");
-  fweight_v18->cd();
-  TH1 *fweight_cospippim_v18 = (TH1D*)fweight_v18->Get("cospippim_woK0_woSid_won_ratio");
-  fweight_cospippim_v18->SetName("fweight_cospippim_v18");
-  fweight_cospippim_v18->Smooth(); //
-  TH1 *fweight_cospippim_wK0_v18 = (TH1D*)fweight_v18->Get("cospippim_wK0_woSid_won_ratio");
-  fweight_cospippim_wK0_v18->SetName("fweight_cospippim_wK0_v18");
-  fweight_cospippim_wK0_v18->Smooth(); //
-
-  TFile *fweight_v20 = new TFile("../simpost/comp_fakedata_out_v20.root","READ");
-  fweight_v20->cd();
-  TH1 *fweight_MMom_v20 = (TH1D*)fweight_v20->Get("MMom_woK0_woSid_won_ratio");
-  fweight_MMom_v20->SetName("fweight_MMom_v20");
-  fweight_MMom_v20->Smooth(); //
-  TH1 *fweight_MMom_wK0_v20 = (TH1D*)fweight_v20->Get("MMom_wK0_woSid_won_ratio");
-  fweight_MMom_wK0_v20->SetName("fweight_MMom_wK0_v20");
-  fweight_MMom_wK0_v20->Smooth(); //
-
-  //v21 function
-  TF1 *fweight_MMnmiss_corr = new TF1("fweight_MMnmiss_corr",func_MMnmiss,0,1.5,18);
-  fweight_MMnmiss_corr->SetParameters(param_MMnmiss_corr);
-
-  TF1 *fweight_MMnmiss_wK0_corr = new TF1("fweight_MMnmiss_wK0_corr",func_MMnmiss_wK0,0,1.5,10);
-  fweight_MMnmiss_wK0_corr->SetParameters(param_MMnmiss_wK0_corr);
-
-  //v23
-  TFile *fweight_v23 = new TFile("../simpost/comp_fakedata_out_v23.root","READ");
-  fweight_v23->cd();
-  TH1 *fweight_pipmom_v23 = (TH1D*)fweight_v23->Get("pipmom_woK0_woSid_won_ratio");
-  fweight_pipmom_v23->SetName("fweight_pipmom_v23");
-  fweight_pipmom_v23->Smooth(); //
-  TH1 *fweight_pimmom_v23 = (TH1D*)fweight_v23->Get("pimmom_woK0_woSid_won_ratio");
-  fweight_pimmom_v23->SetName("fweight_pimmom_v23");
-  fweight_pimmom_v23->Smooth(); //
-  TH1 *fweight_nmom_v23 = (TH1D*)fweight_v23->Get("nmom_woK0_woSid_won_ratio");
-  fweight_nmom_v23->SetName("fweight_nmom_v23");
-  //fweight_nmom_v23->Smooth(); //
-  TH1 *fweight_cospip_v23 = (TH1D*)fweight_v23->Get("cospip_woK0_woSid_won_ratio");
-  fweight_cospip_v23->SetName("fweight_cospip_v23");
-  fweight_cospip_v23->Smooth(); //
-  TH1 *fweight_cospim_v23 = (TH1D*)fweight_v23->Get("cospim_woK0_woSid_won_ratio");
-  fweight_cospim_v23->SetName("fweight_cospim_v23");
-  fweight_cospim_v23->Smooth(); //
-  TH1 *fweight_cosn_v23 = (TH1D*)fweight_v23->Get("cosn_woK0_woSid_won_ratio");
-  fweight_cosn_v23->SetName("fweight_cosn_v23");
-  fweight_cosn_v23->Smooth(); //
-  TH1 *fweight_cospippim_v23 = (TH1D*)fweight_v23->Get("cospippim_woK0_woSid_won_ratio");
-  fweight_cospippim_v23->SetName("fweight_cospippim_v23");
-  fweight_cospippim_v23->Smooth(); //
-  TH1 *fweight_phinpip_v23 = (TH1D*)fweight_v23->Get("phinpip_woK0_woSid_won_ratio");
-  fweight_phinpip_v23->SetName("fweight_phinpip_v23");
-  fweight_phinpip_v23->Smooth();
-  TH1 *fweight_phinpim_v23 = (TH1D*)fweight_v23->Get("phinpim_woK0_woSid_won_ratio");
-  fweight_phinpim_v23->SetName("fweight_phinpim_v23");
-  fweight_phinpim_v23->Smooth();
-  TH1 *fweight_MMom_v23 = (TH1D*)fweight_v23->Get("MMom_woK0_woSid_won_ratio");
-  fweight_MMom_v23->SetName("fweight_MMom_v23");
-  fweight_MMom_v23->Smooth();
-
-  TH1 *fweight_pipmom_wK0_v23 = (TH1D*)fweight_v23->Get("pipmom_wK0_woSid_won_ratio");
-  fweight_pipmom_wK0_v23->SetName("fweight_pipmom_wK0_v23");
-  fweight_pipmom_wK0_v23->Smooth(); //
-  TH1 *fweight_pimmom_wK0_v23 = (TH1D*)fweight_v23->Get("pimmom_wK0_woSid_won_ratio");
-  fweight_pimmom_wK0_v23->SetName("fweight_pimmom_wK0_v23");
-  fweight_pimmom_wK0_v23->Smooth(); //
-  TH1 *fweight_nmom_wK0_v23 = (TH1D*)fweight_v23->Get("nmom_wK0_woSid_won_ratio");
-  fweight_nmom_wK0_v23->SetName("fweight_nmom_wK0_v23");
-  //fweight_nmom_wK0_v23->Smooth(); //
-  TH1 *fweight_cospip_wK0_v23 = (TH1D*)fweight_v23->Get("cospip_wK0_woSid_won_ratio");
-  fweight_cospip_wK0_v23->SetName("fweight_cospip_wK0_v23");
-  fweight_cospip_wK0_v23->Smooth(); //
-  TH1 *fweight_cospim_wK0_v23 = (TH1D*)fweight_v23->Get("cospim_wK0_woSid_won_ratio");
-  fweight_cospim_wK0_v23->SetName("fweight_cospim_wK0_v23");
-  fweight_cospim_wK0_v23->Smooth(); //
-  TH1 *fweight_cosn_wK0_v23 = (TH1D*)fweight_v23->Get("cosn_wK0_woSid_won_ratio");
-  fweight_cosn_wK0_v23->SetName("fweight_cosn_wK0_v23");
-  fweight_cosn_wK0_v23->Smooth(); //
-  TH1 *fweight_cospippim_wK0_v23 = (TH1D*)fweight_v23->Get("cospippim_wK0_woSid_won_ratio");
-  fweight_cospippim_wK0_v23->SetName("fweight_cospippim_wK0_v23");
-  fweight_cospippim_wK0_v23->Smooth(); //
-  TH1 *fweight_phinpip_wK0_v23 = (TH1D*)fweight_v23->Get("phinpip_wK0_woSid_won_ratio");
-  fweight_phinpip_wK0_v23->SetName("fweight_phinpip_wK0_v23");
-  fweight_phinpip_wK0_v23->Smooth();
-  TH1 *fweight_phinpim_wK0_v23 = (TH1D*)fweight_v23->Get("phinpim_wK0_woSid_won_ratio");
-  fweight_phinpim_wK0_v23->SetName("fweight_phinpim_wK0_v23");
-  fweight_phinpim_wK0_v23->Smooth();
-  TH1 *fweight_MMom_wK0_v23 = (TH1D*)fweight_v23->Get("MMom_wK0_woSid_won_ratio");
-  fweight_MMom_wK0_v23->SetName("fweight_MMom_wK0_v23");
-  fweight_MMom_wK0_v23->Smooth();
-
-
-
-
-  /*
-  TH1 *fweight_cospip_v200 = (TH1D*)fweight_v200->Get("cospip_woK0_woSid_won_ratio");
-  fweight_cospip_v200->SetName("fweight_cospip_v200");
-  fweight_cospip_v200->Smooth(); //
-  TH1 *fweight_cospip_wK0_v200 = (TH1D*)fweight_v200->Get("cospip_wK0_woSid_won_ratio");
-  fweight_cospip_wK0_v200->SetName("fweight_cospip_wK0_v200");
-  fweight_cospip_wK0_v200->Smooth(); //
-
-  TFile *fweight_v201 = new TFile("../simpost/comp_fakedata_out_v201.root","READ");
-  TH1 *fweight_cospim_v201 = (TH1D*)fweight_v201->Get("cospim_woK0_woSid_won_ratio");
-  fweight_cospim_v201->SetName("fweight_cospim_v201");
-  fweight_cospim_v201->Smooth(); //
-
-  TH1 *fweight_cospim_wK0_v201 = (TH1D*)fweight_v201->Get("cospim_wK0_woSid_won_ratio");
-  fweight_cospim_wK0_v201->SetName("fweight_cospim_wK0_v201");
-  fweight_cospim_wK0_v201->Smooth(); //
-
-  TFile *fweight_v202 = new TFile("../simpost/comp_fakedata_out_v202.root","READ");
-  TH1 *fweight_cosn_v202 = (TH1D*)fweight_v202->Get("cosn_woK0_woSid_won_ratio");
-  fweight_cosn_v202->SetName("fweight_cosn_v202");
-  fweight_cosn_v202->Smooth(); //
-  TH1 *fweight_cosn_wK0_v202 = (TH1D*)fweight_v202->Get("cosn_wK0_woSid_won_ratio");
-  fweight_cosn_wK0_v202->SetName("fweight_cosn_wK0_v202");
-
-  TFile *fweight_v203 = new TFile("../simpost/comp_fakedata_out_v203.root","READ");
-  TH1 *fweight_pipmom_v203 = (TH1D*)fweight_v203->Get("pipmom_woK0_woSid_won_ratio");
-  fweight_pipmom_v203->SetName("fweight_pipmom_v203");
-  fweight_pipmom_v203->Smooth(); //
-  TH1 *fweight_pipmom_wK0_v203 = (TH1D*)fweight_v203->Get("pipmom_wK0_woSid_won_ratio");
-  fweight_pipmom_wK0_v203->SetName("fweight_pipmom_wK0_v203");
-  fweight_pipmom_wK0_v203->Smooth(); //
-
-  TFile *fweight_v204 = new TFile("../simpost/comp_fakedata_out_v204.root","READ");
-  TH1 *fweight_pimmom_v204 = (TH1D*)fweight_v204->Get("pimmom_woK0_woSid_won_ratio");
-  fweight_pimmom_v204->SetName("fweight_pimmom_v204");
-  fweight_pimmom_v204->Smooth(); //
-  TH1 *fweight_pimmom_wK0_v204 = (TH1D*)fweight_v204->Get("pimmom_wK0_woSid_won_ratio");
-  fweight_pimmom_wK0_v204->SetName("fweight_pimmom_wK0_v204");
-  fweight_pimmom_wK0_v204->Smooth(); //
-
-  TFile *fweight_v205 = new TFile("../simpost/comp_fakedata_out_v205.root","READ");
-  TH1 *fweight_nmom_v205 = (TH1D*)fweight_v205->Get("nmom_woK0_woSid_won_ratio");
-  fweight_nmom_v205->SetName("fweight_nmom_v205");
-  TH1 *fweight_nmom_wK0_v205 = (TH1D*)fweight_v205->Get("nmom_wK0_woSid_won_ratio");
-  fweight_nmom_wK0_v205->SetName("fweight_nmom_wK0_v205");
-
-  TF1 *fweight_MMnmiss_v206 = new TF1("fweight_MMnmiss_v206",func_MMnmiss,0,1.5,18);
-  fweight_MMnmiss_v206->SetParameters(param_MMnmiss);
-  TF1 *fweight_MMnmiss_wK0_v206 = new TF1("fweight_MMnmiss_wK0_v206",func_MMnmiss_wK0,0,1.5,10);
-  fweight_MMnmiss_wK0_v206->SetParameters(param_MMnmiss_wK0);
-
-
-  TFile *fweight_v207 = new TFile("../simpost/comp_fakedata_out_v207.root","READ");
-  TH1 *fweight_MMom_v207 = (TH1D*)fweight_v207->Get("MMom_woK0_woSid_won_ratio");
-  fweight_MMom_v207->SetName("fweight_MMom_v207");
-  fweight_MMom_v207->Smooth();
-  TH1 *fweight_MMom_wK0_v207 = (TH1D*)fweight_v207->Get("MMom_wK0_woSid_won_ratio");
-  fweight_MMom_wK0_v207->SetName("fweight_MMom_wK0_v207");
-  fweight_MMom_wK0_v207->Smooth();
-
-  TFile *fweight_v208 = new TFile("../simpost/comp_fakedata_out_v208.root","READ");
-  TF1 *fweight_IMpippim_v208 = new TF1("fweight_IMpippim_v208",func_IMpippim,0,0.98,7);
-  fweight_IMpippim_v208->SetParameters(param_IMpippim);
-  TH1 *fweight_IMpippim_wK0_v208 = (TH1D*)fweight_v208->Get("IMpippim_wK0_woSid_won_ratio");
-  fweight_IMpippim_wK0_v208->SetName("fweight_IMpippim_wK0_v208");
-  fweight_IMpippim_wK0_v208->Smooth();
-
-  TFile *fweight_v209 = new TFile("../simpost/comp_fakedata_out_v209.root","READ");
-  TH1 *fweight_IMnpipi_v209 = (TH1D*)fweight_v209->Get("IMnpipi_woK0_woSid_won_ratio");
-  fweight_IMnpipi_v209->SetName("fweight_IMnpipi_v209");
-  fweight_IMnpipi_v209->Smooth();
-  TH1 *fweight_IMnpipi_wK0_v209 = (TH1D*)fweight_v209->Get("IMnpipi_wK0_woSid_won_ratio");
-  fweight_IMnpipi_wK0_v209->SetName("fweight_IMnpipi_wK0_v209");
-  fweight_IMnpipi_wK0_v209->Smooth();
-
-
-  TFile *fweight_v210 = new TFile("../simpost/comp_fakedata_out_v210.root","READ");
-  TH1 *fweight_phinpip_v210 = (TH1D*)fweight_v210->Get("phinpip_woK0_woSid_won_ratio");
-  fweight_phinpip_v210->SetName("fweight_phinpip_v210");
-  fweight_phinpip_v210->Smooth();
-  TH1 *fweight_phinpip_wK0_v210 = (TH1D*)fweight_v210->Get("phinpip_wK0_woSid_won_ratio");
-  fweight_phinpip_wK0_v210->SetName("fweight_phinpip_wK0_v210");
-  fweight_phinpip_wK0_v210->Smooth();
-
-  TFile *fweight_v211 = new TFile("../simpost/comp_fakedata_out_v211.root","READ");
-  TH1 *fweight_phinpim_v211 = (TH1D*)fweight_v211->Get("phinpim_woK0_woSid_won_ratio");
-  fweight_phinpim_v211->SetName("fweight_phinpim_v211");
-  fweight_phinpim_v211->Smooth();
-  TH1 *fweight_phinpim_wK0_v211 = (TH1D*)fweight_v211->Get("phinpim_wK0_woSid_won_ratio");
-  fweight_phinpim_wK0_v211->SetName("fweight_phinpim_wK0_v211");
-  fweight_phinpim_wK0_v211->Smooth();
-
-  TFile *fweight_v212 = new TFile("../simpost/comp_fakedata_out_v212.root","READ");
-  TH1 *fweight_pipmom_v212 = (TH1D*)fweight_v212->Get("pipmom_woK0_woSid_won_ratio");
-  fweight_pipmom_v212->SetName("fweight_pipmom_v212");
-  fweight_pipmom_v212->Smooth(); //
-  TH1 *fweight_pipmom_wK0_v212 = (TH1D*)fweight_v212->Get("pipmom_wK0_woSid_won_ratio");
-  fweight_pipmom_wK0_v212->SetName("fweight_pipmom_wK0_v212");
-  fweight_pipmom_wK0_v212->Smooth(); //
-
-  TFile *fweight_v213 = new TFile("../simpost/comp_fakedata_out_v213.root","READ");
-  TH1 *fweight_pimmom_v213 = (TH1D*)fweight_v213->Get("pimmom_woK0_woSid_won_ratio");
-  fweight_pimmom_v213->SetName("fweight_pimmom_v213");
-  fweight_pimmom_v213->Smooth(); //
-  TH1 *fweight_pimmom_wK0_v213 = (TH1D*)fweight_v213->Get("pimmom_wK0_woSid_won_ratio");
-  fweight_pimmom_wK0_v213->SetName("fweight_pimmom_wK0_v213");
-  fweight_pimmom_wK0_v213->Smooth(); //
-
-  TFile *fweight_v214 = new TFile("../simpost/comp_fakedata_out_v214.root","READ");
-  TH1 *fweight_nmom_v214 = (TH1D*)fweight_v214->Get("nmom_woK0_woSid_won_ratio");
-  fweight_nmom_v214->SetName("fweight_nmom_v214");
-  TH1 *fweight_nmom_wK0_v214 = (TH1D*)fweight_v214->Get("nmom_wK0_woSid_won_ratio");
-  fweight_nmom_wK0_v214->SetName("fweight_nmom_wK0_v214");
-
-  TFile *fweight_v215 = new TFile("../simpost/comp_fakedata_out_v215.root","READ");
-  TH1 *fweight_Mompippim_v215 = (TH1D*)fweight_v215->Get("Mompippim_woK0_woSid_won_ratio");
-  fweight_Mompippim_v215->SetName("fweight_Mompippim_v215");
-  fweight_Mompippim_v215->Smooth(); //
-  TH1 *fweight_Mompippim_wK0_v215 = (TH1D*)fweight_v215->Get("Mompippim_wK0_woSid_won_ratio");
-  fweight_Mompippim_wK0_v215->SetName("fweight_Mompippim_wK0_v215");
-  fweight_Mompippim_wK0_v215->Smooth(); //
-
-  TF1 *fweight_MMnmiss_v216 = new TF1("fweight_MMnmiss_v216",func_MMnmiss,0,1.5,18);
-  fweight_MMnmiss_v216->SetParameters(param_MMnmiss_corr);
-  TF1 *fweight_MMnmiss_wK0_v216 = new TF1("fweight_MMnmiss_wK0_v216",func_MMnmiss_wK0,0,1.5,10);
-  fweight_MMnmiss_wK0_v216->SetParameters(param_MMnmiss_wK0_corr);
-
-
-  TFile *fweight_v217 = new TFile("../simpost/comp_fakedata_out_v217.root","READ");
-  TH1 *fweight_MMom_v217 = (TH1D*)fweight_v217->Get("MMom_woK0_woSid_won_ratio");
-  fweight_MMom_v217->SetName("fweight_MMom_v217");
-  fweight_MMom_v217->Smooth();
-  TH1 *fweight_MMom_wK0_v217 = (TH1D*)fweight_v217->Get("MMom_wK0_woSid_won_ratio");
-  fweight_MMom_wK0_v217->SetName("fweight_MMom_wK0_v217");
-  fweight_MMom_wK0_v217->Smooth();
-
-
-  TFile *fweight_v218 = new TFile("../simpost/comp_fakedata_out_v218.root","READ");
-  TH1 *fweight_cospip_v218 = (TH1D*)fweight_v218->Get("cospip_woK0_woSid_won_ratio");
-  fweight_cospip_v218->SetName("fweight_cospip_v218");
-  fweight_cospip_v218->Smooth(); //
-  TH1 *fweight_cospip_wK0_v218 = (TH1D*)fweight_v218->Get("cospip_wK0_woSid_won_ratio");
-  fweight_cospip_wK0_v218->SetName("fweight_cospip_wK0_v218");
-  fweight_cospip_wK0_v218->Smooth(); //
-
-  TFile *fweight_v219 = new TFile("../simpost/comp_fakedata_out_v219.root","READ");
-  TH1 *fweight_cosn_v219 = (TH1D*)fweight_v219->Get("cosn_woK0_woSid_won_ratio");
-  fweight_cosn_v219->SetName("fweight_cosn_v219");
-  fweight_cosn_v219->Smooth(); //
-  TH1 *fweight_cosn_wK0_v219 = (TH1D*)fweight_v219->Get("cosn_wK0_woSid_won_ratio");
-  fweight_cosn_wK0_v219->SetName("fweight_cosn_wK0_v219");
-  fweight_cosn_wK0_v219->Smooth(); //
-
-
-  TF1 *fweight_IMnpim_v220  = new TF1("fweight_IMnpim_v220",func_IMnpim,1.06,2.0,8);
-  fweight_IMnpim_v220->SetParameters(param_IMnpim);
-
-  TF1 *fweight_IMnpim_wK0_v220  = new TF1("fweight_IMnpim_wK0_v220",func_IMnpim,1.06,2.0,8);
-  fweight_IMnpim_wK0_v220->SetParameters(param_IMnpim_wK0);
-  */
-
-  /*
-  TFile *fweight_v107 = new TFile("../simpost/comp_fakedata_out_v107.root","READ");
-  TF1 *fweight_IMpippim_v107 = new TF1("fweight_IMpippim_v107",func_IMpippim,0,0.98,7);
-  fweight_IMpippim_v107->SetParameters(param_IMpippim);
-
-  TH1 *fweight_IMpippim_wK0_v107 = (TH1D*)fweight_v107->Get("IMpippim_wK0_woSid_won_ratio");
-  fweight_IMpippim_wK0_v107->SetName("fweight_IMpippim_wK0_v107");
-  fweight_IMpippim_wK0_v107->Smooth();
-
-
-  TFile *fweight_v109 = new TFile("../simpost/comp_fakedata_out_v109.root","READ");
-  TH1 *fweight_MMom_v109 = (TH1D*)fweight_v109->Get("MMom_woK0_woSid_won_ratio");
-  fweight_MMom_v109->SetName("fweight_MMom_v109");
-  fweight_MMom_v109->Smooth();
-  TH1 *fweight_MMom_wK0_v109 = (TH1D*)fweight_v109->Get("MMom_wK0_woSid_won_ratio");
-  fweight_MMom_wK0_v109->SetName("fweight_MMom_wK0_v109");
-  fweight_MMom_wK0_v109->Smooth();
-  */
 
   /*
   //v3
@@ -1017,6 +611,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* q_IMnpipi_wK0_n;
   TH2F* q_IMnpipi_woK0_woSid;
   TH2F* q_IMnpipi_woK0_woSid_won;
+  TH2F* q_nmom_woK0_woSid_won;
   TH2F* q_IMnpipi_wK0_wSid_n_Sp;
   TH2F* q_IMnpipi_woK0_wSid_n_Sp;
   TH2F* q_IMpiSigma_wSid_n_Sp_genacc;//fine bins
@@ -1047,6 +642,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* q_IMnpipi_wSid_n_Sm_sidewide[nzone];//
   TH2F* q_IMnpipi_woK0_wSid_n_Sm_sidewide[nzone];//
   TH2F* q_IMnpipi_wK0_woSid_won;
+  TH2F* q_nmom_wK0_woSid_won;
   TH2F* q_IMnpipi_wK0_woSidn_won;
   TH2F* q_IMnpipi_woK0_woSidn;
   TH2F* q_IMnpipi_woK0_woSidn_cross;
@@ -1969,6 +1565,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   q_IMnpipi_woK0_woSid_won = new TH2F(Form("q_IMnpipi_woK0_woSid_won"),Form("q_IMnpipi_woK0_woSid_won"), nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_woK0_woSid_won->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_woK0_woSid_won->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_nmom_woK0_woSid_won = new TH2F("q_nmom_woK0_woSid_won","q_nmom_woK0_woSid_won", 100,0,1, nbinq,0,1.5);
+  q_nmom_woK0_woSid_won->SetXTitle("nmom [GeV/c]");
+  q_nmom_woK0_woSid_won->SetYTitle("Mom. Transfer [GeV/c]");
 
   q_IMnpipi_wK0_wSid_n_Sp = new TH2F(Form("q_IMnpipi_wK0_wSid_n_Sp"),Form("q_IMnpipi_wK0_wSid_n_Sp"), nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_wK0_wSid_n_Sp->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -2054,6 +1654,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   q_IMnpipi_wK0_woSid_won = new TH2F("q_IMnpipi_wK0_woSid_won","q_IMnpipi_wK0_woSid_won", nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_wK0_woSid_won->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_wK0_woSid_won->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_nmom_wK0_woSid_won = new TH2F("q_nmom_wK0_woSid_won","q_nmom_wK0_woSid_won", 100,0,1, nbinq,0,1.5);
+  q_nmom_wK0_woSid_won->SetXTitle("nmom [GeV/c]");
+  q_nmom_wK0_woSid_won->SetYTitle("Mom. Transfer [GeV/c]");
 
   q_IMnpipi_wK0_woSidn_won = new TH2F("q_IMnpipi_wK0_woSidn_won","q_IMnpipi_wK0_woSidn_won", nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_wK0_woSidn_won->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -3430,26 +3034,61 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           weight *= fweight_q_v300->Eval(qkn.P()); 
           weight *= fweight_MMnmiss_v301->Eval(nmiss_mass); 
           weight *= fweight_q_v302->Eval(qkn.P());
-          weight *= fweight_IMnpipi_v303->Interpolate(LVec_pip_pim_n.M()); 
+          weight *= fweight_nmom_v303->Eval((*LVec_n).P());
           weight *= fweight_q_v304->Eval(qkn.P()); 
-          weight *= fweight_MMnmiss_v305->Eval(nmiss_mass); 
-          weight *= fweight_q_v306->Eval(qkn.P()); 
-          weight *= fweight_Mompippim_v307->Eval(LVec_pip_pim.P()); 
-          weight *= fweight_MMnmiss_v308->Eval(nmiss_mass); 
-          weight *= fweight_q_v309->Eval(qkn.P()); 
-          weight *= fweight_IMnpipi_v310->Interpolate(LVec_pip_pim_n.M()); 
+          weight *= fweight_nmom_v305->Eval((*LVec_n).P());
+          weight *= fweight_IMpippim_v306->Eval(LVec_pip_pim.M());
+          weight *= fweight_IMnpip_v307->Eval(LVec_pip_n.M()); 
+          weight *= fweight_IMnpim_v308->Eval(LVec_pim_n.M()); 
+          
+          //weight *= fweight_IMnpipi_v303->Interpolate(LVec_pip_pim_n.M()); 
+          //weight *= fweight_MMnmiss_v305->Eval(nmiss_mass); 
+          //weight *= fweight_q_v306->Eval(qkn.P()); 
+          //weight *= fweight_nmom_v308->Eval((*LVec_n).P());
+          //weight *= fweight_q_v309->Eval(qkn.P()); 
+          //weight *= fweight_MMnmiss_v310->Eval(nmiss_mass); 
+          //weight *= fweight_IMnpip_v311->Eval(LVec_pip_n.M()); 
+          //weight *= fweight_IMnpim_v312->Eval(LVec_pim_n.M()); 
+          //weight *= fweight_q_v313->Eval(qkn.P()); 
+          //weight *= fweight_MMnmiss_v314->Eval(nmiss_mass); 
+          //weight *= fweight_IMnpipi_v315->Interpolate(LVec_pip_pim_n.M()); 
+          //weight *= fweight_nmom_v316->Eval((*LVec_n).P());
+          //weight *= fweight_q_v317->Eval(qkn.P()); 
+          //weight *= fweight_Mompippim_v307->Eval(LVec_pip_pim.P()); 
+          //weight *= fweight_MMnmiss_v308->Eval(nmiss_mass); 
+          //weight *= fweight_q_v309->Eval(qkn.P()); 
+          //weight *= fweight_IMnpipi_v310->Interpolate(LVec_pip_pim_n.M()); 
+          //weight *= fweight_Mompippim_v311->Eval(LVec_pip_pim.P()); 
+          //weight *= fweight_IMnpip_v312->Eval(LVec_pip_n.M()); 
         } else { //wK0
           weight *= fweight_q_wK0_v300->Eval(qkn.P()); 
           weight *= fweight_MMnmiss_wK0_v301->Eval(nmiss_mass); 
           weight *= fweight_q_wK0_v302->Eval(qkn.P()); 
-          weight *= fweight_IMnpipi_wK0_v303->Interpolate(LVec_pip_pim_n.M()); 
+          weight *= fweight_nmom_wK0_v303->Eval((*LVec_n).P());
           weight *= fweight_q_wK0_v304->Eval(qkn.P()); 
-          weight *= fweight_MMnmiss_wK0_v305->Eval(nmiss_mass); 
-          weight *= fweight_q_wK0_v306->Eval(qkn.P()); 
-          weight *= fweight_Mompippim_wK0_v307->Eval(LVec_pip_pim.P()); 
-          weight *= fweight_MMnmiss_wK0_v308->Eval(nmiss_mass); 
-          weight *= fweight_q_wK0_v309->Eval(qkn.P()); 
-          weight *= fweight_IMnpipi_wK0_v310->Interpolate(LVec_pip_pim_n.M()); 
+          weight *= fweight_nmom_wK0_v305->Eval((*LVec_n).P());
+          //->v306 IMpippim (N/A)
+          weight *= fweight_IMnpip_wK0_v307->Eval(LVec_pip_n.M()); 
+          weight *= fweight_IMnpim_wK0_v308->Eval(LVec_pim_n.M()); 
+          
+          //weight *= fweight_IMnpipi_wK0_v303->Interpolate(LVec_pip_pim_n.M()); 
+          //weight *= fweight_MMnmiss_wK0_v305->Eval(nmiss_mass); 
+          //weight *= fweight_q_wK0_v306->Eval(qkn.P()); 
+          //->v307 IMpippim (N/A)
+          //weight *= fweight_q_wK0_v309->Eval(qkn.P()); 
+          //weight *= fweight_MMnmiss_wK0_v310->Eval(nmiss_mass); 
+          //weight *= fweight_IMnpip_wK0_v311->Eval(LVec_pip_n.M()); 
+          //weight *= fweight_IMnpim_wK0_v312->Eval(LVec_pim_n.M()); 
+          //weight *= fweight_q_wK0_v313->Eval(qkn.P()); 
+          //weight *= fweight_MMnmiss_wK0_v314->Eval(nmiss_mass); 
+          //weight *= fweight_IMnpipi_wK0_v315->Eval(LVec_pip_pim_n.M()); 
+          //weight *= fweight_nmom_wK0_v316->Eval((*LVec_n).P());
+          //weight *= fweight_q_wK0_v317->Eval(qkn.P()); 
+          //weight *= fweight_Mompippim_wK0_v307->Eval(LVec_pip_pim.P()); 
+          //weight *= fweight_MMnmiss_wK0_v308->Eval(nmiss_mass); 
+          //weight *= fweight_IMnpipi_wK0_v310->Interpolate(LVec_pip_pim_n.M()); 
+          //weight *= fweight_Mompippim_wK0_v311->Eval(LVec_pip_pim.P()); 
+          //weight *= fweight_IMnpip_wK0_v312->Eval(LVec_pip_n.M()); 
         }
       }
     }//MCweighting
@@ -3483,11 +3122,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     }
     if(NBetaOK && NdEOK) {
 
-      //std::cout << (*LVec_beam).Px()<< "    " << (*LVec_beam).Py()<< "   " << (*LVec_beam).Pz() << std::endl;
-      //std::cout << (*LVec_pip).Px() << "    " << (*LVec_pip).Py() << "   " << (*LVec_pip).Pz() << std::endl;
-      //std::cout << (*LVec_pim).Px() << "    " << (*LVec_pim).Py() << "   " << (*LVec_pim).Pz() << std::endl;
-      //std::cout << (*LVec_n).Px()   << "    " << (*LVec_n).Py() << "   " << (*LVec_n).Pz() << std::endl;
-      //std::cout << std::endl;
       CDHz_nmom_fid->Fill((*LVec_n).P(),(*CDH_Pos).z());
       MMom_MMass->Fill(LVec_nmiss.M(),LVec_nmiss.P(),weight);
       IMnpim_IMnpip_dE->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
@@ -3567,6 +3201,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
             MMnmiss_IMnpipi_wK0_woSid_won->Fill(LVec_pip_pim_n.M(),nmiss_mass,weight);
             MMnmiss_Momnpipi_wK0_woSid_won->Fill(LVec_pip_pim_n.P(),nmiss_mass,weight);
             q_IMnpipi_wK0_woSid_won->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+            q_nmom_wK0_woSid_won->Fill((*LVec_n).P(),qkn.P(),weight);
             nmom_MMnmiss_wK0_woSid_won->Fill(nmiss_mass,(*LVec_n).P(),weight);
             MMnmiss_Mompippim_dE_wK0_woSid_won->Fill(LVec_pip_pim.P(),nmiss_mass,weight);
             MMom_MMass_wK0_woSid_won->Fill(LVec_nmiss.M(),LVec_nmiss.P(),weight);
@@ -3919,6 +3554,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           MMnmiss_IMnpipi_woK0_woSid_won->Fill(LVec_pip_pim_n.M(),nmiss_mass,weight);
           MMnmiss_Momnpipi_woK0_woSid_won->Fill(LVec_pip_pim_n.P(),nmiss_mass,weight);
           q_IMnpipi_woK0_woSid_won->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+          q_nmom_woK0_woSid_won->Fill((*LVec_n).P(),qkn.P(),weight);
           nmom_MMnmiss_woK0_woSid_won->Fill(nmiss_mass,(*LVec_n).P(),weight);
           MMnmiss_Mompippim_dE_woK0_woSid_won->Fill(LVec_pip_pim.P(),nmiss_mass,weight);
           MMom_MMass_woK0_woSid_won->Fill(LVec_nmiss.M(),LVec_nmiss.P(),weight);
@@ -5499,7 +5135,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   cMMom_MMass_woK0_wSid->cd();
   MMom_MMass_woK0_wSid->Draw("colz");
 
-
+  /*
   TCanvas *cMMom_MMass_woK0_wSid_px  = new TCanvas("cMMom_MMass_woK0_wSid_px","MMom_MMass_woK0_wSid_px");
   cMMom_MMass_woK0_wSid_px->cd();
   //TH1D *MMom_MMass_wSid_px = MMom_MMass_wSid->ProjectionX();
@@ -5512,17 +5148,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMom_MMass_woK0_wSid_px_clone1->GetXaxis()->SetRangeUser(anacuts::neutron_MIN,anacuts::neutron_MAX);
   MMom_MMass_woK0_wSid_px_clone1->SetFillColor(4);
   MMom_MMass_woK0_wSid_px_clone1->Draw("HEsame");
-
+  */
 
 
   //TCanvas *cMMom_MMass_woK0_px_sup = new TCanvas("cMMom_MMass_woK0_px_sup","MMom_MMass_woK0_px_sup");
   //MMom_MMass_woK0_px->Draw();
-  TH1D *MMom_MMass_woK0_wSid_px_clone = (TH1D*)MMom_MMass_woK0_wSid_px->Clone();
+  //TH1D *MMom_MMass_woK0_wSid_px_clone = (TH1D*)MMom_MMass_woK0_wSid_px->Clone();
   //MMom_MMass_woK0_wSid_px_clone->SetLineColor(4);
   //cMMom_MMass_woK0_px_sup->cd();
-  MMom_MMass_woK0_wSid_px_clone->SetTitle("Missing Mass d(K^{-},#pi^{+}#pi^{-}n)\"X\"");
+  //MMom_MMass_woK0_wSid_px_clone->SetTitle("Missing Mass d(K^{-},#pi^{+}#pi^{-}n)\"X\"");
   //MMom_MMass_woK0_wSid_px_clone->Draw("");
-
+  /*
   TCanvas *cMMom_MMass_woK0_py = new TCanvas("cMMom_MMass_woK0_py","MMom_MMass_woK0_py");
   TH1D *MMom_MMass_woK0_py = MMom_MMass_woK0->ProjectionY();
   TH1D *MMom_MMass_woK0_wSid_py = MMom_MMass_woK0_wSid->ProjectionY();
@@ -5532,7 +5168,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   cMMom_MMass_woK0_py->cd();
   MMom_MMass_woK0_wSid_py_clone->SetTitle("Missing Mom. d(K^{-},#pi^{+}#pi^{-}n)\"X\"");
   MMom_MMass_woK0_wSid_py_clone->Draw("");
-
+  */
   //acceptance calculation
   TFile *facc_Sp = new TFile("../simpost/acc_Sp.root","READ");
   TFile *facc_Sm = new TFile("../simpost/acc_Sm.root","READ");
