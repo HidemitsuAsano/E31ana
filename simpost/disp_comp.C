@@ -149,7 +149,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   cIMnpipi->cd(4);
   IMnpipi_wK0_woSid_won_ratio->Draw("HE");
 
-
+  /*
   TH1D* Momnpipi_woK0_woSid_won_rdata = (TH1D*)f->Get("Momnpipi_woK0_woSid_won_rdata");
   TH1D* Momnpipi_woK0_woSid_won_mc = (TH1D*)f->Get("Momnpipi_woK0_woSid_won_mc");
   TH1D* Momnpipi_wK0_woSid_won_rdata = (TH1D*)f->Get("Momnpipi_wK0_woSid_won_rdata");
@@ -169,6 +169,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   Momnpipi_woK0_woSid_won_ratio->Draw("HE");
   cMomnpipi->cd(4);
   Momnpipi_wK0_woSid_won_ratio->Draw("HE");
+  */
 
   TH1D* IMpippim_woK0_woSid_won_rdata = (TH1D*)f->Get("IMpippim_woK0_woSid_won_rdata");
   TH1D* IMpippim_woK0_woSid_won_mc = (TH1D*)f->Get("IMpippim_woK0_woSid_won_mc");
@@ -210,6 +211,26 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   Mompippim_woK0_woSid_won_ratio->Draw("HE");
   cMompippim->cd(4);
   Mompippim_wK0_woSid_won_ratio->Draw("HE");
+
+  TH1D* nmom_woK0_woSid_won_rdata = (TH1D*)f->Get("nmom_woK0_woSid_won_rdata");
+  TH1D* nmom_woK0_woSid_won_mc = (TH1D*)f->Get("nmom_woK0_woSid_won_mc");
+  TH1D* nmom_wK0_woSid_won_rdata = (TH1D*)f->Get("nmom_wK0_woSid_won_rdata");
+  TH1D* nmom_wK0_woSid_won_mc = (TH1D*)f->Get("nmom_wK0_woSid_won_mc");
+  TH1D* nmom_woK0_woSid_won_ratio = (TH1D*)f->Get("nmom_woK0_woSid_won_ratio");
+  TH1D* nmom_wK0_woSid_won_ratio = (TH1D*)f->Get("nmom_wK0_woSid_won_ratio");
+
+  TCanvas *cnmom = new TCanvas("cnmom","cnmom",1000,1000);
+  cnmom->Divide(2,2);
+  cnmom->cd(1);
+  nmom_woK0_woSid_won_rdata->Draw("HE");
+  nmom_woK0_woSid_won_mc->Draw("HEsame");
+  cnmom->cd(2);
+  nmom_wK0_woSid_won_rdata->Draw("HE");
+  nmom_wK0_woSid_won_mc->Draw("HEsame");
+  cnmom->cd(3);
+  nmom_woK0_woSid_won_ratio->Draw("HE");
+  cnmom->cd(4);
+  nmom_wK0_woSid_won_ratio->Draw("HE");
 
 
 }
