@@ -85,7 +85,6 @@ void GenPiPinFakeK0(int seed=1){
 
 	if (!gROOT->GetClass("TGenPhaseSpace")) gSystem->Load("libPhysics");
 
-   
   // std::string treefile_name("fakepippimn_pippimn.root");
   TFile *treefile = new TFile( Form("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippimK0_pippimn%d.root",seed), "recreate");
   std::cout << treefile->GetName() << std::endl;
