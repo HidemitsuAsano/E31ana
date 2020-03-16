@@ -8,7 +8,7 @@
 #include "TMath.h"
 #include "TFile.h"
 #include "TCanvas.h"
-
+#include <fstream>
 
 Double_t func_MMnmiss(Double_t *x,Double_t *par)
 {
@@ -73,21 +73,22 @@ Double_t func_MMnmiss_wK0(Double_t *x,Double_t *par)
 }
 
 
-/*
-Double_t func_IMnpip(Double_t *x,Double_t *par)
+
+Double_t func_IMnpipi(Double_t *x,Double_t *par)
 {
-  if(x[0]<1.08) {
-    return 0.;
-  } else if(1.08 <= x[0] && x[0]<1.10) {
-    return par[0]*exp(-0.5*pow((x[0]-par[1])/par[2],2.0));
-  } else if(1.10 <= x[0] && x[0]<1.25) {
-    return exp(par[3]+par[4]*x[0]);
-  } else if(1.25 <= x[0] && x[0]<2.0) {
-    return par[5]*exp(-0.5*pow((x[0]-par[6])/par[7],2.0));
+  if(x[0]<1.19) {
+    return 1.;
+  } else if(1.19 <= x[0] && x[0]<1.35) {
+    //return exp(par[0]+par[1]*x[0]);
+    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0);
+  } else if(1.35 <= x[0] && x[0]<2.0) {
+    return par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0)
+          +par[8]*pow(x[0],4.0)+par[9]*pow(x[0],5.0)+par[10]*pow(x[0],6.0)  
+          +par[11]*pow(x[0],7.0);   
   } else {
-    return 0.;
+    return 1.;
   }
-}*/
+}
 
 Double_t func_IMnpip(Double_t *x,Double_t *par)
 {
@@ -103,10 +104,23 @@ Double_t func_IMnpip(Double_t *x,Double_t *par)
 
 Double_t func_IMnpim(Double_t *x,Double_t *par)
 {
-  if(1.07 <= x[0] && x[0]<1.10) {
-    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0);
-  } else if(1.10 <= x[0] && x[0]<1.68) {
-    return par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0)+par[8]*pow(x[0],4.0);
+  if(1.00 <= x[0] && x[0]<1.11) {
+    //return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0);
+    return par[0]*exp(-0.5*pow(((x[0]-par[1])/par[2]),2.0)); 
+  } else if(1.11 <= x[0] && x[0]<=1.7) {
+    return par[3]+par[4]*x[0]+par[5]*pow(x[0],2.0)+par[6]*pow(x[0],3.0)+par[7]*pow(x[0],4.0);
+  } else {
+    return 1.;
+  }
+}
+
+Double_t func_IMnpim_wK0(Double_t *x,Double_t *par)
+{
+  if(1.00 <= x[0] && x[0]<1.11) {
+    //return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0);
+    return par[0]*exp(-0.5*pow(((x[0]-par[1])/par[2]),2.0)); 
+  } else if(1.11 <= x[0] && x[0]<=1.7) {
+    return par[3]+par[4]*x[0]+par[5]*pow(x[0],2.0)+par[6]*pow(x[0],3.0)+par[7]*pow(x[0],4.0)+par[8]*pow(x[0],5.0);
   } else {
     return 1.;
   }
@@ -1299,25 +1313,24 @@ void comp_fakedata()
   IMnpim_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   IMnpim_woK0_woSid_won_ratio->Draw("HE");
   
-  TF1* pol3_IMnpim_1 = new TF1("pol3_IMnpim_1","pol3",1.00,1.10);
-  pol3_IMnpim_1->SetParameter(0,-390570.);
-  pol3_IMnpim_1->SetParameter(1,107320);
-  pol3_IMnpim_1->SetParameter(2,-982998);
-  pol3_IMnpim_1->SetParameter(3,300137.);
-  IMnpim_woK0_woSid_won_ratio->Fit("pol3_IMnpim_1","R","",1.07,1.10);
+  TF1* evalf_IMnpim_1 = new TF1("evalf_IMnpim_1","par[0]*exp(-0.5*pow(((x[0]-par[1])/par[2]),2.0))",1.00,1.11);
+  evalf_IMnpim_1->SetParameter(0,1.74);
+  evalf_IMnpim_1->SetParameter(1,1.114);
+  evalf_IMnpim_1->SetParameter(2,0.02519);
+  IMnpim_woK0_woSid_won_ratio->Fit("evalf_IMnpim_1","R","",1.00,1.11);
 
-  TF1* pol4_IMnpim_2 = new TF1("pol4_IMnpim_2","pol4",1.10,1.68);
-  pol4_IMnpim_2->SetParameter(0,204.9);
-  pol4_IMnpim_2->SetParameter(1,-545.6);
-  pol4_IMnpim_2->SetParameter(2,550.8);
-  pol4_IMnpim_2->SetParameter(3,-249.5);
-  pol4_IMnpim_2->SetParameter(4,42.7915);
-  IMnpim_woK0_woSid_won_ratio->Fit("pol4_IMnpim_2","R+","",1.10,1.68);
+  TF1* pol4_IMnpim_2 = new TF1("pol4_IMnpim_2","pol4",1.11,1.68);
+  //pol4_IMnpim_2->SetParameter(0,204.9);
+  //pol4_IMnpim_2->SetParameter(1,-545.6);
+  //pol4_IMnpim_2->SetParameter(2,550.8);
+  //pol4_IMnpim_2->SetParameter(3,-249.5);
+  //pol4_IMnpim_2->SetParameter(4,42.7915);
+  IMnpim_woK0_woSid_won_ratio->Fit("pol4_IMnpim_2","R+","",1.11,1.68);
   
   double param_IMnpim[9];
-  pol3_IMnpim_1->GetParameters(&param_IMnpim[0]);
-  pol4_IMnpim_2->GetParameters(&param_IMnpim[4]);
-  TF1 *evalf_IMnpim = new TF1("evalf_IMnpim",func_IMnpim,1.07,2.0,9);
+  evalf_IMnpim_1->GetParameters(&param_IMnpim[0]);
+  pol4_IMnpim_2->GetParameters(&param_IMnpim[3]);
+  TF1 *evalf_IMnpim = new TF1("evalf_IMnpim",func_IMnpim,1.00,2.0,8);
   evalf_IMnpim->SetParameters(param_IMnpim);
   evalf_IMnpim->SetLineColor(4);
   evalf_IMnpim->Draw("same");
@@ -1453,14 +1466,20 @@ void comp_fakedata()
   IMnpipi_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   IMnpipi_woK0_woSid_won_ratio->Draw("HE");
   
-  //TF1 *evalf_IMnpipi_1 = new TF1("evalf_IMnpipi_1","expo",1.26,1.35);
-  //IMnpipi_woK0_woSid_won_ratio->Fit("evalf_IMnpipi_1","R","",1.26,1.35);
-  //TF1 *evalf_IMnpipi_2 = new TF1("evalf_IMnpipi_2","pol5",1.35,2.00);
-  //IMnpipi_woK0_woSid_won_ratio->Fit("evalf_IMnpipi_2","R+","",1.35,2.0);
+  TF1 *evalf_IMnpipi_1 = new TF1("evalf_IMnpipi_1","pol3",1.19,1.35);
+  IMnpipi_woK0_woSid_won_ratio->Fit("evalf_IMnpipi_1","R","",1.19,1.35);
+  TF1 *evalf_IMnpipi_2 = new TF1("evalf_IMnpipi_2","pol7",1.35,2.00);
+  IMnpipi_woK0_woSid_won_ratio->Fit("evalf_IMnpipi_2","R+","",1.35,2.0);
 
-  TF1 *evalf_IMnpipi = new TF1("evalf_IMnpipi","pol7",1.26,1.80);
+  TF1 *evalf_IMnpipi = new TF1("evalf_IMnpipi",func_IMnpipi,1.19,2.0,12);
+  double param_IMnpipi[12];
+  evalf_IMnpipi_1->GetParameters(&param_IMnpipi[0]);
+  evalf_IMnpipi_2->GetParameters(&param_IMnpipi[4]);
+  
+  evalf_IMnpipi->SetParameters(param_IMnpipi); 
+  
   //evalf_IMnpipi->SetTitle("IMnpipi");
-  IMnpipi_woK0_woSid_won_ratio->Fit("evalf_IMnpipi","","",1.26,1.80);
+  //IMnpipi_woK0_woSid_won_ratio->Fit("evalf_IMnpipi","","",1.27,1.80);
 
 
   TH1D* q_woK0_woSid_won_mc = (TH1D*)q_IMnpipi_woK0_woSid_won_mc->ProjectionY("q_woK0_woSid_won_mc");
@@ -1970,7 +1989,6 @@ void comp_fakedata()
   MMnmiss_wK0_woSid_won_ratio->Fit("evalf_MMnmiss_wK0");
   evalf_MMnmiss_wK0->SetLineColor(4);
   evalf_MMnmiss_wK0->Draw("same");
-  evalf_MMnmiss_wK0->Print();
 
 
   TH2D *MMom_MMass_wK0_woSid_won_mc = (TH2D*)MMom_MMass_wK0_woSid_won[1]->Clone("MMom_MMass_wK0_woSid_won_mc");
@@ -2118,20 +2136,19 @@ void comp_fakedata()
   IMnpim_wK0_woSid_won_ratio->Draw("HE");
   
   
-  TF1* pol3_IMnpim_wK0_1 = new TF1("pol3_IMnpim_wK0_1","pol3",1.07,1.10);
-  pol3_IMnpim_wK0_1->SetParameter(0,-32074.9);
-  pol3_IMnpim_wK0_1->SetParameter(1,85205.3);
-  pol3_IMnpim_wK0_1->SetParameter(2,-75374.);
-  pol3_IMnpim_wK0_1->SetParameter(3,22204.);
-  IMnpim_wK0_woSid_won_ratio->Fit("pol3_IMnpim_wK0_1","R","",1.07,1.10);
+  TF1* evalf_IMnpim_wK0_1 = new TF1("evalf_IMnpim_wK0_1","gaus",1.07,1.10);
+  evalf_IMnpim_wK0_1->SetParameter(0,1.895 );
+  evalf_IMnpim_wK0_1->SetParameter(1,1.119);
+  evalf_IMnpim_wK0_1->SetParameter(2,0.02881);
+  IMnpim_wK0_woSid_won_ratio->Fit("evalf_IMnpim_wK0_1","R","",1.00,1.10);
 
-  TF1* pol4_IMnpim_wK0_2 = new TF1("pol4_IMnpim_wK0_2","pol4",1.10,2.00);
-  IMnpim_wK0_woSid_won_ratio->Fit("pol4_IMnpim_wK0_2","R+","",1.10,2.00);
+  TF1* evalf_IMnpim_wK0_2 = new TF1("evalf_IMnpim_wK0_2","pol5",1.10,2.00);
+  IMnpim_wK0_woSid_won_ratio->Fit("evalf_IMnpim_wK0_2","R+","",1.10,2.00);
 
   Double_t param_IMnpim_wK0[9];
-  pol3_IMnpim_wK0_1->GetParameters(&param_IMnpim_wK0[0]);
-  pol4_IMnpim_wK0_2->GetParameters(&param_IMnpim_wK0[4]);
-  TF1 *evalf_IMnpim_wK0 = new TF1("evalf_IMnpim_wK0",func_IMnpim,1.00,2.00,9);
+  evalf_IMnpim_wK0_1->GetParameters(&param_IMnpim_wK0[0]);
+  evalf_IMnpim_wK0_2->GetParameters(&param_IMnpim_wK0[3]);
+  TF1 *evalf_IMnpim_wK0 = new TF1("evalf_IMnpim_wK0",func_IMnpim_wK0,1.00,2.00,9);
   evalf_IMnpim_wK0->SetParameters(param_IMnpim_wK0);
   evalf_IMnpim_wK0->SetLineColor(4);
   evalf_IMnpim_wK0->Draw("same");
@@ -2835,6 +2852,105 @@ void comp_fakedata()
   while( (obj = (TObject*)nexthist2())!=NULL ) {
     obj->Write();
   }
+  
+  std::ofstream os;
+  os.open("param.txt");
+
+  os << "q" << endl;
+  for(int i=0;i<evalf_q->GetNpar();i++){
+    os << evalf_q->GetParameter(i) << ",";
+    os << endl;
+  }
+  os << endl;
+  os << "q_wK0" << endl;
+  for(int i=0;i<evalf_q_wK0->GetNpar();i++){
+    os << evalf_q_wK0->GetParameter(i) << ",";
+    os << endl;
+  }
+  os << endl;
+  
+  os << "MMnmiss" << endl;
+  for(int i=0;i<evalf_MMnmiss->GetNpar();i++){
+    os << evalf_MMnmiss->GetParameter(i) << ",";
+    os << endl;
+  }
+  os << endl;
+  os << "MMnmiss_wK0" << endl;
+  for(int i=0;i<evalf_MMnmiss_wK0->GetNpar();i++){
+    os << evalf_MMnmiss_wK0->GetParameter(i) << ",";
+    os << endl;
+  }
+  os << endl;
+
+  os << "nmom" << endl;
+  for(int i=0;i<evalf_nmom->GetNpar();i++){
+    os << evalf_nmom->GetParameter(i) << ",";
+    os << endl;
+  }
+  os << endl;
+  os << "nmom_wK0" << endl;
+  for(int i=0;i<evalf_nmom_wK0->GetNpar();i++){
+    os << evalf_nmom_wK0->GetParameter(i) << ",";
+    os << endl;
+  }
+  os << endl;
+
+
+  os << "IMpippim" << endl;
+  for(int i=0;i<evalf_IMpippim->GetNpar();i++){
+    os << evalf_IMpippim->GetParameter(i) << ",";
+    os << endl;
+  }
+  os << endl;
+  os << "IMpippim_wK0" << endl;
+  for(int i=0;i<evalf_IMpippim_wK0->GetNpar();i++){
+    os << evalf_IMpippim_wK0->GetParameter(i) << ",";
+    os << endl;
+  }
+  os << endl;
+
+
+  os << "IMnpipi" << endl;
+  for(int i=0;i<evalf_IMnpipi->GetNpar();i++){
+    os << evalf_IMnpipi->GetParameter(i) << ",";
+    os << endl;
+  }
+  os << endl;
+  os << "IMnpipi_wK0" << endl;
+  for(int i=0;i<evalf_IMnpipi_wK0->GetNpar();i++){
+    os << evalf_IMnpipi_wK0->GetParameter(i) << ",";
+    os << endl;
+  }
+  os << endl;
+
+  os << "IMnpip" << endl;
+  for(int i=0;i<evalf_IMnpip->GetNpar();i++){
+    os << evalf_IMnpip->GetParameter(i) << ",";
+    os << endl;
+  }
+  os << endl;
+  os << "IMnpip_wK0" << endl;
+  for(int i=0;i<evalf_IMnpip_wK0->GetNpar();i++){
+    os << evalf_IMnpip_wK0->GetParameter(i) << ",";
+    os << endl;
+  }
+  os << endl;
+  
+  os << "IMnpim" << endl;
+  for(int i=0;i<evalf_IMnpim->GetNpar();i++){
+    os << evalf_IMnpim->GetParameter(i) << ",";
+    os << endl;
+  }
+  os << endl;
+  os << "IMnpim_wK0" << endl;
+  for(int i=0;i<evalf_IMnpim_wK0->GetNpar();i++){
+    os << evalf_IMnpim_wK0->GetParameter(i) << ",";
+    os << endl;
+  }
+  os << endl;
+
+  
+  os.close();
 
   evalf_MMnmiss->Write();
 //  evalf_MMnmiss_corr->Write();
