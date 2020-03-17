@@ -6,10 +6,14 @@ namespace anacuts {
   const double dE_MIN = 2.0;
 
   const double K0_NSigmacut=3.0;
+  const double K0_NSigmacut_narrow=1.5;
   const double K0_center = 0.497855;
   const double K0_sigma = 0.0074845;
   const double pipi_MIN = K0_center - K0_NSigmacut*K0_sigma;
   const double pipi_MAX = K0_center + K0_NSigmacut*K0_sigma;
+  const double pipi_MIN_narrow = K0_center - K0_NSigmacut_narrow*K0_sigma;
+  const double pipi_MAX_narrow = K0_center + K0_NSigmacut_narrow*K0_sigma;
+  
   //const double pipi_MIN = 0.475;
   //const double pipi_MAX = 0.522;
   //const double pipi_MIN = 0.487;// (almost 1.5 sigma)

@@ -2646,6 +2646,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     }
 
     bool K0rejectFlag=false;
+    bool K0rejectFlag_narrow=false;
     bool MissNFlag=false;
     bool MissNwideFlag=false;
     bool NBetaOK=false;
@@ -3026,6 +3027,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
     //K0 rejection using original momentum
     if( (LVec_pip_pim.M()<anacuts::pipi_MIN || anacuts::pipi_MAX<LVec_pip_pim.M())) K0rejectFlag=true;
+    if( (LVec_pip_pim.M()<anacuts::pipi_MIN_narrow || anacuts::pipi_MAX_narrow<LVec_pip_pim.M())) K0rejectFlag_narrow=true;
 
     double weight = 1.0;
     if(IsMCweighting) {
@@ -3039,7 +3041,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           weight *= fweight_nmom_v305->Eval((*LVec_n).P());
           weight *= fweight_IMpippim_v306->Eval(LVec_pip_pim.M());
           weight *= fweight_IMnpip_v307->Eval(LVec_pip_n.M()); 
-          weight *= fweight_IMnpim_v308->Eval(LVec_pim_n.M()); 
+          //weight *= fweight_IMnpim_v308->Eval(LVec_pim_n.M()); 
           
           //weight *= fweight_IMnpipi_v303->Interpolate(LVec_pip_pim_n.M()); 
           //weight *= fweight_MMnmiss_v305->Eval(nmiss_mass); 
@@ -3061,15 +3063,15 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           //weight *= fweight_Mompippim_v311->Eval(LVec_pip_pim.P()); 
           //weight *= fweight_IMnpip_v312->Eval(LVec_pip_n.M()); 
         } else { //wK0
-          weight *= fweight_q_wK0_v300->Eval(qkn.P()); 
-          weight *= fweight_MMnmiss_wK0_v301->Eval(nmiss_mass); 
-          weight *= fweight_q_wK0_v302->Eval(qkn.P()); 
-          weight *= fweight_nmom_wK0_v303->Eval((*LVec_n).P());
-          weight *= fweight_q_wK0_v304->Eval(qkn.P()); 
-          weight *= fweight_nmom_wK0_v305->Eval((*LVec_n).P());
+          //weight *= fweight_q_wK0_v300->Eval(qkn.P()); 
+          //weight *= fweight_MMnmiss_wK0_v301->Eval(nmiss_mass); 
+          //weight *= fweight_q_wK0_v302->Eval(qkn.P()); 
+          //weight *= fweight_nmom_wK0_v303->Eval((*LVec_n).P());
+          //weight *= fweight_q_wK0_v304->Eval(qkn.P()); 
+          //weight *= fweight_nmom_wK0_v305->Eval((*LVec_n).P());
           //->v306 IMpippim (N/A)
-          weight *= fweight_IMnpip_wK0_v307->Eval(LVec_pip_n.M()); 
-          weight *= fweight_IMnpim_wK0_v308->Eval(LVec_pim_n.M()); 
+          //weight *= fweight_IMnpip_wK0_v307->Eval(LVec_pip_n.M()); 
+          //weight *= fweight_IMnpim_wK0_v308->Eval(LVec_pim_n.M()); 
           
           //weight *= fweight_IMnpipi_wK0_v303->Interpolate(LVec_pip_pim_n.M()); 
           //weight *= fweight_MMnmiss_wK0_v305->Eval(nmiss_mass); 
@@ -3189,7 +3191,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
             pimmom_MMnmiss_dE_wK0_woSidn_won->Fill(nmiss_mass,(*LVec_pim).P(),weight);
           }
         }
-        if(!SigmawidePFlag && !SigmawideMFlag) {
+        //17th,Mar. 2020.
+        //applied narrow window to remove \pi^{\pm}\Sigma^{\mp} final states
+        if(!SigmawidePFlag && !SigmawideMFlag && !K0rejectFlag_narrow) { 
           nmom_MMnmiss_wK0_woSid->Fill(nmiss_mass,(*LVec_n).P(),weight);
           if(!MissNwideFlag) {
             MMnmiss_IMnpip_dE_wK0_woSid_won->Fill(LVec_pip_n.M(),nmiss_mass,weight);
