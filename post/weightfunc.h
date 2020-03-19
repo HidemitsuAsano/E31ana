@@ -128,15 +128,26 @@ Double_t param_MMnmiss_wK0_corr[18]={
 };
 
 
-
-
-
-
-
-
-
-
-
+Double_t param_MMnmiss_wK0_corr2[18]={
+1.24054,
+4.09863,
+-32.3319,
+98.914,
+-109.221,
+-32.3324,
+110.896,
+35.7169,
+-130.335,
+54.2821,
+-27.1712,
+52.4349,
+-24.5099,
+101.228,
+-164.906,
+-1.37626,
+113.435,
+-46.5863
+};
 
 
 Double_t func_MMnmiss_wK0(Double_t *x,Double_t *par)
@@ -228,8 +239,17 @@ Double_t param_IMnpip_wK0[9]={
 -334.067
 };
 
-
-
+Double_t param_IMnpip_wK0_corr[9]={
+1576.47,
+-3973.79,
+3342.09,
+-937.169,
+-92.396,
+299.593,
+-352.617,
+181.006,
+-34.3025
+};
 
 Double_t func_IMnpim(Double_t *x,Double_t *par)
 {
@@ -290,6 +310,54 @@ Double_t param_IMnpim_wK0[9]={
 7024.27,
 -992.862
 };
+
+
+Double_t param_IMnpim_wK0_corr[9]={
+1.21442,
+1.0981,
+0.0546432,
+7269.69,
+-27461.6,
+41352.5,
+-31016.6,
+11585.2,
+-1723.58
+};
+
+
+Double_t func_IMnpip_wK0_corr(Double_t *x,Double_t *par)
+{
+   if(1<x[0] && x[0]<1.14){
+     return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0);
+   }else if(1.14<=x[0] && x[0]<=1.30){
+    //pol4
+     return par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0)
+           +par[8]*pow(x[0],4.0);
+   }else if(1.30<x[0] && x[0]<1.71){
+     return par[9]+par[10]*x[0]+par[11]*pow(x[0],2.0)+par[12]*pow(x[0],3.0);
+   }else{
+     return 1;
+   }
+}
+
+
+Double_t param_IMnpip_wK0_corr2[13]={
+  14578.1,
+  -39072.2,
+  34907.8,
+  -10395.1,
+  21331.6,
+  -69746.0,
+  85473.5,
+  -46528.6,
+  9492.76,
+  51.1006,
+  -102.339,
+  69.2752,
+  -15.5523
+};
+
+
 
 Double_t func_MMom(Double_t *x,Double_t *par)
 {
@@ -1088,10 +1156,26 @@ Double_t param_q_wK0_corr3[8]={
 };
 
 Double_t param_q_wK0_corr4[8]={
+0.796584,
+0.287783,
+3.61358,
+-12.8859,
+14.6609,
+-0.811114,
+-7.85312,
+3.38527
 };
 
 
 Double_t param_q_wK0_corr5[8]={
+1.0909,
+1.83473,
+-13.6843,
+50.2759,
+-100.122,
+104.935,
+-54.7527,
+11.2442
 };
 
 
