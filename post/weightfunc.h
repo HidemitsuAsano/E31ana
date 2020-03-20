@@ -394,6 +394,17 @@ Double_t param_IMnpim_wK0_corr[9]={
 -1723.58
 };
 
+Double_t param_IMnpim_wK0_corr2[9]={
+1.06217,
+1.10574,
+0.084444,
+10.5054,
+-98.0943,
+256.286,
+-283.087,
+142.609,
+-27.0793
+};
 
 
 
@@ -729,16 +740,6 @@ Double_t func_IMpippim(Double_t *x,Double_t *par)
   }
 }
 
-
-Double_t param_IMpippim[7]={
-5.87624,
--58.0674,
-178.204,
--75.3271,
--380.574,
-531.672,
--201.818
-};
 
 Double_t param_IMpippim[7]={
 5.87624,
