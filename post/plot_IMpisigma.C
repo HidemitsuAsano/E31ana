@@ -318,138 +318,68 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1* fweight_IMnpim_wK0_v329 = new TF1("fweight_IMnpim_wK0_v329",func_IMnpim_wK0,1,2.0,9);
   fweight_IMnpim_wK0_v329->SetParameters(param_IMnpim_wK0_corr2);
 
+  TF1* fweight_IMnpip_wK0_v330 = new TF1("fweight_IMnpip_wK0_v330",func_IMnpip_wK0_corr2,1,2.0,12);
+  fweight_IMnpip_wK0_v330->SetParameters(param_IMnpip_wK0_corr3);
 
-  //TF1 *fweight_IMnpipi_v307 = new TF1("fweight_IMnpipi_v307",func_IMnpipi,1,2.0,12);
-  //fweight_IMnpipi_v307->SetParameters(param_IMnpipi);
-  //TF1 *fweight_IMnpipi_wK0_v307 = new TF1("fweight_IMnpipi_wK0_v307",func_IMnpipi_wK0,1,2.0,6);
-  //fweight_IMnpipi_wK0_v307->SetParameters(param_IMnpipi_wK0);
-  
-  /*
-  TF1* fweight_q_v304 = new TF1("fweight_q_v304",func_q,0,1.5,8);
-  fweight_q_v304->SetParameters(param_q_corr2);
-  
-  TF1* fweight_q_wK0_v304 = new TF1("fweight_q_wK0_v304",func_q,0,1.5,8);
-  fweight_q_wK0_v304->SetParameters(param_q_wK0_corr2);
+  TF1* fweight_IMnpim_wK0_v331 = new TF1("fweight_IMnpim_wK0_v331",func_IMnpim_wK0,1,2.0,9);
+  fweight_IMnpim_wK0_v331->SetParameters(param_IMnpim_wK0_corr3);
 
-  TF1 *fweight_MMnmiss_v305 = new TF1("fweight_MMnmiss_v305",func_MMnmiss,0,1.5,18);
-  fweight_MMnmiss_v305->SetParameters(param_MMnmiss_corr);
-
-  TF1 *fweight_MMnmiss_wK0_v305 = new TF1("fweight_MMnmiss_wK0_v305",func_MMnmiss_wK0,0,1.5,10);
-  fweight_MMnmiss_wK0_v305->SetParameters(param_MMnmiss_wK0_corr);
-
-  TF1* fweight_q_v306 = new TF1("fweight_q_v306",func_q,0,1.5,8);
-  fweight_q_v306->SetParameters(param_q_corr3);
+  TF1 *fweight_MMnmiss_wK0_v332 = new TF1("fweight_MMnmiss_wK0_v332",func_MMnmiss,0,1.5,18);
+  fweight_MMnmiss_wK0_v332->SetParameters(param_MMnmiss_wK0_corr5);
   
-  TF1* fweight_q_wK0_v306 = new TF1("fweight_q_wK0_v306",func_q,0,1.5,8);
-  fweight_q_wK0_v306->SetParameters(param_q_wK0_corr3);
+  TF1* fweight_nmom_wK0_v333 = new TF1("fweight_nmom_wK0_v333",func_nmom,0,1.0,9);
+  fweight_nmom_wK0_v333->SetParameters(param_nmom_wK0_v333);
   
-  //v307 apply only nonK0-BG
-  TF1* fweight_IMpippim_v307 = new TF1("fweight_IMpippim_v307",func_IMpippim,0,1.0,7);
-  fweight_IMpippim_v307->SetParameters(param_IMpippim);
+  TF1 *fweight_MMnmiss_wK0_v334 = new TF1("fweight_MMnmiss_wK0_v334",func_MMnmiss,0,1.5,18);
+  fweight_MMnmiss_wK0_v334->SetParameters(param_MMnmiss_wK0_corr6);
+  
+  TF1* fweight_IMnpip_wK0_v335 = new TF1("fweight_IMnpip_wK0_v335",func_IMnpip_wK0_corr2,1,2.0,12);
+  fweight_IMnpip_wK0_v335->SetParameters(param_IMnpip_wK0_corr4);
+  
+  TF1* fweight_IMnpim_wK0_v336 = new TF1("fweight_IMnpim_wK0_v336",func_IMnpim_wK0,1,2.0,9);
+  fweight_IMnpim_wK0_v336->SetParameters(param_IMnpim_wK0_corr4);
+
+  TF1 *fweight_MMnmiss_wK0_v337 = new TF1("fweight_MMnmiss_wK0_v337",func_MMnmiss,0,1.5,18);
+  fweight_MMnmiss_wK0_v337->SetParameters(param_MMnmiss_wK0_corr7);
+
+  TF1* fweight_q_wK0_v338 = new TF1("fweight_q_wK0_v338",func_q_wK0,0,1.5,9);
+  fweight_q_wK0_v338->SetParameters(param_q_wK0_corr8);
+  
+  
+  TF1* fweight_nmom_wK0_v339 = new TF1("fweight_nmom_wK0_v339",func_nmom,0,1.0,9);
+  fweight_nmom_wK0_v339->SetParameters(param_nmom_wK0_v339);
+
+  TF1 *fweight_MMnmiss_wK0_v340 = new TF1("fweight_MMnmiss_wK0_v340",func_MMnmiss_wK0,0,1.5,18);
+  fweight_MMnmiss_wK0_v340->SetParameters(param_MMnmiss_wK0_corr8);
    
-
-  TF1* fweight_nmom_v308 = new TF1("fweight_nmom_v308",func_nmom,0,1.0,9);
-  fweight_nmom_v308->SetParameters(param_nmom);
-
-  TF1* fweight_nmom_wK0_v308 = new TF1("fweight_nmom_wK0_v308",func_nmom,0,1.0,9);
-  fweight_nmom_wK0_v308->SetParameters(param_nmom_wK0);
-
-  TF1* fweight_q_v309 = new TF1("fweight_q_v309",func_q,0,1.5,8);
-  fweight_q_v309->SetParameters(param_q_corr4);
-  TF1* fweight_q_wK0_v309 = new TF1("fweight_q_wK0_v309",func_q,0,1.5,8);
-  fweight_q_wK0_v309->SetParameters(param_q_wK0_corr4);
- 
-  TF1 *fweight_MMnmiss_v310 = new TF1("fweight_MMnmiss_v310",func_MMnmiss,0,1.5,18);
-  fweight_MMnmiss_v310->SetParameters(param_MMnmiss_corr2);
-  TF1 *fweight_MMnmiss_wK0_v310 = new TF1("fweight_MMnmiss_wK0_v310",func_MMnmiss_wK0,0,1.5,10);
-  fweight_MMnmiss_wK0_v310->SetParameters(param_MMnmiss_wK0_corr2);
-
-  TF1* fweight_IMnpip_v311 = new TF1("fweight_IMnpip_v311",func_IMnpip,1,2.0,9);
-  fweight_IMnpip_v311->SetParameters(param_IMnpip);
-  TF1* fweight_IMnpip_wK0_v311 = new TF1("fweight_IMnpip_wK0_v311",func_IMnpip,1,2.0,9);
-  fweight_IMnpip_wK0_v311->SetParameters(param_IMnpip_wK0);
-
-  TF1* fweight_IMnpim_v312 = new TF1("fweight_IMnpim_v312",func_IMnpim,1,2.0,9);
-  fweight_IMnpim_v312->SetParameters(param_IMnpim);
-  TF1* fweight_IMnpim_wK0_v312 = new TF1("fweight_IMnpim_wK0_v312",func_IMnpim,1,2.0,9);
-  fweight_IMnpim_wK0_v312->SetParameters(param_IMnpim_wK0);
-  
-  TF1* fweight_q_v313 = new TF1("fweight_q_v313",func_q,0,1.5,8);
-  fweight_q_v313->SetParameters(param_q_corr5);
-  TF1* fweight_q_wK0_v313 = new TF1("fweight_q_wK0_v313",func_q,0,1.5,8);
-  fweight_q_wK0_v313->SetParameters(param_q_wK0_corr5);
-  
-  TF1 *fweight_MMnmiss_v314 = new TF1("fweight_MMnmiss_v314",func_MMnmiss,0,1.5,18);
-  fweight_MMnmiss_v314->SetParameters(param_MMnmiss_corr3);
-  //change function from this version
-  TF1 *fweight_MMnmiss_wK0_v314 = new TF1("fweight_MMnmiss_wK0_v314",func_MMnmiss,0,1.5,18);
-  fweight_MMnmiss_wK0_v314->SetParameters(param_MMnmiss_wK0_corr3);
-  
-  //TF1 *fweight_IMnpipi_v315 = new TF1("fweight_IMnpipi_v315",func_IMnpipi,1,2.0,10);
-  //fweight_IMnpipi_v315->SetParameters(param_IMnpipi);
-  TF1 *fweight_IMnpipi_wK0_v315 = new TF1("fweight_IMnpipi_wK0_v315",func_IMnpipi_wK0,1,2.0,6);
-  fweight_IMnpipi_wK0_v315->SetParameters(param_IMnpipi_wK0);
-
-  TFile *fweight_v315 = new TFile("../simpost/comp_fakedata_out_v315.root","READ");
-  fweight_v315->cd();
-  TH1 *fweight_IMnpipi_v315 = (TH1D*)fweight_v315->Get("IMnpipi_woK0_woSid_won_ratio");
-  fweight_IMnpipi_v315->SetName("fweight_IMnpipi_v315");
-  
-  
-  TF1* fweight_nmom_v316 = new TF1("fweight_nmom_v316",func_nmom,0,1.0,9);
-  fweight_nmom_v316->SetParameters(param_nmom_corr);
-  TF1* fweight_nmom_wK0_v316 = new TF1("fweight_nmom_wK0_v316",func_nmom,0,1.0,9);
-  fweight_nmom_wK0_v316->SetParameters(param_nmom_wK0_corr);
-  
-  
-  TF1* fweight_q_v317 = new TF1("fweight_q_v317",func_q,0,1.5,8);
-  fweight_q_v317->SetParameters(param_q_corr6);
-  TF1* fweight_q_wK0_v317 = new TF1("fweight_q_wK0_v317",func_q,0,1.5,8);
-  fweight_q_wK0_v317->SetParameters(param_q_wK0_corr6);
-  
-  //TH1 *fweight_IMnpipi_wK0_v315 = (TH1D*)fweight_v315->Get("IMnpipi_wK0_woSid_won_ratio");
-  //fweight_IMnpipi_wK0_v303->SetName("fweight_IMnpipi_wK0_v303");
-  */ 
-  /*
-  TF1* fweight_Mompippim_v307 = new TF1("fweight_Mompippim_v307",func_Mompippim,0,1.0,6);
-  fweight_Mompippim_v307->SetParameters(param_Mompippim);
-
-  TF1* fweight_Mompippim_wK0_v307 = new TF1("fweight_Mompippim_wK0_v307",func_Mompippim,0,1.0,6);
-  fweight_Mompippim_wK0_v307->SetParameters(param_Mompippim_wK0);
-
-  TF1 *fweight_MMnmiss_v308 = new TF1("fweight_MMnmiss_v308",func_MMnmiss,0,1.5,18);
-  fweight_MMnmiss_v308->SetParameters(param_MMnmiss_corr2);
-
-  TF1 *fweight_MMnmiss_wK0_v308 = new TF1("fweight_MMnmiss_wK0_v308",func_MMnmiss_wK0,0,1.5,10);
-  fweight_MMnmiss_wK0_v308->SetParameters(param_MMnmiss_wK0_corr2);
-
-  TF1* fweight_q_v309 = new TF1("fweight_q_v309",func_q,0,1.5,8);
-  fweight_q_v309->SetParameters(param_q_corr4);
-  TF1* fweight_q_wK0_v309 = new TF1("fweight_q_wK0_v309",func_q,0,1.5,8);
-  fweight_q_wK0_v309->SetParameters(param_q_wK0_corr4);
-
-  TF1* fweight_Mompippim_v311 = new TF1("fweight_Mompippim_v311",func_Mompippim,0,1.0,6);
-  fweight_Mompippim_v311->SetParameters(param_Mompippim_corr);
-  TF1* fweight_Mompippim_wK0_v311 = new TF1("fweight_Mompippim_wK0_v311",func_Mompippim,0,1.0,6);
-  fweight_Mompippim_wK0_v311->SetParameters(param_Mompippim_wK0_corr);
-
-  TF1* fweight_IMnpip_v312 = new TF1("fweight_IMnpip_v312",func_IMnpip,1,2.0,9);
-  fweight_IMnpip_v312->SetParameters(param_IMnpip);
-  TF1* fweight_IMnpip_wK0_v312 = new TF1("fweight_IMnpip_wK0_v312",func_IMnpip,1,2.0,9);
-  fweight_IMnpip_wK0_v312->SetParameters(param_IMnpip_wK0);
-
-  TF1* fweight_q_v313 = new TF1("fweight_q_v313",func_q,0,1.5,8);
-  fweight_q_v313->SetParameters(param_q_corr5);
-  TF1* fweight_q_wK0_v313 = new TF1("fweight_q_wK0_v313",func_q,0,1.5,8);
-  fweight_q_wK0_v313->SetParameters(param_q_wK0_corr5);
+  TF1* fweight_nmom_v341 = new TF1("fweight_nmom_v341",func_nmom,0,1.0,9);
+  fweight_nmom_v341->SetParameters(param_nmom_v341);
+  TF1* fweight_nmom_wK0_v341 = new TF1("fweight_nmom_wK0_v341",func_nmom,0,1.0,9);
+  fweight_nmom_wK0_v341->SetParameters(param_nmom_wK0_v341);
   
 
-  TF1* fweight_IMnpim_v314 = new TF1("fweight_IMnpim_v314",func_IMnpim,1,2.0,9);
-  fweight_IMnpim_v314->SetParameters(param_IMnpim);
-  TF1* fweight_IMnpim_wK0_v314 = new TF1("fweight_IMnpim_wK0_v314",func_IMnpim,1,2.0,9);
-  fweight_IMnpim_wK0_v314->SetParameters(param_IMnpim_wK0);
-  */
+  TF1* fweight_q_v342 = new TF1("fweight_q_v342",func_q,0,1.5,8);
+  fweight_q_v342->SetParameters(param_q_corr6);
+  TF1* fweight_q_wK0_v342 = new TF1("fweight_q_wK0_v342",func_q_wK0,0,1.5,9);
+  fweight_q_wK0_v342->SetParameters(param_q_wK0_corr9);
 
+
+  TF1 *fweight_MMnmiss_v343 = new TF1("fweight_MMnmiss_v343",func_MMnmiss,0,1.5,18);
+  fweight_MMnmiss_v343->SetParameters(param_MMnmiss_corr3);
+  TF1 *fweight_MMnmiss_wK0_v343 = new TF1("fweight_MMnmiss_wK0_v343",func_MMnmiss,0,1.5,18);
+  fweight_MMnmiss_wK0_v343->SetParameters(param_MMnmiss_wK0_corr9);
+  
+
+  TF1* fweight_q_v344 = new TF1("fweight_q_v344",func_q,0,1.5,8);
+  fweight_q_v344->SetParameters(param_q_corr7);
+  TF1* fweight_q_wK0_v344 = new TF1("fweight_q_wK0_v344",func_q_wK0,0,1.5,9);
+  fweight_q_wK0_v344->SetParameters(param_q_wK0_corr10);
+
+  TF1* fweight_nmom_v345 = new TF1("fweight_nmom_v345",func_nmom,0,1.0,9);
+  fweight_nmom_v345->SetParameters(param_nmom_v345);
+  TF1* fweight_nmom_wK0_v345 = new TF1("fweight_nmom_wK0_v345",func_nmom,0,1.0,9);
+  fweight_nmom_wK0_v345->SetParameters(param_nmom_wK0_v345);
+  
   f->cd();
   // w/o kinematic fit
   TH2F* CDHphi_betainv_fid;
@@ -2475,6 +2405,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       }
     }
     double nmiss_mass = LVec_nmiss.M();
+    if(nmiss_mass<0) continue;
     double nmiss_mass_vtx[2]= {LVec_nmiss_vtx[0].M(),LVec_nmiss_vtx[1].M()};
     double nmiss_mom = LVec_nmiss.P();
 
@@ -3099,12 +3030,18 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           weight *= fweight_IMnpip_v314->Eval(LVec_pip_n.M()); 
           weight *= fweight_MMnmiss_v315->Eval(nmiss_mass); 
           weight *= fweight_q_v316->Eval(qkn.P()); 
-          weight *= fweight_nmom_v317->Eval((*LVec_n).P());//done 6 param. sets
+          weight *= fweight_nmom_v317->Eval((*LVec_n).P());
           //v318-v326 fix
           weight *= fweight_IMnpip_v327->Eval(LVec_pip_n.M()); 
           weight *= fweight_IMnpim_v328->Eval(LVec_pim_n.M()); 
           weight *= fweight_IMpippim_v329->Eval(LVec_pip_pim.M());
-          
+          //v330-v340 fix (nmiss_mass <0 was included to v340)
+          weight *= fweight_nmom_v341->Eval((*LVec_n).P());
+          weight *= fweight_q_v342->Eval(qkn.P()); 
+          weight *= fweight_MMnmiss_v343->Eval(nmiss_mass); 
+          weight *= fweight_q_v344->Eval(qkn.P()); 
+          weight *= fweight_nmom_v345->Eval((*LVec_n).P());
+
           //weight *= fweight_IMnpipi_v303->Interpolate(LVec_pip_pim_n.M()); 
           //weight *= fweight_MMnmiss_v305->Eval(nmiss_mass); 
           //weight *= fweight_q_v306->Eval(qkn.P()); 
@@ -3146,7 +3083,24 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           weight *= fweight_MMnmiss_wK0_v327->Eval(nmiss_mass);
           weight *= fweight_q_wK0_v328->Eval(qkn.P()); 
           weight *= fweight_IMnpim_wK0_v329->Eval(LVec_pim_n.M()); 
-       
+          weight *= fweight_IMnpip_wK0_v330->Eval(LVec_pip_n.M()); 
+          weight *= fweight_IMnpim_wK0_v331->Eval(LVec_pim_n.M()); 
+          weight *= fweight_MMnmiss_wK0_v332->Eval(nmiss_mass);
+          weight *= fweight_nmom_wK0_v333->Eval((*LVec_n).P());
+          weight *= fweight_MMnmiss_wK0_v334->Eval(nmiss_mass);
+          weight *= fweight_IMnpip_wK0_v335->Eval(LVec_pip_n.M()); 
+          weight *= fweight_IMnpim_wK0_v336->Eval(LVec_pim_n.M()); 
+          weight *= fweight_MMnmiss_wK0_v337->Eval(nmiss_mass);
+          weight *= fweight_q_wK0_v338->Eval(qkn.P()); 
+          weight *= fweight_nmom_wK0_v339->Eval((*LVec_n).P());
+          weight *= fweight_MMnmiss_wK0_v340->Eval(nmiss_mass);
+          weight *= fweight_nmom_wK0_v341->Eval((*LVec_n).P());
+          weight *= fweight_q_wK0_v342->Eval(qkn.P()); 
+          weight *= fweight_MMnmiss_wK0_v343->Eval(nmiss_mass);
+          weight *= fweight_q_wK0_v344->Eval(qkn.P()); 
+          weight *= fweight_nmom_wK0_v345->Eval((*LVec_n).P());
+
+
           //weight *= fweight_IMnpipi_wK0_v303->Interpolate(LVec_pip_pim_n.M()); 
           //weight *= fweight_MMnmiss_wK0_v305->Eval(nmiss_mass); 
           //weight *= fweight_q_wK0_v306->Eval(qkn.P()); 
@@ -6056,23 +6010,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     grsigma_q->Draw("APE");
   }//if SimSmmode
 
-  /*
-  TCanvas *cfweight_MMnmiss = new TCanvas("cfweight_MMnmiss","cfweight_MMnmiss");
-  cfweight_MMnmiss->Divide(2,2);
-  cfweight_MMnmiss->cd(1);
-  //fweight_MMnmiss->Draw();
-  cfweight_MMnmiss->cd(2);
-  fweight_MMnmiss_corr->Draw();
-  cfweight_MMnmiss->cd(3);
-  TF1 *fweight_MMnmiss_mul = new TF1("fweight_MMnmiss_mul;",func_MMnmiss_mul,0,1.5,26);
-  double par_MMnmiss_mul[26];
-  fweight_MMnmiss->GetParameters(&par_MMnmiss_mul[0]);
-  fweight_MMnmiss_corr->GetParameters(&par_MMnmiss_mul[12]);
-  fweight_MMnmiss_corr2->GetParameters(&par_MMnmiss_mul[19]);
-  fweight_MMnmiss_mul->SetParameters(par_MMnmiss_mul);
-  fweight_MMnmiss_mul->Draw();
-  */
-
+  
   //centering title of all histograms
   f->cd();
   TIter nexthist(gDirectory->GetList());
