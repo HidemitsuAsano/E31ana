@@ -345,7 +345,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1* fweight_q_wK0_v338 = new TF1("fweight_q_wK0_v338",func_q_wK0,0,1.5,9);
   fweight_q_wK0_v338->SetParameters(param_q_wK0_corr8);
   
-  
   TF1* fweight_nmom_wK0_v339 = new TF1("fweight_nmom_wK0_v339",func_nmom,0,1.0,9);
   fweight_nmom_wK0_v339->SetParameters(param_nmom_wK0_v339);
 
@@ -357,18 +356,15 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1* fweight_nmom_wK0_v341 = new TF1("fweight_nmom_wK0_v341",func_nmom,0,1.0,9);
   fweight_nmom_wK0_v341->SetParameters(param_nmom_wK0_v341);
   
-
   TF1* fweight_q_v342 = new TF1("fweight_q_v342",func_q,0,1.5,8);
   fweight_q_v342->SetParameters(param_q_corr6);
   TF1* fweight_q_wK0_v342 = new TF1("fweight_q_wK0_v342",func_q_wK0,0,1.5,9);
   fweight_q_wK0_v342->SetParameters(param_q_wK0_corr9);
 
-
   TF1 *fweight_MMnmiss_v343 = new TF1("fweight_MMnmiss_v343",func_MMnmiss,0,1.5,18);
   fweight_MMnmiss_v343->SetParameters(param_MMnmiss_corr3);
   TF1 *fweight_MMnmiss_wK0_v343 = new TF1("fweight_MMnmiss_wK0_v343",func_MMnmiss,0,1.5,18);
   fweight_MMnmiss_wK0_v343->SetParameters(param_MMnmiss_wK0_corr9);
-  
 
   TF1* fweight_q_v344 = new TF1("fweight_q_v344",func_q,0,1.5,8);
   fweight_q_v344->SetParameters(param_q_corr7);
@@ -5766,7 +5762,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px->cd();
   //TH1D* q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px = q_IMnpipi_woK0_wSid_n_SpSm_side_cs->ProjectionX();
   //q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px->Draw("E");
-
+  
   //resolution evaluation
   if(SimSpmode) {
     TCanvas *cdiff_IMnpipi_woK0_wSid_n_Sp = new TCanvas("cdiff_IMnpipi_woK0_wSid_n_Sp","diff_IMnpipi_woK0_wSid_n_Sp");
