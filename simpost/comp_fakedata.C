@@ -102,12 +102,43 @@ Double_t func_IMnpip(Double_t *x,Double_t *par)
   }
 }
 
+
+Double_t func_IMnpip_wK0_corr(Double_t *x,Double_t *par)
+{
+   if(1<x[0] && x[0]<1.14){
+     return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0);
+   }else if(1.14<=x[0] && x[0]<=1.30){
+    //pol4
+     return par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0)
+           +par[8]*pow(x[0],4.0);
+   }else if(1.30<x[0] && x[0]<1.71){
+     return par[9]+par[10]*x[0]+par[11]*pow(x[0],2.0)+par[12]*pow(x[0],3.0);
+   }else{
+     return 1;
+   }
+}
+
+
+Double_t func_IMnpip_wK0_corr2(Double_t *x,Double_t *par)
+{
+  if(1.0<=x[0] && x[0]<1.15){
+    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0);
+  }else if(1.15<=x[0] && x[0]<1.25){
+    return par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0);
+  }else if(1.25<=x[0] && x[0]<1.71){
+    return par[8]+par[9]*x[0]+par[10]*pow(x[0],2.0)+par[11]*pow(x[0],3.0);
+  }else{
+    return 0;
+  }
+}
+
+
 Double_t func_IMnpim(Double_t *x,Double_t *par)
 {
   if(1.00 <= x[0] && x[0]<1.11) {
     //return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0);
     return par[0]*exp(-0.5*pow(((x[0]-par[1])/par[2]),2.0)); 
-  } else if(1.11 <= x[0] && x[0]<=1.7) {
+  } else if(1.11 <= x[0] && x[0]<=2.0) {
     return par[3]+par[4]*x[0]+par[5]*pow(x[0],2.0)+par[6]*pow(x[0],3.0)+par[7]*pow(x[0],4.0);
   } else {
     return 1.;
@@ -186,6 +217,20 @@ Double_t func_phinpim_wK0(Double_t *x,Double_t *par)
     +par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0);
   }else{
     return par[6]+par[7]*x[0]+par[8]*pow(x[0],2.0)+par[9]*pow(x[0],3.0);
+  }
+}
+
+Double_t func_IMpippim(Double_t *x,Double_t *par)
+{
+  if(x[0]<=0.29){
+    return par[0]*exp(-0.5*pow(((x[0]-par[1])/par[2]),2.0));
+  }else if(0.29<x[0] && x[0]<0.32){
+    return par[3]+par[4]*x[0]+par[5]*pow(x[0],2.0);
+  }else if(0.32<=x[0] && x[0]<0.70){
+   //pol5
+    return par[6]+par[7]*x[0]+par[8]*pow(x[0],2.0)+par[9]*pow(x[0],3.0)+par[10]*pow(x[0],4.0)+par[11]*pow(x[0],5.0);
+  }else{
+    return 1.;
   }
 }
 
@@ -1069,17 +1114,17 @@ void comp_fakedata()
   MMnmiss_woK0_woSid_won_ratio->Draw("HE");
 
 
-  TF1 *sgf_MMnmiss = new TF1("sgf_MMnmiss","[0]*exp(-0.5*pow((x-[1])/([2]+(x<[1])*[3]*(x-[1])),2))");
+  //TF1 *sgf_MMnmiss = new TF1("sgf_MMnmiss","[0]*exp(-0.5*pow((x-[1])/([2]+(x<[1])*[3]*(x-[1])),2))");
   //TF1 *fgaus_MMnmiss_high = new TF1("fgaus_MMnmiss_high","gaus");
   //sgf_MMnmiss->SetParameter(0,1.82171e+00);
   //sgf_MMnmiss->SetParameter(1,8.56016e-01);
   //sgf_MMnmiss->SetParameter(2,6.81677e-01);
   //sgf_MMnmiss->SetLineColor(2);
 
-  MMnmiss_woK0_woSid_won_ratio->Fit("sgf_MMnmiss","R","",1.06,1.5);
+  //MMnmiss_woK0_woSid_won_ratio->Fit("sgf_MMnmiss","R","",1.06,1.5);
   //MMnmiss_woK0_woSid_won_ratio->Fit("fgaus_MMnmiss_high","R+","",1.116,1.5);
-  Double_t param_MMnmiss[7];
-  sgf_MMnmiss->GetParameters(&param_MMnmiss[0]);
+  //Double_t param_MMnmiss[7];
+  //sgf_MMnmiss->GetParameters(&param_MMnmiss[0]);
   //fgaus_MMnmiss_high->GetParameters(&param_MMnmiss[4]);
   
 
@@ -1313,11 +1358,11 @@ void comp_fakedata()
   IMnpim_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   IMnpim_woK0_woSid_won_ratio->Draw("HE");
   
-  TF1* evalf_IMnpim_1 = new TF1("evalf_IMnpim_1","par[0]*exp(-0.5*pow(((x[0]-par[1])/par[2]),2.0))",1.00,1.11);
-  evalf_IMnpim_1->SetParameter(0,1.74);
+  TF1* evalf_IMnpim_1 = new TF1("evalf_IMnpim_1","par[0]*exp(-0.5*pow(((x[0]-par[1])/par[2]),2.0))",1.00,1.12);
+  evalf_IMnpim_1->SetParameter(0,1.092);
   evalf_IMnpim_1->SetParameter(1,1.114);
-  evalf_IMnpim_1->SetParameter(2,0.02519);
-  IMnpim_woK0_woSid_won_ratio->Fit("evalf_IMnpim_1","R","",1.00,1.11);
+  evalf_IMnpim_1->SetParameter(2,0.06987);
+  IMnpim_woK0_woSid_won_ratio->Fit("evalf_IMnpim_1","R","",1.00,1.12);
 
   TF1* pol4_IMnpim_2 = new TF1("pol4_IMnpim_2","pol4",1.11,1.68);
   //pol4_IMnpim_2->SetParameter(0,204.9);
@@ -1325,7 +1370,7 @@ void comp_fakedata()
   //pol4_IMnpim_2->SetParameter(2,550.8);
   //pol4_IMnpim_2->SetParameter(3,-249.5);
   //pol4_IMnpim_2->SetParameter(4,42.7915);
-  IMnpim_woK0_woSid_won_ratio->Fit("pol4_IMnpim_2","R+","",1.11,1.68);
+  IMnpim_woK0_woSid_won_ratio->Fit("pol4_IMnpim_2","R+","",1.11,2.0);
   
   double param_IMnpim[9];
   evalf_IMnpim_1->GetParameters(&param_IMnpim[0]);
@@ -1426,9 +1471,27 @@ void comp_fakedata()
   IMpippim_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   IMpippim_woK0_woSid_won_ratio->Draw("HE");
 
-  TF1 *evalf_IMpippim = new TF1("evalf_IMpippim","pol6",0,1);
-  evalf_IMpippim->SetTitle("IMpippim");
-  IMpippim_woK0_woSid_won_ratio->Fit("evalf_IMpippim","","",0.28,0.97);
+  //TF1 *evalf_IMpippim = new TF1("evalf_IMpippim","pol6",0,1);
+  //evalf_IMpippim->SetTitle("IMpippim");
+  //IMpippim_woK0_woSid_won_ratio->Fit("evalf_IMpippim","","",0.28,0.97);//up to v311
+  
+  
+  //from v312
+  TF1 *evalf_IMpippim_1 = new TF1("evalf_IMpippim_1","gaus",0.26,0.30);//3par
+  IMpippim_woK0_woSid_won_ratio->Fit("evalf_IMpippim_1","R","",0.26,0.30);
+  TF1 *evalf_IMpippim_1_2 = new TF1("evalf_IMpippim_1_2","pol2",0.29,0.32);//3par
+  IMpippim_woK0_woSid_won_ratio->Fit("evalf_IMpippim_1_2","R+","",0.29,0.32);
+  TF1 *evalf_IMpippim_2 = new TF1("evalf_IMpippim_2","pol5",0.32,0.70);//6par
+  IMpippim_woK0_woSid_won_ratio->Fit("evalf_IMpippim_2","R+","",0.32,0.70);
+
+  TF1 *evalf_IMpippim = new TF1("evalf_IMpippim",func_IMpippim,0,1,12);
+  double param_IMpippim[12];
+  evalf_IMpippim_1->GetParameters(&param_IMpippim[0]);
+  evalf_IMpippim_1_2->GetParameters(&param_IMpippim[3]);
+  evalf_IMpippim_2->GetParameters(&param_IMpippim[6]);
+  evalf_IMpippim->SetParameters(param_IMpippim);
+  evalf_IMpippim->SetLineColor(3);;
+  evalf_IMpippim->Draw("same");
 
   //q vs IMnpipi w/o K0 w/o (Sid & n);
   TH2D* q_IMnpipi_woK0_woSid_won_mc = (TH2D*)q_IMnpipi_woK0_woSid_won[1]->Clone("q_IMnpipi_woK0_woSid_won_mc");
@@ -2047,7 +2110,9 @@ void comp_fakedata()
   
   //TF1* evalf_IMnpip_wK0 = new TF1("evalf_IMnpip_wK0","pol6",1.07,1.7);
   //IMnpip_wK0_woSid_won_ratio->Fit("evalf_IMnpip_wK0","","",1.07,1.7);
-
+  
+  //Up to v322
+  /* 
   TF1* evalf_IMnpip_wK0_1 = new TF1("evalf_IMnpip_wK0_1","pol3",1.06,1.25);
   IMnpip_wK0_woSid_won_ratio->Fit("evalf_IMnpip_wK0_1","R","",1.06,1.25);
 
@@ -2061,7 +2126,49 @@ void comp_fakedata()
   evalf_IMnpip_wK0->SetParameters(param_IMnpip_wK0);
   evalf_IMnpip_wK0->SetLineColor(4);
   evalf_IMnpip_wK0->Draw("same");
+  */
   
+  /* //up to v329
+  TF1* evalf_IMnpip_wK0_1 = new TF1("evalf_IMnpip_wK0_1","pol3",1.06,1.14);//4 par
+  IMnpip_wK0_woSid_won_ratio->Fit("evalf_IMnpip_wK0_1","R","",1.06,1.14);
+
+  TF1* evalf_IMnpip_wK0_2 = new TF1("evalf_IMnpip_wK0_2","pol4",1.14,1.30);//5 par
+  IMnpip_wK0_woSid_won_ratio->Fit("evalf_IMnpip_wK0_2","R+","",1.14,1.30);
+  
+  TF1* evalf_IMnpip_wK0_3 = new TF1("evalf_IMnpip_wK0_3","pol3",1.30,1.71);//4 par
+  IMnpip_wK0_woSid_won_ratio->Fit("evalf_IMnpip_wK0_3","R+","",1.30,1.71);
+  
+  TF1 *evalf_IMnpip_wK0 = new TF1("evalf_IMnpip_wK0",func_IMnpip_wK0_corr,1.06,2.0,13);
+  double param_IMnpip_wK0[13];
+  evalf_IMnpip_wK0_1->GetParameters(&param_IMnpip_wK0[0]);
+  evalf_IMnpip_wK0_2->GetParameters(&param_IMnpip_wK0[4]);
+  evalf_IMnpip_wK0_3->GetParameters(&param_IMnpip_wK0[9]);
+  evalf_IMnpip_wK0->SetParameters(param_IMnpip_wK0);
+  evalf_IMnpip_wK0->SetLineColor(4);
+  evalf_IMnpip_wK0->Draw("same");
+  */
+  
+
+  //v330
+  TF1* evalf_IMnpip_wK0_1 = new TF1("evalf_IMnpip_wK0_1","pol3",1.06,1.15);//4 par
+  IMnpip_wK0_woSid_won_ratio->Fit("evalf_IMnpip_wK0_1","R","",1.06,1.15);
+
+  TF1* evalf_IMnpip_wK0_2 = new TF1("evalf_IMnpip_wK0_2","pol3",1.15,1.25);//4 par
+  IMnpip_wK0_woSid_won_ratio->Fit("evalf_IMnpip_wK0_2","R+","",1.15,1.25);
+  
+  TF1* evalf_IMnpip_wK0_3 = new TF1("evalf_IMnpip_wK0_3","pol3",1.25,1.71);//4 par
+  IMnpip_wK0_woSid_won_ratio->Fit("evalf_IMnpip_wK0_3","R+","",1.25,1.71);
+  
+  TF1 *evalf_IMnpip_wK0 = new TF1("evalf_IMnpip_wK0",func_IMnpip_wK0_corr2,1.06,2.0,12);
+  double param_IMnpip_wK0[12];
+  evalf_IMnpip_wK0_1->GetParameters(&param_IMnpip_wK0[0]);
+  evalf_IMnpip_wK0_2->GetParameters(&param_IMnpip_wK0[4]);
+  evalf_IMnpip_wK0_3->GetParameters(&param_IMnpip_wK0[8]);
+  evalf_IMnpip_wK0->SetParameters(param_IMnpip_wK0);
+  evalf_IMnpip_wK0->SetLineColor(4);
+  evalf_IMnpip_wK0->Draw("same");
+  
+
   /*
   TF1* fgaus_IMnpip_wK0_1 = new TF1("fgaus_IMnpip_wK0_1","gaus",1.06,1.10);
   fgaus_IMnpip_wK0_1->SetParameters(0,1.636);
@@ -2136,14 +2243,14 @@ void comp_fakedata()
   IMnpim_wK0_woSid_won_ratio->Draw("HE");
   
   
-  TF1* evalf_IMnpim_wK0_1 = new TF1("evalf_IMnpim_wK0_1","gaus",1.07,1.10);
-  evalf_IMnpim_wK0_1->SetParameter(0,1.895 );
-  evalf_IMnpim_wK0_1->SetParameter(1,1.119);
-  evalf_IMnpim_wK0_1->SetParameter(2,0.02881);
-  IMnpim_wK0_woSid_won_ratio->Fit("evalf_IMnpim_wK0_1","R","",1.00,1.10);
+  TF1* evalf_IMnpim_wK0_1 = new TF1("evalf_IMnpim_wK0_1","gaus",1.07,1.11);
+  evalf_IMnpim_wK0_1->SetParameter(0,1.921 );
+  evalf_IMnpim_wK0_1->SetParameter(1,1.109);
+  evalf_IMnpim_wK0_1->SetParameter(2,0.02146);
+  IMnpim_wK0_woSid_won_ratio->Fit("evalf_IMnpim_wK0_1","R","",1.07,1.11);
 
-  TF1* evalf_IMnpim_wK0_2 = new TF1("evalf_IMnpim_wK0_2","pol5",1.10,2.00);
-  IMnpim_wK0_woSid_won_ratio->Fit("evalf_IMnpim_wK0_2","R+","",1.10,2.00);
+  TF1* evalf_IMnpim_wK0_2 = new TF1("evalf_IMnpim_wK0_2","pol5",1.11,2.00);
+  IMnpim_wK0_woSid_won_ratio->Fit("evalf_IMnpim_wK0_2","R+","",1.11,1.70);
 
   Double_t param_IMnpim_wK0[9];
   evalf_IMnpim_wK0_1->GetParameters(&param_IMnpim_wK0[0]);
@@ -2279,7 +2386,8 @@ void comp_fakedata()
   q_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   q_wK0_woSid_won_ratio->Draw("HE");
   
-  TF1 *evalf_q_wK0 = new TF1("evalf_q_wK0","pol7",0,1.5);
+  //TF1 *evalf_q_wK0 = new TF1("evalf_q_wK0","pol7",0,1.5); //up to v330
+  TF1 *evalf_q_wK0 = new TF1("evalf_q_wK0","pol8",0,1.5);
   q_wK0_woSid_won_ratio->Fit("evalf_q_wK0");
 
 
@@ -2809,7 +2917,7 @@ void comp_fakedata()
   cfunc->cd(4);
   evalf_pimmom->Draw();
   cfunc->cd(5);
-  evalf_IMpippim->Draw();
+  //evalf_IMpippim->Draw();
   cfunc->cd(6);
   evalf_Mompippim->Draw();
   cfunc->cd(7);
