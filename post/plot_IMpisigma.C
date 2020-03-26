@@ -4444,12 +4444,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH1D* q_IMnpipi_wSid_n_Sm_px = (TH1D*) q_IMnpipi_wSid_n_Sm->ProjectionX();
   q_IMnpipi_wSid_n_Sp_px->SetLineColor(2);
   q_IMnpipi_wSid_n_Sm_px->SetLineColor(3);
-  //q_IMnpipi_wSid_n_px1->Draw("HEsame");
   q_IMnpipi_wSid_n_Sp_px->Draw("HEsame");
   q_IMnpipi_wSid_n_Sm_px->Draw("HEsame");
-  //TH1D* q_IMnpipi_wSid_n_sum = (TH1D*)q_IMnpipi_wSid_n_Sp_px->Clone();
-  //q_IMnpipi_wSid_n_sum->Add(q_IMnpipi_wSid_n_Sm_px,1);
-  //q_IMnpipi_wSid_n_sum->Draw("HEsame");
 
   TCanvas *cq_IMnpipi_woK0_wSid_n_px_SpSm = new TCanvas("cq_IMnpipi_woK0_wSid_n_px_SpSm","q_IMnpipi_woK0_wSid_n_px_SpSm");
   cq_IMnpipi_woK0_wSid_n_px_SpSm->cd();
