@@ -103,6 +103,16 @@ Double_t func_IMnpip(Double_t *x,Double_t *par)
 }
 
 
+Double_t func_IMnpip_corr(Double_t *x,Double_t *par)
+{
+  if(1.06<=x[0] && x[0]<=2.00){
+    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)+par[4]*pow(x[0],4.0);
+  }else{
+    return 1.0;
+  } 
+}
+
+
 Double_t func_IMnpip_wK0_corr(Double_t *x,Double_t *par)
 {
    if(1<x[0] && x[0]<1.14){
@@ -1230,6 +1240,7 @@ void comp_fakedata()
   IMnpip_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   IMnpip_woK0_woSid_won_ratio->Draw("HE");
   
+  /*
   TF1* evalf_IMnpip_1 = new TF1("evalf_IMnpip_1","pol3",1.06,1.25);
   evalf_IMnpip_1->SetParameters(0,-637.17);
   evalf_IMnpip_1->SetParameters(1,1569.29);
@@ -1247,13 +1258,19 @@ void comp_fakedata()
   Double_t param_IMnpip[9];
   evalf_IMnpip_1->GetParameters(&param_IMnpip[0]);
   evalf_IMnpip_2->GetParameters(&param_IMnpip[4]);
-  
   TF1 *evalf_IMnpip = new TF1("evalf_IMnpip",func_IMnpip,1.06,1.92,9);
   evalf_IMnpip->SetParameters(param_IMnpip);
   evalf_IMnpip->SetLineColor(4);
   //IMnpip_woK0_woSid_won_ratio->Fit(evalf_IMnpip,"R+");
   evalf_IMnpip->Draw("same");
   
+  */
+  
+  TF1 *evalf_IMnpip = new TF1("evalf_IMnpip",func_IMnpip_corr,1.06,2.0,5);
+  //evalf_IMnpip->SetParameters(param_IMnpip);
+  evalf_IMnpip->SetLineColor(4);
+  IMnpip_woK0_woSid_won_ratio->Fit(evalf_IMnpip,"");
+  evalf_IMnpip->Draw("same");
 
 
 
@@ -3076,8 +3093,8 @@ void comp_fakedata()
     evalf_Mompippim->Write();
     evalf_Mompippim_wK0->Write();
     evalf_IMnpipi->Write();
-    evalf_IMnpip_1->Write();
-    evalf_IMnpip_2->Write();
+    //evalf_IMnpip_1->Write();
+    //evalf_IMnpip_2->Write();
     evalf_IMnpip->Write();
     evalf_IMnpim->Write();
     evalf_IMnpim_wK0->Write();
