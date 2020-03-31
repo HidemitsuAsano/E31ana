@@ -20,6 +20,9 @@ TF1 *fweight_nmom_v345 = NULL;
 TF1 *fweight_IMnpip_v307 = NULL;
 TF1 *fweight_IMnpip_v314 = NULL;
 TF1 *fweight_IMnpip_v327 = NULL;
+TF1 *fweight_IMnpip_v307s = NULL;
+TF1 *fweight_IMnpip_v314s = NULL;
+TF1 *fweight_IMnpip_v327s = NULL;
 TF1 *fweight_IMnpim_v308 = NULL;
 TF1 *fweight_IMnpim_v313 = NULL;
 TF1 *fweight_IMnpim_v328 = NULL;
@@ -110,6 +113,17 @@ Double_t func_IMnpipmul(Double_t *x,Double_t *par)
   fweight_IMnpip_v307->Eval(xx)*
   fweight_IMnpip_v314->Eval(xx)*
   fweight_IMnpip_v327->Eval(xx);
+  //fweight_IMnpip_v346->Eval(xx);
+}
+
+Double_t func_IMnpipmul_s(Double_t *x,Double_t *par)
+{
+  const Double_t xx=x[0];
+  return 
+  fweight_IMnpip_v307s->Eval(xx)*
+  fweight_IMnpip_v314s->Eval(xx)*
+  fweight_IMnpip_v327s->Eval(xx);
+  //fweight_IMnpip_v346->Eval(xx);
 }
 
 
@@ -251,7 +265,7 @@ void FakeMCWeight()
   f_qmul->SetTitle("");
   f_qmul->GetXaxis()->SetTitle("q [GeV/c]");
   f_qmul->GetXaxis()->CenterTitle();
-  f_qmul->Draw();
+  f_qmul->Draw("c");
 
 
   //MMnmiss
@@ -305,13 +319,26 @@ void FakeMCWeight()
   fweight_IMnpip_v314->SetParameters(param_IMnpip_corr);
   fweight_IMnpip_v327 = new TF1("fweight_IMnpip_v327",func_IMnpip,1,2.0,9);
   fweight_IMnpip_v327->SetParameters(param_IMnpip_corr2);
+  //fweight_IMnpip_v346 = new TF1("fweight_IMnpip_v346",func_IMnpip_corr,1,2.0,5);
+  //fweight_IMnpip_v346->SetParameters(param_IMnpip_corr3);
   
   TF1* f_IMnpipmul = new TF1("f_IMnpipmul",func_IMnpipmul,1.08,2.0,9*3);
   f_IMnpipmul->SetTitle("");
   f_IMnpipmul->GetXaxis()->SetTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   f_IMnpipmul->GetXaxis()->CenterTitle();
-  f_IMnpipmul->Draw();
+  f_IMnpipmul->Draw("c");
   
+  fweight_IMnpip_v307s = new TF1("fweight_IMnpip_v307s",func_IMnpip_s,1,2.0,9);
+  fweight_IMnpip_v307s->SetParameters(param_IMnpip);
+  fweight_IMnpip_v314s = new TF1("fweight_IMnpip_v314s",func_IMnpip_s,1,2.0,9);
+  fweight_IMnpip_v314s->SetParameters(param_IMnpip_corr);
+  fweight_IMnpip_v327s = new TF1("fweight_IMnpip_v327s",func_IMnpip_s,1,2.0,9);
+  fweight_IMnpip_v327s->SetParameters(param_IMnpip_corr2);
+  
+  TF1* f_IMnpipmul_s = new TF1("f_IMnpipmul_s",func_IMnpipmul_s,1.08,2.0,9*3);
+  f_IMnpipmul_s->SetLineColor(3);
+  f_IMnpipmul_s->Draw("same");
+
 
   c_woK0_func->cd(5);
   
@@ -326,7 +353,7 @@ void FakeMCWeight()
   f_IMnpimmul->SetTitle("");
   f_IMnpimmul->GetXaxis()->SetTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   f_IMnpimmul->GetXaxis()->CenterTitle();
-  f_IMnpimmul->Draw();
+  f_IMnpimmul->Draw("c");
 
   //IMpippim
   c_woK0_func->cd(6);
@@ -342,7 +369,7 @@ void FakeMCWeight()
   f_IMpippimmul->SetTitle("");
   f_IMpippimmul->GetXaxis()->SetTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   f_IMpippimmul->GetXaxis()->CenterTitle();
-  f_IMpippimmul->Draw();
+  f_IMpippimmul->Draw("c");
 
   
   TCanvas *c_wK0_func = new TCanvas("c_wK0_func","c_wK0_func",1800,1000);
@@ -380,7 +407,7 @@ void FakeMCWeight()
   f_qmul_wK0->SetTitle("");
   f_qmul_wK0->GetXaxis()->SetTitle("q [GeV/c]");
   f_qmul_wK0->GetXaxis()->CenterTitle();
-  f_qmul_wK0->Draw();
+  f_qmul_wK0->Draw("c");
 
 
   //MMnmiss
@@ -480,7 +507,7 @@ void FakeMCWeight()
   f_IMnpim_wK0mul->SetTitle("");
   f_IMnpim_wK0mul->GetXaxis()->SetTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   f_IMnpim_wK0mul->GetXaxis()->CenterTitle();
-  f_IMnpim_wK0mul->Draw();
+  f_IMnpim_wK0mul->Draw("c");
 
   //IMpippim (N/A)
   c_wK0_func->cd(6);
