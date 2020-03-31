@@ -340,7 +340,6 @@ Double_t func_MMnmiss_wK0(Double_t *x,Double_t *par)
 
 
 /*
-
 Double_t param_MMnmiss_wK0[10]={
    1.269308,
   -1.832203, 
@@ -363,8 +362,7 @@ Double_t func_IMnpip(Double_t *x,Double_t *par)
   if(1.06<=x[0] && x[0]<1.25){
     return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0);
   }else if(1.25<=x[0] && x[0]<1.92) {
-    return par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0)
-    +par[8]*pow(x[0],4.0);
+    return par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0)+par[8]*pow(x[0],4.0);
   }else{ 
     return 1.;
   }
@@ -408,7 +406,25 @@ Double_t param_IMnpip_corr2[9]={
 };
 
 
+/*
+Double_t func_IMnpip_corr(Double_t *x,Double_t *par)
+{
+  if(1.06<=x[0] && x[0]<=2.00){
+    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)+par[4]*pow(x[0],4.0);
+  }else{
+    return 1.0;
+  } 
+}
 
+
+Double_t param_IMnpip_corr3[5]={
+3.23373,
+-2.89104,
+-0.474793,
+1.93943,
+-0.685505
+};
+*/
 
 Double_t param_IMnpip_wK0[9]={
 -1779.86,
