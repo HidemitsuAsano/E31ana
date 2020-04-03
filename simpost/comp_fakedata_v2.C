@@ -1725,7 +1725,6 @@ void comp_fakedata_v2()
   Momnpipi_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   Momnpipi_woK0_woSid_won_ratio->Draw("HE");
 
-
   
   TCanvas *cMMnmiss_Momnpipi_wK0_woSid_won = new TCanvas("cMMnmiss_Momnpipi_wK0_woSid_won","cMMnmiss_Momnpipi_wK0_woSid_won",1000,800);
   cMMnmiss_Momnpipi_wK0_woSid_won->Divide(2,1);
@@ -1748,8 +1747,6 @@ void comp_fakedata_v2()
 
   
   //Signal check
-  
-  
 
   TH2D* q_IMnpipi_wSid_n_Sp_mc = (TH2D*)q_IMnpipi_wSid_n_Sp[1]->Clone();
 
