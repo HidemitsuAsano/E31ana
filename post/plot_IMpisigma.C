@@ -376,8 +376,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1* fweight_nmom_wK0_v345 = new TF1("fweight_nmom_wK0_v345",func_nmom,0,1.0,9);
   fweight_nmom_wK0_v345->SetParameters(param_nmom_wK0_v345);
    
-  //TF1* fweight_IMnpip_v346 = new TF1("fweight_IMnpip_v346",func_IMnpip_corr,0,2.0,5);
-  //fweight_IMnpip_v346->SetParameters(param_IMnpip_corr3);
+  TF1* fweight_IMnpip_v346 = new TF1("fweight_IMnpip_v346",func_IMnpipmul_s,0,2.0,12);
+  fweight_IMnpip_v346->SetParameters(param_IMnpip_s);
+  
 
   f->cd();
   // w/o kinematic fit
@@ -490,6 +491,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* MMnmiss_IMpippim_dE_wSid_n;
   TH2F* MMnmiss_IMpippim_dE_woK0;
   TH2F* MMnmiss_IMpippim_dE_woK0_wSid;
+  TH2F* MMnmiss_IMpippim_dE_woK0_wSid_n;
+  TH2F* MMnmiss_IMpippim_dE_wK0_wSid;
+  TH2F* MMnmiss_IMpippim_dE_wK0_wSid_n;
   TH2F* MMnmiss_IMpippim_dE_woK0_woSid;
   TH2F* MMnmiss_IMpippim_dE_woK0_woSid_won;
   TH2F* MMnmiss_IMpippim_dE_woK0_woSidn;// (miss n & Sigma+/-) is rejected
@@ -885,6 +889,18 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMnmiss_IMpippim_dE_woK0_wSid = new TH2F("MMnmiss_IMpippim_dE_woK0_wSid", "MMnmiss_IMpippim_dE_woK0_wSid",nbinpippim,0.,1.0,nbinnmiss,0,1.5);
   MMnmiss_IMpippim_dE_woK0_wSid->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMpippim_dE_woK0_wSid->SetYTitle("Miss Mass. [GeV/c^{2}]");
+  
+  MMnmiss_IMpippim_dE_woK0_wSid_n = new TH2F("MMnmiss_IMpippim_dE_woK0_wSid_n", "MMnmiss_IMpippim_dE_woK0_wSid_n",nbinpippim,0.,1.0,nbinnmiss,0,1.5);
+  MMnmiss_IMpippim_dE_woK0_wSid_n->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  MMnmiss_IMpippim_dE_woK0_wSid_n->SetYTitle("Miss Mass. [GeV/c^{2}]");
+  
+  MMnmiss_IMpippim_dE_wK0_wSid = new TH2F("MMnmiss_IMpippim_dE_wK0_wSid", "MMnmiss_IMpippim_dE_wK0_wSid",nbinpippim,0.,1.0,nbinnmiss,0,1.5);
+  MMnmiss_IMpippim_dE_wK0_wSid->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  MMnmiss_IMpippim_dE_wK0_wSid->SetYTitle("Miss Mass. [GeV/c^{2}]");
+  
+  MMnmiss_IMpippim_dE_wK0_wSid_n = new TH2F("MMnmiss_IMpippim_dE_wK0_wSid_n", "MMnmiss_IMpippim_dE_wK0_wSid_n",nbinpippim,0.,1.0,nbinnmiss,0,1.5);
+  MMnmiss_IMpippim_dE_wK0_wSid_n->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  MMnmiss_IMpippim_dE_wK0_wSid_n->SetYTitle("Miss Mass. [GeV/c^{2}]");
 
   MMnmiss_IMpippim_dE_woK0_woSid = new TH2F("MMnmiss_IMpippim_dE_woK0_woSid", "MMnmiss_IMpippim_dE_woK0_woSid",nbinpippim,0.,1.0,nbinnmiss,0,1.5);
   MMnmiss_IMpippim_dE_woK0_woSid->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -3219,7 +3235,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           }
         }
         //17th,Mar. 2020.
-        //applied narrow window to remove \pi^{\pm}\Sigma^{\mp} final states
+        //applied narrow window to remove \pi^{\pm}\Sigma^{\mp} final states from K0nn events
         if(!SigmawidePFlag && !SigmawideMFlag && !K0rejectFlag_narrow) { 
           nmom_MMnmiss_wK0_woSid->Fill(nmiss_mass,(*LVec_n).P(),weight);
           if(!MissNwideFlag) {
@@ -3256,6 +3272,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         if(SigmaPFlag || SigmaMFlag) {
           nmom_nmissmom_wK0_wSid->Fill(LVec_nmiss.P(),(*LVec_n).P(),weight);
           MMnmiss_IMnpipi_wK0_wSid->Fill(LVec_pip_pim_n.M(), nmiss_mass,weight);
+          MMnmiss_IMpippim_dE_wK0_wSid->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
         }
       }
     }
@@ -3458,6 +3475,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       if(SigmaPFlag || SigmaMFlag) {
         nmom_IMnpipi_wK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P(),weight);
         nmom_nmissmom_wK0_wSid_n->Fill(LVec_nmiss.P(),(*LVec_n).P(),weight);
+        MMnmiss_IMpippim_dE_wK0_wSid_n->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
       }
       if(!SigmaPFlag && !SigmaMFlag) {
         IMpippim_DCApipibeam_wK0_woSid_n->Fill(dca_pipibeam,LVec_pip_pim.M(),weight);
@@ -3692,6 +3710,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       }
       if(SigmaPFlag || SigmaMFlag) {
         MMnpip_MMnpim_woK0_wSid_n->Fill(LVec_pim_nmiss.M(),LVec_pip_nmiss.M(),weight);
+        MMnmiss_IMpippim_dE_woK0_wSid_n->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
         dE_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),dE,weight);
         Cosn_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),cos_nmiss,weight);
         q_IMpiSigma_woK0_wSid_n_genacc->Fill(LVec_piSigma_react.M()/1000.,qkn_react.P()/1000.);
