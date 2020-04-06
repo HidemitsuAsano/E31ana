@@ -17,7 +17,7 @@ void comp_fakedata_v2()
   TH1::SetDefaultSumw2();
   //rdata,nSp,nSm,Lambda,S0pi+pi-,fake,mcsum
   const unsigned int colordef[7]= {1,2,3,4,5,28,6};
-  const char name[][10]= {"rdata","Sigmap","Sigman","Lambda","S0","K0nn"};
+  const char name[][10]= {"rdata","woK0","wK0","Lambda","S0","K0nn"};
 
   //real data
   TFile *filerdata = TFile::Open("../post/evanaIMpisigma_npippim_v196_out.root","READ");
@@ -854,7 +854,8 @@ void comp_fakedata_v2()
 
   //MMnmiss vs IMpippim wSid
   TH2D* MMnmiss_IMpippim_wSid_mc = (TH2D*)MMnmiss_IMpippim_wSid[1]->Clone("MMnmiss_IMpippim_wSid_mc");
-  for(int i=1; i<2; i++) MMnmiss_IMpippim_wSid_mc->Add(MMnmiss_IMpippim_wSid[i]);
+  //for(int i=1; i<2; i++) MMnmiss_IMpippim_wSid_mc->Add(MMnmiss_IMpippim_wSid[i]);
+  MMnmiss_IMpippim_wSid_mc->Add(MMnmiss_IMpippim_wSid[2]);
 
   TCanvas *cMMnmiss_IMpippim_wSid = new TCanvas("cMMnmiss_IMpippim_wSid","cMMnmiss_IMpippim_wSid",1200,800);
   cMMnmiss_IMpippim_wSid->Divide(2,1);
@@ -872,12 +873,13 @@ void comp_fakedata_v2()
   IMpippim_wSid_mc->SetLineColor(6);
   TCanvas *cIMpippim_wSid = new TCanvas("cIMpippim_wSid","cIMpippim_wSid");
   cIMpippim_wSid->cd();
-  TH1D* IMpippim_wSid[2];
-  for(int i=0; i<2; i++) IMpippim_wSid[i] = (TH1D*)MMnmiss_IMpippim_wSid[i]->ProjectionX(Form("IMpippim_wSid_%s",name[i]));
+  TH1D* IMpippim_wSid[3];
+  for(int i=0; i<3; i++) IMpippim_wSid[i] = (TH1D*)MMnmiss_IMpippim_wSid[i]->ProjectionX(Form("IMpippim_wSid_%s",name[i]));
   IMpippim_wSid[0]->Draw("HE");
   IMpippim_wSid_mc->Draw("HEsame");
-  for(int i=1; i<2; i++) {
+  for(int i=1; i<3; i++) {
     IMpippim_wSid[i]->SetLineColor(colordef[i]);
+    IMpippim_wSid[i]->Draw("HEsame");
   }
 
 
