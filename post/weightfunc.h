@@ -406,6 +406,35 @@ Double_t param_IMnpip_corr2[9]={
 };
 
 
+
+
+Double_t func_IMnpipmul_s(Double_t *x,Double_t *par)
+{
+  if(1.06<=x[0] && x[0]<1.92){
+    return (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0))*(1./(1.0+exp((x[0]-1.25)/par[11])))+
+           (par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0)+par[8]*pow(x[0],4.0)+par[9]*pow(x[0],5.0)+par[10]*pow(x[0],6.0))*(1.0-1./(1.0+exp((x[0]-1.25)/par[11])));
+  }else{
+    return 1.;
+  }
+}
+
+Double_t param_IMnpip_s[12]={
+-327.854,
+748.394,
+-561.008,
+138.25,
+-3277.16,
+12041.2,
+-18359.5,
+14891.1,
+-6782.67,
+1645.87,
+-166.272,
+0.01
+};
+
+
+
 /*
 Double_t func_IMnpip_corr(Double_t *x,Double_t *par)
 {
@@ -462,6 +491,20 @@ Double_t func_IMnpim(Double_t *x,Double_t *par)
   }
 }
 
+Double_t func_IMnpim_corr(Double_t *x,Double_t *par)
+{  
+  if(1.00 <= x[0] && x[0]<1.11) {
+    //return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0);
+    //return par[0]*exp(-0.5*pow(((x[0]-par[1])/par[2]),2.0)); 
+    return 1.0;
+  } else if(1.11 <= x[0] && x[0]<=2.0) {
+    return par[3]+par[4]*x[0]+par[5]*pow(x[0],2.0)+par[6]*pow(x[0],3.0)+par[7]*pow(x[0],4.0);
+  } else {
+    return 1.;
+  }
+}
+
+
 Double_t param_IMnpim[8]={
 1.74,
 1.114,
@@ -497,6 +540,18 @@ Double_t param_IMnpim_corr2[8]={
 0.151111
 };
 
+
+
+Double_t param_IMnpim_corr3[8]={
+1.092,
+1.114,
+0.06987,
+49.5531,
+-142.585,
+157.349,
+-77.2074,
+14.1624
+};
 
 
 Double_t func_IMnpim_wK0(Double_t *x,Double_t *par)
@@ -864,6 +919,18 @@ Double_t param_nmom_wK0_v345[9]={
 2206.7
 };
 
+Double_t param_nmom_wK0_v349[9]={
+2.19649,
+-14.6197,
+97.3219,
+-324.903,
+518.34,
+-188.501,
+-515.487,
+664.399,
+-237.424
+};
+
 
 Double_t func_pipmom(Double_t *x,Double_t *par)
 {
@@ -1077,6 +1144,23 @@ Double_t param_IMpippim_corr2[12]={
   -99.6095,
   42.8865
 };
+
+
+Double_t func_IMpippim_wK0(Double_t *x,Double_t *par)
+{
+  return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)+par[4]*pow(x[0],4.0);
+};
+
+Double_t param_IMpippim_wK0[5]={
+5.81027e+06,
+-4.6716e+07,
+1.40843e+08,
+-1.88708e+08,
+9.48076e+07
+};
+
+
+
 
 Double_t func_IMnpipi(Double_t *x,Double_t *par)
 {
@@ -1614,6 +1698,16 @@ Double_t param_q_wK0_corr7[8]={
 };
 
 
+Double_t param_q_mul[8]={
+3.8072,
+-5.52768,
+9.87903,
+-26.5909,
+75.0323,
+-123.557,
+99.1959,
+-29.4453
+};
 
 
 Double_t func_q_wK0(Double_t *x,Double_t *par)
