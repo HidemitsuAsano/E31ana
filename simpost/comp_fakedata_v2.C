@@ -16,8 +16,8 @@ void comp_fakedata_v2()
 {
   TH1::SetDefaultSumw2();
   //rdata,nSp,nSm,Lambda,S0pi+pi-,fake,mcsum
-  const unsigned int colordef[7]= {1,2,3,4,5,28,6};
-  const char name[][10]= {"rdata","woK0","wK0","Lambda","S0","K0nn"};
+  const unsigned int colordef[3]= {1,2,3};
+  const char name[][10]= {"rdata","woK0","wK0"};
 
   //real data
   TFile *filerdata = TFile::Open("../post/evanaIMpisigma_npippim_v196_out.root","READ");
@@ -31,7 +31,6 @@ void comp_fakedata_v2()
   //Sp
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_fake = (TH2D*) filefake->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
   double fake_Sp = MMnmiss_IMnpipi_woK0_wSid_Sp_fake->GetEntries();
-  std::cout << fake_Sp << std::endl;
   //Sm
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sm_fake = (TH2D*) filefake->Get("MMnmiss_IMnpipi_woK0_wSid_Sm");
   double fake_Sm = MMnmiss_IMnpipi_woK0_wSid_Sm_fake->GetEntries();
@@ -678,12 +677,12 @@ void comp_fakedata_v2()
   }
 
   //Data/MC before modifying MC data
-  TCanvas *cMMnmiss_woK0_woSid_won_ratio = new TCanvas("cMMnmiss_woK0_woSid_won_ratio","cMMnmiss_woK0_woSid_ratio");
-  TH1D* MMnmiss_woK0_woSid_won_ratio = (TH1D*)MMnmiss_woK0_woSid_won[0]->Clone("MMnmiss_woK0_woSid_won_ratio");
-  MMnmiss_woK0_woSid_won_ratio->Divide(MMnmiss_woK0_woSid_won_mc);
-  MMnmiss_woK0_woSid_won_ratio->SetTitle("Data/MC");
-  MMnmiss_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  MMnmiss_woK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cMMnmiss_woK0_woSid_won_ratio = new TCanvas("cMMnmiss_woK0_woSid_won_ratio","cMMnmiss_woK0_woSid_ratio");
+  //TH1D* MMnmiss_woK0_woSid_won_ratio = (TH1D*)MMnmiss_woK0_woSid_won[0]->Clone("MMnmiss_woK0_woSid_won_ratio");
+  //MMnmiss_woK0_woSid_won_ratio->Divide(MMnmiss_woK0_woSid_won_mc);
+  //MMnmiss_woK0_woSid_won_ratio->SetTitle("Data/MC");
+  //MMnmiss_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //MMnmiss_woK0_woSid_won_ratio->Draw("HE");
 
 
   TH2D *MMom_MMass_woK0_woSid_won_mc = (TH2D*)MMom_MMass_woK0_woSid_won[1]->Clone("MMom_MMass_woK0_woSid_won_mc");
@@ -710,13 +709,13 @@ void comp_fakedata_v2()
   //for(int i=1;i<6;i++)MMom_woK0_woSid_won[i]->Draw("HEsame");
 
 
-  TCanvas *cMMom_woK0_woSid_won_ratio = new TCanvas("cMMom_woK0_woSid_won_ratio","cMMom_woK0_woSid_won_ratio");
-  cMMom_woK0_woSid_won_ratio->cd();
-  TH1D* MMom_woK0_woSid_won_ratio = (TH1D*)MMom_woK0_woSid_won[0]->Clone("MMom_woK0_woSid_won_ratio");
-  MMom_woK0_woSid_won_ratio->Divide(MMom_woK0_woSid_won_mc);
-  MMom_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  MMom_woK0_woSid_won_ratio->SetTitle("Data/MC");
-  MMom_woK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cMMom_woK0_woSid_won_ratio = new TCanvas("cMMom_woK0_woSid_won_ratio","cMMom_woK0_woSid_won_ratio");
+  //cMMom_woK0_woSid_won_ratio->cd();
+  //TH1D* MMom_woK0_woSid_won_ratio = (TH1D*)MMom_woK0_woSid_won[0]->Clone("MMom_woK0_woSid_won_ratio");
+  //MMom_woK0_woSid_won_ratio->Divide(MMom_woK0_woSid_won_mc);
+  //MMom_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //MMom_woK0_woSid_won_ratio->SetTitle("Data/MC");
+  //MMom_woK0_woSid_won_ratio->Draw("HE");
 
 
   //projection to IMnpip (miss n & Sigma+/-)
@@ -729,13 +728,13 @@ void comp_fakedata_v2()
   IMnpip_woK0_woSid_won_mc->SetLineColor(6);
   IMnpip_woK0_woSid_won_mc->Draw("HEsame");
 
-  TCanvas *cIMnpip_woK0_woSid_won_ratio = new TCanvas("cIMnpip_woK0_woSid_won_ratio","cIMnpip_woK0_woSid_won_ratio");
-  cIMnpip_woK0_woSid_won_ratio->cd();
-  TH1D* IMnpip_woK0_woSid_won_ratio = (TH1D*)IMnpip_woK0_woSid_won[0]->Clone("IMnpip_woK0_woSid_won_ratio");
-  IMnpip_woK0_woSid_won_ratio->Divide(IMnpip_woK0_woSid_won_mc);
-  IMnpip_woK0_woSid_won_ratio->SetTitle("IMnpip_woK0_woSid_won Data/MC");
-  IMnpip_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  IMnpip_woK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cIMnpip_woK0_woSid_won_ratio = new TCanvas("cIMnpip_woK0_woSid_won_ratio","cIMnpip_woK0_woSid_won_ratio");
+  //cIMnpip_woK0_woSid_won_ratio->cd();
+  //TH1D* IMnpip_woK0_woSid_won_ratio = (TH1D*)IMnpip_woK0_woSid_won[0]->Clone("IMnpip_woK0_woSid_won_ratio");
+  //IMnpip_woK0_woSid_won_ratio->Divide(IMnpip_woK0_woSid_won_mc);
+  //IMnpip_woK0_woSid_won_ratio->SetTitle("IMnpip_woK0_woSid_won Data/MC");
+  //IMnpip_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //IMnpip_woK0_woSid_won_ratio->Draw("HE");
   
   //
   TCanvas *cMomnpip_woK0_woSid_won = new TCanvas("cMomnpip_woK0_woSid_won","cMomnpip_woK0_woSid_won");
@@ -747,13 +746,13 @@ void comp_fakedata_v2()
   Momnpip_woK0_woSid_won_mc->SetLineColor(6);
   Momnpip_woK0_woSid_won_mc->Draw("HEsame");
 
-  TCanvas *cMomnpip_woK0_woSid_won_ratio = new TCanvas("cMomnpip_woK0_woSid_won_ratio","cMomnpip_woK0_woSid_won_ratio");
-  cMomnpip_woK0_woSid_won_ratio->cd();
-  TH1D* Momnpip_woK0_woSid_won_ratio = (TH1D*)Momnpip_woK0_woSid_won[0]->Clone("Momnpip_woK0_woSid_won_ratio");
-  Momnpip_woK0_woSid_won_ratio->Divide(Momnpip_woK0_woSid_won_mc);
-  Momnpip_woK0_woSid_won_ratio->SetTitle("Momnpip_woK0_woSid_won Data/MC");
-  Momnpip_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  Momnpip_woK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cMomnpip_woK0_woSid_won_ratio = new TCanvas("cMomnpip_woK0_woSid_won_ratio","cMomnpip_woK0_woSid_won_ratio");
+  //cMomnpip_woK0_woSid_won_ratio->cd();
+  //TH1D* Momnpip_woK0_woSid_won_ratio = (TH1D*)Momnpip_woK0_woSid_won[0]->Clone("Momnpip_woK0_woSid_won_ratio");
+  //Momnpip_woK0_woSid_won_ratio->Divide(Momnpip_woK0_woSid_won_mc);
+  //Momnpip_woK0_woSid_won_ratio->SetTitle("Momnpip_woK0_woSid_won Data/MC");
+  //Momnpip_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //Momnpip_woK0_woSid_won_ratio->Draw("HE");
 
   //
   //Sigma-
@@ -830,13 +829,13 @@ void comp_fakedata_v2()
     //IMnpim_woK0_woSid_won[i]->Draw("HEsame");
   }
 
-  TCanvas *cIMnpim_woK0_woSid_won_ratio = new TCanvas("cIMnpim_woK0_woSid_won_ratio","cIMnpim_woK0_woSid_won_ratio");
-  cIMnpim_woK0_woSid_won_ratio->cd();
-  TH1D* IMnpim_woK0_woSid_won_ratio = (TH1D*)IMnpim_woK0_woSid_won[0]->Clone("IMnpim_woK0_woSid_won_ratio");
-  IMnpim_woK0_woSid_won_ratio->Divide(IMnpim_woK0_woSid_won_mc);
-  IMnpim_woK0_woSid_won_ratio->SetTitle("IMnpim_woK0_woSid_won Data/MC");
-  IMnpim_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  IMnpim_woK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cIMnpim_woK0_woSid_won_ratio = new TCanvas("cIMnpim_woK0_woSid_won_ratio","cIMnpim_woK0_woSid_won_ratio");
+  //cIMnpim_woK0_woSid_won_ratio->cd();
+  //TH1D* IMnpim_woK0_woSid_won_ratio = (TH1D*)IMnpim_woK0_woSid_won[0]->Clone("IMnpim_woK0_woSid_won_ratio");
+  //IMnpim_woK0_woSid_won_ratio->Divide(IMnpim_woK0_woSid_won_mc);
+  //IMnpim_woK0_woSid_won_ratio->SetTitle("IMnpim_woK0_woSid_won Data/MC");
+  //IMnpim_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //IMnpim_woK0_woSid_won_ratio->Draw("HE");
   
   
   TCanvas *cMomnpim_woK0_woSid_won = new TCanvas("Momnpim_woK0_woSid_won","Momnpim_woK0_woSid_won");
@@ -851,13 +850,13 @@ void comp_fakedata_v2()
     Momnpim_woK0_woSid_won[i]->SetLineColor(colordef[i]);
   }
 
-  TCanvas *cMomnpim_woK0_woSid_won_ratio = new TCanvas("cMomnpim_woK0_woSid_won_ratio","cMomnpim_woK0_woSid_won_ratio");
-  cMomnpim_woK0_woSid_won_ratio->cd();
-  TH1D* Momnpim_woK0_woSid_won_ratio = (TH1D*)Momnpim_woK0_woSid_won[0]->Clone("Momnpim_woK0_woSid_won_ratio");
-  Momnpim_woK0_woSid_won_ratio->Divide(Momnpim_woK0_woSid_won_mc);
-  Momnpim_woK0_woSid_won_ratio->SetTitle("Momnpim_woK0_woSid_won Data/MC");
-  Momnpim_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  Momnpim_woK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cMomnpim_woK0_woSid_won_ratio = new TCanvas("cMomnpim_woK0_woSid_won_ratio","cMomnpim_woK0_woSid_won_ratio");
+  //cMomnpim_woK0_woSid_won_ratio->cd();
+  //TH1D* Momnpim_woK0_woSid_won_ratio = (TH1D*)Momnpim_woK0_woSid_won[0]->Clone("Momnpim_woK0_woSid_won_ratio");
+  //Momnpim_woK0_woSid_won_ratio->Divide(Momnpim_woK0_woSid_won_mc);
+  //Momnpim_woK0_woSid_won_ratio->SetTitle("Momnpim_woK0_woSid_won Data/MC");
+  //Momnpim_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //Momnpim_woK0_woSid_won_ratio->Draw("HE");
   
 
   //MMnmiss vs IMpippim wSid
@@ -947,13 +946,13 @@ void comp_fakedata_v2()
     //IMpippim_woK0_woSid_won[i]->Draw("HEsame");
   }
 
-  TCanvas *cIMpippim_woK0_woSid_won_ratio = new TCanvas("cIMpippim_woK0_woSid_won_ratio","cIMpippim_woK0_woSid_won_ratio");
-  cIMpippim_woK0_woSid_won_ratio->cd();
-  TH1D* IMpippim_woK0_woSid_won_ratio = (TH1D*)IMpippim_woK0_woSid_won[0]->Clone("IMpippim_woK0_woSid_won_ratio");
-  IMpippim_woK0_woSid_won_ratio->Divide(IMpippim_woK0_woSid_won_mc);
-  IMpippim_woK0_woSid_won_ratio->SetTitle("Data/MC");
-  IMpippim_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  IMpippim_woK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cIMpippim_woK0_woSid_won_ratio = new TCanvas("cIMpippim_woK0_woSid_won_ratio","cIMpippim_woK0_woSid_won_ratio");
+  //cIMpippim_woK0_woSid_won_ratio->cd();
+  //TH1D* IMpippim_woK0_woSid_won_ratio = (TH1D*)IMpippim_woK0_woSid_won[0]->Clone("IMpippim_woK0_woSid_won_ratio");
+  //IMpippim_woK0_woSid_won_ratio->Divide(IMpippim_woK0_woSid_won_mc);
+  //IMpippim_woK0_woSid_won_ratio->SetTitle("Data/MC");
+  //IMpippim_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //IMpippim_woK0_woSid_won_ratio->Draw("HE");
 
   //q vs IMnpipi w/o K0 w/o (Sid & n);
   TH2D* q_IMnpipi_woK0_woSid_won_mc = (TH2D*)q_IMnpipi_woK0_woSid_won[1]->Clone("q_IMnpipi_woK0_woSid_won_mc");
@@ -983,13 +982,13 @@ void comp_fakedata_v2()
     //IMnpipi_woK0_woSid_won[i]->Draw("HEsame");
   }
 
-  TCanvas *cIMnpipi_woK0_woSid_won_ratio = new TCanvas("cIMnpipi_woK0_woSid_won_ratio","cIMnpipi_woK0_woSid_won_ratio");
-  cIMnpipi_woK0_woSid_won_ratio->cd();
-  TH1D* IMnpipi_woK0_woSid_won_ratio = (TH1D*)IMnpipi_woK0_woSid_won[0]->Clone("IMnpipi_woK0_woSid_won_ratio");
-  IMnpipi_woK0_woSid_won_ratio->Divide(IMnpipi_woK0_woSid_won_mc);
-  IMnpipi_woK0_woSid_won_ratio->SetTitle("Data/MC");
-  IMnpipi_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  IMnpipi_woK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cIMnpipi_woK0_woSid_won_ratio = new TCanvas("cIMnpipi_woK0_woSid_won_ratio","cIMnpipi_woK0_woSid_won_ratio");
+  //cIMnpipi_woK0_woSid_won_ratio->cd();
+  //TH1D* IMnpipi_woK0_woSid_won_ratio = (TH1D*)IMnpipi_woK0_woSid_won[0]->Clone("IMnpipi_woK0_woSid_won_ratio");
+  //IMnpipi_woK0_woSid_won_ratio->Divide(IMnpipi_woK0_woSid_won_mc);
+  //IMnpipi_woK0_woSid_won_ratio->SetTitle("Data/MC");
+  //IMnpipi_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //IMnpipi_woK0_woSid_won_ratio->Draw("HE");
   
   TH1D* q_woK0_woSid_won_mc = (TH1D*)q_IMnpipi_woK0_woSid_won_mc->ProjectionY("q_woK0_woSid_won_mc");
   q_woK0_woSid_won_mc->SetLineColor(6);
@@ -1001,12 +1000,12 @@ void comp_fakedata_v2()
   q_woK0_woSid_won_mc->SetLineColor(6);
   q_woK0_woSid_won_mc->Draw("HEsame");
    
-  TCanvas *cq_woK0_woSid_won_ratio = new TCanvas("cq_woK0_woSid_won_ratio","cq_woK0_woSid_won_ratio");
-  TH1D* q_woK0_woSid_won_ratio = (TH1D*)q_woK0_woSid_won[0]->Clone("q_woK0_woSid_won_ratio");
-  q_woK0_woSid_won_ratio->Divide(q_woK0_woSid_won_mc);
-  q_woK0_woSid_won_ratio->SetTitle("Data/MC");
-  q_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  q_woK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cq_woK0_woSid_won_ratio = new TCanvas("cq_woK0_woSid_won_ratio","cq_woK0_woSid_won_ratio");
+  //TH1D* q_woK0_woSid_won_ratio = (TH1D*)q_woK0_woSid_won[0]->Clone("q_woK0_woSid_won_ratio");
+  //q_woK0_woSid_won_ratio->Divide(q_woK0_woSid_won_mc);
+  //q_woK0_woSid_won_ratio->SetTitle("Data/MC");
+  //q_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //q_woK0_woSid_won_ratio->Draw("HE");
 
   
   //missing mass vs Mom(pi+pi-) w/o K0 w/o (Sid & n)
@@ -1035,14 +1034,6 @@ void comp_fakedata_v2()
   Mompippim_woK0_woSid_won_mc->SetLineColor(6);
   Mompippim_woK0_woSid_won_mc->Draw("HEsame");
 
-  TCanvas *cMompippim_woK0_woSid_won_ratio = new TCanvas("cMompippim_woK0_woSid_won_ratio","cMompippim_woK0_woSid_won_ratio");
-  TH1D* Mompippim_woK0_woSid_won_ratio = (TH1D*)Mompippim_woK0_woSid_won[0]->Clone("Mompippim_woK0_woSid_won_ratio");
-  Mompippim_woK0_woSid_won_ratio->Divide(Mompippim_woK0_woSid_won_mc);
-  Mompippim_woK0_woSid_won_ratio->SetTitle("Data/MC");
-  Mompippim_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  Mompippim_woK0_woSid_won_ratio->Draw("HE");
-
-  //
   TH2D* IMnpim_IMnpip_woK0_woSid_won_mc = (TH2D*)IMnpim_IMnpip_woK0_woSid_won[1]->Clone("IMnpim_IMnpip_woK0_woSid_won_mc");
 
   TCanvas* cIMnpim_IMnpip_woK0_woSid_won = new TCanvas("cIMnpim_IMnpip_woK0_woSid_won","cIMnpim_IMnpip_woK0_woSid_won");
@@ -1053,63 +1044,6 @@ void comp_fakedata_v2()
   IMnpim_IMnpip_woK0_woSid_won_mc->SetMinimum(1);
   IMnpim_IMnpip_woK0_woSid_won_mc->SetMaximum(IMnpim_IMnpip_woK0_woSid_won[0]->GetMaximum());
   IMnpim_IMnpip_woK0_woSid_won_mc->Draw("colz");
-
-  //pipmom
-  TH2D* pipmom_MMnmiss_woK0_woSid_won_mc = (TH2D*)pipmom_MMnmiss_woK0_woSid_won[1]->Clone("pipmom_MMnmiss_woK0_woSid_won_mc");
-
-  TH1D* pipmom_woK0_woSid_won_mc = (TH1D*)pipmom_MMnmiss_woK0_woSid_won_mc->ProjectionY("pipmom_woK0_woSid_won_mc");
-  TH1D* pipmom_woK0_woSid_won[2];
-  for(int i=0; i<2; i++) {
-    pipmom_woK0_woSid_won[i] = (TH1D*)pipmom_MMnmiss_woK0_woSid_won[i]->ProjectionY(Form("pipmom_woK0_woSid_won_%s",name[i]));
-  }
-  TCanvas *cpipmom_woK0_woSid_won = new TCanvas("cpipmom_woK0_woSid_won","cpipmom_woK0_woSid_won");
-  cpipmom_woK0_woSid_won->cd();
-  pipmom_woK0_woSid_won[0]->Draw("HE");
-  pipmom_woK0_woSid_won_mc->SetLineColor(6);
-  pipmom_woK0_woSid_won_mc->Draw("HEsame");
-
-  TCanvas *cpipmom_woK0_woSid_won_ratio = new TCanvas("cpipmom_woK0_woSid_won_ratio","cpipmom_woK0_woSid_won_ratio");
-  cpipmom_woK0_woSid_won_ratio->cd();
-  TH1D* pipmom_woK0_woSid_won_ratio = (TH1D*)pipmom_woK0_woSid_won[0]->Clone("pipmom_woK0_woSid_won_ratio");
-  pipmom_woK0_woSid_won_ratio->Divide(pipmom_woK0_woSid_won_mc);
-  pipmom_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  pipmom_woK0_woSid_won_ratio->SetTitle("Data/MC");
-  pipmom_woK0_woSid_won_ratio->Draw("HEsame");
-
-
-  TH2D* pipmom_pimmom_woK0_woSid_won_mc = (TH2D*)pipmom_pimmom_woK0_woSid_won[1]->Clone("pipmom_pimmom_woK0_woSid_won_mc");
-  TCanvas *cpipmom_pimmom_woK0_woSid_won = new TCanvas("cpipmom_pimmom_woK0_woSid_won","cpipmom_pimmom_woK0_woSid_won");
-  cpipmom_pimmom_woK0_woSid_won->Divide(2,1);
-  cpipmom_pimmom_woK0_woSid_won->cd(1);
-  pipmom_pimmom_woK0_woSid_won[0]->Draw("colz");
-  cpipmom_pimmom_woK0_woSid_won->cd(2);
-  pipmom_pimmom_woK0_woSid_won_mc->SetMinimum(1);
-  pipmom_pimmom_woK0_woSid_won_mc->SetMaximum(pipmom_pimmom_woK0_woSid_won[0]->GetMaximum());
-  pipmom_pimmom_woK0_woSid_won_mc->Draw("colz");
-
-
-  //pimmom
-  TH2D* pimmom_MMnmiss_woK0_woSid_won_mc = (TH2D*)pimmom_MMnmiss_woK0_woSid_won[1]->Clone("pimmom_MMnmiss_woK0_woSid_won_mc");
-
-  TH1D* pimmom_woK0_woSid_won_mc = (TH1D*)pimmom_MMnmiss_woK0_woSid_won_mc->ProjectionY("pimmom_woK0_woSid_won_mc");
-  TH1D* pimmom_woK0_woSid_won[2];
-  for(int i=0; i<2; i++) {
-    pimmom_woK0_woSid_won[i] = (TH1D*)pimmom_MMnmiss_woK0_woSid_won[i]->ProjectionY(Form("pimmom_woK0_woSid_won_%s",name[i]));
-    pimmom_woK0_woSid_won[i]->SetLineColor(colordef[i]);
-  }
-  TCanvas *cpimmom_woK0_woSid_won = new TCanvas("cpimmom_woK0_woSid_won","cpimmom_woK0_woSid_won");
-  cpimmom_woK0_woSid_won->cd();
-  pimmom_woK0_woSid_won[0]->Draw("HE");
-  pimmom_woK0_woSid_won_mc->SetLineColor(6);
-  pimmom_woK0_woSid_won_mc->Draw("HEsame");
-
-  TCanvas *cpimmom_woK0_woSid_won_ratio = new TCanvas("cpimmom_woK0_woSid_won_ratio","cpimmom_woK0_woSid_won_ratio");
-  cpimmom_woK0_woSid_won_ratio->cd();
-  TH1D* pimmom_woK0_woSid_won_ratio = (TH1D*)pimmom_woK0_woSid_won[0]->Clone("pimmom_woK0_woSid_won_ratio");
-  pimmom_woK0_woSid_won_ratio->Divide(pimmom_woK0_woSid_won_mc);
-  pimmom_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  pimmom_woK0_woSid_won_ratio->SetTitle("Data/MC");
-  pimmom_woK0_woSid_won_ratio->Draw("HEsame");
 
   //nCDSmom
   TH2D* nmom_MMnmiss_woK0_woSid_won_mc = (TH2D*)nmom_MMnmiss_woK0_woSid_won[1]->Clone("nmom_MMnmiss_woK0_woSid_won_mc");
@@ -1126,13 +1060,13 @@ void comp_fakedata_v2()
   nmom_woK0_woSid_won_mc->SetLineColor(6);
   nmom_woK0_woSid_won_mc->Draw("HEsame");
 
-  TCanvas *cnmom_woK0_woSid_won_ratio = new TCanvas("cnmom_woK0_woSid_won_ratio","cnmom_woK0_woSid_won_ratio");
-  cnmom_woK0_woSid_won_ratio->cd();
-  TH1D* nmom_woK0_woSid_won_ratio = (TH1D*)nmom_woK0_woSid_won[0]->Clone("nmom_woK0_woSid_won_ratio");
-  nmom_woK0_woSid_won_ratio->Divide(nmom_woK0_woSid_won_mc);
-  nmom_woK0_woSid_won_ratio->SetTitle("Data/MC");
-  nmom_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  nmom_woK0_woSid_won_ratio->Draw("HEsame");
+  //TCanvas *cnmom_woK0_woSid_won_ratio = new TCanvas("cnmom_woK0_woSid_won_ratio","cnmom_woK0_woSid_won_ratio");
+  //cnmom_woK0_woSid_won_ratio->cd();
+  //TH1D* nmom_woK0_woSid_won_ratio = (TH1D*)nmom_woK0_woSid_won[0]->Clone("nmom_woK0_woSid_won_ratio");
+  //nmom_woK0_woSid_won_ratio->Divide(nmom_woK0_woSid_won_mc);
+  //nmom_woK0_woSid_won_ratio->SetTitle("Data/MC");
+  //nmom_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //nmom_woK0_woSid_won_ratio->Draw("HEsame");
 
   
   //weighting to momentum vector 
@@ -1157,112 +1091,6 @@ void comp_fakedata_v2()
   cosn_woK0_woSid_won[0]->Draw("HE");
   cosn_woK0_woSid_won_mc->Draw("HEsame");
    
-
-  TCanvas *ccosn_woK0_woSid_won_ratio = new TCanvas("ccosn_woK0_woSid_won_ratio","ccosn_woK0_woSid_won_ratio");
-  ccosn_woK0_woSid_won_ratio->cd();
-  TH1D* cosn_woK0_woSid_won_ratio = (TH1D*)cosn_woK0_woSid_won[0]->Clone("cosn_woK0_woSid_won_ratio");
-  cosn_woK0_woSid_won_ratio->Divide(cosn_woK0_woSid_won_mc);
-  cosn_woK0_woSid_won_ratio->SetTitle("Data/MC");
-  cosn_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  cosn_woK0_woSid_won_ratio->Draw("HE");
-  
-
-
-  //
-  TH2D* nmom_cospip_woK0_woSid_won_mc = (TH2D*)nmom_cospip_woK0_woSid_won[1]->Clone("nmom_cospip_woK0_woSid_won_mc");
-  TCanvas *cnmom_cospip_woK0_woSid_won = new TCanvas("cnmom_cospip_woK0_woSid_won","cnmom_cospip_woK0_woSid_won",1200,800);
-  cnmom_cospip_woK0_woSid_won->Divide(2,1);
-  cnmom_cospip_woK0_woSid_won->cd(1);
-  nmom_cospip_woK0_woSid_won[0]->SetTitle("#splitline{nmom_cospip_woK0_woSid_won}{Real data}");
-  nmom_cospip_woK0_woSid_won[0]->Draw("colz");
-  cnmom_cospip_woK0_woSid_won->cd(2);
-  nmom_cospip_woK0_woSid_won_mc->SetTitle("#splitline{nmom_cospip_woK0_woSid_won}{MC}");
-  nmom_cospip_woK0_woSid_won_mc->SetMinimum(1);
-  nmom_cospip_woK0_woSid_won_mc->SetMaximum(nmom_cospip_woK0_woSid_won[0]->GetMaximum());
-  nmom_cospip_woK0_woSid_won_mc->Draw("colz");
-
-  TCanvas *ccospip_woK0_woSid_won = new TCanvas("ccospip_woK0_woSid_won","ccospip_woK0_woSid_won");
-  ccospip_woK0_woSid_won->cd();
-  TH1D* cospip_woK0_woSid_won[2];
-  for(int i=0;i<2;i++) cospip_woK0_woSid_won[i] = (TH1D*)nmom_cospip_woK0_woSid_won[i]->ProjectionX(Form("cospip_woK0_woSid_won_%s",name[i]));
-  TH1D* cospip_woK0_woSid_won_mc = (TH1D*)nmom_cospip_woK0_woSid_won_mc->ProjectionX("cospip_woK0_woSid_won_mc");
-  cospip_woK0_woSid_won_mc->SetLineColor(6);
-  cospip_woK0_woSid_won[0]->Draw("HE");
-  cospip_woK0_woSid_won_mc->Draw("HEsame");
-
-  TCanvas *ccospip_woK0_woSid_won_ratio = new TCanvas("ccospip_woK0_woSid_won_ratio","ccospip_woK0_woSid_won_ratio");
-  ccospip_woK0_woSid_won_ratio->cd();
-  TH1D* cospip_woK0_woSid_won_ratio = (TH1D*)cospip_woK0_woSid_won[0]->Clone("cospip_woK0_woSid_won_ratio");
-  cospip_woK0_woSid_won_ratio->Divide(cospip_woK0_woSid_won_mc);
-  cospip_woK0_woSid_won_ratio->SetTitle("Data/MC");
-  cospip_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  cospip_woK0_woSid_won_ratio->Draw("HE");
-  
-
-
-  //
-  TH2D* nmom_cospim_woK0_woSid_won_mc = (TH2D*)nmom_cospim_woK0_woSid_won[1]->Clone("nmom_cospim_woK0_woSid_won_mc");
-  TCanvas *cnmom_cospim_woK0_woSid_won = new TCanvas("cnmom_cospim_woK0_woSid_won","cnmom_cospim_woK0_woSid_won",1200,800);
-  cnmom_cospim_woK0_woSid_won->Divide(2,1);
-  cnmom_cospim_woK0_woSid_won->cd(1);
-  nmom_cospim_woK0_woSid_won[0]->SetTitle("#splitline{nmom_cospim_woK0_woSid_won}{Real data}");
-  nmom_cospim_woK0_woSid_won[0]->Draw("colz");
-  cnmom_cospim_woK0_woSid_won->cd(2);
-  nmom_cospim_woK0_woSid_won_mc->SetTitle("#splitline{nmom_cospim_woK0_woSid_won}{MC}");
-  nmom_cospim_woK0_woSid_won_mc->SetMinimum(1);
-  nmom_cospim_woK0_woSid_won_mc->SetMaximum(nmom_cospim_woK0_woSid_won[0]->GetMaximum());
-  nmom_cospim_woK0_woSid_won_mc->Draw("colz");
-
-  TCanvas *ccospim_woK0_woSid_won = new TCanvas("ccospim_woK0_woSid_won","ccospim_woK0_woSid_won");
-  ccospim_woK0_woSid_won->cd();
-  TH1D* cospim_woK0_woSid_won[2];
-  for(int i=0;i<2;i++) cospim_woK0_woSid_won[i] = (TH1D*)nmom_cospim_woK0_woSid_won[i]->ProjectionX(Form("cospim_woK0_woSid_won_%s",name[i]));
-  TH1D* cospim_woK0_woSid_won_mc = (TH1D*)nmom_cospim_woK0_woSid_won_mc->ProjectionX("cospim_woK0_woSid_won_mc");
-  cospim_woK0_woSid_won_mc->SetLineColor(6);
-  cospim_woK0_woSid_won[0]->Draw("HE");
-  cospim_woK0_woSid_won_mc->Draw("HEsame");
-
-  TCanvas *ccospim_woK0_woSid_won_ratio = new TCanvas("ccospim_woK0_woSid_won_ratio","ccospim_woK0_woSid_won_ratio");
-  ccospim_woK0_woSid_won_ratio->cd();
-  TH1D* cospim_woK0_woSid_won_ratio = (TH1D*)cospim_woK0_woSid_won[0]->Clone("cospim_woK0_woSid_won_ratio");
-  cospim_woK0_woSid_won_ratio->Divide(cospim_woK0_woSid_won_mc);
-  cospim_woK0_woSid_won_ratio->SetTitle("Data/MC");
-  cospim_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  cospim_woK0_woSid_won_ratio->Draw("HE");
-   
-  
-  
-  TH2D* nmom_cospippim_woK0_woSid_won_mc = (TH2D*)nmom_cospippim_woK0_woSid_won[1]->Clone("nmom_cospippim_woK0_woSid_won_mc");
-  TCanvas *cnmom_cospippim_woK0_woSid_won = new TCanvas("cnmom_cospippim_woK0_woSid_won","cnmom_cospippim_woK0_woSid_won",1200,800);
-  cnmom_cospippim_woK0_woSid_won->Divide(2,1);
-  cnmom_cospippim_woK0_woSid_won->cd(1);
-  nmom_cospippim_woK0_woSid_won[0]->SetTitle("#splitline{nmom_cospippim_woK0_woSid_won}{Real data}");
-  nmom_cospippim_woK0_woSid_won[0]->Draw("colz");
-  cnmom_cospippim_woK0_woSid_won->cd(2);
-  nmom_cospippim_woK0_woSid_won_mc->SetTitle("#splitline{nmom_cospippim_woK0_woSid_won}{MC}");
-  nmom_cospippim_woK0_woSid_won_mc->SetMinimum(1);
-  nmom_cospippim_woK0_woSid_won_mc->SetMaximum(nmom_cospippim_woK0_woSid_won[0]->GetMaximum());
-  nmom_cospippim_woK0_woSid_won_mc->Draw("colz");
-
-  TCanvas *ccospippim_woK0_woSid_won = new TCanvas("ccospippim_woK0_woSid_won","ccospippim_woK0_woSid_won");
-  ccospippim_woK0_woSid_won->cd();
-  TH1D* cospippim_woK0_woSid_won[2];
-  for(int i=0;i<2;i++) cospippim_woK0_woSid_won[i] = (TH1D*)nmom_cospippim_woK0_woSid_won[i]->ProjectionX(Form("cospippim_woK0_woSid_won_%s",name[i]));
-  TH1D* cospippim_woK0_woSid_won_mc = (TH1D*)nmom_cospippim_woK0_woSid_won_mc->ProjectionX("cospippim_woK0_woSid_won_mc");
-  cospippim_woK0_woSid_won_mc->SetLineColor(6);
-  cospippim_woK0_woSid_won[0]->Draw("HE");
-  cospippim_woK0_woSid_won_mc->Draw("HEsame");
-
-  TCanvas *ccospippim_woK0_woSid_won_ratio = new TCanvas("ccospippim_woK0_woSid_won_ratio","ccospippim_woK0_woSid_won_ratio");
-  ccospippim_woK0_woSid_won_ratio->cd();
-  TH1D* cospippim_woK0_woSid_won_ratio = (TH1D*)cospippim_woK0_woSid_won[0]->Clone("cospippim_woK0_woSid_won_ratio");
-  cospippim_woK0_woSid_won_ratio->Divide(cospippim_woK0_woSid_won_mc);
-  cospippim_woK0_woSid_won_ratio->SetTitle("Data/MC");
-  cospippim_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  cospippim_woK0_woSid_won_ratio->Draw("HE");
- 
-  //
-
   ////////////////////////////
   // w/K0 + fake neutron
   ///////////////////////////
@@ -1292,12 +1120,12 @@ void comp_fakedata_v2()
   MMnmiss_wK0_woSid_won_mc->Draw("HEsame");
 
   //Data/MC before modifying MC data
-  TCanvas *cMMnmiss_wK0_woSid_won_ratio = new TCanvas("cMMnmiss_wK0_woSid_won_ratio","cMMnmiss_wK0_woSid_won_ratio");
-  TH1D* MMnmiss_wK0_woSid_won_ratio = (TH1D*)MMnmiss_wK0_woSid_won[0]->Clone("MMnmiss_wK0_woSid_won_ratio");
-  MMnmiss_wK0_woSid_won_ratio->Divide(MMnmiss_wK0_woSid_won_mc);
-  MMnmiss_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  MMnmiss_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  MMnmiss_wK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cMMnmiss_wK0_woSid_won_ratio = new TCanvas("cMMnmiss_wK0_woSid_won_ratio","cMMnmiss_wK0_woSid_won_ratio");
+  //TH1D* MMnmiss_wK0_woSid_won_ratio = (TH1D*)MMnmiss_wK0_woSid_won[0]->Clone("MMnmiss_wK0_woSid_won_ratio");
+  //MMnmiss_wK0_woSid_won_ratio->Divide(MMnmiss_wK0_woSid_won_mc);
+  //MMnmiss_wK0_woSid_won_ratio->SetTitle("Data/MC");
+  //MMnmiss_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //MMnmiss_wK0_woSid_won_ratio->Draw("HE");
 
 
   TH2D *MMom_MMass_wK0_woSid_won_mc = (TH2D*)MMom_MMass_wK0_woSid_won[1]->Clone("MMom_MMass_wK0_woSid_won_mc");
@@ -1322,13 +1150,13 @@ void comp_fakedata_v2()
   MMom_wK0_woSid_won_mc->Draw("HEsame");
 
 
-  TCanvas *cMMom_wK0_woSid_won_ratio = new TCanvas("cMMom_wK0_woSid_won_ratio","cMMom_wK0_woSid_won_ratio");
-  cMMom_wK0_woSid_won_ratio->cd();
-  TH1D* MMom_wK0_woSid_won_ratio = (TH1D*)MMom_wK0_woSid_won[0]->Clone("MMom_wK0_woSid_won_ratio");
-  MMom_wK0_woSid_won_ratio->Divide(MMom_wK0_woSid_won_mc);
-  MMom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  MMom_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  MMom_wK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cMMom_wK0_woSid_won_ratio = new TCanvas("cMMom_wK0_woSid_won_ratio","cMMom_wK0_woSid_won_ratio");
+  //cMMom_wK0_woSid_won_ratio->cd();
+  //TH1D* MMom_wK0_woSid_won_ratio = (TH1D*)MMom_wK0_woSid_won[0]->Clone("MMom_wK0_woSid_won_ratio");
+  //MMom_wK0_woSid_won_ratio->Divide(MMom_wK0_woSid_won_mc);
+  //MMom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //MMom_wK0_woSid_won_ratio->SetTitle("Data/MC");
+  //MMom_wK0_woSid_won_ratio->Draw("HE");
 
 
   //projection to IMnpip (miss n & Sigma+/-)
@@ -1341,13 +1169,13 @@ void comp_fakedata_v2()
   IMnpip_wK0_woSid_won_mc->SetLineColor(6);
   IMnpip_wK0_woSid_won_mc->Draw("HEsame");
 
-  TCanvas *cIMnpip_wK0_woSid_won_ratio = new TCanvas("cIMnpip_wK0_woSid_won_ratio","cIMnpip_wK0_woSid_won_ratio");
-  cIMnpip_wK0_woSid_won_ratio->cd();
-  TH1D* IMnpip_wK0_woSid_won_ratio = (TH1D*)IMnpip_wK0_woSid_won[0]->Clone("IMnpip_wK0_woSid_won_ratio");
-  IMnpip_wK0_woSid_won_ratio->Divide(IMnpip_wK0_woSid_won_mc);
-  IMnpip_wK0_woSid_won_ratio->SetTitle("IMnpip_wK0_woSid_won Data/MC");
-  IMnpip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  IMnpip_wK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cIMnpip_wK0_woSid_won_ratio = new TCanvas("cIMnpip_wK0_woSid_won_ratio","cIMnpip_wK0_woSid_won_ratio");
+  //cIMnpip_wK0_woSid_won_ratio->cd();
+  //TH1D* IMnpip_wK0_woSid_won_ratio = (TH1D*)IMnpip_wK0_woSid_won[0]->Clone("IMnpip_wK0_woSid_won_ratio");
+  //IMnpip_wK0_woSid_won_ratio->Divide(IMnpip_wK0_woSid_won_mc);
+  //IMnpip_wK0_woSid_won_ratio->SetTitle("IMnpip_wK0_woSid_won Data/MC");
+  //IMnpip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //IMnpip_wK0_woSid_won_ratio->Draw("HE");
   
   
   TCanvas *cMomnpip_wK0_woSid_won = new TCanvas("cMomnpip_wK0_woSid_won","cMomnpip_wK0_woSid_won");
@@ -1359,13 +1187,13 @@ void comp_fakedata_v2()
   Momnpip_wK0_woSid_won_mc->SetLineColor(6);
   Momnpip_wK0_woSid_won_mc->Draw("HEsame");
 
-  TCanvas *cMomnpip_wK0_woSid_won_ratio = new TCanvas("cMomnpip_wK0_woSid_won_ratio","cMomnpip_wK0_woSid_won_ratio");
-  cMomnpip_wK0_woSid_won_ratio->cd();
-  TH1D* Momnpip_wK0_woSid_won_ratio = (TH1D*)Momnpip_wK0_woSid_won[0]->Clone("Momnpip_wK0_woSid_won_ratio");
-  Momnpip_wK0_woSid_won_ratio->Divide(Momnpip_wK0_woSid_won_mc);
-  Momnpip_wK0_woSid_won_ratio->SetTitle("Momnpip_wK0_woSid_won Data/MC");
-  Momnpip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  Momnpip_wK0_woSid_won_ratio->Draw("HE");
+//  TCanvas *cMomnpip_wK0_woSid_won_ratio = new TCanvas("cMomnpip_wK0_woSid_won_ratio","cMomnpip_wK0_woSid_won_ratio");
+//  cMomnpip_wK0_woSid_won_ratio->cd();
+//  TH1D* Momnpip_wK0_woSid_won_ratio = (TH1D*)Momnpip_wK0_woSid_won[0]->Clone("Momnpip_wK0_woSid_won_ratio");
+//  Momnpip_wK0_woSid_won_ratio->Divide(Momnpip_wK0_woSid_won_mc);
+//  Momnpip_wK0_woSid_won_ratio->SetTitle("Momnpip_wK0_woSid_won Data/MC");
+//  Momnpip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+//  Momnpip_wK0_woSid_won_ratio->Draw("HE");
 
   //Sigma-
   //w K0, w/o ((Sp or Sm) & missing neutron)
@@ -1391,13 +1219,13 @@ void comp_fakedata_v2()
   IMnpim_wK0_woSid_won_mc->SetLineColor(6);
   IMnpim_wK0_woSid_won_mc->Draw("HEsame");
 
-  TCanvas *cIMnpim_wK0_woSid_won_ratio = new TCanvas("cIMnpim_wK0_woSid_won_ratio","cIMnpim_wK0_woSid_won_ratio");
-  cIMnpim_wK0_woSid_won_ratio->cd();
-  TH1D* IMnpim_wK0_woSid_won_ratio = (TH1D*)IMnpim_wK0_woSid_won[0]->Clone("IMnpim_wK0_woSid_won_ratio");
-  IMnpim_wK0_woSid_won_ratio->Divide(IMnpim_wK0_woSid_won_mc);
-  IMnpim_wK0_woSid_won_ratio->SetTitle("IMnpim_wK0_woSid_won Data/MC");
-  IMnpim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  IMnpim_wK0_woSid_won_ratio->Draw("HE");
+//  TCanvas *cIMnpim_wK0_woSid_won_ratio = new TCanvas("cIMnpim_wK0_woSid_won_ratio","cIMnpim_wK0_woSid_won_ratio");
+//  cIMnpim_wK0_woSid_won_ratio->cd();
+//  TH1D* IMnpim_wK0_woSid_won_ratio = (TH1D*)IMnpim_wK0_woSid_won[0]->Clone("IMnpim_wK0_woSid_won_ratio");
+//  IMnpim_wK0_woSid_won_ratio->Divide(IMnpim_wK0_woSid_won_mc);
+//  IMnpim_wK0_woSid_won_ratio->SetTitle("IMnpim_wK0_woSid_won Data/MC");
+//  IMnpim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+//  IMnpim_wK0_woSid_won_ratio->Draw("HE");
   
   
   TCanvas *cMomnpim_wK0_woSid_won = new TCanvas("Momnpim_wK0_woSid_won","Momnpim_wK0_woSid_won");
@@ -1412,13 +1240,13 @@ void comp_fakedata_v2()
     Momnpim_wK0_woSid_won[i]->SetLineColor(colordef[i]);
   }
 
-  TCanvas *cMomnpim_wK0_woSid_won_ratio = new TCanvas("cMomnpim_wK0_woSid_won_ratio","cMomnpim_wK0_woSid_won_ratio");
-  cMomnpim_wK0_woSid_won_ratio->cd();
-  TH1D* Momnpim_wK0_woSid_won_ratio = (TH1D*)Momnpim_wK0_woSid_won[0]->Clone("Momnpim_wK0_woSid_won_ratio");
-  Momnpim_wK0_woSid_won_ratio->Divide(Momnpim_wK0_woSid_won_mc);
-  Momnpim_wK0_woSid_won_ratio->SetTitle("Momnpim_wK0_woSid_won Data/MC");
-  Momnpim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  Momnpim_wK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cMomnpim_wK0_woSid_won_ratio = new TCanvas("cMomnpim_wK0_woSid_won_ratio","cMomnpim_wK0_woSid_won_ratio");
+  //cMomnpim_wK0_woSid_won_ratio->cd();
+  //TH1D* Momnpim_wK0_woSid_won_ratio = (TH1D*)Momnpim_wK0_woSid_won[0]->Clone("Momnpim_wK0_woSid_won_ratio");
+  //Momnpim_wK0_woSid_won_ratio->Divide(Momnpim_wK0_woSid_won_mc);
+  //Momnpim_wK0_woSid_won_ratio->SetTitle("Momnpim_wK0_woSid_won Data/MC");
+  //Momnpim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //Momnpim_wK0_woSid_won_ratio->Draw("HE");
  
 
   //MMnmiss vs IMpippim w/o K0 w/o (Sid & n);
@@ -1444,13 +1272,13 @@ void comp_fakedata_v2()
   IMpippim_wK0_woSid_won[0]->Draw("HE");
   IMpippim_wK0_woSid_won_mc->Draw("HEsame");
 
-  TCanvas *cIMpippim_wK0_woSid_won_ratio = new TCanvas("cIMpippim_wK0_woSid_won_ratio","cIMpippim_wK0_woSid_won_ratio");
-  cIMpippim_wK0_woSid_won_ratio->cd();
-  TH1D* IMpippim_wK0_woSid_won_ratio = (TH1D*)IMpippim_wK0_woSid_won[0]->Clone("IMpippim_wK0_woSid_won_ratio");
-  IMpippim_wK0_woSid_won_ratio->Divide(IMpippim_wK0_woSid_won_mc);
-  IMpippim_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  IMpippim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  IMpippim_wK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cIMpippim_wK0_woSid_won_ratio = new TCanvas("cIMpippim_wK0_woSid_won_ratio","cIMpippim_wK0_woSid_won_ratio");
+  //cIMpippim_wK0_woSid_won_ratio->cd();
+  //TH1D* IMpippim_wK0_woSid_won_ratio = (TH1D*)IMpippim_wK0_woSid_won[0]->Clone("IMpippim_wK0_woSid_won_ratio");
+  //IMpippim_wK0_woSid_won_ratio->Divide(IMpippim_wK0_woSid_won_mc);
+  //IMpippim_wK0_woSid_won_ratio->SetTitle("Data/MC");
+  //IMpippim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //IMpippim_wK0_woSid_won_ratio->Draw("HE");
 
   //q vs IMnpipi w/o K0 w/o (Sid & n);
   TH2D* q_IMnpipi_wK0_woSid_won_mc = (TH2D*)q_IMnpipi_wK0_woSid_won[1]->Clone("q_IMnpipi_wK0_woSid_won_mc");
@@ -1475,13 +1303,13 @@ void comp_fakedata_v2()
   IMnpipi_wK0_woSid_won[0]->Draw("HE");
   IMnpipi_wK0_woSid_won_mc->Draw("HEsame");
 
-  TCanvas *cIMnpipi_wK0_woSid_won_ratio = new TCanvas("cIMnpipi_wK0_woSid_won_ratio","cIMnpipi_wK0_woSid_won_ratio");
-  cIMnpipi_wK0_woSid_won_ratio->cd();
-  TH1D* IMnpipi_wK0_woSid_won_ratio = (TH1D*) IMnpipi_wK0_woSid_won[0]->Clone("IMnpipi_wK0_woSid_won_ratio");
-  IMnpipi_wK0_woSid_won_ratio->Divide(IMnpipi_wK0_woSid_won_mc);
-  IMnpipi_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  IMnpipi_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  IMnpipi_wK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cIMnpipi_wK0_woSid_won_ratio = new TCanvas("cIMnpipi_wK0_woSid_won_ratio","cIMnpipi_wK0_woSid_won_ratio");
+  //cIMnpipi_wK0_woSid_won_ratio->cd();
+  //TH1D* IMnpipi_wK0_woSid_won_ratio = (TH1D*) IMnpipi_wK0_woSid_won[0]->Clone("IMnpipi_wK0_woSid_won_ratio");
+  //IMnpipi_wK0_woSid_won_ratio->Divide(IMnpipi_wK0_woSid_won_mc);
+  //IMnpipi_wK0_woSid_won_ratio->SetTitle("Data/MC");
+  //IMnpipi_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //IMnpipi_wK0_woSid_won_ratio->Draw("HE");
 
 
   TH1D* q_wK0_woSid_won_mc = (TH1D*)q_IMnpipi_wK0_woSid_won_mc->ProjectionY("q_wK0_woSid_won_mc");
@@ -1494,13 +1322,12 @@ void comp_fakedata_v2()
   q_wK0_woSid_won_mc->SetLineColor(6);
   q_wK0_woSid_won_mc->Draw("HEsame");
  
-
-  TCanvas *cq_wK0_woSid_won_ratio = new TCanvas("cq_wK0_woSid_won_ratio","cq_wK0_woSid_won_ratio");
-  TH1D* q_wK0_woSid_won_ratio = (TH1D*)q_wK0_woSid_won[0]->Clone("q_wK0_woSid_won_ratio");
-  q_wK0_woSid_won_ratio->Divide(q_wK0_woSid_won_mc);
-  q_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  q_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  q_wK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cq_wK0_woSid_won_ratio = new TCanvas("cq_wK0_woSid_won_ratio","cq_wK0_woSid_won_ratio");
+  //TH1D* q_wK0_woSid_won_ratio = (TH1D*)q_wK0_woSid_won[0]->Clone("q_wK0_woSid_won_ratio");
+  //q_wK0_woSid_won_ratio->Divide(q_wK0_woSid_won_mc);
+  //q_wK0_woSid_won_ratio->SetTitle("Data/MC");
+  //q_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //q_wK0_woSid_won_ratio->Draw("HE");
   
 
   //missing mass vs Mom(pi+pi-) w/o K0 w/o (Sid & n)
@@ -1527,75 +1354,13 @@ void comp_fakedata_v2()
   Mompippim_wK0_woSid_won[0]->Draw("HE");
   Mompippim_wK0_woSid_won_mc->SetLineColor(6);
 
-  TCanvas *cMompippim_wK0_woSid_won_ratio = new TCanvas("cMompippim_wK0_woSid_won_ratio","cMompippim_wK0_woSid_won_ratio");
-  TH1D* Mompippim_wK0_woSid_won_ratio = (TH1D*)Mompippim_wK0_woSid_won[0]->Clone("Mompippim_wK0_woSid_won_ratio");
-  Mompippim_wK0_woSid_won_ratio->Divide(Mompippim_wK0_woSid_won_mc);
-  Mompippim_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  Mompippim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  Mompippim_wK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cMompippim_wK0_woSid_won_ratio = new TCanvas("cMompippim_wK0_woSid_won_ratio","cMompippim_wK0_woSid_won_ratio");
+  //TH1D* Mompippim_wK0_woSid_won_ratio = (TH1D*)Mompippim_wK0_woSid_won[0]->Clone("Mompippim_wK0_woSid_won_ratio");
+  //Mompippim_wK0_woSid_won_ratio->Divide(Mompippim_wK0_woSid_won_mc);
+  //Mompippim_wK0_woSid_won_ratio->SetTitle("Data/MC");
+  //Mompippim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //Mompippim_wK0_woSid_won_ratio->Draw("HE");
 
-
-
-  //pipmom
-  TH2D* pipmom_MMnmiss_wK0_woSid_won_mc = (TH2D*)pipmom_MMnmiss_wK0_woSid_won[1]->Clone("pipmom_MMnmiss_wK0_woSid_won_mc");
-
-  TH1D* pipmom_wK0_woSid_won_mc = (TH1D*)pipmom_MMnmiss_wK0_woSid_won_mc->ProjectionY("pipmom_wK0_woSid_won_mc");
-  TH1D* pipmom_wK0_woSid_won[2];
-  for(int i=0; i<2; i++) {
-    pipmom_wK0_woSid_won[i] = (TH1D*)pipmom_MMnmiss_wK0_woSid_won[i]->ProjectionY(Form("pipmom_wK0_woSid_won_%s",name[i]));
-    pipmom_wK0_woSid_won[i]->SetLineColor(colordef[i]);
-  }
-  TCanvas *cpipmom_wK0_woSid_won = new TCanvas("cpipmom_wK0_woSid_won","cpipmom_wK0_woSid_won");
-  cpipmom_wK0_woSid_won->cd();
-  pipmom_wK0_woSid_won[0]->Draw("HE");
-  pipmom_wK0_woSid_won_mc->SetLineColor(6);
-  pipmom_wK0_woSid_won_mc->Draw("HEsame");
-
-  TCanvas *cpipmom_wK0_woSid_won_ratio = new TCanvas("cpipmom_wK0_woSid_won_ratio","cpipmom_wK0_woSid_won_ratio");
-  cpipmom_wK0_woSid_won_ratio->cd();
-  TH1D* pipmom_wK0_woSid_won_ratio = (TH1D*)pipmom_wK0_woSid_won[0]->Clone("pipmom_wK0_woSid_won_ratio");
-  pipmom_wK0_woSid_won_ratio->Divide(pipmom_wK0_woSid_won_mc);
-  pipmom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  pipmom_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  pipmom_wK0_woSid_won_ratio->Draw("HEsame");
-
-  
-  //
-  TH2D* pipmom_pimmom_wK0_woSid_won_mc = (TH2D*)pipmom_pimmom_wK0_woSid_won[1]->Clone("pipmom_pimmom_wK0_woSid_won_mc");
-  TCanvas *cpipmom_pimmom_wK0_woSid_won = new TCanvas("cpipmom_pimmom_wK0_woSid_won","cpipmom_pimmom_wK0_woSid_won");
-  cpipmom_pimmom_wK0_woSid_won->Divide(2,1);
-  cpipmom_pimmom_wK0_woSid_won->cd(1);
-  pipmom_pimmom_wK0_woSid_won[0]->Draw("colz");
-  cpipmom_pimmom_wK0_woSid_won->cd(2);
-  pipmom_pimmom_wK0_woSid_won_mc->SetMinimum(1);
-  pipmom_pimmom_wK0_woSid_won_mc->SetMaximum(pipmom_pimmom_wK0_woSid_won[0]->GetMaximum());
-  pipmom_pimmom_wK0_woSid_won_mc->Draw("colz");
-  
-  
-  //pimmom
-  TH2D* pimmom_MMnmiss_wK0_woSid_won_mc = (TH2D*)pimmom_MMnmiss_wK0_woSid_won[1]->Clone("pimmom_MMnmiss_wK0_woSid_won_mc");
-
-  TH1D* pimmom_wK0_woSid_won_mc = pimmom_MMnmiss_wK0_woSid_won_mc->ProjectionY("pimmom_wK0_woSid_won_mc");
-  TH1D* pimmom_wK0_woSid_won[2];
-  for(int i=0; i<2; i++) {
-    pimmom_wK0_woSid_won[i] = (TH1D*)pimmom_MMnmiss_wK0_woSid_won[i]->ProjectionY(Form("pimmom_wK0_woSid_won_%s",name[i]));
-    pimmom_wK0_woSid_won[i]->SetLineColor(colordef[i]);
-  }
-  TCanvas *cpimmom_wK0_woSid_won = new TCanvas("cpimmom_wK0_woSid_won","cpimmom_wK0_woSid_won");
-  cpimmom_wK0_woSid_won->cd();
-  pimmom_wK0_woSid_won[0]->Draw("HE");
-  pimmom_wK0_woSid_won_mc->SetLineColor(6);
-  pimmom_wK0_woSid_won_mc->Draw("HEsame");
-
-  TCanvas *cpimmom_wK0_woSid_won_ratio = new TCanvas("cpimmom_wK0_woSid_won_ratio","cpimmom_wK0_woSid_won_ratio");
-  cpimmom_wK0_woSid_won_ratio->cd();
-  TH1D* pimmom_wK0_woSid_won_ratio = (TH1D*)pimmom_wK0_woSid_won[0]->Clone("pimmom_wK0_woSid_won_ratio");
-  pimmom_wK0_woSid_won_ratio->Divide(pimmom_wK0_woSid_won_mc);
-  pimmom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  pimmom_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  pimmom_wK0_woSid_won_ratio->Draw("HEsame");
-
-  
   //nCDSmom
   TH2D* nmom_MMnmiss_wK0_woSid_won_mc = (TH2D*)nmom_MMnmiss_wK0_woSid_won[1]->Clone("nmom_MMnmiss_wK0_woSid_won_mc");
 
@@ -1612,13 +1377,13 @@ void comp_fakedata_v2()
   nmom_wK0_woSid_won_mc->Draw("HEsame");
   //for(int i=1;i<6;i++)nmom_wK0_woSid_won[i]->Draw("same");
 
-  TCanvas *cnmom_wK0_woSid_won_ratio = new TCanvas("cnmom_wK0_woSid_won_ratio","cnmom_wK0_woSid_won_ratio");
-  cnmom_wK0_woSid_won_ratio->cd();
-  TH1D* nmom_wK0_woSid_won_ratio = (TH1D*)nmom_wK0_woSid_won[0]->Clone("nmom_wK0_woSid_won_ratio");
-  nmom_wK0_woSid_won_ratio->Divide(nmom_wK0_woSid_won_mc);
-  nmom_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  nmom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  nmom_wK0_woSid_won_ratio->Draw("HEsame");
+  //TCanvas *cnmom_wK0_woSid_won_ratio = new TCanvas("cnmom_wK0_woSid_won_ratio","cnmom_wK0_woSid_won_ratio");
+  //cnmom_wK0_woSid_won_ratio->cd();
+  //TH1D* nmom_wK0_woSid_won_ratio = (TH1D*)nmom_wK0_woSid_won[0]->Clone("nmom_wK0_woSid_won_ratio");
+  //nmom_wK0_woSid_won_ratio->Divide(nmom_wK0_woSid_won_mc);
+  //nmom_wK0_woSid_won_ratio->SetTitle("Data/MC");
+  //nmom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
+  //nmom_wK0_woSid_won_ratio->Draw("HEsame");
 
   
   //weighting to momentum vector 
@@ -1653,99 +1418,6 @@ void comp_fakedata_v2()
   cosn_wK0_woSid_won_ratio->Draw("HE");
 
   
-  //
-  TH2D* nmom_cospip_wK0_woSid_won_mc = (TH2D*)nmom_cospip_wK0_woSid_won[1]->Clone("nmom_cospip_wK0_woSid_won_mc");
-  TCanvas *cnmom_cospip_wK0_woSid_won = new TCanvas("cnmom_cospip_wK0_woSid_won","cnmom_cospip_wK0_woSid_won",1200,800);
-  cnmom_cospip_wK0_woSid_won->Divide(2,1);
-  cnmom_cospip_wK0_woSid_won->cd(1);
-  nmom_cospip_wK0_woSid_won[0]->SetTitle("#splitline{nmom_cospip_wK0_woSid_won}{Real data}");
-  nmom_cospip_wK0_woSid_won[0]->Draw("colz");
-  cnmom_cospip_wK0_woSid_won->cd(2);
-  nmom_cospip_wK0_woSid_won_mc->SetTitle("#splitline{nmom_cospip_wK0_woSid_won}{MC}");
-  nmom_cospip_wK0_woSid_won_mc->SetMinimum(1);
-  nmom_cospip_wK0_woSid_won_mc->SetMaximum(nmom_cospip_wK0_woSid_won[0]->GetMaximum());
-  nmom_cospip_wK0_woSid_won_mc->Draw("colz");
-
-  TCanvas *ccospip_wK0_woSid_won = new TCanvas("ccospip_wK0_woSid_won","ccospip_wK0_woSid_won");
-  ccospip_wK0_woSid_won->cd();
-  TH1D* cospip_wK0_woSid_won[2];
-  for(int i=0;i<2;i++) cospip_wK0_woSid_won[i] = (TH1D*)nmom_cospip_wK0_woSid_won[i]->ProjectionX(Form("cospip_wK0_woSid_won_%s",name[i]));
-  TH1D* cospip_wK0_woSid_won_mc = (TH1D*)nmom_cospip_wK0_woSid_won_mc->ProjectionX("cospip_wK0_woSid_won_mc");
-  cospip_wK0_woSid_won_mc->SetLineColor(6);
-  cospip_wK0_woSid_won[0]->Draw("HE");
-  cospip_wK0_woSid_won_mc->Draw("HEsame");
-
-  TCanvas *ccospip_wK0_woSid_won_ratio = new TCanvas("ccospip_wK0_woSid_won_ratio","ccospip_wK0_woSid_won_ratio");
-  ccospip_wK0_woSid_won_ratio->cd();
-  TH1D* cospip_wK0_woSid_won_ratio = (TH1D*)cospip_wK0_woSid_won[0]->Clone("cospip_wK0_woSid_won_ratio");
-  cospip_wK0_woSid_won_ratio->Divide(cospip_wK0_woSid_won_mc);
-  cospip_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  cospip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  cospip_wK0_woSid_won_ratio->Draw("HE");
-  
-
-  //
-  TH2D* nmom_cospim_wK0_woSid_won_mc = (TH2D*)nmom_cospim_wK0_woSid_won[1]->Clone("nmom_cospim_wK0_woSid_won_mc");
-  TCanvas *cnmom_cospim_wK0_woSid_won = new TCanvas("cnmom_cospim_wK0_woSid_won","cnmom_cospim_wK0_woSid_won",1200,800);
-  cnmom_cospim_wK0_woSid_won->Divide(2,1);
-  cnmom_cospim_wK0_woSid_won->cd(1);
-  nmom_cospim_wK0_woSid_won[0]->SetTitle("#splitline{nmom_cospim_wK0_woSid_won}{Real data}");
-  nmom_cospim_wK0_woSid_won[0]->Draw("colz");
-  cnmom_cospim_wK0_woSid_won->cd(2);
-  nmom_cospim_wK0_woSid_won_mc->SetTitle("#splitline{nmom_cospim_wK0_woSid_won}{MC}");
-  nmom_cospim_wK0_woSid_won_mc->SetMinimum(1);
-  nmom_cospim_wK0_woSid_won_mc->SetMaximum(nmom_cospim_wK0_woSid_won[0]->GetMaximum());
-  nmom_cospim_wK0_woSid_won_mc->Draw("colz");
-
-  TCanvas *ccospim_wK0_woSid_won = new TCanvas("ccospim_wK0_woSid_won","ccospim_wK0_woSid_won");
-  ccospim_wK0_woSid_won->cd();
-  TH1D* cospim_wK0_woSid_won[2];
-  for(int i=0;i<2;i++) cospim_wK0_woSid_won[i] = (TH1D*)nmom_cospim_wK0_woSid_won[i]->ProjectionX(Form("cospim_wK0_woSid_won_%s",name[i]));
-  TH1D* cospim_wK0_woSid_won_mc = (TH1D*)nmom_cospim_wK0_woSid_won_mc->ProjectionX("cospim_wK0_woSid_won_mc");
-  cospim_wK0_woSid_won_mc->SetLineColor(6);
-  cospim_wK0_woSid_won[0]->Draw("HE");
-  cospim_wK0_woSid_won_mc->Draw("HEsame");
-
-  TCanvas *ccospim_wK0_woSid_won_ratio = new TCanvas("ccospim_wK0_woSid_won_ratio","ccospim_wK0_woSid_won_ratio");
-  ccospim_wK0_woSid_won_ratio->cd();
-  TH1D* cospim_wK0_woSid_won_ratio = (TH1D*)cospim_wK0_woSid_won[0]->Clone("cospim_wK0_woSid_won_ratio");
-  cospim_wK0_woSid_won_ratio->Divide(cospim_wK0_woSid_won_mc);
-  cospim_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  cospim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  cospim_wK0_woSid_won_ratio->Draw("HE");
-   
-  
-  TH2D* nmom_cospippim_wK0_woSid_won_mc = (TH2D*)nmom_cospippim_wK0_woSid_won[1]->Clone("nmom_cospippim_wK0_woSid_won_mc");
-  TCanvas *cnmom_cospippim_wK0_woSid_won = new TCanvas("cnmom_cospippim_wK0_woSid_won","cnmom_cospippim_wK0_woSid_won",1200,800);
-  cnmom_cospippim_wK0_woSid_won->Divide(2,1);
-  cnmom_cospippim_wK0_woSid_won->cd(1);
-  nmom_cospippim_wK0_woSid_won[0]->SetTitle("#splitline{nmom_cospippim_wK0_woSid_won}{Real data}");
-  nmom_cospippim_wK0_woSid_won[0]->Draw("colz");
-  cnmom_cospippim_wK0_woSid_won->cd(2);
-  nmom_cospippim_wK0_woSid_won_mc->SetTitle("#splitline{nmom_cospippim_wK0_woSid_won}{MC}");
-  nmom_cospippim_wK0_woSid_won_mc->SetMinimum(1);
-  nmom_cospippim_wK0_woSid_won_mc->SetMaximum(nmom_cospippim_wK0_woSid_won[0]->GetMaximum());
-  nmom_cospippim_wK0_woSid_won_mc->Draw("colz");
-
-  TCanvas *ccospippim_wK0_woSid_won = new TCanvas("ccospippim_wK0_woSid_won","ccospippim_wK0_woSid_won");
-  ccospippim_wK0_woSid_won->cd();
-  TH1D* cospippim_wK0_woSid_won[2];
-  for(int i=0;i<2;i++) cospippim_wK0_woSid_won[i] = (TH1D*)nmom_cospippim_wK0_woSid_won[i]->ProjectionX(Form("cospippim_wK0_woSid_won_%s",name[i]));
-  TH1D* cospippim_wK0_woSid_won_mc = (TH1D*)nmom_cospippim_wK0_woSid_won_mc->ProjectionX("cospippim_wK0_woSid_won_mc");
-  cospippim_wK0_woSid_won_mc->SetLineColor(6);
-  cospippim_wK0_woSid_won[0]->Draw("HE");
-  cospippim_wK0_woSid_won_mc->Draw("HEsame");
-
-  TCanvas *ccospippim_wK0_woSid_won_ratio = new TCanvas("ccospippim_wK0_woSid_won_ratio","ccospippim_wK0_woSid_won_ratio");
-  ccospippim_wK0_woSid_won_ratio->cd();
-  TH1D* cospippim_wK0_woSid_won_ratio = (TH1D*)cospippim_wK0_woSid_won[0]->Clone("cospippim_wK0_woSid_won_ratio");
-  cospippim_wK0_woSid_won_ratio->Divide(cospippim_wK0_woSid_won_mc);
-  cospippim_wK0_woSid_won_ratio->SetTitle("Data/MC");
-  cospippim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
-  cospippim_wK0_woSid_won_ratio->Draw("HE");
-
-  //
-
   TCanvas *cMMnmiss_Momnpipi_woK0_woSid_won = new TCanvas("cMMnmiss_Momnpipi_woK0_woSid_won","cMMnmiss_Momnpipi_woK0_woSid_won",1000,800);
   cMMnmiss_Momnpipi_woK0_woSid_won->Divide(2,1);
   cMMnmiss_Momnpipi_woK0_woSid_won->cd(1);
