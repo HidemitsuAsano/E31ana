@@ -2347,8 +2347,8 @@ void comp_fakedata()
   IMpippim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   IMpippim_wK0_woSid_won_ratio->Draw("HE");
 
-  TF1 *evalf_IMpippim_wK0 = new TF1("evalf_IMpippim_wK0","pol6",0,1);
-  IMpippim_wK0_woSid_won_ratio->Fit("evalf_IMpippim_wK0","","",0.28,0.97);
+  TF1 *evalf_IMpippim_wK0 = new TF1("evalf_IMpippim_wK0","pol4",0,1);
+  IMpippim_wK0_woSid_won_ratio->Fit("evalf_IMpippim_wK0","","",0.39,0.65);
 
   //q vs IMnpipi w/o K0 w/o (Sid & n);
   TH2D* q_IMnpipi_wK0_woSid_won_mc = (TH2D*)q_IMnpipi_wK0_woSid_won[1]->Clone("q_IMnpipi_wK0_woSid_won_mc");
