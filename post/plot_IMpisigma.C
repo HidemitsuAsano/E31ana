@@ -389,6 +389,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   fweight_IMnpim_v350->SetParameters(param_IMnpim_corr3);
   //TF1* fweight_IMpippim_wK0_v349 = new TF1("fweight_IMpippim_wK0_v349",func_IMpippim_wK0,0.4,0.58,5);
   //fweight_IMpippim_wK0_v349->SetParameters(param_IMpippim_wK0);
+  
+  TFile *fweight_v351 = new TFile("../simpost/comp_fakedata_out_v351.root","READ");
+  fweight_v351->cd();
+  TH1* fweight_IMpippim_wK0_v351 = (TH1D*)fweight_v351->Get("IMpippim_wK0_woSid_won_ratio");
+  fweight_IMpippim_wK0_v351->SetName("fweight_IMpippim_wK0_v351");
 
   f->cd();
   // w/o kinematic fit
@@ -3109,6 +3114,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           weight *= fweight_q_wK0_v344->Eval(qkn.P()); 
           weight *= fweight_nmom_wK0_v345->Eval((*LVec_n).P());
           weight *= fweight_nmom_wK0_v349->Eval((*LVec_n).P());
+          weight *= fweight_IMpippim_wK0_v351->Interpolate(LVec_pip_pim.M());
           //weight *= fweight_IMpippim_wK0_v349->Eval(LVec_pip_pim.M());
 
           //weight *= fweight_IMnpipi_wK0_v303->Interpolate(LVec_pip_pim_n.M()); 
