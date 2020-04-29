@@ -20,9 +20,6 @@ TF1 *fweight_nmom_v345 = NULL;
 TF1 *fweight_IMnpip_v307 = NULL;
 TF1 *fweight_IMnpip_v314 = NULL;
 TF1 *fweight_IMnpip_v327 = NULL;
-TF1 *fweight_IMnpip_v307s = NULL;
-TF1 *fweight_IMnpip_v314s = NULL;
-TF1 *fweight_IMnpip_v327s = NULL;
 TF1 *fweight_IMnpim_v308 = NULL;
 TF1 *fweight_IMnpim_v313 = NULL;
 TF1 *fweight_IMnpim_v328 = NULL;
@@ -118,13 +115,15 @@ Double_t func_IMnpipmul(Double_t *x,Double_t *par)
 
 Double_t func_IMnpipmul_s(Double_t *x,Double_t *par)
 {
-  const Double_t xx=x[0];
-  return 
-  fweight_IMnpip_v307s->Eval(xx)*
-  fweight_IMnpip_v314s->Eval(xx)*
-  fweight_IMnpip_v327s->Eval(xx);
-  //fweight_IMnpip_v346->Eval(xx);
+  if(1.06<=x[0] && x[0]<1.92){
+    return (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0))*(1./(1.0+exp((x[0]-1.25)/par[11])))+
+           (par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0)+par[8]*pow(x[0],4.0)+par[9]*pow(x[0],5.0)+par[10]*pow(x[0],6.0))*(1.0-1./(1.0+exp((x[0]-1.25)/par[11])));
+  }else{
+    return 1.;
+  }
 }
+
+
 
 
 Double_t func_IMnpimmul(Double_t *x,Double_t *par)
@@ -266,6 +265,10 @@ void FakeMCWeight()
   f_qmul->GetXaxis()->SetTitle("q [GeV/c]");
   f_qmul->GetXaxis()->CenterTitle();
   f_qmul->Draw("c");
+  
+  //TCanvas *cqmul = new TCanvas("cqmu;","cqmul");
+  //cqmul->cd();
+  //TH1D* h_qmul = (TH1D*)f_qmul->GetHistogram();
 
 
   //MMnmiss
@@ -326,18 +329,38 @@ void FakeMCWeight()
   f_IMnpipmul->SetTitle("");
   f_IMnpipmul->GetXaxis()->SetTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   f_IMnpipmul->GetXaxis()->CenterTitle();
+  f_IMnpipmul->SetNpx(5000);
   f_IMnpipmul->Draw("c");
+  f_IMnpipmul->SetLineColor(1);
+  TCanvas *c1 = new TCanvas("c1","c1");
+  TH1D* h_IMnpipmul = (TH1D*)f_IMnpipmul->GetHistogram();
+  h_IMnpipmul->Smooth();
+  h_IMnpipmul->SetLineColor(3);
+  h_IMnpipmul->Draw("H");
   
-  fweight_IMnpip_v307s = new TF1("fweight_IMnpip_v307s",func_IMnpip_s,1,2.0,9);
-  fweight_IMnpip_v307s->SetParameters(param_IMnpip);
-  fweight_IMnpip_v314s = new TF1("fweight_IMnpip_v314s",func_IMnpip_s,1,2.0,9);
-  fweight_IMnpip_v314s->SetParameters(param_IMnpip_corr);
-  fweight_IMnpip_v327s = new TF1("fweight_IMnpip_v327s",func_IMnpip_s,1,2.0,9);
-  fweight_IMnpip_v327s->SetParameters(param_IMnpip_corr2);
+  TF1* f_IMnpipmul_s = new TF1("f_IMnpipmul_s",func_IMnpipmul_s,1.06,2.0,12);
+  f_IMnpipmul_s->SetParameters(param_IMnpip);
   
-  TF1* f_IMnpipmul_s = new TF1("f_IMnpipmul_s",func_IMnpipmul_s,1.08,2.0,9*3);
+  f_IMnpipmul_s->SetParameter(4,-3277.38);
+  f_IMnpipmul_s->SetParameter(5,12041.4);
+  f_IMnpipmul_s->SetParameter(6,-18359.4);
+  f_IMnpipmul_s->SetParameter(7,14891.1);
+  f_IMnpipmul_s->SetParameter(8,-6782.71);
+  f_IMnpipmul_s->SetParameter(9,1645.85);
+  f_IMnpipmul_s->SetParameter(10,-166.262);
+  f_IMnpipmul_s->SetParameter(11,1.0);
+  f_IMnpipmul_s->SetParLimits(11,0.01,1.0);
+  h_IMnpipmul->Fit(f_IMnpipmul_s,"","",1.06,1.92);
   f_IMnpipmul_s->SetLineColor(3);
   f_IMnpipmul_s->Draw("same");
+
+  //fweight_IMnpip_v307s = new TF1("fweight_IMnpip_v307s",func_IMnpip_s,1,2.0,9);
+  //fweight_IMnpip_v307s->SetParameters(param_IMnpip);
+  //fweight_IMnpip_v314s = new TF1("fweight_IMnpip_v314s",func_IMnpip_s,1,2.0,9);
+  //fweight_IMnpip_v314s->SetParameters(param_IMnpip_corr);
+  //fweight_IMnpip_v327s = new TF1("fweight_IMnpip_v327s",func_IMnpip_s,1,2.0,9);
+  //fweight_IMnpip_v327s->SetParameters(param_IMnpip_corr2);
+  
 
 
   c_woK0_func->cd(5);
@@ -512,4 +535,14 @@ void FakeMCWeight()
   //IMpippim (N/A)
   c_wK0_func->cd(6);
   
+  
+
+  std::ofstream os;
+  os.open("param_corr.txt");
+  os << "IMnpip" << endl;
+  for(int i=0;i<f_IMnpipmul_s->GetNpar();i++){
+    os << f_IMnpipmul_s->GetParameter(i) << ",";
+    os << endl;
+  }
+
 };
