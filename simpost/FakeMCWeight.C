@@ -123,6 +123,20 @@ Double_t func_IMnpipmul_s(Double_t *x,Double_t *par)
   }
 }
 
+Double_t param_IMnpip_s[12]={
+-327.854,
+748.394,
+-561.008,
+138.25,
+-3277.16,
+12041.2,
+-18359.5,
+14891.1,
+-6782.67,
+1645.87,
+-166.272,
+0.01
+};
 
 
 
@@ -329,18 +343,21 @@ void FakeMCWeight()
   f_IMnpipmul->SetTitle("");
   f_IMnpipmul->GetXaxis()->SetTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   f_IMnpipmul->GetXaxis()->CenterTitle();
-  f_IMnpipmul->SetNpx(5000);
-  f_IMnpipmul->Draw("c");
-  f_IMnpipmul->SetLineColor(1);
-  TCanvas *c1 = new TCanvas("c1","c1");
-  TH1D* h_IMnpipmul = (TH1D*)f_IMnpipmul->GetHistogram();
-  h_IMnpipmul->Smooth();
-  h_IMnpipmul->SetLineColor(3);
-  h_IMnpipmul->Draw("H");
+  //f_IMnpipmul->SetNpx(5000);
+  //f_IMnpipmul->Draw("c");
+  //f_IMnpipmul->SetLineColor(1);
+  //TCanvas *c1 = new TCanvas("c1","c1");
+  //TH1D* h_IMnpipmul = (TH1D*)f_IMnpipmul->GetHistogram();
+  //h_IMnpipmul->Smooth();
+  //h_IMnpipmul->SetLineColor(3);
+  //h_IMnpipmul->Draw("H");
   
   TF1* f_IMnpipmul_s = new TF1("f_IMnpipmul_s",func_IMnpipmul_s,1.06,2.0,12);
-  f_IMnpipmul_s->SetParameters(param_IMnpip);
-  
+  f_IMnpipmul_s->SetParameters(param_IMnpip_s);
+  f_IMnpipmul_s->SetTitle("");
+  f_IMnpipmul_s->GetXaxis()->SetTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  f_IMnpipmul_s->GetXaxis()->CenterTitle();
+  /*
   f_IMnpipmul_s->SetParameter(4,-3277.38);
   f_IMnpipmul_s->SetParameter(5,12041.4);
   f_IMnpipmul_s->SetParameter(6,-18359.4);
@@ -351,8 +368,9 @@ void FakeMCWeight()
   f_IMnpipmul_s->SetParameter(11,1.0);
   f_IMnpipmul_s->SetParLimits(11,0.01,1.0);
   h_IMnpipmul->Fit(f_IMnpipmul_s,"","",1.06,1.92);
-  f_IMnpipmul_s->SetLineColor(3);
-  f_IMnpipmul_s->Draw("same");
+  */
+  f_IMnpipmul_s->SetLineColor(2);
+  f_IMnpipmul_s->Draw("c");
 
   //fweight_IMnpip_v307s = new TF1("fweight_IMnpip_v307s",func_IMnpip_s,1,2.0,9);
   //fweight_IMnpip_v307s->SetParameters(param_IMnpip);
