@@ -95,7 +95,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   IMnpim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
   IMnpim_wK0_woSid_won_ratio->Draw("HE");
 
-
+  /*
   TH1D* Momnpip_woK0_woSid_won_rdata = (TH1D*)f->Get("Momnpip_woK0_woSid_won_rdata");
   TH1D* Momnpip_woK0_woSid_won_mc = (TH1D*)f->Get("Momnpip_woK0_woSid_won_mc");
   TH1D* Momnpip_wK0_woSid_won_rdata = (TH1D*)f->Get("Momnpip_wK0_woSid_won_rdata");
@@ -139,7 +139,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   cMomnpim->cd(4);
   Momnpim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
   Momnpim_wK0_woSid_won_ratio->Draw("HE");
-
+  */
 
   TH1D* IMnpipi_woK0_woSid_won_rdata = (TH1D*)f->Get("IMnpipi_woK0_woSid_won_rdata");
   TH1D* IMnpipi_woK0_woSid_won_mc = (TH1D*)f->Get("IMnpipi_woK0_woSid_won_mc");
@@ -207,7 +207,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   IMpippim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
   IMpippim_wK0_woSid_won_ratio->Draw("HE");
 
-
+  /*
   TH1D* Mompippim_woK0_woSid_won_rdata = (TH1D*)f->Get("Mompippim_woK0_woSid_won_rdata");
   TH1D* Mompippim_woK0_woSid_won_mc = (TH1D*)f->Get("Mompippim_woK0_woSid_won_mc");
   TH1D* Mompippim_wK0_woSid_won_rdata = (TH1D*)f->Get("Mompippim_wK0_woSid_won_rdata");
@@ -227,6 +227,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   Mompippim_woK0_woSid_won_ratio->Draw("HE");
   cMompippim->cd(4);
   Mompippim_wK0_woSid_won_ratio->Draw("HE");
+  */
 
   TH1D* nmom_woK0_woSid_won_rdata = (TH1D*)f->Get("nmom_woK0_woSid_won_rdata");
   TH1D* nmom_woK0_woSid_won_mc = (TH1D*)f->Get("nmom_woK0_woSid_won_mc");
