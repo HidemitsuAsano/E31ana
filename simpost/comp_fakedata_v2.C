@@ -1578,7 +1578,7 @@ void comp_fakedata_v2()
 
   TCanvas *cIMnpipi_wSid_n_0 = new TCanvas("cIMnpipi_wSid_n_0","cIMnpipi_wSid_n_0");
   TH1D* IMnpipi_wSid_n_0[3];
-  for(int i=0;i<3;i++)IMnpipi_wSid_n_0[i] = q_IMnpipi_wSid_n[i]->ProjectionX(Form("IMnpipi_wSid_n_0_%s",name[i]),q350bin-1);
+  for(int i=0;i<3;i++)IMnpipi_wSid_n_0[i] = q_IMnpipi_wSid_n[i]->ProjectionX(Form("IMnpipi_wSid_n_0_%s",name[i]),0,q350bin-1);
   IMnpipi_wSid_n_0[0]->Draw("HE");
   TH1D* IMnpipi_wSid_n_mc_0 = q_IMnpipi_wSid_n_mc->ProjectionX("IMnpipi_wSid_n_mc_0",0,q350bin-1);
   IMnpipi_wSid_n_mc_0->SetLineColor(6);
@@ -1590,7 +1590,7 @@ void comp_fakedata_v2()
 
   TCanvas *cIMnpipi_wSid_n_350 = new TCanvas("cIMnpipi_wSid_n_350","cIMnpipi_wSid_n_350");
   TH1D* IMnpipi_wSid_n_350[3];
-  for(int i=0;i<3;i++)IMnpipi_wSid_n_350[i] = q_IMnpipi_wSid_n[0]->ProjectionX(Form("IMnpipi_wSid_n_350_%s",name[i]),q350bin,300);
+  for(int i=0;i<3;i++)IMnpipi_wSid_n_350[i] = q_IMnpipi_wSid_n[i]->ProjectionX(Form("IMnpipi_wSid_n_350_%s",name[i]),q350bin,300);
   IMnpipi_wSid_n_350[0]->Draw("HE");
   TH1D* IMnpipi_wSid_n_mc_350 = q_IMnpipi_wSid_n_mc->ProjectionX("IMnpipi_wSid_n_mc_350",q350bin,300);
   IMnpipi_wSid_n_mc_350->SetLineColor(6);
