@@ -1467,8 +1467,6 @@ void comp_fakedata_v2()
   Momnpipi_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   Momnpipi_wK0_woSid_won_ratio->Draw("HE");
   */
-  
-  std::cout << "a " << std::endl;
 
   //Signal check
   TH2D* q_IMnpipi_wSid_n_Sp_mc = (TH2D*)q_IMnpipi_wSid_n_Sp[1]->Clone();//woK0
@@ -1484,7 +1482,6 @@ void comp_fakedata_v2()
   q_IMnpipi_wSid_n_Sp_mc->SetMaximum(q_IMnpipi_wSid_n_Sp[0]->GetMaximum());
   q_IMnpipi_wSid_n_Sp_mc->Draw("colz");
 
-  std::cout << "a " << std::endl;
   TCanvas *cIMnpipi_wSid_n_Sp_0 = new TCanvas("cIMnpipi_wSid_n_Sp_0","cIMnpipi_wSid_n_Sp_0");
   const int q350bin = q_IMnpipi_wSid_n_Sp[0]->GetYaxis()->FindBin(0.35);
   TH1D* IMnpipi_wSid_n_Sp_0[3];
@@ -1499,7 +1496,6 @@ void comp_fakedata_v2()
   IMnpipi_wSid_n_Sp_0[2]->Draw("HEsame");
 
 
-  std::cout << "a " << std::endl;
   TCanvas *cIMnpipi_wSid_n_Sp_350 = new TCanvas("cIMnpipi_wSid_n_Sp_350","cIMnpipi_wSid_n_Sp_350");
   TH1D* IMnpipi_wSid_n_Sp_350[3];
   for(int i=0; i<3; i++)IMnpipi_wSid_n_Sp_350[i] = q_IMnpipi_wSid_n_Sp[i]->ProjectionX(Form("IMnpipi_wSid_n_Sp_350_%s",name[i]),q350bin,300);
@@ -1537,7 +1533,6 @@ void comp_fakedata_v2()
   IMnpipi_wSid_n_Sm_0[2]->SetLineColor(3);
   IMnpipi_wSid_n_Sm_0[2]->Draw("HEsame");
 
-  std::cout << "a " << std::endl;
   TCanvas *cIMnpipi_wSid_n_Sm_350 = new TCanvas("cIMnpipi_wSid_n_Sm_350","cIMnpipi_wSid_n_Sm_350");
   TH1D* IMnpipi_wSid_n_Sm_350[3];
   for(int i=0; i<3; i++)IMnpipi_wSid_n_Sm_350[i] = q_IMnpipi_wSid_n_Sm[i]->ProjectionX(Form("IMnpipi_wSid_n_Sm_350_%s",name[i]),q350bin,300);
@@ -1550,16 +1545,36 @@ void comp_fakedata_v2()
   IMnpipi_wSid_n_Sm_350[2]->SetLineColor(3);
   IMnpipi_wSid_n_Sm_350[2]->Draw("HEsame");
    
-
  
   TCanvas *cq_IMnpipi_wSid_n_rdata = new TCanvas("cq_IMnpipi_wSid_n_rdata","cq_IMnpipi_wSid_n_rdata");
+  cq_IMnpipi_wSid_n_rdata->Divide(2,1);
+  cq_IMnpipi_wSid_n_rdata->cd(1);
   q_IMnpipi_wSid_n[0]->Draw("colz");
-
-  TCanvas *cq_IMnpipi_wSid_n_mc = new TCanvas("cq_IMnpipi_wSid_n_mc","cq_IMnpipi_wSid_n_mc");
+  //TCanvas *cq_IMnpipi_wSid_n_mc = new TCanvas("cq_IMnpipi_wSid_n_mc","cq_IMnpipi_wSid_n_mc");
+  cq_IMnpipi_wSid_n_rdata->cd(2);
   TH2D* q_IMnpipi_wSid_n_mc = (TH2D*)q_IMnpipi_wSid_n[1]->Clone("q_IMnpipi_wSid_n_mc");
+  q_IMnpipi_wSid_n_mc->SetTitle("q_IMnpipi_wSid_n_mc");
   q_IMnpipi_wSid_n_mc->Add(q_IMnpipi_wSid_n[2]);
+  q_IMnpipi_wSid_n_mc->SetMaximum(q_IMnpipi_wSid_n[0]->GetMaximum());
   q_IMnpipi_wSid_n_mc->Draw("colz");
-  
+   
+
+  TCanvas *cq_IMnpipi_wSid_mc = new TCanvas("cq_IMnpipi_wSid_mc","cq_IMnpipi_wSid_mc");
+  cq_IMnpipi_wSid_mc->Divide(2,1);
+  cq_IMnpipi_wSid_mc->cd(1);
+  q_IMnpipi_wSid_n[1]->Draw("colz");
+  cq_IMnpipi_wSid_mc->cd(2);
+  q_IMnpipi_wSid_n[2]->SetMaximum(q_IMnpipi_wSid_n[1]->GetMaximum());
+  q_IMnpipi_wSid_n[2]->Draw("colz");
+ 
+
+  TCanvas *cq_IMnpipi_wSid_n_sub = new TCanvas("cq_IMnpipi_wSid_n_sub","cq_IMnpipi_wSid_n_sub");
+  TH1D* q_IMnpipi_wSid_n_sub = (TH1D*)q_IMnpipi_wSid_n[0]->Clone("q_IMnpipi_wSid_n_sub");
+  q_IMnpipi_wSid_n_sub->Add(q_IMnpipi_wSid_n_mc,-1.0);
+  q_IMnpipi_wSid_n_sub->Draw("colz");
+
+
+
 
   TCanvas *cIMnpipi_wSid_n = new TCanvas("cIMnpipi_wSid_n","cIMnpipi_wSid_n");
   TH1D* IMnpipi_wSid_n_rdata = (TH1D*)q_IMnpipi_wSid_n[0]->ProjectionX("IMnpipi_wSid_n_rdata");
@@ -1575,6 +1590,22 @@ void comp_fakedata_v2()
   IMnpipi_wSid_n_woK0->Draw("HEsame");
   IMnpipi_wSid_n_wK0->SetLineColor(3);
   IMnpipi_wSid_n_wK0->Draw("HEsame");
+
+  TCanvas *cq_wSid_n = new TCanvas("cq_wSid_n","cq_wSid_n");
+  TH1D* q_wSid_n_rdata = (TH1D*)q_IMnpipi_wSid_n[0]->ProjectionY("q_wSid_n_rdata");
+  TH1D* q_wSid_n_woK0 = (TH1D*)q_IMnpipi_wSid_n[1]->ProjectionY("q_wSid_n_woK0");
+  TH1D* q_wSid_n_wK0 = (TH1D*)q_IMnpipi_wSid_n[2]->ProjectionY("q_wSid_n_wK0");
+  q_wSid_n_rdata->Draw("HE");
+  TH1D* q_wSid_n_mc = (TH1D*)q_wSid_n_woK0->Clone("q_wSid_n_mc");
+  q_wSid_n_mc->Add(q_wSid_n_wK0);
+  q_wSid_n_mc->SetLineColor(6);
+  q_wSid_n_mc->Draw("HEsame");
+  q_wSid_n_woK0->SetLineColor(2);
+  q_wSid_n_woK0->Draw("HEsame");
+  q_wSid_n_wK0->SetLineColor(3);
+  q_wSid_n_wK0->Draw("HEsame");
+
+
 
   TCanvas *cIMnpipi_wSid_n_0 = new TCanvas("cIMnpipi_wSid_n_0","cIMnpipi_wSid_n_0");
   TH1D* IMnpipi_wSid_n_0[3];
