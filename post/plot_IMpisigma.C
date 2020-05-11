@@ -3616,7 +3616,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         MMnmiss_IMpippim_dE_woK0_woSid->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
         IMnpim_IMnpip_dE_woK0_woSid->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         q_IMnpipi_woK0_woSid->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
-        if(!MissNFlag) {
+        if(!MissNwideFlag) {
           MMnmiss_IMnpip_dE_woK0_woSid_won->Fill(LVec_pip_n.M(),nmiss_mass,weight);
           MMnmiss_Momnpip_dE_woK0_woSid_won->Fill(LVec_pip_n.P(),nmiss_mass,weight);
           MMnmiss_IMnpim_dE_woK0_woSid_won->Fill(LVec_pim_n.M(),nmiss_mass,weight);
