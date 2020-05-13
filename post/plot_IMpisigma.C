@@ -733,6 +733,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* mnmom_IMpippim_wSid_n;//missing neutron mom.
   TH2F* q_IMpippim_n;
   TH2F* q_IMpippim_n_wSid;
+  TH2F* q_IMpippim_woK0_woSid_won;
+  TH2F* q_IMpippim_wK0_woSid_won;
   TH2F* IMpippim_IMnpipi_n;
   TH2F* IMpippim_IMnpipi_n_wSid;
   TH2F* IMpippim_IMnpip_n;
@@ -2097,6 +2099,14 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   q_IMpippim_n_wSid = new TH2F("q_IMpippim_n_wSid","q_IMpippim_n_wSid",nbinpippim,0,1, 100,0,1.5);
   q_IMpippim_n_wSid->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMpippim_n_wSid->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMpippim_woK0_woSid_won = new TH2F("q_IMpippim_woK0_woSid_won","q_IMpippim_woK0_woSid_won",nbinpippim,0,1, 100,0,1.5);
+  q_IMpippim_woK0_woSid_won->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMpippim_woK0_woSid_won->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMpippim_wK0_woSid_won = new TH2F("q_IMpippim_wK0_woSid_won","q_IMpippim_wK0_woSid_won",nbinpippim,0,1, 100,0,1.5);
+  q_IMpippim_wK0_woSid_won->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMpippim_wK0_woSid_won->SetYTitle("Mom. Transfer [GeV/c]");
 
   IMpippim_IMnpipi_n = new TH2F("IMpippim_IMnpipi_n","IMpippim_IMnpipi_n",100,1,2,nbinpippim,0,1);
   IMpippim_IMnpipi_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -3259,6 +3269,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
             IMnpim_IMnpip_dE_wK0_woSid_won->Fill( LVec_pip_n.M(), LVec_pim_n.M(),weight);
             MMnmiss_IMnpipi_wK0_woSid_won->Fill(LVec_pip_pim_n.M(),nmiss_mass,weight);
             MMnmiss_Momnpipi_wK0_woSid_won->Fill(LVec_pip_pim_n.P(),nmiss_mass,weight);
+            q_IMpippim_wK0_woSid_won->Fill(LVec_pip_pim.M(),qkn.P(),weight);
             q_IMnpipi_wK0_woSid_won->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
             q_nmom_wK0_woSid_won->Fill((*LVec_n).P(),qkn.P(),weight);
             nmom_MMnmiss_wK0_woSid_won->Fill(nmiss_mass,(*LVec_n).P(),weight);
@@ -3626,6 +3637,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           MMnmiss_IMnpipi_woK0_woSid_won->Fill(LVec_pip_pim_n.M(),nmiss_mass,weight);
           MMnmiss_Momnpipi_woK0_woSid_won->Fill(LVec_pip_pim_n.P(),nmiss_mass,weight);
           q_IMnpipi_woK0_woSid_won->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+          q_IMpippim_woK0_woSid_won->Fill(LVec_pip_pim.M(),qkn.P(),weight);
           q_nmom_woK0_woSid_won->Fill((*LVec_n).P(),qkn.P(),weight);
           nmom_MMnmiss_woK0_woSid_won->Fill(nmiss_mass,(*LVec_n).P(),weight);
           MMnmiss_Mompippim_dE_woK0_woSid_won->Fill(LVec_pip_pim.P(),nmiss_mass,weight);
