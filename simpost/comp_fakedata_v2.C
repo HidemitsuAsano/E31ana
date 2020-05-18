@@ -102,7 +102,8 @@ void comp_fakedata_v2()
   TH2D *q_IMnpip_wK0_woSid_won_fake = (TH2D*)filefakeK0->Get("q_IMnpip_wK0_woSid_won");
   TH2D *q_IMnpim_woK0_woSid_won_fake = (TH2D*)filefake->Get("q_IMnpim_woK0_woSid_won");
   TH2D *q_IMnpim_wK0_woSid_won_fake = (TH2D*)filefakeK0->Get("q_IMnpim_wK0_woSid_won");
-
+  TH2D *q_IMpippim_woK0_woSid_won_fake = (TH2D*)filefake->Get("q_IMpippim_woK0_woSid_won");
+  TH2D *q_IMpippim_wK0_woSid_won_fake = (TH2D*)filefakeK0->Get("q_IMpippim_wK0_woSid_won");
   TH2D *nmom_cosn_woK0_woSid_won_fake = (TH2D*)filefake->Get("nmom_cosn_woK0_woSid_won");
   TH2D *nmom_cospip_woK0_woSid_won_fake = (TH2D*)filefake->Get("nmom_cospip_woK0_woSid_won");
   TH2D *nmom_cospim_woK0_woSid_won_fake = (TH2D*)filefake->Get("nmom_cospim_woK0_woSid_won");
@@ -183,6 +184,8 @@ void comp_fakedata_v2()
   TH2D *q_IMnpip_wK0_woSid_won_rdata = (TH2D*)filefrdata->Get("q_IMnpip_wK0_woSid_won");
   TH2D *q_IMnpim_woK0_woSid_won_rdata = (TH2D*)filerdata->Get("q_IMnpim_woK0_woSid_won");
   TH2D *q_IMnpim_wK0_woSid_won_rdata = (TH2D*)filerdata->Get("q_IMnpim_wK0_woSid_won");
+  TH2D *q_IMpippim_woK0_woSid_won_rdata = (TH2D*)filerdata->Get("q_IMpippim_woK0_woSid_won");
+  TH2D *q_IMpippim_wK0_woSid_won_rdata = (TH2D*)filerdata->Get("q_IMpippim_wK0_woSid_won");
   TH2D *nmom_cosn_woK0_woSid_won_rdata = (TH2D*)filerdata->Get("nmom_cosn_woK0_woSid_won");
   TH2D *nmom_cospip_woK0_woSid_won_rdata = (TH2D*)filerdata->Get("nmom_cospip_woK0_woSid_won");
   TH2D *nmom_cospim_woK0_woSid_won_rdata = (TH2D*)filerdata->Get("nmom_cospim_woK0_woSid_won");
