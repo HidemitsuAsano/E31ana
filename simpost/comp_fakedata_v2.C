@@ -75,12 +75,10 @@ void comp_fakedata_v2()
   TH2D *IMnpim_IMnpip_wK0_n_fakeK0 = (TH2D*)filefakeK0->Get("IMnpim_IMnpip_dE_wK0_n");//
   TH2D *IMnpim_IMnpip_woK0_woSid_won_fake = (TH2D*)filefake->Get("IMnpim_IMnpip_dE_woK0_woSid_won");//
   TH2D *IMnpim_IMnpip_wK0_woSid_won_fake = (TH2D*)filefakeK0->Get("IMnpim_IMnpip_dE_wK0_woSid_won");//
-  TH2D *IMpippim_IMnpip_woK0_woSid_won_fake = (TH2D*)filefake->Get("IMpippim_IMnpip_woK0_woSid_won");
-  TH2D *IMpippim_IMnpip_wK0_woSid_won_fake = (TH2D*)filefakeK0->Get("IMpippim_IMnpip_wK0_woSid_won");
-  TH2D *IMpippim_IMnpim_woK0_woSid_won_fake = (TH2D*)filefake->Get("IMpippim_IMnpim_woK0_woSid_won");
-  TH2D *IMpippim_IMnpim_wK0_woSid_won_fake = (TH2D*)filefakeK0->Get("IMpippim_IMnpim_wK0_woSid_won");
-  TH2D *q_IMnpipi_woK0_woSid_won_fake = (TH2D*)filefake->Get("q_IMnpipi_woK0_woSid_won");
-  TH2D *q_IMnpipi_wK0_woSid_won_fake = (TH2D*)filefakeK0->Get("q_IMnpipi_wK0_woSid_won");
+  TH2D *IMpippim_IMnpip_woK0_woSid_won_fake = (TH2D*)filefake->Get("IMpippim_IMnpip_woK0_woSid_won");//
+  TH2D *IMpippim_IMnpip_wK0_woSid_won_fake = (TH2D*)filefakeK0->Get("IMpippim_IMnpip_wK0_woSid_won");//
+  TH2D *IMpippim_IMnpim_woK0_woSid_won_fake = (TH2D*)filefake->Get("IMpippim_IMnpim_woK0_woSid_won");//
+  TH2D *IMpippim_IMnpim_wK0_woSid_won_fake = (TH2D*)filefakeK0->Get("IMpippim_IMnpim_wK0_woSid_won");//
   TH2D *MMnmiss_Mompippim_woK0_woSid_won_fake  = (TH2D*)filefake->Get("MMnmiss_Mompippim_dE_woK0_woSid_won");
   TH2D *MMnmiss_Mompippim_wK0_woSid_won_fake = (TH2D*)filefakeK0->Get("MMnmiss_Mompippim_dE_wK0_woSid_won");
   TH2D *pipmom_MMnmiss_woK0_woSid_won_fake = (TH2D*)filefake->Get("pipmom_MMnmiss_dE_woK0_woSid_won");
@@ -99,6 +97,8 @@ void comp_fakedata_v2()
   TH2D *nmom_IMnpip_wK0_woSid_won_fake = (TH2D*)filefakeK0->Get("nmom_IMnpip_wK0_woSid_won");
   TH2D *nmom_IMnpim_woK0_woSid_won_fake = (TH2D*)filefake->Get("nmom_IMnpim_woK0_woSid_won");
   TH2D *nmom_IMnpim_wK0_woSid_won_fake = (TH2D*)filefakeK0->Get("nmom_IMnpim_wK0_woSid_won");
+  TH2D *q_IMnpipi_woK0_woSid_won_fake = (TH2D*)filefake->Get("q_IMnpipi_woK0_woSid_won");
+  TH2D *q_IMnpipi_wK0_woSid_won_fake = (TH2D*)filefakeK0->Get("q_IMnpipi_wK0_woSid_won");
   TH2D *q_IMnpipi_woK0_wSid_n_fake = (TH2D*)filefake->Get("q_IMnpipi_woK0_wSid_n");
   TH2D *q_IMnpipi_wK0_wSid_n_fake = (TH2D*)filefakeK0->Get("q_IMnpipi_wK0_wSid_n");
   TH2D *q_IMnpipi_wSid_n_Sp_fake = (TH2D*)filefake->Get("q_IMnpipi_wSid_n_Sp");
@@ -255,12 +255,12 @@ void comp_fakedata_v2()
     MMnmiss_IMnpipi_wK0_wSid_rdata,
     MMnmiss_IMnpipi_wK0_wSid_fake
   };//
-
+  
   TH2D* MMnmiss_IMnpip_woK0[2]= {
     MMnmiss_IMnpip_woK0_rdata,
     MMnmiss_IMnpip_woK0_fake
   };//
-
+  
   TH2D* MMnmiss_IMnpim_woK0[2]= {
     MMnmiss_IMnpim_woK0_rdata,
     MMnmiss_IMnpim_woK0_fake
@@ -312,12 +312,12 @@ void comp_fakedata_v2()
     MMnmiss_IMpippim_wSid_n_fake,
     MMnmiss_IMpippim_wSid_n_fakeK0
   };//
-
+  
   TH2D* MMnmiss_IMpippim_woK0_woSid_won[2]= {
     MMnmiss_IMpippim_woK0_woSid_won_rdata,
     MMnmiss_IMpippim_woK0_woSid_won_fake
   };//
-
+  
   TH2D *MMnmiss_IMpippim_wK0_woSid_won[2]= {
     MMnmiss_IMpippim_wK0_woSid_won_rdata,
     MMnmiss_IMpippim_wK0_woSid_won_fake
@@ -327,12 +327,12 @@ void comp_fakedata_v2()
     IMnpim_IMnpip_woK0_n_rdata,
     IMnpim_IMnpip_woK0_n_fake
   };//
-
+  
   TH2D* IMnpim_IMnpip_wK0_n[2]= {
     IMnpim_IMnpip_wK0_n_rdata,
     IMnpim_IMnpip_wK0_n_fakeK0
   };//
-
+  
   TH2D* IMnpim_IMnpip_woK0_woSid_won[2]= {
     IMnpim_IMnpip_woK0_woSid_won_rdata,
     IMnpim_IMnpip_woK0_woSid_won_fake
@@ -342,15 +342,25 @@ void comp_fakedata_v2()
     IMnpim_IMnpip_wK0_woSid_won_rdata,
     IMnpim_IMnpip_wK0_woSid_won_fake
   };//
-
+  
   TH2D* IMpippim_IMnpip_woK0_woSid_won[2]= {
     IMpippim_IMnpip_woK0_woSid_won_rdata,
     IMpippim_IMnpip_woK0_woSid_won_fake
   };//
-
+  
   TH2D* IMpippim_IMnpip_wK0_woSid_won[2]= {
     IMpippim_IMnpip_wK0_woSid_won_rdata,
     IMpippim_IMnpip_wK0_woSid_won_fake
+  };//
+  
+  TH2D* IMpippim_IMnpim_woK0_woSid_won[2]= {
+    IMpippim_IMnpim_woK0_woSid_won_rdata,
+    IMpippim_IMnpim_woK0_woSid_won_fake
+  };//
+
+  TH2D* IMpippim_IMnpim_wK0_woSid_won[2]= {
+    IMpippim_IMnpim_wK0_woSid_won_rdata,
+    IMpippim_IMnpim_wK0_woSid_won_fake
   };//
 
   TH2D* MMnmiss_IMnpim_woK0_woSm[2]= {
@@ -392,19 +402,6 @@ void comp_fakedata_v2()
     MMnmiss_Momnpim_wK0_woSid_won_rdata,
     MMnmiss_Momnpim_wK0_woSid_won_fake
   };
-
-  TH2D* IMpippim_IMnpim_woK0_woSid_won[2]= {
-    IMpippim_IMnpim_woK0_woSid_won_rdata,
-    IMpippim_IMnpim_woK0_woSid_won_fake
-  };
-
-  TH2D* IMpippim_IMnpim_wK0_woSid_won[2]= {
-    IMpippim_IMnpim_wK0_woSid_won_rdata,
-    IMpippim_IMnpim_wK0_woSid_won_fake
-  };
-
-
-
 
   TH2D* q_IMnpipi_woK0_woSid_won[2]= {
     q_IMnpipi_woK0_woSid_won_rdata,
