@@ -21,8 +21,8 @@ void comp_fakedata_v3()
   //rdata,nSp,nSm,Lambda,S0pi+pi-,fake,mcsum
   const unsigned int colordef[3]= {1,2,3};
   const char name[][10]= {"rdata","woK0","wK0"};
-  const char opt[10]="cont1z";
-  //const char opt[10]="colz";
+  //const char opt[10]="cont1z";
+  const char opt[10]="colz";
 
   //real data
   TFile *filerdata = TFile::Open("../post/evanaIMpisigma_npippim_v196_out.root","READ");
