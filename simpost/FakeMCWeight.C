@@ -1,13 +1,7 @@
 #include "../post/weightfunc.h"
 
 //woK0
-TF1 *fweight_q_v300 = NULL;
-TF1 *fweight_q_v302 = NULL;
-TF1 *fweight_q_v304 = NULL;
-TF1 *fweight_q_v309 = NULL;
-TF1 *fweight_q_v311 = NULL;
-TF1 *fweight_q_v342 = NULL;
-TF1 *fweight_q_v344 = NULL;
+TF1 *fweight_q_v348 = NULL;
 TF1 *fweight_MMnmiss_v301 = NULL;
 TF1 *fweight_MMnmiss_v310 = NULL;
 TF1 *fweight_MMnmiss_v315 = NULL;
@@ -17,9 +11,7 @@ TF1 *fweight_nmom_v305 = NULL;
 TF1 *fweight_nmom_v317 = NULL;
 TF1 *fweight_nmom_v341 = NULL;
 TF1 *fweight_nmom_v345 = NULL;
-TF1 *fweight_IMnpip_v307 = NULL;
-TF1 *fweight_IMnpip_v314 = NULL;
-TF1 *fweight_IMnpip_v327 = NULL;
+TF1 *fweight_IMnpip_v346 = NULL;
 TF1 *fweight_IMnpim_v308 = NULL;
 TF1 *fweight_IMnpim_v313 = NULL;
 TF1 *fweight_IMnpim_v328 = NULL;
@@ -73,13 +65,7 @@ TF1 *fweight_IMnpim_wK0_v336 = NULL;
 Double_t func_qmul(Double_t *x,Double_t *par)
 {
   const Double_t xx=x[0];
-  return fweight_q_v300->Eval(xx)*
-         fweight_q_v302->Eval(xx)*
-         fweight_q_v304->Eval(xx)*
-         fweight_q_v309->Eval(xx)*
-         fweight_q_v311->Eval(xx)*
-         fweight_q_v342->Eval(xx)*
-         fweight_q_v344->Eval(xx);
+  return fweight_q_v348->Eval(xx);
 }
 
 Double_t func_MMmul(Double_t *x,Double_t *par)
@@ -107,37 +93,8 @@ Double_t func_IMnpipmul(Double_t *x,Double_t *par)
 {
   const Double_t xx=x[0];
   return 
-  fweight_IMnpip_v307->Eval(xx)*
-  fweight_IMnpip_v314->Eval(xx)*
-  fweight_IMnpip_v327->Eval(xx);
-  //fweight_IMnpip_v346->Eval(xx);
+  fweight_IMnpip_v346->Eval(xx);
 }
-
-Double_t func_IMnpipmul_s(Double_t *x,Double_t *par)
-{
-  if(1.06<=x[0] && x[0]<1.92){
-    return (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0))*(1./(1.0+exp((x[0]-1.25)/par[11])))+
-           (par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0)+par[8]*pow(x[0],4.0)+par[9]*pow(x[0],5.0)+par[10]*pow(x[0],6.0))*(1.0-1./(1.0+exp((x[0]-1.25)/par[11])));
-  }else{
-    return 1.;
-  }
-}
-
-Double_t param_IMnpip_s[12]={
--327.854,
-748.394,
--561.008,
-138.25,
--3277.16,
-12041.2,
--18359.5,
-14891.1,
--6782.67,
-1645.87,
--166.272,
-0.01
-};
-
 
 
 Double_t func_IMnpimmul(Double_t *x,Double_t *par)
@@ -249,30 +206,8 @@ void FakeMCWeight()
   
   //q
   c_woK0_func->cd(1);
-  
-  fweight_q_v300 = new TF1("fweight_q_v300",func_q,0,1.5,8);
-  fweight_q_v300->SetParameters(param_q);
-
-  fweight_q_v302 = new TF1("fweight_q_v302",func_q,0,1.5,8);
-  fweight_q_v302->SetParameters(param_q_corr);
-  
-  fweight_q_v304 = new TF1("fweight_q_v304",func_q,0,1.5,8);
-  fweight_q_v304->SetParameters(param_q_corr2);
-  
-  fweight_q_v309 = new TF1("fweight_q_v309",func_q,0,1.5,8);
-  fweight_q_v309->SetParameters(param_q_corr3);
-  
-  fweight_q_v311 = new TF1("fweight_q_v311",func_q,0,1.5,8);
-  fweight_q_v311->SetParameters(param_q_corr4);
-  
-  fweight_q_v316 = new TF1("fweight_q_v316",func_q,0,1.5,8);
-  fweight_q_v316->SetParameters(param_q_corr5);
-  
-  fweight_q_v342 = new TF1("fweight_q_v342",func_q,0,1.5,8);
-  fweight_q_v342->SetParameters(param_q_corr6);
-  
-  fweight_q_v344 = new TF1("fweight_q_v344",func_q,0,1.5,8);
-  fweight_q_v344->SetParameters(param_q_corr7);
+  fweight_q_v348 = new TF1("fweight_q_v348",func_q,0,1.5,8);
+  fweight_q_v348->SetParameters(param_q_mul);
   //q
   TF1* f_qmul = new TF1("q",func_qmul,0,1.38,8*8);
   f_qmul->SetTitle("");
@@ -329,48 +264,15 @@ void FakeMCWeight()
   
   //IMnpip
   c_woK0_func->cd(4);
-  
-  fweight_IMnpip_v307 = new TF1("fweight_IMnpip_v307",func_IMnpip,1,2.0,9);
-  fweight_IMnpip_v307->SetParameters(param_IMnpip);
-  fweight_IMnpip_v314 = new TF1("fweight_IMnpip_v314",func_IMnpip,1,2.0,9);
-  fweight_IMnpip_v314->SetParameters(param_IMnpip_corr);
-  fweight_IMnpip_v327 = new TF1("fweight_IMnpip_v327",func_IMnpip,1,2.0,9);
-  fweight_IMnpip_v327->SetParameters(param_IMnpip_corr2);
-  //fweight_IMnpip_v346 = new TF1("fweight_IMnpip_v346",func_IMnpip_corr,1,2.0,5);
-  //fweight_IMnpip_v346->SetParameters(param_IMnpip_corr3);
-  
-  TF1* f_IMnpipmul = new TF1("f_IMnpipmul",func_IMnpipmul,1.08,2.0,9*3);
+   
+  fweight_IMnpip_v346 = new TF1("fweight_IMnpip_v346",func_IMnpipmul_s,0,2.0,12);
+  fweight_IMnpip_v346->SetParameters(param_IMnpip_s);
+  TF1* f_IMnpipmul = new TF1("f_IMnpipmul",func_IMnpipmul,1.06,2.0,12);
   f_IMnpipmul->SetTitle("");
   f_IMnpipmul->GetXaxis()->SetTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   f_IMnpipmul->GetXaxis()->CenterTitle();
-  //f_IMnpipmul->SetNpx(5000);
-  //f_IMnpipmul->Draw("c");
-  //f_IMnpipmul->SetLineColor(1);
-  //TCanvas *c1 = new TCanvas("c1","c1");
-  //TH1D* h_IMnpipmul = (TH1D*)f_IMnpipmul->GetHistogram();
-  //h_IMnpipmul->Smooth();
-  //h_IMnpipmul->SetLineColor(3);
-  //h_IMnpipmul->Draw("H");
-  
-  TF1* f_IMnpipmul_s = new TF1("f_IMnpipmul_s",func_IMnpipmul_s,1.06,2.0,12);
-  f_IMnpipmul_s->SetParameters(param_IMnpip_s);
-  f_IMnpipmul_s->SetTitle("");
-  f_IMnpipmul_s->GetXaxis()->SetTitle("IM(n#pi^{+}) [GeV/c^{2}]");
-  f_IMnpipmul_s->GetXaxis()->CenterTitle();
-  /*
-  f_IMnpipmul_s->SetParameter(4,-3277.38);
-  f_IMnpipmul_s->SetParameter(5,12041.4);
-  f_IMnpipmul_s->SetParameter(6,-18359.4);
-  f_IMnpipmul_s->SetParameter(7,14891.1);
-  f_IMnpipmul_s->SetParameter(8,-6782.71);
-  f_IMnpipmul_s->SetParameter(9,1645.85);
-  f_IMnpipmul_s->SetParameter(10,-166.262);
-  f_IMnpipmul_s->SetParameter(11,1.0);
-  f_IMnpipmul_s->SetParLimits(11,0.01,1.0);
-  h_IMnpipmul->Fit(f_IMnpipmul_s,"","",1.06,1.92);
-  */
-  f_IMnpipmul_s->SetLineColor(2);
-  f_IMnpipmul_s->Draw("c");
+  f_IMnpipmul->SetLineColor(3);
+  f_IMnpipmul->Draw("c");
 
   //fweight_IMnpip_v307s = new TF1("fweight_IMnpip_v307s",func_IMnpip_s,1,2.0,9);
   //fweight_IMnpip_v307s->SetParameters(param_IMnpip);
@@ -551,16 +453,16 @@ void FakeMCWeight()
   f_IMnpim_wK0mul->Draw("c");
 
   //IMpippim (N/A)
-  c_wK0_func->cd(6);
+  //c_wK0_func->cd(6);
   
   
 
-  std::ofstream os;
-  os.open("param_corr.txt");
-  os << "IMnpip" << endl;
-  for(int i=0;i<f_IMnpipmul_s->GetNpar();i++){
-    os << f_IMnpipmul_s->GetParameter(i) << ",";
-    os << endl;
-  }
+ // std::ofstream os;
+ // os.open("param_corr.txt");
+ // os << "IMnpip" << endl;
+  //for(int i=0;i<f_IMnpipmul_s->GetNpar();i++){
+  //  os << f_IMnpipmul_s->GetParameter(i) << ",";
+  //  os << endl;
+  //}
 
 };
