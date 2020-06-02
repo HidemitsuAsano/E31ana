@@ -3209,33 +3209,20 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     if(IsMCweighting) {
       if(SimSpmode || SimSmmode || SimK0nnmode || SimnpipiLmode || SimnS0pippimmode || SimSppi0mode || SimSmpi0mode || SimFakemode) {
         if(K0rejectFlag) { //w/o K0
-          //weight *= fweight_q_v300->Eval(qkn.P()); 
           weight *= fweight_MMnmiss_v301->Eval(nmiss_mass); 
-          //weight *= fweight_q_v302->Eval(qkn.P());
           weight *= fweight_nmom_v303->Eval((*LVec_n).P());
-          //weight *= fweight_q_v304->Eval(qkn.P()); 
           weight *= fweight_nmom_v305->Eval((*LVec_n).P());
           weight *= fweight_IMpippim_v306->Eval(LVec_pip_pim.M());
-          //weight *= fweight_IMnpip_v307->Eval(LVec_pip_n.M()); 
           weight *= fweight_IMnpim_v308->Eval(LVec_pim_n.M()); 
-          //weight *= fweight_q_v309->Eval(qkn.P()); 
           weight *= fweight_MMnmiss_v310->Eval(nmiss_mass); 
-          //weight *= fweight_q_v311->Eval(qkn.P()); 
           weight *= fweight_IMpippim_v312->Eval(LVec_pip_pim.M());
           weight *= fweight_IMnpim_v313->Eval(LVec_pim_n.M()); 
-          //weight *= fweight_IMnpip_v314->Eval(LVec_pip_n.M()); 
           weight *= fweight_MMnmiss_v315->Eval(nmiss_mass); 
-          //weight *= fweight_q_v316->Eval(qkn.P()); 
           weight *= fweight_nmom_v317->Eval((*LVec_n).P());
-          //v318-v326 fix
-          //weight *= fweight_IMnpip_v327->Eval(LVec_pip_n.M()); 
           weight *= fweight_IMnpim_v328->Eval(LVec_pim_n.M()); 
           weight *= fweight_IMpippim_v329->Eval(LVec_pip_pim.M());
-          //v330-v340 fix (nmiss_mass <0 was included to v340)
           weight *= fweight_nmom_v341->Eval((*LVec_n).P());
-          //weight *= fweight_q_v342->Eval(qkn.P()); 
           weight *= fweight_MMnmiss_v343->Eval(nmiss_mass); 
-          //weight *= fweight_q_v344->Eval(qkn.P()); 
           weight *= fweight_nmom_v345->Eval((*LVec_n).P());
           weight *= fweight_IMnpip_v346->Eval(LVec_pip_n.M());
           weight *= fweight_q_v348->Eval(qkn.P()); 
