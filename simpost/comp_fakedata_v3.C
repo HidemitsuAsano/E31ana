@@ -12,6 +12,7 @@
 #include "TFile.h"
 #include "TCanvas.h"
 #include <fstream>
+#include "../post/weightfunc.h"
 
 void comp_fakedata_v3()
 {
