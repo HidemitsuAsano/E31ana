@@ -1,3 +1,5 @@
+#include "../post/weightfunc.h"
+
 void disp_comp(const char *filename="comp_fakedata_out.root")
 {
   TFile *f = TFile::Open(filename,"READ");
@@ -48,9 +50,15 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   cMMnmiss->cd(3);
   MMnmiss_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
   MMnmiss_woK0_woSid_won_ratio->Draw("HE");
+  TF1 *f_MMnmiss_mod = new TF1("f_MMnmiss_mod",func_MMnmiss_mod,0.0,1.5,18);
+  f_MMnmiss_mod->SetParameters(param_MMnmiss_mod);
+  f_MMnmiss_mod->FixParameter(8,0.015);
+  f_MMnmiss_mod->FixParameter(12,0.010);
+  MMnmiss_woK0_woSid_won_ratio->Fit("f_MMnmiss_mod","","",0.2,1.5);
+  //f_MMnmiss_mod->Draw("same");
   cMMnmiss->cd(4);
-  MMnmiss_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
-  MMnmiss_wK0_woSid_won_ratio->Draw("HE");
+  //MMnmiss_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
+  //MMnmiss_wK0_woSid_won_ratio->Draw("HE");
 
   TH1D* IMnpip_woK0_woSid_won_data = (TH1D*)f->Get("IMnpip_woK0_woSid_won_data");
   TH1D* IMnpip_woK0_woSid_won_mc = (TH1D*)f->Get("IMnpip_woK0_woSid_won_mc");

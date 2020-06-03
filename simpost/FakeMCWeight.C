@@ -1,4 +1,5 @@
 #include "../post/weightfunc.h"
+#include "../post/anacuts.h"
 
 //woK0
 TF1 *fweight_q_v348 = NULL;
@@ -191,6 +192,32 @@ Double_t func_IMnpim_wK0mul(Double_t *x,Double_t *par)
 
 
 
+Double_t func_MMnmiss_mod(Double_t *x,Double_t *par)
+{
+   //connection using woods-saxon
+   if(0.0<x[0] && x[0]<1.5){
+   //  return (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
+   //    +par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0)+par[6]*pow(x[0],6.0)
+   //    +par[7]*pow(x[0],7.0)+par[8]*pow(x[0],8.0)+par[9]*pow(x[0],9.0))*(1./(1.0+exp((x[0]-1.08)/par[10])))
+   //    +(1.0-1./(1.0+exp((x[0]-1.08)/par[10])))*(par[11]*exp(-0.5*pow(((x[0]-par[12])/par[13]),2.0)))*(1./(1.0+exp((x[0]-1.18)/par[14])))
+   //    +(1.0-1./(1.0+exp((x[0]-1.18)/par[14])))*
+   //     (par[15]+par[16]*x[0]+par[17]*pow(x[0],2.0)+par[18]*pow(x[0],3.0)+par[19]*pow(x[0],4.0));
+   //  return (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
+   //    +par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0)+par[6]*pow(x[0],6.0)
+   //    +par[7]*pow(x[0],7.0)+par[8]*pow(x[0],8.0))*(1./(1.0+exp((x[0]-1.08)/par[9])))
+   //    +(1.0-1./(1.0+exp((x[0]-1.08)/par[9])))*(par[10]*exp(-0.5*pow(((x[0]-par[11])/par[12]),2.0)))*(1./(1.0+exp((x[0]-1.18)/par[13])))
+   //    +(1.0-1./(1.0+exp((x[0]-1.18)/par[13])))*
+   //     (par[14]+par[15]*x[0]+par[16]*pow(x[0],2.0)+par[17]*pow(x[0],3.0)+par[18]*pow(x[0],4.0));
+     return (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
+       +par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0)+par[6]*pow(x[0],6.0)
+       +par[7]*pow(x[0],7.0))*(1./(1.0+exp((x[0]-1.08)/par[8])))
+       +(1.0-1./(1.0+exp((x[0]-1.08)/par[8])))*(par[9]*exp(-0.5*pow(((x[0]-par[10])/par[11]),2.0)))*(1./(1.0+exp((x[0]-1.17)/par[12])))
+       +(1.0-1./(1.0+exp((x[0]-1.17)/par[12])))*
+        (par[13]+par[14]*x[0]+par[15]*pow(x[0],2.0)+par[16]*pow(x[0],3.0)+par[17]*pow(x[0],4.0));
+   }else{
+     return 1.0;
+   }
+}
 
 
 
@@ -240,6 +267,88 @@ void FakeMCWeight()
   f_MMnmissmul->GetXaxis()->SetTitle("Miss. Mass [GeV/c^{2}]");
   f_MMnmissmul->GetXaxis()->CenterTitle();
   f_MMnmissmul->Draw("c");
+  TBox *box_neutron = new TBox(anacuts::neutron_MIN,0,anacuts::neutron_MAX,3);
+  box_neutron->SetFillColor(4);
+  box_neutron->SetFillStyle(3002);
+  box_neutron->Draw();
+
+  TCanvas *cMMnmiss_mod = new TCanvas("cMMnmiss_mod","cMMnmiss_mod");
+  cMMnmiss_mod->cd();
+  f_MMnmissmul->SetLineColor(3);
+  TH1D* h_MMnmiss = (TH1D*)f_MMnmissmul->GetHistogram();
+  h_MMnmiss->SetLineColor(3);
+  h_MMnmiss->SetMarkerColor(3);
+  h_MMnmiss->Draw("H");
+  box_neutron->Draw();
+
+  
+  TF1 *f_MMnmiss_mod = new TF1("f_MMnmiss_mod",func_MMnmiss_mod,0.0,1.5,18);
+  double param_MMnmiss_mod[18];
+  param_MMnmiss_mod[0]=-3.25369;                 
+  param_MMnmiss_mod[1]=56.1105;                  
+  param_MMnmiss_mod[2]=-380.608;                    
+  param_MMnmiss_mod[3]=1358.72;                   
+  param_MMnmiss_mod[4]=-2715.42;                    
+  param_MMnmiss_mod[5]=3050.94;                   
+  param_MMnmiss_mod[6]=-1788.38;                    
+  param_MMnmiss_mod[7]=423.797;                   
+  param_MMnmiss_mod[8]=0.010;//woods saxon         
+  param_MMnmiss_mod[9]= 2.558;//gaus const        
+  param_MMnmiss_mod[10]= 1.116;//gaus mean         
+  param_MMnmiss_mod[11]= 8.45178e-02;//gaus sigma  
+  param_MMnmiss_mod[12]=0.01;//woods saxon         
+  param_MMnmiss_mod[13]=720.767;                   
+  param_MMnmiss_mod[14]=-2156.71;                  
+  param_MMnmiss_mod[15]=2433.82;                   
+  param_MMnmiss_mod[16]=-1222.3;                   
+  param_MMnmiss_mod[17]=229.81;                    
+  //param_MMnmiss_mod[0]=0.00906858;
+  //param_MMnmiss_mod[1]=-0.485126;
+  //param_MMnmiss_mod[2]=28.4734;
+  //param_MMnmiss_mod[3]=-257.647;
+  //param_MMnmiss_mod[4]=1120.55;
+  //param_MMnmiss_mod[5]=-2570.83;
+  //param_MMnmiss_mod[6]=3196.52;
+  //param_MMnmiss_mod[7]=-2027.73;
+  //param_MMnmiss_mod[8]=513.021;
+  //param_MMnmiss_mod[9]=0.010;//woods saxon
+  //param_MMnmiss_mod[10]= 2.558;//gaus const      
+  //param_MMnmiss_mod[11]= 1.116;//gaus mean       
+  //param_MMnmiss_mod[12]= 8.45178e-02;//gaus sigma
+  //param_MMnmiss_mod[13]=0.01;//woods saxon
+  //param_MMnmiss_mod[14]=720.767; 
+  //param_MMnmiss_mod[15]=-2156.71;
+  //param_MMnmiss_mod[16]=2433.82; 
+  //param_MMnmiss_mod[17]=-1222.3; 
+  //param_MMnmiss_mod[18]=229.81;  
+
+
+  //param_MMnmiss_mod[0]=0.00708634;
+  //param_MMnmiss_mod[1]=-0.217851;
+  //param_MMnmiss_mod[2]=20.9625;
+  //param_MMnmiss_mod[3]=-178.022;
+  //param_MMnmiss_mod[4]=708.546;
+  //param_MMnmiss_mod[5]=-1399.05;
+  //param_MMnmiss_mod[6]=1273.94;
+  //param_MMnmiss_mod[7]=-217.497;
+  //param_MMnmiss_mod[8]=-393.59;
+  //param_MMnmiss_mod[9]=186.815;
+  //param_MMnmiss_mod[10]=0.015;//woods saxon
+  //param_MMnmiss_mod[11]= 2.558;//gaus const
+  //param_MMnmiss_mod[12]= 1.116;//gaus mean
+  //param_MMnmiss_mod[13]= 8.45178e-02;//gaus sigma 
+  //param_MMnmiss_mod[14]=0.01;//woods saxon
+  //param_MMnmiss_mod[15]=720.767;
+  //param_MMnmiss_mod[16]=-2156.71;
+  //param_MMnmiss_mod[17]=2433.82;
+  //param_MMnmiss_mod[18]=-1222.3;
+  //param_MMnmiss_mod[19]=229.81;
+  f_MMnmiss_mod->SetParameters(param_MMnmiss_mod);
+  f_MMnmiss_mod->FixParameter(8,0.015);
+  f_MMnmiss_mod->FixParameter(12,0.010);
+  f_MMnmiss_mod->Print("v");
+  h_MMnmiss->Fit("f_MMnmiss_mod","","",0.2,1.5);
+  f_MMnmiss_mod->Draw("same");
   
   //nmom
   c_woK0_func->cd(3);
@@ -271,8 +380,12 @@ void FakeMCWeight()
   f_IMnpipmul->SetTitle("");
   f_IMnpipmul->GetXaxis()->SetTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   f_IMnpipmul->GetXaxis()->CenterTitle();
-  f_IMnpipmul->SetLineColor(3);
+  f_IMnpipmul->SetLineColor(2);
   f_IMnpipmul->Draw("c");
+  TBox *box_sigmap = new TBox(anacuts::Sigmap_MIN,0,anacuts::Sigmap_MAX,3);
+  box_sigmap->SetFillColor(4);
+  box_sigmap->SetFillStyle(3002);
+  box_sigmap->Draw();
 
   //fweight_IMnpip_v307s = new TF1("fweight_IMnpip_v307s",func_IMnpip_s,1,2.0,9);
   //fweight_IMnpip_v307s->SetParameters(param_IMnpip);
@@ -297,6 +410,10 @@ void FakeMCWeight()
   f_IMnpimmul->GetXaxis()->SetTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   f_IMnpimmul->GetXaxis()->CenterTitle();
   f_IMnpimmul->Draw("c");
+  TBox *box_sigmam = new TBox(anacuts::Sigmam_MIN,0,anacuts::Sigmam_MAX,3);
+  box_sigmam->SetFillColor(4);
+  box_sigmam->SetFillStyle(3002);
+  box_sigmam->Draw();
 
   //IMpippim
   c_woK0_func->cd(6);
@@ -313,6 +430,10 @@ void FakeMCWeight()
   f_IMpippimmul->GetXaxis()->SetTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   f_IMpippimmul->GetXaxis()->CenterTitle();
   f_IMpippimmul->Draw("c");
+  TBox *box_K0 = new TBox(anacuts::pipi_MIN,0,anacuts::pipi_MAX,3);
+  box_K0->SetFillColor(4);
+  box_K0->SetFillStyle(3002);
+  box_K0->Draw();
 
   
   TCanvas *c_wK0_func = new TCanvas("c_wK0_func","c_wK0_func",1800,1000);
@@ -384,7 +505,7 @@ void FakeMCWeight()
   f_MMnmiss_wK0mul->GetXaxis()->SetTitle("Miss. Mass [GeV/c^{2}]");
   f_MMnmiss_wK0mul->GetXaxis()->CenterTitle();
   f_MMnmiss_wK0mul->Draw("c");
-  
+  box_neutron->Draw();
   //nmom
   c_wK0_func->cd(3);
   
@@ -430,7 +551,7 @@ void FakeMCWeight()
   f_IMnpip_wK0mul->GetXaxis()->SetTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   f_IMnpip_wK0mul->GetXaxis()->CenterTitle();
   f_IMnpip_wK0mul->Draw("c");
-  
+  box_sigmap->Draw();
 
   c_wK0_func->cd(5);
   
@@ -451,18 +572,22 @@ void FakeMCWeight()
   f_IMnpim_wK0mul->GetXaxis()->SetTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   f_IMnpim_wK0mul->GetXaxis()->CenterTitle();
   f_IMnpim_wK0mul->Draw("c");
-
+  box_sigmam->Draw();
   //IMpippim (N/A)
   //c_wK0_func->cd(6);
   
   
 
- // std::ofstream os;
- // os.open("param_corr.txt");
- // os << "IMnpip" << endl;
+   std::ofstream os;
+   os.open("param_corr.txt");
+   //os << "IMnpip" << endl;
   //for(int i=0;i<f_IMnpipmul_s->GetNpar();i++){
   //  os << f_IMnpipmul_s->GetParameter(i) << ",";
-  //  os << endl;
-  //}
+  os << "MMnmiss " << endl;
+  for(int i=0;i<f_MMnmiss_mod->GetNpar();i++){
+    os << std::setprecision(6);
+    os << f_MMnmiss_mod->GetParameter(i) << ",";
+    os << endl;
+  }
 
 };
