@@ -379,8 +379,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1* fweight_IMnpip_v346 = new TF1("fweight_IMnpip_v346",func_IMnpipmul_s,0,2.0,12);
   fweight_IMnpip_v346->SetParameters(param_IMnpip_s);
   
-  TF1* fweight_q_v348 = new TF1("fweight_q_v348",func_q,0,1.5,8);
-  fweight_q_v348->SetParameters(param_q_mul);
+  //TF1* fweight_q_v348 = new TF1("fweight_q_v348",func_q,0,1.5,8);
+  //fweight_q_v348->SetParameters(param_q_mul);
   
   TF1* fweight_nmom_wK0_v349 = new TF1("fweight_nmom_wK0_v349",func_nmom,0,1.0,9);
   fweight_nmom_wK0_v349->SetParameters(param_nmom_wK0_v349);
@@ -394,6 +394,12 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   fweight_v351->cd();
   TH1* fweight_IMpippim_wK0_v351 = (TH1D*)fweight_v351->Get("IMpippim_wK0_woSid_won_ratio");
   fweight_IMpippim_wK0_v351->SetName("fweight_IMpippim_wK0_v351");
+  
+  TF1 *fweight_MMnmiss_v352 = new TF1("fweight_MMnmiss_v352",func_MMnmiss_mod,0,1.5,18);
+  fweight_MMnmiss_v352->SetParameters(param_MMnmiss_mod);
+
+  TF1* fweight_q_v353 = new TF1("fweight_q_v353",func_q,0,1.5,8);
+  fweight_q_v353->SetParameters(param_q_mul);
 
   f->cd();
   // w/o kinematic fit
@@ -3209,24 +3215,26 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     if(IsMCweighting) {
       if(SimSpmode || SimSmmode || SimK0nnmode || SimnpipiLmode || SimnS0pippimmode || SimSppi0mode || SimSmpi0mode || SimFakemode) {
         if(K0rejectFlag) { //w/o K0
-          weight *= fweight_MMnmiss_v301->Eval(nmiss_mass); 
+          //weight *= fweight_MMnmiss_v301->Eval(nmiss_mass); 
           weight *= fweight_nmom_v303->Eval((*LVec_n).P());
           weight *= fweight_nmom_v305->Eval((*LVec_n).P());
           weight *= fweight_IMpippim_v306->Eval(LVec_pip_pim.M());
           weight *= fweight_IMnpim_v308->Eval(LVec_pim_n.M()); 
-          weight *= fweight_MMnmiss_v310->Eval(nmiss_mass); 
+          //weight *= fweight_MMnmiss_v310->Eval(nmiss_mass); 
           weight *= fweight_IMpippim_v312->Eval(LVec_pip_pim.M());
           weight *= fweight_IMnpim_v313->Eval(LVec_pim_n.M()); 
-          weight *= fweight_MMnmiss_v315->Eval(nmiss_mass); 
+          //weight *= fweight_MMnmiss_v315->Eval(nmiss_mass); 
           weight *= fweight_nmom_v317->Eval((*LVec_n).P());
           weight *= fweight_IMnpim_v328->Eval(LVec_pim_n.M()); 
           weight *= fweight_IMpippim_v329->Eval(LVec_pip_pim.M());
           weight *= fweight_nmom_v341->Eval((*LVec_n).P());
-          weight *= fweight_MMnmiss_v343->Eval(nmiss_mass); 
+          //weight *= fweight_MMnmiss_v343->Eval(nmiss_mass); 
           weight *= fweight_nmom_v345->Eval((*LVec_n).P());
           weight *= fweight_IMnpip_v346->Eval(LVec_pip_n.M());
-          weight *= fweight_q_v348->Eval(qkn.P()); 
+          //weight *= fweight_q_v348->Eval(qkn.P()); 
           weight *= fweight_IMnpim_v350->Eval(LVec_pim_n.M());
+          weight *= fweight_MMnmiss_v352->Eval(nmiss_mass);
+          weight *= fweight_q_v353->Eval(qkn.P()); 
         } else { //wK0
           weight *= fweight_q_wK0_v308->Eval(qkn.P()); 
           weight *= fweight_MMnmiss_wK0_v309->Eval(nmiss_mass); 
