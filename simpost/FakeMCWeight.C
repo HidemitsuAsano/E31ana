@@ -3,10 +3,7 @@
 
 //woK0
 TF1 *fweight_q_v348 = NULL;
-TF1 *fweight_MMnmiss_v301 = NULL;
-TF1 *fweight_MMnmiss_v310 = NULL;
-TF1 *fweight_MMnmiss_v315 = NULL;
-TF1 *fweight_MMnmiss_v343 = NULL;
+TF1 *fweight_MMnmiss_v352 = NULL;
 TF1 *fweight_nmom_v303 = NULL;
 TF1 *fweight_nmom_v305 = NULL;
 TF1 *fweight_nmom_v317 = NULL;
@@ -73,10 +70,7 @@ Double_t func_MMmul(Double_t *x,Double_t *par)
 {
   const Double_t xx=x[0];
   return 
-  fweight_MMnmiss_v301->Eval(xx)*
-  fweight_MMnmiss_v310->Eval(xx)*
-  fweight_MMnmiss_v315->Eval(xx)*
-  fweight_MMnmiss_v343->Eval(xx);
+  fweight_MMnmiss_v352->Eval(xx);
 }
 
 Double_t func_nmommul(Double_t *x,Double_t *par)
@@ -236,42 +230,40 @@ void FakeMCWeight()
   fweight_q_v348 = new TF1("fweight_q_v348",func_q,0,1.5,8);
   fweight_q_v348->SetParameters(param_q_mul);
   //q
-  TF1* f_qmul = new TF1("q",func_qmul,0,1.38,8*8);
+  TF1* f_qmul = new TF1("f_qmul",func_qmul,0,1.5,8);
+  
   f_qmul->SetTitle("");
   f_qmul->GetXaxis()->SetTitle("q [GeV/c]");
   f_qmul->GetXaxis()->CenterTitle();
   f_qmul->Draw("c");
-  
-  //TCanvas *cqmul = new TCanvas("cqmu;","cqmul");
+  std::cout << __LINE__ << std::endl;
+  //TCanvas *cqmul = new TCanvas("cqmul","cqmul");
   //cqmul->cd();
+  //std::cout << __LINE__ << std::endl;
   //TH1D* h_qmul = (TH1D*)f_qmul->GetHistogram();
-
+  //h_qmul->Draw();
+  //std::cout << __LINE__ << std::endl;
+  //h_qmul->Fit(f_qmul,"","",0,1.5);
+ // std::cout << __LINE__ << std::endl;
 
   //MMnmiss
   c_woK0_func->cd(2);
-  fweight_MMnmiss_v301 = new TF1("fweight_MMnmiss_v301",func_MMnmiss,0,1.5,18);
-  fweight_MMnmiss_v301->SetParameters(param_MMnmiss);
+  fweight_MMnmiss_v352 = new TF1("fweight_MMnmiss_v352",func_MMnmiss_mod,0,1.5,18);
+  fweight_MMnmiss_v352->SetParameters(param_MMnmiss_mod);
   
-  fweight_MMnmiss_v310 = new TF1("fweight_MMnmiss_v310",func_MMnmiss,0,1.5,18);
-  fweight_MMnmiss_v310->SetParameters(param_MMnmiss_corr);
-
-  fweight_MMnmiss_v315 = new TF1("fweight_MMnmiss_v315",func_MMnmiss,0,1.5,18);
-  fweight_MMnmiss_v315->SetParameters(param_MMnmiss_corr2);
-  
-  fweight_MMnmiss_v343 = new TF1("fweight_MMnmiss_v343",func_MMnmiss,0,1.5,18);
-  fweight_MMnmiss_v343->SetParameters(param_MMnmiss_corr3);
-  
-  TF1* f_MMnmissmul = new TF1("MissMass",func_MMmul,0,1.5,18*4);
-  f_MMnmissmul->SetNpx(1000);
+  TF1* f_MMnmissmul = new TF1("MissMass",func_MMmul,0,1.5,18);
+  //f_MMnmissmul->SetNpx(1000);
   f_MMnmissmul->SetTitle("");
   f_MMnmissmul->GetXaxis()->SetTitle("Miss. Mass [GeV/c^{2}]");
   f_MMnmissmul->GetXaxis()->CenterTitle();
+  f_MMnmissmul->SetMinimum(0);
   f_MMnmissmul->Draw("c");
+  
   TBox *box_neutron = new TBox(anacuts::neutron_MIN,0,anacuts::neutron_MAX,3);
   box_neutron->SetFillColor(4);
   box_neutron->SetFillStyle(3002);
   box_neutron->Draw();
-
+  /*
   TCanvas *cMMnmiss_mod = new TCanvas("cMMnmiss_mod","cMMnmiss_mod");
   cMMnmiss_mod->cd();
   f_MMnmissmul->SetLineColor(3);
@@ -280,7 +272,6 @@ void FakeMCWeight()
   h_MMnmiss->SetMarkerColor(3);
   h_MMnmiss->Draw("H");
   box_neutron->Draw();
-
   
   TF1 *f_MMnmiss_mod = new TF1("f_MMnmiss_mod",func_MMnmiss_mod,0.0,1.5,18);
   double param_MMnmiss_mod[18];
@@ -350,6 +341,7 @@ void FakeMCWeight()
   h_MMnmiss->Fit("f_MMnmiss_mod","","",0.2,1.5);
   f_MMnmiss_mod->Draw("same");
   
+  */
   //nmom
   c_woK0_func->cd(3);
 
@@ -583,10 +575,16 @@ void FakeMCWeight()
    //os << "IMnpip" << endl;
   //for(int i=0;i<f_IMnpipmul_s->GetNpar();i++){
   //  os << f_IMnpipmul_s->GetParameter(i) << ",";
-  os << "MMnmiss " << endl;
-  for(int i=0;i<f_MMnmiss_mod->GetNpar();i++){
-    os << std::setprecision(6);
-    os << f_MMnmiss_mod->GetParameter(i) << ",";
+  //os << "MMnmiss " << endl;
+  //for(int i=0;i<f_MMnmiss_mod->GetNpar();i++){
+  //  os << std::setprecision(6);
+  //  os << f_MMnmiss_mod->GetParameter(i) << ",";
+  //  os << endl;
+  //}
+  os << "q " << endl;
+  for(int i=0;i<f_qmul->GetNpar();i++){
+  //  os << std::setprecision(6);
+    os << f_qmul->GetParameter(i) << ",";
     os << endl;
   }
 

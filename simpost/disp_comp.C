@@ -25,6 +25,9 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   cq->cd(3);
   q_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
   q_woK0_woSid_won_ratio->Draw("HE");
+  TF1 *f_q_mod = new TF1("f_q_mod",func_q,0.0,1.5,8);
+  f_q_mod->SetParameters(param_q_mul);
+  q_woK0_woSid_won_ratio->Fit("f_q_mod","","",0,1.5);
   cq->cd(4);
   q_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
   q_wK0_woSid_won_ratio->Draw("HE");
@@ -48,7 +51,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   MMnmiss_wK0_woSid_won_data->Draw("HE");
   MMnmiss_wK0_woSid_won_mc->Draw("HEsame");
   cMMnmiss->cd(3);
-  MMnmiss_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
+  //MMnmiss_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
   MMnmiss_woK0_woSid_won_ratio->Draw("HE");
   TF1 *f_MMnmiss_mod = new TF1("f_MMnmiss_mod",func_MMnmiss_mod,0.0,1.5,18);
   f_MMnmiss_mod->SetParameters(param_MMnmiss_mod);
@@ -58,7 +61,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   //f_MMnmiss_mod->Draw("same");
   cMMnmiss->cd(4);
   //MMnmiss_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
-  //MMnmiss_wK0_woSid_won_ratio->Draw("HE");
+  MMnmiss_wK0_woSid_won_ratio->Draw("HE");
 
   TH1D* IMnpip_woK0_woSid_won_data = (TH1D*)f->Get("IMnpip_woK0_woSid_won_data");
   TH1D* IMnpip_woK0_woSid_won_mc = (TH1D*)f->Get("IMnpip_woK0_woSid_won_mc");
@@ -266,5 +269,18 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   nmom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
   nmom_wK0_woSid_won_ratio->Draw("HE");
 
+   std::ofstream os;
+   os.open("param_corr.txt");
+   //os << "IMnpip" << endl;
+  //for(int i=0;i<f_IMnpipmul_s->GetNpar();i++){
+  //  os << f_IMnpipmul_s->GetParameter(i) << ",";
+  //os << "MMnmiss " << endl;
+  os << "q " << endl;
+  //for(int i=0;i<f_MMnmiss_mod->GetNpar();i++){
+  for(int i=0;i<f_q_mod->GetNpar();i++){
+    os << std::setprecision(6);
+    os << f_q_mod->GetParameter(i) << ",";
+    os << endl;
+  }
 
 }
