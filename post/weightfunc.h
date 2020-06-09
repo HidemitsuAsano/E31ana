@@ -1250,6 +1250,42 @@ Double_t param_IMpippim_corr2[12]={
 };
 
 
+Double_t func_IMpippim_mod(Double_t *x,Double_t *par)
+{
+  if(0.27<x[0]){
+  return (par[0]*exp(-0.5*pow(((x[0]-par[1])/par[2]),2.0)))
+        *(1./(1.0+exp((x[0]-0.32)/par[3])))            
+      +(1.0 - 1./(1.0+exp((x[0]-0.32)/par[3])))
+       *(par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0)+par[8]*pow(x[0],4.0)+par[9]*pow(x[0],5.0)+par[10]*pow(x[0],6.0))
+       *(1./(1.0+exp((x[0]-0.73)/par[11])))
+      +(1.0 - 1./(1.0+exp((x[0]-0.73)/par[11])))
+       *(par[12]*exp(-0.5*pow(((x[0]-par[13])/par[14]),2.0)))
+       ;
+   }else{
+    return 0.0;
+   }
+};
+
+Double_t param_IMpippim_mod[15]={
+0.548846,
+0.300758,
+0.0179096,
+0.01,
+6.19628,
+-31.1193,
+20.5298,
+107.759,
+-23.8131,
+-309.574,
+233.743,
+0.03,
+1.25691,
+0.759011,
+0.0583334
+};
+
+
+
 Double_t func_IMpippim_wK0(Double_t *x,Double_t *par)
 {
   return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)+par[4]*pow(x[0],4.0);
