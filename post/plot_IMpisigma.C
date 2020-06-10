@@ -125,7 +125,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   bool SimSmpi0mode = (std::string(filename).find("Smpippi0")!=std::string::npos);
   bool SimSp_nsmode = (std::string(filename).find("Sppim_ns")!=std::string::npos);
   bool SimSm_nsmode = (std::string(filename).find("Smpip_ns")!=std::string::npos);
-  bool SimFakemode  = (std::string(filename).find("fake")!=std::string::npos);
+  bool SimFakemode  = (std::string(filename).find("fakepippim_")!=std::string::npos);
+  bool SimFakeK0mode  = (std::string(filename).find("fakepippimK0_")!=std::string::npos);
   //= = = = pipipnn final-sample tree = = = =//
 
   TFile *f = new TFile(filename);
@@ -379,8 +380,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1* fweight_IMnpip_v346 = new TF1("fweight_IMnpip_v346",func_IMnpipmul_s,0,2.0,12);
   fweight_IMnpip_v346->SetParameters(param_IMnpip_s);
   
-  TF1* fweight_q_v348 = new TF1("fweight_q_v348",func_q,0,1.5,8);
-  fweight_q_v348->SetParameters(param_q_mul);
+  //TF1* fweight_q_v348 = new TF1("fweight_q_v348",func_q,0,1.5,8);
+  //fweight_q_v348->SetParameters(param_q_mul);
   
   TF1* fweight_nmom_wK0_v349 = new TF1("fweight_nmom_wK0_v349",func_nmom,0,1.0,9);
   fweight_nmom_wK0_v349->SetParameters(param_nmom_wK0_v349);
@@ -395,20 +396,21 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH1* fweight_IMpippim_wK0_v351 = (TH1D*)fweight_v351->Get("IMpippim_wK0_woSid_won_ratio");
   fweight_IMpippim_wK0_v351->SetName("fweight_IMpippim_wK0_v351");
   
-  TF1 *fweight_MMnmiss_v354 = new TF1("fweight_MMnmiss_v354",func_MMnmiss_mod,0,1.5,18);
-  fweight_MMnmiss_v354->SetParameters(param_MMnmiss_mod);
 
   TF1* fweight_nmom_v353 = new TF1("fweight_nmom_v353",func_nmom_mod,0.139,1.0,12);
   fweight_nmom_v353->SetParameters(param_nmom_mod);
-
-  //TF1* fweight_IMpippim_v355 = new TF1("fweight_IMpippim_v355",func_IMpippim_mod,0.,1.0,15);
-  //fweight_IMpippim_v355->SetParameters(param_IMpippim_mod);
 
   TF1* fweight_IMnpim_v356 = new TF1("fweight_IMnpim_v356",func_IMnpim_mod,1,2.0,12);
   fweight_IMnpim_v356->SetParameters(param_IMnpim_mod);
   
   TF1* fweight_IMpippim_v357 = new TF1("fweight_IMpippim_v357",func_IMpippim_mod,0.,1.0,15);
   fweight_IMpippim_v357->SetParameters(param_IMpippim_mod);
+  
+  TF1 *fweight_MMnmiss_v358 = new TF1("fweight_MMnmiss_v358",func_MMnmiss_mod,0,1.5,18);
+  fweight_MMnmiss_v358->SetParameters(param_MMnmiss_mod);
+  
+  TF1* fweight_q_v359 = new TF1("fweight_q_v359",func_q_mod,0,1.5,10);
+  fweight_q_v359->SetParameters(param_q_mod);
   
   f->cd();
   // w/o kinematic fit
@@ -828,7 +830,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
 
   const int nbinIMnpipi = 100;//1-2 GeV/c^2
-  const int nbinq = 25;//0-1.5 GeV/c
+  const int nbinq = 100;// 25;//0-1.5 GeV/c
   const int nbinIMnpi = 400; //1-2 GeV/c^2
   const int nbinnmiss = 150; //0-1.5 GeV/c
   const double nmisslow = 0.0;
@@ -2632,14 +2634,14 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     LVec_beam_CM.Boost(-boost);
     double cos_nmiss = LVec_nmiss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_nmiss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
     //cos(theta) of n_cds in lab
-    double cos_ncdslab = SimFakemode ?  (*LVec_n).CosTheta() : LVec_n->Vect().Dot(LVec_beam->Vect())/(LVec_n->Vect().Mag()*LVec_beam->Vect().Mag());
+    double cos_ncdslab = (SimFakemode || SimFakeK0mode) ?  (*LVec_n).CosTheta() : LVec_n->Vect().Dot(LVec_beam->Vect())/(LVec_n->Vect().Mag()*LVec_beam->Vect().Mag());
     TLorentzVector LVec_n_CM = *LVec_n;
     LVec_n_CM.Boost(-boost);
     double cos_ncdsCM = LVec_n_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_n_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
 
 
-    double cos_pim = SimFakemode ? (*LVec_pim).CosTheta() : (*LVec_pim).Vect().Dot((*LVec_beam).Vect())/((*LVec_pim).Vect().Mag()*(*LVec_beam).Vect().Mag());
-    double cos_pip = SimFakemode ? (*LVec_pip).CosTheta() : (*LVec_pip).Vect().Dot((*LVec_beam).Vect())/((*LVec_pip).Vect().Mag()*(*LVec_beam).Vect().Mag());
+    double cos_pim = (SimFakemode || SimFakeK0mode) ? (*LVec_pim).CosTheta() : (*LVec_pim).Vect().Dot((*LVec_beam).Vect())/((*LVec_pim).Vect().Mag()*(*LVec_beam).Vect().Mag());
+    double cos_pip = (SimFakemode || SimFakeK0mode) ? (*LVec_pip).CosTheta() : (*LVec_pip).Vect().Dot((*LVec_beam).Vect())/((*LVec_pip).Vect().Mag()*(*LVec_beam).Vect().Mag());
     double cos_pippim = (*LVec_pip).Vect().Dot((*LVec_pim).Vect())/((*LVec_pip).Vect().Mag()*(*LVec_pim).Vect().Mag());
 
 
@@ -3225,16 +3227,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
     double weight = 1.0;
     if(IsMCweighting) {
-      if(SimSpmode || SimSmmode || SimK0nnmode || SimnpipiLmode || SimnS0pippimmode || SimSppi0mode || SimSmpi0mode || SimFakemode) {
+      if(SimSpmode || SimSmmode || SimK0nnmode || SimnpipiLmode || SimnS0pippimmode || SimSppi0mode || SimSmpi0mode || SimFakemode || SimFakeK0mode) {
         if(K0rejectFlag) { //w/o K0
           weight *= fweight_IMnpip_v346->Eval(LVec_pip_n.M());
-          weight *= fweight_q_v348->Eval(qkn.P()); 
+          //weight *= fweight_q_v348->Eval(qkn.P()); 
           weight *= fweight_nmom_v353->Eval((*LVec_n).P()); 
-          weight *= fweight_MMnmiss_v354->Eval(nmiss_mass);
-          //weight *= fweight_IMpippim_v355->Eval(LVec_pip_pim.M());
           weight *= fweight_IMnpim_v356->Eval(LVec_pim_n.M());
           weight *= fweight_IMpippim_v357->Eval(LVec_pip_pim.M());
-        } else { //wK0
+          weight *= fweight_MMnmiss_v358->Eval(nmiss_mass);
+          weight *= fweight_q_v359->Eval(qkn.P()); 
+         
+        }else { //wK0
           weight *= fweight_q_wK0_v308->Eval(qkn.P()); 
           weight *= fweight_MMnmiss_wK0_v309->Eval(nmiss_mass); 
           weight *= fweight_q_wK0_v310->Eval(qkn.P()); 
@@ -3274,7 +3277,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           weight *= fweight_q_wK0_v344->Eval(qkn.P()); 
           weight *= fweight_nmom_wK0_v345->Eval((*LVec_n).P());
           weight *= fweight_nmom_wK0_v349->Eval((*LVec_n).P());
-          weight *= fweight_IMpippim_wK0_v351->Interpolate(LVec_pip_pim.M());
+          //weight *= fweight_IMpippim_wK0_v351->Interpolate(LVec_pip_pim.M());
           //weight *= fweight_IMpippim_wK0_v349->Eval(LVec_pip_pim.M());
 
           //weight *= fweight_IMnpipi_wK0_v303->Interpolate(LVec_pip_pim_n.M()); 
@@ -6320,6 +6323,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       pt->SetFillColor(kAzure-4);
       pt->AddText("MC #Sigma-#pi+#pi- 1NA");
     } else if(SimFakemode) {
+      pt->SetFillColor(kAzure-4);
+      pt->AddText("MC Fake");
+    } else if(SimFakeK0mode) {
       pt->SetFillColor(kAzure-4);
       pt->AddText("MC Fake");
     }
