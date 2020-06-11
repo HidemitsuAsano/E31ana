@@ -421,6 +421,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1 *fweight_MMnmiss_v362 = new TF1("fweight_MMnmiss_v362",func_MMnmiss_mod,0,1.5,20);
   fweight_MMnmiss_v362->SetParameters(param_MMnmiss_mod);
   
+  TF1* fweight_q_v363 = new TF1("fweight_q_v363",func_q_mod,0,1.5,8);
+  fweight_q_v363->SetParameters(param_q_mod);
+  
   f->cd();
   // w/o kinematic fit
   TH2F* CDHphi_betainv_fid;
@@ -3247,6 +3250,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           //weight *= fweight_MMnmiss_v360->Eval(nmiss_mass);
           //weight *= fweight_q_v361->Eval(qkn.P()); 
           weight *= fweight_MMnmiss_v362->Eval(nmiss_mass);
+          weight *= fweight_q_v363->Eval(qkn.P()); 
          
         }else { //wK0
           weight *= fweight_q_wK0_v308->Eval(qkn.P()); 
