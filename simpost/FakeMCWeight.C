@@ -3,19 +3,20 @@
 
 //woK0
 TF1 *fweight_q_v348 = NULL;
-TF1 *fweight_MMnmiss_v352 = NULL;
-TF1 *fweight_nmom_v303 = NULL;
-TF1 *fweight_nmom_v305 = NULL;
-TF1 *fweight_nmom_v317 = NULL;
-TF1 *fweight_nmom_v341 = NULL;
-TF1 *fweight_nmom_v345 = NULL;
+TF1 *fweight_MMnmiss_v360 = NULL;
+//TF1 *fweight_nmom_v303 = NULL;
+//TF1 *fweight_nmom_v305 = NULL;
+//TF1 *fweight_nmom_v317 = NULL;
+//TF1 *fweight_nmom_v341 = NULL;
+TF1 *fweight_nmom_v353 = NULL;
 TF1 *fweight_IMnpip_v346 = NULL;
-TF1 *fweight_IMnpim_v308 = NULL;
-TF1 *fweight_IMnpim_v313 = NULL;
-TF1 *fweight_IMnpim_v328 = NULL;
-TF1 *fweight_IMpippim_v306 = NULL;
-TF1 *fweight_IMpippim_v312 = NULL;
-TF1 *fweight_IMpippim_v329 = NULL;
+//TF1 *fweight_IMnpim_v308 = NULL;
+//TF1 *fweight_IMnpim_v313 = NULL;
+//TF1 *fweight_IMnpim_v328 = NULL;
+TF1 *fweight_IMnpim_v356 = NULL;
+//TF1 *fweight_IMpippim_v306 = NULL;
+//TF1 *fweight_IMpippim_v312 = NULL;
+//TF1 *fweight_IMpippim_v329 = NULL;
 
 
 //wK0
@@ -70,18 +71,18 @@ Double_t func_MMmul(Double_t *x,Double_t *par)
 {
   const Double_t xx=x[0];
   return 
-  fweight_MMnmiss_v352->Eval(xx);
+  fweight_MMnmiss_v360->Eval(xx);
 }
 
 Double_t func_nmommul(Double_t *x,Double_t *par)
 {
   const Double_t xx=x[0];
   return 
-  fweight_nmom_v303->Eval(xx)*
-  fweight_nmom_v305->Eval(xx)*
-  fweight_nmom_v317->Eval(xx)*
-  fweight_nmom_v341->Eval(xx)*
-  fweight_nmom_v345->Eval(xx);
+  //fweight_nmom_v303->Eval(xx)*
+  //fweight_nmom_v305->Eval(xx)*
+  //fweight_nmom_v317->Eval(xx)*
+  //fweight_nmom_v341->Eval(xx)*
+  fweight_nmom_v353->Eval(xx);
 }
 
 Double_t func_IMnpipmul(Double_t *x,Double_t *par)
@@ -96,9 +97,10 @@ Double_t func_IMnpimmul(Double_t *x,Double_t *par)
 {
   const Double_t xx=x[0];
   return 
-  fweight_IMnpim_v308->Eval(xx)*
-  fweight_IMnpim_v313->Eval(xx)*
-  fweight_IMnpim_v328->Eval(xx);
+  //fweight_IMnpim_v308->Eval(xx)*
+  //fweight_IMnpim_v313->Eval(xx)*
+  //fweight_IMnpim_v328->Eval(xx);
+  fweight_IMnpim_v356->Eval(xx);
 }
 
 
@@ -106,9 +108,10 @@ Double_t func_IMpippimmul(Double_t *x,Double_t *par)
 {
   const Double_t xx=x[0];
   return
-  fweight_IMpippim_v306->Eval(xx)*
-  fweight_IMpippim_v312->Eval(xx)*
-  fweight_IMpippim_v329->Eval(xx);
+  //fweight_IMpippim_v306->Eval(xx)*
+  //fweight_IMpippim_v312->Eval(xx)*
+  //fweight_IMpippim_v329->Eval(xx);
+  fweight_IMpippim_v355->Eval(xx);
 }
 
 
@@ -228,14 +231,15 @@ void FakeMCWeight()
   //q
   c_woK0_func->cd(1);
   fweight_q_v348 = new TF1("fweight_q_v348",func_q,0,1.5,8);
-  fweight_q_v348->SetParameters(param_q_mul);
+  fweight_q_v348->SetParameters(param_q_mod);
   //q
   TF1* f_qmul = new TF1("f_qmul",func_qmul,0,1.5,8);
   
   f_qmul->SetTitle("");
   f_qmul->GetXaxis()->SetTitle("q [GeV/c]");
   f_qmul->GetXaxis()->CenterTitle();
-  f_qmul->Draw("c");
+  f_qmul->SetMinimum(0);
+  f_qmul->Draw("");
   std::cout << __LINE__ << std::endl;
   //TCanvas *cqmul = new TCanvas("cqmul","cqmul");
   //cqmul->cd();
@@ -248,8 +252,8 @@ void FakeMCWeight()
 
   //MMnmiss
   c_woK0_func->cd(2);
-  fweight_MMnmiss_v352 = new TF1("fweight_MMnmiss_v352",func_MMnmiss_mod,0,1.5,18);
-  fweight_MMnmiss_v352->SetParameters(param_MMnmiss_mod);
+  fweight_MMnmiss_v360 = new TF1("fweight_MMnmiss_v360",func_MMnmiss_mod,0,1.5,18);
+  fweight_MMnmiss_v360->SetParameters(param_MMnmiss_mod);
   
   TF1* f_MMnmissmul = new TF1("MissMass",func_MMmul,0,1.5,18);
   //f_MMnmissmul->SetNpx(1000);
@@ -257,7 +261,7 @@ void FakeMCWeight()
   f_MMnmissmul->GetXaxis()->SetTitle("Miss. Mass [GeV/c^{2}]");
   f_MMnmissmul->GetXaxis()->CenterTitle();
   f_MMnmissmul->SetMinimum(0);
-  f_MMnmissmul->Draw("c");
+  f_MMnmissmul->Draw("");
   
   TBox *box_neutron = new TBox(anacuts::neutron_MIN,0,anacuts::neutron_MAX,3);
   box_neutron->SetFillColor(4);
@@ -345,24 +349,29 @@ void FakeMCWeight()
   //nmom
   c_woK0_func->cd(3);
 
-  fweight_nmom_v303 = new TF1("fweight_nmom_v303",func_nmom,0,1.0,9);
-  fweight_nmom_v303->SetParameters(param_nmom);
-  fweight_nmom_v305 = new TF1("fweight_nmom_v305",func_nmom,0,1.0,9);
-  fweight_nmom_v305->SetParameters(param_nmom_v305);
-  fweight_nmom_v317 = new TF1("fweight_nmom_v317",func_nmom,0,1.0,9);
-  fweight_nmom_v317->SetParameters(param_nmom_v317);
-  fweight_nmom_v341 = new TF1("fweight_nmom_v341",func_nmom,0,1.0,9);
-  fweight_nmom_v341->SetParameters(param_nmom_v341);
-  fweight_nmom_v345 = new TF1("fweight_nmom_v345",func_nmom,0,1.0,9);
-  fweight_nmom_v345->SetParameters(param_nmom_v345);
+  //fweight_nmom_v303 = new TF1("fweight_nmom_v303",func_nmom,0,1.0,9);
+  //fweight_nmom_v303->SetParameters(param_nmom);
+  //fweight_nmom_v305 = new TF1("fweight_nmom_v305",func_nmom,0,1.0,9);
+  //fweight_nmom_v305->SetParameters(param_nmom_v305);
+  //fweight_nmom_v317 = new TF1("fweight_nmom_v317",func_nmom,0,1.0,9);
+  //fweight_nmom_v317->SetParameters(param_nmom_v317);
+  //fweight_nmom_v341 = new TF1("fweight_nmom_v341",func_nmom,0,1.0,9);
+  //fweight_nmom_v341->SetParameters(param_nmom_v341);
+  fweight_nmom_v353 = new TF1("fweight_nmom_v353",func_nmom_mod,0,1.0,12);
+  fweight_nmom_v353->SetParameters(param_nmom_mod);
 
-  TF1* f_nmommul = new TF1("f_nmommul",func_nmommul,0,1.0,9*5);
-  f_nmommul->SetNpx(1000);
+  TF1* f_nmommul = new TF1("f_nmommul",func_nmommul,0,1.0,12);
+  //f_nmommul->SetNpx(1000);
   f_nmommul->SetTitle("");
   f_nmommul->GetXaxis()->SetTitle("n_{CDS} mom. [GeV/c^{2}]");
   f_nmommul->GetXaxis()->CenterTitle();
   f_nmommul->Draw();
-  
+  TLine *nmomline = new TLine(anacuts::nmomcut,0,anacuts::nmomcut,9);
+  nmomline->SetLineColor(3);
+  nmomline->SetLineWidth(2.0);
+  nmomline->SetLineStyle(10);
+  nmomline->Draw();
+
   //IMnpip
   c_woK0_func->cd(4);
    
@@ -373,7 +382,7 @@ void FakeMCWeight()
   f_IMnpipmul->GetXaxis()->SetTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   f_IMnpipmul->GetXaxis()->CenterTitle();
   f_IMnpipmul->SetLineColor(2);
-  f_IMnpipmul->Draw("c");
+  f_IMnpipmul->Draw("");
   TBox *box_sigmap = new TBox(anacuts::Sigmap_MIN,0,anacuts::Sigmap_MAX,3);
   box_sigmap->SetFillColor(4);
   box_sigmap->SetFillStyle(3002);
@@ -390,18 +399,19 @@ void FakeMCWeight()
 
   c_woK0_func->cd(5);
   
-  fweight_IMnpim_v308 = new TF1("fweight_IMnpim_v308",func_IMnpim,1,2.0,8);
-  fweight_IMnpim_v308->SetParameters(param_IMnpim);
-  fweight_IMnpim_v313 = new TF1("fweight_IMnpim_v313",func_IMnpim,1,2.0,8);
-  fweight_IMnpim_v313->SetParameters(param_IMnpim_corr);
-  fweight_IMnpim_v328 = new TF1("fweight_IMnpim_v328",func_IMnpim,1,2.0,8);
-  fweight_IMnpim_v328->SetParameters(param_IMnpim_corr2);
-
-  TF1* f_IMnpimmul = new TF1("f_IMnpimmul",func_IMnpimmul,1.08,2.0,8*3);
+  //fweight_IMnpim_v308 = new TF1("fweight_IMnpim_v308",func_IMnpim,1,2.0,8);
+  //fweight_IMnpim_v308->SetParameters(param_IMnpim);
+  //fweight_IMnpim_v313 = new TF1("fweight_IMnpim_v313",func_IMnpim,1,2.0,8);
+  //fweight_IMnpim_v313->SetParameters(param_IMnpim_corr);
+  //fweight_IMnpim_v328 = new TF1("fweight_IMnpim_v328",func_IMnpim,1,2.0,8);
+  //fweight_IMnpim_v328->SetParameters(param_IMnpim_corr2);
+  fweight_IMnpim_v356 = new TF1("fweight_IMnpim_v356",func_IMnpim_mod,1,2.0,12);
+  fweight_IMnpim_v356->SetParameters(param_IMnpim_mod);
+  TF1* f_IMnpimmul = new TF1("f_IMnpimmul",func_IMnpimmul,1.08,2.0,12);
   f_IMnpimmul->SetTitle("");
   f_IMnpimmul->GetXaxis()->SetTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   f_IMnpimmul->GetXaxis()->CenterTitle();
-  f_IMnpimmul->Draw("c");
+  f_IMnpimmul->Draw("");
   TBox *box_sigmam = new TBox(anacuts::Sigmam_MIN,0,anacuts::Sigmam_MAX,3);
   box_sigmam->SetFillColor(4);
   box_sigmam->SetFillStyle(3002);
@@ -410,14 +420,16 @@ void FakeMCWeight()
   //IMpippim
   c_woK0_func->cd(6);
   
-  fweight_IMpippim_v306 = new TF1("fweight_IMpippim_v306",func_IMpippim,0,1.0,7);
-  fweight_IMpippim_v306->SetParameters(param_IMpippim);
-  fweight_IMpippim_v312 = new TF1("fweight_IMpippim_v312",func_IMpippim_corr,0,1.0,12);
-  fweight_IMpippim_v312->SetParameters(param_IMpippim_corr);
-  fweight_IMpippim_v329 = new TF1("fweight_IMpippim_v329",func_IMpippim_corr,0,1.0,12);
-  fweight_IMpippim_v329->SetParameters(param_IMpippim_corr2);
-  
-  TF1 *f_IMpippimmul = new TF1("f_IMpippimmul",func_IMpippimmul,0,1.0,7+12*2);
+  //fweight_IMpippim_v306 = new TF1("fweight_IMpippim_v306",func_IMpippim,0,1.0,7);
+  //fweight_IMpippim_v306->SetParameters(param_IMpippim);
+  //fweight_IMpippim_v312 = new TF1("fweight_IMpippim_v312",func_IMpippim_corr,0,1.0,12);
+  //fweight_IMpippim_v312->SetParameters(param_IMpippim_corr);
+  //fweight_IMpippim_v329 = new TF1("fweight_IMpippim_v329",func_IMpippim_corr,0,1.0,12);
+  //fweight_IMpippim_v329->SetParameters(param_IMpippim_corr2);
+  fweight_IMpippim_v355 = new TF1("fweight_IMpippim_v355",func_IMpippim_mod,0,1.0,15);
+  fweight_IMpippim_v355->SetParameters(param_IMpippim_mod);
+
+  TF1 *f_IMpippimmul = new TF1("f_IMpippimmul",func_IMpippimmul,0,1.0,15);
   f_IMpippimmul->SetTitle("");
   f_IMpippimmul->GetXaxis()->SetTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   f_IMpippimmul->GetXaxis()->CenterTitle();
@@ -463,7 +475,7 @@ void FakeMCWeight()
   f_qmul_wK0->SetTitle("");
   f_qmul_wK0->GetXaxis()->SetTitle("q [GeV/c]");
   f_qmul_wK0->GetXaxis()->CenterTitle();
-  f_qmul_wK0->Draw("c");
+  f_qmul_wK0->Draw("");
 
 
   //MMnmiss
@@ -496,7 +508,7 @@ void FakeMCWeight()
   f_MMnmiss_wK0mul->SetTitle("");
   f_MMnmiss_wK0mul->GetXaxis()->SetTitle("Miss. Mass [GeV/c^{2}]");
   f_MMnmiss_wK0mul->GetXaxis()->CenterTitle();
-  f_MMnmiss_wK0mul->Draw("c");
+  f_MMnmiss_wK0mul->Draw("");
   box_neutron->Draw();
   //nmom
   c_wK0_func->cd(3);
@@ -522,7 +534,7 @@ void FakeMCWeight()
   f_nmom_wK0mul->GetXaxis()->SetTitle("n_{CDS} mom. [GeV/c^{2}]");
   f_nmom_wK0mul->GetXaxis()->CenterTitle();
   f_nmom_wK0mul->Draw();
-  
+  nmomline->Draw();
   //IMnpip
   c_wK0_func->cd(4);
   
@@ -542,7 +554,7 @@ void FakeMCWeight()
   f_IMnpip_wK0mul->SetTitle("");
   f_IMnpip_wK0mul->GetXaxis()->SetTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   f_IMnpip_wK0mul->GetXaxis()->CenterTitle();
-  f_IMnpip_wK0mul->Draw("c");
+  f_IMnpip_wK0mul->Draw("");
   box_sigmap->Draw();
 
   c_wK0_func->cd(5);
@@ -563,7 +575,7 @@ void FakeMCWeight()
   f_IMnpim_wK0mul->SetTitle("");
   f_IMnpim_wK0mul->GetXaxis()->SetTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   f_IMnpim_wK0mul->GetXaxis()->CenterTitle();
-  f_IMnpim_wK0mul->Draw("c");
+  f_IMnpim_wK0mul->Draw("");
   box_sigmam->Draw();
   //IMpippim (N/A)
   //c_wK0_func->cd(6);

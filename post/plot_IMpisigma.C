@@ -409,8 +409,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1 *fweight_MMnmiss_v358 = new TF1("fweight_MMnmiss_v358",func_MMnmiss_mod,0,1.5,18);
   fweight_MMnmiss_v358->SetParameters(param_MMnmiss_mod);
   
-  TF1* fweight_q_v359 = new TF1("fweight_q_v359",func_q_mod,0,1.5,10);
-  fweight_q_v359->SetParameters(param_q_mod);
+  //TF1* fweight_q_v359 = new TF1("fweight_q_v359",func_q_mod,0,1.5,10);
+  //fweight_q_v359->SetParameters(param_q_mod);
+  
+  TF1 *fweight_MMnmiss_v360 = new TF1("fweight_MMnmiss_v360",func_MMnmiss_mod,0,1.5,20);
+  fweight_MMnmiss_v360->SetParameters(param_MMnmiss_mod);
+  
+  TF1* fweight_q_v361 = new TF1("fweight_q_v361",func_q_mod,0,1.5,8);
+  fweight_q_v361->SetParameters(param_q_mod);
+  
+  TF1 *fweight_MMnmiss_v362 = new TF1("fweight_MMnmiss_v362",func_MMnmiss_mod,0,1.5,20);
+  fweight_MMnmiss_v362->SetParameters(param_MMnmiss_mod);
   
   f->cd();
   // w/o kinematic fit
@@ -3234,8 +3243,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           weight *= fweight_nmom_v353->Eval((*LVec_n).P()); 
           weight *= fweight_IMnpim_v356->Eval(LVec_pim_n.M());
           weight *= fweight_IMpippim_v357->Eval(LVec_pip_pim.M());
-          weight *= fweight_MMnmiss_v358->Eval(nmiss_mass);
-          weight *= fweight_q_v359->Eval(qkn.P()); 
+          //weight *= fweight_MMnmiss_v358->Eval(nmiss_mass);
+          //weight *= fweight_MMnmiss_v360->Eval(nmiss_mass);
+          //weight *= fweight_q_v361->Eval(qkn.P()); 
+          weight *= fweight_MMnmiss_v362->Eval(nmiss_mass);
          
         }else { //wK0
           weight *= fweight_q_wK0_v308->Eval(qkn.P()); 
