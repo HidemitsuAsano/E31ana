@@ -128,6 +128,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   bool SimFakemode  = (std::string(filename).find("fakepippim_")!=std::string::npos);
   bool SimFakeK0mode  = (std::string(filename).find("fakepippimK0_")!=std::string::npos);
   //= = = = pipipnn final-sample tree = = = =//
+  
+  if(SimFakemode) std::cout << "fake pi+pi-nX mode "  << std::endl; 
+  if(SimFakeK0mode) std::cout << "fake K0barnX mode "  << std::endl; 
 
   TFile *f = new TFile(filename);
   //TFile *f = new TFile("sim_piSpn_dE0_Al.root");
@@ -423,6 +426,15 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   
   TF1* fweight_q_v363 = new TF1("fweight_q_v363",func_q_mod,0,1.5,8);
   fweight_q_v363->SetParameters(param_q_mod);
+  
+  TF1* fweight_IMpippim_v364 = new TF1("fweight_IMpippim_v364",func_IMpippim_mod,0.,1.0,15);
+  fweight_IMpippim_v364->SetParameters(param_IMpippim_mod);
+  
+  TF1 *fweight_MMnmiss_v365 = new TF1("fweight_MMnmiss_v365",func_MMnmiss_mod,0,1.5,20);
+  fweight_MMnmiss_v365->SetParameters(param_MMnmiss_mod);
+  
+  TF1* fweight_q_v366 = new TF1("fweight_q_v366",func_q_mod,0,1.5,8);
+  fweight_q_v366->SetParameters(param_q_mod);
   
   f->cd();
   // w/o kinematic fit
@@ -3240,19 +3252,15 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     double weight = 1.0;
     if(IsMCweighting) {
       if(SimSpmode || SimSmmode || SimK0nnmode || SimnpipiLmode || SimnS0pippimmode || SimSppi0mode || SimSmpi0mode || SimFakemode || SimFakeK0mode) {
-        if(K0rejectFlag) { //w/o K0
+        if(SimFakemode) { //w/o K0
           weight *= fweight_IMnpip_v346->Eval(LVec_pip_n.M());
-          //weight *= fweight_q_v348->Eval(qkn.P()); 
           weight *= fweight_nmom_v353->Eval((*LVec_n).P()); 
           weight *= fweight_IMnpim_v356->Eval(LVec_pim_n.M());
-          weight *= fweight_IMpippim_v357->Eval(LVec_pip_pim.M());
-          //weight *= fweight_MMnmiss_v358->Eval(nmiss_mass);
-          //weight *= fweight_MMnmiss_v360->Eval(nmiss_mass);
-          //weight *= fweight_q_v361->Eval(qkn.P()); 
-          weight *= fweight_MMnmiss_v362->Eval(nmiss_mass);
-          weight *= fweight_q_v363->Eval(qkn.P()); 
-         
-        }else { //wK0
+          //weight *= fweight_q_v363->Eval(qkn.P()); 
+          weight *= fweight_IMpippim_v364->Eval(LVec_pip_pim.M());
+          weight *= fweight_MMnmiss_v365->Eval(nmiss_mass);
+          weight *= fweight_q_v366->Eval(qkn.P()); 
+        }else if(SimFakeK0mode) { //wK0
           weight *= fweight_q_wK0_v308->Eval(qkn.P()); 
           weight *= fweight_MMnmiss_wK0_v309->Eval(nmiss_mass); 
           weight *= fweight_q_wK0_v310->Eval(qkn.P()); 
@@ -3804,7 +3812,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         nmom_diffz_CDC_CDH_pim_woK0_wSid->Fill(diffpim.z(),(*LVec_n).P(),weight);
         nmom_diffz_CDC_CDH_pip_woK0_wSid->Fill(diffpip.z(),(*LVec_n).P(),weight);
       }
-      if(!SigmaPFlag && !SigmaMFlag) {
+      if(!SigmawidePFlag && !SigmawideMFlag) {
         nmom_MMnmiss_woK0_woSid->Fill(nmiss_mass,(*LVec_n).P(),weight);
 
         MMnmiss_IMpippim_dE_woK0_woSid->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
@@ -4021,6 +4029,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       }//for igap
     }//if K0rejectFlag && NBetaOK && NdEOK && MissNFlag0
     //---removing K0 END----------------------------------------------
+    //if(i> 1.00e+06) break;
 
   }//for ievt
   //--- Filling Histogram END --------------------------------------------------
