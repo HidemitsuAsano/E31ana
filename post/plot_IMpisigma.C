@@ -436,6 +436,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1* fweight_q_v366 = new TF1("fweight_q_v366",func_q_mod,0,1.5,8);
   fweight_q_v366->SetParameters(param_q_mod);
   
+  TF1* fweight_IMnpim_v367 = new TF1("fweight_IMnpim_v367",func_IMnpim_mod,1,2.0,10);
+  fweight_IMnpim_v367->SetParameters(param_IMnpim_mod);
+  
+  
+  
   f->cd();
   // w/o kinematic fit
   TH2F* CDHphi_betainv_fid;
@@ -3255,11 +3260,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         if(SimFakemode) { //w/o K0
           weight *= fweight_IMnpip_v346->Eval(LVec_pip_n.M());
           weight *= fweight_nmom_v353->Eval((*LVec_n).P()); 
-          weight *= fweight_IMnpim_v356->Eval(LVec_pim_n.M());
-          //weight *= fweight_q_v363->Eval(qkn.P()); 
+          //weight *= fweight_IMnpim_v356->Eval(LVec_pim_n.M());
           weight *= fweight_IMpippim_v364->Eval(LVec_pip_pim.M());
           weight *= fweight_MMnmiss_v365->Eval(nmiss_mass);
           weight *= fweight_q_v366->Eval(qkn.P()); 
+          weight *= fweight_IMnpim_v367->Eval(LVec_pim_n.M());
         }else if(SimFakeK0mode) { //wK0
           weight *= fweight_q_wK0_v308->Eval(qkn.P()); 
           weight *= fweight_MMnmiss_wK0_v309->Eval(nmiss_mass); 

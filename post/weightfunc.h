@@ -745,7 +745,7 @@ Double_t func_IMnpim_mod(Double_t *x,Double_t *par)
   }
 }
 
-
+/*
 Double_t param_IMnpim_mod[10]={
 1.93919,
 1.10969,
@@ -758,9 +758,20 @@ Double_t param_IMnpim_mod[10]={
 -53.8587,
 11.4735
 };
+*/
 
-
-
+Double_t param_IMnpim_mod[10]={
+1.99912,
+1.11494,
+0.0176427,
+0.02,
+133.165,
+-257.346,
+113.524,
+67.3744,
+-67.331,
+14.6219
+};
 
 Double_t func_IMnpim_wK0(Double_t *x,Double_t *par)
 {
