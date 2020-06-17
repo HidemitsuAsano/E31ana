@@ -759,6 +759,41 @@ Double_t param_IMnpim_wK0_corr4[9]={
 -394.424
 };
 
+Double_t func_IMnpim_wK0_mod(Double_t *x,Double_t *par)
+{
+  if(1.00 <= x[0] && x[0]<2.0) {
+   //1.07-1.11  gaus    1.11-1.24 pol5            1.24-2.0 exp
+    return (par[0]*exp(-0.5*pow(((x[0]-par[1])/par[2]),2.0)))
+         *(1./(1.0+exp((x[0]-1.11)/par[3])))
+         +(1.0 - (1./(1.0+exp((x[0]-1.11)/par[3]))))
+         //*(par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0)+par[8]*pow(x[0],4.0)+par[9]*pow(x[0],5.0))
+         *(par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0))
+         *(1./(1.0+exp((x[0]-1.24)/par[8])))
+         +(1.0 - (1./(1.0+exp((x[0]-1.24)/par[8]))))
+         *exp(par[9]+par[10]*x[0]);
+  } else {
+    return 0.;
+  }
+}
+
+
+Double_t param_IMnpim_wK0_mod[11]={
+3.80053,
+1.10253,
+0.00869531,
+0.0001,
+4266.42,
+-10484.8,
+8583.89,
+-2340.8,
+0.01,
+8.57184,
+-7.00872
+};
+
+
+
+
 Double_t func_IMnpip_wK0_corr(Double_t *x,Double_t *par)
 {
    if(1<x[0] && x[0]<1.14){

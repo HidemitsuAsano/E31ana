@@ -479,6 +479,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1* fweight_IMnpip_wK0_v380 = new TF1("fweight_IMnpip_wK0_v380",func_IMnpip_wK0_mod,1,2,16);
   fweight_IMnpip_wK0_v380->SetParameters(param_IMnpip_wK0_mod);
   
+  TF1* fweight_IMnpim_wK0_v381 = new TF1("fweight_IMnpim_wK0_v381",func_IMnpim_wK0_mod,1,2,11);
+  fweight_IMnpim_wK0_v381->SetParameters(param_IMnpim_wK0_mod);
+  
   f->cd();
   // w/o kinematic fit
   TH2F* CDHphi_betainv_fid;
@@ -3335,6 +3338,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           weight *= fweight_MMnmiss_wK0_v378->Eval(nmiss_mass);
           weight *= fweight_nmom_wK0_v379->Eval((*LVec_n).P());
           weight *= fweight_IMnpip_wK0_v380->Eval(LVec_pip_n.M());
+          weight *= fweight_IMnpim_wK0_v381->Eval(LVec_pim_n.M());
         }
       }
     }//MCweighting
