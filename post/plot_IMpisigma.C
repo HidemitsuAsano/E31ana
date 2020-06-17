@@ -4055,7 +4055,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       }//for igap
     }//if K0rejectFlag && NBetaOK && NdEOK && MissNFlag0
     //---removing K0 END----------------------------------------------
-    if(i> 1.00e+06) break;
+    //if(i> 1.00e+06) break;
 
   }//for ievt
   //--- Filling Histogram END --------------------------------------------------

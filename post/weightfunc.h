@@ -380,12 +380,14 @@ Double_t param_MMnmiss_mod[20]={
 
 Double_t func_MMnmiss_wK0_mod(Double_t *x,Double_t *par)
 {
-  return (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
-       +par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0))//+par[6]*pow(x[0],6.0)
+  double ret= (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
+       +par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0))
        *(1./(1.0+exp((x[0]-1.08)/par[6])))
        +(1. - 1./(1.0+exp((x[0]-1.08)/par[6])))
        *(par[7]+par[8]*x[0]+par[9]*pow(x[0],3.0)+par[10]*pow(x[0],4.0))
        ;
+   if(ret<0) return 0;
+   else return ret;
 }
 
 Double_t param_MMnmiss_wK0_mod[11]={
@@ -457,8 +459,10 @@ Double_t param_IMnpip_corr2[9]={
 Double_t func_IMnpipmul_s(Double_t *x,Double_t *par)
 {
   if(1.06<=x[0] && x[0]<1.92){
-    return (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0))*(1./(1.0+exp((x[0]-1.25)/par[11])))+
+    double ret=  (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0))*(1./(1.0+exp((x[0]-1.25)/par[11])))+
            (par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0)+par[8]*pow(x[0],4.0)+par[9]*pow(x[0],5.0)+par[10]*pow(x[0],6.0))*(1.0-1./(1.0+exp((x[0]-1.25)/par[11])));
+    if(ret<0) return 0;
+    else return ret;
   }else{
     return 1.;
   }
@@ -781,7 +785,7 @@ Double_t param_IMnpim_wK0_mod[11]={
 3.80053,
 1.10253,
 0.00869531,
-0.0001,
+0.02,
 4266.42,
 -10484.8,
 8583.89,
@@ -1124,9 +1128,11 @@ Double_t func_nmom_mod(Double_t *x,Double_t *par)
  //   return exp(par[0]+par[1]*x[0])*((1./(1.0+exp((x[0]-0.2)/par[2]))))
  //   + (par[3]+par[4]*x[0]+par[5]*pow(x[0],2.0)+par[6]*pow(x[0],3.0)+par[7]*pow(x[0],4.0)+par[8]*pow(x[0],5.0)
  //   +par[9]*pow(x[0],6.0))*(1.-1./(1.0+exp((x[0]-0.2)/par[2])));
-    return (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0))*((1./(1.0+exp((x[0]-0.2)/par[4]))))
+    double ret = (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0))*((1./(1.0+exp((x[0]-0.2)/par[4]))))
     + (par[5]+par[6]*x[0]+par[7]*pow(x[0],2.0)+par[8]*pow(x[0],3.0)+par[9]*pow(x[0],4.0)+par[10]*pow(x[0],5.0)
     +par[11]*pow(x[0],6.0))*(1.-1./(1.0+exp((x[0]-0.2)/par[4])));
+    if(ret<0) return 0;
+    else return ret;
   }else{
     return 1.0;
   }
@@ -2057,8 +2063,12 @@ Double_t param_q_mod[8]={
 Double_t func_q_wK0_mod(Double_t *x,Double_t *par)
 {
   if(0<x[0] && x[0]<1.3) {  //&& x[0]<1.17){
-    return (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
+    double ret = (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
     +par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0)+par[6]*pow(x[0],6.0)+par[7]*pow(x[0],7.0));
+    
+    
+    if(ret <0 ) return 0;
+    else return ret;
     //*(1./(1.0+exp((x[0]-1.17)/par[8]))) 
     //+(1.0 - 1./(1.0+exp((x[0]-1.17)/par[8])))
     //*par[9];
