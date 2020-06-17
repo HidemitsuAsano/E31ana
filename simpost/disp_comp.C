@@ -95,6 +95,22 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   cMMnmiss->cd(4);
   //MMnmiss_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
   MMnmiss_wK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *cMMnmiss_wK0_mod = new TCanvas("cMMnmiss_wK0_mod","cMMnmiss_wK0_mod");
+  //MMnmiss_wK0_woSid_won_ratio->Draw("HE");
+  //TF1 *f_MMnmiss_wK0_mod = new TF1("f_MMnmiss_wK0_mod",func_MMnmiss_wK0_mod,0.0,1.28,11);
+  //f_MMnmiss_wK0_mod->SetParameter(0,-0.0156614);
+  //f_MMnmiss_wK0_mod->SetParameter(1,2.94145);
+  //f_MMnmiss_wK0_mod->SetParameter(2,-47.1231);
+  //f_MMnmiss_wK0_mod->SetParameter(3,491.928);
+  //f_MMnmiss_wK0_mod->SetParameter(4,-2519.55);
+  //f_MMnmiss_wK0_mod->SetParameter(5,7184.26);
+  //f_MMnmiss_wK0_mod->SetParameter(6,-11965.7);
+  //f_MMnmiss_wK0_mod->SetParameter(7,11581.9);
+  //f_MMnmiss_wK0_mod->SetParameter(8,-6029.28);
+  //f_MMnmiss_wK0_mod->SetParameter(9,1302.35);
+  //f_MMnmiss_wK0_mod->FixParameter(6,0.01);
+  //MMnmiss_wK0_woSid_won_ratio->Fit(f_MMnmiss_wK0_mod,"","",0.0,1.28);
+
 
   TH1D* IMnpip_woK0_woSid_won_data = (TH1D*)f->Get("IMnpip_woK0_woSid_won_data");
   TH1D* IMnpip_woK0_woSid_won_mc = (TH1D*)f->Get("IMnpip_woK0_woSid_won_mc");
@@ -123,8 +139,21 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   IMnpip_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
   IMnpip_woK0_woSid_won_ratio->Draw("HE");
   cIMnpip->cd(4);
-  IMnpip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
+  //IMnpip_wK0_woSid_won_ratio->RebinX(2);
+  //IMnpip_wK0_woSid_won_ratio->Scale(0.5);
+  IMnpip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,4);
   IMnpip_wK0_woSid_won_ratio->Draw("HE");
+  TCanvas *cIMnpip_wK0_mod = new TCanvas("cIMnpip_wK0_mod","cIMnpip_wK0_mod");
+  cIMnpip_wK0_mod->cd();
+  IMnpip_wK0_woSid_won_ratio->Draw("HE");
+  TF1 *f_IMnpip_wK0 = new TF1("f_IMnpip_wK0",func_IMnpip_wK0_mod,1,2,16);
+  f_IMnpip_wK0->SetParameters(param_IMnpip_wK0_mod);
+  f_IMnpip_wK0->FixParameter(4,0.01);
+  f_IMnpip_wK0->FixParameter(10,0.01);
+  f_IMnpip_wK0->SetLineColor(2);
+  f_IMnpip_wK0->Draw("same");
+  IMnpip_wK0_woSid_won_ratio->Fit("f_IMnpip_wK0","","",1.,1.62);
+
 
   TH1D* IMnpim_woK0_woSid_won_data = (TH1D*)f->Get("IMnpim_woK0_woSid_won_data");
   TH1D* IMnpim_woK0_woSid_won_mc = (TH1D*)f->Get("IMnpim_woK0_woSid_won_mc");
@@ -396,6 +425,12 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   cnmom->cd(4);
   nmom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
   nmom_wK0_woSid_won_ratio->Draw("HE");
+  //TCanvas *c_nmom_wK0_mod = new TCanvas("c_nmom_wK0_mod","c_nmom_wK0_mod");
+  //c_nmom_wK0_mod->cd();
+  //nmom_wK0_woSid_won_ratio->Draw("HE");
+  //TF1 *f_nmom_wK0_mod = new TF1("f_nmom_wK0_mod",func_nmom_mod,0.13,1.0,12);
+  //f_nmom_wK0_mod->FixParameter(4,0.01);//woods-saxon
+  //nmom_wK0_woSid_won_ratio->Fit("f_nmom_wK0_mod","","",0.14,1.0);
 
   std::ofstream os;
   os.open("param_corr.txt");
@@ -406,17 +441,23 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   //os << "q " << endl;
   //for(int i=0;i<f_q_mod->GetNpar();i++){
   //for(int i=0;i<f_q_wK0_mod->GetNpar();i++){
+  //for(int i=0;i<f_MMnmiss_wK0_mod->GetNpar();i++){
   //for(int i=0;i<f_MMnmiss_mod->GetNpar();i++){
   //for(int i=0;i<f_IMpippim_mod->GetNpar();i++){
   //for(int i=0;i<f_IMnpim_mod->GetNpar();i++){
+  for(int i=0;i<f_IMnpip_wK0->GetNpar();i++){
+  //for(int i=0;i<f_nmom_wK0_mod->GetNpar();i++){
     os << std::setprecision(6);
     //os << f_q_mod->GetParameter(i) << ",";
-   // os << f_q_wK0_mod->GetParameter(i) << ",";
+    //os << f_q_wK0_mod->GetParameter(i) << ",";
+    //os << f_MMnmiss_wK0_mod->GetParameter(i) << ",";
+    //os << f_nmom_wK0_mod->GetParameter(i) << ",";
     //os << f_MMnmiss_mod->GetParameter(i) << ",";
-    // os << f_IMpippim_mod->GetParameter(i) << ",";
-  //  os << f_IMnpim_mod->GetParameter(i) << ",";
+    //os << f_IMpippim_mod->GetParameter(i) << ",";
+    //os << f_IMnpim_mod->GetParameter(i) << ",";
+    os << f_IMnpip_wK0->GetParameter(i) << ",";
     os << endl;
-  //}
+  }
   // os << f_q_mod->GetParameter(i) << ",";
   //  os << endl;
   //}
