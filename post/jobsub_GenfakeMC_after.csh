@@ -55,5 +55,5 @@ while (1)
     root -b -q comp_fakedata_v4.C+
     break
   endif
-  sleep 60
+  sleep 10
 end
