@@ -485,25 +485,6 @@ Double_t param_IMnpip_s[12]={
 
 
 
-/*
-Double_t func_IMnpip_corr(Double_t *x,Double_t *par)
-{
-  if(1.06<=x[0] && x[0]<=2.00){
-    return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)+par[4]*pow(x[0],4.0);
-  }else{
-    return 1.0;
-  } 
-}
-
-
-Double_t param_IMnpip_corr3[5]={
-3.23373,
--2.89104,
--0.474793,
-1.93943,
--0.685505
-};
-*/
 
 Double_t param_IMnpip_wK0[9]={
 -1779.86,
@@ -540,7 +521,6 @@ Double_t func_IMnpip_wK0_mod(Double_t *x,Double_t *par)
     *(par[5]+par[6]*x[0]+par[7]*pow(x[0],2.0)+par[8]*pow(x[0],3.0)+par[9]*pow(x[0],4.0))
     *(1./(1.0+exp((x[0]-1.25)/par[10])))
     +(1.0-1./(1.0+exp((x[0]-1.25)/par[10])))
-    //*(par[11]+par[12]*x[0]+par[13]*pow(x[0],2.0)+par[14]*pow(x[0],3.0)+par[15]*pow(x[0],4.0)+par[16]*pow(x[0],5.0));
     *(par[11]+par[12]*x[0]+par[13]*pow(x[0],2.0)+par[14]*pow(x[0],3.0)+par[15]*pow(x[0],4.0));
   
     if(ret<0) return 0;
@@ -586,8 +566,6 @@ Double_t func_IMnpim(Double_t *x,Double_t *par)
 Double_t func_IMnpim_corr(Double_t *x,Double_t *par)
 {  
   if(1.00 <= x[0] && x[0]<1.11) {
-    //return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0);
-    //return par[0]*exp(-0.5*pow(((x[0]-par[1])/par[2]),2.0)); 
     return 1.0;
   } else if(1.11 <= x[0] && x[0]<=2.0) {
     return par[3]+par[4]*x[0]+par[5]*pow(x[0],2.0)+par[6]*pow(x[0],3.0)+par[7]*pow(x[0],4.0);
@@ -1404,44 +1382,6 @@ Double_t func_IMpippim_mod(Double_t *x,Double_t *par)
    }
 };
 
-/*
-Double_t param_IMpippim_mod[15]={
-0.395041,
-0.296922,
-0.0118245,
-0.02,
-5.07512,
--23.1285,
-10.27,
-84.9313,
-1.30107,
--231.161,
-140.749,
-0.03,
-1.78472,
-0.753667,
-0.0668154
-};
-*/
-/*
-Double_t param_IMpippim_mod[15]={
-0.468509,
-0.297271,
-0.0130168,
-0.02,
--16.0994,
-157.248,
--429.852,
--190.526,
-2851.48,
--4601.61,
-2316.36,
-0.03,
-1.62175,
-0.791874,
--0.0483207
-};
-*/
 
 Double_t param_IMpippim_mod[15]={
 0.431559,
@@ -1514,7 +1454,6 @@ Double_t func_IMnpipi_wK0(Double_t *x,Double_t *par)
   if(x[0]<1.4){
     return 1.;
   }else if(1.4<=x[0] && x[0]<=2.00) {
-  //  return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)+par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0);
     return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)+par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0);
   }else{
     return 1.;
@@ -1532,57 +1471,6 @@ Double_t param_IMnpipi_wK0[6]={
 };
 
 
-/*
-Double_t func_cosn(Double_t *x,Double_t *p)
-{
-  if(-0.92<= x[0] && x[0]<0.30){
-    //return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)+par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0)
-    //+par[6]*pow(x[0],6.0)+par[7]*pow(x[0],7.0)+par[8]*pow(x[0],8.0);
-    return (p[0]+p[1]*x[0]+p[2]*TMath::Power(x[0],2)+p[3]*TMath::Power(x[0],3)+p[4]*TMath::Power(x[0],4)+p[5]*TMath::Power(x[0],5)+p[6]*TMath::Power(x[0],6)
-    +p[7]*TMath::Power(x[0],7)+p[8]*TMath::Power(x[0],8)) ; 
-  }else{
-    return 1.0;
-  }
-}
-
-Double_t param_cosn[9]={
-    1.015500, 
-    1.006929, 
-   -2.654014, 
-  -28.385825, 
-   10.852024, 
-  384.093426, 
-  945.706089, 
-  919.509377, 
-  323.637467 
-};
-
-
-Double_t func_cosn_wK0(Double_t *x,Double_t *p)
-{
-  if(-0.92<= x[0] && x[0]<0.20){
-    //return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)+par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0)
-    //+par[6]*pow(x[0],6.0)+par[7]*pow(x[0],7.0)+par[8]*pow(x[0],8.0);
-    return (p[0]+p[1]*x[0]+p[2]*TMath::Power(x[0],2)+p[3]*TMath::Power(x[0],3)+p[4]*TMath::Power(x[0],4)+p[5]*TMath::Power(x[0],5)+p[6]*TMath::Power(x[0],6)
-    +p[7]*TMath::Power(x[0],7)+p[8]*TMath::Power(x[0],8)) ; 
-  }else{
-    return 1.0;
-  }
-}
-
-Double_t param_cosn_wK0[9]={
-   0.977648,
-   0.490488, 
-  -7.280459, 
-  -4.424170, 
- 321.226554, 
- 1457.236988, 
- 2663.463669, 
- 2241.231879, 
- 718.822831 
-};
-
-*/
 
 Double_t func_cosn(Double_t *x,Double_t *p)
 {
@@ -1594,13 +1482,6 @@ Double_t func_cosn(Double_t *x,Double_t *p)
 }
 
 Double_t param_cosn[6]={
-  /*
-  -8.454380,
-  -9.339147, 
-  0.948693, 
-  0.943733, 
-  2.495556, 
-  1.473135 */
  -9.353473,
 -10.342388,
   0.906928,
@@ -1620,13 +1501,6 @@ Double_t func_cosn_wK0(Double_t *x,Double_t *p)
 }
 
 Double_t param_cosn_wK0[6]={
-  /*
-  -8.052033,
-  -8.903550, 
-  0.981118, 
-  0.614340, 
-  1.344470, 
-  0.661165 */
   -8.473595,
  -9.376222, 
   0.879538, 
@@ -1684,8 +1558,6 @@ Double_t func_cospim(Double_t *x,Double_t *p)
   if(x[0]<-0.92){
     return 1.0;
   }else if(-0.92<= x[0] && x[0]<0.50){
-    //return par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)+par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0)
-    //+par[6]*pow(x[0],6.0)+par[7]*pow(x[0],7.0)+par[8]*pow(x[0],8.0);
     return (p[0]+p[1]*x[0]+p[2]*TMath::Power(x[0],2)+p[3]*TMath::Power(x[0],3)+p[4]*TMath::Power(x[0],4)+p[5]*TMath::Power(x[0],5)+p[6]*TMath::Power(x[0],6)
     +p[7]*TMath::Power(x[0],7)+p[8]*TMath::Power(x[0],8)) ; 
   }else{
@@ -2014,38 +1886,12 @@ Double_t param_q_wK0_corr7[8]={
 -0.297473
 };
 
-/*
-Double_t param_q_mul[8]={
-3.8072,
--5.52768,
-9.87903,
--26.5909,
-75.0323,
--123.557,
-99.1959,
--29.4453
-};*/
-/*
-Double_t param_q_mul[8]={
-4.21641,
--15.0937,
-102.561,
--448.393,
-1090.17,
--1450.83,
-983.821,
--262.107
-};*/
 
 Double_t func_q_mod(Double_t *x,Double_t *par)
 {
   if(0<x[0]) {  //&& x[0]<1.17){
     return (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
     +par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0)+par[6]*pow(x[0],6.0)+par[7]*pow(x[0],7.0));
-    //*(1./(1.0+exp((x[0]-1.17)/par[8]))) 
-    //+(1.0 - 1./(1.0+exp((x[0]-1.17)/par[8])))
-    //*par[9];
-    //*(par[9]+par[10]*x[0]+par[11]*pow(x[0],2.0)+par[12]*pow(x[0],3.0)+par[13]*pow(x[0],4.0)+par[14]*pow(x[0],5.0));
   }
 }
 
@@ -2069,26 +1915,11 @@ Double_t func_q_wK0_mod(Double_t *x,Double_t *par)
     
     if(ret <0 ) return 0;
     else return ret;
-    //*(1./(1.0+exp((x[0]-1.17)/par[8]))) 
-    //+(1.0 - 1./(1.0+exp((x[0]-1.17)/par[8])))
-    //*par[9];
-    //*(par[9]+par[10]*x[0]+par[11]*pow(x[0],2.0)+par[12]*pow(x[0],3.0)+par[13]*pow(x[0],4.0)+par[14]*pow(x[0],5.0));
   }else{
     return 0;
   }
 }
 
-/*
-Double_t param_q_wK0_mod[8]={
-0.224869,
-5.36634,
--28.7376,
-59.1513,
--46.8782,
--3.78717,
-25.0815,
--9.80949
-};*/
 
 
 Double_t param_q_wK0_mod[8]={
