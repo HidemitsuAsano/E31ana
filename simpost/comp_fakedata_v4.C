@@ -20,7 +20,7 @@ void comp_fakedata_v4()
   gStyle->SetPalette(1);
   gStyle->SetOptStat(0);
   const unsigned int colordef[3]= {1,2,3};
-  const char name3[][10]= {"data","woK0","wK0"};
+  const char name3[][10]= {"data","woK0","wK0","wK0geta"};
   const char name[][10]= {"data","mc","mcgeta"};
   //const char opt[10]="cont1z";
   const char opt[10]="colz";
@@ -45,9 +45,10 @@ void comp_fakedata_v4()
   //scaling factor for entire MC
   //data, mc woK0, mc wK0
   //v2 2020113
-  const double scaleFactor[3]= {1.0,
+  const double scaleFactor[4]= {1.0,
                                 nrdata/nfake*0.416169,
-                                nrdata/nfakeK0*0.0898116
+                                nrdata/nfakeK0*0.0898116,
+                                nrdata/nfake*0.416169
                                };
 
   const double scaleFactorK0[3]={1.0,
@@ -462,7 +463,7 @@ void comp_fakedata_v4()
   TH2D *q_IMnpipi_woK0_wSid_n_Sp_fake = (TH2D*)filefake->Get("q_IMnpipi_woK0_wSid_n_Sp");
   TH2D *q_IMnpipi_wK0_wSid_n_Sp_fake = (TH2D*)filefakeK0->Get("q_IMnpipi_wK0_wSid_n_Sp");
   TH2D *q_IMnpipi_wK0_wSid_n_Sp_fakegeta = (TH2D*)filefake->Get("q_IMnpipi_wK0_wSid_n_Sp");
-  TH2D* q_IMnpipi_wSid_n_Sp[3]= {
+  TH2D* q_IMnpipi_wSid_n_Sp[4]= {
     q_IMnpipi_wSid_n_Sp_rdata,
     q_IMnpipi_woK0_wSid_n_Sp_fake,
     q_IMnpipi_wK0_wSid_n_Sp_fake,
@@ -473,7 +474,7 @@ void comp_fakedata_v4()
   TH2D *q_IMnpipi_woK0_wSid_n_Sm_fake = (TH2D*)filefake->Get("q_IMnpipi_woK0_wSid_n_Sm");
   TH2D *q_IMnpipi_wK0_wSid_n_Sm_fake = (TH2D*)filefakeK0->Get("q_IMnpipi_wK0_wSid_n_Sm");
   TH2D *q_IMnpipi_wK0_wSid_n_Sm_fakegeta = (TH2D*)filefake->Get("q_IMnpipi_wK0_wSid_n_Sm");
-  TH2D* q_IMnpipi_wSid_n_Sm[3]= {
+  TH2D* q_IMnpipi_wSid_n_Sm[4]= {
     q_IMnpipi_wSid_n_Sm_rdata,
     q_IMnpipi_woK0_wSid_n_Sm_fake,
     q_IMnpipi_wK0_wSid_n_Sm_fake,
@@ -605,7 +606,6 @@ void comp_fakedata_v4()
     MMnmiss_Momnpipi_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
     MMnmiss_Mompippim_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
     IMnpim_IMnpip_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
-    IMnpim_IMnpip_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
     IMpippim_IMnpip_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
     IMpippim_IMnpim_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
     MMnmiss_IMpippim_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
@@ -616,7 +616,6 @@ void comp_fakedata_v4()
     q_IMpippim_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
     q_MMnmiss_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
     q_nmom_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
-    nmom_IMnpim_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
     nmom_MMnmiss_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
     nmom_IMpippim_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
     nmom_IMnpip_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
@@ -2063,7 +2062,6 @@ void comp_fakedata_v4()
   cq_IMnpipi_wSid_n_rdata->Divide(2,1);
   cq_IMnpipi_wSid_n_rdata->cd(1);
   q_IMnpipi_wSid_n[0]->Draw(opt);
-  //TCanvas *cq_IMnpipi_wSid_n_mc = new TCanvas("cq_IMnpipi_wSid_n_mc","cq_IMnpipi_wSid_n_mc");
   cq_IMnpipi_wSid_n_rdata->cd(2);
   TH2D* q_IMnpipi_wSid_n_mc = (TH2D*)q_IMnpipi_wSid_n[1]->Clone("q_IMnpipi_wSid_n_mc");
   q_IMnpipi_wSid_n_mc->SetTitle("q_IMnpipi_wSid_n_mc");
@@ -2088,26 +2086,30 @@ void comp_fakedata_v4()
 
 
 
-
   TCanvas *cIMnpipi_wSid_n = new TCanvas("cIMnpipi_wSid_n","cIMnpipi_wSid_n");
   TH1D* IMnpipi_wSid_n_rdata = (TH1D*)q_IMnpipi_wSid_n[0]->ProjectionX("IMnpipi_wSid_n_rdata");
   TH1D* IMnpipi_wSid_n_woK0 = (TH1D*)q_IMnpipi_wSid_n[1]->ProjectionX("IMnpipi_wSid_n_woK0");
   TH1D* IMnpipi_wSid_n_wK0 = (TH1D*)q_IMnpipi_wSid_n[2]->ProjectionX("IMnpipi_wSid_n_wK0");
+  TH1D* IMnpipi_wSid_n_wK0geta = (TH1D*)q_IMnpipi_wSid_n[3]->ProjectionX("IMnpipi_wSid_n_wK0geta");
 
   IMnpipi_wSid_n_rdata->Draw("HE");
   TH1D* IMnpipi_wSid_n_mc = (TH1D*)IMnpipi_wSid_n_woK0->Clone("IMnpipi_wSid_n_mc");
   IMnpipi_wSid_n_mc->Add(IMnpipi_wSid_n_wK0);
+  IMnpipi_wSid_n_mc->Add(IMnpipi_wSid_n_wK0geta);
   IMnpipi_wSid_n_mc->SetLineColor(6);
   IMnpipi_wSid_n_mc->Draw("HEsame");
   IMnpipi_wSid_n_woK0->SetLineColor(2);
   IMnpipi_wSid_n_woK0->Draw("HEsame");
   IMnpipi_wSid_n_wK0->SetLineColor(3);
   IMnpipi_wSid_n_wK0->Draw("HEsame");
+  IMnpipi_wSid_n_wK0geta->SetLineColor(4);
+  IMnpipi_wSid_n_wK0geta->Draw("HEsame");
 
   TCanvas *cq_wSid_n = new TCanvas("cq_wSid_n","cq_wSid_n");
   TH1D* q_wSid_n_rdata = (TH1D*)q_IMnpipi_wSid_n[0]->ProjectionY("q_wSid_n_rdata");
   TH1D* q_wSid_n_woK0 = (TH1D*)q_IMnpipi_wSid_n[1]->ProjectionY("q_wSid_n_woK0");
   TH1D* q_wSid_n_wK0 = (TH1D*)q_IMnpipi_wSid_n[2]->ProjectionY("q_wSid_n_wK0");
+  TH1D* q_wSid_n_wK0geta = (TH1D*)q_IMnpipi_wSid_n[3]->ProjectionY("q_wSid_n_wK0");
   q_wSid_n_rdata->Draw("HE");
   TH1D* q_wSid_n_mc = (TH1D*)q_wSid_n_woK0->Clone("q_wSid_n_mc");
   q_wSid_n_mc->Add(q_wSid_n_wK0);
@@ -2117,12 +2119,14 @@ void comp_fakedata_v4()
   q_wSid_n_woK0->Draw("HEsame");
   q_wSid_n_wK0->SetLineColor(3);
   q_wSid_n_wK0->Draw("HEsame");
+  q_wSid_n_wK0geta->SetLineColor(4);
+  q_wSid_n_wK0geta->Draw("HEsame");
 
 
 
   TCanvas *cIMnpipi_wSid_n_0 = new TCanvas("cIMnpipi_wSid_n_0","cIMnpipi_wSid_n_0");
-  TH1D* IMnpipi_wSid_n_0[3];
-  for(int i=0; i<3; i++)IMnpipi_wSid_n_0[i] = q_IMnpipi_wSid_n[i]->ProjectionX(Form("IMnpipi_wSid_n_0_%s",name3[i]),0,q350bin-1);
+  TH1D* IMnpipi_wSid_n_0[4];
+  for(int i=0; i<4; i++)IMnpipi_wSid_n_0[i] = q_IMnpipi_wSid_n[i]->ProjectionX(Form("IMnpipi_wSid_n_0_%s",name3[i]),0,q350bin-1);
   IMnpipi_wSid_n_0[0]->Draw("HE");
   TH1D* IMnpipi_wSid_n_mc_0 = q_IMnpipi_wSid_n_mc->ProjectionX("IMnpipi_wSid_n_mc_0",0,q350bin-1);
   IMnpipi_wSid_n_mc_0->SetLineColor(6);
@@ -2131,10 +2135,12 @@ void comp_fakedata_v4()
   IMnpipi_wSid_n_0[1]->Draw("HEsame");
   IMnpipi_wSid_n_0[2]->SetLineColor(3);
   IMnpipi_wSid_n_0[2]->Draw("HEsame");
+  IMnpipi_wSid_n_0[3]->SetLineColor(4);
+  IMnpipi_wSid_n_0[3]->Draw("HEsame");
 
   TCanvas *cIMnpipi_wSid_n_350 = new TCanvas("cIMnpipi_wSid_n_350","cIMnpipi_wSid_n_350");
-  TH1D* IMnpipi_wSid_n_350[3];
-  for(int i=0; i<3; i++)IMnpipi_wSid_n_350[i] = q_IMnpipi_wSid_n[i]->ProjectionX(Form("IMnpipi_wSid_n_350_%s",name3[i]),q350bin,q600bin);
+  TH1D* IMnpipi_wSid_n_350[4];
+  for(int i=0; i<4; i++)IMnpipi_wSid_n_350[i] = q_IMnpipi_wSid_n[i]->ProjectionX(Form("IMnpipi_wSid_n_350_%s",name3[i]),q350bin,q600bin);
   IMnpipi_wSid_n_350[0]->Draw("HE");
   TH1D* IMnpipi_wSid_n_mc_350 = q_IMnpipi_wSid_n_mc->ProjectionX("IMnpipi_wSid_n_mc_350",q350bin,q600bin);
   IMnpipi_wSid_n_mc_350->SetLineColor(6);
@@ -2143,6 +2149,8 @@ void comp_fakedata_v4()
   IMnpipi_wSid_n_350[1]->Draw("HEsame");
   IMnpipi_wSid_n_350[2]->SetLineColor(3);
   IMnpipi_wSid_n_350[2]->Draw("HEsame");
+  IMnpipi_wSid_n_350[3]->SetLineColor(4);
+  IMnpipi_wSid_n_350[3]->Draw("HEsame");
  
   
   std::cout << q_woK0_woSid_won[0]->Integral()/q_woK0_woSid_won[1]->Integral() << std::endl;
