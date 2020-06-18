@@ -232,19 +232,23 @@ void comp_fakedata_v4()
   TH2D *MMnmiss_IMpippim_wSid_rdata = (TH2D*)filerdata->Get("MMnmiss_IMpippim_dE_wSid");
   TH2D *MMnmiss_IMpippim_wSid_fake = (TH2D*)filefake->Get("MMnmiss_IMpippim_dE_woK0_wSid");
   TH2D *MMnmiss_IMpippim_wSid_fakeK0 = (TH2D*)filefakeK0->Get("MMnmiss_IMpippim_dE_wK0_wSid");
-  TH2D* MMnmiss_IMpippim_wSid[3]= {
+  TH2D *MMnmiss_IMpippim_wSid_fakeK0geta = (TH2D*)filefake->Get("MMnmiss_IMpippim_dE_wK0_wSid");
+  TH2D* MMnmiss_IMpippim_wSid[4]= {
     MMnmiss_IMpippim_wSid_rdata,
     MMnmiss_IMpippim_wSid_fake,
-    MMnmiss_IMpippim_wSid_fakeK0
+    MMnmiss_IMpippim_wSid_fakeK0,
+    MMnmiss_IMpippim_wSid_fakeK0geta
   };
   
   TH2D *MMnmiss_IMpippim_wSid_n_rdata = (TH2D*)filerdata->Get("MMnmiss_IMpippim_dE_wSid_n");
   TH2D *MMnmiss_IMpippim_wSid_n_fake = (TH2D*)filefake->Get("MMnmiss_IMpippim_dE_woK0_wSid_n");
   TH2D *MMnmiss_IMpippim_wSid_n_fakeK0 = (TH2D*)filefakeK0->Get("MMnmiss_IMpippim_dE_wK0_wSid_n");
-  TH2D* MMnmiss_IMpippim_wSid_n[3]= {
+  TH2D *MMnmiss_IMpippim_wSid_n_fakeK0geta = (TH2D*)filefake->Get("MMnmiss_IMpippim_dE_wK0_wSid_n");
+  TH2D* MMnmiss_IMpippim_wSid_n[4]= {
     MMnmiss_IMpippim_wSid_n_rdata,
     MMnmiss_IMpippim_wSid_n_fake,
-    MMnmiss_IMpippim_wSid_n_fakeK0
+    MMnmiss_IMpippim_wSid_n_fakeK0,
+    MMnmiss_IMpippim_wSid_n_fakeK0geta
   };
   
   TH2D *MMnmiss_IMpippim_woK0_woSid_won_rdata = (TH2D*)filerdata->Get("MMnmiss_IMpippim_dE_woK0_woSid_won");
@@ -446,28 +450,34 @@ void comp_fakedata_v4()
   TH2D *q_IMnpipi_wSid_n_rdata = (TH2D*)filerdata->Get("q_IMnpipi_wSid_n");
   TH2D *q_IMnpipi_woK0_wSid_n_fake = (TH2D*)filefake->Get("q_IMnpipi_woK0_wSid_n");
   TH2D *q_IMnpipi_wK0_wSid_n_fake = (TH2D*)filefakeK0->Get("q_IMnpipi_wK0_wSid_n");
-  TH2D* q_IMnpipi_wSid_n[3]= {
+  TH2D *q_IMnpipi_wK0_wSid_n_fakegeta = (TH2D*)filefake->Get("q_IMnpipi_wK0_wSid_n");
+  TH2D* q_IMnpipi_wSid_n[4]= {
     q_IMnpipi_wSid_n_rdata,
     q_IMnpipi_woK0_wSid_n_fake,
-    q_IMnpipi_wK0_wSid_n_fake
+    q_IMnpipi_wK0_wSid_n_fake,
+    q_IMnpipi_wK0_wSid_n_fakegeta
   };
   
   TH2D *q_IMnpipi_wSid_n_Sp_rdata = (TH2D*)filerdata->Get("q_IMnpipi_wSid_n_Sp");
   TH2D *q_IMnpipi_woK0_wSid_n_Sp_fake = (TH2D*)filefake->Get("q_IMnpipi_woK0_wSid_n_Sp");
   TH2D *q_IMnpipi_wK0_wSid_n_Sp_fake = (TH2D*)filefakeK0->Get("q_IMnpipi_wK0_wSid_n_Sp");
+  TH2D *q_IMnpipi_wK0_wSid_n_Sp_fakegeta = (TH2D*)filefake->Get("q_IMnpipi_wK0_wSid_n_Sp");
   TH2D* q_IMnpipi_wSid_n_Sp[3]= {
     q_IMnpipi_wSid_n_Sp_rdata,
     q_IMnpipi_woK0_wSid_n_Sp_fake,
-    q_IMnpipi_wK0_wSid_n_Sp_fake
+    q_IMnpipi_wK0_wSid_n_Sp_fake,
+    q_IMnpipi_wK0_wSid_n_Sp_fakegeta
   };
   
   TH2D *q_IMnpipi_wSid_n_Sm_rdata = (TH2D*)filerdata->Get("q_IMnpipi_wSid_n_Sm");
   TH2D *q_IMnpipi_woK0_wSid_n_Sm_fake = (TH2D*)filefake->Get("q_IMnpipi_woK0_wSid_n_Sm");
   TH2D *q_IMnpipi_wK0_wSid_n_Sm_fake = (TH2D*)filefakeK0->Get("q_IMnpipi_wK0_wSid_n_Sm");
+  TH2D *q_IMnpipi_wK0_wSid_n_Sm_fakegeta = (TH2D*)filefake->Get("q_IMnpipi_wK0_wSid_n_Sm");
   TH2D* q_IMnpipi_wSid_n_Sm[3]= {
     q_IMnpipi_wSid_n_Sm_rdata,
     q_IMnpipi_woK0_wSid_n_Sm_fake,
-    q_IMnpipi_wK0_wSid_n_Sm_fake
+    q_IMnpipi_wK0_wSid_n_Sm_fake,
+    q_IMnpipi_wK0_wSid_n_Sm_fakegeta
   };
   
   TH2D *q_IMnpip_woK0_woSid_won_rdata = (TH2D*)filerdata->Get("q_IMnpip_woK0_woSid_won");
@@ -611,6 +621,8 @@ void comp_fakedata_v4()
     nmom_IMpippim_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
     nmom_IMnpip_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
     nmom_IMnpim_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
+  }
+  for(int i=0;i<4;i++) {
     q_IMnpipi_wSid_n[i]->Scale(scaleFactor[i]);
     q_IMnpipi_wSid_n_Sp[i]->Scale(scaleFactor[i]);
     q_IMnpipi_wSid_n_Sm[i]->Scale(scaleFactor[i]);
@@ -1518,8 +1530,6 @@ void comp_fakedata_v4()
   nmom_woK0_woSid_won_mc->SetLineColor(6);
   nmom_woK0_woSid_won_mc->Draw("HEsame");
 
-  //TCanvas *cnmom_woK0_woSid_won_ratio = new TCanvas("cnmom_woK0_woSid_won_ratio","cnmom_woK0_woSid_won_ratio");
-  //cnmom_woK0_woSid_won_ratio->cd();
   TH1D* nmom_woK0_woSid_won_ratio = (TH1D*)nmom_woK0_woSid_won[0]->Clone("nmom_woK0_woSid_won_ratio");
   nmom_woK0_woSid_won_ratio->Divide(nmom_woK0_woSid_won_mc);
   nmom_woK0_woSid_won_ratio->SetTitle("Data/MC");
@@ -1617,9 +1627,6 @@ void comp_fakedata_v4()
   nmom_IMnpim_wK0_woSid_won_mc->GetXaxis()->SetRangeUser(0,1.6);
   nmom_IMnpim_wK0_woSid_won_mc->SetMaximum(nmom_IMnpim_wK0_woSid_won_data->GetMaximum());
   nmom_IMnpim_wK0_woSid_won_mc->Draw(opt);
-
-
-
 
 
 
