@@ -32,8 +32,8 @@ void comp_fakedata_v4()
   //fake K0(mass is smeared by resolution) + fake_n
   TFile *filefakeK0 = TFile::Open("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippimK0_pippimn_out_sum.root","READ");
 
-  TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_rdata = (TH2D*) filerdata->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
-  TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_fake = (TH2D*) filefakeK0->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
+  TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_rdata = (TH2D*)filerdata->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
+  TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_fake = (TH2D*)filefakeK0->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
   
   TH2D* dE_betainv_fid_rdata = (TH2D*)filerdata->Get("dE_betainv_fid");
   double nrdata = dE_betainv_fid_rdata->GetEntries();
@@ -637,7 +637,6 @@ void comp_fakedata_v4()
   TH1D* MMnmiss_woK0_wSid_mc = (TH1D*)MMnmiss_IMnpipi_woK0_wSid[1]->ProjectionY("MMnmiss_woK0_wSid_mc");
   MMnmiss_woK0_wSid_mc->SetLineColor(6);
   MMnmiss_woK0_wSid_mc->Draw("HEsame");
-
 
 
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_mc = (TH2D*)MMnmiss_IMnpipi_woK0_wSid_Sp[1]->Clone("MMnmiss_IMnpipi_woK0_wSid_Sp_mc");
@@ -2041,12 +2040,14 @@ void comp_fakedata_v4()
   IMnpipi_wSid_n_Sm_0[0]->Draw("HE");
   TH1D* IMnpipi_wSid_n_Sm_mc_0 = q_IMnpipi_wSid_n_Sm_mc->ProjectionX("IMnpipi_wSid_n_Sm_mc_0",0,q350bin-1);
   IMnpipi_wSid_n_Sm_mc_0->SetLineColor(6);
+  IMnpipi_wSid_n_Sm_mc_0->Add(IMnpipi_wSid_n_Sm_0[2],1.0);
+  IMnpipi_wSid_n_Sm_mc_0->Add(IMnpipi_wSid_n_Sm_0[3],1.0);
   IMnpipi_wSid_n_Sm_mc_0->Draw("HEsame");
   IMnpipi_wSid_n_Sm_0[1]->SetLineColor(2);
   IMnpipi_wSid_n_Sm_0[1]->Draw("HEsame");
   IMnpipi_wSid_n_Sm_0[2]->SetLineColor(3);
   IMnpipi_wSid_n_Sm_0[2]->Draw("HEsame");
-  IMnpipi_wSid_n_Sm_0[3]->SetLineColor(3);
+  IMnpipi_wSid_n_Sm_0[3]->SetLineColor(4);
   IMnpipi_wSid_n_Sm_0[3]->Draw("HEsame");
 
   TCanvas *cIMnpipi_wSid_n_Sm_350 = new TCanvas("cIMnpipi_wSid_n_Sm_350","cIMnpipi_wSid_n_Sm_350");
@@ -2055,6 +2056,8 @@ void comp_fakedata_v4()
   IMnpipi_wSid_n_Sm_350[0]->Draw("HE");
   TH1D* IMnpipi_wSid_n_Sm_mc_350 = q_IMnpipi_wSid_n_Sm_mc->ProjectionX("IMnpipi_wSid_n_Sm_mc_350",q350bin,q600bin);
   IMnpipi_wSid_n_Sm_mc_350->SetLineColor(6);
+  IMnpipi_wSid_n_Sm_mc_350->Add(IMnpipi_wSid_n_Sm_350[2],1.0);
+  IMnpipi_wSid_n_Sm_mc_350->Add(IMnpipi_wSid_n_Sm_350[3],1.0);
   IMnpipi_wSid_n_Sm_mc_350->Draw("HEsame");
   IMnpipi_wSid_n_Sm_350[1]->SetLineColor(2);
   IMnpipi_wSid_n_Sm_350[1]->Draw("HEsame");
@@ -2072,6 +2075,7 @@ void comp_fakedata_v4()
   TH2D* q_IMnpipi_wSid_n_mc = (TH2D*)q_IMnpipi_wSid_n[1]->Clone("q_IMnpipi_wSid_n_mc");
   q_IMnpipi_wSid_n_mc->SetTitle("q_IMnpipi_wSid_n_mc");
   q_IMnpipi_wSid_n_mc->Add(q_IMnpipi_wSid_n[2]);
+  q_IMnpipi_wSid_n_mc->Add(q_IMnpipi_wSid_n[3]);
   q_IMnpipi_wSid_n_mc->SetMaximum(q_IMnpipi_wSid_n[0]->GetMaximum());
   q_IMnpipi_wSid_n_mc->Draw(opt);
 
@@ -2081,6 +2085,7 @@ void comp_fakedata_v4()
   cq_IMnpipi_wSid_mc->cd(1);
   q_IMnpipi_wSid_n[1]->Draw(opt);
   cq_IMnpipi_wSid_mc->cd(2);
+  q_IMnpipi_wSid_n[2]->Add(q_IMnpipi_wSid_n[3]);
   q_IMnpipi_wSid_n[2]->SetMaximum(q_IMnpipi_wSid_n[1]->GetMaximum());
   q_IMnpipi_wSid_n[2]->Draw(opt);
 
