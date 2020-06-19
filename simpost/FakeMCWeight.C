@@ -172,10 +172,10 @@ void FakeMCWeight()
   f_IMpippimmul->GetXaxis()->SetTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   f_IMpippimmul->GetXaxis()->CenterTitle();
   f_IMpippimmul->Draw("c");
-  TBox *box_K0 = new TBox(anacuts::pipi_MIN,0,anacuts::pipi_MAX,3);
-  box_K0->SetFillColor(4);
-  box_K0->SetFillStyle(3002);
-  box_K0->Draw();
+  //TBox *box_K0 = new TBox(anacuts::pipi_MIN,0,anacuts::pipi_MAX,3);
+  //box_K0->SetFillColor(4);
+  //box_K0->SetFillStyle(3002);
+  //box_K0->Draw();
 
   
   TCanvas *c_wK0_func = new TCanvas("c_wK0_func","c_wK0_func",1800,1000);
@@ -202,16 +202,20 @@ void FakeMCWeight()
   box_neutron->Draw();
   //nmom
   c_wK0_func->cd(3);
-  TF1* fweight_nmom_wK0_v379 = new TF1("fweight_nmom_wK0_v379",func_nmom_mod,0,1.5,12);
+  TF1* fweight_nmom_wK0_v379 = new TF1("fweight_nmom_wK0_v379",func_nmom_mod,0,1.0,12);
   fweight_nmom_wK0_v379->SetParameters(param_nmom_wK0_mod);
-  fweight_nmom_wK0_v379->SetNpx(1000);
+  //fweight_nmom_wK0_v379->SetNpx(1000);
   fweight_nmom_wK0_v379->SetTitle("");
   fweight_nmom_wK0_v379->GetXaxis()->SetTitle("n_{CDS} mom. [GeV/c^{2}]");
   fweight_nmom_wK0_v379->GetXaxis()->CenterTitle();
-  fweight_nmom_wK0_v379->GetYaxis()->SetRangeUser(0,50);
+  fweight_nmom_wK0_v379->GetYaxis()->SetRangeUser(0,53);
   fweight_nmom_wK0_v379->Draw();
   
-  nmomline->Draw();
+  TLine *nmomline2 = new TLine(anacuts::nmomcut,0,anacuts::nmomcut,53);
+  nmomline2->SetLineColor(3);
+  nmomline2->SetLineWidth(2.0);
+  nmomline2->SetLineStyle(10);
+  nmomline2->Draw();
   //IMnpip
   c_wK0_func->cd(4);
   TF1* fweight_IMnpip_wK0_v380 = new TF1("fweight_IMnpip_wK0_v380",func_IMnpip_wK0_mod,1,2,16);
