@@ -22,8 +22,8 @@ void comp_fakedata_v4()
   const unsigned int colordef[3]= {1,2,3};
   const char name3[][10]= {"data","woK0","wK0","wK0geta"};
   const char name[][10]= {"data","mc","mcgeta"};
-  //const char opt[10]="cont1z";
-  const char opt[10]="colz";
+  const char opt[10]="cont1z";
+  //const char opt[10]="colz";
 
   //real data
   TFile *filerdata = TFile::Open("../post/evanaIMpisigma_npippim_v196_out.root","READ");
@@ -33,7 +33,7 @@ void comp_fakedata_v4()
   TFile *filefakeK0 = TFile::Open("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippimK0_pippimn_out_sum.root","READ");
 
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_rdata = (TH2D*)filerdata->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
-  TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_fake = (TH2D*)filefakeK0->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
+  TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_fake = (TH2D*)filefake->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
   
   TH2D* dE_betainv_fid_rdata = (TH2D*)filerdata->Get("dE_betainv_fid");
   double nrdata = dE_betainv_fid_rdata->GetEntries();
@@ -651,7 +651,7 @@ void comp_fakedata_v4()
   MMnmiss_IMnpipi_woK0_wSid_Sp_mc->SetTitle("#splitline{MMnmiss_IMnpipi_woK0_wSid_Sp}{  MC sum}");
   MMnmiss_IMnpipi_woK0_wSid_Sp_mc->SetMaximum(MMnmiss_IMnpipi_woK0_wSid_Sp[0]->GetMaximum());
   MMnmiss_IMnpipi_woK0_wSid_Sp_mc->SetMinimum(1);
-  MMnmiss_IMnpipi_woK0_wSid_Sp_mc->Draw(opt);
+  MMnmiss_IMnpipi_woK0_wSid_Sp_mc->Draw(opt);MMnmiss_IMnpipi_woK0_wSid_Sp_mc->Print("base");
 
   TCanvas *cMMnmiss_woK0_wSid_Sp = new TCanvas("cMMnmiss_woK0_wSid_Sp","cMMnmiss_woK0_wSid_Sp",800,800);
   cMMnmiss_woK0_wSid_Sp->cd();
