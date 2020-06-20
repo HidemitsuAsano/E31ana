@@ -222,7 +222,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1* fweight_MMnmiss_wK0_v378 = new TF1("fweight_MMnmiss_wK0_v378",func_MMnmiss_wK0_mod,0,1.5,11);
   fweight_MMnmiss_wK0_v378->SetParameters(param_MMnmiss_wK0_mod);
   
-  TF1* fweight_nmom_wK0_v379 = new TF1("fweight_nmom_wK0_v379",func_nmom_mod,0,1.5,12);
+  TF1* fweight_nmom_wK0_v379 = new TF1("fweight_nmom_wK0_v379",func_nmom_mod,0,1.0,12);
   fweight_nmom_wK0_v379->SetParameters(param_nmom_wK0_mod);
   
   TF1* fweight_IMnpip_wK0_v380 = new TF1("fweight_IMnpip_wK0_v380",func_IMnpip_wK0_mod,1,2,16);
