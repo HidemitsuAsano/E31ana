@@ -760,7 +760,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0 = new TH2F(Form("IMnpim_IMnpip_dE_woK0"), Form("IMnpim_IMnpip_dE_woK0"),nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_woK0->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_woK0->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
-
+  
   IMnpim_IMnpip_dE_wK0 = new TH2F(Form("IMnpim_IMnpip_dE_wK0"), Form("IMnpim_IMnpip_dE_wK0"),nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wK0->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
@@ -824,8 +824,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMnmiss_Mompippim_dE_woK0_woSid_won = new TH2F("MMnmiss_Mompippim_dE_woK0_woSid_won", "MMnmiss_Mompippim_dE_woK0_woSid_won",nbinpippim,0.,1.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_Mompippim_dE_woK0_woSid_won->SetXTitle("Mom.(#pi^{+}#pi^{-}) [GeV/c]");
   MMnmiss_Mompippim_dE_woK0_woSid_won->SetYTitle("Miss Mass. [GeV/c^{2}]");
-
-
 
   MMnmiss_Mompippim_dE_wK0_woSid_won = new TH2F("MMnmiss_Mompippim_dE_wK0_woSid_won", "MMnmiss_Mompippim_dE_wK0_woSid_won",nbinpippim,0.,1.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_Mompippim_dE_wK0_woSid_won->SetXTitle("Mom.(#pi^{+}#pi^{-}) [GeV/c]");
@@ -2075,7 +2073,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   q_IMnpim_n_wSid = new TH2F("q_IMnpim_n_wSid","q_IMnpim_n_wSid",nbinIMnpi, 1.0, 2.0, 100,0,1.5);
   q_IMnpim_n_wSid->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   q_IMnpim_n_wSid->SetYTitle("Mom. Transfer [GeV/c]");
-  
+   
+ 
   q_IMnpim_woK0_woSid_won = new TH2F("q_IMnpim_woK0_woSid_won","q_IMnpim_woK0_woSid_won",nbinIMnpi, 1.0, 2.0, 100,0,1.5);
   q_IMnpim_woK0_woSid_won->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   q_IMnpim_woK0_woSid_won->SetYTitle("Mom. Transfer [GeV/c]");
