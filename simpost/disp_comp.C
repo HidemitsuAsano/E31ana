@@ -448,6 +448,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   TCanvas *cIMpippim_sum = new TCanvas("cIMpippim_sum","cIMpippim_sum",1000,1000);
   TH1D* IMpippim_woSid_won_data = (TH1D*) IMpippim_woK0_woSid_won_data->Clone("IMpippim_woSid_won_data");
   IMpippim_woSid_won_data->Add(IMpippim_wK0_woSid_won_data);
+  IMpippim_woSid_won_data->GetXaxis()->SetRangeUser(0.2,1.0);
   IMpippim_woSid_won_data->Draw("HE");
   TH1D* IMpippim_woSid_won_pipinxmc = (TH1D*)IMpippim_woK0_woSid_won_mc->Clone("IMpippim_woSid_won_pipinxmc");
   IMpippim_woSid_won_pipinxmc->Add(IMpippim_wK0_woSid_won_mcgeta);

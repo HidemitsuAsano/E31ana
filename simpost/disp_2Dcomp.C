@@ -1,7 +1,7 @@
 
 void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
 {
- 
+  
   TFile *f = TFile::Open(filename,"READ");
   f->cd();
   gStyle->SetPadBorderMode(0);
@@ -49,8 +49,6 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   gr_IMnpim_n_rdata->Draw("AP");
   
 
-
-
   //draw BG at first
   TH2D* IMnpim_IMnpip_woK0_woSid_won_data = (TH2D*)f->Get("IMnpim_IMnpip_woK0_woSid_won_data");IMnpim_IMnpip_woK0_woSid_won_data->Print();
   TH2D* IMnpim_IMnpip_wK0_woSid_won_data = (TH2D*)f->Get("IMnpim_IMnpip_wK0_woSid_won_data");IMnpim_IMnpip_wK0_woSid_won_data->Print();
@@ -64,7 +62,6 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   IMnpim_IMnpip_woSid_won_data->Add(IMnpim_IMnpip_wK0_woSid_won_data);
   TH2D* IMnpim_IMnpip_woSid_won_mc = (TH2D*)IMnpim_IMnpip_woK0_woSid_won_mc->Clone("IMnpim_IMnpip_woSid_won_mc");
   IMnpim_IMnpip_woSid_won_mc->Add(IMnpim_IMnpip_wK0_woSid_won_mc);
-  //IMnpim_IMnpip_woSid_won_mc->Add(IMnpim_IMnpip_wK0_woSid_won_mcgeta);
    
   
   TCanvas *cIMnpim_IMnpip_woSid_won = new TCanvas("cIMnpim_IMnpip_woSid_won","cIMnpim_IMnpip_woSid_won",1200,1000);
@@ -636,7 +633,6 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   q_IMnpipi_wSid_n_sub->Scale(0.25);
   q_IMnpipi_wSid_n_sub->GetZaxis()->SetRangeUser(-0.3,0.3);
   q_IMnpipi_wSid_n_sub->Draw("colz");
-
-
+  
 
 }
