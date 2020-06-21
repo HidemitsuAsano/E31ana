@@ -12,7 +12,6 @@
 #include "TFile.h"
 #include "TCanvas.h"
 #include <fstream>
-#include "../post/weightfunc.h"
 
 void comp_fakedata_v4()
 {
@@ -27,11 +26,13 @@ void comp_fakedata_v4()
 
   //real data
   TFile *filerdata = TFile::Open("../post/evanaIMpisigma_npippim_v196_out.root","READ");
+  filerdata->IsOpen();
   //fake nonK0+fake_n
-  TFile *filefake = TFile::Open("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippim_pippimn_out_sum.root","READ");
+  //TFile *filefake = TFile::Open("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippim_pippimn_out_sum.root","READ");
+  TFile *filefake = TFile::Open("fakepippim_pippimn_out_sum.root","READ");
   //fake K0(mass is smeared by resolution) + fake_n
-  TFile *filefakeK0 = TFile::Open("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippimK0_pippimn_out_sum.root","READ");
-
+  TFile *filefakeK0 = TFile::Open("fakepippimK0_pippimn_out_sum.root","READ");
+  std::cout << __LINE__ << std::endl;
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_rdata = (TH2D*)filerdata->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_fake = (TH2D*)filefake->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
   
@@ -561,6 +562,7 @@ void comp_fakedata_v4()
     q_MMnmiss_wK0_woSid_won_fakegeta
   };
 
+  std::cout << __LINE__ << std::endl;
   for(int i=0; i<2; i++) {
     MMnmiss_IMnpipi_woK0_wSid_Sp[i]->Scale(scaleFactor[i]);
     MMnmiss_IMnpipi_woK0_wSid_Sm[i]->Scale(scaleFactor[i]);
@@ -593,6 +595,7 @@ void comp_fakedata_v4()
     nmom_IMnpip_woK0_woSid_won[i]->Scale(scaleFactor[i]);
     nmom_IMnpim_woK0_woSid_won[i]->Scale(scaleFactor[i]);
   }
+  std::cout << __LINE__ << std::endl;
   for(int i=0; i<3; i++) {
     MMnmiss_IMnpipi_wK0_wSid[i]->Scale(scaleFactorK0[i]);
     MMnmiss_IMnpip_wK0_woSm[i]->Scale(scaleFactorK0[i]);
@@ -621,6 +624,7 @@ void comp_fakedata_v4()
     nmom_IMnpip_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
     nmom_IMnpim_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
   }
+  std::cout << __LINE__ << std::endl;
   for(int i=0;i<4;i++) {
     q_IMnpipi_wSid_n[i]->Scale(scaleFactor[i]);
     q_IMnpipi_wSid_n_Sp[i]->Scale(scaleFactor[i]);
@@ -629,6 +633,7 @@ void comp_fakedata_v4()
     MMnmiss_IMpippim_wSid_n[i]->Scale(scaleFactor[i]);
   }
   
+  std::cout << __LINE__ << std::endl;
   TCanvas *cMMnmiss_woK0_wSid = new TCanvas("cMMnmiss_woK0_wSid","cMMnmiss_woK0_wSid",800,800);
   cMMnmiss_woK0_wSid->cd();
   TH1D* MMnmiss_woK0_wSid[2];
@@ -1268,38 +1273,39 @@ void comp_fakedata_v4()
 
 
   //
-  TCanvas *cq_nmom_woK0_woSid_won = new TCanvas("cq_nmom_woK0_woSid_won","cq_nmom_woK0_woSid_won",1200,800);
-  cq_nmom_woK0_woSid_won->Divide(2,1);
-  cq_nmom_woK0_woSid_won->cd(1);
+  //TCanvas *cq_nmom_woK0_woSid_won = new TCanvas("cq_nmom_woK0_woSid_won","cq_nmom_woK0_woSid_won",1200,800);
+  //cq_nmom_woK0_woSid_won->Divide(2,1);
+  //cq_nmom_woK0_woSid_won->cd(1);
   TH2D* q_nmom_woK0_woSid_won_data = (TH2D*)q_nmom_woK0_woSid_won[0]->Clone("q_nmom_woK0_woSid_won_data");
   q_nmom_woK0_woSid_won_data->SetTitle("#splitline{q_nmom_woK0_woSid_won}{  Real data}");
-  q_nmom_woK0_woSid_won_data->RebinX(2);
+  //q_nmom_woK0_woSid_won_data->RebinX(2);
   q_nmom_woK0_woSid_won_data->SetMinimum(1);
-  q_nmom_woK0_woSid_won_data->Draw(opt);
-  cq_nmom_woK0_woSid_won->cd(2);
+  //q_nmom_woK0_woSid_won_data->Draw(opt);
+  //cq_nmom_woK0_woSid_won->cd(2);
   TH2D* q_nmom_woK0_woSid_won_mc = (TH2D*)q_nmom_woK0_woSid_won[1]->Clone("q_nmom_woK0_woSid_won_mc");
   q_nmom_woK0_woSid_won_mc->SetTitle("#splitline{q_nmom_woK0_woSid_won}{  MC}");
-  q_nmom_woK0_woSid_won_mc->RebinX(2);
+  //q_nmom_woK0_woSid_won_mc->RebinX(2);
   q_nmom_woK0_woSid_won_mc->SetMinimum(1);
   q_nmom_woK0_woSid_won_mc->SetMaximum(q_nmom_woK0_woSid_won_data->GetMaximum());
-  q_nmom_woK0_woSid_won_mc->Draw(opt);
+  //q_nmom_woK0_woSid_won_mc->Draw(opt);
 
 
-  TCanvas *cq_nmom_wK0_woSid_won = new TCanvas("cq_nmom_wK0_woSid_won","cq_nmom_wK0_woSid_won",1200,800);
-  cq_nmom_wK0_woSid_won->Divide(2,1);
-  cq_nmom_wK0_woSid_won->cd(1);
+  //TCanvas *cq_nmom_wK0_woSid_won = new TCanvas("cq_nmom_wK0_woSid_won","cq_nmom_wK0_woSid_won",1200,800);
+  //cq_nmom_wK0_woSid_won->Divide(2,1);
+  //cq_nmom_wK0_woSid_won->cd(1);
   TH2D* q_nmom_wK0_woSid_won_data = (TH2D*)q_nmom_wK0_woSid_won[0]->Clone("q_nmom_wK0_woSid_won_data");
   q_nmom_wK0_woSid_won_data->SetTitle("#splitline{q_nmom_wK0_woSid_won}{  Real data}");
-  q_nmom_wK0_woSid_won_data->RebinX(2);
+  //q_nmom_wK0_woSid_won_data->RebinX(2);
   q_nmom_wK0_woSid_won_data->SetMinimum(1);
-  q_nmom_wK0_woSid_won_data->Draw(opt);
-  cq_nmom_wK0_woSid_won->cd(2);
+  //q_nmom_wK0_woSid_won_data->Draw(opt);
+  //cq_nmom_wK0_woSid_won->cd(2);
   TH2D* q_nmom_wK0_woSid_won_mc = (TH2D*)q_nmom_wK0_woSid_won[1]->Clone("q_nmom_wK0_woSid_won_mc");
   q_nmom_wK0_woSid_won_mc->SetTitle("#splitline{q_nmom_wK0_woSid_won}{  MC}");
-  q_nmom_wK0_woSid_won_mc->RebinX(2);
+  q_nmom_wK0_woSid_won_mc->Add(q_nmom_wK0_woSid_won[2]);
+  //q_nmom_wK0_woSid_won_mc->RebinX(2);
   q_nmom_wK0_woSid_won_mc->SetMinimum(1);
   q_nmom_wK0_woSid_won_mc->SetMaximum(q_nmom_wK0_woSid_won_data->GetMaximum());
-  q_nmom_wK0_woSid_won_mc->Draw(opt);
+  //q_nmom_wK0_woSid_won_mc->Draw(opt);
 
 
   //q vs IMnpipi w/o K0 w/o (Sid & n);
