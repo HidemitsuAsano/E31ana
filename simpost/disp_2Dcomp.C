@@ -440,7 +440,6 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   //q_IMnpipi_woSid_won_mc->GetYaxis()->SetRangeUser(1,1.7);
   q_IMnpipi_woSid_won_data->SetContour(10);
   q_IMnpipi_woSid_won_mc->SetContour(10);
-
   q_IMnpipi_woSid_won_data->SetLineWidth(1);
   q_IMnpipi_woSid_won_data->Draw("cont3");
   q_IMnpipi_woSid_won_mc->SetLineColor(2);
@@ -471,14 +470,14 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   TGraphErrors *gr_q_woSid_won_data_2 = new TGraphErrors();
   TGraphErrors *gr_q_woSid_won_mc_2 = new TGraphErrors();
   
-  for(int ibin=0;ibin<q_woSid_won_data->GetNbinsX();ibin++){
+  for(int ibin=0;ibin<q_woSid_won_data_2->GetNbinsX();ibin++){
     double cont = q_woSid_won_data_2->GetBinContent(ibin);
     double err = q_woSid_won_data_2->GetBinError(ibin);
     double bincenter = q_woSid_won_data_2->GetBinCenter(ibin);
     gr_q_woSid_won_data_2->SetPoint(ibin,cont, bincenter);
     gr_q_woSid_won_data_2->SetPointError(ibin,err,0);
   }
-  for(int ibin=0;ibin<q_woSid_won_mc->GetNbinsX();ibin++){
+  for(int ibin=0;ibin<q_woSid_won_mc_2->GetNbinsX();ibin++){
     double cont = q_woSid_won_mc_2->GetBinContent(ibin);
     double err = q_woSid_won_mc_2->GetBinError(ibin);
     double bincenter = q_woSid_won_mc_2->GetBinCenter(ibin);
@@ -502,7 +501,7 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   q_IMnpipi_woSid_won_data_2->SetContour(10);
   q_IMnpipi_woSid_won_data_2->SetMinimum(1);
   q_IMnpipi_woSid_won_data_2->Draw("cont1z");
-  gPad->SetRightMargin(1);
+  gPad->SetRightMargin(0);
   cq_IMnpipi_woSid_won_2->cd(2);
   q_IMnpipi_woSid_won_mc_2->SetTitle("MC");
   q_IMnpipi_woSid_won_mc_2->SetContour(10); 
@@ -522,6 +521,121 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   q_IMnpipi_woSid_won_sub->GetZaxis()->SetRangeUser(-0.3,0.3);
   q_IMnpipi_woSid_won_sub->Draw("colz");
 
+  
+  //
+  //signal check q vs IMnpipi
+  //
+  TH2D* q_IMnpipi_woK0_wSid_n_data = (TH2D*)f->Get("q_IMnpipi_woK0_wSid_n_data");q_IMnpipi_woK0_wSid_n_data->Print();
+  TH2D* q_IMnpipi_wK0_wSid_n_data = (TH2D*)f->Get("q_IMnpipi_wK0_wSid_n_data");q_IMnpipi_wK0_wSid_n_data->Print();
+
+  TH2D* q_IMnpipi_woK0_wSid_n_mc = (TH2D*)f->Get("q_IMnpipi_woK0_wSid_n_mc");q_IMnpipi_woK0_wSid_n_mc->Print();
+
+  TH2D* q_IMnpipi_wK0_wSid_n_mc = (TH2D*)f->Get("q_IMnpipi_wK0_wSid_n_mc");q_IMnpipi_wK0_wSid_n_mc->Print();
+
+  TH2D* q_IMnpipi_wSid_n_data = (TH2D*)q_IMnpipi_woK0_wSid_n_data->Clone("q_IMnpipi_wSid_n_data");
+  q_IMnpipi_wSid_n_data->Add(q_IMnpipi_wK0_wSid_n_data);
+  TH2D* q_IMnpipi_wSid_n_mc = (TH2D*)q_IMnpipi_woK0_wSid_n_mc->Clone("q_IMnpipi_wSid_n_mc");
+  q_IMnpipi_wSid_n_mc->Add(q_IMnpipi_wK0_wSid_n_mc);
+   
+  
+  TCanvas *cq_IMnpipi_wSid_n = new TCanvas("cq_IMnpipi_wSid_n","cq_IMnpipi_wSid_n",1200,1000);
+  cq_IMnpipi_wSid_n ->Divide(2,2,0,0);
+  
+ 
+  cq_IMnpipi_wSid_n->cd(3);
+  q_IMnpipi_wSid_n_data->SetTitle("");
+  q_IMnpipi_wSid_n_data->RebinX(2);
+  std::cout << "bin width x q_IMnpipi_wSid_n_data " << q_IMnpipi_wSid_n_data->GetXaxis()->GetBinWidth(1) << std::endl;
+  q_IMnpipi_wSid_n_data->RebinY(4);
+  std::cout << "bin width y q_IMnpipi_wSid_n_data " << q_IMnpipi_wSid_n_data->GetYaxis()->GetBinWidth(1) << std::endl;
+  q_IMnpipi_wSid_n_data->GetXaxis()->SetRangeUser(0.2,1.0);
+  //q_IMnpipi_wSid_n_data->GetYaxis()->SetRangeUser(1,1.7);
+  q_IMnpipi_wSid_n_mc->RebinX(2);
+  q_IMnpipi_wSid_n_mc->RebinY(4);
+  q_IMnpipi_wSid_n_mc->GetXaxis()->SetRangeUser(0.2,1.0);
+  //q_IMnpipi_wSid_n_mc->GetYaxis()->SetRangeUser(1,1.7);
+  q_IMnpipi_wSid_n_data->SetContour(10);
+  q_IMnpipi_wSid_n_mc->SetContour(10);
+  q_IMnpipi_wSid_n_data->SetLineWidth(1);
+  q_IMnpipi_wSid_n_data->Draw("cont3");
+  q_IMnpipi_wSid_n_mc->SetLineColor(2);
+  q_IMnpipi_wSid_n_mc->SetLineWidth(1);
+  q_IMnpipi_wSid_n_mc->Draw("cont3same");
+   
+  
+  cq_IMnpipi_wSid_n->cd(1);
+  TH1D* IMnpipi_wSid_n_data = (TH1D*)q_IMnpipi_wSid_n_data->ProjectionX("IMnpipi_wSid_n_data");
+  TH1D* IMnpipi_wSid_n_mc = (TH1D*)q_IMnpipi_wSid_n_mc->ProjectionX("IMnpipi_wSid_n_mc");
+  IMnpipi_wSid_n_data->SetTitle("");
+  IMnpipi_wSid_n_data->GetXaxis()->SetLabelSize(0);
+  IMnpipi_wSid_n_data->SetMarkerStyle(20);
+  IMnpipi_wSid_n_data->SetMarkerColor(1);
+  IMnpipi_wSid_n_data->Draw("E");
+  IMnpipi_wSid_n_mc->SetLineColor(2);
+  IMnpipi_wSid_n_mc->SetMarkerStyle(20);
+  IMnpipi_wSid_n_mc->SetMarkerColor(2);
+  IMnpipi_wSid_n_mc->Draw("Esame");
+  
+  
+  cq_IMnpipi_wSid_n->cd(4);
+  TH1D* q_wSid_n_data = (TH1D*)q_IMnpipi_wSid_n_data->ProjectionY("q_wSid_n_data");
+  TH1D* q_wSid_n_mc = (TH1D*)q_IMnpipi_wSid_n_mc->ProjectionY("q_wSid_n_mc");
+  q_wSid_n_data->SetTitle("");
+  q_wSid_n_data->GetXaxis()->SetTitle("");
+  
+  TGraphErrors *gr_q_wSid_n_data = new TGraphErrors();
+  TGraphErrors *gr_q_wSid_n_mc = new TGraphErrors();
+  
+  for(int ibin=0;ibin<q_wSid_n_data->GetNbinsX();ibin++){
+    double cont = q_wSid_n_data->GetBinContent(ibin);
+    double err = q_wSid_n_data->GetBinError(ibin);
+    double bincenter = q_wSid_n_data->GetBinCenter(ibin);
+    gr_q_wSid_n_data->SetPoint(ibin,cont, bincenter);
+    gr_q_wSid_n_data->SetPointError(ibin,err,0);
+  }
+  for(int ibin=0;ibin<q_wSid_n_mc->GetNbinsX();ibin++){
+    double cont = q_wSid_n_mc->GetBinContent(ibin);
+    double err = q_wSid_n_mc->GetBinError(ibin);
+    double bincenter = q_wSid_n_mc->GetBinCenter(ibin);
+    gr_q_wSid_n_mc->SetPoint(ibin,cont, bincenter);
+    gr_q_wSid_n_mc->SetPointError(ibin,err,0);
+  }
+  gr_q_wSid_n_data->GetYaxis()->SetRangeUser(0,1.5);
+  gr_q_wSid_n_data->SetMarkerStyle(20);
+  gr_q_wSid_n_data->GetYaxis()->SetLabelSize(0);
+  gr_q_wSid_n_data->Draw("AP");
+  gr_q_wSid_n_mc->SetMarkerStyle(20);
+  gr_q_wSid_n_mc->SetMarkerColor(2);
+  gr_q_wSid_n_mc->Draw("P");
+
+  TCanvas *cq_IMnpipi_wSid_n_2 = new TCanvas("cq_IMnpipi_wSid_n_2","cq_IMnpipi_wSid_n_2",1200,1000);
+  cq_IMnpipi_wSid_n_2->Divide(2,1);
+  cq_IMnpipi_wSid_n_2->cd(1);
+  TH2D* q_IMnpipi_wSid_n_data_2 = (TH2D*)q_IMnpipi_wSid_n_data->Clone("q_IMnpipi_wSid_n_data_2");
+  TH2D* q_IMnpipi_wSid_n_mc_2 = (TH2D*)q_IMnpipi_wSid_n_mc->Clone("q_IMnpipi_wSid_n_mc_2");
+  q_IMnpipi_wSid_n_data_2->SetTitle("real data");
+  q_IMnpipi_wSid_n_data_2->SetContour(10);
+  q_IMnpipi_wSid_n_data_2->SetMinimum(1);
+  q_IMnpipi_wSid_n_data_2->Draw("cont1z");
+  gPad->SetRightMargin(0);
+  cq_IMnpipi_wSid_n_2->cd(2);
+  q_IMnpipi_wSid_n_mc_2->SetTitle("MC");
+  q_IMnpipi_wSid_n_mc_2->SetContour(10); 
+  q_IMnpipi_wSid_n_mc_2->SetMinimum(1);
+  q_IMnpipi_wSid_n_mc_2->SetMaximum(q_IMnpipi_wSid_n_data_2->GetMaximum());
+  q_IMnpipi_wSid_n_mc_2->Draw("cont1z");
+  gPad->SetLeftMargin(0);
+  
+  TCanvas *cq_IMnpipi_wSid_n_sub = new TCanvas("cq_IMnpipi_wSid_n_sub","cq_IMnpipi_wSid_n_sub");
+  TH2D* q_IMnpipi_wSid_n_sub = (TH2D*)q_IMnpipi_wSid_n_data->Clone("q_IMnpipi_wSid_n_data");
+  q_IMnpipi_wSid_n_sub->Add(q_IMnpipi_wSid_n_mc,-1.0);
+  q_IMnpipi_wSid_n_sub->Divide(q_IMnpipi_wSid_n_data);
+  q_IMnpipi_wSid_n_sub->SetTitle("(data-MC)/data");
+  q_IMnpipi_wSid_n_sub->RebinX(2);
+  q_IMnpipi_wSid_n_sub->RebinY(2);
+  q_IMnpipi_wSid_n_sub->Scale(0.25);
+  q_IMnpipi_wSid_n_sub->GetZaxis()->SetRangeUser(-0.3,0.3);
+  q_IMnpipi_wSid_n_sub->Draw("colz");
 
 
 
