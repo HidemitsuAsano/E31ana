@@ -1209,16 +1209,18 @@ void comp_fakedata_v4()
   //MMnmiss_IMpippim_woSid_won_mc->SetMaximum(MMnmiss_IMpippim_woSid_won_data->GetMaximum());
   //MMnmiss_IMpippim_woSid_won_mc->Draw(opt);
   
+  //MMnmiss_IMppipim signal region
+  TH2D* MMnmiss_IMpippim_woK0_wSid_n_data = (TH2D*)MMnmiss_IMpippim_woK0_wSid_n[0]->Clone("MMnmiss_IMpippim_woK0_wSid_n_data");
+  TH2D* MMnmiss_IMpippim_woK0_wSid_n_mc = (TH2D*)MMnmiss_IMpippim_woK0_wSid_n[1]->Clone("MMnmiss_IMpippim_woK0_wSid_n_mc");
 
-  TH2D* MMnmiss_IMpippim_woK0_wSid_n_data = (TH2D*)MMnmiss_IMpippim_woK0_woSid_won[0]->Clone("MMnmiss_IMpippim_woK0_wSid_n_data");
-  TH2D* MMnmiss_IMpippim_woK0_wSid_n_mc = (TH2D*)MMnmiss_IMpippim_woK0_woSid_won[1]->Clone("MMnmiss_IMpippim_woK0_wSid_n_mc");
-
-  TH2D* MMnmiss_IMpippim_wK0_wSid_n_data = (TH2D*)MMnmiss_IMpippim_wK0_woSid_won[0]->Clone("MMnmiss_IMpippim_wK0_wSid_n_data");
-  TH2D* MMnmiss_IMpippim_wK0_wSid_n_mc = (TH2D*)MMnmiss_IMpippim_wK0_woSid_won[1]->Clone("MMnmiss_IMpippim_wK0_wSid_n_mc");
-  TH2D* MMnmiss_IMpippim_wK0_wSid_n_mcgeta = (TH2D*)MMnmiss_IMpippim_wK0_woSid_won[2]->Clone("MMnmiss_IMpippim_wK0_wSid_n_mcgeta");
+  TH2D* MMnmiss_IMpippim_wK0_wSid_n_data = (TH2D*)MMnmiss_IMpippim_wK0_wSid_n[0]->Clone("MMnmiss_IMpippim_wK0_wSid_n_data");
+  TH2D* MMnmiss_IMpippim_wK0_wSid_n_mc = (TH2D*)MMnmiss_IMpippim_wK0_wSid_n[1]->Clone("MMnmiss_IMpippim_wK0_wSid_n_mc");
+  TH2D* MMnmiss_IMpippim_wK0_wSid_n_mcgeta = (TH2D*)MMnmiss_IMpippim_wK0_wSid_n[2]->Clone("MMnmiss_IMpippim_wK0_wSid_n_mcgeta");
+  
 
 
-  //q vs MMnmiss
+
+  //q vs MMnmiss BG region
   TCanvas *cq_MMnmiss_woK0_woSid_won = new TCanvas("cq_MMnmiss_woK0_woSid_won","cq_MMnmiss_woK0_woSid_won",1200,800);
   cq_MMnmiss_woK0_woSid_won->Divide(2,1);
   cq_MMnmiss_woK0_woSid_won->cd(1);
@@ -1390,7 +1392,7 @@ void comp_fakedata_v4()
   //q_nmom_wK0_woSid_won_mc->Draw(opt);
   
 
-  //q vs nmom signal region
+  //q_nmom signal region
   TH2D* q_nmom_woK0_wSid_n_data = (TH2D*)q_nmom_woK0_wSid_n[0]->Clone("q_nmom_woK0_wSid_n_data");
   TH2D* q_nmom_woK0_wSid_n_mc = (TH2D*)q_nmom_woK0_wSid_n[1]->Clone("q_nmom_woK0_wSid_n_mc");
 
@@ -1515,7 +1517,7 @@ void comp_fakedata_v4()
   //to write object
   TH2D* IMnpim_IMnpip_wK0_woSid_won_mcgeta = (TH2D*)IMnpim_IMnpip_wK0_woSid_won[2]->Clone("IMnpim_IMnpip_wK0_woSid_won_mcgeta");
   
-  
+  //IMnpim_IMnpip signal region
   TH2D* IMnpim_IMnpip_woK0_wSid_n_data = (TH2D*)IMnpim_IMnpip_woK0_wSid_n[0]->Clone("IMnpim_IMnpip_woK0_wSid_n_data");
   TH2D* IMnpim_IMnpip_woK0_wSid_n_mc = (TH2D*)IMnpim_IMnpip_woK0_wSid_n[1]->Clone("IMnpim_IMnpip_woK0_wSid_n_mc");
   
@@ -2148,7 +2150,6 @@ void comp_fakedata_v4()
   TH2D* q_IMnpipi_wK0_wSid_n_data = (TH2D*)q_IMnpipi_wK0_wSid_n[0]->Clone("q_IMnpipi_wK0_wSid_n_data");
   TH2D* q_IMnpipi_wK0_wSid_n_mc = (TH2D*)q_IMnpipi_wK0_wSid_n[1]->Clone("q_IMnpipi_wK0_wSid_n_mc");
   TH2D* q_IMnpipi_wK0_wSid_n_mcgeta = (TH2D*)q_IMnpipi_wK0_wSid_n[2]->Clone("q_IMnpipi_wK0_wSid_n_mcgeta");
-  q_IMnpipi_wK0_wSid_n_mc->Add(q_IMnpipi_wK0_wSid_n_mcgeta,1.0);
 
   //TH2D* q_IMnpipi_wSid_n_data = (TH2D*)q_IMnpipi_wSid_n[0]->Clone("q_IMnpipi_wSid_n_data");
   //TH2D* q_IMnpipi_wSid_n_mc = (TH2D*)q_IMnpipi_wSid_n[1]->Clone("q_IMnpipi_wSid_n_mc");
