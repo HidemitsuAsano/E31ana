@@ -255,7 +255,7 @@ void comp_fakedata_v4()
     MMnmiss_IMpippim_woK0_wSid_n_fake 
   };
   
-  TH2D* MMnmiss_IMpipipim_wK0_wSid_n[3]={
+  TH2D* MMnmiss_IMpippim_wK0_wSid_n[3]={
     MMnmiss_IMpippim_wK0_wSid_n_rdata,
     MMnmiss_IMpippim_wK0_wSid_n_fake,
     MMnmiss_IMpippim_wK0_wSid_n_fakegeta
