@@ -75,7 +75,7 @@ void FakeMCWeight()
   
   //q
   c_woK0_func->cd(1);
-  fweight_q_v363 = new TF1("fweight_q_v363",func_q,0,1.5,8);
+  fweight_q_v363 = new TF1("fweight_q_v363",func_q_mod,0,1.5,8);
   fweight_q_v363->SetParameters(param_q_mod);
   //q
   TF1* f_qmul = new TF1("f_qmul",func_qmul,0,1.5,8);
