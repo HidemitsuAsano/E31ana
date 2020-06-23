@@ -127,10 +127,14 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   bool SimSm_nsmode = (std::string(filename).find("Smpip_ns")!=std::string::npos);
   bool SimFakemode  = (std::string(filename).find("fakepippim_")!=std::string::npos);
   bool SimFakeK0mode  = (std::string(filename).find("fakepippimK0_")!=std::string::npos);
+  bool SimFakemode_gSp = (std::string(filename).find("fakemcgSp")!=std::string::npos);
+  bool SimFakemode_gSm = (std::string(filename).find("fakemcgSm")!=std::string::npos);
   //= = = = pipipnn final-sample tree = = = =//
   
   if(SimFakemode) std::cout << "fake pi+pi-nX mode "  << std::endl; 
   if(SimFakeK0mode) std::cout << "fake K0barnX mode "  << std::endl; 
+  if(SimFakemode_gSp) std::cout << "fake for GEANT nSp mode" << std::endl;
+  if(SimFakemode_gSm) std::cout << "fake for GEANT nSm mode" << std::endl;
 
   TFile *f = new TFile(filename);
   //TFile *f = new TFile("sim_piSpn_dE0_Al.root");
@@ -3080,7 +3084,37 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
     double weight = 1.0;
     if(IsMCweighting) {
-      if(SimSpmode || SimSmmode || SimK0nnmode || SimnpipiLmode || SimnS0pippimmode || SimSppi0mode || SimSmpi0mode || SimFakemode || SimFakeK0mode) {
+      if(!SimFakemode_gSp && !SimFakemode_gSm){//mc for real data
+        if(SimFakemode) { //w/o K0
+          weight *= fweight_IMnpip_v346->Eval(LVec_pip_n.M());
+          weight *= fweight_nmom_v353->Eval((*LVec_n).P()); 
+          weight *= fweight_IMpippim_v364->Eval(LVec_pip_pim.M());
+          weight *= fweight_MMnmiss_v365->Eval(nmiss_mass);
+          weight *= fweight_q_v366->Eval(qkn.P()); 
+          weight *= fweight_IMnpim_v367->Eval(LVec_pim_n.M());
+        }else if(SimFakeK0mode) { //wK0
+          weight *= fweight_q_wK0_v377->Eval((qkn.P()));
+          weight *= fweight_MMnmiss_wK0_v378->Eval(nmiss_mass);
+          weight *= fweight_nmom_wK0_v379->Eval((*LVec_n).P());
+          weight *= fweight_IMnpip_wK0_v380->Eval(LVec_pip_n.M());
+          weight *= fweight_IMnpim_wK0_v381->Eval(LVec_pim_n.M());
+        }
+      }else if(SimFakemode_gSp){
+        if(SimFakemode) { //w/o K0
+          weight *= fweight_IMnpip_v346->Eval(LVec_pip_n.M());
+          weight *= fweight_nmom_v353->Eval((*LVec_n).P()); 
+          weight *= fweight_IMpippim_v364->Eval(LVec_pip_pim.M());
+          weight *= fweight_MMnmiss_v365->Eval(nmiss_mass);
+          weight *= fweight_q_v366->Eval(qkn.P()); 
+          weight *= fweight_IMnpim_v367->Eval(LVec_pim_n.M());
+        }else if(SimFakeK0mode) { //wK0
+          weight *= fweight_q_wK0_v377->Eval((qkn.P()));
+          weight *= fweight_MMnmiss_wK0_v378->Eval(nmiss_mass);
+          weight *= fweight_nmom_wK0_v379->Eval((*LVec_n).P());
+          weight *= fweight_IMnpip_wK0_v380->Eval(LVec_pip_n.M());
+          weight *= fweight_IMnpim_wK0_v381->Eval(LVec_pim_n.M());
+        }
+      }else if(SimFakemode_gSm){
         if(SimFakemode) { //w/o K0
           weight *= fweight_IMnpip_v346->Eval(LVec_pip_n.M());
           weight *= fweight_nmom_v353->Eval((*LVec_n).P()); 
