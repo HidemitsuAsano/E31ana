@@ -747,7 +747,33 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   gr_IMnpim_wSid_n_mcK0nX->SetMarkerColor(3);
   if(showBG)gr_IMnpim_wSid_n_mcK0nX->Draw("P");
   
-   
+  //BG-subtracted 
+  TCanvas *cIMnpim_IMnpip_wSid_n_sub = new TCanvas("cIMnpim_IMnpip_wSid_n_sub","cIMnpim_IMnpip_wSid_n_sub",1000,1000);
+  cIMnpim_IMnpip_wSid_n_sub->Divide(2,2,0,0);
+  cIMnpim_IMnpip_wSid_n_sub->cd(3);
+  TH2D* IMnpim_IMnpip_wSid_n_data_sub = (TH2D*)IMnpim_IMnpip_wSid_n_data->Clone("IMnpim_IMnpip_wSid_n_data_sub");
+  IMnpim_IMnpip_wSid_n_data_sub->Add(IMnpim_IMnpip_wSid_n_mc,-1.0);
+  IMnpim_IMnpip_wSid_n_data_sub->Draw("col");
+
+  cIMnpim_IMnpip_wSid_n_sub->cd(1);
+  TH1D* IMnpip_wSid_n_data_sub = (TH1D*)IMnpim_IMnpip_wSid_n_data_sub->ProjectionX("IMnpip_wSid_n_data_sub");
+  IMnpip_wSid_n_data_sub->SetMarkerStyle(20);
+  IMnpip_wSid_n_data_sub->Draw();
+
+  cIMnpim_IMnpip_wSid_n_sub->cd(4);
+  TH1D* IMnpim_wSid_n_data_sub = (TH1D*)IMnpim_IMnpip_wSid_n_data_sub->ProjectionY("IMnpim_wSid_n_data_sub");
+  TGraphErrors *gr_IMnpim_wSid_n_data_sub = new TGraphErrors();
+  for(int ibin=0;ibin<IMnpim_wSid_n_data_sub->GetNbinsX();ibin++){
+    double cont = IMnpim_wSid_n_data_sub->GetBinContent(ibin);
+    double err = IMnpim_wSid_n_data_sub->GetBinError(ibin);
+    double bincenter = IMnpim_wSid_n_data_sub->GetBinCenter(ibin);
+    gr_IMnpim_wSid_n_data_sub->SetPoint(ibin,cont, bincenter);
+    gr_IMnpim_wSid_n_data_sub->SetPointError(ibin,err,0);
+  }
+  gr_IMnpim_wSid_n_data_sub->SetMarkerStyle(20);
+  
+ 
+
   //signal check MMnmiss vs IMpippim
   TH2D* MMnmiss_IMpippim_woK0_wSid_n_data = (TH2D*)f->Get("MMnmiss_IMpippim_woK0_wSid_n_data");MMnmiss_IMpippim_woK0_wSid_n_data->Print();
   TH2D* MMnmiss_IMpippim_wK0_wSid_n_data = (TH2D*)f->Get("MMnmiss_IMpippim_wK0_wSid_n_data");MMnmiss_IMpippim_wK0_wSid_n_data->Print();
@@ -784,8 +810,6 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   //MMnmiss_IMpippim_wSid_n_mcK0nX->RebinY(4);
   //MMnmiss_IMpippim_wSid_n_mc->GetXaxis()->SetRangeUser(1.1,1.3);
   //MMnmiss_IMpippim_wSid_n_mc->GetYaxis()->SetRangeUser(1.1,1.3);
-  //MMnmiss_IMpippim_wSid_n_data->GetZaxis()->SetNdivisions(503);
-  //MMnmiss_IMpippim_wSid_n_mc->GetZaxis()->SetNdivisions(503);
   MMnmiss_IMpippim_wSid_n_data->SetContour(8);
   MMnmiss_IMpippim_wSid_n_mc->SetContour(8);
   MMnmiss_IMpippim_wSid_n_data->SetMinimum(1);
@@ -1331,9 +1355,6 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   gr_q_wSid_n_mcK0nX_350->SetMarkerStyle(20);
   gr_q_wSid_n_mcK0nX_350->SetMarkerColor(3);
   if(showBG)gr_q_wSid_n_mcK0nX_350->Draw("P");
-
-
-
 
 
 
