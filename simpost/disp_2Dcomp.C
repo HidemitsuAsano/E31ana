@@ -1194,7 +1194,7 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   q_IMnpipi_wSid_n_mc_2->SetMaximum(q_IMnpipi_wSid_n_data_2->GetMaximum());
   q_IMnpipi_wSid_n_mc_2->Draw("colz");
   gPad->SetLeftMargin(0);
-  
+
   TCanvas *cq_IMnpipi_wSid_n_0 = new TCanvas("cq_IMnpipi_wSid_n_0","cq_IMnpipi_wSid_n_0",1000,1000);
   cq_IMnpipi_wSid_n_0->Divide(2,2,0,0);
   cq_IMnpipi_wSid_n_0->cd(3);
@@ -1416,9 +1416,6 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   gr_q_wSid_n_mcK0nX_350->SetMarkerColor(3);
   if(showBG)gr_q_wSid_n_mcK0nX_350->Draw("P");
 
-
-
-
   //subtracted 
   TCanvas *cq_IMnpipi_wSid_n_sub = new TCanvas("cq_IMnpipi_wSid_n_sub","cq_IMnpipi_wSid_n_sub",1000,1000);
   TH2D* q_IMnpipi_wSid_n_sub = (TH2D*)q_IMnpipi_wSid_n_data->Clone("q_IMnpipi_wSid_n_data");
@@ -1432,13 +1429,42 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   q_IMnpipi_wSid_n_sub->Draw("colz");
    
   TCanvas *cq_IMnpipi_wSid_n_sub_proj0 = new TCanvas("cq_IMnpipi_wSid_n_sub_proj0","cq_IMnpipi_wSid_n_sub_proj0");
-  q_IMnpipi_wSid_n_sub->ProjectionX("px0",0,q_IMnpipi_wSid_n_sub->GetYaxis()->FindBin(0.35)-1)->Draw("HE");
-  
+  TH1D* IMnpipi_wSid_n_sub_0 = (TH1D*) q_IMnpipi_wSid_n_sub->ProjectionX("IMnpipi_wSid_n_sub_0",0,q_IMnpipi_wSid_n_sub->GetYaxis()->FindBin(0.35)-1);
+  IMnpipi_wSid_n_sub_0->SetMarkerStyle(20);
+  IMnpipi_wSid_n_sub_0->Draw();
+
   TCanvas *cq_IMnpipi_wSid_n_sub_proj350 = new TCanvas("cq_IMnpipi_wSid_n_sub_proj350","cq_IMnpipi_wSid_n_sub_proj350");
-  q_IMnpipi_wSid_n_sub->ProjectionX("px350",q_IMnpipi_wSid_n_sub->GetYaxis()->FindBin(0.35),q_IMnpipi_wSid_n_sub->GetYaxis()->FindBin(0.60))->Draw("HE");
-
-
-
-
+  TH1D* IMnpipi_wSid_n_sub_350 = (TH1D*) q_IMnpipi_wSid_n_sub->ProjectionX("IMnpipi_wSid_n_sub_350",q_IMnpipi_wSid_n_sub->GetYaxis()->FindBin(0.35),q_IMnpipi_wSid_n_sub->GetYaxis()->FindBin(0.60));
+  IMnpipi_wSid_n_sub_350->SetMarkerStyle(20);
+  IMnpipi_wSid_n_sub_350->Draw();
+  //
+  //signal check q vs IMnpipi wK0 selection BG subtracted
+  //
+  TH2D* q_IMnpipi_wK0_wSid_n_data_sub = (TH2D*)q_IMnpipi_wK0_wSid_n_data->Clone("q_IMnpipi_wK0_wSid_n_data_sub");
+  q_IMnpipi_wK0_wSid_n_data_sub->Add(q_IMnpipi_wK0_wSid_n_mc,-1.0);
+  q_IMnpipi_wK0_wSid_n_data_sub->Add(q_IMnpipi_wK0_wSid_n_mcgeta,-1.0);
+  TCanvas *cq_IMnpipi_wK0_wSid_n_data_sub = new TCanvas("cq_IMnpipi_wK0_wSid_n_data_sub","cq_IMnpipi_wK0_wSid_n_data_sub",1000,1000);
+  cq_IMnpipi_wK0_wSid_n_data_sub->Divide(2,2,0,0);
+  cq_IMnpipi_wK0_wSid_n_data_sub->cd(3);
+  q_IMnpipi_wK0_wSid_n_data_sub->RebinX(2);
+  q_IMnpipi_wK0_wSid_n_data_sub->SetTitle("");
+  q_IMnpipi_wK0_wSid_n_data_sub->Draw("colz");
+  cq_IMnpipi_wK0_wSid_n_data_sub->cd(1);
+  TH1D* IMnpipi_wK0_wSid_n_data_sub = (TH1D*)q_IMnpipi_wK0_wSid_n_data_sub->ProjectionX("IMnpipi_wK0_wSid_n_data_sub");
+  IMnpipi_wK0_wSid_n_data_sub->SetMarkerStyle(20);
+  IMnpipi_wK0_wSid_n_data_sub->Draw("");
+  cq_IMnpipi_wK0_wSid_n_data_sub->cd(4);
+  TH1D* q_wK0_wSid_n_data_sub = (TH1D*)q_IMnpipi_wK0_wSid_n_data_sub->ProjectionY("q_wK0_wSid_n_data_sub");
+  TGraphErrors *gr_q_wK0_wSid_n_data_sub = new TGraphErrors();
+  for(int ibin=0;ibin<q_wK0_wSid_n_data_sub->GetNbinsX();ibin++){
+    double cont = q_wK0_wSid_n_data_sub->GetBinContent(ibin);
+    double err = q_wK0_wSid_n_data_sub->GetBinError(ibin);
+    double bincenter = q_wK0_wSid_n_data_sub->GetBinCenter(ibin);
+    gr_q_wK0_wSid_n_data_sub->SetPoint(ibin,cont, bincenter);
+    gr_q_wK0_wSid_n_data_sub->SetPointError(ibin,err,0);
+  }
+  gr_q_wK0_wSid_n_data_sub->GetYaxis()->SetRangeUser(0,1.5);
+  gr_q_wK0_wSid_n_data_sub->SetMarkerStyle(20);
+  gr_q_wK0_wSid_n_data_sub->Draw("AP");
 
 }
