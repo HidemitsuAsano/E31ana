@@ -202,23 +202,27 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   }
   //weight function of BG evaluation for MC
 
-  TF1* fweight_IMnpip_v346 = new TF1("fweight_IMnpip_v346",func_IMnpipmul_s,0,2.0,12);
-  fweight_IMnpip_v346->SetParameters(param_IMnpip_s);
-  
+  TF1* fweight_IMnpip_v369 = new TF1("fweight_IMnpip_v369",func_IMnpip_mod,0,2.0,16);
+  fweight_IMnpip_v369->SetParameters(param_IMnpip_mod);
+   
+  //TF1* fweight_Mompippim = new TF1("fweight_Mompippim",func_Mompippim,0,1.0,7);
+  //fweight_Mompippim->SetParameters(param_Mompippim);
+
   TF1* fweight_nmom_v353 = new TF1("fweight_nmom_v353",func_nmom_mod,0.139,1.0,12);
   fweight_nmom_v353->SetParameters(param_nmom_mod);
 
   TF1* fweight_IMpippim_v364 = new TF1("fweight_IMpippim_v364",func_IMpippim_mod,0.,1.0,15);
   fweight_IMpippim_v364->SetParameters(param_IMpippim_mod);
   
-  TF1 *fweight_MMnmiss_v365 = new TF1("fweight_MMnmiss_v365",func_MMnmiss_mod,0,1.5,20);
-  fweight_MMnmiss_v365->SetParameters(param_MMnmiss_mod);
   
   TF1* fweight_q_v366 = new TF1("fweight_q_v366",func_q_mod,0,1.5,8);
   fweight_q_v366->SetParameters(param_q_mod);
   
   TF1* fweight_IMnpim_v367 = new TF1("fweight_IMnpim_v367",func_IMnpim_mod,1,2.0,10);
   fweight_IMnpim_v367->SetParameters(param_IMnpim_mod);
+  
+  TF1 *fweight_MMnmiss_v368 = new TF1("fweight_MMnmiss_v368",func_MMnmiss_mod,0,1.5,20);
+  fweight_MMnmiss_v368->SetParameters(param_MMnmiss_mod);
   
   TF1* fweight_q_wK0_v377 = new TF1("fweight_q_wK0_v377",func_q_wK0_mod,0,1.5,8);
   fweight_q_wK0_v377->SetParameters(param_q_wK0_mod);
@@ -3086,12 +3090,12 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     if(IsMCweighting) {
       if(!SimFakemode_gSp && !SimFakemode_gSm){//mc for real data
         if(SimFakemode) { //w/o K0
-          weight *= fweight_IMnpip_v346->Eval(LVec_pip_n.M());
           weight *= fweight_nmom_v353->Eval((*LVec_n).P()); 
           weight *= fweight_IMpippim_v364->Eval(LVec_pip_pim.M());
-          weight *= fweight_MMnmiss_v365->Eval(nmiss_mass);
           weight *= fweight_q_v366->Eval(qkn.P()); 
           weight *= fweight_IMnpim_v367->Eval(LVec_pim_n.M());
+          weight *= fweight_MMnmiss_v368->Eval(nmiss_mass);
+          weight *= fweight_IMnpip_v369->Eval(LVec_pip_n.M());
         }else if(SimFakeK0mode) { //wK0
           weight *= fweight_q_wK0_v377->Eval((qkn.P()));
           weight *= fweight_MMnmiss_wK0_v378->Eval(nmiss_mass);
@@ -3100,11 +3104,12 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           weight *= fweight_IMnpim_wK0_v381->Eval(LVec_pim_n.M());
         }
       }else if(SimFakemode_gSp){
+        /*
         if(SimFakemode) { //w/o K0
           weight *= fweight_IMnpip_v346->Eval(LVec_pip_n.M());
           weight *= fweight_nmom_v353->Eval((*LVec_n).P()); 
           weight *= fweight_IMpippim_v364->Eval(LVec_pip_pim.M());
-          weight *= fweight_MMnmiss_v365->Eval(nmiss_mass);
+          weight *= fweight_MMnmiss_v368->Eval(nmiss_mass);
           weight *= fweight_q_v366->Eval(qkn.P()); 
           weight *= fweight_IMnpim_v367->Eval(LVec_pim_n.M());
         }else if(SimFakeK0mode) { //wK0
@@ -3119,7 +3124,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           weight *= fweight_IMnpip_v346->Eval(LVec_pip_n.M());
           weight *= fweight_nmom_v353->Eval((*LVec_n).P()); 
           weight *= fweight_IMpippim_v364->Eval(LVec_pip_pim.M());
-          weight *= fweight_MMnmiss_v365->Eval(nmiss_mass);
+          weight *= fweight_MMnmiss_v368->Eval(nmiss_mass);
           weight *= fweight_q_v366->Eval(qkn.P()); 
           weight *= fweight_IMnpim_v367->Eval(LVec_pim_n.M());
         }else if(SimFakeK0mode) { //wK0
@@ -3129,6 +3134,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           weight *= fweight_IMnpip_wK0_v380->Eval(LVec_pip_n.M());
           weight *= fweight_IMnpim_wK0_v381->Eval(LVec_pim_n.M());
         }
+        */
       }
     }//MCweighting
     //---end of Flag definition-----------------------------------------------------
