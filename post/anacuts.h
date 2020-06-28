@@ -20,7 +20,7 @@ namespace anacuts {
   //const double pipi_MAX = 0.510;// (almost 1.5 sigma)
   
   const double neutron_NSigmacut = 1.5;//+/- N sigma
-  const double neutron_NSigmacut_wide = 2.5;//+/- N sigma
+  const double neutron_NSigmacut_wide = 3.0;//+/- N sigma
   const double neutron_center = 0.939161;
   const double neutron_sigma = 0.0308562;
   const double neutron_MIN = neutron_center-neutron_NSigmacut*neutron_sigma;
@@ -41,7 +41,7 @@ namespace anacuts {
   const double Sigmam_MIN = Sigmam_center-Sigma_NSigmacut*Sigmam_sigma;
   const double Sigmam_MAX = Sigmam_center+Sigma_NSigmacut*Sigmam_sigma;  
   
-  const double Sigma_wideNSigmacut = 2.5;
+  const double Sigma_wideNSigmacut = 3.0;
   const double Sigmap_MIN_wide = Sigmap_center-Sigma_wideNSigmacut*Sigmap_sigma;   
   const double Sigmap_MAX_wide = Sigmap_center+Sigma_wideNSigmacut*Sigmap_sigma;   
   const double Sigmam_MIN_wide = Sigmam_center-Sigma_wideNSigmacut*Sigmam_sigma;
