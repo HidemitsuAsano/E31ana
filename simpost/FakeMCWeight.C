@@ -98,14 +98,14 @@ void FakeMCWeight()
   c_woK0_func->cd(2);
   fweight_MMnmiss_v362 = new TF1("fweight_MMnmiss_v362",func_MMnmiss_mod,0,1.5,20);
   fweight_MMnmiss_v362->SetParameters(param_MMnmiss_mod);
-  
+  //fweight_MMnmiss_v362->SetParameter(10,0.017);
   TF1* f_MMnmissmul = new TF1("MissMass",func_MMmul,0,1.5,20);
-  //f_MMnmissmul->SetNpx(1000);
+  f_MMnmissmul->SetNpx(1000);
   f_MMnmissmul->SetTitle("");
   f_MMnmissmul->GetXaxis()->SetTitle("Miss. Mass [GeV/c^{2}]");
   f_MMnmissmul->GetXaxis()->CenterTitle();
   //f_MMnmissmul->SetMinimum(0);
-  f_MMnmissmul->Draw("");
+  f_MMnmissmul->Draw("c");
   
   TBox *box_neutron = new TBox(anacuts::neutron_MIN,0,anacuts::neutron_MAX,3);
   box_neutron->SetFillColor(4);
@@ -169,6 +169,7 @@ void FakeMCWeight()
 
   TF1 *f_IMpippimmul = new TF1("f_IMpippimmul",func_IMpippimmul,0,1.0,15);
   f_IMpippimmul->SetTitle("");
+  f_IMpippimmul->SetNpx(1000);
   f_IMpippimmul->GetXaxis()->SetTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   f_IMpippimmul->GetXaxis()->CenterTitle();
   f_IMpippimmul->Draw("c");
