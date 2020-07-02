@@ -202,11 +202,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   }
   //weight function of BG evaluation for MC
 
-  TF1* fweight_IMnpip_v369 = new TF1("fweight_IMnpip_v369",func_IMnpip_mod,0,2.0,16);
+  TF1* fweight_IMnpip_v369 = new TF1("fweight_IMnpip_v369",func_IMnpip_mod,1,2.0,12);
   fweight_IMnpip_v369->SetParameters(param_IMnpip_mod);
    
-  //TF1* fweight_Mompippim = new TF1("fweight_Mompippim",func_Mompippim,0,1.0,7);
-  //fweight_Mompippim->SetParameters(param_Mompippim);
 
   TF1* fweight_nmom_v353 = new TF1("fweight_nmom_v353",func_nmom_mod,0.139,1.0,12);
   fweight_nmom_v353->SetParameters(param_nmom_mod);
@@ -218,7 +216,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1* fweight_q_v366 = new TF1("fweight_q_v366",func_q_mod,0,1.5,8);
   fweight_q_v366->SetParameters(param_q_mod);
   
-  TF1* fweight_IMnpim_v367 = new TF1("fweight_IMnpim_v367",func_IMnpim_mod,1,2.0,10);
+  TF1* fweight_IMnpim_v367 = new TF1("fweight_IMnpim_v367",func_IMnpim_mod,1,2.0,6);
   fweight_IMnpim_v367->SetParameters(param_IMnpim_mod);
   
   TF1 *fweight_MMnmiss_v368 = new TF1("fweight_MMnmiss_v368",func_MMnmiss_mod,0,1.5,20);
