@@ -231,10 +231,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1* fweight_nmom_wK0_v379 = new TF1("fweight_nmom_wK0_v379",func_nmom_mod,0,1.0,12);
   fweight_nmom_wK0_v379->SetParameters(param_nmom_wK0_mod);
   
-  TF1* fweight_IMnpip_wK0_v380 = new TF1("fweight_IMnpip_wK0_v380",func_IMnpip_wK0_mod,1,2,16);
+  TF1* fweight_IMnpip_wK0_v380 = new TF1("fweight_IMnpip_wK0_v380",func_IMnpip_wK0_mod,1,2,14);
   fweight_IMnpip_wK0_v380->SetParameters(param_IMnpip_wK0_mod);
   
-  TF1* fweight_IMnpim_wK0_v381 = new TF1("fweight_IMnpim_wK0_v381",func_IMnpim_wK0_mod,1,2,11);
+  //TF1* fweight_IMnpim_wK0_v381 = new TF1("fweight_IMnpim_wK0_v381",func_IMnpim_wK0_mod,1,2,11);
+  TF1* fweight_IMnpim_wK0_v381 = new TF1("fweight_IMnpim_wK0_v381",func_IMnpim_wK0_mod,1,2,10);
   fweight_IMnpim_wK0_v381->SetParameters(param_IMnpim_wK0_mod);
   
   f->cd();
@@ -3854,7 +3855,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       }//for igap
     }//if K0rejectFlag && NBetaOK && NdEOK && MissNFlag0
     //---removing K0 END----------------------------------------------
-    if(i> 1.00e+06) break;
+    //if(i> 1.00e+06) break;
 
   }//for ievt
   //--- Filling Histogram END --------------------------------------------------
