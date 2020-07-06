@@ -1419,13 +1419,23 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   //subtracted 
   TCanvas *cq_IMnpipi_wSid_n_sub = new TCanvas("cq_IMnpipi_wSid_n_sub","cq_IMnpipi_wSid_n_sub",1000,1000);
   TH2D* q_IMnpipi_wSid_n_sub = (TH2D*)q_IMnpipi_wSid_n_data->Clone("q_IMnpipi_wSid_n_data");
-  q_IMnpipi_wSid_n_sub->Add(q_IMnpipi_wSid_n_mc,-1.0);
+  TH2D* q_IMnpipi_wSid_n_mc_no0 = (TH2D*)q_IMnpipi_wSid_n_mc->Clone("q_IMnpipi_wSid_n_mc_no0");
+  //clean up 0 count bin
+  for(int ix=0;ix<q_IMnpipi_wSid_n_sub->GetNbinsX();ix++){
+    for(int iy=0;iy<q_IMnpipi_wSid_n_sub->GetNbinsY();iy++){
+      double cont = q_IMnpipi_wSid_n_sub->GetBinContent(ix,iy);
+      if(cont <1.0) q_IMnpipi_wSid_n_mc_no0->SetBinContent(ix,iy,0);
+    }
+  }
+
+  q_IMnpipi_wSid_n_sub->Add(q_IMnpipi_wSid_n_mc_no0,-1.0);
   //q_IMnpipi_wSid_n_sub->Divide(q_IMnpipi_wSid_n_data);
   //q_IMnpipi_wSid_n_sub->SetTitle("(data-MC)/data");
   //q_IMnpipi_wSid_n_sub->RebinX(2);
   //q_IMnpipi_wSid_n_sub->RebinY(2);
   //q_IMnpipi_wSid_n_sub->Scale(0.25);
   //q_IMnpipi_wSid_n_sub->GetZaxis()->SetRangeUser(-0.3,0.3);
+  //q_IMnpipi_wSid_n_sub->SetMinimum(0);
   q_IMnpipi_wSid_n_sub->Draw("colz");
    
   TCanvas *cq_IMnpipi_wSid_n_sub_proj0 = new TCanvas("cq_IMnpipi_wSid_n_sub_proj0","cq_IMnpipi_wSid_n_sub_proj0");
@@ -1433,10 +1443,27 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   IMnpipi_wSid_n_sub_0->SetMarkerStyle(20);
   IMnpipi_wSid_n_sub_0->Draw();
 
-  TCanvas *cq_IMnpipi_wSid_n_sub_proj350 = new TCanvas("cq_IMnpipi_wSid_n_sub_proj350","cq_IMnpipi_wSid_n_sub_proj350");
-  TH1D* IMnpipi_wSid_n_sub_350 = (TH1D*) q_IMnpipi_wSid_n_sub->ProjectionX("IMnpipi_wSid_n_sub_350",q_IMnpipi_wSid_n_sub->GetYaxis()->FindBin(0.35),q_IMnpipi_wSid_n_sub->GetYaxis()->FindBin(0.60));
-  IMnpipi_wSid_n_sub_350->SetMarkerStyle(20);
-  IMnpipi_wSid_n_sub_350->Draw();
+  TCanvas *cq_IMnpipi_wSid_n_sub_proj350 = new TCanvas("cq_IMnpipi_wSid_n_sub_proj350_600","cq_IMnpipi_wSid_n_sub_proj350_600");
+  TH1D* IMnpipi_wSid_n_sub_350_600 = (TH1D*) q_IMnpipi_wSid_n_sub->ProjectionX("IMnpipi_wSid_n_sub_350_600",q_IMnpipi_wSid_n_sub->GetYaxis()->FindBin(0.35),q_IMnpipi_wSid_n_sub->GetYaxis()->FindBin(0.60));
+  IMnpipi_wSid_n_sub_350_600->SetMarkerStyle(20);
+  IMnpipi_wSid_n_sub_350_600->Draw();
+  TF1 *f_L1520 = new TF1("f_L1520","gaus(0)+gaus(3)",1,2);
+  f_L1520->SetParameter(0,180);
+  f_L1520->SetParameter(1,1.517);
+  f_L1520->SetParameter(2,0.0156);
+  f_L1520->SetParameter(3,90);
+  f_L1520->SetParameter(4,1.405);
+  f_L1520->SetParameter(5,0.050);
+  f_L1520->SetLineColor(2);
+  f_L1520->SetNpx(1000);
+  //f_L1520->Draw("same");
+
+  TF1* f_bf = new TF1("f_bf","4.1*TMath::BreitWigner(x, 1.5195, 0.0156)+7.2*TMath::BreitWigner(x, 1.4051, 0.050)",1,2);
+  f_bf->SetLineColor(3);
+  f_bf->SetNpx(5000);
+  f_bf->Draw("same");
+
+
   //
   //signal check q vs IMnpipi wK0 selection BG subtracted
   //
