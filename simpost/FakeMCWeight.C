@@ -36,6 +36,7 @@ void FakeMCWeight()
   fweight_q->GetXaxis()->SetTitle("q [GeV/c]");
   fweight_q->GetXaxis()->CenterTitle();
   fweight_q->SetMinimum(0);
+  fweight_q->SetNpx(10000);
   fweight_q->Draw("");
   std::cout << __LINE__ << std::endl;
 
@@ -43,11 +44,11 @@ void FakeMCWeight()
   c_woK0_func->cd(2);
   fweight_MMnmiss = new TF1("fweight_MMnmiss",func_MMnmiss_mod,0,1.5,20);
   fweight_MMnmiss->SetParameters(param_MMnmiss_mod);
-  fweight_MMnmiss->SetNpx(1000);
+  fweight_MMnmiss->SetNpx(10000);
   fweight_MMnmiss->SetTitle("");
   fweight_MMnmiss->GetXaxis()->SetTitle("Miss. Mass [GeV/c^{2}]");
   fweight_MMnmiss->GetXaxis()->CenterTitle();
-  fweight_MMnmiss->Draw("c");
+  fweight_MMnmiss->Draw("");
   TBox *box_neutron = new TBox(anacuts::neutron_MIN,0,anacuts::neutron_MAX,3);
   box_neutron->SetFillColor(4);
   box_neutron->SetFillStyle(3002);
@@ -58,7 +59,7 @@ void FakeMCWeight()
   c_woK0_func->cd(3);
   fweight_nmom = new TF1("fweight_nmom",func_nmom_mod,0,1.0,12);
   fweight_nmom->SetParameters(param_nmom_mod);
-  fweight_nmom->SetNpx(1000);
+  fweight_nmom->SetNpx(10000);
   fweight_nmom->SetTitle("");
   fweight_nmom->GetXaxis()->SetTitle("n_{CDS} mom. [GeV/c^{2}]");
   fweight_nmom->GetXaxis()->CenterTitle();
@@ -77,6 +78,7 @@ void FakeMCWeight()
   fweight_IMnpip->GetXaxis()->SetTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   fweight_IMnpip->GetXaxis()->CenterTitle();
   fweight_IMnpip->SetLineColor(2);
+  fweight_IMnpip->SetNpx(10000);
   fweight_IMnpip->Draw("");
   TBox *box_sigmap = new TBox(anacuts::Sigmap_MIN,0,anacuts::Sigmap_MAX,3);
   box_sigmap->SetFillColor(4);
@@ -90,6 +92,7 @@ void FakeMCWeight()
   fweight_IMnpim->SetTitle("");
   fweight_IMnpim->GetXaxis()->SetTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   fweight_IMnpim->GetXaxis()->CenterTitle();
+  fweight_IMnpim->SetNpx(10000);
   fweight_IMnpim->Draw("");
   TBox *box_sigmam = new TBox(anacuts::Sigmam_MIN,0,anacuts::Sigmam_MAX,3);
   box_sigmam->SetFillColor(4);
@@ -101,7 +104,7 @@ void FakeMCWeight()
   fweight_IMpippim = new TF1("fweight_IMpippim",func_IMpippim_mod,0,1.0,15);
   fweight_IMpippim->SetParameters(param_IMpippim_mod);
   fweight_IMpippim->SetTitle("");
-  fweight_IMpippim->SetNpx(1000);
+  fweight_IMpippim->SetNpx(10000);
   fweight_IMpippim->GetXaxis()->SetTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   fweight_IMpippim->GetXaxis()->CenterTitle();
   fweight_IMpippim->Draw("c");
@@ -121,6 +124,7 @@ void FakeMCWeight()
   fweight_q_wK0->SetTitle("");
   fweight_q_wK0->GetXaxis()->SetTitle("q [GeV/c]");
   fweight_q_wK0->GetXaxis()->CenterTitle();
+  fweight_q_wK0->SetNpx(10000);
   fweight_q_wK0->Draw("");
 
 
@@ -131,13 +135,14 @@ void FakeMCWeight()
   fweight_MMnmiss_wK0->SetTitle("");
   fweight_MMnmiss_wK0->GetXaxis()->SetTitle("Miss. Mass [GeV/c^{2}]");
   fweight_MMnmiss_wK0->GetXaxis()->CenterTitle();
+  fweight_MMnmiss_wK0->SetNpx(10000);
   fweight_MMnmiss_wK0->Draw("");
   box_neutron->Draw();
   //nmom
   c_wK0_func->cd(3);
   TF1* fweight_nmom_wK0 = new TF1("fweight_nmom_wK0",func_nmom_mod,0,1.0,12);
   fweight_nmom_wK0->SetParameters(param_nmom_wK0_mod);
-  //fweight_nmom_wK0_v379->SetNpx(1000);
+  fweight_nmom_wK0->SetNpx(10000);
   fweight_nmom_wK0->SetTitle("");
   fweight_nmom_wK0->GetXaxis()->SetTitle("n_{CDS} mom. [GeV/c^{2}]");
   fweight_nmom_wK0->GetXaxis()->CenterTitle();
@@ -157,7 +162,7 @@ void FakeMCWeight()
   fweight_IMnpip_wK0->SetTitle("");
   fweight_IMnpip_wK0->GetXaxis()->SetTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   fweight_IMnpip_wK0->GetXaxis()->CenterTitle();
-  fweight_IMnpip_wK0->SetNpx(1000);
+  fweight_IMnpip_wK0->SetNpx(10000);
   fweight_IMnpip_wK0->Draw("");
   box_sigmap->Draw();
   
@@ -168,7 +173,7 @@ void FakeMCWeight()
   fweight_IMnpim_wK0->SetTitle("");
   fweight_IMnpim_wK0->GetXaxis()->SetTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   fweight_IMnpim_wK0->GetXaxis()->CenterTitle();
-  fweight_IMnpim_wK0->SetNpx(1000);
+  fweight_IMnpim_wK0->SetNpx(10000);
   fweight_IMnpim_wK0->Draw("");
   box_sigmam->Draw();
   //IMpippim (N/A)

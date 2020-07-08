@@ -238,14 +238,18 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   TH2D* MMnmiss_IMpippim_woK0_woSid_won_mc = (TH2D*)f->Get("MMnmiss_IMpippim_woK0_woSid_won_mc");MMnmiss_IMpippim_woK0_woSid_won_mc->Print();
 
   TH2D* MMnmiss_IMpippim_wK0_woSid_won_mc = (TH2D*)f->Get("MMnmiss_IMpippim_wK0_woSid_won_mc");MMnmiss_IMpippim_wK0_woSid_won_mc->Print();
-  //TH2D* MMnmiss_IMpippim_wK0_woSid_won_mcgeta = (TH2D*)f->Get("MMnmiss_IMpippim_wK0_woSid_won_mcgeta");MMnmiss_IMpippim_wK0_woSid_won_mcgeta->Print();
+  TH2D* MMnmiss_IMpippim_wK0_woSid_won_mcgeta = (TH2D*)f->Get("MMnmiss_IMpippim_wK0_woSid_won_mcgeta");MMnmiss_IMpippim_wK0_woSid_won_mcgeta->Print();
 
   TH2D* MMnmiss_IMpippim_woSid_won_data = (TH2D*)MMnmiss_IMpippim_woK0_woSid_won_data->Clone("MMnmiss_IMpippim_woSid_won_data");
   MMnmiss_IMpippim_woSid_won_data->Add(MMnmiss_IMpippim_wK0_woSid_won_data);
   TH2D* MMnmiss_IMpippim_woSid_won_mc = (TH2D*)MMnmiss_IMpippim_woK0_woSid_won_mc->Clone("MMnmiss_IMpippim_woSid_won_mc");
   MMnmiss_IMpippim_woSid_won_mc->Add(MMnmiss_IMpippim_wK0_woSid_won_mc);
-  //MMnmiss_IMpippim_woSid_won_mc->Add(MMnmiss_IMpippim_wK0_woSid_won_mcgeta);
    
+  //divide pipin"X" BG and K0n"X" BG
+  TH2D* MMnmiss_IMpippim_woSid_won_mcpipinX = (TH2D*)MMnmiss_IMpippim_woK0_woSid_won_mc->Clone("MMnmiss_IMpippim_woSid_won_mcpipinX");
+  MMnmiss_IMpippim_woSid_won_mcpipinX->Add(MMnmiss_IMpippim_wK0_woSid_won_mcgeta,1.0);
+  TH2D* MMnmiss_IMpippim_woSid_won_mcK0nX = (TH2D*)MMnmiss_IMpippim_wK0_woSid_won_mc->Clone("MMnmiss_IMpippim_wSid_won_mcK0nX");
+  MMnmiss_IMpippim_woSid_won_mcK0nX->Add(MMnmiss_IMpippim_wK0_woSid_won_mcgeta,-1.0);
   
   TCanvas *cMMnmiss_IMpippim_woSid_won = new TCanvas("cMMnmiss_IMpippim_woSid_won","cMMnmiss_IMpippim_woSid_won",1000,1000);
   cMMnmiss_IMpippim_woSid_won ->Divide(2,2,0,0);
@@ -259,8 +263,16 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   //MMnmiss_IMpippim_woSid_won_data->GetYaxis()->SetRangeUser(1,1.7);
   MMnmiss_IMpippim_woSid_won_mc->RebinX(4);
   MMnmiss_IMpippim_woSid_won_mc->RebinY(3);
+  MMnmiss_IMpippim_woSid_won_mcpipinX->RebinX(4);
+  MMnmiss_IMpippim_woSid_won_mcpipinX->RebinY(3);
+  MMnmiss_IMpippim_woSid_won_mcK0nX->RebinX(4);
+  MMnmiss_IMpippim_woSid_won_mcK0nX->RebinY(3);
   MMnmiss_IMpippim_woSid_won_mc->GetXaxis()->SetRangeUser(0.2,1.0);
+  MMnmiss_IMpippim_woSid_won_mcpipinX->GetXaxis()->SetRangeUser(0.2,1.0);
+  MMnmiss_IMpippim_woSid_won_mcK0nX->GetXaxis()->SetRangeUser(0.2,1.0);
   //MMnmiss_IMpippim_woSid_won_mc->GetYaxis()->SetRangeUser(1,1.7);
+  //MMnmiss_IMpippim_woSid_won_mcpipinX->GetYaxis()->SetRangeUser(1,1.7);
+  //MMnmiss_IMpippim_woSid_won_mcK0nX->GetYaxis()->SetRangeUser(1,1.7);
   MMnmiss_IMpippim_woSid_won_data->SetContour(10);
   MMnmiss_IMpippim_woSid_won_mc->SetContour(10);
 
@@ -277,25 +289,39 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   cMMnmiss_IMpippim_woSid_won->cd(1);
   TH1D* IMpippim_woSid_won_data = (TH1D*)MMnmiss_IMpippim_woSid_won_data->ProjectionX("IMpippim_woSid_won_data");
   TH1D* IMpippim_woSid_won_mc = (TH1D*)MMnmiss_IMpippim_woSid_won_mc->ProjectionX("IMpippim_woSid_won_mc");
+  TH1D* IMpippim_woSid_won_mcpipinX = (TH1D*)MMnmiss_IMpippim_woSid_won_mcpipinX->ProjectionX("IMpippim_woSid_won_mcpipinX");
+  TH1D* IMpippim_woSid_won_mcK0nX = (TH1D*)MMnmiss_IMpippim_woSid_won_mcK0nX->ProjectionX("IMpippim_woSid_won_mcK0nX");
   IMpippim_woSid_won_data->SetTitle("");
   IMpippim_woSid_won_data->GetXaxis()->SetLabelSize(0);
   IMpippim_woSid_won_data->SetMarkerStyle(20);
   IMpippim_woSid_won_data->SetMarkerColor(1);
   IMpippim_woSid_won_data->Draw("E");
-  IMpippim_woSid_won_mc->SetLineColor(2);
+  IMpippim_woSid_won_mc->SetLineColor(6);
   IMpippim_woSid_won_mc->SetMarkerStyle(20);
   IMpippim_woSid_won_mc->SetMarkerColor(6);
   IMpippim_woSid_won_mc->Draw("Esame");
+  IMpippim_woSid_won_mcpipinX->SetLineColor(2);
+  IMpippim_woSid_won_mcpipinX->SetMarkerStyle(20);
+  IMpippim_woSid_won_mcpipinX->SetMarkerColor(2);
+  if(showBG)IMpippim_woSid_won_mcpipinX->Draw("Esame");
+  IMpippim_woSid_won_mcK0nX->SetLineColor(3);
+  IMpippim_woSid_won_mcK0nX->SetMarkerStyle(20);
+  IMpippim_woSid_won_mcK0nX->SetMarkerColor(3);
+  if(showBG)IMpippim_woSid_won_mcK0nX->Draw("Esame");
   
   
   cMMnmiss_IMpippim_woSid_won->cd(4);
   TH1D* MMnmiss_woSid_won_data = (TH1D*)MMnmiss_IMpippim_woSid_won_data->ProjectionY("MMnmiss_woSid_won_data");
   TH1D* MMnmiss_woSid_won_mc = (TH1D*)MMnmiss_IMpippim_woSid_won_mc->ProjectionY("MMnmiss_woSid_won_mc");
+  TH1D* MMnmiss_woSid_won_mcpipinX = (TH1D*)MMnmiss_IMpippim_woSid_won_mcpipinX->ProjectionY("MMnmiss_woSid_won_mcpipinX");
+  TH1D* MMnmiss_woSid_won_mcK0nX = (TH1D*)MMnmiss_IMpippim_woSid_won_mcK0nX->ProjectionY("MMnmiss_woSid_won_mcK0nX");
   MMnmiss_woSid_won_data->SetTitle("");
   MMnmiss_woSid_won_data->GetXaxis()->SetTitle("");
   
   TGraphErrors *gr_MMnmiss_woSid_won_data = new TGraphErrors();
   TGraphErrors *gr_MMnmiss_woSid_won_mc = new TGraphErrors();
+  TGraphErrors *gr_MMnmiss_woSid_won_mcpipinX = new TGraphErrors();
+  TGraphErrors *gr_MMnmiss_woSid_won_mcK0nX = new TGraphErrors();
   
   for(int ibin=0;ibin<MMnmiss_woSid_won_data->GetNbinsX();ibin++){
     double cont = MMnmiss_woSid_won_data->GetBinContent(ibin);
@@ -311,6 +337,20 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
     gr_MMnmiss_woSid_won_mc->SetPoint(ibin,cont, bincenter);
     gr_MMnmiss_woSid_won_mc->SetPointError(ibin,err,0);
   }
+  for(int ibin=0;ibin<MMnmiss_woSid_won_mcpipinX->GetNbinsX();ibin++){
+    double cont = MMnmiss_woSid_won_mcpipinX->GetBinContent(ibin);
+    double err = MMnmiss_woSid_won_mcpipinX->GetBinError(ibin);
+    double bincenter = MMnmiss_woSid_won_mcpipinX->GetBinCenter(ibin);
+    gr_MMnmiss_woSid_won_mcpipinX->SetPoint(ibin,cont, bincenter);
+    gr_MMnmiss_woSid_won_mcpipinX->SetPointError(ibin,err,0);
+  }
+  for(int ibin=0;ibin<MMnmiss_woSid_won_mcK0nX->GetNbinsX();ibin++){
+    double cont = MMnmiss_woSid_won_mcK0nX->GetBinContent(ibin);
+    double err = MMnmiss_woSid_won_mcK0nX->GetBinError(ibin);
+    double bincenter = MMnmiss_woSid_won_mcK0nX->GetBinCenter(ibin);
+    gr_MMnmiss_woSid_won_mcK0nX->SetPoint(ibin,cont, bincenter);
+    gr_MMnmiss_woSid_won_mcK0nX->SetPointError(ibin,err,0);
+  }
   gr_MMnmiss_woSid_won_data->GetYaxis()->SetRangeUser(0,1.5);
   gr_MMnmiss_woSid_won_data->SetMarkerStyle(20);
   gr_MMnmiss_woSid_won_data->GetYaxis()->SetLabelSize(0);
@@ -318,6 +358,12 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   gr_MMnmiss_woSid_won_mc->SetMarkerStyle(20);
   gr_MMnmiss_woSid_won_mc->SetMarkerColor(6);
   gr_MMnmiss_woSid_won_mc->Draw("P");
+  gr_MMnmiss_woSid_won_mcpipinX->SetMarkerStyle(20);
+  gr_MMnmiss_woSid_won_mcpipinX->SetMarkerColor(2);
+  if(showBG)gr_MMnmiss_woSid_won_mcpipinX->Draw("P");
+  gr_MMnmiss_woSid_won_mcK0nX->SetMarkerStyle(20);
+  gr_MMnmiss_woSid_won_mcK0nX->SetMarkerColor(3);
+  if(showBG)gr_MMnmiss_woSid_won_mcK0nX->Draw("P");
 
   TCanvas *cMMnmiss_IMpippim_woSid_won_2 = new TCanvas("cMMnmiss_IMpippim_woSid_won_2","cMMnmiss_IMpippim_woSid_won_2",1000,1000);
   cMMnmiss_IMpippim_woSid_won_2->Divide(2,2);
@@ -372,13 +418,18 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   TH2D* q_nmom_woK0_woSid_won_mc = (TH2D*)f->Get("q_nmom_woK0_woSid_won_mc");q_nmom_woK0_woSid_won_mc->Print();
 
   TH2D* q_nmom_wK0_woSid_won_mc = (TH2D*)f->Get("q_nmom_wK0_woSid_won_mc");q_nmom_wK0_woSid_won_mc->Print();
+  TH2D* q_nmom_wK0_woSid_won_mcgeta = (TH2D*)f->Get("q_nmom_wK0_woSid_won_mcgeta");q_nmom_wK0_woSid_won_mcgeta->Print();
 
   TH2D* q_nmom_woSid_won_data = (TH2D*)q_nmom_woK0_woSid_won_data->Clone("q_nmom_woSid_won_data");
   q_nmom_woSid_won_data->Add(q_nmom_wK0_woSid_won_data);
   TH2D* q_nmom_woSid_won_mc = (TH2D*)q_nmom_woK0_woSid_won_mc->Clone("q_nmom_woSid_won_mc");
   q_nmom_woSid_won_mc->Add(q_nmom_wK0_woSid_won_mc);
-  //q_nmom_woSid_won_mc->Add(q_nmom_wK0_woSid_won_mcgeta);
    
+  //divide pipin"X" BG and K0n"X" BG
+  TH2D* q_nmom_woSid_won_mcpipinX = (TH2D*)q_nmom_woK0_woSid_won_mc->Clone("q_nmom_woSid_won_mcpipinX");
+  q_nmom_woSid_won_mcpipinX->Add(q_nmom_wK0_woSid_won_mcgeta,1.0);
+  TH2D* q_nmom_woSid_won_mcK0nX = (TH2D*)q_nmom_wK0_woSid_won_mc->Clone("q_nmom_wSid_won_mcK0nX");
+  q_nmom_woSid_won_mcK0nX->Add(q_nmom_wK0_woSid_won_mcgeta,-1.0);
   
   TCanvas *cq_nmom_woSid_won = new TCanvas("cq_nmom_woSid_won","cq_nmom_woSid_won",1000,1000);
   cq_nmom_woSid_won ->Divide(2,2,0,0);
@@ -392,8 +443,11 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   //q_nmom_woSid_won_data->GetYaxis()->SetRangeUser(1,1.7);
   q_nmom_woSid_won_mc->RebinX(4);
   q_nmom_woSid_won_mc->RebinY(4);
+  q_nmom_woSid_won_mcpipinX->RebinX(4);
+  q_nmom_woSid_won_mcK0nX->RebinY(4);
   q_nmom_woSid_won_mc->GetXaxis()->SetRangeUser(0.2,1.0);
-  //q_nmom_woSid_won_mc->GetYaxis()->SetRangeUser(1,1.7);
+  q_nmom_woSid_won_mcpipinX->GetXaxis()->SetRangeUser(0.2,1.0);
+  q_nmom_woSid_won_mcK0nX->GetXaxis()->SetRangeUser(0.2,1.0);
   q_nmom_woSid_won_data->SetContour(10);
   q_nmom_woSid_won_mc->SetContour(10);
   q_nmom_woSid_won_data->SetMinimum(1);
@@ -409,25 +463,38 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   cq_nmom_woSid_won->cd(1);
   TH1D* nmom_woSid_won_data = (TH1D*)q_nmom_woSid_won_data->ProjectionX("nmom_woSid_won_data");
   TH1D* nmom_woSid_won_mc = (TH1D*)q_nmom_woSid_won_mc->ProjectionX("nmom_woSid_won_mc");
+  TH1D* nmom_woSid_won_mcpipinX = (TH1D*)q_nmom_woSid_won_mcpipinX->ProjectionX("nmom_woSid_won_mcpipinX");
+  TH1D* nmom_woSid_won_mcK0nX = (TH1D*)q_nmom_woSid_won_mcK0nX->ProjectionX("nmom_woSid_won_mcK0nX");
   nmom_woSid_won_data->SetTitle("");
   nmom_woSid_won_data->GetXaxis()->SetLabelSize(0);
   nmom_woSid_won_data->SetMarkerStyle(20);
   nmom_woSid_won_data->SetMarkerColor(1);
   nmom_woSid_won_data->Draw("E");
-  nmom_woSid_won_mc->SetLineColor(2);
+  nmom_woSid_won_mc->SetLineColor(6);
   nmom_woSid_won_mc->SetMarkerStyle(20);
   nmom_woSid_won_mc->SetMarkerColor(6);
   nmom_woSid_won_mc->Draw("Esame");
-  
+  nmom_woSid_won_mcpipinX->SetLineColor(2);
+  nmom_woSid_won_mcpipinX->SetMarkerStyle(20);
+  nmom_woSid_won_mcpipinX->SetMarkerColor(2);
+  if(showBG)nmom_woSid_won_mcpipinX->Draw("Esame");
+  nmom_woSid_won_mcK0nX->SetLineColor(3);
+  nmom_woSid_won_mcK0nX->SetMarkerStyle(20);
+  nmom_woSid_won_mcK0nX->SetMarkerColor(3);
+  if(showBG)nmom_woSid_won_mcK0nX->Draw("Esame");
   
   cq_nmom_woSid_won->cd(4);
   TH1D* q_woSid_won_data = (TH1D*)q_nmom_woSid_won_data->ProjectionY("q_woSid_won_data");
   TH1D* q_woSid_won_mc = (TH1D*)q_nmom_woSid_won_mc->ProjectionY("q_woSid_won_mc");
+  TH1D* q_woSid_won_mcpipinX = (TH1D*)q_nmom_woSid_won_mcpipinX->ProjectionY("q_woSid_won_mcpipinX");
+  TH1D* q_woSid_won_mcK0nX = (TH1D*)q_nmom_woSid_won_mcK0nX->ProjectionY("q_woSid_won_mcK0nX");
   q_woSid_won_data->SetTitle("");
   q_woSid_won_data->GetXaxis()->SetTitle("");
   
   TGraphErrors *gr_q_woSid_won_data = new TGraphErrors();
   TGraphErrors *gr_q_woSid_won_mc = new TGraphErrors();
+  TGraphErrors *gr_q_woSid_won_mcpipinX = new TGraphErrors();
+  TGraphErrors *gr_q_woSid_won_mcK0nX = new TGraphErrors();
   
   for(int ibin=0;ibin<q_woSid_won_data->GetNbinsX();ibin++){
     double cont = q_woSid_won_data->GetBinContent(ibin);
@@ -443,6 +510,21 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
     gr_q_woSid_won_mc->SetPoint(ibin,cont, bincenter);
     gr_q_woSid_won_mc->SetPointError(ibin,err,0);
   }
+  for(int ibin=0;ibin<q_woSid_won_mcpipinX->GetNbinsX();ibin++){
+    double cont = q_woSid_won_mcpipinX->GetBinContent(ibin);
+    double err = q_woSid_won_mcpipinX->GetBinError(ibin);
+    double bincenter = q_woSid_won_mcpipinX->GetBinCenter(ibin);
+    gr_q_woSid_won_mcpipinX->SetPoint(ibin,cont, bincenter);
+    gr_q_woSid_won_mcpipinX->SetPointError(ibin,err,0);
+  }
+  for(int ibin=0;ibin<q_woSid_won_mcK0nX->GetNbinsX();ibin++){
+    double cont = q_woSid_won_mcK0nX->GetBinContent(ibin);
+    double err = q_woSid_won_mcK0nX->GetBinError(ibin);
+    double bincenter = q_woSid_won_mcK0nX->GetBinCenter(ibin);
+    gr_q_woSid_won_mcK0nX->SetPoint(ibin,cont, bincenter);
+    gr_q_woSid_won_mcK0nX->SetPointError(ibin,err,0);
+  }
+
   gr_q_woSid_won_data->GetYaxis()->SetRangeUser(0,1.5);
   gr_q_woSid_won_data->SetMarkerStyle(20);
   gr_q_woSid_won_data->GetYaxis()->SetLabelSize(0);
@@ -450,6 +532,12 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   gr_q_woSid_won_mc->SetMarkerStyle(20);
   gr_q_woSid_won_mc->SetMarkerColor(6);
   gr_q_woSid_won_mc->Draw("P");
+  gr_q_woSid_won_mcpipinX->SetMarkerStyle(20);
+  gr_q_woSid_won_mcpipinX->SetMarkerColor(2);
+  if(showBG)gr_q_woSid_won_mcpipinX->Draw("P");
+  gr_q_woSid_won_mcK0nX->SetMarkerStyle(20);
+  gr_q_woSid_won_mcK0nX->SetMarkerColor(3);
+  if(showBG)gr_q_woSid_won_mcK0nX->Draw("P");
 
   TCanvas *cq_nmom_woSid_won_2 = new TCanvas("cq_nmom_woSid_won_2","cq_nmom_woSid_won_2",1000,1000);
   cq_nmom_woSid_won_2->Divide(2,2);
