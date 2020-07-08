@@ -328,8 +328,10 @@ Double_t param_IMpippim_mod[15]={
 Double_t func_q_mod(Double_t *x,Double_t *par)
 {
   if(0<x[0]) {  //&& x[0]<1.17){
-    return (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
+    double ret = (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
     +par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0)+par[6]*pow(x[0],6.0)+par[7]*pow(x[0],7.0));
+    if(ret>0) return ret;
+    else      return 0;
   }else{
    return 0;
   }
