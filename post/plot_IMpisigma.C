@@ -24,7 +24,8 @@
 #include "../src/GlobalVariables.h"
 #include "anacuts.h"
 #include "globalana.h"
-#include "weightfunc.h"
+//#include "weightfunc.h"
+#include "weightfuncGSp.h"
 
 const double pvalcut = 0.005;
 const bool gridon=true;
@@ -337,6 +338,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH1 *fweight_IMnpim_vSp19 = (TH1D*)fweight_Sp19->Get("IMnpim_woK0_woSid_won_ratio");
   fweight_IMnpim_vSp19->SetName("fweight_IMnpim_vSp19");
 
+  TF1* fweight_q_vSp20 = new TF1("fweight_q_vSp20",func_q_mod,0,1.5,8);
+  fweight_q_vSp20->SetParameters(param_q_mod);
 
   f->cd();
   // w/o kinematic fit
@@ -3219,21 +3222,21 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           //weight *= fweight_IMpippim_v364->Eval(LVec_pip_pim.M());
           weight *= fweight_IMpippim_vSp4->Interpolate(LVec_pip_pim.M());
           weight *= fweight_IMpippim_vSp10->Interpolate(LVec_pip_pim.M());
-          //weight *= fweight_q_v366->Eval(qkn.P()); 
-          weight *= fweight_q_vSp1->Interpolate(qkn.P());
-          weight *= fweight_q_vSp7->Interpolate(qkn.P());
-          weight *= fweight_q_vSp13->Interpolate(qkn.P());
-          weight *= fweight_q_vSp15->Interpolate(qkn.P());
+          weight *= fweight_q_vSp20->Eval(qkn.P()); 
+          //weight *= fweight_q_vSp1->Interpolate(qkn.P());
+          //weight *= fweight_q_vSp7->Interpolate(qkn.P());
+          //weight *= fweight_q_vSp13->Interpolate(qkn.P());
+          //weight *= fweight_q_vSp15->Interpolate(qkn.P());
           //weight *= fweight_IMnpim_v367->Eval(LVec_pim_n.M());
           weight *= fweight_IMnpim_vSp6->Interpolate(LVec_pim_n.M());
           weight *= fweight_IMnpim_vSp12->Interpolate(LVec_pim_n.M());
           weight *= fweight_IMnpim_vSp17->Interpolate(LVec_pim_n.M());
           weight *= fweight_IMnpim_vSp19->Interpolate(LVec_pim_n.M());
           //weight *= fweight_MMnmiss_v368->Eval(nmiss_mass);
-          weight *= fweight_MMnmiss_vSp2->Interpolate(nmiss_mass);
-          weight *= fweight_MMnmiss_vSp8->Interpolate(nmiss_mass);
-          weight *= fweight_MMnmiss_vSp14->Interpolate(nmiss_mass);
-          weight *= fweight_MMnmiss_vSp18->Interpolate(nmiss_mass);
+          //weight *= fweight_MMnmiss_vSp2->Interpolate(nmiss_mass);
+          //weight *= fweight_MMnmiss_vSp8->Interpolate(nmiss_mass);
+          //weight *= fweight_MMnmiss_vSp14->Interpolate(nmiss_mass);
+          //weight *= fweight_MMnmiss_vSp18->Interpolate(nmiss_mass);
           //weight *= fweight_IMnpip_v369->Eval(LVec_pip_n.M());
           weight *= fweight_IMnpip_vSp5->Interpolate(LVec_pip_n.M());
           weight *= fweight_IMnpip_vSp11->Interpolate(LVec_pip_n.M());
