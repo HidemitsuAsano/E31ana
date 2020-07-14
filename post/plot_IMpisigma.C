@@ -3287,7 +3287,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           weight *= fweight_nmom_vSm25->Eval((*LVec_n).P()); 
           weight *= fweight_IMpippim_vSm26->Eval(LVec_pip_pim.M());
           weight *= fweight_IMnpip_vSm27->Eval(LVec_pip_n.M());
-          weight *= fweight_IMnpim_vSm28->Eval(LVec_pim_n.M());
+          //weight *= fweight_IMnpim_vSm28->Eval(LVec_pim_n.M());
         }else if(SimFakeK0mode) { //wK0
           weight = 0;
           //weight *= fweight_q_wK0_v377->Eval((qkn.P()));
@@ -4017,7 +4017,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       }//for igap
     }//if K0rejectFlag && NBetaOK && NdEOK && MissNFlag0
     //---removing K0 END----------------------------------------------
-    //if(i> 1.00e+06) break;
+    if(i> 1.00e+06) break;
 
   }//for ievt
   //--- Filling Histogram END --------------------------------------------------
