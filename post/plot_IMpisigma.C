@@ -361,7 +361,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   fweight_q_vSm22->SetName("fweight_q_vSm22");
   
   
+  TF1* fweight_q_vSm23 = new TF1("fweight_q_vSm23",func_q_mod,0,1.5,8);
+  fweight_q_vSm23->SetParameters(param_q_mod);
   
+  TF1 *fweight_MMnmiss_vSm24 = new TF1("fweight_MMnmiss_vSm24",func_MMnmiss_mod,0,1.5,20);
+  fweight_MMnmiss_vSm24->SetParameters(param_MMnmiss_mod);
+  
+  TF1* fweight_nmom_vSm25 = new TF1("fweight_nmom_vSm25",func_nmom_mod,0.139,1.0,12);
+  fweight_nmom_vSm25->SetParameters(param_nmom_mod);
+  
+  TF1* fweight_IMpippim_vSm26 = new TF1("fweight_IMpippim_vSm26",func_IMpippim_mod,0.,1.0,15);
+  fweight_IMpippim_vSm26->SetParameters(param_IMpippim_mod);
   
   f->cd();
   // w/o kinematic fit
@@ -3258,29 +3268,18 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           isState = true;
         }
         if(SimFakemode) { //w/o K0
-          //weight *= fweight_q_vSm1->Eval(qkn.P()); 
-          weight *= fweight_nmom_vSm3->Interpolate((*LVec_n).P());
-          weight *= fweight_q_vSm5->Interpolate(qkn.P());
-          weight *= fweight_MMnmiss_vSm7->Interpolate(nmiss_mass);
-          weight *= fweight_IMpippim_vSm8->Interpolate(LVec_pip_pim.M());
-          weight *= fweight_MMnmiss_vSm9->Interpolate(nmiss_mass);
-          weight *= fweight_nmom_vSm10->Interpolate((*LVec_n).P());
-          weight *= fweight_IMnpip_vSm11->Interpolate(LVec_pip_n.M());
+          //weight *= fweight_IMnpip_vSm11->Interpolate(LVec_pip_n.M());
           weight *= fweight_IMnpim_vSm12->Interpolate(LVec_pim_n.M());
-          weight *= fweight_nmom_vSm13->Interpolate((*LVec_n).P());
-          weight *= fweight_MMnmiss_vSm14->Interpolate(nmiss_mass);
-          weight *= fweight_q_vSm15->Interpolate(qkn.P());
-          weight *= fweight_IMnpip_vSm16->Interpolate(LVec_pip_n.M());
+          //weight *= fweight_IMnpip_vSm16->Interpolate(LVec_pip_n.M());
           weight *= fweight_IMnpim_vSm17->Interpolate(LVec_pim_n.M());
-          weight *= fweight_IMpippim_vSm18->Interpolate(LVec_pip_pim.M());
-          weight *= fweight_MMnmiss_vSm19->Interpolate(nmiss_mass);
-          weight *= fweight_IMnpip_vSm20->Interpolate(LVec_pip_n.M());
+          //weight *= fweight_IMnpip_vSm20->Interpolate(LVec_pip_n.M());
           weight *= fweight_IMnpim_vSm21->Interpolate(LVec_pim_n.M());
-          weight *= fweight_q_vSm22->Interpolate(qkn.P());
-          //weight *= fweight_nmom_vSp23->Eval((*LVec_n).P()); 
-          //weight *= fweight_IMpippim_vSp22->Eval(LVec_pip_pim.M());
+          
+          weight *= fweight_q_vSm23->Eval(qkn.P()); 
+          weight *= fweight_MMnmiss_vSm24->Eval(nmiss_mass);
+          weight *= fweight_nmom_vSm25->Eval((*LVec_n).P()); 
+          weight *= fweight_IMpippim_vSm26->Eval(LVec_pip_pim.M());
           //weight *= fweight_IMnpim_vSp25->Eval(LVec_pim_n.M());
-          //weight *= fweight_MMnmiss_vSp21->Eval(nmiss_mass);
           //weight *= fweight_IMnpip_vSp24->Eval(LVec_pip_n.M());
         }else if(SimFakeK0mode) { //wK0
           weight = 0;
