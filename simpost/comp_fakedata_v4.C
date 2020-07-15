@@ -28,11 +28,11 @@ void comp_fakedata_v4()
   TFile *filerdata = TFile::Open("../post/evanaIMpisigma_npippim_v196_out.root","READ");
   filerdata->IsOpen();
   //fake nonK0+fake_n
-  //TFile *filefake = TFile::Open("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippim_pippimn_out_sum.root","READ");
-  TFile *filefake = TFile::Open("fakepippim_pippimn_out_sum.root","READ");
+  TFile *filefake = TFile::Open("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippim_pippimn_out_sum.root","READ");
+  //TFile *filefake = TFile::Open("fakepippim_pippimn_out_sum.root","READ");
   //fake K0(mass is smeared by resolution) + fake_n
-  TFile *filefakeK0 = TFile::Open("fakepippimK0_pippimn_out_sum.root","READ");
-  //TFile *filefakeK0 = TFile::Open("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippimK0_pippimn_out_sum.root","READ");
+  //TFile *filefakeK0 = TFile::Open("fakepippimK0_pippimn_out_sum.root","READ");
+  TFile *filefakeK0 = TFile::Open("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippimK0_pippimn_out_sum.root","READ");
   std::cout << __LINE__ << std::endl;
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_rdata = (TH2D*)filerdata->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_fake = (TH2D*)filefake->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
