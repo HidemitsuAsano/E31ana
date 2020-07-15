@@ -28,11 +28,11 @@ void comp_fakedata_v4()
   TFile *filerdata = TFile::Open("../post/evanaIMpisigma_npippim_v196_out.root","READ");
   filerdata->IsOpen();
   //fake nonK0+fake_n
-  TFile *filefake = TFile::Open("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippim_pippimn_out_sum.root","READ");
-  //TFile *filefake = TFile::Open("fakepippim_pippimn_out_sum.root","READ");
+  //TFile *filefake = TFile::Open("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippim_pippimn_out_sum.root","READ");
+  TFile *filefake = TFile::Open("fakepippim_pippimn_out_sum.root","READ");
   //fake K0(mass is smeared by resolution) + fake_n
-  //TFile *filefakeK0 = TFile::Open("fakepippimK0_pippimn_out_sum.root","READ");
-  TFile *filefakeK0 = TFile::Open("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippimK0_pippimn_out_sum.root","READ");
+  TFile *filefakeK0 = TFile::Open("fakepippimK0_pippimn_out_sum.root","READ");
+  //TFile *filefakeK0 = TFile::Open("/gpfs/group/had/knucl/e15/asano/sim/fakemc/fakepippimK0_pippimn_out_sum.root","READ");
   std::cout << __LINE__ << std::endl;
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_rdata = (TH2D*)filerdata->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
   TH2D* MMnmiss_IMnpipi_woK0_wSid_Sp_fake = (TH2D*)filefake->Get("MMnmiss_IMnpipi_woK0_wSid_Sp");
@@ -1148,6 +1148,7 @@ void comp_fakedata_v4()
   //MMnmiss vs IMpippim w/o K0 w/o (Sid & n);
   TH2D* MMnmiss_IMpippim_wK0_woSid_won_data = (TH2D*)MMnmiss_IMpippim_wK0_woSid_won[0]->Clone("MMnmiss_IMpippim_wK0_woSid_won_data");
   TH2D* MMnmiss_IMpippim_wK0_woSid_won_mc = (TH2D*)MMnmiss_IMpippim_wK0_woSid_won[1]->Clone("MMnmiss_IMpippim_wK0_woSid_won_mc");
+  TH2D* MMnmiss_IMpippim_wK0_woSid_won_mcgeta = (TH2D*)MMnmiss_IMpippim_wK0_woSid_won[2]->Clone("MMnmiss_IMpippim_wK0_woSid_won_mcgeta");
   //TH2D* test_wK0 = (TH2D*)MMnmiss_IMpippim_wK0_woSid_won[1]->Clone("test_wK0");   
   //TH2D* test_geta = (TH2D*)MMnmiss_IMpippim_wK0_woSid_won[2]->Clone("test_geta");   
   MMnmiss_IMpippim_wK0_woSid_won_mc->Add(MMnmiss_IMpippim_wK0_woSid_won[2]);
@@ -1389,6 +1390,7 @@ void comp_fakedata_v4()
   //q_nmom_wK0_woSid_won_data->Draw(opt);
   //cq_nmom_wK0_woSid_won->cd(2);
   TH2D* q_nmom_wK0_woSid_won_mc = (TH2D*)q_nmom_wK0_woSid_won[1]->Clone("q_nmom_wK0_woSid_won_mc");
+  TH2D* q_nmom_wK0_woSid_won_mcgeta = (TH2D*)q_nmom_wK0_woSid_won[2]->Clone("q_nmom_wK0_woSid_won_mcgeta");
   q_nmom_wK0_woSid_won_mc->SetTitle("#splitline{q_nmom_wK0_woSid_won}{  MC}");
   q_nmom_wK0_woSid_won_mc->Add(q_nmom_wK0_woSid_won[2]);
   //q_nmom_wK0_woSid_won_mc->RebinX(2);
