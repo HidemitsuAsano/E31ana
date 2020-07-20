@@ -305,6 +305,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH1F* diff_IMnpim_reactmc;//store mcData - reaction data
   TH1F* diff_IMnpip_reactmc;//store mcData - reaction data
   TH1F* diff_nmiss_reactmc;//store mcData - reaction data mom.
+  TH2F* diff2D_nmiss_IMnpim_reactmc;
+  TH2F* diff2D_nmiss_IMnpip_reactmc;
   TH2F* IMnpim_IMnpip_mc;//store mcData node
   TH2F* nmom_IMnpim_mc;
   TH2F* nmom_IMnpip_mc;
@@ -313,6 +315,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* IMnpim_IMnpip_dE_wK0;
   TH2F* IMnpim_IMnpip_dE_n;//
   TH2F* IMnpim_IMnpip_dE_wSid_n;
+  TH2F* IMnpim_IMnpip_dE_wSid_n_fake;
   TH2F* IMnpim_IMnpip_dE_woK0_n;//
   TH2F* IMnpim_IMnpip_dE_woK0_wSid_n;//
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n;//
@@ -400,6 +403,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* MMnmiss_IMpippim_dE;
   TH2F* MMnmiss_IMpippim_dE_wSid;
   TH2F* MMnmiss_IMpippim_dE_wSid_n;
+  TH2F* MMnmiss_IMpippim_dE_wSid_n_fake;
   TH2F* MMnmiss_IMpippim_dE_woK0;
   TH2F* MMnmiss_IMpippim_dE_woK0_wSid;
   TH2F* MMnmiss_IMpippim_dE_woK0_wSid_n;
@@ -475,6 +479,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* MMnmiss_IMnpipi_woK0_woSid_won;
   TH2F* MMnmiss_Momnpipi_woK0_woSid_won;
   TH2F* q_IMnpipi_wSid_n;
+  TH2F* q_IMnpipi_wSid_n_fake;
   TH2F* q_IMnpipi_woK0_wSid_n;
   TH2F* q_IMnpipi_wK0_wSid_n;
   TH2F* q_IMpiSigma_gen;//fine bins
@@ -803,14 +808,22 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMom_MMass_wK0_woSidn_won->SetXTitle("Missing Mass [GeV/c^{2}]");
   MMom_MMass_wK0_woSidn_won->SetYTitle("Missing Mom. [GeV/c]");
   
-  diff_IMnpim_reactmc = new TH1F("diff_IMnpim_reactmc","diff_IMnpim_reactmc",1000,-0.5,0.5);
+  diff_IMnpim_reactmc = new TH1F("diff_IMnpim_reactmc","diff_IMnpim_reactmc",1000,-1.0,1.0);
   diff_IMnpim_reactmc->SetXTitle("diff. IMnpim (MCData - Reac.) [GeV/c^{2}]");
 
-  diff_IMnpip_reactmc = new TH1F("diff_IMnpip_reactmc","diff_IMnpip_reactmc",1000,-0.5,0.5);
+  diff_IMnpip_reactmc = new TH1F("diff_IMnpip_reactmc","diff_IMnpip_reactmc",1000,-1.0,1.0);
   diff_IMnpip_reactmc->SetXTitle("diff. IMnpip (MCData - Reac.) [GeV/c^{2}]");
   
-  diff_nmiss_reactmc = new TH1F("diff_nmiss_reactmc","diff_nmiss_reactmc",2000,-1.0,1.0);
+  diff_nmiss_reactmc = new TH1F("diff_nmiss_reactmc","diff_nmiss_reactmc",1500,-1.5,1.5);
   diff_nmiss_reactmc->SetXTitle("diff. nmiss (MCData - Reac.) [GeV/c]");
+
+  diff2D_nmiss_IMnpim_reactmc = new TH2F("diff2D_nmiss_IMnpim_reactmc","diff2D_nmiss_IMnpim_reactmc",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_nmiss_IMnpim_reactmc->SetXTitle("diff. IMnpim (MCData - Reac.) [GeV/c^{2}]");
+  diff2D_nmiss_IMnpim_reactmc->SetYTitle("diff. nmiss (MCData - Reac.) [GeV/c]");
+
+  diff2D_nmiss_IMnpip_reactmc = new TH2F("diff2D_nmiss_IMnpip_reactmc","diff2D_nmiss_IMnpip_reactmc",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_nmiss_IMnpip_reactmc->SetXTitle("diff. IMnpip (MCData - Reac.) [GeV/c^{2}]");
+  diff2D_nmiss_IMnpip_reactmc->SetYTitle("diff. nmiss (MCData - Reac.) [GeV/c]");
   
   IMnpim_IMnpip_mc = new TH2F("IMnpim_IMnpip_mc", "IMnpim_IMnpip_mc",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_mc->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
@@ -832,6 +845,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   IMnpim_IMnpip_dE_wSid_n = new TH2F("IMnpim_IMnpip_dE_wSid_n", "IMnpim_IMnpip_dE_wSid_n",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wSid_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wSid_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  
+  IMnpim_IMnpip_dE_wSid_n_fake = new TH2F("IMnpim_IMnpip_dE_wSid_n_fake", "IMnpim_IMnpip_dE_wSid_n_fake",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  IMnpim_IMnpip_dE_wSid_n_fake->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpim_IMnpip_dE_wSid_n_fake->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
 
   IMnpim_IMnpip_dE_woK0 = new TH2F(Form("IMnpim_IMnpip_dE_woK0"), Form("IMnpim_IMnpip_dE_woK0"),nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_woK0->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
@@ -852,6 +869,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMnmiss_IMpippim_dE_wSid_n = new TH2F("MMnmiss_IMpippim_dE_wSid_n", "MMnmiss_IMpippim_dE_wSid_n",nbinpippim,0.,1.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMpippim_dE_wSid_n->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMpippim_dE_wSid_n->SetYTitle("Miss Mass. [GeV/c^{2}]");
+  
+  MMnmiss_IMpippim_dE_wSid_n_fake = new TH2F("MMnmiss_IMpippim_dE_wSid_n_fake", "MMnmiss_IMpippim_dE_wSid_n_fake",nbinpippim,0.,1.0,nbinnmiss, nmisslow, nmisshigh);
+  MMnmiss_IMpippim_dE_wSid_n_fake->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  MMnmiss_IMpippim_dE_wSid_n_fake->SetYTitle("Miss Mass. [GeV/c^{2}]");
 
   MMnmiss_IMpippim_dE_woK0 = new TH2F("MMnmiss_IMpippim_dE_woK0", "MMnmiss_IMpippim_dE_woK0",nbinpippim,0.,1.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMpippim_dE_woK0->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -1501,9 +1522,13 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMnmiss_Momnpipi_woK0_woSid_won->SetXTitle("Mom.(n#pi^{+}#pi^{-}) [GeV/c]");
   MMnmiss_Momnpipi_woK0_woSid_won->SetYTitle("Miss. Mass. [GeV/c^{2}]");
 
-  q_IMnpipi_wSid_n = new TH2F(Form("q_IMnpipi_wSid_n"),Form("q_IMnpipi_wSid_n"),nbinIMnpipi,1,2,nbinq,0,1.5);
+  q_IMnpipi_wSid_n = new TH2F("q_IMnpipi_wSid_n","q_IMnpipi_wSid_n",nbinIMnpipi,1,2,nbinq,0,1.5);
   q_IMnpipi_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_wSid_n->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMnpipi_wSid_n_fake = new TH2F("q_IMnpipi_wSid_n_fake","q_IMnpipi_wSid_n_fake",nbinIMnpipi,1,2,nbinq,0,1.5);
+  q_IMnpipi_wSid_n_fake->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMnpipi_wSid_n_fake->SetYTitle("Mom. Transfer [GeV/c]");
 
   q_IMnpipi_woK0_wSid_n = new TH2F(Form("q_IMnpipi_woK0_wSid_n"),Form("q_IMnpipi_woK0_wSid_n"), nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -2747,6 +2772,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     TLorentzVector LVec_pi_react;
     TLorentzVector LVec_piSigma_react;
     TLorentzVector qkn_react;
+    bool IsFakeN = false;
     if(SimSpmode || SimSmmode) {
       LVec_Sigma_react = *react_Sigma;
       LVec_pi_react = *react_pi;
@@ -2770,10 +2796,20 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       q_IMpiSigma_gen->Fill(LVec_piSigma_react.M()/1000.,qkn_react.P()/1000.);
       diff_IMnpim_reactmc->Fill(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.);
       diff_IMnpip_reactmc->Fill(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.);
-      diff_nmiss_reactmc->Fill((*mcmom_ncds).P()-(*react_nmiss).P()/1000.);
+      diff_nmiss_reactmc->Fill((*mcmom_nmiss).P()-(*react_nmiss).P()/1000.);
+      diff2D_nmiss_IMnpim_reactmc->Fill(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.,(*mcmom_nmiss).P()-(*react_nmiss).P()/1000.);
+      diff2D_nmiss_IMnpip_reactmc->Fill(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.,(*mcmom_nmiss).P()-(*react_nmiss).P()/1000.);
       IMnpim_IMnpip_mc->Fill(LVec_pip_n_mc.M(), LVec_pim_n_mc.M());
       nmom_IMnpip_mc->Fill((*mcmom_ncds).P(), LVec_pip_n_mc.M());
       nmom_IMnpim_mc->Fill((*mcmom_ncds).P(), LVec_pim_n_mc.M());
+      if(SimSpmode){
+        if(fabs(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.) > 0.001) IsFakeN = true;
+        if(fabs((*mcmom_nmiss).P()-(*react_nmiss).P()/1000.) > 0.001) IsFakeN = true;
+      }
+      if(SimSmmode){
+        if(fabs(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.) > 0.001) IsFakeN = true;
+        if(fabs((*mcmom_nmiss).P()-(*react_nmiss).P()/1000.) > 0.001) IsFakeN = true;
+      }
     }
 
     bool K0rejectFlag=false;
@@ -3571,6 +3607,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         nmom_MMnmiss_wSid_n->Fill(nmiss_mass,(*LVec_n).P(),weight);
         pipmom_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_pip).P(),weight);
         pimmom_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_pim).P(),weight);
+        if(IsFakeN){
+          q_IMnpipi_wSid_n_fake->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+          MMnmiss_IMpippim_dE_wSid_n_fake->Fill(LVec_pip_pim.M(),nmiss_mass ,weight);
+          IMnpim_IMnpip_dE_wSid_n_fake->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
+        }
       }
       for(int igap=0; igap<ngap; igap++) {
         if(SigmaPsideFlag[sidebandtype][igap] || SigmaMsideFlag[sidebandtype][igap]) {
