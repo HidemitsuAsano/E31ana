@@ -307,6 +307,20 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH1F* diff_nmiss_reactmc;//store mcData - reaction data mom.
   TH2F* diff2D_nmiss_IMnpim_reactmc;
   TH2F* diff2D_nmiss_IMnpip_reactmc;
+
+  TH2F* diff2D_nmiss_IMnpim_recomc_wSid_woK0_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmiss_IMnpip_recomc_wSid_woK0_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmiss_IMnpim_recomc_wSid_wK0_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmiss_IMnpip_recomc_wSid_wK0_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmiss_IMnpim_recomc_wSid_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmiss_IMnpip_recomc_wSid_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpim_recomc_wSid_woK0_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpip_recomc_wSid_woK0_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpim_recomc_wSid_wK0_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpip_recomc_wSid_wK0_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpim_recomc_wSid_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpip_recomc_wSid_n;//store reconstructed data - mcData
+  
   TH2F* IMnpim_IMnpip_mc;//store mcData node
   TH2F* nmom_IMnpim_mc;
   TH2F* nmom_IMnpip_mc;
@@ -816,7 +830,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   
   diff_nmiss_reactmc = new TH1F("diff_nmiss_reactmc","diff_nmiss_reactmc",1500,-1.5,1.5);
   diff_nmiss_reactmc->SetXTitle("diff. nmiss (MCData - Reac.) [GeV/c]");
-
+  
   diff2D_nmiss_IMnpim_reactmc = new TH2F("diff2D_nmiss_IMnpim_reactmc","diff2D_nmiss_IMnpim_reactmc",200,-1.0,1.0,300,-1.5,1.5);
   diff2D_nmiss_IMnpim_reactmc->SetXTitle("diff. IMnpim (MCData - Reac.) [GeV/c^{2}]");
   diff2D_nmiss_IMnpim_reactmc->SetYTitle("diff. nmiss (MCData - Reac.) [GeV/c]");
@@ -824,7 +838,24 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   diff2D_nmiss_IMnpip_reactmc = new TH2F("diff2D_nmiss_IMnpip_reactmc","diff2D_nmiss_IMnpip_reactmc",200,-1.0,1.0,300,-1.5,1.5);
   diff2D_nmiss_IMnpip_reactmc->SetXTitle("diff. IMnpip (MCData - Reac.) [GeV/c^{2}]");
   diff2D_nmiss_IMnpip_reactmc->SetYTitle("diff. nmiss (MCData - Reac.) [GeV/c]");
+   
+  diff2D_nmiss_IMnpim_recomc = new TH2F("diff2D_nmiss_IMnpim_recomc","diff2D_nmiss_IMnpim_recomc",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_nmiss_IMnpim_recomc->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmiss_IMnpim_recomc->SetYTitle("diff. nmiss (reco. - MCData) [GeV/c]");
+
+  diff2D_nmiss_IMnpip_recomc = new TH2F("diff2D_nmiss_IMnpip_recomc","diff2D_nmiss_IMnpip_recomc",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_nmiss_IMnpip_recomc->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmiss_IMnpip_recomc->SetYTitle("diff. nmiss (reco. - MCData) [GeV/c]");
   
+  diff2D_nmom_IMnpim_recomc = new TH2F("diff2D_nmom_IMnpim_recomc","diff2D_nmom_IMnpim_recomc",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_nmom_IMnpim_recomc->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmom_IMnpim_recomc->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
+
+  diff2D_nmom_IMnpip_recomc = new TH2F("diff2D_nmom_IMnpip_recomc","diff2D_nmom_IMnpip_recomc",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_nmom_IMnpip_recomc->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmom_IMnpip_recomc->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
+
+
   IMnpim_IMnpip_mc = new TH2F("IMnpim_IMnpip_mc", "IMnpim_IMnpip_mc",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_mc->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_mc->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
