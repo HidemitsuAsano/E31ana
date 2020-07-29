@@ -444,6 +444,8 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   q_nmom_woSid_won_mc->RebinX(4);
   q_nmom_woSid_won_mc->RebinY(4);
   q_nmom_woSid_won_mcpipinX->RebinX(4);
+  q_nmom_woSid_won_mcpipinX->RebinY(4);
+  q_nmom_woSid_won_mcK0nX->RebinX(4);
   q_nmom_woSid_won_mcK0nX->RebinY(4);
   q_nmom_woSid_won_mc->GetXaxis()->SetRangeUser(0.2,1.0);
   q_nmom_woSid_won_mcpipinX->GetXaxis()->SetRangeUser(0.2,1.0);
