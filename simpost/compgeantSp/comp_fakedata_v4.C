@@ -1377,8 +1377,8 @@ void comp_fakedata_v4()
   TH2D* q_nmom_woK0_woSid_won_mc = (TH2D*)q_nmom_woK0_woSid_won[1]->Clone("q_nmom_woK0_woSid_won_mc");
   q_nmom_woK0_woSid_won_mc->SetTitle("#splitline{q_nmom_woK0_woSid_won}{  MC}");
   //q_nmom_woK0_woSid_won_mc->RebinX(2);
-  q_nmom_woK0_woSid_won_mc->SetMinimum(1);
-  q_nmom_woK0_woSid_won_mc->SetMaximum(q_nmom_woK0_woSid_won_data->GetMaximum());
+  //q_nmom_woK0_woSid_won_mc->SetMinimum(1);
+  //q_nmom_woK0_woSid_won_mc->SetMaximum(q_nmom_woK0_woSid_won_data->GetMaximum());
   //q_nmom_woK0_woSid_won_mc->Draw(opt);
    
 
