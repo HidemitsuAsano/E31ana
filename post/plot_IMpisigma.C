@@ -302,28 +302,49 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* MMom_MMass_woK0_woSid_won;
   TH2F* MMom_MMass_wK0_woSidn_won;
   TH2F* MMom_MMass_wK0_woSid_won;
-  TH1F* diff_IMnpim_reactmc;//store mcData - reaction data
-  TH1F* diff_IMnpip_reactmc;//store mcData - reaction data
-  TH1F* diff_nmiss_reactmc;//store mcData - reaction data mom.
-  TH2F* diff2D_nmiss_IMnpim_reactmc;
-  TH2F* diff2D_nmiss_IMnpip_reactmc;
-
-  TH2F* diff2D_nmiss_IMnpim_recomc_wSid_woK0_n;//store reconstructed data - mcData
-  TH2F* diff2D_nmiss_IMnpip_recomc_wSid_woK0_n;//store reconstructed data - mcData
-  TH2F* diff2D_nmiss_IMnpim_recomc_wSid_wK0_n;//store reconstructed data - mcData
-  TH2F* diff2D_nmiss_IMnpip_recomc_wSid_wK0_n;//store reconstructed data - mcData
-  TH2F* diff2D_nmiss_IMnpim_recomc_wSid_n;//store reconstructed data - mcData
-  TH2F* diff2D_nmiss_IMnpip_recomc_wSid_n;//store reconstructed data - mcData
-  TH2F* diff2D_nmom_IMnpim_recomc_wSid_woK0_n;//store reconstructed data - mcData
-  TH2F* diff2D_nmom_IMnpip_recomc_wSid_woK0_n;//store reconstructed data - mcData
-  TH2F* diff2D_nmom_IMnpim_recomc_wSid_wK0_n;//store reconstructed data - mcData
-  TH2F* diff2D_nmom_IMnpip_recomc_wSid_wK0_n;//store reconstructed data - mcData
-  TH2F* diff2D_nmom_IMnpim_recomc_wSid_n;//store reconstructed data - mcData
-  TH2F* diff2D_nmom_IMnpip_recomc_wSid_n;//store reconstructed data - mcData
   
+  //
   TH2F* IMnpim_IMnpip_mc;//store mcData node
   TH2F* nmom_IMnpim_mc;
   TH2F* nmom_IMnpip_mc;
+  
+  //GEANT reaction data - mcData matching 
+  TH1F* diff_IMnpim_reactmc;//store mcData - reaction data
+  TH1F* diff_IMnpip_reactmc;//store mcData - reaction data
+  TH1F* diff_nmiss_reactmc;//store mcData - reaction data mom.
+  TH1F* diff_cosnmiss_reactmc;//store mcData - reaction data mom.
+  TH2F* diff2D_MMnmiss_IMnpim_reactmc;
+  TH2F* diff2D_MMnmiss_IMnpip_reactmc;
+  
+  //GEANT mcData - reco. data matching 
+  //fake1: fake event flag based on mcData - reaction data matching
+  TH2F* diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n;//store reconstructed data - mcData
+  TH2F* diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n;//store reconstructed data - mcData
+  TH2F* diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n_fake1;//store reconstructed data - mcData
+  TH2F* diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n_fake1;//store reconstructed data - mcData
+  TH2F* diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n;//store reconstructed data - mcData
+  TH2F* diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n;//store reconstructed data - mcData
+  TH2F* diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n_fake1;//store reconstructed data - mcData
+  TH2F* diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n_fake1;//store reconstructed data - mcData
+  TH2F* diff2D_MMnmiss_IMnpim_recomc_wSid_n;//store reconstructed data - mcData
+  TH2F* diff2D_MMnmiss_IMnpip_recomc_wSid_n;//store reconstructed data - mcData
+  TH2F* diff2D_MMnmiss_IMnpim_recomc_wSid_n_fake1;//store reconstructed data - mcData
+  TH2F* diff2D_MMnmiss_IMnpip_recomc_wSid_n_fake1;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpim_recomc_woK0_wSid_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpip_recomc_woK0_wSid_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpim_recomc_woK0_wSid_n_fake1;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpip_recomc_woK0_wSid_n_fake1;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpim_recomc_wK0_wSid_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpip_recomc_wK0_wSid_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpim_recomc_wK0_wSid_n_fake1;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpip_recomc_wK0_wSid_n_fake1;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpim_recomc_wSid_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpip_recomc_wSid_n;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpim_recomc_wSid_n_fake1;//store reconstructed data - mcData
+  TH2F* diff2D_nmom_IMnpip_recomc_wSid_n_fake1;//store reconstructed data - mcData
+  
+
+
   TH2F* IMnpim_IMnpip_dE;
   TH2F* IMnpim_IMnpip_dE_woK0;
   TH2F* IMnpim_IMnpip_dE_wK0;
@@ -831,30 +852,112 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   diff_nmiss_reactmc = new TH1F("diff_nmiss_reactmc","diff_nmiss_reactmc",1500,-1.5,1.5);
   diff_nmiss_reactmc->SetXTitle("diff. nmiss (MCData - Reac.) [GeV/c]");
   
-  diff2D_nmiss_IMnpim_reactmc = new TH2F("diff2D_nmiss_IMnpim_reactmc","diff2D_nmiss_IMnpim_reactmc",200,-1.0,1.0,300,-1.5,1.5);
-  diff2D_nmiss_IMnpim_reactmc->SetXTitle("diff. IMnpim (MCData - Reac.) [GeV/c^{2}]");
-  diff2D_nmiss_IMnpim_reactmc->SetYTitle("diff. nmiss (MCData - Reac.) [GeV/c]");
-
-  diff2D_nmiss_IMnpip_reactmc = new TH2F("diff2D_nmiss_IMnpip_reactmc","diff2D_nmiss_IMnpip_reactmc",200,-1.0,1.0,300,-1.5,1.5);
-  diff2D_nmiss_IMnpip_reactmc->SetXTitle("diff. IMnpip (MCData - Reac.) [GeV/c^{2}]");
-  diff2D_nmiss_IMnpip_reactmc->SetYTitle("diff. nmiss (MCData - Reac.) [GeV/c]");
-   
-  diff2D_nmiss_IMnpim_recomc = new TH2F("diff2D_nmiss_IMnpim_recomc","diff2D_nmiss_IMnpim_recomc",200,-1.0,1.0,300,-1.5,1.5);
-  diff2D_nmiss_IMnpim_recomc->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
-  diff2D_nmiss_IMnpim_recomc->SetYTitle("diff. nmiss (reco. - MCData) [GeV/c]");
-
-  diff2D_nmiss_IMnpip_recomc = new TH2F("diff2D_nmiss_IMnpip_recomc","diff2D_nmiss_IMnpip_recomc",200,-1.0,1.0,300,-1.5,1.5);
-  diff2D_nmiss_IMnpip_recomc->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
-  diff2D_nmiss_IMnpip_recomc->SetYTitle("diff. nmiss (reco. - MCData) [GeV/c]");
+  diff_cosnmiss_reactmc = new TH1F("diff_cosnmiss_reactmc","diff_cosnmiss_reactmc",2000,-1.0,1.0);
+  diff_cosnmiss_reactmc->SetXTitle("diff. cos. nmiss (MCData - Reac.) [radian]");
   
-  diff2D_nmom_IMnpim_recomc = new TH2F("diff2D_nmom_IMnpim_recomc","diff2D_nmom_IMnpim_recomc",200,-1.0,1.0,300,-1.5,1.5);
-  diff2D_nmom_IMnpim_recomc->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
-  diff2D_nmom_IMnpim_recomc->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
+  diff2D_MMnmiss_IMnpim_reactmc = new TH2F("diff2D_MMnmiss_IMnpim_reactmc","diff2D_MMnmiss_IMnpim_reactmc",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_MMnmiss_IMnpim_reactmc->SetXTitle("diff. IMnpim (MCData - Reac.) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpim_reactmc->SetYTitle("diff. Missing Mass (MCData - Reac.) [GeV/c^{2}]");
 
-  diff2D_nmom_IMnpip_recomc = new TH2F("diff2D_nmom_IMnpip_recomc","diff2D_nmom_IMnpip_recomc",200,-1.0,1.0,300,-1.5,1.5);
-  diff2D_nmom_IMnpip_recomc->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
-  diff2D_nmom_IMnpip_recomc->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
+  diff2D_MMnmiss_IMnpip_reactmc = new TH2F("diff2D_MMnmiss_IMnpip_reactmc","diff2D_MMnmiss_IMnpip_reactmc",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_MMnmiss_IMnpip_reactmc->SetXTitle("diff. IMnpip (MCData - Reac.) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpip_reactmc->SetYTitle("diff. Missing Mass (MCData - Reac.) [GeV/c^{2}]");
+   
+  diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n = new TH2F("diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n","diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n->SetYTitle("diff. Missing Mass (reco. - MCData) [GeV/c^{2}]");
 
+  diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n_fake1 = new TH2F("diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n_fake1","diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n_fake1",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n_fake1->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n_fake1->SetYTitle("diff. Missing Mass (reco. - MCData) [GeV/c^{2}]");
+  
+  diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n = new TH2F("diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n","diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n->SetYTitle("diff. Missing Mass (reco. - MCData) [GeV/c^{2}]");
+  
+  diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n_fake1 = new TH2F("diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n_fake1","diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n_fake1",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n_fake1->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n_fake1->SetYTitle("diff. Missing Mass (reco. - MCData) [GeV/c^{2}]");
+  
+  diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n = new TH2F("diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n","diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n->SetYTitle("diff. Missing Mass (reco. - MCData) [GeV/c^{2}]");
+  
+  diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n_fake1 = new TH2F("diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n_fake1","diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n_fake1",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n_fake1->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n_fake1->SetYTitle("diff. Missing Mass (reco. - MCData) [GeV/c^{2}]");
+
+  diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n = new TH2F("diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n","diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n->SetYTitle("diff. Missing Mass (reco. - MCData) [GeV/c^{2}]");
+  
+  diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n_fake1 = new TH2F("diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n_fake1","diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n_fake1",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n_fake1->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n_fake1->SetYTitle("diff. Missing Mass (reco. - MCData) [GeV/c^{2}]");
+
+  diff2D_MMnmiss_IMnpim_recomc_wSid_n = new TH2F("diff2D_MMnmiss_IMnpim_recomc_wSid_n","diff2D_MMnmiss_IMnpim_recomc_wSid_n",2000,-1.0,1.0,3000,-1.5,1.5);
+  diff2D_MMnmiss_IMnpim_recomc_wSid_n->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpim_recomc_wSid_n->SetYTitle("diff. Missing Mass (reco. - MCData) [GeV/c^{2}]");
+  
+  diff2D_MMnmiss_IMnpim_recomc_wSid_n_fake1 = new TH2F("diff2D_MMnmiss_IMnpim_recomc_wSid_n_fake1","diff2D_MMnmiss_IMnpim_recomc_wSid_n_fake1",2000,-1.0,1.0,3000,-1.5,1.5);
+  diff2D_MMnmiss_IMnpim_recomc_wSid_n_fake1->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpim_recomc_wSid_n_fake1->SetYTitle("diff. Missing Mass (reco. - MCData) [GeV/c^{2}]");
+
+  diff2D_MMnmiss_IMnpip_recomc_wSid_n = new TH2F("diff2D_MMnmiss_IMnpip_recomc_wSid_n","diff2D_MMnmiss_IMnpip_recomc_wSid_n",2000,-1.0,1.0,3000,-1.5,1.5);
+  diff2D_MMnmiss_IMnpip_recomc_wSid_n->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpip_recomc_wSid_n->SetYTitle("diff. Missing Mass (reco. - MCData) [GeV/c^{2}]");
+  
+  diff2D_MMnmiss_IMnpip_recomc_wSid_n_fake1 = new TH2F("diff2D_MMnmiss_IMnpip_recomc_wSid_n_fake1","diff2D_MMnmiss_IMnpip_recomc_wSid_n_fake1",2000,-1.0,1.0,3000,-1.5,1.5);
+  diff2D_MMnmiss_IMnpip_recomc_wSid_n_fake1->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpip_recomc_wSid_n_fake1->SetYTitle("diff. Missing Mass (reco. - MCData) [GeV/c^{2}]");
+
+  diff2D_nmom_IMnpim_recomc_woK0_wSid_n = new TH2F("diff2D_nmom_IMnpim_recomc_woK0_wSid_n","diff2D_nmom_IMnpim_recomc_woK0_wSid_n",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_nmom_IMnpim_recomc_woK0_wSid_n->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmom_IMnpim_recomc_woK0_wSid_n->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
+  
+  diff2D_nmom_IMnpim_recomc_woK0_wSid_n_fake1 = new TH2F("diff2D_nmom_IMnpim_recomc_woK0_wSid_n_fake1","diff2D_nmom_IMnpim_recomc_woK0_wSid_n_fake1",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_nmom_IMnpim_recomc_woK0_wSid_n_fake1->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmom_IMnpim_recomc_woK0_wSid_n_fake1->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
+
+  diff2D_nmom_IMnpip_recomc_woK0_wSid_n = new TH2F("diff2D_nmom_IMnpip_recomc_woK0_wSid_n","diff2D_nmom_IMnpip_recomc_woK0_wSid_n",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_nmom_IMnpip_recomc_woK0_wSid_n->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmom_IMnpip_recomc_woK0_wSid_n->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
+  
+  diff2D_nmom_IMnpip_recomc_woK0_wSid_n_fake1 = new TH2F("diff2D_nmom_IMnpip_recomc_woK0_wSid_n_fake1","diff2D_nmom_IMnpip_recomc_woK0_wSid_n_fake1",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_nmom_IMnpip_recomc_woK0_wSid_n_fake1->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmom_IMnpip_recomc_woK0_wSid_n_fake1->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
+
+  diff2D_nmom_IMnpim_recomc_wK0_wSid_n = new TH2F("diff2D_nmom_IMnpim_recomc_wK0_wSid_n","diff2D_nmom_IMnpim_recomc_wK0_wSid_n",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_nmom_IMnpim_recomc_wK0_wSid_n->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmom_IMnpim_recomc_wK0_wSid_n->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
+  
+  diff2D_nmom_IMnpim_recomc_wK0_wSid_n_fake1 = new TH2F("diff2D_nmom_IMnpim_recomc_wK0_wSid_n_fake1","diff2D_nmom_IMnpim_recomc_wK0_wSid_n_fake1",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_nmom_IMnpim_recomc_wK0_wSid_n_fake1->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmom_IMnpim_recomc_wK0_wSid_n_fake1->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
+
+  diff2D_nmom_IMnpip_recomc_wK0_wSid_n = new TH2F("diff2D_nmom_IMnpip_recomc_wK0_wSid_n","diff2D_nmom_IMnpip_recomc_wK0_wSid_n",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_nmom_IMnpip_recomc_wK0_wSid_n->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmom_IMnpip_recomc_wK0_wSid_n->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
+   
+  diff2D_nmom_IMnpip_recomc_wK0_wSid_n_fake1 = new TH2F("diff2D_nmom_IMnpip_recomc_wK0_wSid_n_fake1","diff2D_nmom_IMnpip_recomc_wK0_wSid_n_fake1",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_nmom_IMnpip_recomc_wK0_wSid_n_fake1->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmom_IMnpip_recomc_wK0_wSid_n_fake1->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
+  
+  diff2D_nmom_IMnpim_recomc_wSid_n = new TH2F("diff2D_nmom_IMnpim_recomc_wSid_n","diff2D_nmom_IMnpim_recomc_wSid_n",2000,-1.0,1.0,3000,-1.5,1.5);
+  diff2D_nmom_IMnpim_recomc_wSid_n->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmom_IMnpim_recomc_wSid_n->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
+  
+  diff2D_nmom_IMnpim_recomc_wSid_n_fake1 = new TH2F("diff2D_nmom_IMnpim_recomc_wSid_n_fake1","diff2D_nmom_IMnpim_recomc_wSid_n_fake1",2000,-1.0,1.0,3000,-1.5,1.5);
+  diff2D_nmom_IMnpim_recomc_wSid_n_fake1->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmom_IMnpim_recomc_wSid_n_fake1->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
+
+  diff2D_nmom_IMnpip_recomc_wSid_n = new TH2F("diff2D_nmom_IMnpip_recomc_wSid_n","diff2D_nmom_IMnpip_recomc_wSid_n",2000,-1.0,1.0,3000,-1.5,1.5);
+  diff2D_nmom_IMnpip_recomc_wSid_n->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmom_IMnpip_recomc_wSid_n->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
+
+  diff2D_nmom_IMnpip_recomc_wSid_n_fake1 = new TH2F("diff2D_nmom_IMnpip_recomc_wSid_n_fake1","diff2D_nmom_IMnpip_recomc_wSid_n_fake1",2000,-1.0,1.0,3000,-1.5,1.5);
+  diff2D_nmom_IMnpip_recomc_wSid_n_fake1->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
+  diff2D_nmom_IMnpip_recomc_wSid_n_fake1->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
 
   IMnpim_IMnpip_mc = new TH2F("IMnpim_IMnpip_mc", "IMnpim_IMnpip_mc",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_mc->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
@@ -2803,7 +2906,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     TLorentzVector LVec_pi_react;
     TLorentzVector LVec_piSigma_react;
     TLorentzVector qkn_react;
-    bool IsFakeN = false;
+    bool IsFakeN1 = false;
+    bool IsFakeN2 = false;
     if(SimSpmode || SimSmmode) {
       LVec_Sigma_react = *react_Sigma;
       LVec_pi_react = *react_pi;
@@ -2828,18 +2932,23 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       diff_IMnpim_reactmc->Fill(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.);
       diff_IMnpip_reactmc->Fill(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.);
       diff_nmiss_reactmc->Fill((*mcmom_nmiss).P()-(*react_nmiss).P()/1000.);
-      diff2D_nmiss_IMnpim_reactmc->Fill(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.,(*mcmom_nmiss).P()-(*react_nmiss).P()/1000.);
-      diff2D_nmiss_IMnpip_reactmc->Fill(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.,(*mcmom_nmiss).P()-(*react_nmiss).P()/1000.);
+      diff2D_MMnmiss_IMnpim_reactmc->Fill(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.,(*mcmom_nmiss).M()-(*react_nmiss).M()/1000.);
+      diff2D_MMnmiss_IMnpip_reactmc->Fill(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.,(*mcmom_nmiss).M()-(*react_nmiss).M()/1000.);
       IMnpim_IMnpip_mc->Fill(LVec_pip_n_mc.M(), LVec_pim_n_mc.M());
       nmom_IMnpip_mc->Fill((*mcmom_ncds).P(), LVec_pip_n_mc.M());
       nmom_IMnpim_mc->Fill((*mcmom_ncds).P(), LVec_pim_n_mc.M());
       if(SimSpmode){
-        if(fabs(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.) > 0.001) IsFakeN = true;
-        if(fabs((*mcmom_nmiss).P()-(*react_nmiss).P()/1000.) > 0.001) IsFakeN = true;
+        if(fabs(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.) > 0.002) IsFakeN1 = true;
+        if(fabs((*mcmom_nmiss).M()-(*react_nmiss).M()/1000.) > 0.002) IsFakeN1 = true;
       }
       if(SimSmmode){
-        if(fabs(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.) > 0.001) IsFakeN = true;
-        if(fabs((*mcmom_nmiss).P()-(*react_nmiss).P()/1000.) > 0.001) IsFakeN = true;
+        if(fabs(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.) > 0.002) IsFakeN1 = true;
+        if(fabs((*mcmom_nmiss).M()-(*react_nmiss).M()/1000.) > 0.002) IsFakeN1 = true;
+      }
+      //added angle check
+      if(!IsFakeN1){
+        diff_cosnmiss_reactmc->Fill((*mcmom_nmiss).CosTheta()-(*react_nmiss).CosTheta());
+        if(fabs((*mcmom_nmiss).CosTheta()-(*react_nmiss).CosTheta())>0.002) IsFakeN1 = true;
       }
     }
 
@@ -3638,7 +3747,31 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         nmom_MMnmiss_wSid_n->Fill(nmiss_mass,(*LVec_n).P(),weight);
         pipmom_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_pip).P(),weight);
         pimmom_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_pim).P(),weight);
-        if(IsFakeN){
+        double diffIMnpim_recomc = LVec_pim_n.M()- LVec_pim_n_mc.M();
+        double diffIMnpip_recomc = LVec_pip_n.M()- LVec_pip_n_mc.M();
+        double diffMMnmiss_recomc = nmiss_mass - (*mcmom_nmiss).M();
+        bool IsMassNOK = false;
+        if(fabs(diffMMnmiss_recomc)<0.1) IsMassNOK = true;
+        double diffnmom_recomc = (*LVec_n).P() - (*mcmom_ncds).P();
+        diff2D_MMnmiss_IMnpim_recomc_wSid_n->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
+        diff2D_MMnmiss_IMnpip_recomc_wSid_n->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
+        diff2D_nmom_IMnpim_recomc_wSid_n->Fill(diffIMnpim_recomc,diffnmom_recomc);
+        diff2D_nmom_IMnpip_recomc_wSid_n->Fill(diffIMnpip_recomc,diffnmom_recomc);
+        if(!IsFakeN1){
+          diff2D_MMnmiss_IMnpim_recomc_wSid_n_fake1->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
+          diff2D_MMnmiss_IMnpip_recomc_wSid_n_fake1->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
+          if(IsMassNOK){
+            diff2D_nmom_IMnpim_recomc_wSid_n_fake1->Fill(diffIMnpim_recomc,diffnmom_recomc);
+            diff2D_nmom_IMnpip_recomc_wSid_n_fake1->Fill(diffIMnpip_recomc,diffnmom_recomc);
+          }
+        }
+        if(SimSpmode){
+          if( (diffIMnpip_recomc<-0.012) || (0.010<diffIMnpip_recomc)) IsFakeN2=true;
+        }
+        if(SimSmmode){
+          if( (diffIMnpim_recomc<-0.012) || (0.012<diffIMnpim_recomc)) IsFakeN2=true;
+        }
+        if(IsFakeN1 || !IsMassNOK || IsFakeN2){
           q_IMnpipi_wSid_n_fake->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
           MMnmiss_IMpippim_dE_wSid_n_fake->Fill(LVec_pip_pim.M(),nmiss_mass ,weight);
           IMnpim_IMnpip_dE_wSid_n_fake->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
@@ -3680,6 +3813,20 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         nmom_IMnpipi_wK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P(),weight);
         nmom_nmissmom_wK0_wSid_n->Fill(LVec_nmiss.P(),(*LVec_n).P(),weight);
         MMnmiss_IMpippim_dE_wK0_wSid_n->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
+        double diffIMnpim_recomc = LVec_pim_n.M()- LVec_pim_n_mc.M();
+        double diffIMnpip_recomc = LVec_pip_n.M()- LVec_pip_n_mc.M();
+        double diffMMnmiss_recomc = nmiss_mass - (*mcmom_nmiss).M();
+        double diffnmom_recomc = (*LVec_n).P() - (*mcmom_ncds).P();
+        diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
+        diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
+        diff2D_nmom_IMnpim_recomc_wK0_wSid_n->Fill(diffIMnpim_recomc,diffnmom_recomc);
+        diff2D_nmom_IMnpip_recomc_wK0_wSid_n->Fill(diffIMnpip_recomc,diffnmom_recomc);
+        if(!IsFakeN1){
+          diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n_fake1->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
+          diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n_fake1->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
+          diff2D_nmom_IMnpim_recomc_wK0_wSid_n_fake1->Fill(diffIMnpim_recomc,diffnmom_recomc);
+          diff2D_nmom_IMnpip_recomc_wK0_wSid_n_fake1->Fill(diffIMnpip_recomc,diffnmom_recomc);
+        }
       }
       if(!SigmaPFlag && !SigmaMFlag) {
         IMpippim_DCApipibeam_wK0_woSid_n->Fill(dca_pipibeam,LVec_pip_pim.M(),weight);
@@ -3952,6 +4099,21 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         nmom_nmissmom_woK0_wSid_n->Fill(LVec_nmiss.P(),(*LVec_n).P(),weight);
         diff2d_CDC_CDH_pim_woK0_wSid_n->Fill(diffphipim,diffpim.z(),weight);
         diff2d_CDC_CDH_pip_woK0_wSid_n->Fill(diffphipip,diffpip.z(),weight);
+        double diffIMnpim_recomc = LVec_pim_n.M()- LVec_pim_n_mc.M();
+        double diffIMnpip_recomc = LVec_pip_n.M()- LVec_pip_n_mc.M();
+        double diffMMnmiss_recomc = nmiss_mass - (*mcmom_nmiss).M();
+        double diffnmom_recomc = (*LVec_n).P() - (*mcmom_ncds).P();
+        diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
+        diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
+        diff2D_nmom_IMnpim_recomc_woK0_wSid_n->Fill(diffIMnpim_recomc,diffnmom_recomc);
+        diff2D_nmom_IMnpip_recomc_woK0_wSid_n->Fill(diffIMnpip_recomc,diffnmom_recomc);
+        if(!IsFakeN1){
+          diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n_fake1->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
+          diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n_fake1->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
+          diff2D_nmom_IMnpim_recomc_woK0_wSid_n_fake1->Fill(diffIMnpim_recomc,diffnmom_recomc);
+          diff2D_nmom_IMnpip_recomc_woK0_wSid_n_fake1->Fill(diffIMnpip_recomc,diffnmom_recomc);
+        }
+      
       }
 
 
