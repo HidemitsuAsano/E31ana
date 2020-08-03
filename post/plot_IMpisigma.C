@@ -311,11 +311,17 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   
   //GEANT reaction data - mcData matching 
   TH1F* diff_IMnpim_reactmc;//store mcData - reaction data
+  TH1F* diff_IMnpim_wSid_n_reactmc;//store mcData - reaction data
   TH1F* diff_IMnpip_reactmc;//store mcData - reaction data
+  TH1F* diff_IMnpip_wSid_n_reactmc;//store mcData - reaction data
   TH1F* diff_nmiss_reactmc;//store mcData - reaction data mom.
+  TH1F* diff_nmiss_wSid_n_reactmc;//store mcData - reaction data mom.
   TH1F* diff_cosnmiss_reactmc;//store mcData - reaction data mom.
+  TH1F* diff_cosnmiss_wSid_n_reactmc;//store mcData - reaction data mom.
   TH2F* diff2D_MMnmiss_IMnpim_reactmc;
+  TH2F* diff2D_MMnmiss_IMnpim_wSid_n_reactmc;
   TH2F* diff2D_MMnmiss_IMnpip_reactmc;
+  TH2F* diff2D_MMnmiss_IMnpip_wSid_n_reactmc;
   
   //GEANT mcData - reco. data matching 
   //fake1: fake event flag based on mcData - reaction data matching
@@ -847,23 +853,43 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   diff_IMnpim_reactmc = new TH1F("diff_IMnpim_reactmc","diff_IMnpim_reactmc",1000,-1.0,1.0);
   diff_IMnpim_reactmc->SetXTitle("diff. IMnpim (MCData - Reac.) [GeV/c^{2}]");
 
+  diff_IMnpim_wSid_n_reactmc = new TH1F("diff_IMnpim_wSid_n_reactmc","diff_IMnpim_wSid_n_reactmc",1000,-1.0,1.0);
+  diff_IMnpim_wSid_n_reactmc->SetXTitle("diff. IMnpim (MCData - Reac.) [GeV/c^{2}]");
+  
   diff_IMnpip_reactmc = new TH1F("diff_IMnpip_reactmc","diff_IMnpip_reactmc",1000,-1.0,1.0);
   diff_IMnpip_reactmc->SetXTitle("diff. IMnpip (MCData - Reac.) [GeV/c^{2}]");
   
+  diff_IMnpip_wSid_n_reactmc = new TH1F("diff_IMnpip_wSid_n_reactmc","diff_IMnpip_wSid_n_reactmc",1000,-1.0,1.0);
+  diff_IMnpip_wSid_n_reactmc->SetXTitle("diff. IMnpip (MCData - Reac.) [GeV/c^{2}]");
+
   diff_nmiss_reactmc = new TH1F("diff_nmiss_reactmc","diff_nmiss_reactmc",1500,-1.5,1.5);
   diff_nmiss_reactmc->SetXTitle("diff. nmiss (MCData - Reac.) [GeV/c]");
+  
+  diff_nmiss_wSid_n_reactmc = new TH1F("diff_nmiss_wSid_n_reactmc","diff_nmiss_wSid_n_reactmc",1500,-1.5,1.5);
+  diff_nmiss_wSid_n_reactmc->SetXTitle("diff. nmiss (MCData - Reac.) [GeV/c]");
   
   diff_cosnmiss_reactmc = new TH1F("diff_cosnmiss_reactmc","diff_cosnmiss_reactmc",2000,-1.0,1.0);
   diff_cosnmiss_reactmc->SetXTitle("diff. cos. nmiss (MCData - Reac.) [radian]");
   
+  diff_cosnmiss_wSid_n_reactmc = new TH1F("diff_cosnmiss_wSid_n_reactmc","diff_cosnmiss_wSid_n_reactmc",2000,-1.0,1.0);
+  diff_cosnmiss_wSid_n_reactmc->SetXTitle("diff. cos. nmiss (MCData - Reac.) [radian]");
+  
   diff2D_MMnmiss_IMnpim_reactmc = new TH2F("diff2D_MMnmiss_IMnpim_reactmc","diff2D_MMnmiss_IMnpim_reactmc",200,-1.0,1.0,300,-1.5,1.5);
   diff2D_MMnmiss_IMnpim_reactmc->SetXTitle("diff. IMnpim (MCData - Reac.) [GeV/c^{2}]");
   diff2D_MMnmiss_IMnpim_reactmc->SetYTitle("diff. Missing Mass (MCData - Reac.) [GeV/c^{2}]");
+   
+  diff2D_MMnmiss_IMnpim_wSid_n_reactmc = new TH2F("diff2D_MMnmiss_IMnpim_wSid_n_reactmc","diff2D_MMnmiss_IMnpim_wSid_n_reactmc",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_MMnmiss_IMnpim_wSid_n_reactmc->SetXTitle("diff. IMnpim (MCData - Reac.) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpim_wSid_n_reactmc->SetYTitle("diff. Missing Mass (MCData - Reac.) [GeV/c^{2}]");
 
   diff2D_MMnmiss_IMnpip_reactmc = new TH2F("diff2D_MMnmiss_IMnpip_reactmc","diff2D_MMnmiss_IMnpip_reactmc",200,-1.0,1.0,300,-1.5,1.5);
   diff2D_MMnmiss_IMnpip_reactmc->SetXTitle("diff. IMnpip (MCData - Reac.) [GeV/c^{2}]");
   diff2D_MMnmiss_IMnpip_reactmc->SetYTitle("diff. Missing Mass (MCData - Reac.) [GeV/c^{2}]");
    
+  diff2D_MMnmiss_IMnpip_wSid_n_reactmc = new TH2F("diff2D_MMnmiss_IMnpip_wSid_n_reactmc","diff2D_MMnmiss_IMnpip_wSid_n_reactmc",200,-1.0,1.0,300,-1.5,1.5);
+  diff2D_MMnmiss_IMnpip_wSid_n_reactmc->SetXTitle("diff. IMnpip (MCData - Reac.) [GeV/c^{2}]");
+  diff2D_MMnmiss_IMnpip_wSid_n_reactmc->SetYTitle("diff. Missing Mass (MCData - Reac.) [GeV/c^{2}]");
+
   diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n = new TH2F("diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n","diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n",200,-1.0,1.0,300,-1.5,1.5);
   diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
   diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n->SetYTitle("diff. Missing Mass (reco. - MCData) [GeV/c^{2}]");
@@ -2918,7 +2944,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       double py = (*LVec_beam).Py();
       double pz = (*LVec_beam).Pz();
       double E = (*LVec_beam).E();
-      TLorentzVector LVec_beam_unit;
+      TLorentzVector LVec_beam_unit;//adjust unit [GeV/c^2, GeV/c]
       LVec_beam_unit.SetPx(px*1000.0);
       LVec_beam_unit.SetPy(py*1000.0);
       LVec_beam_unit.SetPz(pz*1000.0);
