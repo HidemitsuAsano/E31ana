@@ -131,12 +131,13 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   bool SimFakeK0mode  = (std::string(filename).find("fakepippimK0_")!=std::string::npos);
   bool SimFakemode_gSp = (std::string(filename).find("fakemcgSp")!=std::string::npos);
   bool SimFakemode_gSm = (std::string(filename).find("fakemcgSm")!=std::string::npos);
+  bool RealDatamode = (std::string(filename).find("evanaIMpisigma")!=std::string::npos);
   //= = = = pipipnn final-sample tree = = = =//
-  
   if(SimFakemode) std::cout << "fake pi+pi-nX mode "  << std::endl; 
   if(SimFakeK0mode) std::cout << "fake K0barnX mode "  << std::endl; 
   if(SimFakemode_gSp) std::cout << "fake for GEANT nSp mode" << std::endl;
   if(SimFakemode_gSm) std::cout << "fake for GEANT nSm mode" << std::endl;
+  if(RealDatamode) std::cout << "Real Data analysis" << std::endl;
 
   TFile *f = new TFile(filename);
   //TFile *f = new TFile("sim_piSpn_dE0_Al.root");
