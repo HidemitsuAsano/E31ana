@@ -3774,6 +3774,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         nmom_MMnmiss_wSid_n->Fill(nmiss_mass,(*LVec_n).P(),weight);
         pipmom_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_pip).P(),weight);
         pimmom_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_pim).P(),weight);
+        
+        diff_IMnpim_wSid_n_reactmc->Fill(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.);
+        diff_IMnpip_wSid_n_reactmc->Fill(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.);
+        diff_nmiss_wSid_n_reactmc->Fill((*mcmom_nmiss).P()-(*react_nmiss).P()/1000.);
+        diff_cosnmiss_wSid_n_reactmc->Fill((*mcmom_nmiss).CosTheta()-(*react_nmiss).CosTheta());
         double diffIMnpim_recomc = LVec_pim_n.M()- LVec_pim_n_mc.M();
         double diffIMnpip_recomc = LVec_pip_n.M()- LVec_pip_n_mc.M();
         double diffMMnmiss_recomc = nmiss_mass - (*mcmom_nmiss).M();
