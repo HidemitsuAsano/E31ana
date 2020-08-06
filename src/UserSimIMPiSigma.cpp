@@ -1550,7 +1550,7 @@ int main( int argc, char** argv )
             double val1 = (TL_meas[kin::ncds]-TL_gene[kin::nmiss]).P(); // n_measured - n_initial
             double val2 = (TL_meas[kin::ncds]-TL_gene[kin::ncds]).P(); // n_measured - n_Sigma
             //int genID[kin::npart] = {0,1,2,3,4,5};
-            IsncdsfromSigma = true;
+            //IsncdsfromSigma = true;
             if( val1<val2 ){ // is there more good selection way?
               genID[kin::nmiss] = kin::ncds;
               genID[kin::ncds] = kin::nmiss;
