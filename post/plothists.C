@@ -135,9 +135,15 @@ void plothists(const char *filename="evanaIMpisigma_all_v23.root")
     pt->Draw();
     c->Modified();
     c->Update();
+    
+    //make 1 pdf file
     if(i==0) c->Print(pdfname+"(",Form("Title:%s",c->GetTitle()));
     else if(i==size-1)c->Print(pdfname+")",Form("Title:%s",c->GetTitle())); 
     else c->Print(pdfname,Form("Title:%s",c->GetTitle())); 
+  
+    //make separated pdf files
+    c->Print(Form("pdf/%s.pdf",c->GetTitle()));
+
   }
   //pdf->Close();
   //std::cout << "closing pdf " << std::endl;
