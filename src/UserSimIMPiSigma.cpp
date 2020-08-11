@@ -296,7 +296,7 @@ int main( int argc, char** argv )
   //npippimTree->Branch( "run_num", &run_num );
   //npippimTree->Branch( "event_num", &event_num );
   //npippimTree->Branch( "block_num", &block_num );
-  //npippimTree->Branch( "mc_nparticle",   &mc_nparticle );
+  npippimTree->Branch( "mc_nparticle",   &mc_nparticle );
   npippimTree->Branch( "mcmom_beam",   &mcmom_beam );
   npippimTree->Branch( "mcmom_pip", &mcmom_pip );
   npippimTree->Branch( "mcmom_pim", &mcmom_pim );
@@ -548,7 +548,8 @@ int main( int argc, char** argv )
       << std::endl;
       std::cout<< std::endl;
     }
-
+    
+    bool FoundSigmaNMcData = false;
     for( int imctrk=0; imctrk<mcData->trackSize(); imctrk++ ){
       //pdg ID
       const int pdgcode = mcData->track(imctrk)->pdgID();

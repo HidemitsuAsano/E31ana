@@ -1163,6 +1163,13 @@ void Util::AnaMcData(MCData *mcdata,
         Tools::H2("ncan_mom_parentvtxr_select_nparent",ncaninfo.mom,parentvtxr,200,0,2,480,0,120.);
       }
     }
+    if(Util::IsFromSigma(mcdata,ncaninfo.dhitncan)){
+      Tools::H2(Form("CDHdE_generation_ncan_select_sigma"),ncaninfo.gen, ncaninfo.dE,10,0,10, 100,0,10);
+      Tools::H2(Form("vtxr_generation_ncan_select_sigma"),ncaninfo.gen, parentvtxr,10,0,10, 480,0,120.0);
+      if(ncaninfo.dE>2.0){
+        Tools::H2(Form("vtxr_generation_ncan_select_sigma_dE"),ncaninfo.gen, parentvtxr,10,0,10, 480,0,120.0);
+      }
+    }
     if(parentvtxr<58.0){
       Tools::H2("CDHdE_mom_ncan_select_vtxr",ncaninfo.mom,ncaninfo.dE,200,0,2, 100,0,10);
       if(ncaninfo.dE>0.6 && Util::IsFromSigma(mcdata,ncaninfo.dhitncan) && ncaninfo.gen==3)Tools::H2("CDHdE_mom_ncan_select_vtxr_sigma",ncaninfo.mom,ncaninfo.dE,100,0,2, 100,0,10);
