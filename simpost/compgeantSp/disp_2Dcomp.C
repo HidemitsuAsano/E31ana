@@ -1584,15 +1584,15 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   gr_q_wK0_wSid_n_data_sub->SetMarkerStyle(20);
   gr_q_wK0_wSid_n_data_sub->Draw("AP");
   
-  TCanvas *cq_BG_comp = new TCanvas("cq_BG_comp","cq_BG_comp",1600,800);
+  auto *cq_BG_comp = new TCanvas("cq_BG_comp","cq_BG_comp",1600,800);
   cq_BG_comp->Divide(3,1);
   //q_IMnpipi_wSid_n_mc->Draw("colz");
   //gPad->SetRightMargin(0.1);
   //gPad->SetLeftMargin(0);
   TFile *fGSp = TFile::Open("../simIMpisigma_nSppim_pippimn_v108_out.root","READ");
-  TH2D* q_IMnpipi_wSid_n = fGSp->Get("q_IMnpipi_wSid_n");
+  TH2D* q_IMnpipi_wSid_n = (TH2D*)fGSp->Get("q_IMnpipi_wSid_n");
   TH2D* q_IMnpipi_wSid_n_true = (TH2D*)q_IMnpipi_wSid_n->Clone("q_IMnpipi_wSid_n_true");
-  TH2D* q_IMnpipi_wSid_n_fake = fGSp->Get("q_IMnpipi_wSid_n_fake");
+  TH2D* q_IMnpipi_wSid_n_fake = (TH2D*)fGSp->Get("q_IMnpipi_wSid_n_fake");
   q_IMnpipi_wSid_n_true->Add(q_IMnpipi_wSid_n_fake,-1.0);
   q_IMnpipi_wSid_n_true->SetTitle("GEANT true");
   cq_BG_comp->cd(1);
