@@ -312,9 +312,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   
   //GEANT reaction data - mcData matching 
   TH1F* diff_IMnpim_reactmc;//store mcData - reaction data
-  TH1F* diff_IMnpim_wSid_n_reactmc;//store mcData - reaction data
+  TH2F* diff2D_IMnpim_Momnpim_wSid_n_reactmc;//store mcData - reaction data
+  TH2F* diff2D_IMnpim_Momnpim_wSid_n_reactmc_fake1;//store mcData - reaction data
   TH1F* diff_IMnpip_reactmc;//store mcData - reaction data
-  TH1F* diff_IMnpip_wSid_n_reactmc;//store mcData - reaction data
+  TH2F* diff2D_IMnpip_Momnpip_wSid_n_reactmc;//store mcData - reaction data
+  TH2F* diff2D_IMnpip_Momnpip_wSid_n_reactmc_fake1;//store mcData - reaction data
   TH1F* diff_nmiss_reactmc;//store mcData - reaction data mom.
   TH1F* diff_nmiss_wSid_n_reactmc;//store mcData - reaction data mom.
   TH1F* diff_cosnmiss_reactmc;//store mcData - reaction data mom.
@@ -347,8 +349,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* diff2D_nmom_IMnpim_recomc_wK0_wSid_n_fake1;//store reconstructed data - mcData
   TH2F* diff2D_nmom_IMnpip_recomc_wK0_wSid_n_fake1;//store reconstructed data - mcData
   TH2F* diff2D_nmom_IMnpim_recomc_wSid_n;//store reconstructed data - mcData
-  TH1F* diffMomnpip_recomc_wSid_n;//store reconstructed data - mcData
-  TH1F* diffMomnpim_recomc_wSid_n;//store reconstructed data - mcData
+  TH2F* diffMomnpim_Momnpip_recomc_wSid_n;//store reconstructed data - mcData
   TH1F* diffMMom_recomc_wSid_n;//store reconstructed data - mcData
   TH2F* diff2D_nmom_IMnpip_recomc_wSid_n;//store reconstructed data - mcData
   TH2F* diff2D_nmom_IMnpim_recomc_wSid_n_fake1;//store reconstructed data - mcData
@@ -861,15 +862,25 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   diff_IMnpim_reactmc = new TH1F("diff_IMnpim_reactmc","diff_IMnpim_reactmc",1000,-1.0,1.0);
   diff_IMnpim_reactmc->SetXTitle("diff. IMnpim (MCData - Reac.) [GeV/c^{2}]");
 
-  diff_IMnpim_wSid_n_reactmc = new TH1F("diff_IMnpim_wSid_n_reactmc","diff_IMnpim_wSid_n_reactmc",1000,-1.0,1.0);
-  diff_IMnpim_wSid_n_reactmc->SetXTitle("diff. IMnpim (MCData - Reac.) [GeV/c^{2}]");
+  diff2D_IMnpim_Momnpim_wSid_n_reactmc = new TH2F("diff2D_IMnpim_Momnpim_wSid_n_reactmc","diff2D_IMnpim_Momnpim_wSid_n_reactmc",1000,-1.0,1.0,1000,-1.0,1.0);
+  diff2D_IMnpim_Momnpim_wSid_n_reactmc->SetXTitle("diff. Mom.(n#pi^{-}) (MCData - Reac.) [GeV/c]");
+  diff2D_IMnpim_Momnpim_wSid_n_reactmc->SetYTitle("diff. IM(n#pi^{-}) (MCData - Reac.) [GeV/c^{2}]");
+  
+  diff2D_IMnpim_Momnpim_wSid_n_reactmc_fake1 = new TH2F("diff2D_IMnpim_Momnpim_wSid_n_reactmc_fake1","diff2D_IMnpim_Momnpim_wSid_n_reactmc_fake1",1000,-1.0,1.0,1000,-1.0,1.0);
+  diff2D_IMnpim_Momnpim_wSid_n_reactmc_fake1->SetXTitle("diff. Mom.(n#pi^{-}) (MCData - Reac.) [GeV/c]");
+  diff2D_IMnpim_Momnpim_wSid_n_reactmc_fake1->SetYTitle("diff. IM(n#pi^{-}) (MCData - Reac.) [GeV/c^{2}]");
   
   diff_IMnpip_reactmc = new TH1F("diff_IMnpip_reactmc","diff_IMnpip_reactmc",1000,-1.0,1.0);
   diff_IMnpip_reactmc->SetXTitle("diff. IMnpip (MCData - Reac.) [GeV/c^{2}]");
   
-  diff_IMnpip_wSid_n_reactmc = new TH1F("diff_IMnpip_wSid_n_reactmc","diff_IMnpip_wSid_n_reactmc",1000,-1.0,1.0);
-  diff_IMnpip_wSid_n_reactmc->SetXTitle("diff. IMnpip (MCData - Reac.) [GeV/c^{2}]");
+  diff2D_IMnpip_Momnpip_wSid_n_reactmc = new TH2F("diff2D_IMnpip_Momnpip_wSid_n_reactmc","diff2D_IMnpip_Momnpip_wSid_n_reactmc",1000,-1.0,1.0,1000,-1.0,1.0);
+  diff2D_IMnpip_Momnpip_wSid_n_reactmc->SetXTitle("diff. Mom.(n#pi^{+}) (MCData - Reac.) [GeV/c]");
+  diff2D_IMnpip_Momnpip_wSid_n_reactmc->SetYTitle("diff. IM(n#pi^{+}) (MCData - Reac.) [GeV/c^{2}]");
 
+  diff2D_IMnpip_Momnpip_wSid_n_reactmc_fake1 = new TH2F("diff2D_IMnpip_Momnpip_wSid_n_reactmc_fake1","diff2D_IMnpip_Momnpip_wSid_n_reactmc_fake1",1000,-1.0,1.0,1000,-1.0,1.0);
+  diff2D_IMnpip_Momnpip_wSid_n_reactmc_fake1->SetXTitle("diff. Mom.(n#pi^{+}) (MCData - Reac.) [GeV/c]");
+  diff2D_IMnpip_Momnpip_wSid_n_reactmc_fake1->SetYTitle("diff. IM(n#pi^{+}) (MCData - Reac.) [GeV/c^{2}]");
+  
   diff_nmiss_reactmc = new TH1F("diff_nmiss_reactmc","diff_nmiss_reactmc",1500,-1.5,1.5);
   diff_nmiss_reactmc->SetXTitle("diff. nmiss (MCData - Reac.) [GeV/c]");
   
@@ -982,7 +993,6 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   diff2D_nmom_IMnpim_recomc_wSid_n->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
   diff2D_nmom_IMnpim_recomc_wSid_n->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
   
-  diffMomnpim_recomc_wSid_n = new TH1F("diffMomnpim_recomc_wSid_n","diffMomnpim_recomc_wSid_n",1000,-1.0,1.0);
 
   diff2D_nmom_IMnpim_recomc_wSid_n_fake1 = new TH2F("diff2D_nmom_IMnpim_recomc_wSid_n_fake1","diff2D_nmom_IMnpim_recomc_wSid_n_fake1",2000,-1.0,1.0,3000,-1.5,1.5);
   diff2D_nmom_IMnpim_recomc_wSid_n_fake1->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
@@ -992,8 +1002,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   diff2D_nmom_IMnpip_recomc_wSid_n->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
   diff2D_nmom_IMnpip_recomc_wSid_n->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
 
-  diffMomnpip_recomc_wSid_n = new TH1F("diffMomnpip_recomc_wSid_n","diffMomnpip_recomc_wSid_n",1000,-1.0,1.0);
-  
+  diffMomnpim_Momnpip_recomc_wSid_n = new TH2F("diffMomnpim_Momnpip_recomc_wSid_n","diffMomnpim_Momnpip_recomc_wSid_n",1000,-1.0,1.0,1000,-1.0,1.0);
+  diffMomnpim_Momnpip_recomc_wSid_n->SetXTitle("diff. Mom(n#pi^{+}) [GeV/c]");
+  diffMomnpim_Momnpip_recomc_wSid_n->SetYTitle("diff. Mom(n#pi^{-}) [GeV/c]");
+
   diff2D_nmom_IMnpip_recomc_wSid_n_fake1 = new TH2F("diff2D_nmom_IMnpip_recomc_wSid_n_fake1","diff2D_nmom_IMnpip_recomc_wSid_n_fake1",2000,-1.0,1.0,3000,-1.5,1.5);
   diff2D_nmom_IMnpip_recomc_wSid_n_fake1->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
   diff2D_nmom_IMnpip_recomc_wSid_n_fake1->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
@@ -3799,31 +3811,35 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           double diffIMnpip_reactmc = LVec_pip_n.M()- LVec_pip_n_mc.M();
           double diffMMnmiss_recomc = nmiss_mass - (*mcmom_nmiss).M();
           
-          //missing mass check
-          if(fabs(diffMMnmiss_recomc)<0.1) IsMissMassNOK = true;
-          //ncds check
-          if(fabs((*mcmom_ncds).M()-nMass)<0.1) IsMcNMassOK = true;
+          //MCdata missing mass check
+          if(fabs((*mcmom_nmiss).M()-nMass)<0.01) IsMissMassNOK = true;
+          //MCdata ncds check
+          if(fabs((*mcmom_ncds).M()-nMass)<0.01) IsMcNMassOK = true;
           
           
           if(IsMissMassNOK && IsMcNMassOK){
-            diff_IMnpim_wSid_n_reactmc->Fill(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.);
-            diff_IMnpip_wSid_n_reactmc->Fill(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.);
+            diff2D_IMnpim_Momnpim_wSid_n_reactmc->Fill(LVec_pim_n_mc.P()-LVec_Sigma_react.P()/1000.,LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.);
+            diff2D_IMnpip_Momnpip_wSid_n_reactmc->Fill(LVec_pip_n_mc.P()-LVec_Sigma_react.P()/1000.,LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.);
             diff_nmiss_wSid_n_reactmc->Fill((*mcmom_nmiss).P()-(*react_nmiss).P()/1000.);
             diff2D_MMnmiss_IMnpim_wSid_n_reactmc->Fill(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.,(*mcmom_nmiss).M()-(*react_nmiss).M()/1000.);
             diff2D_MMnmiss_IMnpip_wSid_n_reactmc->Fill(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.,(*mcmom_nmiss).M()-(*react_nmiss).M()/1000.);
+            //Sigma mass check and missing neurtom mom. check. 
+            //note: Reaction data does not have the info. of the neutron from Sigma
             if(SimSpmode){
               if(fabs(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.) > 0.002) IsFakeN1 = true;
-              if(fabs((*mcmom_nmiss).M()-(*react_nmiss).M()/1000.) > 0.002) IsFakeN1 = true;
+              if(fabs((*mcmom_nmiss).P()-(*react_nmiss).P()/1000.) > 0.002) IsFakeN1 = true;
             }
             if(SimSmmode){
               if(fabs(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.) > 0.002) IsFakeN1 = true;
-              if(fabs((*mcmom_nmiss).M()-(*react_nmiss).M()/1000.) > 0.002) IsFakeN1 = true;
+              if(fabs((*mcmom_nmiss).P()-(*react_nmiss).P()/1000.) > 0.002) IsFakeN1 = true;
             }
-            //added angle check
-            if(!IsFakeN1){
+            //added angle check->why angle ? ->mom. check. 
+            //if(!IsFakeN1){
+              diff2D_IMnpim_Momnpim_wSid_n_reactmc_fake1->Fill(LVec_pim_n_mc.P()-LVec_Sigma_react.P()/1000.,LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.);
+              diff2D_IMnpip_Momnpip_wSid_n_reactmc_fake1->Fill(LVec_pip_n_mc.P()-LVec_Sigma_react.P()/1000.,LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.);
               diff_cosnmiss_wSid_n_reactmc->Fill((*mcmom_nmiss).CosTheta()-(*react_nmiss).CosTheta());
               if(fabs((*mcmom_nmiss).CosTheta()-(*react_nmiss).CosTheta())>0.002) IsFakeN1 = true;
-            }
+            //}
           }
           
           double diffIMnpim_recomc = LVec_pim_n.M()- LVec_pim_n_mc.M();
@@ -3836,17 +3852,16 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           diff2D_MMnmiss_IMnpip_recomc_wSid_n->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
           diff2D_nmom_IMnpim_recomc_wSid_n->Fill(diffIMnpim_recomc,diffnmom_recomc);
           diff2D_nmom_IMnpip_recomc_wSid_n->Fill(diffIMnpip_recomc,diffnmom_recomc);
-          diffMomnpip_recomc_wSid_n->Fill(diffnpip_recomc.P());
-          diffMomnpim_recomc_wSid_n->Fill(diffnpim_recomc.P());
+          diffMomnpim_Momnpip_recomc_wSid_n->Fill(diffnpip_recomc.P(),diffnpim_recomc.P());
           diffMMom_recomc_wSid_n->Fill(diffMMom_recomc.P());
-          //if(!IsFakeN1){
+          if(!IsFakeN1){
             diff2D_MMnmiss_IMnpim_recomc_wSid_n_fake1->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
             diff2D_MMnmiss_IMnpip_recomc_wSid_n_fake1->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
             if(IsMcNMassOK){
               diff2D_nmom_IMnpim_recomc_wSid_n_fake1->Fill(diffIMnpim_recomc,diffnmom_recomc);
               diff2D_nmom_IMnpip_recomc_wSid_n_fake1->Fill(diffIMnpip_recomc,diffnmom_recomc);
             }
-          //}
+          }
           if(SimSpmode){
             //if( (diffIMnpip_recomc<-0.012) || (0.010<diffIMnpip_recomc)) IsFakeN2=true;
             if(diffnpip_recomc.P()>0.10) IsFakeN2 = true;
@@ -3855,7 +3870,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
             //if( (diffIMnpim_recomc<-0.012) || (0.012<diffIMnpim_recomc)) IsFakeN2=true;
             if(diffnpim_recomc.P()>0.10) IsFakeN2 = true;
           }
-          if(IsFakeN1 || !IsMissMassNOK || !IsMcNMassOK || IsFakeN2){
+          //if(IsFakeN1 || !IsMissMassNOK || !IsMcNMassOK || IsFakeN2){
+          if(!IsMissMassNOK || !IsMcNMassOK || IsFakeN2){
             q_IMnpipi_wSid_n_fake->Fill(LVec_pip_pim_n.M(),qkn.P());
             MMnmiss_IMpippim_dE_wSid_n_fake->Fill(LVec_pip_pim.M(),nmiss_mass);
             IMnpim_IMnpip_dE_wSid_n_fake->Fill(LVec_pip_n.M(),LVec_pim_n.M());
