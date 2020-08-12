@@ -271,6 +271,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   //TF1 *f_IMnpim_mod_ref = new TF1("f_IMnpim_mod_ref",func_IMnpim_mod,1,2.0,12);
   //f_IMnpim_mod->SetParameters(param_IMnpim_mod);
   //f_IMnpim_mod_ref->SetParameters(param_IMnpim_mod);
+  /*
   f_IMnpim_mod->FixParameter(0,-6053.91);
   f_IMnpim_mod->FixParameter(1,15687.3);
   f_IMnpim_mod->FixParameter(2,-13543.8);
@@ -285,7 +286,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   f_IMnpim_mod->FixParameter(11,0.010); 
   f_IMnpim_mod->FixParameter(12,14.4862); 
   f_IMnpim_mod->FixParameter(13,-11.6483); 
-
+  */
 
   //f_IMnpim_mod->FixParameter(0,1.98042);
   //f_IMnpim_mod->FixParameter(1,1.11227);
