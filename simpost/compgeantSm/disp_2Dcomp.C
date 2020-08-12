@@ -12,7 +12,7 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   //const char opt[10]="cont1";
   //const char opt[10]="colz";
   gStyle->SetErrorX(0.);  
-  TCanvas *cIMnpim_IMnpip_n = new TCanvas("cIMnpim_IMnpip_n", "cIMnpim_IMnpip_n",1000,1000);
+  auto *cIMnpim_IMnpip_n = new TCanvas("cIMnpim_IMnpip_n", "cIMnpim_IMnpip_n",1000,1000);
   cIMnpim_IMnpip_n->Divide(2,2,0,0);
   TH2D* IMnpim_IMnpip_n_rdata = (TH2D*)f->Get("IMnpim_IMnpip_n_rdata");
   TH2D* IMnpim_IMnpip_n_mc    = (TH2D*)f->Get("IMnpim_IMnpip_n_mc");
@@ -1584,7 +1584,7 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   gr_q_wK0_wSid_n_data_sub->SetMarkerStyle(20);
   gr_q_wK0_wSid_n_data_sub->Draw("AP");
 
-  TCanvas *cq_BG_comp = new TCanvas("cq_BG_comp","cq_BG_comp",1600,800);
+  auto *cq_BG_comp = new TCanvas("cq_BG_comp","cq_BG_comp",1600,800);
   cq_BG_comp->Divide(3,1);
   cq_BG_comp->cd(1);
   //q_IMnpipi_wSid_n_mc->Draw("colz");
@@ -1592,9 +1592,9 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   //cq_BG_comp->cd(2);
   //gPad->SetLeftMargin(0);
   TFile *fGSm = TFile::Open("../simIMpisigma_nSmpip_pippimn_v108_out.root","READ");
-  TH2D* q_IMnpipi_wSid_n = fGSm->Get("q_IMnpipi_wSid_n");
+  TH2D* q_IMnpipi_wSid_n = (TH2D*)fGSm->Get("q_IMnpipi_wSid_n");
   TH2D* q_IMnpipi_wSid_n_true = (TH2D*)q_IMnpipi_wSid_n->Clone("q_IMnpipi_wSid_n_true");
-  TH2D* q_IMnpipi_wSid_n_fake = fGSm->Get("q_IMnpipi_wSid_n_fake");
+  TH2D* q_IMnpipi_wSid_n_fake = (TH2D*)fGSm->Get("q_IMnpipi_wSid_n_fake");
   q_IMnpipi_wSid_n_true->Add(q_IMnpipi_wSid_n_fake,-1.0);
   q_IMnpipi_wSid_n_true->SetTitle("GEANT true");
   cq_BG_comp->cd(1);
