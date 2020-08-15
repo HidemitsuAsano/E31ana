@@ -892,10 +892,15 @@ void Util::AnaReactionData( ReactionData *reactionData){
 
 void Util::AnaMcData(MCData *mcdata, 
                      DetectorData  *detdata,
-                     CDSHitMan *cdsman
+                     CDSHitMan *cdsman,
+                     ReactionData *reactionData,
+                     double &ncanvtxr,
+                     int &ncangeneration
                      )
 {
-  
+  ncanvtxr=999.0;
+  ncangeneration=999;
+
   for(int itr=0;itr<mcdata->trackSize();itr++){
     TVector3 vtx = mcdata->track(itr)->vertex();
     Tools::H1(Form("track_vtxr_cdh"),vtx.Perp()/10.,1200,0,120);
@@ -909,11 +914,13 @@ void Util::AnaMcData(MCData *mcdata,
     int parentProcessID;
     double dE;
     double mom;
+    TLorentzVector LVec;
     double time;
     pimInfo(){
       gen=-1;
       processID=-1;
       parentProcessID=-1;
+      LVec.SetXYZM(999,999,999,99999);
       dE=0.0;
       mom=0.0;
       time=0.0;
@@ -926,17 +933,22 @@ void Util::AnaMcData(MCData *mcdata,
     int parentProcessID;
     double dE;
     double mom;
+    TLorentzVector LVec;
     double time;
     pipInfo(){
       gen=-1;
       processID=-1;
       parentProcessID=-1;
+      LVec.SetXYZM(999,999,999,99999);
       dE=0.0;
       mom=0.0;
       time=0.0;
     }
   };
-
+  
+  //Neutron candidate info.
+  //the actual particle which fires CDH is proton or electron
+  //the parent should be the neutron less it is not fake
   struct NcanInfo{
     int pdg;
     int parentpdg;
@@ -945,6 +957,7 @@ void Util::AnaMcData(MCData *mcdata,
     int parentProcessID;
     double dE;
     double mom;
+    TLorentzVector LVec;//stores parent LVec.
     TVector3 calc_mom;
     double vtx_r;
     double vtx_r_g1parent;
@@ -960,6 +973,7 @@ void Util::AnaMcData(MCData *mcdata,
       parentProcessID=-1;
       dE=0.0;
       mom=0.0;
+      LVec.SetXYZM(999,999,999,99999);
       calc_mom.SetXYZ(999.,999.,999.);
       vtx_r=0.0;
       vtx_r_g1parent=0.0;
@@ -978,6 +992,8 @@ void Util::AnaMcData(MCData *mcdata,
   int npip=0;
   int trackIDcont[3]={-1,-1,-1};
   int iokhit=0;
+  //check detectorhit at first
+  //store pi+/-, neutron candidate info.
   for(int idethit=0;idethit<detdata->detectorHitSize(); idethit++){  
     DetectorHit *dhit = detdata->detectorHit(idethit);
     int cid    = dhit->detectorID();
@@ -1010,12 +1026,19 @@ void Util::AnaMcData(MCData *mcdata,
     Track *parenttrack_p = Util::FindTrackFromMcIndex(mcdata,parentID);
     int parentpdg = 0;
     int parentprocessID=-1;
-    if(parenttrack_p !=0){
+    if(parenttrack_p != 0){
       parentpdg= parenttrack_p->pdgID();
       std::string parentProcessname = std::string(parenttrack_p->creatorProcess()); 
       parentprocessID = ProcessNameToProcessID(parentProcessname);
     }
     double truemom = (track_p->momentum()).Mag()/1000.;
+    double parenttruemom = -999.0;
+    TVector3 parenttruemomVec;
+    if(parenttrack_p != 0){
+      parenttruemom = (parenttrack_p->momentum()).Mag()/1000.;
+      parenttruemomVec = parenttrack_p->momentum();//MeV/c
+    }
+    TVector3 truemomVec = track_p->momentum();//MeV/c
     std::string processname = std::string(track_p->creatorProcess());
     int processID =ProcessNameToProcessID(processname);
     //std::cout << "pdg dhit" << pdg << std::endl;//->OK
@@ -1057,6 +1080,7 @@ void Util::AnaMcData(MCData *mcdata,
       npim++;
       piminfo.dE = dEtrue;
       piminfo.mom = truemom;
+      piminfo.LVec.SetVectM(truemomVec,piMass*1000.0);
       piminfo.processID = processID;
       piminfo.parentProcessID = parentprocessID;
       piminfo.gen = generation;
@@ -1076,6 +1100,7 @@ void Util::AnaMcData(MCData *mcdata,
       npip++;
       pipinfo.dE = dEtrue;
       pipinfo.mom = truemom;
+      pipinfo.LVec.SetVectM(truemomVec,piMass*1000.0);
       pipinfo.processID = processID;
       pipinfo.parentProcessID = parentprocessID;
       pipinfo.gen = generation;
@@ -1090,12 +1115,13 @@ void Util::AnaMcData(MCData *mcdata,
       Tools::H2(Form("CDHdE_processID_pip"),processID, dEtrue,222,-0.5,221.5, 100,0,10);
       Tools::H2(Form("CDHdE_generation_pip"),generation, dEtrue,10,0,10, 100,0,10);
     }
-    //neutron candidate
+    //neutron candidate 
     else{
       ncaninfo.pdg = pdg;
       ncaninfo.parentpdg = parentpdg;
       ncaninfo.dE = dEtrue;
-      ncaninfo.mom = truemom;
+      ncaninfo.mom = parenttruemom;
+      ncaninfo.LVec.SetVectM(parenttruemomVec,nMass*1000.0);
       ncaninfo.processID = processID;
       ncaninfo.gen = generation;
       ncaninfo.dhitncan = dhit;
@@ -1108,7 +1134,8 @@ void Util::AnaMcData(MCData *mcdata,
       Tools::H2(Form("CDHdE_generation_ncan"),generation, dEtrue,10,0,10, 100,0,10);
       Tools::H1("ncan_time",ncaninfo.time,1000,0,100);
     }
-  }//idethit
+  }//for idethit
+
   if(npip==1 && npim==1) EventType = 1;
   //check track sharing 
   for(int i=0;i<3;i++){
@@ -1163,9 +1190,30 @@ void Util::AnaMcData(MCData *mcdata,
         Tools::H2("ncan_mom_parentvtxr_select_nparent",ncaninfo.mom,parentvtxr,200,0,2,480,0,120.);
       }
     }
+    ncanvtxr = parentvtxr;
+    ncangeneration = ncaninfo.gen;
     if(Util::IsFromSigma(mcdata,ncaninfo.dhitncan)){
       Tools::H2(Form("CDHdE_generation_ncan_select_sigma"),ncaninfo.gen, ncaninfo.dE,10,0,10, 100,0,10);
       Tools::H2(Form("vtxr_generation_ncan_select_sigma"),ncaninfo.gen, parentvtxr,10,0,10, 480,0,120.0);
+      TLorentzVector LVec_n_pim_mc = ncaninfo.LVec + piminfo.LVec;
+      TLorentzVector LVec_n_pip_mc = ncaninfo.LVec + pipinfo.LVec;
+      TLorentzVector TL_Sigma = reactionData->GetParticle(1);
+      TLorentzVector TL_diff_n_pim = LVec_n_pim_mc - TL_Sigma;
+      TLorentzVector TL_diff_n_pip = LVec_n_pip_mc - TL_Sigma;
+      //std::cout << "MC " << LVec_n_pim_mc.P() << std::endl;
+      //std::cout << "react " << TL_Sigma.P() << std::endl;
+      //std::cout << "MC_M " << LVec_n_pim_mc.M() << std::endl;
+      //std::cout << "react_M " << TL_Sigma.M() << std::endl;
+      double diffmom_npim = (LVec_n_pim_mc.P()-TL_Sigma.P())*0.001;
+      double diffmom_npip = (LVec_n_pip_mc.P()-TL_Sigma.P())*0.001;
+      Tools::H2(Form("vtxr_diffmom_npim_ncan_select_sigma"),diffmom_npim, parentvtxr,200,-0.1,0.1, 480,0,120.0);
+      Tools::H2(Form("vtxr_diffmom_npip_ncan_select_sigma"),diffmom_npip, parentvtxr,200,-0.1,0.1, 480,0,120.0);
+      if(ncaninfo.gen==3){
+        Tools::H2(Form("vtxr_diffmom_npim_ncan_select_sigma_3rdgen"),diffmom_npim, parentvtxr,200,-0.1,0.1, 480,0,120.0);
+        Tools::H2(Form("vtxr_diffmom_npip_ncan_select_sigma_3rdgen"),diffmom_npip, parentvtxr,200,-0.1,0.1, 480,0,120.0);
+      }
+      Tools::H2(Form("generation_diffmom_npim_ncan_select_sigma"),diffmom_npim,ncaninfo.gen,200,-0.1,0.1, 10,0,10);
+      Tools::H2(Form("generation_diffmom_npip_ncan_select_sigma"),diffmom_npip,ncaninfo.gen,200,-0.1,0.1, 10,0,10);
       if(ncaninfo.dE>2.0){
         Tools::H2(Form("vtxr_generation_ncan_select_sigma_dE"),ncaninfo.gen, parentvtxr,10,0,10, 480,0,120.0);
       }
@@ -1174,7 +1222,7 @@ void Util::AnaMcData(MCData *mcdata,
       Tools::H2("CDHdE_mom_ncan_select_vtxr",ncaninfo.mom,ncaninfo.dE,200,0,2, 100,0,10);
       if(ncaninfo.dE>0.6 && Util::IsFromSigma(mcdata,ncaninfo.dhitncan) && ncaninfo.gen==3)Tools::H2("CDHdE_mom_ncan_select_vtxr_sigma",ncaninfo.mom,ncaninfo.dE,100,0,2, 100,0,10);
     }
-  }
+  }//event Type 1
 
 
   return;

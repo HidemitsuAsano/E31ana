@@ -75,7 +75,10 @@ namespace Util
    void AnaReactionData(ReactionData *reactionData);
    void AnaMcData(MCData *mcdata, 
                   DetectorData  *detdata,
-                  CDSHitMan *cdsman
+                  CDSHitMan *cdsman,
+                  ReactionData *reactionData,
+                  double &ncanvtxr,
+                  int &ncangeneration
                   );
    int ProcessNameToProcessID(const std::string &name);
    std::string ProcessIDToProcessName(const int &id);

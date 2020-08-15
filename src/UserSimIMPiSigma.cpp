@@ -104,7 +104,8 @@ TLorentzVector mcmom_pip;   // generated 4-momentum(pi+)
 TLorentzVector mcmom_pim;   // generated 4-momentum(pi-)
 TLorentzVector mcmom_ncds;    // generated 4-momentum(neutron)
 TLorentzVector mcmom_nmiss;    // generated 4-momentum(neutron)
-
+double mcncanvtxr;
+int mcncdsgen;
 
 //GEANT4 info generated particle before interaction
 TLorentzVector react_nmiss;
@@ -302,6 +303,8 @@ int main( int argc, char** argv )
   npippimTree->Branch( "mcmom_pim", &mcmom_pim );
   npippimTree->Branch( "mcmom_ncds", &mcmom_ncds );
   npippimTree->Branch( "mcmom_nmiss", &mcmom_nmiss );
+  npippimTree->Branch( "mcncanvtxr",&mcncanvtxr);
+  npippimTree->Branch( "mcncdsgen",&mcncdsgen);
   npippimTree->Branch( "react_nmiss",&react_nmiss);
   npippimTree->Branch( "react_Sigma",&react_Sigma);
   npippimTree->Branch( "react_pi",&react_pi);
@@ -743,15 +746,19 @@ int main( int argc, char** argv )
     }
     
     //put here tmp. solution for CDH eff. study
-    //Util::AnaMcData(mcData,detData,cdsMan);
+    double ncanvtxr=999.0;
+    int ncdsgen=10;
+
     if( Util::GetCDHMul(cdsMan,nGoodTrack,true)!=cdscuts::cdhmulti ){
       if(IsrecoPassed)nAbort_nCDH++;
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nCDH" << std::endl;
       //continue;
       IsrecoPassed=false;
     }else{
-      Util::AnaMcData(mcData,detData2,cdsMan);
+      Util::AnaMcData(mcData,detData2,cdsMan,reacData,ncanvtxr,ncdsgen);
     }
+    mcncanvtxr=ncanvtxr;
+    mcncdsgen=ncdsgen;
 
     //if( nGoodTrack!=cdscuts::cds_ngoodtrack ){ // dedicated for pi+ pi- event
     if( nGoodTrack!=cdscuts::cds_ngoodtrack && nallTrack!=cdscuts::cds_ngoodtrack ){ // dedicated for pi+ pi- event
@@ -1571,7 +1578,15 @@ int main( int argc, char** argv )
               mcmom_pip  = TL_gene[kin::pip_g1];
               mcmom_pim  = TL_gene[kin::pim_g2];
             }
+            //
+            //TLorentzVector LVec_n_pim_mc = mcmom_ncds + mcmom_pim;
+            //TLorentzVector LVec_n_pip_mc = mcmom_ncds + mcmom_pip;
+            //double momdiff_npim = (LVec_n_pim_mc.Vect()-react_Sigma.Vect()*0.001).Mag();
+            //double momdiff_npip = (LVec_n_pip_mc.Vect()-react_Sigma.Vect()*0.001).Mag();
 
+            //std::cout << "MC " << LVec_n_pim_mc.P() << std::endl;
+            //std::cout << "react " << react_Sigma.P() << std::endl;
+            //std::cout << "momdiff" << momdiff_npim << std::endl;
 
 
             if(Verbosity_)std::cout<< "L." << __LINE__ << " val = "<<val1<<" "<<val2<<" -> "<< genID[kin::nmiss] <<" "<< genID[kin::ncds] << std::endl;
@@ -2001,6 +2016,8 @@ void InitTreeVal()
   mcmom_pim.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);    // generated 4-momentum(pi-)
   mcmom_ncds.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // generated 4-momentum(neutron)
   mcmom_nmiss.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // generated 4-momentum(neutron)
+  mcncanvtxr=999.9;
+  mcncdsgen=199;
   react_nmiss.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
   react_Sigma.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
   react_pi.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
