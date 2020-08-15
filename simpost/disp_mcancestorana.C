@@ -5,7 +5,7 @@ void disp_mcancestorana()
   fGSp->cd();
 
   TH2F* generation_diffmom_npip_ncan_select_sigma_Sp 
-  = fGSp->Get("generation_diffmom_npip_ncan_select_sigma");
+  = (TH2F*)fGSp->Get("generation_diffmom_npip_ncan_select_sigma");
   
   TCanvas *c1 = new TCanvas();
   generation_diffmom_npip_ncan_select_sigma_Sp->SetXTitle("diff. MC data - react. IM(n#pi^{+}) [GeV/c^{2}]");
@@ -30,13 +30,21 @@ void disp_mcancestorana()
   diffmom_npip_ncan_6g->SetLineColor(5);
   diffmom_npip_ncan_6g->Draw("HEsame");
   c3->SetLogy();
+  
+  TH2F* vtxr_diffmom_npip_ncan_select_sigma_Sp
+  = (TH2F*)fGSp->Get("vtxr_diffmom_npip_ncan_select_sigma");
+  TCanvas *c5 = new TCanvas();
+  vtxr_diffmom_npip_ncan_select_sigma_Sp->Draw("colz");
+  c5->SetLogz();
+
+
 
 
   TFile *fGSm = TFile::Open("simIMpisigma_nSmpip_v111.root","READ");
   fGSm->cd();
 
   TH2F* generation_diffmom_npim_ncan_select_sigma_Sm 
-  = fGSm->Get("generation_diffmom_npim_ncan_select_sigma");
+  = (TH2F*)fGSm->Get("generation_diffmom_npim_ncan_select_sigma");
   
   TCanvas *c2 = new TCanvas();
   generation_diffmom_npim_ncan_select_sigma_Sm->SetXTitle("diff. MC data - react. IM(n#pi^{-}) [GeV/c^{2}]");
@@ -62,7 +70,11 @@ void disp_mcancestorana()
   diffmom_npim_ncan_6g->Draw("HEsame");
   c4->SetLogy();
 
-
+  TH2F* vtxr_diffmom_npim_ncan_select_sigma_Sm
+  = (TH2F*)fGSm->Get("vtxr_diffmom_npim_ncan_select_sigma");
+  TCanvas *c6 = new TCanvas();
+  vtxr_diffmom_npim_ncan_select_sigma_Sm->Draw("colz");
+  c6->SetLogz();
 
 
 
