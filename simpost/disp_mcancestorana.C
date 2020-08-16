@@ -20,7 +20,10 @@ void disp_mcancestorana()
   TH1D* diffmom_npip_ncan_4g =  (TH1D*)generation_diffmom_npip_ncan_select_sigma_Sp->ProjectionX("Sp4g",bin2nd+2,bin2nd+2);
   TH1D* diffmom_npip_ncan_5g =  (TH1D*)generation_diffmom_npip_ncan_select_sigma_Sp->ProjectionX("Sp5g",bin2nd+3,bin2nd+3);
   TH1D* diffmom_npip_ncan_6g =  (TH1D*)generation_diffmom_npip_ncan_select_sigma_Sp->ProjectionX("Sp6g",bin2nd+4,bin2nd+4);
+  TH1D* diffmom_npip_ncan_except3g = (TH1D*)generation_diffmom_npip_ncan_select_sigma_Sp->ProjectionX("Spex",bin2nd+2,100);
+  diffmom_npip_ncan_except3g->Add(diffmom_npip_ncan_2g);
   diffmom_npip_ncan_3g->Draw("HE");
+  /*
   diffmom_npip_ncan_2g->SetLineColor(2);
   diffmom_npip_ncan_2g->Draw("HEsame");
   diffmom_npip_ncan_4g->SetLineColor(3);
@@ -29,15 +32,20 @@ void disp_mcancestorana()
   diffmom_npip_ncan_5g->Draw("HEsame");
   diffmom_npip_ncan_6g->SetLineColor(5);
   diffmom_npip_ncan_6g->Draw("HEsame");
+  */
+  diffmom_npip_ncan_except3g->SetLineColor(2);
+  diffmom_npip_ncan_except3g->Draw("HEsame");
   c3->SetLogy();
-  
+  TLegend *leg = new TLegend(0.6,0.7,0.9,0.9);
+  leg->AddEntry(diffmom_npip_ncan_3g,"3rd generation");
+  leg->AddEntry(diffmom_npip_ncan_except3g,"others");
+  leg->Draw();
+
   TH2F* vtxr_diffmom_npip_ncan_select_sigma_Sp
   = (TH2F*)fGSp->Get("vtxr_diffmom_npip_ncan_select_sigma");
   TCanvas *c5 = new TCanvas();
   vtxr_diffmom_npip_ncan_select_sigma_Sp->Draw("colz");
   c5->SetLogz();
-
-
 
 
   TFile *fGSm = TFile::Open("simIMpisigma_nSmpip_v111.root","READ");
@@ -60,6 +68,12 @@ void disp_mcancestorana()
   TH1D* diffmom_npim_ncan_5g =  (TH1D*)generation_diffmom_npim_ncan_select_sigma_Sm->ProjectionX("Sm5g",bin2nd+3,bin2nd+3);
   TH1D* diffmom_npim_ncan_6g =  (TH1D*)generation_diffmom_npim_ncan_select_sigma_Sm->ProjectionX("Sm6g",bin2nd+4,bin2nd+4);
   diffmom_npim_ncan_3g->Draw("HE");
+  TH1D* diffmom_npim_ncan_except3g = (TH1D*)generation_diffmom_npim_ncan_select_sigma_Sm->ProjectionX("Smex",bin2nd+2,100);
+  diffmom_npim_ncan_except3g->Add(diffmom_npim_ncan_2g);
+  diffmom_npim_ncan_3g->Draw("HE");
+  diffmom_npim_ncan_except3g->SetLineColor(2);
+  diffmom_npim_ncan_except3g->Draw("HEsame");
+  /*
   diffmom_npim_ncan_2g->SetLineColor(2);
   diffmom_npim_ncan_2g->Draw("HEsame");
   diffmom_npim_ncan_4g->SetLineColor(3);
@@ -68,7 +82,15 @@ void disp_mcancestorana()
   diffmom_npim_ncan_5g->Draw("HEsame");
   diffmom_npim_ncan_6g->SetLineColor(5);
   diffmom_npim_ncan_6g->Draw("HEsame");
+  */
+
+
   c4->SetLogy();
+  
+  TLegend *leg2 = new TLegend(0.6,0.7,0.9,0.9);
+  leg2->AddEntry(diffmom_npim_ncan_3g,"3rd generation");
+  leg2->AddEntry(diffmom_npim_ncan_except3g,"others");
+  leg2->Draw();
 
   TH2F* vtxr_diffmom_npim_ncan_select_sigma_Sm
   = (TH2F*)fGSm->Get("vtxr_diffmom_npim_ncan_select_sigma");
