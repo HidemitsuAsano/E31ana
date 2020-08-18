@@ -175,6 +175,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //tree->SetBranchAddress( "event_num", &event_num );
   //tree->SetBranchAddress( "block_num", &block_num );
   if(SimSpmode || SimSmmode) {
+    tree->SetBranchAddress( "mcncanvtxr", &mcncanvtxr);
+    tree->SetBranchAddress( "mcncdsgen", &mcncdsgen);
     tree->SetBranchAddress( "mcmom_beam",  &mcmom_beam );
     tree->SetBranchAddress( "mcmom_pip", &mcmom_pip);
     tree->SetBranchAddress( "mcmom_pim", &mcmom_pim);
@@ -309,6 +311,11 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* IMnpim_IMnpip_mc;//store mcData node
   TH2F* nmom_IMnpim_mc;
   TH2F* nmom_IMnpip_mc;
+  TH2F* vtxr_generation_ncan_wSid_n_mc;//
+  TH2F* vtxr_diffmom_npip_ncan_wSid_n_mc;
+  TH2F* vtxr_diffmom_npim_ncan_wSid_n_mc;
+  TH2F* generation_diffmom_npip_ncan_wSid_n_mc;
+  TH2F* generation_diffmom_npim_ncan_wSid_n_mc;
   
   //GEANT reaction data - mcData matching 
   TH1F* diff_IMnpim_reactmc;//store mcData - reaction data
@@ -1023,6 +1030,26 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   nmom_IMnpip_mc = new TH2F("nmom_IMnpip_mc", "nmom_IMnpip_mc",nbinIMnpi, 1, 2.0, nbinnmom,0,1.0);
   nmom_IMnpip_mc->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   nmom_IMnpip_mc->SetYTitle("n_{CDS} mom. [GeV/c]");
+  
+  vtxr_generation_ncan_wSid_n_mc = new TH2F("vtxr_generation_ncan_wSid_n_mc","vtxr_generation_ncan_wSid_n_mc",10,0,10, 480,0,120.0);
+  vtxr_generation_ncan_wSid_n_mc->SetXTitle("n_{CDS} generation");
+  vtxr_generation_ncan_wSid_n_mc->SetYTitle("n_{CDS} origin in R [cm]");
+  
+  vtxr_diffmom_npip_ncan_wSid_n_mc = new TH2F("vtxr_diffmom_npip_ncan_wSid_n_mc","vtxr_diffmom_npip_ncan_wSid_n_mc",200,-0.1,0.1,480,0,120.0);
+  vtxr_diffmom_npip_ncan_wSid_n_mc->SetXTitle("diff. mom. (n#pi^{+}) MCdata - React.");
+  vtxr_diffmom_npip_ncan_wSid_n_mc->SetYTitle("n_{CDS} origin in R [cm] ");
+
+  vtxr_diffmom_npim_ncan_wSid_n_mc = new TH2F("vtxr_diffmom_npim_ncan_wSid_n_mc","vtxr_diffmom_npim_ncan_wSid_n_mc",200,-0.1,0.1,480,0,120.0);
+  vtxr_diffmom_npim_ncan_wSid_n_mc->SetXTitle("diff. mom. (n#pi^{-}) MCdata - React.");
+  vtxr_diffmom_npim_ncan_wSid_n_mc->SetYTitle("n_{CDS} origin in R [cm] ");
+
+  generation_diffmom_npip_ncan_wSid_n_mc = new TH2F("generation_diffmom_npip_ncan_wSid_n_mc","generation_diffmom_npip_ncan_wSid_n_mc",200,-0.1,0.1,10,0,10);
+  generation_diffmom_npip_ncan_wSid_n_mc->SetXTitle("diff. mom. (n#pi^{+}) MCdata - React.");
+  generation_diffmom_npip_ncan_wSid_n_mc->SetYTitle("n_{CDS} generation");
+
+  generation_diffmom_npim_ncan_wSid_n_mc = new TH2F("generation_diffmom_npim_ncan_wSid_n_mc","generation_diffmom_npim_ncan_wSid_n_mc",200,-0.1,0.1,10,0,10);
+  generation_diffmom_npim_ncan_wSid_n_mc->SetXTitle("diff. mom. (n#pi^{-}) MCdata - React.");
+  generation_diffmom_npim_ncan_wSid_n_mc->SetYTitle("n_{CDS} generation");
 
 
   IMnpim_IMnpip_dE = new TH2F(Form("IMnpim_IMnpip_dE"), Form("IMnpim_IMnpip_dE"),nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
@@ -3842,18 +3869,29 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
             //}
           }
           
+          
+
+
           double diffIMnpim_recomc = LVec_pim_n.M()- LVec_pim_n_mc.M();
           double diffIMnpip_recomc = LVec_pip_n.M()- LVec_pip_n_mc.M();
           TLorentzVector diffnpip_recomc = LVec_pip_n - LVec_pip_n_mc; 
           TLorentzVector diffnpim_recomc = LVec_pim_n - LVec_pim_n_mc; 
           TLorentzVector diffMMom_recomc = LVec_nmiss - *mcmom_nmiss;
           double diffnmom_recomc = (*LVec_n).P() - (*mcmom_ncds).P();
+          double diffnpip_mcreact = LVec_pip_n_mc.P() - LVec_Sigma_react.P()/1000.0;
+          double diffnpim_mcreact = LVec_pim_n_mc.P() - LVec_Sigma_react.P()/1000.0;
           diff2D_MMnmiss_IMnpim_recomc_wSid_n->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
           diff2D_MMnmiss_IMnpip_recomc_wSid_n->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
           diff2D_nmom_IMnpim_recomc_wSid_n->Fill(diffIMnpim_recomc,diffnmom_recomc);
           diff2D_nmom_IMnpip_recomc_wSid_n->Fill(diffIMnpip_recomc,diffnmom_recomc);
           diffMomnpim_Momnpip_recomc_wSid_n->Fill(diffnpip_recomc.P(),diffnpim_recomc.P());
           diffMMom_recomc_wSid_n->Fill(diffMMom_recomc.P());
+          vtxr_generation_ncan_wSid_n_mc->Fill(mcncdsgen,mcncanvtxr);
+          vtxr_diffmom_npip_ncan_wSid_n_mc->Fill(diffnpip_mcreact,mcncanvtxr);
+          vtxr_diffmom_npim_ncan_wSid_n_mc->Fill(diffnpim_mcreact,mcncanvtxr);
+          generation_diffmom_npip_ncan_wSid_n_mc->Fill(diffnpip_mcreact,mcncdsgen);
+          generation_diffmom_npim_ncan_wSid_n_mc->Fill(diffnpim_mcreact,mcncdsgen);
+
           if(!IsFakeN1){
             diff2D_MMnmiss_IMnpim_recomc_wSid_n_fake1->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
             diff2D_MMnmiss_IMnpip_recomc_wSid_n_fake1->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
