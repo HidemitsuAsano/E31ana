@@ -3909,7 +3909,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
             if(diffnpim_recomc.P()>0.10) IsFakeN2 = true;
           }
           //if(IsFakeN1 || !IsMissMassNOK || !IsMcNMassOK || IsFakeN2){
-          if(!IsMissMassNOK || !IsMcNMassOK || IsFakeN2){
+          //if(!IsMissMassNOK || !IsMcNMassOK || IsFakeN2){
+          if( (mcncdsgen!=3) || (mcncanvtxr>20)  ){
+          //if( (mcncdsgen!=3)  ){
             q_IMnpipi_wSid_n_fake->Fill(LVec_pip_pim_n.M(),qkn.P());
             MMnmiss_IMpippim_dE_wSid_n_fake->Fill(LVec_pip_pim.M(),nmiss_mass);
             IMnpim_IMnpip_dE_wSid_n_fake->Fill(LVec_pip_n.M(),LVec_pim_n.M());
