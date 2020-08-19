@@ -12,43 +12,6 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   //const char opt[10]="cont1";
   //const char opt[10]="colz";
   gStyle->SetErrorX(0.);  
-  TCanvas *cIMnpim_IMnpip_n = new TCanvas("cIMnpim_IMnpip_n", "cIMnpim_IMnpip_n",1000,1000);
-  cIMnpim_IMnpip_n->Divide(2,2,0,0);
-  TH2D* IMnpim_IMnpip_n_rdata = (TH2D*)f->Get("IMnpim_IMnpip_n_rdata");
-  TH2D* IMnpim_IMnpip_n_mc    = (TH2D*)f->Get("IMnpim_IMnpip_n_mc");
-  
-  cIMnpim_IMnpip_n->cd(3);
-  IMnpim_IMnpip_n_rdata->RebinX(4);
-  IMnpim_IMnpip_n_rdata->RebinY(4);
-  IMnpim_IMnpip_n_rdata->GetXaxis()->SetRangeUser(1,1.7);
-  IMnpim_IMnpip_n_rdata->GetYaxis()->SetRangeUser(1,1.7);
-  IMnpim_IMnpip_n_rdata->Draw("cont1");
-  
-  cIMnpim_IMnpip_n->cd(1);
-  TH1D* IMnpip_n_rdata = (TH1D*)IMnpim_IMnpip_n_rdata->ProjectionX("IMnpip_n_rdata");
-  IMnpip_n_rdata->SetTitle("");
-  IMnpip_n_rdata->GetXaxis()->SetTitle("");
-  IMnpip_n_rdata->Draw("E1");
-  IMnpip_n_rdata->GetXaxis()->SetLabelSize(0);
-  
-  cIMnpim_IMnpip_n->cd(4);
-  TH1D* IMnpim_n_rdata = (TH1D*)IMnpim_IMnpip_n_rdata->ProjectionY("IMnpim_n_rdata");
-  IMnpim_n_rdata->SetTitle("");
-  IMnpim_n_rdata->GetXaxis()->SetTitle("");
-  TGraphErrors *gr_IMnpim_n_rdata = new TGraphErrors();
-  for(int ibin=0;ibin<IMnpim_n_rdata->GetNbinsX();ibin++){
-    double cont = IMnpim_n_rdata->GetBinContent(ibin);
-    double bincenter = IMnpim_n_rdata->GetBinCenter(ibin);
-    double err = IMnpim_n_rdata->GetBinError(ibin);
-    gr_IMnpim_n_rdata->SetPoint(ibin,cont,bincenter);
-    gr_IMnpim_n_rdata->SetPointError(ibin,err,0);
-  }
-  gr_IMnpim_n_rdata->GetYaxis()->SetLabelOffset(999);
-  gr_IMnpim_n_rdata->GetYaxis()->SetLabelSize(0);
-  gr_IMnpim_n_rdata->GetYaxis()->SetRangeUser(IMnpim_IMnpip_n_rdata->GetYaxis()->GetXmin(),1.7);//IMnpim_IMnpip_n_rdata->GetYaxis()->GetXmax());
-  gr_IMnpim_n_rdata->SetLineWidth(2);
-  gr_IMnpim_n_rdata->Draw("AP");
-  
 
   //draw BG at first
   TH2D* IMnpim_IMnpip_woK0_woSid_won_data = (TH2D*)f->Get("IMnpim_IMnpip_woK0_woSid_won_data");IMnpim_IMnpip_woK0_woSid_won_data->Print();
@@ -699,11 +662,73 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   q_IMnpipi_woSid_won_sub->Scale(0.25);
   q_IMnpipi_woSid_won_sub->GetZaxis()->SetRangeUser(-0.3,0.3);
   q_IMnpipi_woSid_won_sub->Draw("colz");
-
   
+
   //signal check IMnpim vs IMnpip
   const double Slow = 1.0;
   const double Shigh = 1.7;
+  
+  TCanvas *cIMnpim_IMnpip_n = new TCanvas("cIMnpim_IMnpip_n", "cIMnpim_IMnpip_n",1000,1000);
+  cIMnpim_IMnpip_n->Divide(2,2,0,0);
+  TH2D* IMnpim_IMnpip_n_rdata = (TH2D*)f->Get("IMnpim_IMnpip_n_rdata");
+  TH2D* IMnpim_IMnpip_n_mc    = (TH2D*)f->Get("IMnpim_IMnpip_n_mc");
+  
+  cIMnpim_IMnpip_n->cd(3);
+  //IMnpim_IMnpip_n_rdata->RebinX(4);
+  //IMnpim_IMnpip_n_rdata->RebinY(4);
+  //IMnpim_IMnpip_n_mc->RebinX(4);
+  //IMnpim_IMnpip_n_mc->RebinY(4);
+  IMnpim_IMnpip_n_rdata->SetTitle("");
+  IMnpim_IMnpip_n_rdata->GetXaxis()->SetRangeUser(Slow,Shigh);
+  IMnpim_IMnpip_n_rdata->GetYaxis()->SetRangeUser(Slow,Shigh);
+  IMnpim_IMnpip_n_rdata->Draw("cont1");
+  
+  cIMnpim_IMnpip_n->cd(1);
+  TH1D* IMnpip_n_rdata = (TH1D*)IMnpim_IMnpip_n_rdata->ProjectionX("IMnpip_n_rdata");
+  TH1D* IMnpip_n_mc = (TH1D*)IMnpim_IMnpip_n_mc->ProjectionX("IMnpip_n_mc");
+  IMnpip_n_rdata->SetTitle("");
+  IMnpip_n_rdata->GetXaxis()->SetTitle("");
+  IMnpip_n_rdata->GetXaxis()->SetLabelSize(0);
+  IMnpip_n_rdata->SetMarkerStyle(20);
+  IMnpip_n_rdata->Draw("E1");
+  IMnpip_n_mc->SetLineColor(6);
+  IMnpip_n_mc->SetMarkerColor(6);
+  IMnpip_n_mc->SetMarkerStyle(20);
+  IMnpip_n_mc->Draw("E1same");
+  
+  cIMnpim_IMnpip_n->cd(4);
+  TH1D* IMnpim_n_rdata = (TH1D*)IMnpim_IMnpip_n_rdata->ProjectionY("IMnpim_n_rdata");
+  TH1D* IMnpim_n_mc = (TH1D*)IMnpim_IMnpip_n_mc->ProjectionY("IMnpim_n_mc");
+  IMnpim_n_rdata->SetTitle("");
+  IMnpim_n_rdata->GetXaxis()->SetTitle("");
+  TGraphErrors *gr_IMnpim_n_rdata = new TGraphErrors();
+  TGraphErrors *gr_IMnpim_n_mc = new TGraphErrors();
+  for(int ibin=0;ibin<IMnpim_n_rdata->GetNbinsX();ibin++){
+    double cont = IMnpim_n_rdata->GetBinContent(ibin);
+    double bincenter = IMnpim_n_rdata->GetBinCenter(ibin);
+    double err = IMnpim_n_rdata->GetBinError(ibin);
+    gr_IMnpim_n_rdata->SetPoint(ibin,cont,bincenter);
+    gr_IMnpim_n_rdata->SetPointError(ibin,err,0);
+  }
+  for(int ibin=0;ibin<IMnpim_n_mc->GetNbinsX();ibin++){
+    double cont = IMnpim_n_mc->GetBinContent(ibin);
+    double bincenter = IMnpim_n_mc->GetBinCenter(ibin);
+    double err = IMnpim_n_mc->GetBinError(ibin);
+    gr_IMnpim_n_mc->SetPoint(ibin,cont,bincenter);
+    gr_IMnpim_n_mc->SetPointError(ibin,err,0);
+  }
+  gr_IMnpim_n_rdata->GetYaxis()->SetLabelOffset(999);
+  gr_IMnpim_n_rdata->GetYaxis()->SetLabelSize(0);
+  gr_IMnpim_n_rdata->GetYaxis()->SetRangeUser(IMnpim_IMnpip_n_rdata->GetYaxis()->GetXmin(),1.7);//IMnpim_IMnpip_n_rdata->GetYaxis()->GetXmax());
+  gr_IMnpim_n_rdata->SetLineWidth(2);
+  gr_IMnpim_n_rdata->SetMarkerStyle(20);
+  gr_IMnpim_n_rdata->Draw("AP");
+  gr_IMnpim_n_mc->SetMarkerStyle(20);
+  gr_IMnpim_n_mc->SetMarkerColor(6);
+  gr_IMnpim_n_mc->SetLineColor(6);
+  gr_IMnpim_n_mc->Draw("P");
+  
+  
 
   TH2D* IMnpim_IMnpip_woK0_wSid_n_data = (TH2D*)f->Get("IMnpim_IMnpip_woK0_wSid_n_data");IMnpim_IMnpip_woK0_wSid_n_data->Print();
   TH2D* IMnpim_IMnpip_wK0_wSid_n_data = (TH2D*)f->Get("IMnpim_IMnpip_wK0_wSid_n_data");IMnpim_IMnpip_wK0_wSid_n_data->Print();
