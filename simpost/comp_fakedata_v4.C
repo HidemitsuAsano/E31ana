@@ -233,15 +233,30 @@ void comp_fakedata_v4()
   };
   
   TH2D *MMnmiss_IMpippim_wSid_rdata = (TH2D*)filerdata->Get("MMnmiss_IMpippim_dE_wSid");
-  TH2D *MMnmiss_IMpippim_wSid_fake = (TH2D*)filefake->Get("MMnmiss_IMpippim_dE_woK0_wSid");
-  TH2D *MMnmiss_IMpippim_wSid_fakeK0 = (TH2D*)filefakeK0->Get("MMnmiss_IMpippim_dE_wK0_wSid");
-  TH2D *MMnmiss_IMpippim_wSid_fakeK0geta = (TH2D*)filefake->Get("MMnmiss_IMpippim_dE_wK0_wSid");
+  TH2D *MMnmiss_IMpippim_woK0_wSid_rdata = (TH2D*)filerdata->Get("MMnmiss_IMpippim_dE_woK0_wSid");
+  TH2D *MMnmiss_IMpippim_wK0_wSid_rdata = (TH2D*)filerdata->Get("MMnmiss_IMpippim_dE_wK0_wSid");
+  TH2D *MMnmiss_IMpippim_woK0_wSid_fake = (TH2D*)filefake->Get("MMnmiss_IMpippim_dE_woK0_wSid");
+  TH2D *MMnmiss_IMpippim_wK0_wSid_fake = (TH2D*)filefakeK0->Get("MMnmiss_IMpippim_dE_wK0_wSid");
+  TH2D *MMnmiss_IMpippim_wK0_wSid_fakegeta = (TH2D*)filefake->Get("MMnmiss_IMpippim_dE_wK0_wSid");
+  
+  TH2D* MMnmiss_IMpippim_woK0_wSid[2]={
+    MMnmiss_IMpippim_woK0_wSid_rdata,
+    MMnmiss_IMpippim_woK0_wSid_fake 
+  };
+  
+  TH2D* MMnmiss_IMpippim_wK0_wSid[3]={
+    MMnmiss_IMpippim_wK0_wSid_rdata,
+    MMnmiss_IMpippim_wK0_wSid_fake,
+    MMnmiss_IMpippim_wK0_wSid_fakegeta
+  };
+  
+  /*
   TH2D* MMnmiss_IMpippim_wSid[4]= {
     MMnmiss_IMpippim_wSid_rdata,
     MMnmiss_IMpippim_wSid_fake,
     MMnmiss_IMpippim_wSid_fakeK0,
     MMnmiss_IMpippim_wSid_fakeK0geta
-  };
+  };*/
   
   TH2D *MMnmiss_IMpippim_wSid_n_rdata = (TH2D*)filerdata->Get("MMnmiss_IMpippim_dE_wSid_n");
   TH2D *MMnmiss_IMpippim_woK0_wSid_n_rdata = (TH2D*)filerdata->Get("MMnmiss_IMpippim_dE_woK0_wSid_n");
@@ -649,6 +664,7 @@ void comp_fakedata_v4()
     IMpippim_IMnpip_woK0_woSid_won[i]->Scale(scaleFactor[i]);
     IMpippim_IMnpim_woK0_woSid_won[i]->Scale(scaleFactor[i]);
     MMnmiss_IMpippim_woK0_woSid_won[i]->Scale(scaleFactor[i]);
+    MMnmiss_IMpippim_woK0_wSid[i]->Scale(scaleFactor[i]);
     MMnmiss_IMpippim_woK0_wSid_n[i]->Scale(scaleFactor[i]);
     IMnpim_IMnpip_woK0_n[i]->Scale(scaleFactor[i]);
     q_IMnpipi_woK0_wSid_n[i]->Scale(scaleFactor[i]);
@@ -682,6 +698,7 @@ void comp_fakedata_v4()
     IMpippim_IMnpip_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
     IMpippim_IMnpim_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
     MMnmiss_IMpippim_wK0_woSid_won[i]->Scale(scaleFactorK0[i]);
+    MMnmiss_IMpippim_wK0_wSid[i]->Scale(scaleFactorK0[i]);
     MMnmiss_IMpippim_wK0_wSid_n[i]->Scale(scaleFactorK0[i]);
     IMnpim_IMnpip_wK0_n[i]->Scale(scaleFactorK0[i]);
     q_IMnpipi_wK0_wSid_n[i]->Scale(scaleFactorK0[i]);
@@ -1215,6 +1232,17 @@ void comp_fakedata_v4()
   //MMnmiss_IMpippim_woSid_won_mc->SetMaximum(MMnmiss_IMpippim_woSid_won_data->GetMaximum());
   //MMnmiss_IMpippim_woSid_won_mc->Draw(opt);
   
+
+  TH2D* MMnmiss_IMpippim_woK0_wSid_data = (TH2D*)MMnmiss_IMpippim_woK0_wSid[0]->Clone("MMnmiss_IMpippim_woK0_wSid_data");
+  TH2D* MMnmiss_IMpippim_woK0_wSid_mc = (TH2D*)MMnmiss_IMpippim_woK0_wSid[1]->Clone("MMnmiss_IMpippim_woK0_wSid_mc");
+
+  TH2D* MMnmiss_IMpippim_wK0_wSid_data = (TH2D*)MMnmiss_IMpippim_wK0_wSid[0]->Clone("MMnmiss_IMpippim_wK0_wSid_data");
+  TH2D* MMnmiss_IMpippim_wK0_wSid_mc = (TH2D*)MMnmiss_IMpippim_wK0_wSid[1]->Clone("MMnmiss_IMpippim_wK0_wSid_mc");
+  TH2D* MMnmiss_IMpippim_wK0_wSid_mcgeta = (TH2D*)MMnmiss_IMpippim_wK0_wSid[2]->Clone("MMnmiss_IMpippim_wK0_wSid_mcgeta");
+
+
+
+
   //MMnmiss_IMppipim signal region
   TH2D* MMnmiss_IMpippim_woK0_wSid_n_data = (TH2D*)MMnmiss_IMpippim_woK0_wSid_n[0]->Clone("MMnmiss_IMpippim_woK0_wSid_n_data");
   TH2D* MMnmiss_IMpippim_woK0_wSid_n_mc = (TH2D*)MMnmiss_IMpippim_woK0_wSid_n[1]->Clone("MMnmiss_IMpippim_woK0_wSid_n_mc");
