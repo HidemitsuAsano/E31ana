@@ -46,7 +46,22 @@ void disp_mcancestorana()
   TCanvas *c5 = new TCanvas();
   vtxr_diffmom_npip_ncan_select_sigma_Sp->Draw("colz");
   c5->SetLogz();
+  
+  TCanvas *c7 = new TCanvas();
+  int bin20cm = vtxr_diffmom_npip_ncan_select_sigma_Sp->GetYaxis()->FindBin(20);
+  int bin120cm = vtxr_diffmom_npip_ncan_select_sigma_Sp->GetYaxis()->FindBin(120);
 
+  TH1D* pxfidinSp = (TH1D*)vtxr_diffmom_npip_ncan_select_sigma_Sp->ProjectionX("pxfidinSp",0,bin20cm);
+  TH1D* pxfidoutSp = (TH1D*)vtxr_diffmom_npip_ncan_select_sigma_Sp->ProjectionX("pxfidoutSp",bin20cm,bin120cm);
+  pxfidinSp->Draw("HE");
+  pxfidoutSp->SetLineColor(2);
+  pxfidoutSp->Draw("HEsame");
+  c7->SetLogy();
+  
+  TLegend *leg7 = new TLegend(0.6,0.7,0.9,0.9);
+  leg7->AddEntry(pxfidinSp,"n_{CDS} origin R<20 cm");
+  leg7->AddEntry(pxfidoutSp,"n_{CDS} origin R>20 cm");
+  leg7->Draw();
 
   TFile *fGSm = TFile::Open("simIMpisigma_nSmpip_v113.root","READ");
   fGSm->cd();
@@ -54,6 +69,9 @@ void disp_mcancestorana()
   TH2F* generation_diffmom_npim_ncan_select_sigma_Sm 
   = (TH2F*)fGSm->Get("generation_diffmom_npim_ncan_select_sigma");
   
+
+
+
   TCanvas *c2 = new TCanvas();
   generation_diffmom_npim_ncan_select_sigma_Sm->SetXTitle("diff. MC data - react. IM(n#pi^{-}) [GeV/c^{2}]");
   generation_diffmom_npim_ncan_select_sigma_Sm->SetYTitle("generation of neutron candidate");
@@ -99,5 +117,19 @@ void disp_mcancestorana()
   c6->SetLogz();
 
 
+  TCanvas *c8 = new TCanvas();
+  int bin20cm = vtxr_diffmom_npim_ncan_select_sigma_Sm->GetYaxis()->FindBin(20);
+  int bin120cm = vtxr_diffmom_npim_ncan_select_sigma_Sm->GetYaxis()->FindBin(120);
 
+  TH1D* pxfidinSm = (TH1D*)vtxr_diffmom_npim_ncan_select_sigma_Sm->ProjectionX("pxfidinSm",0,bin20cm);
+  TH1D* pxfidoutSm = (TH1D*)vtxr_diffmom_npim_ncan_select_sigma_Sm->ProjectionX("pxfidoutSm",bin20cm,bin120cm);
+  pxfidinSm->Draw("HE");
+  pxfidoutSm->SetLineColor(2);
+  pxfidoutSm->Draw("HEsame");
+  c8->SetLogy();
+
+  TLegend *leg8 = new TLegend(0.5,0.7,0.9,0.9);
+  leg8->AddEntry(pxfidinSm,"n_{CDS} origin R<20 cm");
+  leg8->AddEntry(pxfidoutSm,"n_{CDS} origin R>20 cm");
+  leg8->Draw();
 };
