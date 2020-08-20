@@ -893,7 +893,82 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   gr_IMnpim_wSid_n_data_sub->GetYaxis()->SetRangeUser(Slow,Shigh);
   gr_IMnpim_wSid_n_data_sub->Draw("AP");
   
- 
+  //
+  //signal + BG check MMnmiss vs IMpippim wSid 
+  //
+  TH2D* MMnmiss_IMpippim_woK0_wSid_data = (TH2D*)f->Get("MMnmiss_IMpippim_woK0_wSid_data");MMnmiss_IMpippim_woK0_wSid_data->Print();
+  TH2D* MMnmiss_IMpippim_wK0_wSid_data = (TH2D*)f->Get("MMnmiss_IMpippim_wK0_wSid_data");MMnmiss_IMpippim_wK0_wSid_data->Print();
+  TH2D* MMnmiss_IMpippim_woK0_wSid_mc = (TH2D*)f->Get("MMnmiss_IMpippim_woK0_wSid_mc");MMnmiss_IMpippim_woK0_wSid_mc->Print();//wo geta
+  TH2D* MMnmiss_IMpippim_wK0_wSid_mc = (TH2D*)f->Get("MMnmiss_IMpippim_wK0_wSid_mc");MMnmiss_IMpippim_wK0_wSid_mc->Print();//w geta
+  TH2D* MMnmiss_IMpippim_wK0_wSid_mcgeta = (TH2D*)f->Get("MMnmiss_IMpippim_wK0_wSid_mcgeta");MMnmiss_IMpippim_wK0_wSid_mcgeta->Print();
+  
+  //adding woK0 + wK0
+  TH2D* MMnmiss_IMpippim_wSid_data = (TH2D*)MMnmiss_IMpippim_woK0_wSid_data->Clone("MMnmiss_IMpippim_wSid_data");
+  MMnmiss_IMpippim_wSid_data->Add(MMnmiss_IMpippim_wK0_wSid_data);
+  TH2D* MMnmiss_IMpippim_wSid_mc = (TH2D*)MMnmiss_IMpippim_woK0_wSid_mc->Clone("MMnmiss_IMpippim_wSid_mc");
+  MMnmiss_IMpippim_wSid_mc->Add(MMnmiss_IMpippim_wK0_wSid_mc);
+  MMnmiss_IMpippim_wSid_mc->Add(MMnmiss_IMpippim_wK0_wSid_mcgeta,1.0);
+  MMnmiss_IMpippim_wSid_mc->Print();
+  
+  TCanvas *cMMnmiss_IMpippim_wSid = new TCanvas("cMMnmiss_IMpippim_wSid","cMMnmiss_IMpippim_wSid",1000,1000);
+  cMMnmiss_IMpippim_wSid->Divide(2,2,0,0);
+  cMMnmiss_IMpippim_wSid->cd(3);
+  MMnmiss_IMpippim_wSid_data->SetTitle("");
+  MMnmiss_IMpippim_wSid_data->RebinX(4);
+  MMnmiss_IMpippim_wSid_mc->RebinX(4);
+  MMnmiss_IMpippim_wSid_data->SetContour(8);
+  MMnmiss_IMpippim_wSid_mc->SetContour(8);
+  MMnmiss_IMpippim_wSid_data->SetMinimum(1);
+  MMnmiss_IMpippim_wSid_data->SetLineWidth(2);
+  MMnmiss_IMpippim_wSid_data->Draw("colz");
+  MMnmiss_IMpippim_wSid_mc->SetLineColor(6);
+  MMnmiss_IMpippim_wSid_mc->SetLineWidth(2);
+  MMnmiss_IMpippim_wSid_mc->SetMinimum(1);
+
+
+  cMMnmiss_IMpippim_wSid->cd(1);
+  TH1D* IMpippim_wSid_data = (TH1D*)MMnmiss_IMpippim_wSid_data->ProjectionX("IMpippim_wSid_data");
+  TH1D* IMpippim_wSid_mc = (TH1D*)MMnmiss_IMpippim_wSid_mc->ProjectionX("IMpippim_wSid_mc");
+  IMpippim_wSid_data->GetXaxis()->SetLabelSize(0);
+  IMpippim_wSid_data->SetMarkerStyle(20);
+  IMpippim_wSid_data->SetMarkerColor(1);
+  IMpippim_wSid_data->Draw("E");
+  IMpippim_wSid_mc->SetLineColor(6);
+  IMpippim_wSid_mc->SetMarkerStyle(20);
+  IMpippim_wSid_mc->SetMarkerColor(6);
+  IMpippim_wSid_mc->Draw("Esame");IMpippim_wSid_mc->Print();
+
+
+  cMMnmiss_IMpippim_wSid->cd(4);
+  TH1D* MMnmiss_wSid_data = (TH1D*)MMnmiss_IMpippim_wSid_data->ProjectionY("MMnmiss_wSid_data");
+  TH1D* MMnmiss_wSid_mc = (TH1D*)MMnmiss_IMpippim_wSid_mc->ProjectionY("MMnmiss_wSid_mc");
+  MMnmiss_wSid_data->SetTitle("");
+  MMnmiss_wSid_data->GetXaxis()->SetTitle("");
+  
+  TGraphErrors *gr_MMnmiss_wSid_data = new TGraphErrors();
+  TGraphErrors *gr_MMnmiss_wSid_mc = new TGraphErrors();
+  
+  for(int ibin=0;ibin<MMnmiss_wSid_data->GetNbinsX();ibin++){
+    double cont = MMnmiss_wSid_data->GetBinContent(ibin);
+    double err = MMnmiss_wSid_data->GetBinError(ibin);
+    double bincenter = MMnmiss_wSid_data->GetBinCenter(ibin);
+    gr_MMnmiss_wSid_data->SetPoint(ibin,cont, bincenter);
+    gr_MMnmiss_wSid_data->SetPointError(ibin,err,0);
+  }
+  for(int ibin=0;ibin<MMnmiss_wSid_mc->GetNbinsX();ibin++){
+    double cont = MMnmiss_wSid_mc->GetBinContent(ibin);
+    double err = MMnmiss_wSid_mc->GetBinError(ibin);
+    double bincenter = MMnmiss_wSid_mc->GetBinCenter(ibin);
+    gr_MMnmiss_wSid_mc->SetPoint(ibin,cont, bincenter);
+    gr_MMnmiss_wSid_mc->SetPointError(ibin,err,0);
+  }
+  gr_MMnmiss_wSid_data->SetMarkerStyle(20);
+  gr_MMnmiss_wSid_data->GetYaxis()->SetLabelSize(0);
+  gr_MMnmiss_wSid_data->Draw("AP");
+  gr_MMnmiss_wSid_mc->SetMarkerStyle(20);
+  gr_MMnmiss_wSid_mc->SetMarkerColor(6);
+  gr_MMnmiss_wSid_mc->Draw("P");
+
 
   //signal check MMnmiss vs IMpippim
   TH2D* MMnmiss_IMpippim_woK0_wSid_n_data = (TH2D*)f->Get("MMnmiss_IMpippim_woK0_wSid_n_data");MMnmiss_IMpippim_woK0_wSid_n_data->Print();
