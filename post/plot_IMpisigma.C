@@ -368,8 +368,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* IMnpim_IMnpip_dE_woK0;
   TH2F* IMnpim_IMnpip_dE_wK0;
   TH2F* IMnpim_IMnpip_dE_n;//
+  TH2F* IMnpim_IMnpip_dE_n_fake;//for GEANT4 sim.
   TH2F* IMnpim_IMnpip_dE_wSid_n;
-  TH2F* IMnpim_IMnpip_dE_wSid_n_fake;
+  TH2F* IMnpim_IMnpip_dE_wSid_n_fake;//for GEANT4 sim.
   TH2F* IMnpim_IMnpip_dE_woK0_n;//
   TH2F* IMnpim_IMnpip_dE_woK0_wSid_n;//
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n;//
@@ -456,8 +457,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* nmom_Momnpim_woK0_n_Sm;
   TH2F* MMnmiss_IMpippim_dE;
   TH2F* MMnmiss_IMpippim_dE_wSid;
+  TH2F* MMnmiss_IMpippim_dE_wSid_fake;//for GEANT4 sim.
   TH2F* MMnmiss_IMpippim_dE_wSid_n;
-  TH2F* MMnmiss_IMpippim_dE_wSid_n_fake;
+  TH2F* MMnmiss_IMpippim_dE_wSid_n_fake;//for GEANT4 sim.
   TH2F* MMnmiss_IMpippim_dE_woK0;
   TH2F* MMnmiss_IMpippim_dE_woK0_wSid;
   TH2F* MMnmiss_IMpippim_dE_woK0_wSid_n;
@@ -1080,6 +1082,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMnmiss_IMpippim_dE_wSid->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMpippim_dE_wSid->SetYTitle("Miss Mass. [GeV/c^{2}]");
   
+  MMnmiss_IMpippim_dE_wSid_fake = new TH2F("MMnmiss_IMpippim_dE_wSid_fake", "MMnmiss_IMpippim_dE_wSid_fake",nbinpippim,0.,1.0,nbinnmiss, nmisslow, nmisshigh);
+  MMnmiss_IMpippim_dE_wSid_fake->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  MMnmiss_IMpippim_dE_wSid_fake->SetYTitle("Miss Mass. [GeV/c^{2}]");
+
   MMnmiss_IMpippim_dE_wSid_n = new TH2F("MMnmiss_IMpippim_dE_wSid_n", "MMnmiss_IMpippim_dE_wSid_n",nbinpippim,0.,1.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMpippim_dE_wSid_n->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMpippim_dE_wSid_n->SetYTitle("Miss Mass. [GeV/c^{2}]");
@@ -1268,9 +1274,13 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMnmiss_IMpippim_dE_woK0_woSidn->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMpippim_dE_woK0_woSidn->SetYTitle("Miss Mass. [GeV/c^{2}]");
 
-  IMnpim_IMnpip_dE_n = new TH2F(Form("IMnpim_IMnpip_dE_n"),Form("IMnpim_IMnpip_dE_n"),nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  IMnpim_IMnpip_dE_n = new TH2F("IMnpim_IMnpip_dE_n","IMnpim_IMnpip_dE_n",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  
+  IMnpim_IMnpip_dE_n_fake = new TH2F("IMnpim_IMnpip_dE_n_fake","IMnpim_IMnpip_dE_n_fake",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  IMnpim_IMnpip_dE_n_fake->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpim_IMnpip_dE_n_fake->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
 
   IMnpim_IMnpip_dE_woK0_n = new TH2F(Form("IMnpim_IMnpip_dE_woK0_n"),Form("IMnpim_IMnpip_dE_woK0_n"),nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_woK0_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
@@ -3532,6 +3542,12 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         MMnmiss_IMnpipi_wSid->Fill(LVec_pip_pim_n.M(), nmiss_mass,weight);
         q_MMnmiss_wSid->Fill(nmiss_mass,qkn.P(),weight);
         nmom_MMnmiss_wSid->Fill(nmiss_mass,(*LVec_n).P(),weight);
+        
+        if(SimSpmode || SimSmmode){
+          if( (mcncdsgen!=3) || (mcncanvtxr>20)  ){
+            MMnmiss_IMpippim_dE_wSid_fake->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
+          }
+        }
       }
       pipmom_IMpippim_dE->Fill(LVec_pip_pim.M(),(*LVec_pip).P());
       pimmom_IMpippim_dE->Fill(LVec_pip_pim.M(),(*LVec_pim).P());
@@ -3660,6 +3676,12 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       IMnpim_IMnpip_dE_n->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
       IMnpip_IMnpipi_n->Fill(LVec_pip_pim_n.M(),LVec_pip_n.M(),weight);
       IMnpim_IMnpipi_n->Fill(LVec_pip_pim_n.M(),LVec_pim_n.M(),weight);
+      
+      if(SimSpmode || SimSmmode){
+        if( (mcncdsgen!=3) || (mcncanvtxr>20)  ){
+          IMnpim_IMnpip_dE_n_fake->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
+        }
+      }
 
       pipmom_IMpippim_dE_n->Fill(LVec_pip_pim.M(),(*LVec_pip).P(),weight);
       pimmom_IMpippim_dE_n->Fill(LVec_pip_pim.M(),(*LVec_pim).P(),weight);
