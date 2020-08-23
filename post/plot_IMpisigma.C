@@ -3544,7 +3544,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         nmom_MMnmiss_wSid->Fill(nmiss_mass,(*LVec_n).P(),weight);
         
         if(SimSpmode || SimSmmode){
-          if( (mcncdsgen!=3) || (mcncanvtxr>20)  ){
+          //if( (mcncdsgen!=3) || (mcncanvtxr>20)  ){
+          if( (mcncanvtxr>58)  ){
             MMnmiss_IMpippim_dE_wSid_fake->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
           }
         }
@@ -3678,7 +3679,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       IMnpim_IMnpipi_n->Fill(LVec_pip_pim_n.M(),LVec_pim_n.M(),weight);
       
       if(SimSpmode || SimSmmode){
-        if( (mcncdsgen!=3) || (mcncanvtxr>20)  ){
+        //if( (mcncdsgen!=3) || (mcncanvtxr>20)  ){
+        if( (mcncanvtxr>58) ){
           IMnpim_IMnpip_dE_n_fake->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         }
       }
@@ -3932,7 +3934,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           }
           //if(IsFakeN1 || !IsMissMassNOK || !IsMcNMassOK || IsFakeN2){
           //if(!IsMissMassNOK || !IsMcNMassOK || IsFakeN2){
-          if( (mcncdsgen!=3) || (mcncanvtxr>20)  ){
+          //if( (mcncdsgen!=3) || (mcncanvtxr>20)  ){
+          if( (mcncanvtxr>58)  ){
           //if( (mcncdsgen!=3)  ){
             q_IMnpipi_wSid_n_fake->Fill(LVec_pip_pim_n.M(),qkn.P());
             MMnmiss_IMpippim_dE_wSid_n_fake->Fill(LVec_pip_pim.M(),nmiss_mass);
