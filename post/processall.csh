@@ -7,6 +7,7 @@
   root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_pipiL_ns_pippimn_v1.root")'
   root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_npipiL_ts_pippimn_v1.root")'
   root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_nS0pippim_pippimn_v5.root")'
+  root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_S0pippim_ns_pippimn_v1.root")'
   root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_nSppimpi0_pippimn_v2.root")'
   root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_nSmpippi0_pippimn_v2.root")'
   root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_Sppim_ns_pippimn_v2.root")'
