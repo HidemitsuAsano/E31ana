@@ -6,12 +6,14 @@ Double_t func_MMnmiss_mod(Double_t *x,Double_t *par)
 {
    //connection using woods-saxon
    if(0.0<x[0] && x[0]<1.5){
-     return (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
+     double ret = (par[0]+par[1]*x[0]+par[2]*pow(x[0],2.0)+par[3]*pow(x[0],3.0)
        +par[4]*pow(x[0],4.0)+par[5]*pow(x[0],5.0)+par[6]*pow(x[0],6.0)
        +par[7]*pow(x[0],7.0)+par[8]*pow(x[0],8.0)+par[9]*pow(x[0],9.0))*(1./(1.0+exp((x[0]-1.075)/par[10])))
        +(1.0-1./(1.0+exp((x[0]-1.075)/par[10])))*(par[11]*exp(-0.5*pow(((x[0]-par[12])/par[13]),2.0)))*(1./(1.0+exp((x[0]-1.14)/par[14])))
        +(1.0-1./(1.0+exp((x[0]-1.14)/par[14])))*
         (par[15]+par[16]*x[0]+par[17]*pow(x[0],2.0)+par[18]*pow(x[0],3.0)+par[19]*pow(x[0],4.0));
+     if(ret<0) return 0;
+     else      return ret;
    }else{
      return 1.0;
    }
@@ -287,7 +289,7 @@ Double_t param_nmom_wK0_mod[12]={
 Double_t func_IMpippim_mod(Double_t *x,Double_t *par)
 {
   if(0.27<x[0]){
-  return (par[0]*exp(-0.5*pow(((x[0]-par[1])/par[2]),2.0)))
+  double ret = (par[0]*exp(-0.5*pow(((x[0]-par[1])/par[2]),2.0)))
         *(1./(1.0+exp((x[0]-0.30)/par[3])))            
       +(1.0 - 1./(1.0+exp((x[0]-0.30)/par[3])))
        *(par[4]+par[5]*x[0]+par[6]*pow(x[0],2.0)+par[7]*pow(x[0],3.0)+par[8]*pow(x[0],4.0)+par[9]*pow(x[0],5.0)+par[10]*pow(x[0],6.0))
@@ -295,9 +297,11 @@ Double_t func_IMpippim_mod(Double_t *x,Double_t *par)
       +(1.0 - 1./(1.0+exp((x[0]-0.73)/par[11])))
        *(par[12]*exp(-0.5*pow(((x[0]-par[13])/par[14]),2.0)))
        ;
-   }else{
+  if(ret<0) return 0;
+  else      return ret;
+  }else{
     return 0.0;
-   }
+  }
 };
 
 
