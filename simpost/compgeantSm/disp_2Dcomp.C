@@ -1716,10 +1716,32 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   TH1D* IMnpipi_true = (TH1D*)q_IMnpipi_wSid_n_true->ProjectionX("IMnpipi_true");
   IMnpipi_true->Draw("HE");
   TH1D* IMnpipi_BGmodel = (TH1D*) q_IMnpipi_wSid_n_mc->ProjectionX("IMnpipi_BGmodel");
-  IMnpipi_BGmodel->SetLineColor(2);
+  IMnpipi_BGmodel->SetLineColor(3);
   IMnpipi_BGmodel->Draw("HEsame");
   TH1D* IMnpipi_BGGEANT = (TH1D*) q_IMnpipi_wSid_n_fake->ProjectionX("IMnpipi_BGGEANT");
-  IMnpipi_BGGEANT->SetLineColor(3);
+  IMnpipi_BGGEANT->SetLineColor(2);
   IMnpipi_BGGEANT->Draw("HEsame");
+  
+  const int bin350 = q_IMnpipi_wSid_n_true->GetYaxis()->FindBin(0.35);
+
+  TCanvas *cq_BG_comp_X_0 = new TCanvas("cq_BG_comp_X_0","cq_BG_comp_X_0");
+  TH1D* IMnpipi_true_0 = (TH1D*)q_IMnpipi_wSid_n_true->ProjectionX("IMnpipi_true_0",0,bin350-1);
+  IMnpipi_true_0->Draw("HE");
+  TH1D* IMnpipi_BGmodel_0 = (TH1D*) q_IMnpipi_wSid_n_mc->ProjectionX("IMnpipi_BGmodel_0",0,bin350-1);
+  IMnpipi_BGmodel_0->SetLineColor(3);
+  IMnpipi_BGmodel_0->Draw("HEsame");
+  TH1D* IMnpipi_BGGEANT_0 = (TH1D*) q_IMnpipi_wSid_n_fake->ProjectionX("IMnpipi_BGGEANT_0",0,bin350-1);
+  IMnpipi_BGGEANT_0->SetLineColor(2);
+  IMnpipi_BGGEANT_0->Draw("HEsame");
+
+  TCanvas *cq_BG_comp_X_350 = new TCanvas("cq_BG_comp_X_350","cq_BG_comp_X_350");
+  TH1D* IMnpipi_true_350 = (TH1D*)q_IMnpipi_wSid_n_true->ProjectionX("IMnpipi_true_350",bin350,100);
+  IMnpipi_true_350->Draw("HE");
+  TH1D* IMnpipi_BGmodel_350 = (TH1D*) q_IMnpipi_wSid_n_mc->ProjectionX("IMnpipi_BGmodel_350",bin350,100);
+  IMnpipi_BGmodel_350->SetLineColor(3);
+  IMnpipi_BGmodel_350->Draw("HEsame");
+  TH1D* IMnpipi_BGGEANT_350 = (TH1D*) q_IMnpipi_wSid_n_fake->ProjectionX("IMnpipi_BGGEANT_350",bin350,100);
+  IMnpipi_BGGEANT_350->SetLineColor(2);
+  IMnpipi_BGGEANT_350->Draw("HEsame");
 
 }

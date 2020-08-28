@@ -1232,6 +1232,7 @@ void comp_fakedata_v4()
   TH2D* MMnmiss_IMpippim_wK0_wSid_mc = (TH2D*)MMnmiss_IMpippim_wK0_wSid[1]->Clone("MMnmiss_IMpippim_wK0_wSid_mc");                 
   TH2D* MMnmiss_IMpippim_wK0_wSid_mcgeta = (TH2D*)MMnmiss_IMpippim_wK0_wSid[2]->Clone("MMnmiss_IMpippim_wK0_wSid_mcgeta");         
 
+
   //MMnmiss_IMppipim signal region
   TH2D* MMnmiss_IMpippim_woK0_wSid_n_data = (TH2D*)MMnmiss_IMpippim_woK0_wSid_n[0]->Clone("MMnmiss_IMpippim_woK0_wSid_n_data");
   TH2D* MMnmiss_IMpippim_woK0_wSid_n_mc = (TH2D*)MMnmiss_IMpippim_woK0_wSid_n[1]->Clone("MMnmiss_IMpippim_woK0_wSid_n_mc");
@@ -1522,7 +1523,18 @@ void comp_fakedata_v4()
   IMnpim_IMnpip_woK0_woSid_won_mc->SetMinimum(1);
   IMnpim_IMnpip_woK0_woSid_won_mc->SetMaximum(IMnpim_IMnpip_woK0_woSid_won_data->GetMaximum());
   IMnpim_IMnpip_woK0_woSid_won_mc->Draw(opt);
-  
+
+
+  TH2D* IMnpim_IMnpip_woK0_woSid_won_ratio = (TH2D*)IMnpim_IMnpip_woK0_woSid_won[0]->Clone("IMnpim_IMnpip_woK0_woSid_won_ratio");
+  IMnpim_IMnpip_woK0_woSid_won_ratio->Divide(IMnpim_IMnpip_woK0_woSid_won[1]);
+  IMnpim_IMnpip_woK0_woSid_won_ratio->SetTitle("Data/MC");
+
+
+  TH2D* IMnpim_IMnpip_wK0_woSid_won_ratio = (TH2D*)IMnpim_IMnpip_wK0_woSid_won[0]->Clone("IMnpim_IMnpip_wK0_woSid_won_ratio");
+  IMnpim_IMnpip_wK0_woSid_won_ratio->Add(IMnpim_IMnpip_wK0_woSid_won[2],-1.0);
+  IMnpim_IMnpip_wK0_woSid_won_ratio->Divide(IMnpim_IMnpip_wK0_woSid_won[1]);
+  IMnpim_IMnpip_wK0_woSid_won_ratio->SetTitle("Data/MC");
+  IMnpim_IMnpip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
 
   //
   //TCanvas* cIMnpim_IMnpip_wK0_woSid_won = new TCanvas("cIMnpim_IMnpip_wK0_woSid_won","cIMnpim_IMnpip_wK0_woSid_won",1200,800);
