@@ -25,8 +25,8 @@
 #include "anacuts.h"
 #include "globalana.h"
 //#include "weightfunc.h"
-//#include "weightfuncGSp.h"
-#include "weightfuncGSm.h"
+#include "weightfuncGSp.h"
+//#include "weightfuncGSm.h"
 
 const double pvalcut = 0.005;
 const bool gridon=true;
@@ -261,6 +261,57 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TF1* fweight_IMnpim_vSp25 = new TF1("fweight_IMnpim_vSp25",func_IMnpim_mod,1,2.0,10);
   fweight_IMnpim_vSp25->SetParameters(param_IMnpim_mod);
   
+  //update from Aug.23
+  TFile *fweight_vSp23 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v23.root","READ");
+  TH2D* fweight_IMnpim_IMnpip_vSp23 = (TH2D*)fweight_vSp23->Get("IMnpim_IMnpip_woK0_woSid_won_ratio");
+
+  TFile *fweight_vSp24 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v24.root","READ");
+  TH1D* fweight_MMnmiss_vSp24 = (TH1D*)fweight_vSp24->Get("MMnmiss_woK0_woSid_won_ratio");
+
+  TFile *fweight_vSp25 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v25.root","READ");
+  TH1D* fweight_IMpippim_vSp25 = (TH1D*)fweight_vSp25->Get("IMpippim_woK0_woSid_won_ratio");
+   
+  TFile *fweight_vSp26 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v26.root","READ");
+  TH2D* fweight_q_nmom_vSp26 = (TH2D*)fweight_vSp26->Get("q_nmom_woK0_woSid_won_ratio");
+
+  TFile *fweight_vSp27 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v27.root","READ");
+  TH2D* fweight_MMnmiss_IMpippim_vSp27 = (TH2D*)fweight_vSp27->Get("MMnmiss_IMpippim_woK0_woSid_won_ratio");
+
+  TFile *fweight_vSp28 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v28.root","READ");
+  TH2D* fweight_IMnpim_IMnpip_vSp28 = (TH2D*)fweight_vSp28->Get("IMnpim_IMnpip_woK0_woSid_won_ratio");
+   
+  TFile *fweight_vSp29 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v29.root","READ");
+  TH2D* fweight_MMnmiss_IMpippim_vSp29 = (TH2D*)fweight_vSp29->Get("MMnmiss_IMpippim_woK0_woSid_won_ratio");
+
+  TFile *fweight_vSp30 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v30.root","READ");
+  TH2D* fweight_q_nmom_vSp30 = (TH2D*)fweight_vSp30->Get("q_nmom_woK0_woSid_won_ratio");
+
+  TFile *fweight_vSp31 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v31.root","READ");
+  TH2D* fweight_IMnpim_IMnpip_vSp31 = (TH2D*)fweight_vSp31->Get("IMnpim_IMnpip_woK0_woSid_won_ratio");
+  
+  TFile *fweight_vSp32 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v32.root","READ");
+  TH2D* fweight_MMnmiss_IMpippim_vSp32 = (TH2D*)fweight_vSp32->Get("MMnmiss_IMpippim_woK0_woSid_won_ratio");
+  
+  TFile *fweight_vSp33 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v33.root","READ");
+  TH2D* fweight_IMnpim_IMnpip_vSp33 = (TH2D*)fweight_vSp33->Get("IMnpim_IMnpip_woK0_woSid_won_ratio");
+
+  TFile *fweight_vSp34 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v34.root","READ");
+  TH2D* fweight_IMnpip_vSp34 = (TH2D*)fweight_vSp34->Get("IMnpip_woK0_woSid_won_ratio");
+
+  TFile *fweight_vSp37 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v37.root","READ");
+  TH2D* fweight_IMnpip_vSp37 = (TH2D*)fweight_vSp37->Get("IMnpip_woK0_woSid_won_ratio");
+  
+  TF1* fweight_IMnpim_vSp38 = new TF1("fweight_IMnpim_vSp38",func_IMnpim_mod,1,2.0,18);
+  fweight_IMnpim_vSp38->SetParameters(param_IMnpim_mod);
+  
+  TF1* fweight_IMnpip_vSp39 = new TF1("fweight_IMnpip_vSp39",func_IMnpip_mod,1,2.0,6);
+  fweight_IMnpip_vSp39->SetParameters(param_IMnpip_mod);
+  
+  TFile *fweight_vSp42 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v42.root","READ");
+  TH2D* fweight_IMpippim_vSp42 = (TH2D*)fweight_vSp42->Get("IMpippim_woK0_woSid_won_ratio");
+
+  TFile *fweight_vSp46 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v46.root","READ");
+  TH2D* fweight_q_nmom_vSp46 = (TH2D*)fweight_vSp46->Get("q_nmom_woK0_woSid_won_ratio");
 
   //GEANT sim. weight function Sm mode
   TF1* fweight_q_vSm23 = new TF1("fweight_q_vSm23",func_q_mod,0,1.5,8);
@@ -3458,9 +3509,30 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           weight *= fweight_nmom_vSp23->Eval((*LVec_n).P()); 
           weight *= fweight_IMpippim_vSp22->Eval(LVec_pip_pim.M());
           weight *= fweight_q_vSp20->Eval(qkn.P()); 
-          weight *= fweight_IMnpim_vSp25->Eval(LVec_pim_n.M());
           weight *= fweight_MMnmiss_vSp21->Eval(nmiss_mass);
+          weight *= fweight_IMnpim_vSp25->Eval(LVec_pim_n.M());
           weight *= fweight_IMnpip_vSp24->Eval(LVec_pip_n.M());
+          /*
+          //weight *= fweight_IMnpim_IMnpip_vSp23->Interpolate(LVec_pip_n.M(),LVec_pim_n.M());
+          //weight *= fweight_MMnmiss_vSp24->Interpolate(nmiss_mass);
+          //weight *= fweight_IMpippim_vSp25->Interpolate(LVec_pip_pim.M());
+          weight *= fweight_q_nmom_vSp26->Interpolate((*LVec_n).P(),qkn.P());
+          //weight *= fweight_MMnmiss_IMpippim_vSp27->Interpolate(LVec_pip_pim.M(),nmiss_mass);
+          //weight *= fweight_IMnpim_IMnpip_vSp28->Interpolate(LVec_pip_n.M(),LVec_pim_n.M());
+          //weight *= fweight_MMnmiss_IMpippim_vSp29->Interpolate(LVec_pip_pim.M(),nmiss_mass);
+          weight *= fweight_q_nmom_vSp30->Interpolate((*LVec_n).P(),qkn.P());
+          //weight *= fweight_IMnpim_IMnpip_vSp31->Interpolate(LVec_pip_n.M(),LVec_pim_n.M());
+          //weight *= fweight_MMnmiss_IMpippim_vSp32->Interpolate(LVec_pip_pim.M(),nmiss_mass);
+          //weight *= fweight_IMnpim_IMnpip_vSp33->Interpolate(LVec_pip_n.M(),LVec_pim_n.M());
+          //weight *= fweight_IMnpip_vSp34->Interpolate(LVec_pip_n.M());
+          //weight *= fweight_IMnpip_vSp37->Interpolate(LVec_pip_n.M());
+          weight *= fweight_IMnpim_vSp38->Eval(LVec_pim_n.M());
+          weight *= fweight_IMnpip_vSp39->Eval(LVec_pip_n.M());
+          //weight *= fweight_IMpippim_vSp42->Interpolate(LVec_pip_pim.M());
+          weight *= fweight_MMnmiss_vSp21->Eval(nmiss_mass);
+          weight *= fweight_IMpippim_vSp22->Eval(LVec_pip_pim.M());
+          weight *= fweight_q_nmom_vSp46->Interpolate((*LVec_n).P(),qkn.P());
+          */
         }else if(SimFakeK0mode) { //wK0
           weight = 0;
           //weight *= fweight_q_wK0_v377->Eval((qkn.P()));
@@ -3482,12 +3554,12 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           //weight *= fweight_IMnpip_vSm20->Interpolate(LVec_pip_n.M());
           //weight *= fweight_IMnpim_vSm21->Interpolate(LVec_pim_n.M());
           
-          weight *= fweight_q_vSm23->Eval(qkn.P()); 
-          weight *= fweight_MMnmiss_vSm24->Eval(nmiss_mass);
-          weight *= fweight_nmom_vSm25->Eval((*LVec_n).P()); 
-          weight *= fweight_IMpippim_vSm26->Eval(LVec_pip_pim.M());
-          weight *= fweight_IMnpip_vSm27->Eval(LVec_pip_n.M());
-          weight *= fweight_IMnpim_vSm28->Eval(LVec_pim_n.M());
+          //weight *= fweight_q_vSm23->Eval(qkn.P()); 
+          //weight *= fweight_MMnmiss_vSm24->Eval(nmiss_mass);
+          //weight *= fweight_nmom_vSm25->Eval((*LVec_n).P()); 
+          //weight *= fweight_IMpippim_vSm26->Eval(LVec_pip_pim.M());
+          //weight *= fweight_IMnpip_vSm27->Eval(LVec_pip_n.M());
+          //weight *= fweight_IMnpim_vSm28->Eval(LVec_pim_n.M());
         }else if(SimFakeK0mode) { //wK0
           weight = 0;
           //weight *= fweight_q_wK0_v377->Eval((qkn.P()));
@@ -3545,7 +3617,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         
         if(SimSpmode || SimSmmode){
           //if( (mcncdsgen!=3) || (mcncanvtxr>20)  ){
-          if( (mcncanvtxr>58)  ){
+          //if( (mcncanvtxr>58) && (mcncdsgen!=3) ){
+          if( (mcncanvtxr>58) ){
             MMnmiss_IMpippim_dE_wSid_fake->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
           }
         }
@@ -3680,6 +3753,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       
       if(SimSpmode || SimSmmode){
         //if( (mcncdsgen!=3) || (mcncanvtxr>20)  ){
+        //if( (mcncanvtxr>58) && (mcncdsgen!=3) ){
         if( (mcncanvtxr>58) ){
           IMnpim_IMnpip_dE_n_fake->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         }
@@ -3935,7 +4009,8 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           //if(IsFakeN1 || !IsMissMassNOK || !IsMcNMassOK || IsFakeN2){
           //if(!IsMissMassNOK || !IsMcNMassOK || IsFakeN2){
           //if( (mcncdsgen!=3) || (mcncanvtxr>20)  ){
-          if( (mcncanvtxr>58)  ){
+          //if( (mcncanvtxr>58)  && (mcncdsgen!=3) ){
+          if( (mcncanvtxr>58) ){
           //if( (mcncdsgen!=3)  ){
             q_IMnpipi_wSid_n_fake->Fill(LVec_pip_pim_n.M(),qkn.P());
             MMnmiss_IMpippim_dE_wSid_n_fake->Fill(LVec_pip_pim.M(),nmiss_mass);
