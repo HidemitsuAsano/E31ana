@@ -1190,9 +1190,9 @@ void Util::AnaMcData(MCData *mcdata,
         Tools::H2("ncan_mom_parentvtxr_select_nparent",ncaninfo.mom,parentvtxr,200,0,2,480,0,120.);
       }
     }
-    ncanvtxr = parentvtxr;
-    ncangeneration = ncaninfo.gen;
     if(Util::IsFromSigma(mcdata,ncaninfo.dhitncan)){
+      ncanvtxr = parentvtxr;
+      ncangeneration = ncaninfo.gen;
       Tools::H2(Form("CDHdE_generation_ncan_select_sigma"),ncaninfo.gen, ncaninfo.dE,10,0,10, 100,0,10);
       Tools::H2(Form("vtxr_generation_ncan_select_sigma"),ncaninfo.gen, parentvtxr,10,0,10, 480,0,120.0);
       TLorentzVector LVec_n_pim_mc = ncaninfo.LVec + piminfo.LVec;
