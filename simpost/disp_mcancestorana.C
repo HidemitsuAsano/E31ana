@@ -1,7 +1,8 @@
 void disp_mcancestorana()
 {
 
-  TFile *fGSp = TFile::Open("simIMpisigma_nSppim_v113.root","READ");
+  //TFile *fGSp = TFile::Open("simIMpisigma_nSppim_v113.root","READ");
+  TFile *fGSp = TFile::Open("simIMpisigma_nSppim_v114.root","READ");
   fGSp->cd();
 
   TH2F* generation_diffmom_npip_ncan_select_sigma_Sp 
@@ -43,12 +44,14 @@ void disp_mcancestorana()
 
   TH2F* vtxr_diffmom_npip_ncan_select_sigma_Sp
   = (TH2F*)fGSp->Get("vtxr_diffmom_npip_ncan_select_sigma");
+  
   TCanvas *c5 = new TCanvas();
   vtxr_diffmom_npip_ncan_select_sigma_Sp->Draw("colz");
   c5->SetLogz();
   
   TCanvas *c7 = new TCanvas();
   int bin20cm = vtxr_diffmom_npip_ncan_select_sigma_Sp->GetYaxis()->FindBin(20);
+  int bin58cm = vtxr_diffmom_npip_ncan_select_sigma_Sp->GetYaxis()->FindBin(58);
   int bin120cm = vtxr_diffmom_npip_ncan_select_sigma_Sp->GetYaxis()->FindBin(120);
 
   TH1D* pxfidinSp = (TH1D*)vtxr_diffmom_npip_ncan_select_sigma_Sp->ProjectionX("pxfidinSp",0,bin20cm);
@@ -62,14 +65,17 @@ void disp_mcancestorana()
   leg7->AddEntry(pxfidinSp,"n_{CDS} origin R<20 cm");
   leg7->AddEntry(pxfidoutSp,"n_{CDS} origin R>20 cm");
   leg7->Draw();
+  
 
-  TFile *fGSm = TFile::Open("simIMpisigma_nSmpip_v113.root","READ");
+  //TFile *fGSm = TFile::Open("simIMpisigma_nSmpip_v113.root","READ");
+  TFile *fGSm = TFile::Open("simIMpisigma_nSmpip_v114.root","READ");
   fGSm->cd();
 
   TH2F* generation_diffmom_npim_ncan_select_sigma_Sm 
   = (TH2F*)fGSm->Get("generation_diffmom_npim_ncan_select_sigma");
   
-
+  TH2F* generation_diffMass_npim_ncan_select_sigma_Sm 
+  = (TH2F*)fGSm->Get("generation_diffMass_npim_ncan_select_sigma");
 
 
   TCanvas *c2 = new TCanvas();
