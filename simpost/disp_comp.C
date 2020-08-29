@@ -290,7 +290,6 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   cIMnpim_wK0_mod->cd();
   IMnpim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,3);
   IMnpim_wK0_woSid_won_ratio->Draw("HE");
-  //TF1 *f_IMnpim_wK0_mod = new TF1("f_IMnpim_wK0_mod",func_IMnpim_wK0_mod,1,2.0,11);
   TF1 *f_IMnpim_wK0_mod = new TF1("f_IMnpim_wK0_mod",func_IMnpim_wK0_mod,1,2.0,10);
   //TF1 *f_IMnpim_mod = new TF1("f_IMnpim_mod",func_IMnpim_mod,1,2.0,10);
   //TF1 *f_IMnpim_mod_ref = new TF1("f_IMnpim_mod_ref",func_IMnpim_mod,1,2.0,10);
