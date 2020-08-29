@@ -895,10 +895,12 @@ void Util::AnaMcData(MCData *mcdata,
                      CDSHitMan *cdsman,
                      ReactionData *reactionData,
                      double &ncanvtxr,
+                     double &ncanvtxz,
                      int &ncangeneration
                      )
 {
   ncanvtxr=999.0;
+  ncanvtxz=999.0;
   ncangeneration=999;
 
   for(int itr=0;itr<mcdata->trackSize();itr++){
@@ -1184,14 +1186,17 @@ void Util::AnaMcData(MCData *mcdata,
     Tools::H2(Form("CDHdE_mom_ncan_select"),ncaninfo.mom,ncaninfo.dE,200,0,2, 100,0,10);
     Tools::H1("ncan_time_select",ncaninfo.time,1000,0,100);
     double parentvtxr=Util::FillAncestryVertexR(mcdata,ncaninfo.dhitncan,ncaninfo.dE);
+    double parentvtxz=Util::FillAncestryVertexZ(mcdata,ncaninfo.dhitncan,ncaninfo.dE);
     if(ncaninfo.dE>2.0){
       Tools::H2("ncan_mom_parentvtxr_select",ncaninfo.mom,parentvtxr,200,0,2,480,0,120.);
+      Tools::H2("ncan_mom_parentvtxz_select",ncaninfo.mom,parentvtxz,200,0,2,750,-750,750);
       if(ncaninfo.parentpdg==2112){
         Tools::H2("ncan_mom_parentvtxr_select_nparent",ncaninfo.mom,parentvtxr,200,0,2,480,0,120.);
       }
     }
     if(Util::IsFromSigma(mcdata,ncaninfo.dhitncan)){
       ncanvtxr = parentvtxr;
+      ncanvtxz = parentvtxz;
       ncangeneration = ncaninfo.gen;
       Tools::H2(Form("CDHdE_generation_ncan_select_sigma"),ncaninfo.gen, ncaninfo.dE,10,0,10, 100,0,10);
       Tools::H2(Form("vtxr_generation_ncan_select_sigma"),ncaninfo.gen, parentvtxr,10,0,10, 480,0,120.0);
@@ -1342,7 +1347,7 @@ Track* Util::FindTrackFromMcIndex(MCData *mcdata, int trackid)
 
 double Util::FillAncestryVertexR(MCData *mcdata,DetectorHit *dhit, double dE)
 {
-  if(dE<0.06) return 0;
+  //if(dE<0.06) return 999;
   Track *parentTr=Util::FindTrackFromMcIndex(mcdata, dhit->parentID());
   
   TVector3 vtxp = parentTr->vertex();
@@ -1358,6 +1363,24 @@ double Util::FillAncestryVertexR(MCData *mcdata,DetectorHit *dhit, double dE)
   }
   return vtxp.Perp()/10.;
 }
+
+double Util::FillAncestryVertexZ(MCData *mcdata,DetectorHit *dhit, double dE)
+{
+  Track *parentTr=Util::FindTrackFromMcIndex(mcdata, dhit->parentID());
+  TVector3 vtxp = parentTr->vertex();
+  Tools::H2(Form("dE_track_vtxz_ncan_1stg"),vtxp.Z()/10.,dE,1500,-750,750,100,0,10);
+  int gen=0;
+  while( parentTr!=0){
+    TVector3 vtx = parentTr->vertex();
+    Tools::H2(Form("dE_track_vtxz_ncan"),vtx.Z()/10.,dE,1500,-750,750,100,0,10);
+    Tools::H2(Form("time_track_vtxz_ncan"),vtx.Z()/10.,dhit->time(),1500,-750,750,1000,0,100);
+    Tools::H2(Form("gen_track_vtxz_ncan"),vtx.Z()/10.,gen+1,1500,-750,750,10,0,10);
+    parentTr=Util::FindTrackFromMcIndex(mcdata,parentTr->parentTrackID());
+    gen++;
+  }
+  return vtxp.Z()/10.;
+}
+
 
 bool Util::IsFromSigma(MCData *mcdata,DetectorHit *dhit)
 {

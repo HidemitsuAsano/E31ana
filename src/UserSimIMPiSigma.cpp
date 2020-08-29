@@ -105,6 +105,7 @@ TLorentzVector mcmom_pim;   // generated 4-momentum(pi-)
 TLorentzVector mcmom_ncds;    // generated 4-momentum(neutron)
 TLorentzVector mcmom_nmiss;    // generated 4-momentum(neutron)
 double mcncanvtxr;
+double mcncanvtxz;
 int mcncdsgen;
 
 //GEANT4 info generated particle before interaction
@@ -304,6 +305,7 @@ int main( int argc, char** argv )
   npippimTree->Branch( "mcmom_ncds", &mcmom_ncds );
   npippimTree->Branch( "mcmom_nmiss", &mcmom_nmiss );
   npippimTree->Branch( "mcncanvtxr",&mcncanvtxr);
+  npippimTree->Branch( "mcncanvtxz",&mcncanvtxz);
   npippimTree->Branch( "mcncdsgen",&mcncdsgen);
   npippimTree->Branch( "react_nmiss",&react_nmiss);
   npippimTree->Branch( "react_Sigma",&react_Sigma);
@@ -747,6 +749,7 @@ int main( int argc, char** argv )
     
     //put here tmp. solution for CDH eff. study
     double ncanvtxr=999.0;
+    double ncanvtxz=999.0;
     int ncdsgen=10;
 
     if( Util::GetCDHMul(cdsMan,nGoodTrack,true)!=cdscuts::cdhmulti ){
@@ -755,9 +758,10 @@ int main( int argc, char** argv )
       //continue;
       IsrecoPassed=false;
     }else{
-      Util::AnaMcData(mcData,detData2,cdsMan,reacData,ncanvtxr,ncdsgen);
+      Util::AnaMcData(mcData,detData2,cdsMan,reacData,ncanvtxr,ncanvtxz,ncdsgen);
     }
     mcncanvtxr=ncanvtxr;
+    mcncanvtxz=ncanvtxz;
     mcncdsgen=ncdsgen;
 
     //if( nGoodTrack!=cdscuts::cds_ngoodtrack ){ // dedicated for pi+ pi- event
@@ -2017,6 +2021,7 @@ void InitTreeVal()
   mcmom_ncds.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // generated 4-momentum(neutron)
   mcmom_nmiss.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // generated 4-momentum(neutron)
   mcncanvtxr=999.9;
+  mcncanvtxz=999.9;
   mcncdsgen=199;
   react_nmiss.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
   react_Sigma.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);

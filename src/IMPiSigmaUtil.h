@@ -78,12 +78,14 @@ namespace Util
                   CDSHitMan *cdsman,
                   ReactionData *reactionData,
                   double &ncanvtxr,
+                  double &ncanvtxz,
                   int &ncangeneration
                   );
    int ProcessNameToProcessID(const std::string &name);
    std::string ProcessIDToProcessName(const int &id);
    int CalcGeneration(MCData *mcdata,DetectorHit *dhit);
    double FillAncestryVertexR(MCData *mcdata,DetectorHit *dhit,double dE);
+   double FillAncestryVertexZ(MCData *mcdata,DetectorHit *dhit,double dE);
    Track *FindTrackFromMcIndex(MCData *mcdata, int trackid);
    bool IsFromSigma(MCData *mcdata,DetectorHit *dhit);
    TLorentzVector *GetForwardNeutralLVec(BeamLineHitMan *blman,const TVector3 vtxpos,const double t0time,const double beamtof, const double thre);
