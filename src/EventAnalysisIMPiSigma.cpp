@@ -851,10 +851,13 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       if(Verbosity) std::cerr<<"CDH isolation cuts : OK " << std::endl;
       Tools::Fill1D( Form("EventCheck"), 14 );
     }
+    const int nCDHInnter3Lay = Util::GetNHitsCDCInner3Lay(cdsMan);
+    Tools::H1(Form("CDHInner3Mul"),nCDHInnter3Lay,20,0,20);
+
 
     const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
     Pos_CDH.SetZ(-1.*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
-
+    
     //** neutral particle in CDH **//
     if( !nCDCforVeto ) {
       if(NeutralCDHseg.size()!=1) {

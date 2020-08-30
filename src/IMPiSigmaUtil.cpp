@@ -170,6 +170,20 @@ int Util::GetCDHTwoSegAwayNHits(const std::vector <int> &seg, const std::vector 
   return NTwoSegAwayHits;
 }
 
+int Util::GetNHitsCDCInner3Lay(CDSHitMan *cdsman)
+{
+  int nCDChit = 0;
+
+  for( int ilr=0; ilr<3; ilr++ ) { // 
+    for( int icdchit=0; icdchit<cdsman->nCDC(ilr); icdchit++ ) {
+      CDCHit *cdc=cdsman->CDC(ilr,icdchit);
+      nCDChit++;
+    }//icdchit
+  }//ilr
+  
+  return nCDChit;
+}
+
 
 //returns # of cdc hits of layer 15 and 16 within -+ 15 degree of the CDH hit
 int Util::GetNHitsCDCOuter(const TVector3 PosCDH, CDSHitMan *cdsman, const double rangedeg)
@@ -1368,13 +1382,13 @@ double Util::FillAncestryVertexZ(MCData *mcdata,DetectorHit *dhit, double dE)
 {
   Track *parentTr=Util::FindTrackFromMcIndex(mcdata, dhit->parentID());
   TVector3 vtxp = parentTr->vertex();
-  Tools::H2(Form("dE_track_vtxz_ncan_1stg"),vtxp.Z()/10.,dE,1500,-750,750,100,0,10);
+  Tools::H2(Form("dE_track_vtxz_ncan_1stg"),vtxp.Z()/10.,dE,1200,-200,400,100,0,10);
   int gen=0;
   while( parentTr!=0){
     TVector3 vtx = parentTr->vertex();
-    Tools::H2(Form("dE_track_vtxz_ncan"),vtx.Z()/10.,dE,1500,-750,750,100,0,10);
-    Tools::H2(Form("time_track_vtxz_ncan"),vtx.Z()/10.,dhit->time(),1500,-750,750,1000,0,100);
-    Tools::H2(Form("gen_track_vtxz_ncan"),vtx.Z()/10.,gen+1,1500,-750,750,10,0,10);
+    Tools::H2(Form("dE_track_vtxz_ncan"),vtx.Z()/10.,dE,1200,-200,400,100,0,10);
+    Tools::H2(Form("time_track_vtxz_ncan"),vtx.Z()/10.,dhit->time(),1200,-200,400,1000,0,100);
+    Tools::H2(Form("gen_track_vtxz_ncan"),vtx.Z()/10.,gen+1,1200,-200,400,10,0,10);
     parentTr=Util::FindTrackFromMcIndex(mcdata,parentTr->parentTrackID());
     gen++;
   }
