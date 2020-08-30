@@ -122,6 +122,7 @@ private:
   int nAbort_flagbmom;
   int nAbort_ftarget;
   int nAbort_CDHiso;
+  int nAbort_CDCInner3Lay;
   int nAbort_pipi;
   int nAbort_end;
 
@@ -415,6 +416,7 @@ void EventAnalysis::ResetCounters()
   nAbort_flagbmom = 0;
   nAbort_ftarget = 0;
   nAbort_end = 0;
+  nAbort_CDCInner3Lay = 0;
   nAbort_pipi = 0;
   nAbort_CDHiso = 0;
 
@@ -851,9 +853,13 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       if(Verbosity) std::cerr<<"CDH isolation cuts : OK " << std::endl;
       Tools::Fill1D( Form("EventCheck"), 14 );
     }
-    const int nCDHInnter3Lay = Util::GetNHitsCDCInner3Lay(cdsMan);
-    Tools::H1(Form("CDHInner3Mul"),nCDHInnter3Lay,20,0,20);
-
+    const int nCDCInner3Lay = Util::GetNHitsCDCInner3Lay(cdsMan);
+    Tools::H1(Form("CDHInner3Mul"),nCDCInner3Lay,20,0,20);
+     
+    if(nCDCInner3Lay>6){
+      Clear(nAbort_CDCInner3Lay);
+      return true;
+    }
 
     const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
     Pos_CDH.SetZ(-1.*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
@@ -1516,6 +1522,7 @@ void EventAnalysis::Finalize()
   std::cout<<" nAbort_flagbmom      = "<<nAbort_flagbmom<<std::endl;
   std::cout<<" nAbort_ftarget       = "<<nAbort_ftarget<<std::endl;
   std::cout<<" nAbort_CDHiso        = "<<nAbort_CDHiso<<std::endl;
+  std::cout<<" nAbort_CDCInner3Lay   = "<<nAbort_CDCInner3Lay<<std::endl;
   std::cout<<" nAbort_nAbort_pipi   = "<<nAbort_pipi<<std::endl;
   std::cout<<" nAbort_end           = "<<nAbort_end<<std::endl;
   std::cout<<"========= Abort counter ========="<<std::endl;

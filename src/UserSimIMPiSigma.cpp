@@ -1139,6 +1139,8 @@ int main( int argc, char** argv )
       confMan->GetGeomMapManager()->GetPos( CID_CDH, ncdhhit->seg(), Pos_CDH );
       if(Verbosity_) std::cout<<"CDH candidate seg = "<<ncdhhit->seg()<<" -> "<<Pos_CDH.Phi()/TwoPi*360<<" deg"<<std::endl;
       
+      const int nCDCInner3Lay = Util::GetNHitsCDCInner3Lay(cdsMan);
+      Tools::H1(Form("CDHInner3Mul"),nCDCInner3Lay,20,0,20);
 
       int nCDCforVeto = 0;
       if(IsrecoPassed){
@@ -1158,7 +1160,7 @@ int main( int argc, char** argv )
          
 
       // neutral particle in CDH //
-      if( !nCDCforVeto && !flag_isolation ){
+      if( !nCDCforVeto && !flag_isolation && (nCDCInner3Lay>6)){
         if(NeutralCDHseg.size()!=1) {
           std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
         } else {
