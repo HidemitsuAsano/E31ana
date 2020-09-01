@@ -1160,7 +1160,7 @@ int main( int argc, char** argv )
          
 
       // neutral particle in CDH //
-      if( !nCDCforVeto && !flag_isolation && (nCDCInner3Lay>6)){
+      if( !nCDCforVeto && !flag_isolation && (nCDCInner3Lay<7)){
         if(NeutralCDHseg.size()!=1) {
           std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
         } else {
