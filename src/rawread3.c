@@ -301,9 +301,9 @@ int cmain(int argc, char* argv[]) // change by tsukada '09/11/24
 
   int type =0; // NotCompressed=0,Bzip2Com=1,GzipCom=2;
   char comtmp1[64] = "file ";
-  char comtmp2[512] =" | grep bzip2 > /dev/null";
-  char comtmp3[512] =" | grep gzip > /dev/null";
-  char com1[2024];  char com2[2024];
+  char comtmp2[64] =" | grep bzip2 > /dev/null";
+  char comtmp3[64] =" | grep gzip > /dev/null";
+  char com1[256];  char com2[256];
   sprintf(com1,"%s%s%s",comtmp1,file,comtmp2);
   sprintf(com2,"%s%s%s",comtmp1,file,comtmp3);
 
