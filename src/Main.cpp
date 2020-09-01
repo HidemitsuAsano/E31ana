@@ -50,7 +50,7 @@ int main( int argc, char **argv )
   confManager->SetProgramName(argv[0]);
   confManager->Initialize();
 
-  std::cout << "InFile="<<inFile << std::endl;
+  std::cout << __FILE__ << "InFile="<<inFile << std::endl;
 
   //
   if( confManager->GetDataType()==Type_CDS1 ){
