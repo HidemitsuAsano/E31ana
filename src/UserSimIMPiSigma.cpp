@@ -1140,8 +1140,8 @@ int main( int argc, char** argv )
       if(Verbosity_) std::cout<<"CDH candidate seg = "<<ncdhhit->seg()<<" -> "<<Pos_CDH.Phi()/TwoPi*360<<" deg"<<std::endl;
       
       const int nCDCInner3Lay = Util::GetNHitsCDCInner3Lay(cdsMan);
-      Tools::H1(Form("CDHInner3Mul"),nCDCInner3Lay,20,0,20);
-
+      if(IsrecoPassed)Tools::H1(Form("CDCInner3Mul"),nCDCInner3Lay,20,0,20);
+      
       int nCDCforVeto = 0;
       if(IsrecoPassed){
         nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
