@@ -27,9 +27,11 @@ int BLEvent::BMain( int argc, char **argv, ConfMan *con )
   }
   int nsmp = con->GetCounterMapManager()->GetNumSMP();
   int nch_sca = con->GetCounterMapManager()->GetNumScaler();
-  for(int i=0;i<nsmp;i++)
-    for(int j=1;j<=23;j++)
+  for(int i=0;i<nsmp;i++){
+    for(int j=1;j<=23;j++){
       set_crate_type(i,j,con->GetCounterMapManager()->GetCrateType(i,j));  //sl 1 origin
+    }
+  }
   set_num_modules( nch_sca, nsmp );
   cmain(argc, argv );
 
