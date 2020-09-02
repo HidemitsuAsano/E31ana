@@ -8,6 +8,7 @@
 *.png
 *.swp
 *.pdf
+*.a
 src/tmp/
 src/lib/
 src/CVS/
