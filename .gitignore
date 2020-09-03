@@ -3,15 +3,16 @@
 *.dat
 *.so
 *.o
-*.a
 *.d
 *.png
 *.swp
 *.pdf
 *.a
+src/*.a
 src/tmp/
 src/lib/
 src/CVS/
+simpost/sakumacro/
 conf/CVS/
 param/CVS/
 lib/
