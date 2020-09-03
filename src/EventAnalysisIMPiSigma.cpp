@@ -854,7 +854,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       Tools::Fill1D( Form("EventCheck"), 14 );
     }
     const int nCDCInner3Lay = Util::GetNHitsCDCInner3Lay(cdsMan);
-    Tools::H1(Form("CDHInner3Mul"),nCDCInner3Lay,20,0,20);
+    Tools::Fill1D(Form("CDHInner3Mul"),nCDCInner3Lay);
      
     if(nCDCInner3Lay>6){
       Clear(nAbort_CDCInner3Lay);
