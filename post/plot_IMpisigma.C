@@ -205,6 +205,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     tree->SetBranchAddress( "kfSmmode_pvalue", &kfSmmode_pvalue );
     tree->SetBranchAddress( "kf_flag", &kf_flag );
   }
+  //std::cout << __LINE__ << std::endl;
   //weight function of BG evaluation for MC
 
   TF1* fweight_IMnpip_v369 = new TF1("fweight_IMnpip_v369",func_IMnpip_mod,1,2.0,12);
@@ -263,6 +264,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   
   //update from Aug.23
   TFile *fweight_vSp23 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v23.root","READ");
+  fweight_vSp23->Print();
   TH2D* fweight_IMnpim_IMnpip_vSp23 = (TH2D*)fweight_vSp23->Get("IMnpim_IMnpip_woK0_woSid_won_ratio");
 
   TFile *fweight_vSp24 = new TFile("../simpost/compgeantSp/comp_fakedata_out_v24.root","READ");
@@ -333,6 +335,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   fweight_IMnpim_vSm28->SetParameters(param_IMnpim_mod);
   
   
+  //std::cout << __LINE__ << std::endl;
   f->cd();
   // w/o kinematic fit
   TH2F* CDHphi_betainv_fid;
@@ -2991,6 +2994,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         LVec_pim_n_vtx[1]= *kfSmmode_mom_pim+*kfSmmode_mom_n;
       }
     }
+    //std::cout << __LINE__ << std::endl;
 
     // calc missing pip+neutron //
     TLorentzVector LVec_pipmiss_nmiss = *LVec_target+*LVec_beam-*LVec_pim-*LVec_n;
@@ -3072,6 +3076,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
     //Filling generated info.
 
+    //std::cout << __LINE__ << std::endl;
     TLorentzVector LVec_Sigma_react;
     TLorentzVector LVec_pi_react;
     TLorentzVector LVec_piSigma_react;
@@ -3511,15 +3516,16 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     if( (LVec_pip_pim.M()<anacuts::pipi_MIN || anacuts::pipi_MAX<LVec_pip_pim.M())) K0rejectFlag=true;
     if( (LVec_pip_pim.M()<anacuts::pipi_MIN_narrow || anacuts::pipi_MAX_narrow<LVec_pip_pim.M())) K0rejectFlag_narrow=true;
 
+    //std::cout << __LINE__ << std::endl;
     double weight = 1.0;
     static bool isState = false;
     if(IsMCweighting) {
       if(!SimFakemode_gSp && !SimFakemode_gSm){//mc for real data
-        if(!isState){
-          std::cout << "MC for real data" << std::endl;
-          isState = true;
-        }
         if(SimFakemode) { //w/o K0
+          if(!isState){
+            std::cout << "MC for real data" << std::endl;
+            isState = true;
+          }
           weight *= fweight_nmom_v353->Eval((*LVec_n).P()); 
           weight *= fweight_IMpippim_v364->Eval(LVec_pip_pim.M());
           weight *= fweight_q_v366->Eval(qkn.P()); 
@@ -3607,6 +3613,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     //w/o kinfit
     //---including K0 --------------------------------------------------------------
 
+    //std::cout << __LINE__ << std::endl;
     CDHphi_betainv_fid->Fill(1./NeutralBetaCDH,(*CDH_Pos).Phi());
     CDHz_betainv_fid->Fill(1./NeutralBetaCDH,(*CDH_Pos).z());
     dE_betainv_fid->Fill(1./NeutralBetaCDH,dE);
@@ -3783,6 +3790,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
 
 
 
+    //std::cout << __LINE__ << std::endl;
     if(NBetaOK && NdEOK && MissNFlag) {
       IMnpim_IMnpip_dE_n->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
       IMnpip_IMnpipi_n->Fill(LVec_pip_pim_n.M(),LVec_pip_n.M(),weight);
@@ -4002,8 +4010,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
             //}
           }
           
-          
-
+          //std::cout << __LINE__ << std::endl;
 
           double diffIMnpim_recomc = LVec_pim_n.M()- LVec_pim_n_mc.M();
           double diffIMnpip_recomc = LVec_pip_n.M()- LVec_pip_n_mc.M();
@@ -4069,6 +4076,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     }//NBetaOK && NdEOK && MissNFlag
     //---including K0 end----------------------------------------------------------------------
 
+    //std::cout << __LINE__ << std::endl;
     //selection K0
     if(!K0rejectFlag && NBetaOK && NdEOK && MissNFlag) {
       nmom_cosn_wK0_n->Fill(cos_ncdslab,(*LVec_n).P(),weight);
@@ -4095,19 +4103,21 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         nmom_IMnpipi_wK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P(),weight);
         nmom_nmissmom_wK0_wSid_n->Fill(LVec_nmiss.P(),(*LVec_n).P(),weight);
         MMnmiss_IMpippim_dE_wK0_wSid_n->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
-        double diffIMnpim_recomc = LVec_pim_n.M()- LVec_pim_n_mc.M();
-        double diffIMnpip_recomc = LVec_pip_n.M()- LVec_pip_n_mc.M();
-        double diffMMnmiss_recomc = nmiss_mass - (*mcmom_nmiss).M();
-        double diffnmom_recomc = (*LVec_n).P() - (*mcmom_ncds).P();
-        diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
-        diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
-        diff2D_nmom_IMnpim_recomc_wK0_wSid_n->Fill(diffIMnpim_recomc,diffnmom_recomc);
-        diff2D_nmom_IMnpip_recomc_wK0_wSid_n->Fill(diffIMnpip_recomc,diffnmom_recomc);
-        if(!IsFakeN1){
-          diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n_fake1->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
-          diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n_fake1->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
-          diff2D_nmom_IMnpim_recomc_wK0_wSid_n_fake1->Fill(diffIMnpim_recomc,diffnmom_recomc);
-          diff2D_nmom_IMnpip_recomc_wK0_wSid_n_fake1->Fill(diffIMnpip_recomc,diffnmom_recomc);
+        if(SimSpmode || SimSmmode){
+          double diffIMnpim_recomc = LVec_pim_n.M()- LVec_pim_n_mc.M();
+          double diffIMnpip_recomc = LVec_pip_n.M()- LVec_pip_n_mc.M();
+          double diffMMnmiss_recomc = nmiss_mass - (*mcmom_nmiss).M();
+          double diffnmom_recomc = (*LVec_n).P() - (*mcmom_ncds).P();
+          diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
+          diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
+          diff2D_nmom_IMnpim_recomc_wK0_wSid_n->Fill(diffIMnpim_recomc,diffnmom_recomc);
+          diff2D_nmom_IMnpip_recomc_wK0_wSid_n->Fill(diffIMnpip_recomc,diffnmom_recomc);
+          if(!IsFakeN1){
+            diff2D_MMnmiss_IMnpim_recomc_wK0_wSid_n_fake1->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
+            diff2D_MMnmiss_IMnpip_recomc_wK0_wSid_n_fake1->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
+            diff2D_nmom_IMnpim_recomc_wK0_wSid_n_fake1->Fill(diffIMnpim_recomc,diffnmom_recomc);
+            diff2D_nmom_IMnpip_recomc_wK0_wSid_n_fake1->Fill(diffIMnpip_recomc,diffnmom_recomc);
+          }
         }
       }
       if(!SigmaPFlag && !SigmaMFlag) {
@@ -4141,6 +4151,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       }
     }
 
+    //std::cout << __LINE__ << std::endl;
     //---rejecting K0--------------------------------------------------------------------------
     //K0 rejection
     if(K0rejectFlag && NBetaOK) {
@@ -4173,6 +4184,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           MMnmiss_IMnpip_dE_woK0_woSm_cross->Fill(LVec_pip_n.M(),nmiss_mass,weight);
         }
       }
+      //std::cout << __LINE__ << std::endl;
       if( !(SigmawidePFlag && MissNwideFlag) && !(SigmawideMFlag && MissNwideFlag)) {
         MMnmiss_IMnpip_dE_woK0_woSidn->Fill(LVec_pip_n.M(),nmiss_mass,weight);
         MMnmiss_IMnpim_dE_woK0_woSidn->Fill(LVec_pim_n.M(),nmiss_mass,weight);
@@ -4231,6 +4243,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         nmom_diffz_CDC_CDH_pim_woK0_wSid->Fill(diffpim.z(),(*LVec_n).P(),weight);
         nmom_diffz_CDC_CDH_pip_woK0_wSid->Fill(diffpip.z(),(*LVec_n).P(),weight);
       }
+      //std::cout << __LINE__ << std::endl;
       if(!SigmawidePFlag && !SigmawideMFlag) {
         nmom_MMnmiss_woK0_woSid->Fill(nmiss_mass,(*LVec_n).P(),weight);
 
@@ -4285,6 +4298,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
       }
     }//K0reject, NbetaOK ,NdEOk
 
+    //std::cout << __LINE__ << std::endl;
     if(K0rejectFlag && NBetaOK && NdEOK && MissNFlag) {
       IMnpim_IMnpip_dE_woK0_n->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
       IMnpip_CDHphi_dE_woK0_n->Fill((*CDH_Pos).Phi(),LVec_pip_n.M(),weight);
@@ -4348,6 +4362,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         }
       }
 
+      //std::cout << __LINE__ << std::endl;
       MMnpip_MMnpim_woK0_n->Fill(LVec_pim_nmiss.M(),LVec_pip_nmiss.M(),weight);
       nmom_IMnpim_dE_woK0_n->Fill(LVec_pim_n.M(),(*LVec_n).P(),weight);
       nmom_IMnpip_dE_woK0_n->Fill(LVec_pip_n.M(),(*LVec_n).P(),weight);
@@ -4381,21 +4396,24 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         nmom_nmissmom_woK0_wSid_n->Fill(LVec_nmiss.P(),(*LVec_n).P(),weight);
         diff2d_CDC_CDH_pim_woK0_wSid_n->Fill(diffphipim,diffpim.z(),weight);
         diff2d_CDC_CDH_pip_woK0_wSid_n->Fill(diffphipip,diffpip.z(),weight);
-        double diffIMnpim_recomc = LVec_pim_n.M()- LVec_pim_n_mc.M();
-        double diffIMnpip_recomc = LVec_pip_n.M()- LVec_pip_n_mc.M();
-        double diffMMnmiss_recomc = nmiss_mass - (*mcmom_nmiss).M();
-        double diffnmom_recomc = (*LVec_n).P() - (*mcmom_ncds).P();
-        diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
-        diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
-        diff2D_nmom_IMnpim_recomc_woK0_wSid_n->Fill(diffIMnpim_recomc,diffnmom_recomc);
-        diff2D_nmom_IMnpip_recomc_woK0_wSid_n->Fill(diffIMnpip_recomc,diffnmom_recomc);
-        if(!IsFakeN1){
-          diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n_fake1->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
-          diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n_fake1->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
-          diff2D_nmom_IMnpim_recomc_woK0_wSid_n_fake1->Fill(diffIMnpim_recomc,diffnmom_recomc);
-          diff2D_nmom_IMnpip_recomc_woK0_wSid_n_fake1->Fill(diffIMnpip_recomc,diffnmom_recomc);
+        //std::cout << __LINE__ << std::endl;
+        if(SimSpmode || SimSmmode){
+          //std::cout << __LINE__ << std::endl;
+          double diffIMnpim_recomc = LVec_pim_n.M()- LVec_pim_n_mc.M();
+          double diffIMnpip_recomc = LVec_pip_n.M()- LVec_pip_n_mc.M();
+          double diffMMnmiss_recomc = nmiss_mass - (*mcmom_nmiss).M();
+          double diffnmom_recomc = (*LVec_n).P() - (*mcmom_ncds).P();
+          diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
+          diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
+          diff2D_nmom_IMnpim_recomc_woK0_wSid_n->Fill(diffIMnpim_recomc,diffnmom_recomc);
+          diff2D_nmom_IMnpip_recomc_woK0_wSid_n->Fill(diffIMnpip_recomc,diffnmom_recomc);
+          if(!IsFakeN1){
+            diff2D_MMnmiss_IMnpim_recomc_woK0_wSid_n_fake1->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
+            diff2D_MMnmiss_IMnpip_recomc_woK0_wSid_n_fake1->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
+            diff2D_nmom_IMnpim_recomc_woK0_wSid_n_fake1->Fill(diffIMnpim_recomc,diffnmom_recomc);
+            diff2D_nmom_IMnpip_recomc_woK0_wSid_n_fake1->Fill(diffIMnpip_recomc,diffnmom_recomc);
+          }
         }
-      
       }
 
 
@@ -4467,10 +4485,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
     }//if K0rejectFlag && NBetaOK && NdEOK && MissNFlag0
     //---removing K0 END----------------------------------------------
     //if(i> 1.00e+06) break;
-
   }//for ievt
   //--- Filling Histogram END --------------------------------------------------
 
+  //std::cout << __LINE__ << std::endl;
 
   //----------------------------------------------------------------------------
   //---Drawing Part
