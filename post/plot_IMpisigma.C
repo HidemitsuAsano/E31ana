@@ -176,6 +176,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   //tree->SetBranchAddress( "block_num", &block_num );
   if(SimSpmode || SimSmmode) {
     tree->SetBranchAddress( "mcncanvtxr", &mcncanvtxr);
+    tree->SetBranchAddress( "mcncanvtxz", &mcncanvtxz);
     tree->SetBranchAddress( "mcncdsgen", &mcncdsgen);
     tree->SetBranchAddress( "mcmom_beam",  &mcmom_beam );
     tree->SetBranchAddress( "mcmom_pip", &mcmom_pip);
@@ -370,6 +371,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* vtxr_diffmom_npim_ncan_wSid_n_mc;
   TH2F* vtxr_diffMass_npip_ncan_wSid_n_mc;
   TH2F* vtxr_diffMass_npim_ncan_wSid_n_mc;
+  TH2F* vtxr_vtxz_ncan_wSid_n_mc;
   TH2F* generation_diffmom_npip_ncan_wSid_n_mc;
   TH2F* generation_diffmom_npim_ncan_wSid_n_mc;
   TH2F* generation_diffMass_npip_ncan_wSid_n_mc;
@@ -523,6 +525,16 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* MMnmiss_IMpippim_dE_woK0_wSid_n;
   TH2F* MMnmiss_IMpippim_dE_wK0_wSid;
   TH2F* MMnmiss_IMpippim_dE_wK0_wSid_n;
+  TH2F* Momnpim_Momnpip_dE_wSid_n;
+  TH2F* Momnpim_Momnpip_dE_woK0_wSid_n;
+  TH2F* Momnpim_Momnpip_dE_wK0_wSid_n;
+  TH2F* Momnpim_Mompippim_dE_wSid_n;
+  TH2F* Momnpim_Mompippim_dE_woK0_wSid_n;
+  TH2F* Momnpim_Mompippim_dE_wK0_wSid_n;
+  TH2F* Momnpip_Mompippim_dE_wSid_n;
+  TH2F* Momnpip_Mompippim_dE_woK0_wSid_n;
+  TH2F* Momnpip_Mompippim_dE_wK0_wSid_n;
+
   TH2F* MMnmiss_IMpippim_dE_woK0_woSid;
   TH2F* MMnmiss_IMpippim_dE_woSid_won;
   TH2F* MMnmiss_IMpippim_dE_woK0_woSid_won;
@@ -565,6 +577,12 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   TH2F* MMnmiss_IMnpim_dE_wK0_woSid_won;// (miss n & Sigma+/-) is rejected
   TH2F* MMnmiss_Momnpim_dE_wK0_woSid_won;// (miss n & Sigma+/-) is rejected
   TH2F* MMnmiss_IMnpim_dE_wK0_woSidn_won;// (miss n & Sigma+/-) is rejected
+  TH2F* Momnpim_Momnpip_dE_woK0_woSid_won;
+  TH2F* Momnpim_Momnpip_dE_wK0_woSid_won;
+  TH2F* Momnpim_Mompippim_dE_woK0_woSid_won;
+  TH2F* Momnpim_Mompippim_dE_wK0_woSid_won;
+  TH2F* Momnpip_Mompippim_dE_woK0_woSid_won;
+  TH2F* Momnpip_Mompippim_dE_wK0_woSid_won;
   TH2F* MMnpip_MMnpim_n;
   TH2F* MMnpip_MMnpim_wSid_n;
   TH2F* MMnpip_MMnpim_woK0_n;
@@ -839,6 +857,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   const int nbindE = 200;
   const int nbinpippim = 1000;
   const int nbinnmom = 400;
+  const int nbinmomnpi = 150;
+  const int nbinmompipi = 500;
+ 
 
   CDHphi_betainv_fid = new TH2F("CDHphi_betainv_fid","CDHphi_betainv_fid",1000,0,10,100,-TMath::Pi(),TMath::Pi());
   CDHphi_betainv_fid->SetXTitle("1/#beta");
@@ -1113,6 +1134,10 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   vtxr_diffMass_npim_ncan_wSid_n_mc->SetXTitle("diff. Mass. (n#pi^{-}) MCdata - React.");
   vtxr_diffMass_npim_ncan_wSid_n_mc->SetYTitle("n_{CDS} origin in R [cm] ");
 
+  vtxr_vtxz_ncan_wSid_n_mc = new TH2F("vtxr_vtxz_ncan_wSid_n_mc","vtxr_vtxz_ncan_wSid_n_mc",750,-75,75,480,0,120.0);
+  vtxr_vtxz_ncan_wSid_n_mc->SetXTitle("n_{CDS} origin in Z [cm] ");
+  vtxr_vtxz_ncan_wSid_n_mc->SetYTitle("n_{CDS} origin in R [cm] ");
+
   generation_diffmom_npip_ncan_wSid_n_mc = new TH2F("generation_diffmom_npip_ncan_wSid_n_mc","generation_diffmom_npip_ncan_wSid_n_mc",200,-0.1,0.1,10,0,10);
   generation_diffmom_npip_ncan_wSid_n_mc->SetXTitle("diff. mom. (n#pi^{+}) MCdata - React.");
   generation_diffmom_npip_ncan_wSid_n_mc->SetYTitle("n_{CDS} generation");
@@ -1188,6 +1213,42 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMnmiss_IMpippim_dE_wK0_wSid_n = new TH2F("MMnmiss_IMpippim_dE_wK0_wSid_n", "MMnmiss_IMpippim_dE_wK0_wSid_n",nbinpippim,0.,1.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMpippim_dE_wK0_wSid_n->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMpippim_dE_wK0_wSid_n->SetYTitle("Miss Mass. [GeV/c^{2}]");
+   
+  Momnpim_Momnpip_dE_wSid_n = new TH2F("Momnpim_Momnpip_dE_wSid_n","Momnpim_Momnpip_dE_wSid_n",nbinmomnpi,0,1.5,nbinmomnpi,0,1.5);
+  Momnpim_Momnpip_dE_wSid_n->SetXTitle("Mom(n#pi^{+}) [GeV/c]");
+  Momnpim_Momnpip_dE_wSid_n->SetYTitle("Mom(n#pi^{-}) [GeV/c]");
+
+  Momnpim_Momnpip_dE_woK0_wSid_n = new TH2F("Momnpim_Momnpip_dE_woK0_wSid_n","Momnpim_Momnpip_dE_woK0_wSid_n",nbinmomnpi,0,1.5,nbinmomnpi,0,1.5);
+  Momnpim_Momnpip_dE_woK0_wSid_n->SetXTitle("Mom(n#pi^{+}) [GeV/c]");
+  Momnpim_Momnpip_dE_woK0_wSid_n->SetYTitle("Mom(n#pi^{-}) [GeV/c]");
+  
+  Momnpim_Momnpip_dE_wK0_wSid_n = new TH2F("Momnpim_Momnpip_dE_wK0_wSid_n","Momnpim_Momnpip_dE_wK0_wSid_n",nbinmomnpi,0,1.5,nbinmomnpi,0,1.5);
+  Momnpim_Momnpip_dE_wK0_wSid_n->SetXTitle("Mom(n#pi^{+}) [GeV/c]");
+  Momnpim_Momnpip_dE_wK0_wSid_n->SetYTitle("Mom(n#pi^{-}) [GeV/c]");
+  
+  Momnpim_Mompippim_dE_wSid_n = new TH2F("Momnpim_Mompippim_dE_wSid_n","Momnpim_Mompippim_dE_wSid_n",nbinmompipi,0,1.0,nbinmomnpi,0,1.5);
+  Momnpim_Mompippim_dE_wSid_n->SetXTitle("Mom(#pi^{+}#pi^{-}) [GeV/c]");
+  Momnpim_Mompippim_dE_wSid_n->SetYTitle("Mom(n#pi^{-}) [GeV/c]");
+
+  Momnpim_Mompippim_dE_woK0_wSid_n = new TH2F("Momnpim_Mompippim_dE_woK0_wSid_n","Momnpim_Mompippim_dE_woK0_wSid_n",nbinmompipi,0,1.0,nbinmomnpi,0,1.5);
+  Momnpim_Mompippim_dE_woK0_wSid_n->SetXTitle("Mom(#pi^{+}#pi^{-}) [GeV/c]");
+  Momnpim_Mompippim_dE_woK0_wSid_n->SetYTitle("Mom(n#pi^{-}) [GeV/c]");
+  
+  Momnpim_Mompippim_dE_wK0_wSid_n = new TH2F("Momnpim_Mompippim_dE_wK0_wSid_n","Momnpim_Mompippim_dE_wK0_wSid_n",nbinmompipi,0,1.0,nbinmomnpi,0,1.5);
+  Momnpim_Mompippim_dE_wK0_wSid_n->SetXTitle("Mom(#pi^{+}#pi^{-}) [GeV/c]");
+  Momnpim_Mompippim_dE_wK0_wSid_n->SetYTitle("Mom(n#pi^{-}) [GeV/c]");
+  
+  Momnpip_Mompippim_dE_wSid_n = new TH2F("Momnpip_Mompippim_dE_wSid_n","Momnpip_Mompippim_dE_wSid_n",nbinmompipi,0,1.0,nbinmomnpi,0,1.5);
+  Momnpip_Mompippim_dE_wSid_n->SetXTitle("Mom(#pi^{+}#pi^{-}) [GeV/c]");
+  Momnpip_Mompippim_dE_wSid_n->SetYTitle("Mom(n#pi^{+}) [GeV/c]");
+
+  Momnpip_Mompippim_dE_woK0_wSid_n = new TH2F("Momnpip_Mompippim_dE_woK0_wSid_n","Momnpip_Mompippim_dE_woK0_wSid_n",nbinmompipi,0,1.0,nbinmomnpi,0,1.5);
+  Momnpip_Mompippim_dE_woK0_wSid_n->SetXTitle("Mom(#pi^{+}#pi^{-}) [GeV/c]");
+  Momnpip_Mompippim_dE_woK0_wSid_n->SetYTitle("Mom(n#pi^{+}) [GeV/c]");
+  
+  Momnpip_Mompippim_dE_wK0_wSid_n = new TH2F("Momnpip_Mompippim_dE_wK0_wSid_n","Momnpip_Mompippim_dE_wK0_wSid_n",nbinmompipi,0,1.0,nbinmomnpi,0,1.5);
+  Momnpip_Mompippim_dE_wK0_wSid_n->SetXTitle("Mom(#pi^{+}#pi^{-}) [GeV/c]");
+  Momnpip_Mompippim_dE_wK0_wSid_n->SetYTitle("Mom(n#pi^{+}) [GeV/c]");
 
   MMnmiss_IMpippim_dE_woK0_woSid = new TH2F("MMnmiss_IMpippim_dE_woK0_woSid", "MMnmiss_IMpippim_dE_woK0_woSid",nbinpippim,0.,1.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMpippim_dE_woK0_woSid->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -1332,6 +1393,31 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
   MMnmiss_IMnpim_dE_wK0_woSidn_won = new TH2F("MMnmiss_IMnpim_dE_wK0_woSidn_won", "MMnmiss_IMnpim_dE_wK0_woSidn_won",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMnpim_dE_wK0_woSidn_won->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMnpim_dE_wK0_woSidn_won->SetYTitle("Miss Mass. [GeV/c^{2}]");
+  
+  Momnpim_Momnpip_dE_woK0_woSid_won = new TH2F("Momnpim_Momnpip_dE_woK0_woSid_won","Momnpim_Momnpip_dE_woK0_woSid_won",nbinmomnpi,0,1.5,nbinmomnpi,0,1.5);
+  Momnpim_Momnpip_dE_woK0_woSid_won->SetXTitle("Mom(n#pi^{+}) [GeV/c]");
+  Momnpim_Momnpip_dE_woK0_woSid_won->SetYTitle("Mom(n#pi^{-}) [GeV/c]");
+
+  Momnpim_Momnpip_dE_wK0_woSid_won = new TH2F("Momnpim_Momnpip_dE_wK0_woSid_won","Momnpim_Momnpip_dE_wK0_woSid_won",nbinmomnpi,0,1.5,nbinmomnpi,0,1.5);
+  Momnpim_Momnpip_dE_wK0_woSid_won->SetXTitle("Mom(n#pi^{+}) [GeV/c]");
+  Momnpim_Momnpip_dE_wK0_woSid_won->SetYTitle("Mom(n#pi^{-}) [GeV/c]");
+
+  Momnpim_Mompippim_dE_woK0_woSid_won = new TH2F("Momnpim_Mompippim_dE_woK0_woSid_won","Momnpim_Mompippim_dE_woK0_woSid_won",nbinmompipi,0,1.0,nbinmomnpi,0,1.5);
+  Momnpim_Mompippim_dE_woK0_woSid_won->SetXTitle("Mom(#pi^{+}#pi^{-}) [GeV/c]");
+  Momnpim_Mompippim_dE_woK0_woSid_won->SetYTitle("Mom(n#pi^{-}) [GeV/c]");
+
+  Momnpim_Mompippim_dE_wK0_woSid_won = new TH2F("Momnpim_Mompippim_dE_wK0_woSid_won","Momnpim_Mompippim_dE_wK0_woSid_won",nbinmompipi,0,1.0,nbinmomnpi,0,1.5);
+  Momnpim_Mompippim_dE_wK0_woSid_won->SetXTitle("Mom(#pi^{+}#pi^{-}) [GeV/c]");
+  Momnpim_Mompippim_dE_wK0_woSid_won->SetYTitle("Mom(n#pi^{-}) [GeV/c]");
+
+  Momnpip_Mompippim_dE_woK0_woSid_won = new TH2F("Momnpip_Mompippim_dE_woK0_woSid_won","Momnpip_Mompippim_dE_woK0_woSid_won",nbinmompipi,0,1.0,nbinmomnpi,0,1.5);
+  Momnpip_Mompippim_dE_woK0_woSid_won->SetXTitle("Mom(#pi^{+}#pi^{-}) [GeV/c]");
+  Momnpip_Mompippim_dE_woK0_woSid_won->SetYTitle("Mom(n#pi^{+}) [GeV/c]");
+
+  Momnpip_Mompippim_dE_wK0_woSid_won = new TH2F("Momnpip_Mompippim_dE_wK0_woSid_won","Momnpip_Mompippim_dE_wK0_woSid_won",nbinmompipi,0,1.0,nbinmomnpi,0,1.5);
+  Momnpip_Mompippim_dE_wK0_woSid_won->SetXTitle("Mom(#pi^{+}#pi^{-}) [GeV/c]");
+  Momnpip_Mompippim_dE_wK0_woSid_won->SetYTitle("Mom(n#pi^{+}) [GeV/c]");
+
 
   MMnmiss_IMnpim_dE_woK0_woSidn = new TH2F("MMnmiss_IMnpim_dE_woK0_woSidn", "MMnmiss_IMnpim_dE_woK0_woSidn",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMnpim_dE_woK0_woSidn->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
@@ -3739,6 +3825,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
             MMnmiss_Momnpip_dE_wK0_woSid_won->Fill(LVec_pip_n.P(),nmiss_mass,weight);
             MMnmiss_IMnpim_dE_wK0_woSid_won->Fill(LVec_pim_n.M(),nmiss_mass,weight);
             MMnmiss_Momnpim_dE_wK0_woSid_won->Fill(LVec_pim_n.P(),nmiss_mass,weight);
+            Momnpim_Momnpip_dE_wK0_woSid_won->Fill(LVec_pip_n.P(),LVec_pim_n.P(),weight);
+            Momnpim_Mompippim_dE_wK0_woSid_won->Fill(LVec_pip_pim.P(),LVec_pim_n.P(),weight);
+            Momnpip_Mompippim_dE_wK0_woSid_won->Fill(LVec_pip_pim.P(),LVec_pip_n.P(),weight);
             MMnmiss_IMpippim_dE_wK0_woSid_won->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
             IMnpim_IMnpip_dE_wK0_woSid_won->Fill( LVec_pip_n.M(), LVec_pim_n.M(),weight);
             IMpippim_IMnpip_wK0_woSid_won->Fill(LVec_pip_n.M(),LVec_pip_pim.M(),weight);
@@ -3947,6 +4036,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         MMom_MMass_wSid_n->Fill(LVec_nmiss.M(),LVec_nmiss.P(),weight);
         MMnpip_MMnpim_wSid_n->Fill(LVec_pim_nmiss.M(),LVec_pip_nmiss.M(),weight);
         MMnmiss_IMpippim_dE_wSid_n->Fill(LVec_pip_pim.M(),nmiss_mass ,weight);
+        Momnpim_Momnpip_dE_wSid_n->Fill(LVec_pip_n.P(),LVec_pim_n.P(),weight);
+        Momnpim_Mompippim_dE_wSid_n->Fill(LVec_pip_pim.P(),LVec_pim_n.P(),weight);
+        Momnpip_Mompippim_dE_wSid_n->Fill(LVec_pip_pim.P(),LVec_pip_n.P(),weight);
         q_IMpippim_n_wSid->Fill(LVec_pip_pim.M(),qkn.P(),weight);
         IMnpim_IMnpip_dE_wSid_n->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         Cosn_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),cos_nmiss,weight);
@@ -4033,6 +4125,7 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           vtxr_diffmom_npim_ncan_wSid_n_mc->Fill(diffnpim_mcreact,mcncanvtxr);
           vtxr_diffMass_npip_ncan_wSid_n_mc->Fill(diffMassnpip_mcreact,mcncanvtxr);
           vtxr_diffMass_npim_ncan_wSid_n_mc->Fill(diffMassnpim_mcreact,mcncanvtxr);
+          vtxr_vtxz_ncan_wSid_n_mc->Fill(mcncanvtxz,mcncanvtxr);
           generation_diffmom_npip_ncan_wSid_n_mc->Fill(diffnpip_mcreact,mcncdsgen);
           generation_diffmom_npim_ncan_wSid_n_mc->Fill(diffnpim_mcreact,mcncdsgen);
           generation_diffMass_npip_ncan_wSid_n_mc->Fill(diffMassnpip_mcreact,mcncdsgen);
@@ -4103,6 +4196,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         nmom_IMnpipi_wK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P(),weight);
         nmom_nmissmom_wK0_wSid_n->Fill(LVec_nmiss.P(),(*LVec_n).P(),weight);
         MMnmiss_IMpippim_dE_wK0_wSid_n->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
+        Momnpim_Momnpip_dE_wK0_wSid_n->Fill(LVec_pip_n.P(),LVec_pim_n.P(),weight);
+        Momnpim_Mompippim_dE_wK0_wSid_n->Fill(LVec_pip_pim.P(),LVec_pim_n.P(),weight);
+        Momnpip_Mompippim_dE_wK0_wSid_n->Fill(LVec_pip_pim.P(),LVec_pip_n.P(),weight);
         if(SimSpmode || SimSmmode){
           double diffIMnpim_recomc = LVec_pim_n.M()- LVec_pim_n_mc.M();
           double diffIMnpip_recomc = LVec_pip_n.M()- LVec_pip_n_mc.M();
@@ -4256,6 +4352,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
           MMnmiss_Momnpip_dE_woK0_woSid_won->Fill(LVec_pip_n.P(),nmiss_mass,weight);
           MMnmiss_IMnpim_dE_woK0_woSid_won->Fill(LVec_pim_n.M(),nmiss_mass,weight);
           MMnmiss_Momnpim_dE_woK0_woSid_won->Fill(LVec_pim_n.P(),nmiss_mass,weight);
+          Momnpim_Momnpip_dE_woK0_woSid_won->Fill(LVec_pip_n.P(),LVec_pim_n.P(),weight);
+          Momnpim_Mompippim_dE_woK0_woSid_won->Fill(LVec_pip_pim.P(),LVec_pim_n.P(),weight);
+          Momnpip_Mompippim_dE_woK0_woSid_won->Fill(LVec_pip_pim.P(),LVec_pip_n.P(),weight);
           MMnmiss_IMpippim_dE_woK0_woSid_won->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
           IMnpim_IMnpip_dE_woK0_woSid_won->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
           IMpippim_IMnpip_woK0_woSid_won->Fill(LVec_pip_n.M(),LVec_pip_pim.M(),weight);
@@ -4376,6 +4475,9 @@ void plot_IMpisigma(const char* filename="",const int qvalcutflag=0)
         IMnpim_IMnpip_dE_woK0_wSid_n->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         MMnpip_MMnpim_woK0_wSid_n->Fill(LVec_pim_nmiss.M(),LVec_pip_nmiss.M(),weight);
         MMnmiss_IMpippim_dE_woK0_wSid_n->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
+        Momnpim_Momnpip_dE_woK0_wSid_n->Fill(LVec_pip_n.P(),LVec_pim_n.P(),weight);
+        Momnpim_Mompippim_dE_woK0_wSid_n->Fill(LVec_pip_pim.P(),LVec_pim_n.P(),weight);
+        Momnpip_Mompippim_dE_woK0_wSid_n->Fill(LVec_pip_pim.P(),LVec_pip_n.P(),weight);
         dE_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),dE,weight);
         Cosn_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),cos_nmiss,weight);
         q_IMpiSigma_woK0_wSid_n_genacc->Fill(LVec_piSigma_react.M()/1000.,qkn_react.P()/1000.);
