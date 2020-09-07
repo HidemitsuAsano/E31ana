@@ -1,8 +1,9 @@
 #!/bin/tcsh -f
 
 #root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v196.root")' 
-root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_nSppim_pippimn_v114.root")'
-root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_nSmpip_pippimn_v114.root")'
+root -b -q 'plot_IMpisigma.C+'
+root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_nSppim_pippimn_v116.root")'
+root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_nSmpip_pippimn_v116.root")'
 #  root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_npipiL_pippimn_v23.root")' 
 #  root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_pipiL_ns_pippimn_v1.root")'
 #  root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_npipiL_ts_pippimn_v1.root")'
