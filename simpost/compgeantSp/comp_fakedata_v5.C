@@ -1281,8 +1281,14 @@ void comp_fakedata_v5()
   TH2D* Momnpim_Momnpip_woK0_woSid_won_mc = (TH2D*)Momnpim_Momnpip_woK0_woSid_won[1]->Clone("Momnpim_Momnpip_woK0_woSid_won_mc");
   TH1D* Momnpip_woK0_woSid_won[2]; 
   TH1D* Momnpim_woK0_woSid_won[2]; 
-  for(int i=0;i<2;i++)Momnpip_woK0_woSid_won[i] = (TH1D*)Momnpim_Momnpip_woK0_woSid_won[i]->ProjectionX(Form("Momnpip_woK0_woSid_won_%s",name[i]));
-  for(int i=0;i<2;i++)Momnpim_woK0_woSid_won[i] = (TH1D*)Momnpim_Momnpip_woK0_woSid_won[i]->ProjectionY(Form("Momnpim_woK0_woSid_won_%s",name[i]));
+  for(int i=0;i<2;i++){
+    Momnpip_woK0_woSid_won[i] = (TH1D*)Momnpim_Momnpip_woK0_woSid_won[i]->ProjectionX(Form("Momnpip_woK0_woSid_won_%s",name[i]));
+    Momnpip_woK0_woSid_won[i]->SetLineColor(colordef[i]);
+  }
+  for(int i=0;i<2;i++){
+    Momnpim_woK0_woSid_won[i] = (TH1D*)Momnpim_Momnpip_woK0_woSid_won[i]->ProjectionY(Form("Momnpim_woK0_woSid_won_%s",name[i]));
+    Momnpim_woK0_woSid_won[i]->SetLineColor(colordef[i]);
+  }
   TH1D* Momnpip_woK0_woSid_won_ratio = (TH1D*)Momnpip_woK0_woSid_won[0]->Clone("Momnpip_woK0_woSid_won_ratio");
   Momnpip_woK0_woSid_won_ratio->Divide(Momnpip_woK0_woSid_won[1]);
   Momnpip_woK0_woSid_won_ratio->SetTitle("Data/MC");
