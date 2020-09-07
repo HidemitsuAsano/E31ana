@@ -2507,7 +2507,7 @@ void comp_fakedata_v5()
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
   int size = SCol->GetSize();
   TIter next(SCol);
-  TString pdfname="comp_fakedata_out_v4.pdf";
+  TString pdfname="comp_fakedata_out_v5.pdf";
   for(int i=0; i<size; i++) {
     c= (TCanvas*)next();
     c->Draw();
