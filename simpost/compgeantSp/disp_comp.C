@@ -1,5 +1,16 @@
 #include "../../post/weightfuncGSp.h"
-
+//version-2 2020 9 4
+//
+//change weighting functions as follows
+//
+// 1. nmom
+// 2. MMnmiss
+// 3. IM(pi+pi-)
+// 4. IM(npi+)
+// 5. IM(npi-)
+// 6. Mom(npi+)
+// 7. Mom(npi-)
+// 8  Mom(pi+pi-)
 
 void disp_comp(const char *filename="comp_fakedata_out.root")
 {
@@ -530,7 +541,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   IMpippim_woSid_won_mcsum->Draw("HEsame");
   IMpippim_woSid_won_pipinxmc->Draw("HEsame");
 
-  /*
+  
   TH1D* Mompippim_woK0_woSid_won_data = (TH1D*)f->Get("Mompippim_woK0_woSid_won_data");
   TH1D* Mompippim_woK0_woSid_won_mc = (TH1D*)f->Get("Mompippim_woK0_woSid_won_mc");
   TH1D* Mompippim_wK0_woSid_won_data = (TH1D*)f->Get("Mompippim_wK0_woSid_won_data");
@@ -563,7 +574,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   //Mompippim_woK0_woSid_won_ratio->Fit("f_Mompippim","","",0,1);
   //cMompippim->cd(4);
   //Mompippim_wK0_woSid_won_ratio->Draw("HE");
-  */
+  
 
   TH1D* nmom_woK0_woSid_won_data = (TH1D*)f->Get("nmom_woK0_woSid_won_data");
   TH1D* nmom_woK0_woSid_won_mc = (TH1D*)f->Get("nmom_woK0_woSid_won_mc");
