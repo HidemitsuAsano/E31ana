@@ -23,6 +23,7 @@
   double NeutralBetaCDH_vtx[2]; // velocity of neutral particle on CDH,0: Spmode 1:Smmode
   double dE;   // energy deposit on CDH
   double mcncanvtxr;
+  double mcncanvtxz;
   int mcncdsgen;
   TVector3 *vtx_reaction = NULL; // vertex(reaction) 
   TVector3 *vtx_pip_beam = NULL; //C.A.P of pip-beam beam side
