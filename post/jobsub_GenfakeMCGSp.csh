@@ -52,7 +52,7 @@ while (1)
     hadd -f -T fakepippim_pippimn_out_sum.root fakepippim_pippimn[1-9]_out.root fakepippim_pippimn1[0-9]_out.root fakepippim_pippimn20_out.root
     hadd -f -T fakepippimK0_pippimn_out_sum.root fakepippimK0_pippimn[1-9]_out.root fakepippimK0_pippimn1[0-9]_out.root fakepippimK0_pippimn20_out.root
    cd /gpfs/home/had/hiasano/ana/k18ana/simpost/compgeantSp
-   root -b -q comp_fakedata_v4.C+
+   root -b -q comp_fakedata_v5.C+
     break
   endif
   sleep 10
