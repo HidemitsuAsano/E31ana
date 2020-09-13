@@ -49,7 +49,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   TCanvas *c_q_mod = new TCanvas("c_q_mod","c_q_mod");
   q_woK0_woSid_won_ratio->Draw("HE");
   TF1 *f_q_mod = new TF1("f_q_mod",func_q_mod,0.0,1.5,8);
-  q_woK0_woSid_won_ratio->Fit("f_q_mod","","",0,1.5);
+  //q_woK0_woSid_won_ratio->Fit("f_q_mod","","",0,1.5);
   f_q_mod->Draw("same");
   cq->cd(4);
   q_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
@@ -59,7 +59,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   TCanvas *c_q_wK0_mod = new TCanvas("c_q_wK0_mod","c_q_wK0_mod");
   q_wK0_woSid_won_ratio->Draw("HE");
   TF1 *f_q_wK0_mod = new TF1("f_q_wK0_mod",func_q_mod,0.0,1.5,8);
-  q_wK0_woSid_won_ratio->Fit("f_q_wK0_mod","","",0,1.35);
+  //q_wK0_woSid_won_ratio->Fit("f_q_wK0_mod","","",0,1.35);
   //f_q_wK0_mod->Draw("same");
   //TF1 *f_q_wK0_mod_ref = new TF1("f_q_wK0_mod_ref",func_q_mod,0.0,1.5,8);
   //f_q_wK0_mod_ref->SetParameters(param_q_wK0_mod);
@@ -118,7 +118,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   //f_MMnmiss_mod->SetParLimits(12,0,2800);
   //f_MMnmiss_mod->SetParLimits(13,0,2800);
   f_MMnmiss_mod->FixParameter(14,0.010);
-  MMnmiss_woK0_woSid_won_ratio->Fit("f_MMnmiss_mod","","",0.0,1.5);
+  //MMnmiss_woK0_woSid_won_ratio->Fit("f_MMnmiss_mod","","",0.0,1.5);
   //f_MMnmiss_mod->Draw("same");
   cMMnmiss->cd(4);
   MMnmiss_wK0_woSid_won_ratio->Rebin(2);
@@ -208,7 +208,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   
   //f_IMnpip_mod_ref->SetLineColor(3);
   //f_IMnpip_mod_ref->Draw("same");
-  IMnpip_woK0_woSid_won_ratio->Fit("f_IMnpip_mod","","",1.,2.0);
+  //IMnpip_woK0_woSid_won_ratio->Fit("f_IMnpip_mod","","",1.,2.0);
   
   cIMnpip->cd(4);
   //IMnpip_wK0_woSid_won_ratio->RebinX(2);
@@ -225,7 +225,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
 
   //f_IMnpip_wK0->SetLineColor(2);
   //f_IMnpip_wK0->Draw("same");
-  IMnpip_wK0_woSid_won_ratio->Fit("f_IMnpip_wK0","","",1.,1.8);
+  //IMnpip_wK0_woSid_won_ratio->Fit("f_IMnpip_wK0","","",1.,1.8);
   
   
   TCanvas *cIMnpip_sum = new TCanvas("cIMnpip_sum","cIMnpip_sum",1000,1000);
@@ -277,30 +277,31 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   TCanvas *cIMnpim_mod = new TCanvas("cIMnpim_mod","cIMnpim_mod");
   cIMnpim_mod->cd();
   IMnpim_woK0_woSid_won_ratio->Draw("HE");
-  TF1 *f_IMnpim_mod = new TF1("f_IMnpim_mod",func_IMnpim_mod,1,2.0,18);
-  TF1 *f_IMnpim_mod_ref = new TF1("f_IMnpim_mod",func_IMnpim_mod,1,2.0,18);
+  TF1 *f_IMnpim_mod = new TF1("f_IMnpim_mod",func_IMnpim_mod,1,2.0,10);
+  //TF1 *f_IMnpim_mod_ref = new TF1("f_IMnpim_mod",func_IMnpim_mod,1,2.0,18);
   //TF1 *f_IMnpim_mod = new TF1("f_IMnpim_mod",func_IMnpim_mod,1,2.0,6);
   //TF1 *f_IMnpim_mod_ref = new TF1("f_IMnpim_mod_ref",func_IMnpim_mod,1,2.0,12);
-  //f_IMnpim_mod->SetParameters(param_IMnpim_mod);
-  f_IMnpim_mod_ref->SetParameters(param_IMnpim_mod);
-  f_IMnpim_mod->FixParameter(0,7.41795e-01);//gaus
-  f_IMnpim_mod->FixParameter(1,1.08782);//gaus
-  f_IMnpim_mod->FixParameter(2,7.75022e-03);//gaus
-  f_IMnpim_mod->FixParameter(3,0.0050); //woods-saxon
-  f_IMnpim_mod->FixParameter(4,1.08622);//gaus
-  f_IMnpim_mod->FixParameter(5,1.11018); //gaus
-  f_IMnpim_mod->FixParameter(6,1.72955e-02); //gaus
-  f_IMnpim_mod->FixParameter(7,0.005); //woods-saxon
-  f_IMnpim_mod->FixParameter(8,0.997878); //gaus
-  f_IMnpim_mod->FixParameter(9,1.13315); //gaus
-  f_IMnpim_mod->FixParameter(10,0.0520443); //gaus
-  f_IMnpim_mod->FixParameter(11,0.02);
-  f_IMnpim_mod->SetParameter(12,621.106);
-  f_IMnpim_mod->SetParameter(13,-2291.9);
-  f_IMnpim_mod->SetParameter(14,3311.46);
-  f_IMnpim_mod->SetParameter(15,-2340.63);
-  f_IMnpim_mod->SetParameter(16,810.61);
-  f_IMnpim_mod->SetParameter(17,-110.272);
+  f_IMnpim_mod->SetParameters(param_IMnpim_mod);
+  f_IMnpim_mod->Print();
+  //f_IMnpim_mod_ref->SetParameters(param_IMnpim_mod);
+  //f_IMnpim_mod->FixParameter(0,1.21522);
+  //f_IMnpim_mod->FixParameter(1,1.10837);
+  //f_IMnpim_mod->FixParameter(2,0.0149924);
+  //f_IMnpim_mod->FixParameter(3,0.0050); //woods-saxon
+  //f_IMnpim_mod->FixParameter(4,1.08622);//gaus
+  //f_IMnpim_mod->FixParameter(5,1.11018); //gaus
+  //f_IMnpim_mod->FixParameter(6,1.72955e-02); //gaus
+  //f_IMnpim_mod->FixParameter(7,0.005); //woods-saxon
+  //f_IMnpim_mod->FixParameter(8,0.997878); //gaus
+  //f_IMnpim_mod->FixParameter(9,1.13315); //gaus
+  //f_IMnpim_mod->FixParameter(10,0.0520443); //gaus
+  //f_IMnpim_mod->FixParameter(11,0.02);
+  //f_IMnpim_mod->SetParameter(12,621.106);
+  //f_IMnpim_mod->SetParameter(13,-2291.9);
+  //f_IMnpim_mod->SetParameter(14,3311.46);
+  //f_IMnpim_mod->SetParameter(15,-2340.63);
+  //f_IMnpim_mod->SetParameter(16,810.61);
+  //f_IMnpim_mod->SetParameter(17,-110.272);
   f_IMnpim_mod->SetNpx(50000);
   //f_IMnpim_mod->FixParameter(8,-4775.93); 
   //f_IMnpim_mod->FixParameter(9,1617.75); 
@@ -312,8 +313,8 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   //f_IMnpim_mod->FixParameter(3,0.005); 
   //IMnpim_woK0_woSid_won_ratio->Fit("f_IMnpim_mod","","",1.07,1.8);
   f_IMnpim_mod->Draw("same");
-  f_IMnpim_mod_ref->SetLineColor(3);
-  f_IMnpim_mod_ref->Draw("same");
+  //f_IMnpim_mod_ref->SetLineColor(3);
+  //f_IMnpim_mod_ref->Draw("same");
   
   cIMnpim->cd(4);
   IMnpim_wK0_woSid_won_ratio->RebinX(4);
@@ -329,19 +330,19 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   //TF1 *f_IMnpim_mod = new TF1("f_IMnpim_mod",func_IMnpim_mod,1,2.0,10);
   //TF1 *f_IMnpim_mod_ref = new TF1("f_IMnpim_mod_ref",func_IMnpim_mod,1,2.0,10);
   f_IMnpim_wK0_mod->SetParameters(param_IMnpim_wK0_mod);
-  f_IMnpim_wK0_mod->FixParameter(3,0.005);
-  f_IMnpim_wK0_mod->FixParameter(7,0.005);
+  //f_IMnpim_wK0_mod->FixParameter(3,0.005);
+  //f_IMnpim_wK0_mod->FixParameter(7,0.005);
   //f_IMnpim_wK0_mod->Print();
   //f_IMnpim_mod_ref->SetParameters(param_IMnpim_mod);
-  f_IMnpim_wK0_mod->FixParameter(0,0.0858578);
-  f_IMnpim_wK0_mod->FixParameter(1,1.10463);
-  f_IMnpim_wK0_mod->FixParameter(2,0.00904288);
+  //f_IMnpim_wK0_mod->FixParameter(0,0.0858578);
+  //f_IMnpim_wK0_mod->FixParameter(1,1.10463);
+  //f_IMnpim_wK0_mod->FixParameter(2,0.00904288);
   //f_IMnpim_wK0_mod->FixParameter(4,3296.35);
   //f_IMnpim_wK0_mod->FixParameter(5,-8069.16);
   //f_IMnpim_wK0_mod->FixParameter(6,6579.4);
   //f_IMnpim_wK0_mod->FixParameter(7,-1786.53);
-  f_IMnpim_wK0_mod->FixParameter(8, 8.48006e+00);
-  f_IMnpim_wK0_mod->FixParameter(9,-6.98101e+00);
+  //f_IMnpim_wK0_mod->FixParameter(8, 8.48006e+00);
+  //f_IMnpim_wK0_mod->FixParameter(9,-6.98101e+00);
 
   //f_IMnpim_mod->FixParameter(3,0.02); 
   //IMnpim_wK0_woSid_won_ratio->Fit("f_IMnpim_wK0_mod","","",1.07,1.8);
@@ -364,7 +365,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   IMnpim_woSid_won_mcsum->SetLineColor(6);
   IMnpim_woSid_won_mcsum->Draw("HEsame");
   
-  /*
+  
   TH1D* Momnpip_woK0_woSid_won_data = (TH1D*)f->Get("Momnpip_woK0_woSid_won_data");
   TH1D* Momnpip_woK0_woSid_won_mc = (TH1D*)f->Get("Momnpip_woK0_woSid_won_mc");
   TH1D* Momnpip_wK0_woSid_won_data = (TH1D*)f->Get("Momnpip_wK0_woSid_won_data");
@@ -386,6 +387,13 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   cMomnpip->cd(4);
   Momnpip_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
   Momnpip_wK0_woSid_won_ratio->Draw("HE");
+  TCanvas *cMomnpip_woK0 = new TCanvas("cMomnpip_woK0","cMomnpip_woK0",1000,1000);
+  cMomnpip_woK0->cd();
+  Momnpip_woK0_woSid_won_ratio->Draw("HE");
+  TF1 *f_Momnpip = new TF1("f_Momnpip",func_Momnpip,0,1.5,6);
+  f_Momnpip->SetParameters(param_Momnpip);
+  //Momnpip_woK0_woSid_won_ratio->Fit(f_Momnpip,"","",0,1.33);
+  
 
   TH1D* Momnpim_woK0_woSid_won_data = (TH1D*)f->Get("Momnpim_woK0_woSid_won_data");
   TH1D* Momnpim_woK0_woSid_won_mc = (TH1D*)f->Get("Momnpim_woK0_woSid_won_mc");
@@ -408,7 +416,12 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   cMomnpim->cd(4);
   Momnpim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
   Momnpim_wK0_woSid_won_ratio->Draw("HE");
-  */
+  TCanvas *cMomnpim_woK0 = new TCanvas("cMomnpim_woK0","cMomnpim_woK0",1000,1000);
+  cMomnpim_woK0->cd();
+  Momnpim_woK0_woSid_won_ratio->Draw("HE");
+  TF1 *f_Momnpim = new TF1("f_Momnpim",func_Momnpim,0,1.5,8);
+  f_Momnpim->SetParameters(param_Momnpim);
+  //Momnpim_woK0_woSid_won_ratio->Fit(f_Momnpim,"","",0,1.38);
 
   TH1D* IMnpipi_woK0_woSid_won_data = (TH1D*)f->Get("IMnpipi_woK0_woSid_won_data");
   TH1D* IMnpipi_woK0_woSid_won_mc = (TH1D*)f->Get("IMnpipi_woK0_woSid_won_mc");
@@ -516,7 +529,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   //f_IMpippim_mod->SetParameter(14,0.0590810);
   //IMpippim_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
   IMpippim_woK0_woSid_won_ratio->Draw("HE");
-  IMpippim_woK0_woSid_won_ratio->Fit("f_IMpippim_mod","","",0.28,1.0);
+  //IMpippim_woK0_woSid_won_ratio->Fit("f_IMpippim_mod","","",0.28,1.0);
   
   cIMpippim->cd(4);
   //IMpippim_wK0_woSid_won_ratio->RebinX(2);
@@ -566,14 +579,22 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   Mompippim_wK0_woSid_won_mcsum->SetLineColor(6);
   Mompippim_wK0_woSid_won_mcsum->Draw("HEsame");
   cMompippim->cd(3);
+  Mompippim_woK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
   Mompippim_woK0_woSid_won_ratio->Draw("HE");
+  cMompippim->cd(4);
+  Mompippim_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
+  Mompippim_wK0_woSid_won_ratio->Draw("HE");
   TCanvas *cMompippim_woK0_woSid_won_ratio = new TCanvas("cMompippim_woK0_woSid_won_ratio","cMompippim_woK0_woSid_won_ratio");
   cMompippim_woK0_woSid_won_ratio->cd();
   Mompippim_woK0_woSid_won_ratio->Draw("HE");
-  //TF1 *f_Mompippim = new TF1("f_Mompippim",func_Mompippim,0,1,7);
-  //Mompippim_woK0_woSid_won_ratio->Fit("f_Mompippim","","",0,1);
-  //cMompippim->cd(4);
-  //Mompippim_wK0_woSid_won_ratio->Draw("HE");
+  TF1 *f_Mompippim = new TF1("f_Mompippim",func_Mompippim,0,1.5,7);
+  //Mompippim_woK0_woSid_won_ratio->Fit("f_Mompippim","","",0,1.5);
+  
+  TF1 *f_Mompippim_ref = new TF1("f_Mompippim_ref",func_Mompippim,0,1.5,7);
+  f_Mompippim_ref->SetParameters(param_Mompippim);
+  f_Mompippim_ref->SetLineColor(3);
+  f_Mompippim_ref->Draw("same");
+  
   
 
   TH1D* nmom_woK0_woSid_won_data = (TH1D*)f->Get("nmom_woK0_woSid_won_data");
@@ -610,7 +631,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   //f_nmom_mod->SetParameter(0,4.30264);
   //f_nmom_mod->SetParameter(1,-16.3496);
   f_nmom_mod->FixParameter(4,0.01);//woods-saxon
-  nmom_woK0_woSid_won_ratio->Fit("f_nmom_mod","","",0.140,1.0);
+  //nmom_woK0_woSid_won_ratio->Fit("f_nmom_mod","","",0.140,1.0);
 
   cnmom->cd(4);
   nmom_wK0_woSid_won_ratio->GetYaxis()->SetRangeUser(0,2);
@@ -621,7 +642,7 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   TF1 *f_nmom_wK0_mod = new TF1("f_nmom_wK0_mod",func_nmom_mod,0.13,1.0,12);
   f_nmom_wK0_mod->SetParameters(param_nmom_wK0_mod);
   f_nmom_wK0_mod->FixParameter(4,0.01);//woods-saxon
-  nmom_wK0_woSid_won_ratio->Fit("f_nmom_wK0_mod","","",0.14,1.0);
+  //nmom_wK0_woSid_won_ratio->Fit("f_nmom_wK0_mod","","",0.14,1.0);
 
   TCanvas *cnmom_sum = new TCanvas("cnmom_sum","cnmom_sum",1000,1000);
   TH1D* nmom_woSid_won_data = (TH1D*) nmom_woK0_woSid_won_data->Clone("nmom_woSid_won_data");
@@ -650,20 +671,24 @@ void disp_comp(const char *filename="comp_fakedata_out.root")
   //for(int i=0;i<f_q_wK0_mod->GetNpar();i++){
   //for(int i=0;i<f_MMnmiss_wK0_mod->GetNpar();i++){
   //for(int i=0;i<f_MMnmiss_mod->GetNpar();i++){
-  for(int i=0;i<f_IMpippim_mod->GetNpar();i++){
-  //for(int i=0;i<f_IMnpip_mod->GetNpar();i++){
+  //for(int i=0;i<f_IMpippim_mod->GetNpar();i++){
+  for(int i=0;i<f_IMnpip_mod->GetNpar();i++){
   //for(int i=0;i<f_IMnpim_mod->GetNpar();i++){
   //for(int i=0;i<f_Mompippim->GetNpar();i++){
+  //for(int i=0;i<f_Momnpip->GetNpar();i++){
+  //for(int i=0;i<f_Momnpim->GetNpar();i++){
     os << std::setprecision(6);
     //os << f_nmom_mod->GetParameter(i) << ",";
     //os << f_q_wK0_mod->GetParameter(i) << ",";
     //os << f_q_mod->GetParameter(i) << ",";
     //os << f_MMnmiss_mod->GetParameter(i) << ",";
-    os << f_IMpippim_mod->GetParameter(i) << ",";
-    //os << f_IMnpip_mod->GetParameter(i) << ",";
+    //os << f_IMpippim_mod->GetParameter(i) << ",";
+    os << f_IMnpip_mod->GetParameter(i) << ",";
     //os << f_IMnpim_mod->GetParameter(i) << ",";
     //os << f_IMnpip_wK0->GetParameter(i) << ",";
     //os << f_Mompippim->GetParameter(i) << ",";
+    //os << f_Momnpip->GetParameter(i) << ",";
+    //os << f_Momnpim->GetParameter(i) << ",";
     os << endl;
   }
   // os << f_q_mod->GetParameter(i) << ",";
