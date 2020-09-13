@@ -47,14 +47,14 @@ void comp_fakedata_v5()
   //data, mc woK0, mc wK0
   //v2 2020113
   const double scaleFactor[4]= {1.0,
-                                nrdata/nfake*0.30271,
+                                nrdata/nfake*0.357675,
                                 nrdata/nfakeK0,
-                                nrdata/nfake*0.30271
+                                nrdata/nfake*0.357675
                                };
 
   const double scaleFactorK0[3]={1.0,
                                 nrdata/nfakeK0,
-                                nrdata/nfake*0.30271
+                                nrdata/nfake*0.357675
                                 };
 
   //arrays
@@ -1849,15 +1849,15 @@ void comp_fakedata_v5()
   cnmom_MMnmiss_woK0_woSid_won->cd(1);
   TH2D* nmom_MMnmiss_woK0_woSid_won_data = (TH2D*)nmom_MMnmiss_woK0_woSid_won[0]->Clone("nmom_MMnmiss_woK0_woSid_won_data");
   nmom_MMnmiss_woK0_woSid_won_data->SetTitle("#splitline{nmom_MMnmiss_woK0_woSid_won}{  Real data}");
-  nmom_MMnmiss_woK0_woSid_won_data->RebinX(2);
-  nmom_MMnmiss_woK0_woSid_won_data->SetMinimum(1);
+  //nmom_MMnmiss_woK0_woSid_won_data->RebinX(2);
+  //nmom_MMnmiss_woK0_woSid_won_data->SetMinimum(1);
   nmom_MMnmiss_woK0_woSid_won_data->Draw(opt);
   cnmom_MMnmiss_woK0_woSid_won->cd(2);
   TH2D* nmom_MMnmiss_woK0_woSid_won_mc = (TH2D*)nmom_MMnmiss_woK0_woSid_won[1]->Clone("nmom_MMnmiss_woK0_woSid_won_mc");
   nmom_MMnmiss_woK0_woSid_won_mc->SetTitle("#splitline{nmom_MMnmiss_woK0_woSid_won}{  MC data}");
-  nmom_MMnmiss_woK0_woSid_won_mc->RebinX(2);
-  nmom_MMnmiss_woK0_woSid_won_mc->SetMinimum(1);
-  nmom_MMnmiss_woK0_woSid_won_mc->SetMaximum(nmom_MMnmiss_woK0_woSid_won_data->GetMaximum());
+  //nmom_MMnmiss_woK0_woSid_won_mc->RebinX(2);
+  //nmom_MMnmiss_woK0_woSid_won_mc->SetMinimum(1);
+  //nmom_MMnmiss_woK0_woSid_won_mc->SetMaximum(nmom_MMnmiss_woK0_woSid_won_data->GetMaximum());
   nmom_MMnmiss_woK0_woSid_won_mc->Draw(opt);
 
 
@@ -1866,15 +1866,15 @@ void comp_fakedata_v5()
   cnmom_MMnmiss_wK0_woSid_won->cd(1);
   TH2D* nmom_MMnmiss_wK0_woSid_won_data = (TH2D*)nmom_MMnmiss_wK0_woSid_won[0]->Clone("nmom_MMnmiss_wK0_woSid_won_data");
   nmom_MMnmiss_wK0_woSid_won_data->SetTitle("#splitline{nmom_MMnmiss_wK0_woSid_won}{  Real data}");
-  nmom_MMnmiss_wK0_woSid_won_data->RebinX(2);
-  nmom_MMnmiss_wK0_woSid_won_data->SetMinimum(1);
+  //nmom_MMnmiss_wK0_woSid_won_data->RebinX(2);
+  //nmom_MMnmiss_wK0_woSid_won_data->SetMinimum(1);
   nmom_MMnmiss_wK0_woSid_won_data->Draw(opt);
   cnmom_MMnmiss_wK0_woSid_won->cd(2);
   TH2D* nmom_MMnmiss_wK0_woSid_won_mc = (TH2D*)nmom_MMnmiss_wK0_woSid_won[1]->Clone("nmom_MMnmiss_wK0_woSid_won_mc");
   nmom_MMnmiss_wK0_woSid_won_mc->SetTitle("#splitline{nmom_MMnmiss_wK0_woSid_won}{  MC data}");
-  nmom_MMnmiss_wK0_woSid_won_mc->RebinX(2);
-  nmom_MMnmiss_wK0_woSid_won_mc->SetMinimum(1);
-  nmom_MMnmiss_wK0_woSid_won_mc->SetMaximum(nmom_MMnmiss_wK0_woSid_won_data->GetMaximum());
+  //nmom_MMnmiss_wK0_woSid_won_mc->RebinX(2);
+  //nmom_MMnmiss_wK0_woSid_won_mc->SetMinimum(1);
+  //nmom_MMnmiss_wK0_woSid_won_mc->SetMaximum(nmom_MMnmiss_wK0_woSid_won_data->GetMaximum());
   nmom_MMnmiss_wK0_woSid_won_mc->Draw(opt);
 
   
@@ -1900,6 +1900,8 @@ void comp_fakedata_v5()
   //nmom_woK0_woSid_won_ratio->Draw("HEsame");
   
   
+
+
   //
   TCanvas* cnmom_IMpippim_woK0_woSid_won = new TCanvas("cnmom_IMpippim_woK0_woSid_won","cnmom_IMpippim_woK0_woSid_won",1200,800);
   cnmom_IMpippim_woK0_woSid_won->Divide(2,1);
@@ -2249,7 +2251,7 @@ void comp_fakedata_v5()
   //nCDSmom
   //TH2D* nmom_MMnmiss_wK0_woSid_won_mc = (TH2D*)nmom_MMnmiss_wK0_woSid_won[1]->Clone("nmom_MMnmiss_wK0_woSid_won_mc");
 
-  TH1D* nmom_wK0_woSid_won_mc = (TH1D*)nmom_MMnmiss_wK0_woSid_won_mc->ProjectionY("nmom_wK0_woSid_won_mc");
+  TH1D* nmom_wK0_woSid_won_mc = (TH1D*)nmom_MMnmiss_wK0_woSid_won[1]->ProjectionY("nmom_wK0_woSid_won_mc");
   TH1D* nmom_wK0_woSid_won[3];
   for(int i=0; i<3; i++) {
     nmom_wK0_woSid_won[i] = (TH1D*)nmom_MMnmiss_wK0_woSid_won[i]->ProjectionY(Form("nmom_wK0_woSid_won_%s",name[i]));
