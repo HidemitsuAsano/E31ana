@@ -82,6 +82,13 @@ namespace Util
                   double &ncanvtxz,
                   int &ncangeneration
                   );
+   void AnaMcData2(MCData *mcdata, 
+                  DetectorData  *detdata,
+                  int CDHseg,
+                  double &ncanvtxr,
+                  double &ncanvtxz,
+                  int &ncangeneration
+                  );
    int ProcessNameToProcessID(const std::string &name);
    std::string ProcessIDToProcessName(const int &id);
    int CalcGeneration(MCData *mcdata,DetectorHit *dhit);

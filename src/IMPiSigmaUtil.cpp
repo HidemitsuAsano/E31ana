@@ -1010,12 +1010,14 @@ void Util::AnaMcData(MCData *mcdata,
   int iokhit=0;
   //check detectorhit at first
   //store pi+/-, neutron candidate info.
+  unsigned int ncdhhit=0;
   for(int idethit=0;idethit<detdata->detectorHitSize(); idethit++){  
     DetectorHit *dhit = detdata->detectorHit(idethit);
     int cid    = dhit->detectorID();
     if(cid!=CID_CDH){
       continue;
     }
+    ncdhhit++;
     int seg  = dhit->channelID();//0 origin
     double dEreco = -100.;
     int segReco = -1;
@@ -1151,6 +1153,7 @@ void Util::AnaMcData(MCData *mcdata,
       Tools::H1("ncan_time",ncaninfo.time,1000,0,100);
     }
   }//for idethit
+  //std::cout << __LINE__ << "ncdh hit " << ncdhhit << std::endl;
 
   if(npip==1 && npim==1) EventType = 1;
   //check track sharing 
@@ -1245,6 +1248,108 @@ void Util::AnaMcData(MCData *mcdata,
 
 
   return;
+}
+
+
+void Util::AnaMcData2(MCData *mcdata, 
+                     DetectorData  *detdata,
+                     int CDHseg,
+                     double &ncanvtxr,
+                     double &ncanvtxz,
+                     int &ncangeneration
+                     )
+{
+  ncanvtxr=999.0;
+  ncanvtxz=999.0;
+  ncangeneration=999;
+
+  
+  int trackID = -1;
+  int pdg = 0;
+  int ncandidate = 0;
+  int parentID = 0;
+  int generation = 0;
+  Track *ptrack=0;
+  for(int idethit=0;idethit<detdata->detectorHitSize(); idethit++){  
+    DetectorHit *dhit = detdata->detectorHit(idethit);
+    int cid    = dhit->detectorID();
+    if(cid!=CID_CDH){
+      continue;
+    }
+
+    //require CDH hit seg matching
+    int dhitseg  = dhit->channelID()+1;//0 origin
+    if(dhitseg != CDHseg) continue;
+    
+    trackID = dhit->trackID();
+    pdg    = dhit->pdg();
+    ptrack = Util::FindTrackFromMcIndex(mcdata, trackID);
+    parentID = ptrack->parentTrackID();
+    generation = Util::CalcGeneration(mcdata,dhit);
+    ncandidate++;
+  }
+  
+  //this is 
+  if(parentID==0){
+    std::cout << __FILE__ << " L." << __LINE__ << " primary particle is detected: " << pdg << std::endl;
+  }
+  if(ncandidate!=1){
+    std::cout << __FILE__ << " L." << __LINE__ << " !!! ncandidate =  " << ncandidate << std::endl;
+  }
+
+
+  Track *AncestorTr[32]={0};//array index <= generation
+  int AncestorTrackID[32]={0};
+  AncestorTrackID[0]=parentID;
+  
+  TVector3 AncestorVTX[32];
+  int AncestorPDG[32]={0};
+  unsigned int anc=0;
+  bool isFromNeutron = false;
+  bool isFromSigma = false;
+  bool isFromPion = false; 
+  double vtxRNeutron = 0.0;
+  double vtxZNeutron = 0.0;
+  int genNeutron = -1;
+
+  while(generation != 0){
+    generation--;
+    AncestorTr[anc]=Util::FindTrackFromMcIndex(mcdata,AncestorTrackID[anc]);
+    AncestorTrackID[anc+1]=AncestorTr[anc]->parentTrackID();
+    AncestorVTX[anc] = AncestorTr[anc]->vertex();
+    AncestorPDG[anc] = AncestorTr[anc]->pdgID();
+    
+
+    if( AncestorPDG[anc]==2112){
+      isFromNeutron = true;
+      Tools::H2(Form("vtxrz_n"),AncestorVTX[anc].Z()/10.,
+                                AncestorVTX[anc].Perp()/10.,
+                                750,-75.,75.,480,0.,120.);
+      vtxRNeutron = AncestorVTX[anc].Perp()/10.;
+      vtxZNeutron = AncestorVTX[anc].Z()/10.;
+      genNeutron = generation;
+    }
+    //check originated from sigma+/-
+    if( AncestorPDG[anc]==3112 || AncestorPDG[anc]==3222){
+      isFromSigma = true;
+    }
+    //check also sigma -> pion -> .... -> neutron Path
+    if( AncestorPDG[anc]== 211 || AncestorPDG[anc]==-211) isFromPion = true;
+  }
+  int pattern=0;
+  if(isFromNeutron==true && isFromSigma == false && isFromPion == false) pattern=1;//BG neutron
+  if(isFromNeutron==true && isFromSigma == true  && isFromPion == false) pattern=2;//Signal 
+  if(isFromNeutron==true && isFromSigma == false && isFromPion == true) pattern=3;//BG
+  if(isFromNeutron==true && isFromSigma == true && isFromPion == true) pattern=4;//BG
+  Tools::H1(Form("NfakePattern"),pattern,10,-0.5,9.5);
+
+  if(pattern==2){
+    ncanvtxr = vtxRNeutron;
+    ncanvtxz = vtxZNeutron;
+    ncangeneration = genNeutron;
+  }
+
+
 }
 
 

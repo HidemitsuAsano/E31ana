@@ -760,9 +760,6 @@ int main( int argc, char** argv )
     }else{
       Util::AnaMcData(mcData,detData2,cdsMan,reacData,ncanvtxr,ncanvtxz,ncdsgen);
     }
-    mcncanvtxr=ncanvtxr;
-    mcncanvtxz=ncanvtxz;
-    mcncdsgen=ncdsgen;
 
     //if( nGoodTrack!=cdscuts::cds_ngoodtrack ){ // dedicated for pi+ pi- event
     if( nGoodTrack!=cdscuts::cds_ngoodtrack && nallTrack!=cdscuts::cds_ngoodtrack ){ // dedicated for pi+ pi- event
@@ -1160,7 +1157,7 @@ int main( int argc, char** argv )
          
 
       // neutral particle in CDH //
-      if( !nCDCforVeto && !flag_isolation && (nCDCInner3Lay<7)){
+      if( !nCDCforVeto && !flag_isolation){ //&& (nCDCInner3Lay<7))
         if(NeutralCDHseg.size()!=1) {
           std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
         } else {
@@ -1854,8 +1851,17 @@ int main( int argc, char** argv )
 
           } // if( NBetaOK && NdEOK )
 
-          //** fill tree **//
+          // fill tree //
+          // IsncdsfromSigma is always true in this version 20200915
           if(IsncdsfromSigma && IsrecoPassed){
+            double ncanvtxr2=999.0;
+            double ncanvtxz2=999.0;
+            int ncdsgen2=10;
+            Util::AnaMcData2(mcData,detData2,ncdhhit->seg(),ncanvtxr2,ncanvtxz2,ncdsgen2);
+            mcncanvtxr=ncanvtxr2;
+            mcncanvtxz=ncanvtxz2;
+            mcncdsgen=ncdsgen2;
+            
             dE = ncdhhit->emean();
             neutralseg = ncdhhit->seg();
             mom_n_Sp = LVec_n_vtx[0];            // 4-momentum(neutron)
