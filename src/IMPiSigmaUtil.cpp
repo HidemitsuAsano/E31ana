@@ -1317,7 +1317,6 @@ void Util::AnaMcData2(MCData *mcdata,
   double vtxZNeutron = 0.0;
   unsigned int nNeutrons = 0;
   int genNeutron = -1;
-  int genSigma = -1;
   bool isWentCDHOutSide = false;
 
   while(true){
@@ -1328,6 +1327,11 @@ void Util::AnaMcData2(MCData *mcdata,
     AncestorTrackID[anc+1]=AncestorTr[anc]->parentTrackID();
     AncestorVTX[anc] = AncestorTr[anc]->vertex();
     AncestorPDG[anc] = AncestorTr[anc]->pdgID();
+    if(anc==0){
+      Tools::H2(Form("vtxrz_cdhhitparenet"),AncestorVTX[anc].Z()/10.,
+          AncestorVTX[anc].Perp()/10.,
+          750,-75.,75.,480,0.,120.);
+    }
     if( (AncestorVTX[anc].Perp()/10.0) > 58.0) isWentCDHOutSide = true;
     if( fabs(AncestorVTX[anc].Z()/10.0) > 40.0) isWentCDHOutSide = true; 
 
@@ -1340,8 +1344,8 @@ void Util::AnaMcData2(MCData *mcdata,
       if(nNeutrons==1){
         vtxRNeutron = AncestorVTX[anc].Perp()/10.;
         vtxZNeutron = AncestorVTX[anc].Z()/10.;
+        genNeutron = generation;
       }
-      genNeutron = generation;
     }
 
     //check originated from sigma+/-
@@ -1371,7 +1375,11 @@ void Util::AnaMcData2(MCData *mcdata,
   if(pattern==2){
     ncanvtxr = vtxRNeutron;
     ncanvtxz = vtxZNeutron;
-    ncangeneration = generation;
+    ncangeneration = genNeutron;
+    //std::cout << "vtx R " << ncanvtxr << std::endl;
+    //std::cout << "vtx Z " << ncanvtxz << std::endl;
+    //std::cout << "generation " << ncangeneration << std::endl;
+    //std::cout << std::endl;
   }
 
 
