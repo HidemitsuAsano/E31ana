@@ -13,6 +13,7 @@ src/tmp/
 src/lib/
 src/CVS/
 simpost/sakumacro/
+post/sakumacro/
 conf/CVS/
 param/CVS/
 lib/
