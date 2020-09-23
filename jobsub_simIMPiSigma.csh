@@ -67,6 +67,7 @@ while ($i < 800)
     @ i ++
 end
 
+set agstarttime=`date '+%y/%m/%d %H:%M:%S'`
 set hname=`hostname -s`
 echo ${hname}
 while (1)
@@ -85,4 +86,5 @@ end
 
 echo "aggrigation is finished"
 echo "start time ${starttime}"
+echo "ag. start time  ${agstarttime}"
 echo "end time `date '+%y/%m/%d %H:%M:%S'`"
