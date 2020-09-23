@@ -1205,18 +1205,18 @@ void Util::AnaMcData(MCData *mcdata,
     double parentvtxr=Util::FillAncestryVertexR(mcdata,ncaninfo.dhitncan,ncaninfo.dE);
     double parentvtxz=Util::FillAncestryVertexZ(mcdata,ncaninfo.dhitncan,ncaninfo.dE);
     if(ncaninfo.dE>2.0){
-      Tools::H2("ncan_mom_parentvtxr_select",ncaninfo.mom,parentvtxr,200,0,2,480,0,120.);
-      Tools::H2("ncan_mom_parentvtxz_select",ncaninfo.mom,parentvtxz,200,0,2,750,-750,750);
+      //Tools::H2("ncan_mom_parentvtxr_select",ncaninfo.mom,parentvtxr,200,0,2,480,0,120.);
+      //Tools::H2("ncan_mom_parentvtxz_select",ncaninfo.mom,parentvtxz,200,0,2,750,-750,750);
       if(ncaninfo.parentpdg==2112){
-        Tools::H2("ncan_mom_parentvtxr_select_nparent",ncaninfo.mom,parentvtxr,200,0,2,480,0,120.);
+        //Tools::H2("ncan_mom_parentvtxr_select_nparent",ncaninfo.mom,parentvtxr,200,0,2,480,0,120.);
       }
     }
     if(Util::IsFromSigma(mcdata,ncaninfo.dhitncan)){
       ncanvtxr = parentvtxr;
       ncanvtxz = parentvtxz;
       ncangeneration = ncaninfo.gen;
-      Tools::H2(Form("CDHdE_generation_ncan_select_sigma"),ncaninfo.gen, ncaninfo.dE,10,0,10, 100,0,10);
-      Tools::H2(Form("vtxr_generation_ncan_select_sigma"),ncaninfo.gen, parentvtxr,10,0,10, 480,0,120.0);
+      //Tools::H2(Form("CDHdE_generation_ncan_select_sigma"),ncaninfo.gen, ncaninfo.dE,10,0,10, 100,0,10);
+      //Tools::H2(Form("vtxr_generation_ncan_select_sigma"),ncaninfo.gen, parentvtxr,10,0,10, 480,0,120.0);
       TLorentzVector LVec_n_pim_mc = ncaninfo.LVec + piminfo.LVec;
       TLorentzVector LVec_n_pip_mc = ncaninfo.LVec + pipinfo.LVec;
       TLorentzVector TL_Sigma = reactionData->GetParticle(1);
@@ -1228,21 +1228,21 @@ void Util::AnaMcData(MCData *mcdata,
       //std::cout << "react_M " << TL_Sigma.M() << std::endl;
       double diffmom_npim = (LVec_n_pim_mc.P()-TL_Sigma.P())*0.001;
       double diffmom_npip = (LVec_n_pip_mc.P()-TL_Sigma.P())*0.001;
-      Tools::H2(Form("vtxr_diffmom_npim_ncan_select_sigma"),diffmom_npim, parentvtxr,200,-0.1,0.1, 480,0,120.0);
-      Tools::H2(Form("vtxr_diffmom_npip_ncan_select_sigma"),diffmom_npip, parentvtxr,200,-0.1,0.1, 480,0,120.0);
+      //Tools::H2(Form("vtxr_diffmom_npim_ncan_select_sigma"),diffmom_npim, parentvtxr,200,-0.1,0.1, 480,0,120.0);
+      //Tools::H2(Form("vtxr_diffmom_npip_ncan_select_sigma"),diffmom_npip, parentvtxr,200,-0.1,0.1, 480,0,120.0);
       if(ncaninfo.gen==3){
-        Tools::H2(Form("vtxr_diffmom_npim_ncan_select_sigma_3rdgen"),diffmom_npim, parentvtxr,200,-0.1,0.1, 480,0,120.0);
-        Tools::H2(Form("vtxr_diffmom_npip_ncan_select_sigma_3rdgen"),diffmom_npip, parentvtxr,200,-0.1,0.1, 480,0,120.0);
+        //Tools::H2(Form("vtxr_diffmom_npim_ncan_select_sigma_3rdgen"),diffmom_npim, parentvtxr,200,-0.1,0.1, 480,0,120.0);
+        //Tools::H2(Form("vtxr_diffmom_npip_ncan_select_sigma_3rdgen"),diffmom_npip, parentvtxr,200,-0.1,0.1, 480,0,120.0);
       }
-      Tools::H2(Form("generation_diffmom_npim_ncan_select_sigma"),diffmom_npim,ncaninfo.gen,200,-0.1,0.1, 10,0,10);
-      Tools::H2(Form("generation_diffmom_npip_ncan_select_sigma"),diffmom_npip,ncaninfo.gen,200,-0.1,0.1, 10,0,10);
+      //Tools::H2(Form("generation_diffmom_npim_ncan_select_sigma"),diffmom_npim,ncaninfo.gen,200,-0.1,0.1, 10,0,10);
+      //Tools::H2(Form("generation_diffmom_npip_ncan_select_sigma"),diffmom_npip,ncaninfo.gen,200,-0.1,0.1, 10,0,10);
       if(ncaninfo.dE>2.0){
-        Tools::H2(Form("vtxr_generation_ncan_select_sigma_dE"),ncaninfo.gen, parentvtxr,10,0,10, 480,0,120.0);
+        //Tools::H2(Form("vtxr_generation_ncan_select_sigma_dE"),ncaninfo.gen, parentvtxr,10,0,10, 480,0,120.0);
       }
     }
     if(parentvtxr<58.0){
-      Tools::H2("CDHdE_mom_ncan_select_vtxr",ncaninfo.mom,ncaninfo.dE,200,0,2, 100,0,10);
-      if(ncaninfo.dE>0.6 && Util::IsFromSigma(mcdata,ncaninfo.dhitncan) && ncaninfo.gen==3)Tools::H2("CDHdE_mom_ncan_select_vtxr_sigma",ncaninfo.mom,ncaninfo.dE,100,0,2, 100,0,10);
+      //Tools::H2("CDHdE_mom_ncan_select_vtxr",ncaninfo.mom,ncaninfo.dE,200,0,2, 100,0,10);
+      //if(ncaninfo.dE>0.6 && Util::IsFromSigma(mcdata,ncaninfo.dhitncan) && ncaninfo.gen==3)Tools::H2("CDHdE_mom_ncan_select_vtxr_sigma",ncaninfo.mom,ncaninfo.dE,100,0,2, 100,0,10);
     }
   }//event Type 1
 
@@ -1269,6 +1269,7 @@ void Util::AnaMcData2(MCData *mcdata,
   int ncandidate = 0;
   int parentID = 0;
   int generation = 0;
+  int generation_init = 0;
   Track *ptrack=0;
   for(int idethit=0;idethit<detdata->detectorHitSize(); idethit++){  
     DetectorHit *dhit = detdata->detectorHit(idethit);
@@ -1286,6 +1287,7 @@ void Util::AnaMcData2(MCData *mcdata,
     ptrack = Util::FindTrackFromMcIndex(mcdata, trackID);
     parentID = ptrack->parentTrackID();
     generation = Util::CalcGeneration(mcdata,dhit);
+    generation_init = generation;
     ncandidate++;
   }
   
@@ -1331,6 +1333,7 @@ void Util::AnaMcData2(MCData *mcdata,
       Tools::H2(Form("vtxrz_cdhhitparenet"),AncestorVTX[anc].Z()/10.,
           AncestorVTX[anc].Perp()/10.,
           750,-75.,75.,480,0.,120.);
+      Tools::H1(Form("gen_cdhhitparent"),generation,10,0,10);
     }
     if( (AncestorVTX[anc].Perp()/10.0) > 58.0) isWentCDHOutSide = true;
     if( fabs(AncestorVTX[anc].Z()/10.0) > 40.0) isWentCDHOutSide = true; 
@@ -1338,13 +1341,13 @@ void Util::AnaMcData2(MCData *mcdata,
     if( AncestorPDG[anc]==2112){
       nNeutrons++;
       isFromNeutron = true;
-      Tools::H2(Form("vtxrz_n"),AncestorVTX[anc].Z()/10.,
-                                AncestorVTX[anc].Perp()/10.,
-                                750,-75.,75.,480,0.,120.);
       if(nNeutrons==1){
         vtxRNeutron = AncestorVTX[anc].Perp()/10.;
         vtxZNeutron = AncestorVTX[anc].Z()/10.;
         genNeutron = generation;
+        Tools::H2(Form("vtxrz_n"),AncestorVTX[anc].Z()/10.,
+            AncestorVTX[anc].Perp()/10.,
+            750,-75.,75.,480,0.,120.);
       }
     }
 
@@ -1355,30 +1358,39 @@ void Util::AnaMcData2(MCData *mcdata,
     }
     //check also sigma -> pion -> .... -> neutron Path
     if( (AncestorPDG[anc]==211) || (AncestorPDG[anc]==-211)) isFromPion = true;
-    //std::cout << "gen " << generation << std::endl;
-    //std::cout << "anc " << anc << std::endl;
-    //std::cout << "pdg " << AncestorPDG[anc] << std::endl;
+    if( (generation == 1)  && !isWentCDHOutSide){
+      //std::cout << "gen " << generation << std::endl;
+      //std::cout << "anc " << anc << std::endl;
+      //std::cout << "pdg " << AncestorPDG[anc] << std::endl;
+      //std::cout << "generation_init " << generation_init << std::endl;
+      //std::cout << "isFromSigma " << isFromSigma << std::endl;
+      //std::cout << "isFromPion " << isFromPion << std::endl;
+    }
     anc++;
   }
   int pattern=0;
-  if( (isFromNeutron==true) && (isFromSigma == false) && (isFromPion == false) ) pattern=1;//BG neutron
-  else if( (isFromNeutron==true) && (isFromSigma == true)  && (isFromPion == false) && isSigmaNeutronChain && !isWentCDHOutSide ) pattern=2;//Signal 
-  else if( (isFromNeutron==true) && (isFromSigma == true)  && (isFromPion == false) && !isSigmaNeutronChain ) pattern=3;//BG
-  else if( (isFromNeutron==true) && (isFromSigma == true)  && (isFromPion == false) && isWentCDHOutSide ) pattern=4;//BG 
-  else if( (isFromNeutron==true) && (isFromSigma == false) && (isFromPion == true) ) pattern=5;//BG
-  else if( (isFromNeutron==true) && (isFromSigma == true) && (isFromPion == true)) pattern=6;//BG
+  if( isFromNeutron && !isFromSigma  && !isFromPion && isWentCDHOutSide ) pattern=1;//BG neutron
+  else if( isFromNeutron && isFromSigma && !isFromPion && isSigmaNeutronChain && !isWentCDHOutSide ) pattern=2;//Signal 
+  else if( isFromNeutron && isFromSigma && !isFromPion && !isSigmaNeutronChain ) pattern=3;//BG
+  else if( isFromNeutron && isFromSigma && !isFromPion && isWentCDHOutSide ) pattern=4;//BG 
+  else if( isFromNeutron && !isFromSigma && isFromPion ) pattern=5;//BG
+  else if( isFromNeutron && isFromSigma  && isFromPion ) pattern=6;//BG
+  else if( isFromNeutron && !isFromSigma && !isFromPion && !isWentCDHOutSide) pattern=7;//BG but initial neutron
   //std::cout << "pattern = " << pattern << std::endl;
   Tools::H1(Form("NfakePattern"),pattern,10,-0.5,9.5);
   
   //std::cout << "  " << std::endl;
 
-  if(pattern==2){
+  if( (pattern==2) || (pattern==7)){
     ncanvtxr = vtxRNeutron;
     ncanvtxz = vtxZNeutron;
     ncangeneration = genNeutron;
     //std::cout << "vtx R " << ncanvtxr << std::endl;
     //std::cout << "vtx Z " << ncanvtxz << std::endl;
     //std::cout << "generation " << ncangeneration << std::endl;
+    //std::cout << "generation_init " << generation_init << std::endl;
+    //std::cout << "pattern " << pattern << std::endl;
+    //std::cout << "went CDH Out ? " << isWentCDHOutSide << std::endl;
     //std::cout << std::endl;
   }
 
