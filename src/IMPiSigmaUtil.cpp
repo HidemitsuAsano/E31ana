@@ -1296,8 +1296,12 @@ void Util::AnaMcData2(MCData *mcdata,
   if(ncandidate!=1){
     std::cout << __FILE__ << " L." << __LINE__ << " !!! ncandidate =  " << ncandidate << std::endl;
   }
+  //std::cout << __FILE__ << " L." << __LINE__ << std::endl;
+  //std::cout << "CDH 1st pdg " << pdg << std::endl;
+  //std::cout << "generation " << generation << std::endl;
 
-
+  if( (pdg== -211) || (pdg==211) ) return; 
+  //std::cout << __LINE__ << "  " << pdg << std::endl;
   Track *AncestorTr[32]={0};//array index <= generation
   int AncestorTrackID[32]={0};
   AncestorTrackID[0]=parentID;
@@ -1307,46 +1311,67 @@ void Util::AnaMcData2(MCData *mcdata,
   unsigned int anc=0;
   bool isFromNeutron = false;
   bool isFromSigma = false;
+  bool isSigmaNeutronChain = false;
   bool isFromPion = false; 
   double vtxRNeutron = 0.0;
   double vtxZNeutron = 0.0;
+  unsigned int nNeutrons = 0;
   int genNeutron = -1;
+  int genSigma = -1;
+  bool isWentCDHOutSide = false;
 
-  while(generation != 0){
-    generation--;
+  while(true){
+    //std::cout << __LINE__ << std::endl;
+    if(generation == 1) break;
+    else generation--;
     AncestorTr[anc]=Util::FindTrackFromMcIndex(mcdata,AncestorTrackID[anc]);
     AncestorTrackID[anc+1]=AncestorTr[anc]->parentTrackID();
     AncestorVTX[anc] = AncestorTr[anc]->vertex();
     AncestorPDG[anc] = AncestorTr[anc]->pdgID();
-    
+    if( (AncestorVTX[anc].Perp()/10.0) > 58.0) isWentCDHOutSide = true;
+    if( fabs(AncestorVTX[anc].Z()/10.0) > 40.0) isWentCDHOutSide = true; 
 
     if( AncestorPDG[anc]==2112){
+      nNeutrons++;
       isFromNeutron = true;
       Tools::H2(Form("vtxrz_n"),AncestorVTX[anc].Z()/10.,
                                 AncestorVTX[anc].Perp()/10.,
                                 750,-75.,75.,480,0.,120.);
-      vtxRNeutron = AncestorVTX[anc].Perp()/10.;
-      vtxZNeutron = AncestorVTX[anc].Z()/10.;
+      if(nNeutrons==1){
+        vtxRNeutron = AncestorVTX[anc].Perp()/10.;
+        vtxZNeutron = AncestorVTX[anc].Z()/10.;
+      }
       genNeutron = generation;
     }
+
     //check originated from sigma+/-
-    if( AncestorPDG[anc]==3112 || AncestorPDG[anc]==3222){
+    if( (AncestorPDG[anc]==3112) || (AncestorPDG[anc]==3222) ){
       isFromSigma = true;
+      if(generation==genNeutron-1) isSigmaNeutronChain = true;
     }
     //check also sigma -> pion -> .... -> neutron Path
-    if( AncestorPDG[anc]== 211 || AncestorPDG[anc]==-211) isFromPion = true;
+    if( (AncestorPDG[anc]==211) || (AncestorPDG[anc]==-211)) isFromPion = true;
+    //std::cout << "gen " << generation << std::endl;
+    //std::cout << "anc " << anc << std::endl;
+    //std::cout << "pdg " << AncestorPDG[anc] << std::endl;
+    anc++;
   }
   int pattern=0;
-  if(isFromNeutron==true && isFromSigma == false && isFromPion == false) pattern=1;//BG neutron
-  if(isFromNeutron==true && isFromSigma == true  && isFromPion == false) pattern=2;//Signal 
-  if(isFromNeutron==true && isFromSigma == false && isFromPion == true) pattern=3;//BG
-  if(isFromNeutron==true && isFromSigma == true && isFromPion == true) pattern=4;//BG
+  if( (isFromNeutron==true) && (isFromSigma == false) && (isFromPion == false) ) pattern=1;//BG neutron
+  else if( (isFromNeutron==true) && (isFromSigma == true)  && (isFromPion == false) && isSigmaNeutronChain && !isWentCDHOutSide ) pattern=2;//Signal 
+  else if( (isFromNeutron==true) && (isFromSigma == true)  && (isFromPion == false) && !isSigmaNeutronChain ) pattern=3;//BG
+  else if( (isFromNeutron==true) && (isFromSigma == true)  && (isFromPion == false) && isWentCDHOutSide ) pattern=4;//BG 
+  else if( (isFromNeutron==true) && (isFromSigma == false) && (isFromPion == true) ) pattern=5;//BG
+  else if( (isFromNeutron==true) && (isFromSigma == true) && (isFromPion == true)) pattern=6;//BG
+  //std::cout << "pattern = " << pattern << std::endl;
   Tools::H1(Form("NfakePattern"),pattern,10,-0.5,9.5);
+  
+  //std::cout << "  " << std::endl;
 
   if(pattern==2){
     ncanvtxr = vtxRNeutron;
     ncanvtxz = vtxZNeutron;
-    ncangeneration = genNeutron;
+    ncangeneration = generation;
   }
 
 
