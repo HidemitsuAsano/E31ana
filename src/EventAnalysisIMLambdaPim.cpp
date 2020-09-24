@@ -488,7 +488,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   Tools::Fill1D( Form("EventCheck"), 1 );
   
   //temporary fix of the cdhz position
-  Util::CorrectCDHz(cdsMan);
+  //Util::CorrectCDHz(cdsMan);
 
   //CDH-hits cut
   if( Util::GetCDHMul(cdsMan,nGoodTrack)!=cdscuts_lpim::cdhmulti){
@@ -510,7 +510,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   //** BLDC tracking **//
   bltrackMan->DoTracking(blMan,confMan,true,true);
   //Get T0
-  ctmT0 = Util::AnalyzeT0(blMan,confMan);
+  int t0seg=-1;
+  ctmT0 = Util::AnalyzeT0(blMan,confMan,t0seg);
   if(ctmT0<-9000){
     Clear( nAbort_nT0 );
     Tools::Fill1D( Form("EventCheck"), 15 );
@@ -612,11 +613,13 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   std::vector <int> p_ID;
 
   std::vector <int> vCDHseg;
+  TVector3 pim_cdhprojected;
+  TVector3 pip_cdhprojected;
   // PID of CDS tracks //
   const int nIDedTrack = Util::CDSChargedAna(
     DoCDCRetiming,
     bpctrack, cdsMan, trackMan, confMan,blMan, 
-    LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID);
+    LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,pim_cdhprojected,pip_cdhprojected);
   if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
   if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );
   if(nIDedTrack==-9) Tools::Fill1D( Form("EventCheck"), 9 );
