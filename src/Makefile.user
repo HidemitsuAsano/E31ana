@@ -37,6 +37,12 @@ evlpim: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMLambdaPim.o 
 	$(patsubst %,$(TMPDIR)/%,$(OBJS)) 
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMLambdaPim.o  $(TMPDIR)/IMPiSigmaHist.o $(TMPDIR)/IMPiSigmaUtil.o $(LIBLINK) $(OBJSLIB) $(KFLIB)
 
+evl: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMLambda.o IMPiSigmaAnaPar.h \
+	$(TMPDIR)/IMPiSigmaHist.o \
+	$(TMPDIR)/IMPiSigmaUtil.o \
+	$(patsubst %,$(TMPDIR)/%,$(OBJS)) 
+	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysisIMLambda.o  $(TMPDIR)/IMPiSigmaHist.o $(TMPDIR)/IMPiSigmaUtil.o $(LIBLINK) $(OBJSLIB) $(KFLIB)
+
 evkpn: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysiskpn.o IMPiSigmaAnaPar.h \
 	$(TMPDIR)/IMPiSigmaHist.o \
 	$(TMPDIR)/IMPiSigmaUtil.o \
