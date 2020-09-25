@@ -177,7 +177,7 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   TH2D* IMnpim_IMnpip_woSid_won_sub = (TH2D*)IMnpim_IMnpip_woSid_won_data_2->Clone("IMnpim_IMnpip_woSid_won_sub");
   IMnpim_IMnpip_woSid_won_sub->Add(IMnpim_IMnpip_woSid_won_mc,-1.0);
   IMnpim_IMnpip_woSid_won_sub->Divide(IMnpim_IMnpip_woSid_won_mc);
-  IMnpim_IMnpip_woSid_won_sub->SetTitle("(real data - MC)/MC");
+  IMnpim_IMnpip_woSid_won_sub->SetTitle("(reco. data - MC)/MC");
   //IMnpim_IMnpip_woSid_won_sub->RebinX(2);
   //IMnpim_IMnpip_woSid_won_sub->RebinY(2);
   //IMnpim_IMnpip_woSid_won_sub->Scale(1./4.);
@@ -334,7 +334,7 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   cMMnmiss_IMpippim_woSid_won_2->cd(1);
   TH2D* MMnmiss_IMpippim_woSid_won_data_2 = (TH2D*)MMnmiss_IMpippim_woSid_won_data->Clone("MMnmiss_IMpippim_woSid_won_data_2");
   TH2D* MMnmiss_IMpippim_woSid_won_mc_2 = (TH2D*)MMnmiss_IMpippim_woSid_won_mc->Clone("MMnmiss_IMpippim_woSid_won_mc_2");
-  MMnmiss_IMpippim_woSid_won_data_2->SetTitle("real data");
+  MMnmiss_IMpippim_woSid_won_data_2->SetTitle("reco data");
   MMnmiss_IMpippim_woSid_won_data_2->SetContour(10); 
   MMnmiss_IMpippim_woSid_won_data_2->SetMinimum(1);
   MMnmiss_IMpippim_woSid_won_data_2->Draw("cont1z");
@@ -1693,10 +1693,13 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   //gPad->SetRightMargin(0.1);
   //gPad->SetLeftMargin(0);
   //TFile *fGSp = TFile::Open("../simIMpisigma_nSppim_pippimn_v108_out.root","READ");
-  TFile *fGSp = TFile::Open("../simIMpisigma_nSppim_pippimn_v113_out.root","READ");
+  //TFile *fGSp = TFile::Open("../simIMpisigma_nSppim_pippimn_v113_out.root","READ");
+  //TFile *fGSp_old = TFile::Open("../simIMpisigma_nSppim_pippimn_v117_out_v1.root","READ");
+  TFile *fGSp = TFile::Open("../simIMpisigma_nSppim_pippimn_v120_out.root","READ");
   TH2D* q_IMnpipi_wSid_n = (TH2D*)fGSp->Get("q_IMnpipi_wSid_n");
   TH2D* q_IMnpipi_wSid_n_true = (TH2D*)q_IMnpipi_wSid_n->Clone("q_IMnpipi_wSid_n_true");
   TH2D* q_IMnpipi_wSid_n_fake = (TH2D*)fGSp->Get("q_IMnpipi_wSid_n_fake");
+  //TH2D* q_IMnpipi_wSid_n_fake_v1 = (TH2D*)fGSp_old->Get("q_IMnpipi_wSid_n_fake");
   q_IMnpipi_wSid_n_true->Add(q_IMnpipi_wSid_n_fake,-1.0);
   q_IMnpipi_wSid_n_true->SetTitle("GEANT true");
   cq_BG_comp->cd(1);
@@ -1704,6 +1707,7 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   q_IMnpipi_wSid_n_true->Draw("colz");
   cq_BG_comp->cd(2);
   q_IMnpipi_wSid_n_fake->RebinX(2);
+  //q_IMnpipi_wSid_n_fake_v1->RebinX(2);
   q_IMnpipi_wSid_n_fake->SetMaximum(q_IMnpipi_wSid_n_true->GetMaximum());
   q_IMnpipi_wSid_n_fake->SetTitle("GEANT fake");
   q_IMnpipi_wSid_n_fake->Draw("colz");
@@ -1724,6 +1728,9 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   TH1D* IMnpipi_BGGEANT = (TH1D*) q_IMnpipi_wSid_n_fake->ProjectionX("IMnpipi_BGGEANT");
   IMnpipi_BGGEANT->SetLineColor(2);
   IMnpipi_BGGEANT->Draw("HEsame");
+  //TH1D* IMnpipi_BGGEANT_v1 = (TH1D*) q_IMnpipi_wSid_n_fake_v1->ProjectionX("IMnpipi_BGGEANT_v1");
+  //IMnpipi_BGGEANT_v1->SetLineColor(46);
+  //IMnpipi_BGGEANT_v1->Draw("HEsame");
   
   const int bin350 = q_IMnpipi_wSid_n_true->GetYaxis()->FindBin(0.35);
   const int bin800 = q_IMnpipi_wSid_n_true->GetYaxis()->FindBin(0.80);
@@ -1737,6 +1744,9 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   TH1D* IMnpipi_BGGEANT_0 = (TH1D*) q_IMnpipi_wSid_n_fake->ProjectionX("IMnpipi_BGGEANT_0",0,bin350-1);
   IMnpipi_BGGEANT_0->SetLineColor(2);
   IMnpipi_BGGEANT_0->Draw("HEsame");
+  //TH1D* IMnpipi_BGGEANT_0_v1 = (TH1D*) q_IMnpipi_wSid_n_fake_v1->ProjectionX("IMnpipi_BGGEANT_0_v1",0,bin350-1);
+  //IMnpipi_BGGEANT_0_v1->SetLineColor(46);
+  //IMnpipi_BGGEANT_0_v1->Draw("HEsame");
 
   TCanvas *cq_BG_comp_X_350 = new TCanvas("cq_BG_comp_X_350","cq_BG_comp_X_350");
   TH1D* IMnpipi_true_350 = (TH1D*)q_IMnpipi_wSid_n_true->ProjectionX("IMnpipi_true_350",bin350,bin800);
@@ -1747,6 +1757,9 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   TH1D* IMnpipi_BGGEANT_350 = (TH1D*) q_IMnpipi_wSid_n_fake->ProjectionX("IMnpipi_BGGEANT_350",bin350,bin800);
   IMnpipi_BGGEANT_350->SetLineColor(2);
   IMnpipi_BGGEANT_350->Draw("HEsame");
+  //TH1D* IMnpipi_BGGEANT_350_v1 = (TH1D*) q_IMnpipi_wSid_n_fake_v1->ProjectionX("IMnpipi_BGGEANT_350_v1",bin350,bin800);
+  //IMnpipi_BGGEANT_350_v1->SetLineColor(46);
+  //IMnpipi_BGGEANT_350_v1->Draw("HEsame");
 
   //other signal checks
   //MMnmiss 
@@ -1779,6 +1792,32 @@ void disp_2Dcomp(const char *filename="comp_fakedata_out.root")
   IMnpip_n_mc->SetLineColor(3);
   IMnpip_n_mc->SetMarkerColor(3);
   IMnpip_n_mc->Draw("HEsame");
+  
+  TCanvas *cMMnmiss_sub = new TCanvas("cMMnmiss_sub","cMMnmiss_sub");
+  cMMnmiss_sub->cd();
+  TH1D* MMnmiss_sub = (TH1D*)MMnmiss_reco->Clone("MMnmiss_sub");
+  MMnmiss_sub->Add(MMnmiss_fake,-1.0);
+  MMnmiss_sub->Draw("HE");
+  TF1 *fgaus_MM = new TF1("fgaus_MM","gaus",0.5,1.5);
+  fgaus_MM->SetParameter(0,8000);
+  fgaus_MM->SetParameter(1,anacuts::neutron_center);
+  fgaus_MM->SetParameter(2,anacuts::neutron_sigma);
+  fgaus_MM->SetLineColor(3);
+  fgaus_MM->SetNpx(10000);
+  fgaus_MM->Draw("same");
+
+  TCanvas *cIMnip_sub = new TCanvas("cIMnpip_sub","cIMnpip_sub");
+  cIMnpip_sub->cd();
+  TH1D* IMnpip_sub = (TH1D*)IMnpip_reco->Clone("IMnpip_sub");
+  IMnpip_sub->Add(IMnpip_fake,-1.0);
+  IMnpip_sub->Draw("HE");
+  TF1 *fgaus_S = new TF1("fgaus_S","gaus",0.5,1.5);
+  fgaus_S->SetParameter(0,11000);
+  fgaus_S->SetParameter(1,anacuts::Sigmap_center);
+  fgaus_S->SetParameter(2,anacuts::Sigmap_sigma);
+  fgaus_S->SetLineColor(3);
+  fgaus_S->SetNpx(10000);
+  fgaus_S->Draw("same");
 
 
 }
