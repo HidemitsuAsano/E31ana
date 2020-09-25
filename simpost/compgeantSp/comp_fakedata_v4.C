@@ -26,7 +26,7 @@ void comp_fakedata_v4()
 
   //real data
   //TFile *filerdata = TFile::Open("../post/evanaIMpisigma_npippim_v196_out.root","READ");
-  TFile *filerdata = TFile::Open("../simIMpisigma_nSppim_pippimn_v108_out.root","READ");
+  TFile *filerdata = TFile::Open("../simIMpisigma_nSppim_pippimn_v116_out.root","READ");
   filerdata->IsOpen();
   //fake nonK0+fake_n
   TFile *filefake = TFile::Open("/gpfs/group/had/knucl/e15/asano/sim/fakemcgSp/fakepippim_pippimn_out_sum.root","READ");
