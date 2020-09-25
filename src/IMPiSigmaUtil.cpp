@@ -1256,12 +1256,14 @@ void Util::AnaMcData2(MCData *mcdata,
                      int CDHseg,
                      double &ncanvtxr,
                      double &ncanvtxz,
-                     int &ncangeneration
+                     int &ncangeneration,
+                     int &mcpattern
                      )
 {
   ncanvtxr=999.0;
   ncanvtxz=999.0;
   ncangeneration=999;
+  mcpattern=999;
 
   
   int trackID = -1;
@@ -1385,13 +1387,16 @@ void Util::AnaMcData2(MCData *mcdata,
     ncanvtxr = vtxRNeutron;
     ncanvtxz = vtxZNeutron;
     ncangeneration = genNeutron;
-    //std::cout << "vtx R " << ncanvtxr << std::endl;
-    //std::cout << "vtx Z " << ncanvtxz << std::endl;
-    //std::cout << "generation " << ncangeneration << std::endl;
-    //std::cout << "generation_init " << generation_init << std::endl;
-    //std::cout << "pattern " << pattern << std::endl;
-    //std::cout << "went CDH Out ? " << isWentCDHOutSide << std::endl;
-    //std::cout << std::endl;
+    mcpattern = pattern;
+    /*
+    std::cout << "vtx R " << ncanvtxr << std::endl;
+    std::cout << "vtx Z " << ncanvtxz << std::endl;
+    std::cout << "generation " << ncangeneration << std::endl;
+    std::cout << "generation_init " << generation_init << std::endl;
+    std::cout << "pattern " << pattern << std::endl;
+    std::cout << "went CDH Out ? " << isWentCDHOutSide << std::endl;
+    std::cout << std::endl;
+    */
   }
 
 

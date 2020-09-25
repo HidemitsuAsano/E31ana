@@ -87,7 +87,8 @@ namespace Util
                   int CDHseg,
                   double &ncanvtxr,
                   double &ncanvtxz,
-                  int &ncangeneration
+                  int &ncangeneration,
+                  int &mcpattern
                   );
    int ProcessNameToProcessID(const std::string &name);
    std::string ProcessIDToProcessName(const int &id);

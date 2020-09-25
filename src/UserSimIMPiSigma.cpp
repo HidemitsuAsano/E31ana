@@ -107,6 +107,7 @@ TLorentzVector mcmom_nmiss;    // generated 4-momentum(neutron)
 double mcncanvtxr;
 double mcncanvtxz;
 int mcncdsgen;
+int mcpattern;
 
 //GEANT4 info generated particle before interaction
 TLorentzVector react_nmiss;
@@ -307,6 +308,7 @@ int main( int argc, char** argv )
   npippimTree->Branch( "mcncanvtxr",&mcncanvtxr);
   npippimTree->Branch( "mcncanvtxz",&mcncanvtxz);
   npippimTree->Branch( "mcncdsgen",&mcncdsgen);
+  npippimTree->Branch( "mcpattern",&mcpattern);
   npippimTree->Branch( "react_nmiss",&react_nmiss);
   npippimTree->Branch( "react_Sigma",&react_Sigma);
   npippimTree->Branch( "react_pi",&react_pi);
@@ -1857,11 +1859,13 @@ int main( int argc, char** argv )
             double ncanvtxr2=999.0;
             double ncanvtxz2=999.0;
             int ncdsgen2=10;
-            Util::AnaMcData2(mcData,detData2,ncdhhit->seg(),ncanvtxr2,ncanvtxz2,ncdsgen2);
+            int pattern=10;
+            Util::AnaMcData2(mcData,detData2,ncdhhit->seg(),ncanvtxr2,ncanvtxz2,ncdsgen2,pattern);
             mcncanvtxr=ncanvtxr2;
             mcncanvtxz=ncanvtxz2;
             mcncdsgen=ncdsgen2;
-            
+            mcpattern=pattern;
+
             dE = ncdhhit->emean();
             neutralseg = ncdhhit->seg();
             mom_n_Sp = LVec_n_vtx[0];            // 4-momentum(neutron)
@@ -2031,6 +2035,7 @@ void InitTreeVal()
   mcncanvtxr=999.9;
   mcncanvtxz=999.9;
   mcncdsgen=199;
+  mcpattern=199;
   react_nmiss.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
   react_Sigma.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
   react_pi.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
