@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="121"
+set Version="123"
 set DSTVersion="26"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
@@ -67,12 +67,12 @@ while ($i < 800)
     @ i ++
 end
 
-set agstarttime=`date '+%y/%m/%d %H:%M:%S'`
 set hname=`hostname -s`
 echo ${hname}
 while (1)
   @ njob=`bjobs | grep ${hname} | wc -l`
   if ( $njob < 1 ) then 
+    set agstarttime=`date '+%y/%m/%d %H:%M:%S'`
     echo "all jobs finished"
     cd $OUTDIRSUB
     tcsh hadd_sim_pippimn.csh
