@@ -475,7 +475,12 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* vtxr_diffmom_npim_ncan_wSid_n_mc;
   TH2F* vtxr_diffMass_npip_ncan_wSid_n_mc;
   TH2F* vtxr_diffMass_npim_ncan_wSid_n_mc;
+  TH2F* vtxr_vtxz_mc;
+  TH2F* vtxr_vtxz_mc_pat2;
+  TH2F* vtxr_vtxz_mc_pat7;
   TH2F* vtxr_vtxz_ncan_wSid_n_mc;
+  TH2F* vtxr_vtxz_ncan_wSid_n_mc_pat2;
+  TH2F* vtxr_vtxz_ncan_wSid_n_mc_pat7;
   TH2F* generation_diffmom_npip_ncan_wSid_n_mc;
   TH2F* generation_diffmom_npim_ncan_wSid_n_mc;
   TH2F* generation_diffMass_npip_ncan_wSid_n_mc;
@@ -483,13 +488,23 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   
   //GEANT reaction data - mcData matching 
   TH1F* diff_IMnpim_reactmc;//store mcData - reaction data
-  TH2F* IMnpim_MMnpim_mc;//store mcData - reaction data
-  TH2F* IMnpim_MMnpim_mc_vtx;//store mcData - reaction data
+  TH2F* IMnpim_MMnpim_mc;//store mcData
+  TH2F* IMnpim_MMnpim_mc_wSid_n_fake;//store mcData
+  TH2F* IMnpim_MMnpim_mc_wSid_n_fake_pat2;//store mcData
+  TH2F* IMnpim_MMnpim_mc_wSid_n_fake_pat7;//store mcData
+  TH2F* IMnpim_MMnpim_mc_vtx;//store mcData 
+  TH2F* IMnpim_MMnpim_mc_vtx_pat2;//store mcData 
+  TH2F* IMnpim_MMnpim_mc_vtx_pat7;//store mcData
   TH2F* diff2D_IMnpim_Momnpim_wSid_n_reactmc;//store mcData - reaction data
   TH2F* diff2D_IMnpim_Momnpim_wSid_n_reactmc_fake1;//store mcData - reaction data
   TH1F* diff_IMnpip_reactmc;//store mcData - reaction data
-  TH2F* IMnpip_MMnpip_mc;//store mcData - reaction data
-  TH2F* IMnpip_MMnpip_mc_vtx;//store mcData - reaction data
+  TH2F* IMnpip_MMnpip_mc;//store mcData 
+  TH2F* IMnpip_MMnpip_mc_wSid_n_fake;//store mcData 
+  TH2F* IMnpip_MMnpip_mc_wSid_n_fake_pat2;//store mcData 
+  TH2F* IMnpip_MMnpip_mc_wSid_n_fake_pat7;//store mcData 
+  TH2F* IMnpip_MMnpip_mc_vtx;//store mcData 
+  TH2F* IMnpip_MMnpip_mc_vtx_pat2;//store mcData 
+  TH2F* IMnpip_MMnpip_mc_vtx_pat7;//store mcData 
   TH2F* diff2D_IMnpip_Momnpip_wSid_n_reactmc;//store mcData - reaction data
   TH2F* diff2D_IMnpip_Momnpip_wSid_n_reactmc_fake1;//store mcData - reaction data
   TH1F* diff_nmiss_reactmc;//store mcData - reaction data mom.
@@ -547,6 +562,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* IMnpim_IMnpip_dE_n_fake;//for GEANT4 sim.
   TH2F* IMnpim_IMnpip_dE_wSid_n;
   TH2F* IMnpim_IMnpip_dE_wSid_n_fake;//for GEANT4 sim.
+  TH2F* IMnpim_IMnpip_dE_wSid_n_fake_pat2;//for GEANT4 sim.
+  TH2F* IMnpim_IMnpip_dE_wSid_n_fake_pat7;//for GEANT4 sim.
   TH2F* IMnpim_IMnpip_dE_woK0_n;//
   TH2F* IMnpim_IMnpip_dE_woK0_wSid_n;//
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n;//
@@ -636,6 +653,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* MMnmiss_IMpippim_dE_wSid_fake;//for GEANT4 sim.
   TH2F* MMnmiss_IMpippim_dE_wSid_n;
   TH2F* MMnmiss_IMpippim_dE_wSid_n_fake;//for GEANT4 sim.
+  TH2F* MMnmiss_IMpippim_dE_wSid_n_fake_pat2;//for GEANT4 sim.
+  TH2F* MMnmiss_IMpippim_dE_wSid_n_fake_pat7;//for GEANT4 sim.
   TH2F* MMnmiss_IMpippim_dE_woK0;
   TH2F* MMnmiss_IMpippim_dE_woK0_wSid;
   TH2F* MMnmiss_IMpippim_dE_woK0_wSid_n;
@@ -732,6 +751,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* MMnmiss_Momnpipi_woK0_woSid_won;
   TH2F* q_IMnpipi_wSid_n;
   TH2F* q_IMnpipi_wSid_n_fake;
+  TH2F* q_IMnpipi_wSid_n_fake_pat2;
+  TH2F* q_IMnpipi_wSid_n_fake_pat7;
   TH2F* q_IMnpipi_woK0_wSid_n;
   TH2F* q_IMnpipi_wK0_wSid_n;
   TH2F* q_IMpiSigma_gen;//fine bins
@@ -1074,9 +1095,31 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_MMnpim_mc->SetYTitle("true  IM(n_{CDS}#pi^{-}) [GeV/c^{2}]");
   IMnpim_MMnpim_mc->SetXTitle("true  IM(n_{miss}#pi^{-}) [GeV/c^{2}]");
   
+  IMnpim_MMnpim_mc_wSid_n_fake = new TH2F("IMnpim_MMnpim_mc_wSid_n_fake","IMnpim_MMnpim_mc_wSid_n_fake",280,1.,1.7,280,1.0,1.7);
+  IMnpim_MMnpim_mc_wSid_n_fake->SetYTitle("true  IM(n_{CDS}#pi^{-}) [GeV/c^{2}]");
+  IMnpim_MMnpim_mc_wSid_n_fake->SetXTitle("true  IM(n_{miss}#pi^{-}) [GeV/c^{2}]");
+  
+  IMnpim_MMnpim_mc_wSid_n_fake_pat2 = new TH2F("IMnpim_MMnpim_mc_wSid_n_fake_pat2","IMnpim_MMnpim_mc_wSid_n_fake_pat2",280,1.,1.7,280,1.0,1.7);
+  IMnpim_MMnpim_mc_wSid_n_fake_pat2->SetYTitle("true  IM(n_{CDS}#pi^{-}) [GeV/c^{2}]");
+  IMnpim_MMnpim_mc_wSid_n_fake_pat2->SetXTitle("true  IM(n_{miss}#pi^{-}) [GeV/c^{2}]");
+  
+  IMnpim_MMnpim_mc_wSid_n_fake_pat7 = new TH2F("IMnpim_MMnpim_mc_wSid_n_fake_pat7","IMnpim_MMnpim_mc_wSid_n_fake_pat7",280,1.,1.7,280,1.0,1.7);
+  IMnpim_MMnpim_mc_wSid_n_fake_pat7->SetYTitle("true  IM(n_{CDS}#pi^{-}) [GeV/c^{2}]");
+  IMnpim_MMnpim_mc_wSid_n_fake_pat7->SetXTitle("true  IM(n_{miss}#pi^{-}) [GeV/c^{2}]");
+  
+  
   IMnpim_MMnpim_mc_vtx = new TH2F("IMnpim_MMnpim_mc_vtx","IMnpim_MMnpim_mc_vtx",280,1.,1.7,280,1.0,1.7);
   IMnpim_MMnpim_mc_vtx->SetYTitle("true  IM(n_{CDS}#pi^{-})  [GeV/c^{2}]");
   IMnpim_MMnpim_mc_vtx->SetXTitle("true  IM(n_{miss}#pi^{-}) [GeV/c^{2}]");
+  
+  IMnpim_MMnpim_mc_vtx_pat2 = new TH2F("IMnpim_MMnpim_mc_vtx_pat2","IMnpim_MMnpim_mc_vtx_pat2",280,1.,1.7,280,1.0,1.7);
+  IMnpim_MMnpim_mc_vtx_pat2->SetYTitle("true  IM(n_{CDS}#pi^{-})  [GeV/c^{2}]");
+  IMnpim_MMnpim_mc_vtx_pat2->SetXTitle("true  IM(n_{miss}#pi^{-}) [GeV/c^{2}]");
+
+  IMnpim_MMnpim_mc_vtx_pat7 = new TH2F("IMnpim_MMnpim_mc_vtx_pat7","IMnpim_MMnpim_mc_vtx_pat7",280,1.,1.7,280,1.0,1.7);
+  IMnpim_MMnpim_mc_vtx_pat7->SetYTitle("true  IM(n_{CDS}#pi^{-})  [GeV/c^{2}]");
+  IMnpim_MMnpim_mc_vtx_pat7->SetXTitle("true  IM(n_{miss}#pi^{-}) [GeV/c^{2}]");
+
 
   diff2D_IMnpim_Momnpim_wSid_n_reactmc = new TH2F("diff2D_IMnpim_Momnpim_wSid_n_reactmc","diff2D_IMnpim_Momnpim_wSid_n_reactmc",1000,-1.0,1.0,1000,-1.0,1.0);
   diff2D_IMnpim_Momnpim_wSid_n_reactmc->SetXTitle("diff. Mom.(n#pi^{-}) (MCData - Reac.) [GeV/c]");
@@ -1093,9 +1136,35 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpip_MMnpip_mc->SetYTitle("true IM(n_{CDS}#pi^{+}) [GeV/c^{2}]");
   IMnpip_MMnpip_mc->SetXTitle("true IM(n_{miss}#pi^{+}) [GeV/c^{2}]");
   
+  IMnpip_MMnpip_mc_wSid_n_fake = new TH2F("IMnpip_MMnpip_mc_wSid_n_fake","IMnpip_MMnpip_mc_wSid_n_fake",280,1,1.7,280,1.0,1.7);
+  IMnpip_MMnpip_mc_wSid_n_fake->SetYTitle("true IM(n_{CDS}#pi^{+}) [GeV/c^{2}]");
+  IMnpip_MMnpip_mc_wSid_n_fake->SetXTitle("true IM(n_{miss}#pi^{+}) [GeV/c^{2}]");
+  
+  IMnpip_MMnpip_mc_wSid_n_fake_pat2 = new TH2F("IMnpip_MMnpip_mc_wSid_n_fake_pat2","IMnpip_MMnpip_mc_wSid_n_fake_pat2",280,1,1.7,280,1.0,1.7);
+  IMnpip_MMnpip_mc_wSid_n_fake_pat2->SetYTitle("true IM(n_{CDS}#pi^{+}) [GeV/c^{2}]");
+  IMnpip_MMnpip_mc_wSid_n_fake_pat2->SetXTitle("true IM(n_{miss}#pi^{+}) [GeV/c^{2}]");
+  
+  IMnpip_MMnpip_mc_wSid_n_fake_pat7 = new TH2F("IMnpip_MMnpip_mc_wSid_n_fake_pat7","IMnpip_MMnpip_mc_wSid_n_fake_pat7",280,1,1.7,280,1.0,1.7);
+  IMnpip_MMnpip_mc_wSid_n_fake_pat7->SetYTitle("true IM(n_{CDS}#pi^{+}) [GeV/c^{2}]");
+  IMnpip_MMnpip_mc_wSid_n_fake_pat7->SetXTitle("true IM(n_{miss}#pi^{+}) [GeV/c^{2}]");
+  
+  
+  
+  
+  
   IMnpip_MMnpip_mc_vtx = new TH2F("IMnpip_MMnpip_mc_vtx","IMnpip_MMnpip_mc_vtx",280,1,1.7,280,1.,1.7);
   IMnpip_MMnpip_mc_vtx->SetYTitle("true IM(n_{CDS}#pi^{+}) [GeV/c^{2}]");
   IMnpip_MMnpip_mc_vtx->SetXTitle("true IM(n_{miss}#pi^{+} ) [GeV/c^{2}]");
+  
+  IMnpip_MMnpip_mc_vtx_pat2 = new TH2F("IMnpip_MMnpip_mc_vtx_pat2","IMnpip_MMnpip_mc_vtx_pat2",280,1,1.7,280,1.,1.7);
+  IMnpip_MMnpip_mc_vtx_pat2->SetYTitle("true IM(n_{CDS}#pi^{+}) [GeV/c^{2}]");
+  IMnpip_MMnpip_mc_vtx_pat2->SetXTitle("true IM(n_{miss}#pi^{+} ) [GeV/c^{2}]");
+  
+  IMnpip_MMnpip_mc_vtx_pat7 = new TH2F("IMnpip_MMnpip_mc_vtx_pat7","IMnpip_MMnpip_mc_vtx_pat7",280,1,1.7,280,1.,1.7);
+  IMnpip_MMnpip_mc_vtx_pat7->SetYTitle("true IM(n_{CDS}#pi^{+}) [GeV/c^{2}]");
+  IMnpip_MMnpip_mc_vtx_pat7->SetXTitle("true IM(n_{miss}#pi^{+} ) [GeV/c^{2}]");
+  
+  
   
   diff2D_IMnpip_Momnpip_wSid_n_reactmc = new TH2F("diff2D_IMnpip_Momnpip_wSid_n_reactmc","diff2D_IMnpip_Momnpip_wSid_n_reactmc",1000,-1.0,1.0,1000,-1.0,1.0);
   diff2D_IMnpip_Momnpip_wSid_n_reactmc->SetXTitle("diff. Mom.(n#pi^{+}) (MCData - Reac.) [GeV/c]");
@@ -1267,10 +1336,30 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   vtxr_diffMass_npim_ncan_wSid_n_mc = new TH2F("vtxr_diffMass_npim_ncan_wSid_n_mc","vtxr_diffMass_npim_ncan_wSid_n_mc",200,-0.1,0.1,480,0,120.0);
   vtxr_diffMass_npim_ncan_wSid_n_mc->SetXTitle("diff. Mass. (n#pi^{-}) MCdata - React.");
   vtxr_diffMass_npim_ncan_wSid_n_mc->SetYTitle("n_{CDS} origin in R [cm] ");
+  
+  vtxr_vtxz_mc = new TH2F("vtxr_vtxz_mc","vtxr_vtxz_mc",750,-75,75,480,0,120.0);
+  vtxr_vtxz_mc->SetXTitle("n_{CDS} origin in Z [cm] ");
+  vtxr_vtxz_mc->SetYTitle("n_{CDS} origin in R [cm] ");
+
+  vtxr_vtxz_mc_pat2 = new TH2F("vtxr_vtxz_mc_pat2","vtxr_vtxz_mc_pat2",750,-75,75,480,0,120.0);
+  vtxr_vtxz_mc_pat2->SetXTitle("n_{CDS} origin in Z [cm] ");
+  vtxr_vtxz_mc_pat2->SetYTitle("n_{CDS} origin in R [cm] ");
+  
+  vtxr_vtxz_mc_pat7 = new TH2F("vtxr_vtxz_mc_pat7","vtxr_vtxz_mc_pat7",750,-75,75,480,0,120.0);
+  vtxr_vtxz_mc_pat7->SetXTitle("n_{CDS} origin in Z [cm] ");
+  vtxr_vtxz_mc_pat7->SetYTitle("n_{CDS} origin in R [cm] ");
 
   vtxr_vtxz_ncan_wSid_n_mc = new TH2F("vtxr_vtxz_ncan_wSid_n_mc","vtxr_vtxz_ncan_wSid_n_mc",750,-75,75,480,0,120.0);
   vtxr_vtxz_ncan_wSid_n_mc->SetXTitle("n_{CDS} origin in Z [cm] ");
   vtxr_vtxz_ncan_wSid_n_mc->SetYTitle("n_{CDS} origin in R [cm] ");
+  
+  vtxr_vtxz_ncan_wSid_n_mc_pat2 = new TH2F("vtxr_vtxz_ncan_wSid_n_mc_pat2","vtxr_vtxz_ncan_wSid_n_mc_pat2",750,-75,75,480,0,120.0);
+  vtxr_vtxz_ncan_wSid_n_mc_pat2->SetXTitle("n_{CDS} origin in Z [cm] ");
+  vtxr_vtxz_ncan_wSid_n_mc_pat2->SetYTitle("n_{CDS} origin in R [cm] ");
+  
+  vtxr_vtxz_ncan_wSid_n_mc_pat7 = new TH2F("vtxr_vtxz_ncan_wSid_n_mc_pat7","vtxr_vtxz_ncan_wSid_n_mc_pat7",750,-75,75,480,0,120.0);
+  vtxr_vtxz_ncan_wSid_n_mc_pat7->SetXTitle("n_{CDS} origin in Z [cm] ");
+  vtxr_vtxz_ncan_wSid_n_mc_pat7->SetYTitle("n_{CDS} origin in R [cm] ");
 
   generation_diffmom_npip_ncan_wSid_n_mc = new TH2F("generation_diffmom_npip_ncan_wSid_n_mc","generation_diffmom_npip_ncan_wSid_n_mc",200,-0.1,0.1,10,0,10);
   generation_diffmom_npip_ncan_wSid_n_mc->SetXTitle("diff. mom. (n#pi^{+}) MCdata - React.");
@@ -1299,6 +1388,17 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE_wSid_n_fake = new TH2F("IMnpim_IMnpip_dE_wSid_n_fake", "IMnpim_IMnpip_dE_wSid_n_fake",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wSid_n_fake->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wSid_n_fake->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  
+  IMnpim_IMnpip_dE_wSid_n_fake_pat2 = new TH2F("IMnpim_IMnpip_dE_wSid_n_fake_pat2", "IMnpim_IMnpip_dE_wSid_n_fake_pat2",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  IMnpim_IMnpip_dE_wSid_n_fake_pat2->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpim_IMnpip_dE_wSid_n_fake_pat2->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+
+  IMnpim_IMnpip_dE_wSid_n_fake_pat7 = new TH2F("IMnpim_IMnpip_dE_wSid_n_fake_pat7", "IMnpim_IMnpip_dE_wSid_n_fake_pat7",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  IMnpim_IMnpip_dE_wSid_n_fake_pat7->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpim_IMnpip_dE_wSid_n_fake_pat7->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+
+
+
 
   IMnpim_IMnpip_dE_woK0 = new TH2F(Form("IMnpim_IMnpip_dE_woK0"), Form("IMnpim_IMnpip_dE_woK0"),nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_woK0->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
@@ -1327,6 +1427,16 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   MMnmiss_IMpippim_dE_wSid_n_fake = new TH2F("MMnmiss_IMpippim_dE_wSid_n_fake", "MMnmiss_IMpippim_dE_wSid_n_fake",nbinpippim,0.,1.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMpippim_dE_wSid_n_fake->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMpippim_dE_wSid_n_fake->SetYTitle("Miss Mass. [GeV/c^{2}]");
+  
+  MMnmiss_IMpippim_dE_wSid_n_fake_pat2 = new TH2F("MMnmiss_IMpippim_dE_wSid_n_fake_pat2", "MMnmiss_IMpippim_dE_wSid_n_fake_pat2",nbinpippim,0.,1.0,nbinnmiss, nmisslow, nmisshigh);
+  MMnmiss_IMpippim_dE_wSid_n_fake_pat2->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  MMnmiss_IMpippim_dE_wSid_n_fake_pat2->SetYTitle("Miss Mass. [GeV/c^{2}]");
+  
+  MMnmiss_IMpippim_dE_wSid_n_fake_pat7 = new TH2F("MMnmiss_IMpippim_dE_wSid_n_fake_pat7", "MMnmiss_IMpippim_dE_wSid_n_fake_pat7",nbinpippim,0.,1.0,nbinnmiss, nmisslow, nmisshigh);
+  MMnmiss_IMpippim_dE_wSid_n_fake_pat7->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  MMnmiss_IMpippim_dE_wSid_n_fake_pat7->SetYTitle("Miss Mass. [GeV/c^{2}]");
+
+
 
   MMnmiss_IMpippim_dE_woK0 = new TH2F("MMnmiss_IMpippim_dE_woK0", "MMnmiss_IMpippim_dE_woK0",nbinpippim,0.,1.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMpippim_dE_woK0->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -1581,22 +1691,37 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   
-  IMnpim_IMnpim_mc_dE_n = new TH2F("IMnpim_IMnpim_mc_dE_n","IMnpim_IMnpim_mc_dE_n",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
-  IMnpim_IMnpim_mc_dE_n->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
-  IMnpim_IMnpim_mc_dE_n->SetYTitle("true IM(n#pi^{-}) [GeV/c^{2}]");
+  IMnpim_IMnpim_mc_dE_n = new TH2F("IMnpim_IMnpim_mc_dE_n","IMnpim_IMnpim_mc_dE_n",nbinIMnpi, 1, 2.0, nbinIMnpi, -1.0, 1.0);
+  IMnpim_IMnpim_mc_dE_n->SetXTitle("reco. IM(n#pi^{-}) [GeV/c^{2}]");
+  IMnpim_IMnpim_mc_dE_n->SetYTitle("reco. - true IM(n#pi^{-}) [GeV/c^{2}]");
   
-  IMnpim_IMnpim_mc_dE_n_vtx = new TH2F("IMnpim_IMnpim_mc_dE_n_vtx","IMnpim_IMnpim_mc_dE_n_vtx",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
-  IMnpim_IMnpim_mc_dE_n_vtx->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
-  IMnpim_IMnpim_mc_dE_n_vtx->SetYTitle("true IM(n#pi^{-}) [GeV/c^{2}]");
+  IMnpim_IMnpim_mc_dE_n_vtx = new TH2F("IMnpim_IMnpim_mc_dE_n_vtx","IMnpim_IMnpim_mc_dE_n_vtx",nbinIMnpi, 1, 2.0, nbinIMnpi, -1.0, 1.0);
+  IMnpim_IMnpim_mc_dE_n_vtx->SetXTitle("reco. IM(n#pi^{-}) [GeV/c^{2}]");
+  IMnpim_IMnpim_mc_dE_n_vtx->SetYTitle("reco. true IM(n#pi^{-}) [GeV/c^{2}]");
   
-  IMnpip_IMnpip_mc_dE_n = new TH2F("IMnpip_IMnpip_mc_dE_n","IMnpip_IMnpip_mc_dE_n",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
-  IMnpip_IMnpip_mc_dE_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
-  IMnpip_IMnpip_mc_dE_n->SetYTitle("true IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpim_IMnpim_mc_dE_n_vtx_pat2 = new TH2F("IMnpim_IMnpim_mc_dE_n_vtx_pat2","IMnpim_IMnpim_mc_dE_n_vtx_pat2",nbinIMnpi, 1, 2.0, nbinIMnpi, -1.0, 1.0);
+  IMnpim_IMnpim_mc_dE_n_vtx_pat2->SetXTitle("reco. IM(n#pi^{-}) [GeV/c^{2}]");
+  IMnpim_IMnpim_mc_dE_n_vtx_pat2->SetYTitle("reco. - true IM(n#pi^{-}) [GeV/c^{2}]");
   
-  IMnpip_IMnpip_mc_dE_n_vtx = new TH2F("IMnpip_IMnpip_mc_dE_n_vtx","IMnpip_IMnpip_mc_dE_n_vtx",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
-  IMnpip_IMnpip_mc_dE_n_vtx->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
-  IMnpip_IMnpip_mc_dE_n_vtx->SetYTitle("true IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpim_IMnpim_mc_dE_n_vtx_pat7 = new TH2F("IMnpim_IMnpim_mc_dE_n_vtx_pat7","IMnpim_IMnpim_mc_dE_n_vtx_pat7",nbinIMnpi, 1, 2.0, nbinIMnpi, -1.0, 1.0);
+  IMnpim_IMnpim_mc_dE_n_vtx_pat7->SetXTitle("reco. IM(n#pi^{-}) [GeV/c^{2}]");
+  IMnpim_IMnpim_mc_dE_n_vtx_pat7->SetYTitle("reco. - true IM(n#pi^{-}) [GeV/c^{2}]");
   
+  IMnpip_IMnpip_mc_dE_n = new TH2F("IMnpip_IMnpip_mc_dE_n","IMnpip_IMnpip_mc_dE_n",nbinIMnpi, 1, 2.0, nbinIMnpi, -1.0, 1.0);
+  IMnpip_IMnpip_mc_dE_n->SetXTitle("reco. IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpip_IMnpip_mc_dE_n->SetYTitle("reco. - true IM(n#pi^{+}) [GeV/c^{2}]");
+  
+  IMnpip_IMnpip_mc_dE_n_vtx = new TH2F("IMnpip_IMnpip_mc_dE_n_vtx","IMnpip_IMnpip_mc_dE_n_vtx",nbinIMnpi, 1, 2.0, nbinIMnpi, -1.0, 1.0);
+  IMnpip_IMnpip_mc_dE_n_vtx->SetXTitle("reco. IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpip_IMnpip_mc_dE_n_vtx->SetYTitle("reco. - true IM(n#pi^{+}) [GeV/c^{2}]");
+  
+  IMnpip_IMnpip_mc_dE_n_vtx_pat2 = new TH2F("IMnpip_IMnpip_mc_dE_n_vtx_pat2","IMnpip_IMnpip_mc_dE_n_vtx_pat2",nbinIMnpi, 1, 2.0, nbinIMnpi, -1.0, 1.0);
+  IMnpip_IMnpip_mc_dE_n_vtx_pat2->SetXTitle("reco. IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpip_IMnpip_mc_dE_n_vtx_pat2->SetYTitle("reco. - true IM(n#pi^{+}) [GeV/c^{2}]");
+  
+  IMnpip_IMnpip_mc_dE_n_vtx_pat7 = new TH2F("IMnpip_IMnpip_mc_dE_n_vtx_pat7","IMnpip_IMnpip_mc_dE_n_vtx_pat7",nbinIMnpi, 1, 2.0, nbinIMnpi, -1.0, 1.0);
+  IMnpip_IMnpip_mc_dE_n_vtx_pat7->SetXTitle("reco. IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpip_IMnpip_mc_dE_n_vtx_pat7->SetYTitle("reco. - true IM(n#pi^{+}) [GeV/c^{2}]");
   
   IMnpim_IMnpip_dE_n_fake = new TH2F("IMnpim_IMnpip_dE_n_fake","IMnpim_IMnpip_dE_n_fake",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_n_fake->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
@@ -2081,6 +2206,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   q_IMnpipi_wSid_n_fake = new TH2F("q_IMnpipi_wSid_n_fake","q_IMnpipi_wSid_n_fake",nbinIMnpipi,1,2,nbinq,0,1.5);
   q_IMnpipi_wSid_n_fake->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_wSid_n_fake->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMnpipi_wSid_n_fake_pat2 = new TH2F("q_IMnpipi_wSid_n_fake_pat2","q_IMnpipi_wSid_n_fake_pat2",nbinIMnpipi,1,2,nbinq,0,1.5);
+  q_IMnpipi_wSid_n_fake_pat2->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMnpipi_wSid_n_fake_pat2->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMnpipi_wSid_n_fake_pat7 = new TH2F("q_IMnpipi_wSid_n_fake_pat7","q_IMnpipi_wSid_n_fake_pat7",nbinIMnpipi,1,2,nbinq,0,1.5);
+  q_IMnpipi_wSid_n_fake_pat7->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMnpipi_wSid_n_fake_pat7->SetYTitle("Mom. Transfer [GeV/c]");
 
   q_IMnpipi_woK0_wSid_n = new TH2F(Form("q_IMnpipi_woK0_wSid_n"),Form("q_IMnpipi_woK0_wSid_n"), nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -3339,6 +3472,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     bool IsFakebyVTX = false;
     if(SimSpmode || SimSmmode) {
       if( (mcncanvtxr>58) || (fabs(mcncanvtxz)>40) ){
+      //if( (mcncanvtxr>15) || (fabs(mcncanvtxz)>15) ){
         IsFakebyVTX = true;
       }
       LVec_Sigma_react = *react_Sigma;
@@ -3365,9 +3499,32 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       IMnpim_MMnpim_mc->Fill(LVec_pim_nmiss_mc.M(),LVec_pim_n_mc.M());
       diff_IMnpip_reactmc->Fill(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.);
       IMnpip_MMnpip_mc->Fill(LVec_pip_nmiss_mc.M(),LVec_pip_n_mc.M());
-      if(!IsFakebyVTX){
+      
+      vtxr_vtxz_mc->Fill(mcncanvtxz,mcncanvtxr);
+      if(mcpattern==2){
+        vtxr_vtxz_mc_pat2->Fill(mcncanvtxz,mcncanvtxr);
+      }
+      else if(mcpattern==7){
+        vtxr_vtxz_mc_pat7->Fill(mcncanvtxz,mcncanvtxr);
+      }
+      
+      if(!IsFakebyVTX  &&  (*mcmom_nmiss).P()>0.01 && (*mcmom_nmiss).P()<100.0 && (*mcmom_ncds).P()>0.01 && (*mcmom_pip).P()>0.01 && (*mcmom_pim).P()>0.01) {
         IMnpim_MMnpim_mc_vtx->Fill(LVec_pim_nmiss_mc.M(),LVec_pim_n_mc.M());
         IMnpip_MMnpip_mc_vtx->Fill(LVec_pip_nmiss_mc.M(),LVec_pip_n_mc.M());
+        if(mcpattern==2){
+          IMnpim_MMnpim_mc_vtx_pat2->Fill(LVec_pim_nmiss_mc.M(),LVec_pim_n_mc.M());
+          IMnpip_MMnpip_mc_vtx_pat2->Fill(LVec_pip_nmiss_mc.M(),LVec_pip_n_mc.M());
+        }
+        if(mcpattern==7){
+          if( LVec_pim_nmiss_mc.M() <1.197440   ||  1.197450 < LVec_pim_nmiss_mc.M() ){
+          //std::cout << "nmiss mom " << (*mcmom_nmiss).P() << std::endl;
+          //std::cout << "ncds mom " << (*mcmom_ncds).P() << std::endl;
+          //std::cout << "pip mom " << (*mcmom_pip).P() << std::endl;
+          //std::cout << "pim mom " << (*mcmom_pim).P() << std::endl;
+          }
+          IMnpim_MMnpim_mc_vtx_pat7->Fill(LVec_pim_nmiss_mc.M(),LVec_pim_n_mc.M());
+          IMnpip_MMnpip_mc_vtx_pat7->Fill(LVec_pip_nmiss_mc.M(),LVec_pip_n_mc.M());
+        }
       }
 
       diff_nmiss_reactmc->Fill((*mcmom_nmiss).P()-(*react_nmiss).P()/1000.);
@@ -4108,13 +4265,19 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       IMnpim_IMnpipi_n->Fill(LVec_pip_pim_n.M(),LVec_pim_n.M(),weight);
       
       if(SimSpmode || SimSmmode){
-        IMnpim_IMnpim_mc_dE_n->Fill(LVec_pim_n.M(),LVec_pim_n_mc.M(),weight);
-        IMnpip_IMnpip_mc_dE_n->Fill(LVec_pip_n.M(),LVec_pip_n_mc.M(),weight);
+        IMnpim_IMnpim_mc_dE_n->Fill(LVec_pim_n.M(),LVec_pim_n.M()-LVec_pim_n_mc.M(),weight);
+        IMnpip_IMnpip_mc_dE_n->Fill(LVec_pip_n.M(),LVec_pip_n.M()-LVec_pip_n_mc.M(),weight);
         if(!IsFakebyVTX){
-          if(mcpattern==7){
-            IMnpim_IMnpim_mc_dE_n_vtx->Fill(LVec_pim_n.M(),LVec_pim_n_mc.M(),weight);
-            IMnpip_IMnpip_mc_dE_n_vtx->Fill(LVec_pip_n.M(),LVec_pip_n_mc.M(),weight);
+          IMnpim_IMnpim_mc_dE_n_vtx->Fill(LVec_pim_n.M(),LVec_pim_n.M()-LVec_pim_n_mc.M(),weight);
+          IMnpip_IMnpip_mc_dE_n_vtx->Fill(LVec_pip_n.M(),LVec_pip_n.M()-LVec_pip_n_mc.M(),weight);
+          if(mcpattern==2){
+            IMnpim_IMnpim_mc_dE_n_vtx_pat2->Fill(LVec_pim_n.M(),LVec_pim_n.M()-LVec_pim_n_mc.M(),weight);
+            IMnpip_IMnpip_mc_dE_n_vtx_pat2->Fill(LVec_pip_n.M(),LVec_pip_n.M()-LVec_pip_n_mc.M(),weight);
+          }else if(mcpattern==7){
+            IMnpim_IMnpim_mc_dE_n_vtx_pat7->Fill(LVec_pim_n.M(),LVec_pim_n.M()-LVec_pim_n_mc.M(),weight);
+            IMnpip_IMnpip_mc_dE_n_vtx_pat7->Fill(LVec_pip_n.M(),LVec_pip_n.M()-LVec_pip_n_mc.M(),weight);
           }
+        }else{
           IMnpim_IMnpip_dE_n_fake->Fill(LVec_pip_n.M(),LVec_pim_n.M());
         }
       }
@@ -4362,6 +4525,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           }
 
           vtxr_vtxz_ncan_wSid_n_mc->Fill(mcncanvtxz,mcncanvtxr);
+          if(mcpattern==2)vtxr_vtxz_ncan_wSid_n_mc_pat2->Fill(mcncanvtxz,mcncanvtxr);
+          else if(mcpattern==7)vtxr_vtxz_ncan_wSid_n_mc_pat7->Fill(mcncanvtxz,mcncanvtxr);
           //if(!IsFakeN1){
           if(!IsFakebyVTX){
             diff2D_MMnmiss_IMnpim_recomc_wSid_n_fake1->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
@@ -4383,13 +4548,20 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           //if(!IsMissMassNOK || !IsMcNMassOK || IsFakeN2){
           //if( (mcncdsgen!=3) || (mcncanvtxr>20)  ){
           //if( (mcncanvtxr>58)  && (mcncdsgen!=3) ){
-          if(IsFakebyVTX  || IsFakeN2){
-          //if( (mcncdsgen!=3)  ){
+          //if(IsFakebyVTX  || IsFakeN2){
+          //if( !((mcpattern==2))) { //|| (mcpattern==7))) { // || IsFakebyVTX ){
+          //if( IsFakebyVTX ){
+            //if(  (SimSpmode &&  ( ( LVec_pip_nmiss_mc.M() < 1.189) || (1.190 < LVec_pip_nmiss_mc.M())) )
+            //   ||(SimSmmode &&  ( ( LVec_pim_nmiss_mc.M() < 1.197) || (1.198 < LVec_pim_nmiss_mc.M())) 
+            // )){
+          if(!( (mcpattern==2) ||  (mcpattern==7))){
             q_IMnpipi_wSid_n_fake->Fill(LVec_pip_pim_n.M(),qkn.P());
             MMnmiss_IMpippim_dE_wSid_n_fake->Fill(LVec_pip_pim.M(),nmiss_mass);
             IMnpim_IMnpip_dE_wSid_n_fake->Fill(LVec_pip_n.M(),LVec_pim_n.M());
+
+            IMnpim_MMnpim_mc_wSid_n_fake->Fill(LVec_pim_nmiss_mc.M(),LVec_pim_n_mc.M());
+            IMnpip_MMnpip_mc_wSid_n_fake->Fill(LVec_pip_nmiss_mc.M(),LVec_pip_n_mc.M());
           }
-          //Sigma Mass check
         }//SimSpmode or SimSmmode
       }//wSid_n
 
