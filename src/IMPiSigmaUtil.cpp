@@ -1064,7 +1064,9 @@ void Util::AnaMcData(MCData *mcdata,
     //std::cout << "processname " << processname.c_str() << std::endl;
     //std::cout << "processID " << processID << std::endl;
     
-    int generation = Util::CalcGeneration(mcdata,dhit);
+    
+   
+    int generation = Util::CalcGeneration(mcdata,parentID);
     //std::cout << "gen " << generation << std::endl;
 
     Tools::H2(Form("CDHdE_processID"),processID, dEtrue,222,-0.5,221.5, 100,0,10);
@@ -1253,17 +1255,19 @@ void Util::AnaMcData(MCData *mcdata,
 
 void Util::AnaMcData2(MCData *mcdata, 
                      DetectorData  *detdata,
-                     int CDHseg,
+                     const int CDHseg,
                      double &ncanvtxr,
                      double &ncanvtxz,
                      int &ncangeneration,
-                     int &mcpattern
+                     int &mcpattern,
+                     int &nanc
                      )
 {
   ncanvtxr=999.0;
   ncanvtxz=999.0;
   ncangeneration=999;
   mcpattern=999;
+  nanc=999;
 
   
   int trackID = -1;
@@ -1272,23 +1276,41 @@ void Util::AnaMcData2(MCData *mcdata,
   int parentID = 0;
   int generation = 0;
   int generation_init = 0;
-  Track *ptrack=0;
+  Track *track_p=0;
+  //bool isPip=false;
+  //bool isPim=false;
+  //TVector3 mom_pip;
+  //TVector3 mom_pim;
+  //TLorentzVector LVec_pip;
+  //TLorentzVector LVec_pim;
   for(int idethit=0;idethit<detdata->detectorHitSize(); idethit++){  
     DetectorHit *dhit = detdata->detectorHit(idethit);
     int cid    = dhit->detectorID();
     if(cid!=CID_CDH){
       continue;
     }
-
     //require CDH hit seg matching
     int dhitseg  = dhit->channelID()+1;//0 origin
     if(dhitseg != CDHseg) continue;
     
     trackID = dhit->trackID();
     pdg    = dhit->pdg();
-    ptrack = Util::FindTrackFromMcIndex(mcdata, trackID);
-    parentID = ptrack->parentTrackID();
-    generation = Util::CalcGeneration(mcdata,dhit);
+    track_p = Util::FindTrackFromMcIndex(mcdata, trackID);
+    parentID = track_p->parentTrackID();
+    /*
+    if(pdg==-211){
+      isPim=true;
+      mom_pim = dhit->momentum();
+      LVec_pim.SetVectM(mom_pim*0.001,piMass);
+    }
+    if(pdg== 211){
+      isPip=true;
+      mom_pip = dhit->momentum();
+      LVec_pip.SetVectM(mom_pip*0.001,piMass);
+    }*/
+    //parentID of detector 
+    if(dhit->parentID() != parentID) std::cout << __LINE__ << " somothing is wrong !!!! " << std::endl;
+    generation = Util::CalcGeneration(mcdata,parentID);
     generation_init = generation;
     ncandidate++;
   }
@@ -1301,10 +1323,16 @@ void Util::AnaMcData2(MCData *mcdata,
     std::cout << __FILE__ << " L." << __LINE__ << " !!! ncandidate =  " << ncandidate << std::endl;
   }
   //std::cout << __FILE__ << " L." << __LINE__ << std::endl;
+  //std::cout << "parentID " << parentID << std::endl;
   //std::cout << "CDH 1st pdg " << pdg << std::endl;
   //std::cout << "generation " << generation << std::endl;
 
-  if( (pdg== -211) || (pdg==211) ) return; 
+  if( (pdg== -211) || (pdg==211) ){
+    std::cout << __FILE__<<  " L." << __LINE__ << "pion hit return" << std::endl;
+    return; 
+  }
+ 
+
   //std::cout << __LINE__ << "  " << pdg << std::endl;
   Track *AncestorTr[32]={0};//array index <= generation
   int AncestorTrackID[32]={0};
@@ -1317,20 +1345,23 @@ void Util::AnaMcData2(MCData *mcdata,
   bool isFromSigma = false;
   bool isSigmaNeutronChain = false;
   bool isFromPion = false; 
-  double vtxRNeutron = 0.0;
-  double vtxZNeutron = 0.0;
+  double vtxRNeutron = 0.0;//cm
+  double vtxZNeutron = 0.0;//cm
   unsigned int nNeutrons = 0;
   int genNeutron = -1;
   bool isWentCDHOutSide = false;
-
+  
   while(true){
     //std::cout << __LINE__ << std::endl;
     if(generation == 1) break;
     else generation--;
+    //In the first loop, 
+    //get the Track of the parent particle which fired CDH
     AncestorTr[anc]=Util::FindTrackFromMcIndex(mcdata,AncestorTrackID[anc]);
-    AncestorTrackID[anc+1]=AncestorTr[anc]->parentTrackID();
     AncestorVTX[anc] = AncestorTr[anc]->vertex();
     AncestorPDG[anc] = AncestorTr[anc]->pdgID();
+    Track *parenttrack_p = Util::FindTrackFromMcIndex(mcdata,AncestorTrackID[anc]);
+
     if(anc==0){
       Tools::H2(Form("vtxrz_cdhhitparenet"),AncestorVTX[anc].Z()/10.,
           AncestorVTX[anc].Perp()/10.,
@@ -1352,7 +1383,19 @@ void Util::AnaMcData2(MCData *mcdata,
             750,-75.,75.,480,0.,120.);
       }
     }
-
+    /*
+    std::cout << __LINE__ << " gen " << generation << std::endl;
+    std::cout << __LINE__ << " pdg " << AncestorPDG[anc] << std::endl;
+    std::cout << __LINE__ << " parentTrackID " << AncestorTrackID[anc] << std::endl;
+    std::cout << __LINE__ << " parentID " << AncestorTrackID[anc] << std::endl;
+    std::cout << __LINE__ << " parentID_2 " << parenttrack_p->parentTrackID() << std::endl;
+    std::cout << __LINE__ << " anc "  << anc << std::endl;
+    std::cout << __LINE__ << " R "  << AncestorVTX[anc].Perp() << std::endl;
+    std::cout << __LINE__ << " Z "  << AncestorVTX[anc].Z() << std::endl;
+    std::cout <<           "Pim " << isPim << std::endl;
+    std::cout <<           "Pip " << isPip << std::endl;
+    std::cout <<         "CDHout " << isWentCDHOutSide << std::endl;
+    */
     //check originated from sigma+/-
     if( (AncestorPDG[anc]==3112) || (AncestorPDG[anc]==3222) ){
       isFromSigma = true;
@@ -1368,13 +1411,17 @@ void Util::AnaMcData2(MCData *mcdata,
       //std::cout << "isFromSigma " << isFromSigma << std::endl;
       //std::cout << "isFromPion " << isFromPion << std::endl;
     }
+    AncestorTrackID[anc+1]=AncestorTr[anc]->parentTrackID();
     anc++;
   }
+
+  //if(nNeutrons!=1) std::cout << __LINE__ << " # of neutrons " <<  nNeutrons << std::endl; 
+
   int pattern=0;
   if( isFromNeutron && !isFromSigma  && !isFromPion && isWentCDHOutSide ) pattern=1;//BG neutron
   else if( isFromNeutron && isFromSigma && !isFromPion && isSigmaNeutronChain && !isWentCDHOutSide ) pattern=2;//Signal 
-  else if( isFromNeutron && isFromSigma && !isFromPion && !isSigmaNeutronChain ) pattern=3;//BG
-  else if( isFromNeutron && isFromSigma && !isFromPion && isWentCDHOutSide ) pattern=4;//BG 
+  else if( isFromNeutron && isFromSigma && !isFromPion && isSigmaNeutronChain && isWentCDHOutSide ) pattern=3;//BG 
+  else if( isFromNeutron && isFromSigma && !isFromPion && !isSigmaNeutronChain ) pattern=4;//BG
   else if( isFromNeutron && !isFromSigma && isFromPion ) pattern=5;//BG
   else if( isFromNeutron && isFromSigma  && isFromPion ) pattern=6;//BG
   else if( isFromNeutron && !isFromSigma && !isFromPion && !isWentCDHOutSide) pattern=7;//BG but initial neutron
@@ -1382,23 +1429,22 @@ void Util::AnaMcData2(MCData *mcdata,
   Tools::H1(Form("NfakePattern"),pattern,10,-0.5,9.5);
   
   //std::cout << "  " << std::endl;
-
-  if( (pattern==2) || (pattern==7)){
-    ncanvtxr = vtxRNeutron;
-    ncanvtxz = vtxZNeutron;
-    ncangeneration = genNeutron;
-    mcpattern = pattern;
-    /*
-    std::cout << "vtx R " << ncanvtxr << std::endl;
-    std::cout << "vtx Z " << ncanvtxz << std::endl;
-    std::cout << "generation " << ncangeneration << std::endl;
+  /*
+  if(pattern==7){
+    std::cout << "gen " << genNeutron << std::endl;
+    std::cout << "anc " << anc << std::endl;
     std::cout << "generation_init " << generation_init << std::endl;
-    std::cout << "pattern " << pattern << std::endl;
-    std::cout << "went CDH Out ? " << isWentCDHOutSide << std::endl;
-    std::cout << std::endl;
-    */
-  }
+    std::cout << "isFromSigma " << isFromSigma << std::endl;
+    std::cout << "isFromPion " << isFromPion << std::endl;
+    std::cout << "vtx R " << vtxRNeutron << std::endl;
+    std::cout << "vtx Z " << vtxZNeutron << std::endl;
+  }*/
 
+  ncanvtxr = vtxRNeutron;
+  ncanvtxz = vtxZNeutron;
+  ncangeneration = genNeutron;
+  mcpattern = pattern;
+  nanc = anc;
 
 }
 
@@ -1489,11 +1535,12 @@ std::string Util::ProcessIDToProcessName(const int &id)
   else return "error";
 }
 
-int Util::CalcGeneration(MCData *mcdata,DetectorHit *dhit)
+//parentID from detectorhit node = parenttrackID of Track node
+int Util::CalcGeneration(MCData *mcdata,int parentID)
 {
   int gen=1;
-  Track *parentTr=Util::FindTrackFromMcIndex(mcdata, dhit->parentID());
-  while( parentTr!=0){
+  Track *parentTr=Util::FindTrackFromMcIndex(mcdata, parentID);
+  while( parentTr!=NULL){
     //std::cout << "parent ID " << parentTr->parentTrackID() << std::endl;
     parentTr=Util::FindTrackFromMcIndex(mcdata,parentTr->parentTrackID());
     gen++;
@@ -1503,14 +1550,18 @@ int Util::CalcGeneration(MCData *mcdata,DetectorHit *dhit)
 
 //input 
 //MCData node
-//trackid from detectorhit
+//trackid 
+//
+//output
+//pointer of the Track node
 Track* Util::FindTrackFromMcIndex(MCData *mcdata, int trackid)
 {
   for( int itr=0;itr<mcdata->trackSize();itr++){
     Track *track=mcdata->track(itr);
     if( track->trackID()==trackid) return track;
   }
-  return 0;
+  //std::cout << __FILE__ << "  L." <<  __LINE__ << " track NOT found !!! " << std::endl; 
+  return NULL;
 }
 
 

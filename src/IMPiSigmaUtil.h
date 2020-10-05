@@ -84,15 +84,16 @@ namespace Util
                   );
    void AnaMcData2(MCData *mcdata, 
                   DetectorData  *detdata,
-                  int CDHseg,
+                  const int CDHseg,
                   double &ncanvtxr,
                   double &ncanvtxz,
                   int &ncangeneration,
-                  int &mcpattern
+                  int &mcpattern,
+                  int &nanc
                   );
    int ProcessNameToProcessID(const std::string &name);
    std::string ProcessIDToProcessName(const int &id);
-   int CalcGeneration(MCData *mcdata,DetectorHit *dhit);
+   int CalcGeneration(MCData *mcdata,int parentid);
    double FillAncestryVertexR(MCData *mcdata,DetectorHit *dhit,double dE);
    double FillAncestryVertexZ(MCData *mcdata,DetectorHit *dhit,double dE);
    Track *FindTrackFromMcIndex(MCData *mcdata, int trackid);

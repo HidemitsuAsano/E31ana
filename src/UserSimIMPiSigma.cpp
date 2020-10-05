@@ -108,6 +108,7 @@ double mcncanvtxr;
 double mcncanvtxz;
 int mcncdsgen;
 int mcpattern;
+int mcnanc;
 
 //GEANT4 info generated particle before interaction
 TLorentzVector react_nmiss;
@@ -309,6 +310,7 @@ int main( int argc, char** argv )
   npippimTree->Branch( "mcncanvtxz",&mcncanvtxz);
   npippimTree->Branch( "mcncdsgen",&mcncdsgen);
   npippimTree->Branch( "mcpattern",&mcpattern);
+  npippimTree->Branch( "mcnanc",&mcnanc);
   npippimTree->Branch( "react_nmiss",&react_nmiss);
   npippimTree->Branch( "react_Sigma",&react_Sigma);
   npippimTree->Branch( "react_pi",&react_pi);
@@ -605,8 +607,11 @@ int main( int argc, char** argv )
 
     if( nparticle==kin::npart ) { 
       flagG4Decay = true;
-    
-      if(Verbosity_) std::cout << "L." << __LINE__ << " flagG4Decay OK " << std::endl;
+      
+
+      if(Verbosity_) {
+        std::cout << "L." << __LINE__ << " flagG4Decay OK " << std::endl;
+      }
     }else{
       if(Verbosity_) std::cout << "L." <<  __LINE__ << " nparticle " << nparticle << std::endl;
     }
@@ -662,11 +667,20 @@ int main( int argc, char** argv )
     // beam particle is emitted from the target
     TLorentzVector TL_gene[kin::npart]; // generated
     for( int ip=0; ip<kin::npart; ip++ ){
-      if( ip ) TL_gene[ip].SetVectM(mcData->track(ID[ip])->momentum()*0.001,  pdg->GetParticle(PDG[ip])->Mass()); // GeV
-      else    TL_gene[ip].SetVectM(mcData->track(ID[ip])->momentum()*-0.001, pdg->GetParticle(PDG[ip])->Mass()); // GeV
+      if(ID[ip]==-1){
+        TL_gene[ip].SetPxPyPzE(-9999.0,-9999.0,-9999.0,-9999999.0);
+      }else{
+        if( ip ) TL_gene[ip].SetVectM(mcData->track(ID[ip])->momentum()*0.001,  pdg->GetParticle(PDG[ip])->Mass()); // GeV
+        else    TL_gene[ip].SetVectM(mcData->track(ID[ip])->momentum()*-0.001, pdg->GetParticle(PDG[ip])->Mass()); // GeV
+      }
     }
     int genID[kin::npart] = {0,1,2,3,4,5};
     mcmom_beam = TL_gene[kin::kmbeam];
+
+
+
+
+
     //std::cout << mcmom_beam.P() << std::endl;
     //std::cout << mcmom_beam.M() << std::endl;
     /*
@@ -760,7 +774,7 @@ int main( int argc, char** argv )
       //continue;
       IsrecoPassed=false;
     }else{
-      Util::AnaMcData(mcData,detData2,cdsMan,reacData,ncanvtxr,ncanvtxz,ncdsgen);
+      //Util::AnaMcData(mcData,detData2,cdsMan,reacData,ncanvtxr,ncanvtxz,ncdsgen);
     }
 
     //if( nGoodTrack!=cdscuts::cds_ngoodtrack ){ // dedicated for pi+ pi- event
@@ -1386,42 +1400,42 @@ int main( int argc, char** argv )
             Tools::Fill2D( Form("MMom_MMass_fid_beta_dE"), mm_mass, P_missn.Mag() );
             Tools::Fill1D( Form("IMpipi_dE"), (LVec_pim+LVec_pip).M() );
             Tools::Fill2D( Form("IMpipi_NMom_dE"),P_n.Mag(), (LVec_pim+LVec_pip).M());
-      //added Jul.28th, 2019
-      //purpose  QA of PID 
-      for( int it=0; it<cdstrackMan->nGoodTrack(); it++ ) {
-        CDSTrack *track = cdstrackMan->Track( cdstrackMan->GoodTrackID(it) );
+            //added Jul.28th, 2019
+            //purpose  QA of PID 
+            for( int it=0; it<cdstrackMan->nGoodTrack(); it++ ) {
+              CDSTrack *track = cdstrackMan->Track( cdstrackMan->GoodTrackID(it) );
 
-        double mom = track->Momentum();//charge X momentum
-        double tof = 999.;//TOF of CDH-T0 (slewing corrected)
-        double mass2 = -999.;
-        double correctedtof=0;//CDH-T0 (corrected by energy loss)
-        double beta_calc=0;
-        for( int icdh=0; icdh<track->nCDHHit(); icdh++ ) {
-          HodoscopeLikeHit *cdhhit = track->CDHHit( cdsMan, icdh );
-          double tmptof = cdhhit->ctmean()-ctmT0;
-          if( tmptof<tof || tof==999. ) {
-            tof = tmptof;
-          }
-        }
-        if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
-                                Beam_Kaon, beta_calc, mass2, correctedtof ) ) {
+              double mom = track->Momentum();//charge X momentum
+              double tof = 999.;//TOF of CDH-T0 (slewing corrected)
+              double mass2 = -999.;
+              double correctedtof=0;//CDH-T0 (corrected by energy loss)
+              double beta_calc=0;
+              for( int icdh=0; icdh<track->nCDHHit(); icdh++ ) {
+                HodoscopeLikeHit *cdhhit = track->CDHHit( cdsMan, icdh );
+                double tmptof = cdhhit->ctmean()-ctmT0;
+                if( tmptof<tof || tof==999. ) {
+                  tof = tmptof;
+                }
+              }
+              if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
+                    Beam_Kaon, beta_calc, mass2, correctedtof ) ) {
 
-        }
-        //const int pid = TrackTools::PIDcorr_wide(mom,mass2);
-        const int pid = TrackTools::PIDcorr(mom,mass2);
-        track->SetPID( pid );
-        Tools::Fill2D( "PID_CDS_beta_select2", 1./beta_calc, mom );
-        Tools::Fill2D( "PID_CDS_select2", mass2, mom );
-        if(pid == CDS_PiMinus){
-          Tools::Fill2D("PID_CDS_PIM_beta_select2",1./beta_calc,mom);
-          Tools::Fill2D("PID_CDS_PIM_select2",mass2,mom);
-        }else if(pid == CDS_PiPlus){
-          Tools::Fill2D("PID_CDS_PIP_beta_select2",1./beta_calc,mom);
-          Tools::Fill2D("PID_CDS_PIP_select2",mass2,mom);
-        }
-        else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton_select2",mass2,mom);
-        else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon_select2",mass2,mom);
-      }//for it
+              }
+              //const int pid = TrackTools::PIDcorr_wide(mom,mass2);
+              const int pid = TrackTools::PIDcorr(mom,mass2);
+              track->SetPID( pid );
+              Tools::Fill2D( "PID_CDS_beta_select2", 1./beta_calc, mom );
+              Tools::Fill2D( "PID_CDS_select2", mass2, mom );
+              if(pid == CDS_PiMinus){
+                Tools::Fill2D("PID_CDS_PIM_beta_select2",1./beta_calc,mom);
+                Tools::Fill2D("PID_CDS_PIM_select2",mass2,mom);
+              }else if(pid == CDS_PiPlus){
+                Tools::Fill2D("PID_CDS_PIP_beta_select2",1./beta_calc,mom);
+                Tools::Fill2D("PID_CDS_PIP_select2",mass2,mom);
+              }
+              else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton_select2",mass2,mom);
+              else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon_select2",mass2,mom);
+            }//for it
           }//NbetaOK
 
           if( ((LVec_pim+LVec_pip).M()<anacuts::pipi_MIN || anacuts::pipi_MAX<(LVec_pim+LVec_pip).M())) K0rejectFlag=true;
@@ -1564,10 +1578,11 @@ int main( int argc, char** argv )
             double val2 = (TL_meas[kin::ncds]-TL_gene[kin::ncds]).P(); // n_measured - n_Sigma
             //int genID[kin::npart] = {0,1,2,3,4,5};
             //IsncdsfromSigma = true;
+            bool isInitial = false; 
             if( val1<val2 ){ // is there more good selection way?
               genID[kin::nmiss] = kin::ncds;
               genID[kin::ncds] = kin::nmiss;
-
+              isInitial = true;
               //ncds(gen.) is not detected, initial n is detected in CDS instead.
               //abort this event !
               //if(IsrecoPassed)nAbort_anothern++;
@@ -1583,6 +1598,20 @@ int main( int argc, char** argv )
               mcmom_pip  = TL_gene[kin::pip_g1];
               mcmom_pim  = TL_gene[kin::pim_g2];
             }
+            //std::cout << std::endl;
+            //std::cout << "react n_miss mom: " << react_nmiss.P()/1000.0 << std::endl;
+            //std::cout << "mcData n_miss "     << TL_gene[genID[kin::nmiss]].P() << std::endl;
+            //std::cout << "mcData ncds "       << TL_gene[genID[kin::ncds]].P() << std::endl;
+            //std::cout << "mcData IM(npi-)  "  << (TL_gene[genID[kin::ncds]]+TL_gene[genID[kin::pim_g2]]).M() << std::endl;
+            //std::cout << "mcData IM(nmisspi-)  "  << (TL_gene[genID[kin::nmiss]]+TL_gene[genID[kin::pim_g2]]).M() << std::endl;
+            //std::cout << "G4flag " << flagG4Decay << std::endl;
+            //std::cout << "initial n" << isInitial << std::endl;
+            //TVector3 mcvertex_tmp = mcData->track(kin::kmbeam)->vertex();
+            //TVector3 mcvertex_nmiss = mcData->track(genID[kin::nmiss])->vertex();
+            //TVector3 mcvertex_ncds = mcData->track(genID[kin::ncds])->vertex();
+            //std::cout << "MCvertex beam " << mcvertex_tmp.X()/10.0 << "  " << mcvertex_tmp.Y()/10.0 << "  " << mcvertex_tmp.Z()/10.0 <<  std::endl;
+            //std::cout << "MCvertex nmiss " << mcvertex_nmiss.X()/10.0 << "  " << mcvertex_nmiss.Y()/10.0 << "  " << mcvertex_nmiss.Z()/10.0 <<  std::endl;
+            //std::cout << "MCvertex ncds " << mcvertex_ncds.X()/10.0 << "  " << mcvertex_ncds.Y()/10.0 << "  " << mcvertex_ncds.Z()/10.0 <<  std::endl;
             //
             //TLorentzVector LVec_n_pim_mc = mcmom_ncds + mcmom_pim;
             //TLorentzVector LVec_n_pip_mc = mcmom_ncds + mcmom_pip;
@@ -1860,11 +1889,13 @@ int main( int argc, char** argv )
             double ncanvtxz2=999.0;
             int ncdsgen2=10;
             int pattern=10;
-            Util::AnaMcData2(mcData,detData2,ncdhhit->seg(),ncanvtxr2,ncanvtxz2,ncdsgen2,pattern);
+            int anc=999;
+            Util::AnaMcData2(mcData,detData2,ncdhhit->seg(),ncanvtxr2,ncanvtxz2,ncdsgen2,pattern,anc);
             mcncanvtxr=ncanvtxr2;
             mcncanvtxz=ncanvtxz2;
             mcncdsgen=ncdsgen2;
             mcpattern=pattern;
+            mcnanc=anc;
 
             dE = ncdhhit->emean();
             neutralseg = ncdhhit->seg();
@@ -1897,7 +1928,9 @@ int main( int argc, char** argv )
             run_num   = confMan->GetRunNumber(); // run number
             event_num = iev;     // event number
             block_num = 0;      // block number (temp)
-
+            //if(!flagG4Decay){
+               //std::cout << pattern << "  " << mcmom_nmiss.P() << std::endl;
+            //}
             if(Verbosity_){
               std::cout<<"%%% pippimn event: Event_Number, Block_Event_Number, CDC_Event_Number = "
                 <<iev<<" , "<<" ---, "<<ev_cdc<<std::endl;
@@ -2036,6 +2069,7 @@ void InitTreeVal()
   mcncanvtxz=999.9;
   mcncdsgen=199;
   mcpattern=199;
+  mcnanc=199;
   react_nmiss.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
   react_Sigma.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
   react_pi.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
