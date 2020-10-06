@@ -162,6 +162,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   tree->SetBranchAddress( "NeutralBetaCDH_beam", &NeutralBetaCDH_beam );//from v192
   tree->SetBranchAddress( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
   tree->SetBranchAddress( "dE", &dE );
+  tree->SetBranchAddress( "neutralseg", &neutralseg );  
   tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
   tree->SetBranchAddress( "vtx_pip_beam",&vtx_pip_beam);
   tree->SetBranchAddress( "vtx_pim_beam",&vtx_pim_beam);
