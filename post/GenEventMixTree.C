@@ -49,9 +49,9 @@ TVector3 *CDH_Pos_pim2 = NULL;
 TVector3 *CDH_Pos_pip2 = NULL;
 
 
-void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v197.root")
+void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v196.root")
 {
-  TFile *f = new TFile(filename);
+  TFile *f = new TFile(filename,"READ");
   //TFile *f = new TFile("sim_piSpn_dE0_Al.root");
   TTree *tree = (TTree*)f->Get("EventTree");
   if(tree==0) {
@@ -104,45 +104,15 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v197.root")
     tree->SetBranchAddress( "react_Sigma", &react_Sigma);
     tree->SetBranchAddress( "react_pi", &react_pi);
   }
-   
-  Int_t nevent = tree->GetEntries();
-  std::cerr<<"# of events = "<<nevent<<std::endl;
   
-  for ( Int_t i=0; i<nevent; i++ ) {
-    tree->GetEvent(i);
-    if(i%50000==0) std::cout << "Event# " << i << std::endl;
-    *LVec_beam2 =  *LVec_beam;
-    *LVec_beam_Sp2 = *LVec_beam_Sp;
-    *LVec_beam_Sm2 = *LVec_beam_Sm;
-    *LVec_target2 = *LVec_target;
-    *LVec_pip2 = *LVec_pip;
-    *LVec_pim2 = *LVec_pim;
-    *LVec_n2 = *LVec_n;
-    *LVec_n_beam2 = *LVec_n_beam;
-    *LVec_n_Sp2 = *LVec_n_Sp;
-    *LVec_n_Sm2 = *LVec_n_Sm;
-    NeutralBetaCDH2 = NeutralBetaCDH;
-    dE2 = dE;
-    neutralseg2 = neutralseg;
-    *CA_pip2 = *CA_pip;
-    *CA_pim2 = *CA_pim;
-    *CDH_Pos2 = *CDH_Pos;
-    *CDH_Pos_pim2 = *CDH_Pos_pim;
-    *CDH_Pos_pip2 = *CDH_Pos_pip;
-    if(SimSpmode || SimSmmode){
-      *mcmom_beam2 = *mcmom_beam;
-      *mcmom_pip2 = *mcmom_pip;
-      *mcmom_pim2 = *mcmom_pim;
-      *mcmom_ncds2 = *mcmom_ncds;
-      *mcmom_nmiss2 = *mcmom_nmiss;
-      *react_nmiss2 = *react_nmiss;
-      *react_Sigma2 = *react_Sigma;
-      *react_pi2 = *react_pi;
-    }
-
-  }
+  TString outname = std::string(filename);
+  outname.Replace(std::string(filename).size()-5,5,"_MIX.root");
 
 
+  TFile *fout = new TFile(outname.Data(),"RECREATE");
+  fout->Print();
+  fout->cd();
+   
   TTree *treeMIX = new TTree("EventTree","EventTreeMIX");
   treeMIX->Branch( "mom_beam",   &LVec_beam2 );//
   treeMIX->Branch( "mom_beam_Sp",  &LVec_beam_Sp2 );//
@@ -180,14 +150,46 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v197.root")
     treeMIX->Branch( "react_pi",&react_pi2);
   }
 
+  Int_t nevent = tree->GetEntries();
+  std::cerr<<"# of events = "<<nevent<<std::endl;
+  
+  for ( Int_t i=0; i<nevent; i++ ) {
+    tree->GetEvent(i);
+    if(i%50000==0) std::cout << "Event# " << i << std::endl;
+    *LVec_beam2 =  *LVec_beam;
+    *LVec_beam_Sp2 = *LVec_beam_Sp;
+    *LVec_beam_Sm2 = *LVec_beam_Sm;
+    *LVec_target2 = *LVec_target;
+    *LVec_pip2 = *LVec_pip;
+    *LVec_pim2 = *LVec_pim;
+    *LVec_n2 = *LVec_n;
+    *LVec_n_beam2 = *LVec_n_beam;
+    *LVec_n_Sp2 = *LVec_n_Sp;
+    *LVec_n_Sm2 = *LVec_n_Sm;
+    NeutralBetaCDH2 = NeutralBetaCDH;
+    dE2 = dE;
+    neutralseg2 = neutralseg;
+    *CA_pip2 = *CA_pip;
+    *CA_pim2 = *CA_pim;
+    *CDH_Pos2 = *CDH_Pos;
+    *CDH_Pos_pim2 = *CDH_Pos_pim;
+    *CDH_Pos_pip2 = *CDH_Pos_pip;
+    if(SimSpmode || SimSmmode){
+      *mcmom_beam2 = *mcmom_beam;
+      *mcmom_pip2 = *mcmom_pip;
+      *mcmom_pim2 = *mcmom_pim;
+      *mcmom_ncds2 = *mcmom_ncds;
+      *mcmom_nmiss2 = *mcmom_nmiss;
+      *react_nmiss2 = *react_nmiss;
+      *react_Sigma2 = *react_Sigma;
+      *react_pi2 = *react_pi;
+    }
+    treeMIX->Fill();
+  }
+
+
+
  
-  TString outname = std::string(filename);
-  outname.Replace(std::string(filename).size()-5,5,"_MIX.root");
-
-
-  TFile *fout = new TFile(outname.Data(),"RECREATE");
-  fout->Print();
-  fout->cd();
   treeMIX->Write();
   fout->Close();
 
