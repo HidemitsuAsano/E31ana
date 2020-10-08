@@ -9,6 +9,7 @@
 #include <TH2.h>
 
 #include "globalana.h"
+#include "anacuts.h"
 
 TLorentzVector *LVec_beam2=NULL;   // 4-momentum(beam)
 TLorentzVector *LVec_beam_Sp2=NULL;   // 4-momentum(beam),Sp mode assumption
@@ -152,9 +153,64 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v196.root")
 
   Int_t nevent = tree->GetEntries();
   std::cerr<<"# of events = "<<nevent<<std::endl;
-  
+  std::cout << "dE cut:" << anacuts::dE_MIN << std::endl;
+  std::vector <TLorentzVector>  vec_LVec_n;
   for ( Int_t i=0; i<nevent; i++ ) {
     tree->GetEvent(i);
+    TLorentzVector LVec_nmiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n;
+    double nmiss_mass = LVec_nmiss.M();
+    double nmiss_mom = LVec_nmiss.P();
+  
+    TLorentzVector LVec_pip_pim = *LVec_pip+*LVec_pim;
+    TLorentzVector LVec_pip_n = *LVec_pip+*LVec_n;
+    TLorentzVector LVec_pim_n = *LVec_pim+*LVec_n;
+    TLorentzVector LVec_pip_pim_n = *LVec_pip+*LVec_pim+*LVec_n;
+    TLorentzVector qkn = *LVec_beam-LVec_nmiss;
+    if( (*LVec_n).P()<anacuts::nmomcut) continue;
+    vec_LVec_n.push_back(*LVec_n);
+
+    bool K0rejectFlag=false;
+    bool K0rejectFlag_narrow=false;
+    bool MissNFlag=false;
+    bool MissNwideFlag=false;
+    bool NBetaOK=false;
+    bool NdEOK=false;
+    bool SigmaPFlag=false;
+    bool SigmaMFlag=false;
+    bool SigmawidePFlag=false;
+    bool SigmawideMFlag=false;
+  
+    if(anacuts::beta_MIN<NeutralBetaCDH &&  NeutralBetaCDH<anacuts::beta_MAX  ) NBetaOK=true;
+    if(anacuts::dE_MIN<dE) NdEOK=true;
+  
+
+    if(anacuts::neutron_MIN<nmiss_mass && nmiss_mass<anacuts::neutron_MAX ) MissNFlag=true;
+    if(anacuts::neutron_MIN_wide<nmiss_mass && nmiss_mass<anacuts::neutron_MAX_wide ) MissNwideFlag=true;
+
+    //K0 rejection using original momentum
+    if( (LVec_pip_pim.M()<anacuts::pipi_MIN || anacuts::pipi_MAX<LVec_pip_pim.M())) K0rejectFlag=true;
+    if( (LVec_pip_pim.M()<anacuts::pipi_MIN_narrow || anacuts::pipi_MAX_narrow<LVec_pip_pim.M())) K0rejectFlag_narrow=true;
+
+    double MassNPip= (*LVec_n+*LVec_pip).M();
+    double MassNPim= (*LVec_n+*LVec_pim).M();
+    
+    if( (anacuts::Sigmap_MIN<MassNPip && MassNPip<anacuts::Sigmap_MAX)) SigmaPFlag=true;
+    //Sigma- production in CDS
+    //band cut for signal
+    if( (anacuts::Sigmam_MIN<MassNPim && MassNPim<anacuts::Sigmam_MAX)) SigmaMFlag=true;
+
+    //Sigma+ production in CDS
+    //
+    if( (anacuts::Sigmap_MIN_wide<MassNPip && MassNPip<anacuts::Sigmap_MAX_wide)) SigmawidePFlag=true;
+
+    //Sigma- production in CDS
+    if( (anacuts::Sigmam_MIN_wide<MassNPim && MassNPim<anacuts::Sigmam_MAX_wide)) SigmawideMFlag=true;
+  }
+
+  decltype(vec_LVec_n)::iterator last_n = vec_LVec_n.end();
+  const size_t nsize=vec_LVec_n.size();
+  for ( Int_t i=0; i<nevent*3; i++ ) {
+    tree->GetEvent(i%(nevent-1));
     if(i%50000==0) std::cout << "Event# " << i << std::endl;
     *LVec_beam2 =  *LVec_beam;
     *LVec_beam_Sp2 = *LVec_beam_Sp;
@@ -162,7 +218,15 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v196.root")
     *LVec_target2 = *LVec_target;
     *LVec_pip2 = *LVec_pip;
     *LVec_pim2 = *LVec_pim;
-    *LVec_n2 = *LVec_n;
+    last_n--;
+    *LVec_n2 = *last_n;
+    if(i!=0 &&  (i%(nsize-1)==0)){
+     std::cout << i << std::endl;
+     last_n+=(nsize-1);
+    }
+    if((*LVec_n2).P() < 0.0001){
+      std::cout << (*LVec_n2).P() << std::endl;
+    }
     *LVec_n_beam2 = *LVec_n_beam;
     *LVec_n_Sp2 = *LVec_n_Sp;
     *LVec_n_Sm2 = *LVec_n_Sm;
