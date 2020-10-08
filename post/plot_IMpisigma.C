@@ -109,7 +109,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   std::cout << "Sigma selection type     " << sigmacuttype << std::endl;
   std::cout << "Side band selection type " << sidebandtype << std::endl;
   std::cout << std::endl;
-  std::cout << "neutron momentum cut below:  " << anacuts::nmomcut  << std::endl;
   std::cout << std::endl;
 
   std::cout << "MC weighting ? " << std::endl;
@@ -2977,11 +2976,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   diff2d_Zpippim_Znpim->SetYTitle("#pi^{+} - #pi^{-} hit (z) [cm]");
   
   diff2d_Phipippim_Phinpim_woSid_won = new TH2F("diff2d_Phipippim_Phinpim_woSid_won","diff2d_Phipippim_Phinpim_woSid_won",36,-1.*TMath::Pi(),TMath::Pi(),36,-1.*TMath::Pi(),TMath::Pi());
-  diff2d_Phipippim_Phinpim_woSid_won->SetXTitle("n_{can.} - #pi^{-} hit (phi) [radian]");
+  diff2d_Phipippim_Phinpim_woSid_won->SetXTitle("n_{fake} - #pi^{-} hit (phi) [radian]");
   diff2d_Phipippim_Phinpim_woSid_won->SetYTitle("#pi^{+} - #pi^{-} hit (phi) [radian]");
 
   diff2d_Zpippim_Znpim_woSid_won = new TH2F("diff2d_Zpippim_Znpim_woSid_won","diff2d_Zpippim_Znpim_woSid_won",100,-100,100,100,-100,100);
-  diff2d_Zpippim_Znpim_woSid_won->SetXTitle("n_{can.} - #pi^{-} hit (z) [cm]");
+  diff2d_Zpippim_Znpim_woSid_won->SetXTitle("n_{fake} - #pi^{-} hit (z) [cm]");
   diff2d_Zpippim_Znpim_woSid_won->SetYTitle("#pi^{+} - #pi^{-} hit (z) [cm]");
 
   diff2d_CDC_CDH_pim = new TH2F("diff2d_CDC_CDH_pim","diff2d_CDC_CDH_pim",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
