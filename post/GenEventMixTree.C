@@ -167,7 +167,6 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v196.root")
     TLorentzVector LVec_pip_pim_n = *LVec_pip+*LVec_pim+*LVec_n;
     TLorentzVector qkn = *LVec_beam-LVec_nmiss;
     if( (*LVec_n).P()<anacuts::nmomcut) continue;
-    vec_LVec_n.push_back(*LVec_n);
 
     bool K0rejectFlag=false;
     bool K0rejectFlag_narrow=false;
@@ -205,11 +204,15 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v196.root")
 
     //Sigma- production in CDS
     if( (anacuts::Sigmam_MIN_wide<MassNPim && MassNPim<anacuts::Sigmam_MAX_wide)) SigmawideMFlag=true;
+    
+    if(!MissNwideFlag && !SigmawidePFlag && !SigmawideMFlag){
+      vec_LVec_n.push_back(*LVec_n);
+    }
   }
 
   decltype(vec_LVec_n)::iterator last_n = vec_LVec_n.end();
   const size_t nsize=vec_LVec_n.size();
-  for ( Int_t i=0; i<nevent*3; i++ ) {
+  for ( Int_t i=0; i<nevent*10; i++ ) {
     tree->GetEvent(i%(nevent-1));
     if(i%50000==0) std::cout << "Event# " << i << std::endl;
     *LVec_beam2 =  *LVec_beam;
@@ -251,13 +254,9 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v196.root")
     treeMIX->Fill();
   }
 
-
-
  
   treeMIX->Write();
   fout->Close();
-
-
 
 
 }
