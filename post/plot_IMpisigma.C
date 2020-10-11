@@ -3346,8 +3346,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       TVector3 boost_mc =  (*LVec_target+*mcmom_beam).BoostVector();
     }
     TLorentzVector qkn_mc;
+    TLorentzVector mcmom_nmiss_calc;
     if(SimSpmode || SimSmmode) {
       qkn_mc = *mcmom_beam-*mcmom_nmiss;
+      mcmom_nmiss_calc = *LVec_target+*mcmom_beam-*mcmom_pip-*mcmom_pim-*mcmom_ncds;
     }
     TLorentzVector qkn_vtx[2];
     if(UseKinFit) {
@@ -3566,17 +3568,12 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           IMnpip_MMnpip_mc_vtx_pat2->Fill(LVec_pip_nmiss_mc.M(),LVec_pip_n_mc.M());
         }
         if(mcpattern==7){
-          if( LVec_pim_nmiss_mc.M() <1.197440   ||  1.197450 < LVec_pim_nmiss_mc.M() ){
-          //std::cout << "nmiss mom " << (*mcmom_nmiss).P() << std::endl;
-          //std::cout << "ncds mom " << (*mcmom_ncds).P() << std::endl;
-          //std::cout << "pip mom " << (*mcmom_pip).P() << std::endl;
-          //std::cout << "pim mom " << (*mcmom_pim).P() << std::endl;
-          }
           IMnpim_MMnpim_mc_vtx_pat7->Fill(LVec_pim_nmiss_mc.M(),LVec_pim_n_mc.M());
           IMnpip_MMnpip_mc_vtx_pat7->Fill(LVec_pip_nmiss_mc.M(),LVec_pip_n_mc.M());
         }
       }
-
+     
+      
       diff_nmiss_reactmc->Fill((*mcmom_nmiss).P()-(*react_nmiss).P()/1000.);
       diff2D_MMnmiss_IMnpim_reactmc->Fill(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.,(*mcmom_nmiss).M()-(*react_nmiss).M()/1000.);
       diff2D_MMnmiss_IMnpip_reactmc->Fill(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.,(*mcmom_nmiss).M()-(*react_nmiss).M()/1000.);
@@ -4184,7 +4181,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         nmom_MMnmiss_wSid->Fill(nmiss_mass,(*LVec_n).P(),weight);
         
         if(SimSpmode || SimSmmode){
-          if(IsFakebyVTX || IsFakeN2){
+          //if(IsFakebyVTX || IsFakeN2){
+          if(!( (mcpattern==2)  ||  (mcpattern==7))) {// || IsFakebyVTX ){
             MMnmiss_IMpippim_dE_wSid_fake->Fill(LVec_pip_pim.M(),nmiss_mass);
           }
         }
@@ -4337,7 +4335,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       if(SimSpmode || SimSmmode){
         IMnpim_IMnpim_mc_dE_n->Fill(LVec_pim_n.M(),LVec_pim_n.M()-LVec_pim_n_mc.M(),weight);
         IMnpip_IMnpip_mc_dE_n->Fill(LVec_pip_n.M(),LVec_pip_n.M()-LVec_pip_n_mc.M(),weight);
-        if(!IsFakebyVTX){
+        if((mcpattern==2) || (mcpattern==7)){
           IMnpim_IMnpim_mc_dE_n_vtx->Fill(LVec_pim_n.M(),LVec_pim_n.M()-LVec_pim_n_mc.M(),weight);
           IMnpip_IMnpip_mc_dE_n_vtx->Fill(LVec_pip_n.M(),LVec_pip_n.M()-LVec_pip_n_mc.M(),weight);
           if(mcpattern==2){
@@ -4624,7 +4622,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
             //if(  (SimSpmode &&  ( ( LVec_pip_nmiss_mc.M() < 1.189) || (1.190 < LVec_pip_nmiss_mc.M())) )
             //   ||(SimSmmode &&  ( ( LVec_pim_nmiss_mc.M() < 1.197) || (1.198 < LVec_pim_nmiss_mc.M())) 
             // )){
-          if(!( (mcpattern==2) ||  (mcpattern==7))){
+          if(!( (mcpattern==2)  ||  (mcpattern==7))) {// || IsFakebyVTX ){
+          //if( IsFakebyVTX ){
             q_IMnpipi_wSid_n_fake->Fill(LVec_pip_pim_n.M(),qkn.P());
             MMnmiss_IMpippim_dE_wSid_n_fake->Fill(LVec_pip_pim.M(),nmiss_mass);
             IMnpim_IMnpip_dE_wSid_n_fake->Fill(LVec_pip_n.M(),LVec_pim_n.M());
