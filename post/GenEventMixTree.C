@@ -154,7 +154,13 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v196.root")
   Int_t nevent = tree->GetEntries();
   std::cerr<<"# of events = "<<nevent<<std::endl;
   std::cout << "dE cut:" << anacuts::dE_MIN << std::endl;
-  std::vector <TLorentzVector>  vec_LVec_n;
+  //mixed variables
+  std::vector <TLorentzVector> vec_LVec_n;
+  //std::vector <double> vec_dE;
+  //std::vector <double> vec_NeutralBetaCDH;
+  std::vector <TVector3> vec_CDH_Pos;
+  //std::vector <int> vec_neutralseg;
+
   for ( Int_t i=0; i<nevent; i++ ) {
     tree->GetEvent(i);
     TLorentzVector LVec_nmiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n;
@@ -207,10 +213,19 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v196.root")
     
     if(!MissNwideFlag && !SigmawidePFlag && !SigmawideMFlag){
       vec_LVec_n.push_back(*LVec_n);
+      //vec_dE.push_back(dE);
+      //vec_NeutralBetaCDH.push_back(NeutralBetaCDH);
+      vec_CDH_Pos.push_back(*CDH_Pos);
+      //vec_neutralseg.push_back(neutralseg);
     }
   }
 
   decltype(vec_LVec_n)::iterator last_n = vec_LVec_n.end();
+  //decltype(vec_dE)::iterator last_dE = vec_dE.end();
+  //decltype(vec_NeutralBetaCDH)::iterator last_Beta =vec_NeutralBetaCDH.end();
+  decltype(vec_CDH_Pos)::iterator last_CDH_Pos = vec_CDH_Pos.end();
+  //decltype(vec_neutralseg)::iterator last_neutralseg = vec_neutralseg.end();
+  
   const size_t nsize=vec_LVec_n.size();
   for ( Int_t i=0; i<nevent*10; i++ ) {
     tree->GetEvent(i%(nevent-1));
@@ -221,11 +236,23 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v196.root")
     *LVec_target2 = *LVec_target;
     *LVec_pip2 = *LVec_pip;
     *LVec_pim2 = *LVec_pim;
+    //decrement iterators 
     last_n--;
+    //last_dE--;
+    //last_Beta--;
+    last_CDH_Pos--;
+    //last_neutralseg--;
+    //std::cout << (*last_n).P() << std::endl;
+    //std::cout << *last_dE << std::endl;
+    //std::cout << *last_Beta << std::endl;
+    //std::cout << (*last_CDH_Pos).Phi() << std::endl;
+    //std::cout << *last_neutralseg << std::endl;
+
     *LVec_n2 = *last_n;
     if(i!=0 &&  (i%(nsize-1)==0)){
-     std::cout << i << std::endl;
+     std::cout << "L." << __LINE__ <<  "  "  << i << std::endl;
      last_n+=(nsize-1);
+     last_CDH_Pos+=(nsize-1);
     }
     if((*LVec_n2).P() < 0.0001){
       std::cout << (*LVec_n2).P() << std::endl;
@@ -233,12 +260,14 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v196.root")
     *LVec_n_beam2 = *LVec_n_beam;
     *LVec_n_Sp2 = *LVec_n_Sp;
     *LVec_n_Sm2 = *LVec_n_Sm;
+    //NeutralBetaCDH2 = *last_Beta;
     NeutralBetaCDH2 = NeutralBetaCDH;
     dE2 = dE;
+    //neutralseg2 = *last_neutralseg;
     neutralseg2 = neutralseg;
     *CA_pip2 = *CA_pip;
     *CA_pim2 = *CA_pim;
-    *CDH_Pos2 = *CDH_Pos;
+    *CDH_Pos2 = *last_CDH_Pos;
     *CDH_Pos_pim2 = *CDH_Pos_pim;
     *CDH_Pos_pip2 = *CDH_Pos_pip;
     if(SimSpmode || SimSmmode){
@@ -254,9 +283,9 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v196.root")
     treeMIX->Fill();
   }
 
- 
   treeMIX->Write();
   fout->Close();
 
+  std::cout << "end" << std::endl;
 
 }
