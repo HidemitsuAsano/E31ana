@@ -1,3 +1,8 @@
+//asano memo 
+//v198 remove isolation cut, CDC charge veto->nhitOutCDC
+//v197 tried CDC inner veto 
+//v196 usual isolation cut + CDC charge veto
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -53,7 +58,10 @@ const unsigned int sigmacuttype=0;
 //2:5 sigma cut
 const unsigned int sidebandtype=0;
 
-const unsigned int IsolationFlag=0;
+//v198 def, 
+//0 no isolation
+//1 round cut
+const unsigned int IsolationFlag=1;
 
 const bool IsMCweighting = true;
 
@@ -162,6 +170,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   tree->SetBranchAddress( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
   tree->SetBranchAddress( "dE", &dE );
   tree->SetBranchAddress( "neutralseg", &neutralseg );  
+  tree->SetBranchAddress( "nhitOutCDC", &nhitOutCDC ); //charge veto by Outer 3 layer of 3cdc
   tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
   tree->SetBranchAddress( "vtx_pip_beam",&vtx_pip_beam);
   tree->SetBranchAddress( "vtx_pim_beam",&vtx_pim_beam);
@@ -895,6 +904,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* nmom_IMnpipi_woK0_wSid_n_Sp;
   TH2F* nmom_IMnpipi_woK0_wSid_n_Sm;
   TH2F* nmom_MMnmiss_wSid;
+  TH2F* nmom_MMnmiss_wSid_fake;
   TH2F* nmom_MMnmiss_wSid_n;
   TH2F* nmom_MMnmiss_woK0_wSid;
   TH2F* nmom_MMnmiss_woK0_wSid_Sp;//
@@ -962,6 +972,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* diff2d_Zpippim_Znpim_woSid_won;
   TH2F* diff2d_CDC_CDH_pim;//neutral hit - pim track projected position
   TH2F* diff2d_CDC_CDH_pip;//neutral hit - pip track projected position
+  TH2F* diff2d_CDC_CDH_pim_woSid_won;//neutral hit - pim track projected position
+  TH2F* diff2d_CDC_CDH_pip_woSid_won;//neutral hit - pip track projected position
   TH2F* diff2d_CDC_CDH_pim_wK0;//neutral hit - pim track projected position
   TH2F* diff2d_CDC_CDH_pip_wK0;//neutral hit - pip track projected position
   TH2F* diff2d_CDC_CDH_pim_woK0_wSid;//neutral hit - pim track projected position
@@ -2790,6 +2802,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   nmom_MMnmiss_wSid->SetXTitle("Miss. Mass [GeV/c^{2}]");
   nmom_MMnmiss_wSid->SetYTitle("nmom  [GeV/c]");
   
+  nmom_MMnmiss_wSid_fake = new TH2F("nmom_MMnmiss_wSid_fake","nmom_MMnmiss_wSid_fake", nbinnmiss, nmisslow, nmisshigh,nbinnmom,0,1.0);
+  nmom_MMnmiss_wSid_fake->SetXTitle("Miss. Mass [GeV/c^{2}]");
+  nmom_MMnmiss_wSid_fake->SetYTitle("nmom  [GeV/c]");
+  
   nmom_MMnmiss_wSid_n = new TH2F("nmom_MMnmiss_wSid_n","nmom_MMnmiss_wSid_n", nbinnmiss, nmisslow, nmisshigh,nbinnmom,0,1.0);
   nmom_MMnmiss_wSid_n->SetXTitle("Miss. Mass [GeV/c^{2}]");
   nmom_MMnmiss_wSid_n->SetYTitle("nmom  [GeV/c]");
@@ -3012,6 +3028,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   diff2d_CDC_CDH_pip = new TH2F("diff2d_CDC_CDH_pip","diff2d_CDC_CDH_pip",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
   diff2d_CDC_CDH_pip->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
   diff2d_CDC_CDH_pip->SetYTitle("CDH hit - #pi^{+} track (z) [cm]");
+  
+  diff2d_CDC_CDH_pim_woSid_won = new TH2F("diff2d_CDC_CDH_pim_woSid_won","diff2d_CDC_CDH_pim_woSid_won",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
+  diff2d_CDC_CDH_pim_woSid_won->SetXTitle("CDH hit - #pi^{-} track (phi) [radian]");
+  diff2d_CDC_CDH_pim_woSid_won->SetYTitle("CDH hit - #pi^{-} track (z) [cm]");
+
+  diff2d_CDC_CDH_pip_woSid_won = new TH2F("diff2d_CDC_CDH_pip_woSid_won","diff2d_CDC_CDH_pip_woSid_won",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
+  diff2d_CDC_CDH_pip_woSid_won->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
+  diff2d_CDC_CDH_pip_woSid_won->SetYTitle("CDH hit - #pi^{+} track (z) [cm]");
 
   diff2d_CDC_CDH_pim_wK0 = new TH2F("diff2d_CDC_CDH_pim_wK0","diff2d_CDC_CDH_pim_wK0",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
   diff2d_CDC_CDH_pim_wK0->SetXTitle("CDH hit - #pi^{-} track (phi) [radian]");
@@ -4184,6 +4208,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           //if(IsFakebyVTX || IsFakeN2){
           if(!( (mcpattern==2)  ||  (mcpattern==7))) {// || IsFakebyVTX ){
             MMnmiss_IMpippim_dE_wSid_fake->Fill(LVec_pip_pim.M(),nmiss_mass);
+            nmom_MMnmiss_wSid_fake->Fill(nmiss_mass,(*LVec_n).P(),weight);
           }
         }
       }
@@ -4217,6 +4242,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
       if(!SigmawidePFlag && !SigmawideMFlag ) { 
         if(!MissNwideFlag) {
+          diff2d_CDC_CDH_pim_woSid_won->Fill(diffPhinpim,diffpim.z());
+          diff2d_CDC_CDH_pip_woSid_won->Fill(diffPhinpip,diffpip.z());
           diff2d_Phipippim_Phinpim_woSid_won->Fill(diffPhinpim,diffPhipippim);
           diff2d_Zpippim_Znpim_woSid_won->Fill(diffpim.Z(),diffpippim.Z());
         
