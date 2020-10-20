@@ -87,6 +87,8 @@ namespace Util
                   const int CDHseg,
                   double &ncanvtxr,
                   double &ncanvtxz,
+                  double &firstvtxr,
+                  double &firstvtxz,
                   int &ncangeneration,
                   int &mcpattern,
                   int &nanc
