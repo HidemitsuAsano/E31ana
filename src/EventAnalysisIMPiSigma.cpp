@@ -147,6 +147,7 @@ private:
   double dE;   // energy deposit on CDH [MeVee] (neutral candidate)
   int neutralseg;   //neutral candidate segment
   int nhitOutCDC;
+  int ForwardCharge;
   TVector3 vtx_reaction; // 
   TVector3 vtx_pip_beam; // 
   TVector3 vtx_pim_beam; // 
@@ -327,6 +328,7 @@ void EventAnalysis::Initialize( ConfMan *conf )
   npippimTree->Branch( "dE", &dE );
   npippimTree->Branch( "neutralseg", &neutralseg );
   npippimTree->Branch( "nhitOutCDC", &nhitOutCDC );
+  npippimTree->Branch( "ForwardCharge", &ForwardCharge);
   npippimTree->Branch( "vtx_reaction", &vtx_reaction );
   npippimTree->Branch( "vtx_pip_beam", &vtx_pip_beam );
   npippimTree->Branch( "vtx_pim_beam", &vtx_pim_beam );
@@ -722,7 +724,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   bool pimpipFlag = false;
   if( pim_ID.size()==1 && pip_ID.size()==1) pimpipFlag = true;
   if( pimpipFlag &&
-      (trackMan->nGoodTrack()==cdscuts::cds_ngoodtrack) && !Util::IsForwardCharge(blMan)){
+      (trackMan->nGoodTrack()==cdscuts::cds_ngoodtrack)) { //&& !Util::IsForwardCharge(blMan)){
     //=== pi+ pi- X candidates ===//
     rtFile2->cd();
     evTree->Fill();
@@ -856,7 +858,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       Tools::Fill1D( Form("EventCheck"), 14 );
     }
     const int nCDCInner3Lay = Util::GetNHitsCDCInner3Lay(cdsMan);
-    Tools::Fill1D(Form("CDHInner3Mul"),nCDCInner3Lay);
+    Tools::Fill1D(Form("CDCInner3Mul"),nCDCInner3Lay);
      
     //if(nCDCInner3Lay>6){
     //  Clear(nAbort_CDCInner3Lay);
@@ -865,7 +867,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
     const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
     Pos_CDH.SetZ(-1.*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
-    nhitOutCDC = nCDCforVeto;
     //** neutral particle in CDH **//
     //if( !nCDCforVeto ) {
       if(NeutralCDHseg.size()!=1) {
@@ -1456,6 +1457,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         mom_n_Sm = LVec_n_vtx[1];
         dE = ncdhhit->emean();
         neutralseg = (ncdhhit->seg());
+        nhitOutCDC = nCDCforVeto;
+        ForwardCharge = Util::IsForwardCharge(blMan);
         // beta is already filled
         vtx_reaction = vtx_react; // vertex(reaction)
         vtx_pip_beam = vtx_beam_wpip;
@@ -1637,6 +1640,7 @@ void EventAnalysis::Clear( int &nAbort)
   dE=-9999.;
   neutralseg=-1;
   nhitOutCDC=-1;
+  ForwardCharge=-1;
   vtx_reaction.SetXYZ(-9999.,-9999.,-9999.);
   vtx_pip_beam.SetXYZ(-9999.,-9999.,-9999.);
   vtx_pim_beam.SetXYZ(-9999.,-9999.,-9999.);

@@ -1332,7 +1332,7 @@ void Util::AnaMcData2(MCData *mcdata,
   //std::cout << "generation " << generation << std::endl;
 
   if( (pdg== -211) || (pdg==211) ){
-    std::cout << __FILE__<<  " L." << __LINE__ << "pion hit return" << std::endl;
+    //std::cout << __FILE__<<  " L." << __LINE__ << " pion hit return" << std::endl;
     return; 
   }
  

@@ -83,6 +83,8 @@ double NeutralBetaCDH_beam; // veracity of neutral particle on CDH
 double NeutralBetaCDH_vtx[2]; // veracity of neutral particle on CDH
 double dE;   // energy deposit on CDH
 int neutralseg;   // energy deposit on CDH
+int nhitOutCDC;
+int ForwardCharge;
 TVector3 vtx_reaction; //  vertex(reaction)   
 TVector3 vtx_pip_beam; //  
 TVector3 vtx_pim_beam; //   
@@ -106,6 +108,8 @@ TLorentzVector mcmom_ncds;    // generated 4-momentum(neutron)
 TLorentzVector mcmom_nmiss;    // generated 4-momentum(neutron)
 double mcncanvtxr;
 double mcncanvtxz;
+double mcfirstvtxr;
+double mcfirstvtxz;
 int mcncdsgen;
 int mcpattern;
 int mcnanc;
@@ -287,6 +291,8 @@ int main( int argc, char** argv )
   npippimTree->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx);
   npippimTree->Branch( "dE", &dE );
   npippimTree->Branch( "neutralseg", &neutralseg );
+  npippimTree->Branch( "nhitOutCDC", &nhitOutCDC );
+  npippimTree->Branch( "ForwardCharge", &ForwardCharge );
   npippimTree->Branch( "vtx_reaction", &vtx_reaction );
   npippimTree->Branch( "vtx_pip_beam", &vtx_pip_beam );
   npippimTree->Branch( "vtx_pim_beam", &vtx_pim_beam );
@@ -308,6 +314,8 @@ int main( int argc, char** argv )
   npippimTree->Branch( "mcmom_nmiss", &mcmom_nmiss );
   npippimTree->Branch( "mcncanvtxr",&mcncanvtxr);
   npippimTree->Branch( "mcncanvtxz",&mcncanvtxz);
+  npippimTree->Branch( "mcfirstvxr",&mcfirstvtxr);
+  npippimTree->Branch( "mcfirstvxz",&mcfirstvtxz);
   npippimTree->Branch( "mcncdsgen",&mcncdsgen);
   npippimTree->Branch( "mcpattern",&mcpattern);
   npippimTree->Branch( "mcnanc",&mcnanc);
@@ -679,8 +687,6 @@ int main( int argc, char** argv )
 
 
 
-
-
     //std::cout << mcmom_beam.P() << std::endl;
     //std::cout << mcmom_beam.M() << std::endl;
     /*
@@ -1036,7 +1042,7 @@ int main( int argc, char** argv )
         (pim_ID.size()==1) && 
         (pip_ID.size()==1) && 
         (cdstrackMan->nGoodTrack()==cdscuts::cds_ngoodtrack) 
-        && !forwardcharge 
+        //&& !forwardcharge 
         ){
         
       nFill_pippim++;
@@ -1114,7 +1120,6 @@ int main( int argc, char** argv )
         } std::cout<<std::endl;
       }
 
-
       
       // isolation cut //
       int flag_isolation = 0;
@@ -1132,9 +1137,9 @@ int main( int argc, char** argv )
       }
       if( flag_isolation ){
         if(Verbosity_>100)std::cout<< "L."<< __LINE__ << " Event Number: " <<iev <<  " CDH hit candidate is NOT isolated !!!"<<std::endl;
-        if(IsrecoPassed)nAbort_CDHiso++;
+        //if(IsrecoPassed)nAbort_CDHiso++;
         //continue;
-        IsrecoPassed=false;
+        //IsrecoPassed=false;
       }else{
         if(Verbosity_>100) std::cerr<<"CDH isolation cuts : OK " << std::endl;
         Tools::Fill1D( Form("EventCheck"), 14 );
@@ -1173,7 +1178,7 @@ int main( int argc, char** argv )
          
 
       // neutral particle in CDH //
-      if( !nCDCforVeto && !flag_isolation){ //&& (nCDCInner3Lay<7))
+      //if( !nCDCforVeto && !flag_isolation){ //&& (nCDCInner3Lay<7))
         if(NeutralCDHseg.size()!=1) {
           std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
         } else {
@@ -1887,18 +1892,24 @@ int main( int argc, char** argv )
           if(IsncdsfromSigma && IsrecoPassed){
             double ncanvtxr2=999.0;
             double ncanvtxz2=999.0;
+            double firstvtxr=999.0;
+            double firstvtxz=999.0;
             int ncdsgen2=10;
             int pattern=10;
             int anc=999;
-            Util::AnaMcData2(mcData,detData2,ncdhhit->seg(),ncanvtxr2,ncanvtxz2,ncdsgen2,pattern,anc);
+            Util::AnaMcData2(mcData,detData2,ncdhhit->seg(),ncanvtxr2,ncanvtxz2,firstvtxr,firstvtxz,ncdsgen2,pattern,anc);
             mcncanvtxr=ncanvtxr2;
             mcncanvtxz=ncanvtxz2;
+            mcncanvtxr=firstvtxr;
+            mcncanvtxz=firstvtxz;
             mcncdsgen=ncdsgen2;
             mcpattern=pattern;
             mcnanc=anc;
 
             dE = ncdhhit->emean();
             neutralseg = ncdhhit->seg();
+            nhitOutCDC = nCDCforVeto;
+            ForwardCharge = forwardcharge;
             mom_n_Sp = LVec_n_vtx[0];            // 4-momentum(neutron)
             mom_n_Sm = LVec_n_vtx[1];            // 4-momentum(neutron)
             mom_beam_Sp = LVec_beam_vtx[0];
@@ -1943,7 +1954,7 @@ int main( int argc, char** argv )
             outfile->cd();
           }//IsrecoPassed
         } // if( GeomTools::GetID(vtx_react)==CID_Fiducial )
-      } // if( !nCDCforVeto )
+      //} // if( !nCDCforVeto )
     }else{  //if pi+ pi- X event  
       nAbort_pippim++;
     }
@@ -2046,6 +2057,8 @@ void InitTreeVal()
   NeutralBetaCDH_vtx[1]=-9999.; // veracity of neutral particle on CDH
   dE=-9999.;   // energy deposit on CDH
   neutralseg =-1;   // energy deposit on CDH
+  nhitOutCDC = -1;
+  ForwardCharge = -1;
   vtx_reaction.SetXYZ(-9999., -9999., -9999.); //  vertex(reaction)   
   vtx_pip_beam.SetXYZ(-9999., -9999., -9999.); //  
   vtx_pim_beam.SetXYZ(-9999., -9999., -9999.); //   
@@ -2067,6 +2080,8 @@ void InitTreeVal()
   mcmom_nmiss.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // generated 4-momentum(neutron)
   mcncanvtxr=999.9;
   mcncanvtxz=999.9;
+  mcfirstvtxr=999.9;
+  mcfirstvtxz=999.9;
   mcncdsgen=199;
   mcpattern=199;
   mcnanc=199;
@@ -2092,7 +2107,7 @@ void InitTreeVal()
   kf_status_Smmode=-9999.; // status of kinematical refit -> details can be found in this code
   kf_pvalue_Smmode=-9999.; // p-value of kinematical refit
   kf_flag=-9999; // flag of correct pair reconstruction, etc
-//= = = = pippimn final-sample tree = = = =//
+  //= = = = pippimn final-sample tree = = = =//
 
 }
 
