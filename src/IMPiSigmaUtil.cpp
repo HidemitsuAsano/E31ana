@@ -1258,6 +1258,8 @@ void Util::AnaMcData2(MCData *mcdata,
                      const int CDHseg,
                      double &ncanvtxr,
                      double &ncanvtxz,
+                     double &firstvtxr,
+                     double &firstvtxz,
                      int &ncangeneration,
                      int &mcpattern,
                      int &nanc
@@ -1265,6 +1267,8 @@ void Util::AnaMcData2(MCData *mcdata,
 {
   ncanvtxr=999.0;
   ncanvtxz=999.0;
+  firstvtxr=999.0;
+  firstvtxz=999.0;
   ncangeneration=999;
   mcpattern=999;
   nanc=999;
@@ -1290,7 +1294,7 @@ void Util::AnaMcData2(MCData *mcdata,
       continue;
     }
     //require CDH hit seg matching
-    int dhitseg  = dhit->channelID()+1;//0 origin
+     int dhitseg  = dhit->channelID()+1;//0 origin
     if(dhitseg != CDHseg) continue;
     
     trackID = dhit->trackID();
@@ -1345,8 +1349,8 @@ void Util::AnaMcData2(MCData *mcdata,
   bool isFromSigma = false;
   bool isSigmaNeutronChain = false;
   bool isFromPion = false; 
-  double vtxRNeutron = 0.0;//cm
-  double vtxZNeutron = 0.0;//cm
+  double vtxRNeutron = 999.0;//cm
+  double vtxZNeutron = 999.0;//cm
   unsigned int nNeutrons = 0;
   int genNeutron = -1;
   bool isWentCDHOutSide = false;
@@ -1367,6 +1371,8 @@ void Util::AnaMcData2(MCData *mcdata,
           AncestorVTX[anc].Perp()/10.,
           750,-75.,75.,480,0.,120.);
       Tools::H1(Form("gen_cdhhitparent"),generation,10,0,10);
+      firstvtxr = AncestorVTX[anc].Perp()/10.0;
+      firstvtxz = AncestorVTX[anc].Z()/10.0;
     }
     if( (AncestorVTX[anc].Perp()/10.0) > 58.0) isWentCDHOutSide = true;
     if( fabs(AncestorVTX[anc].Z()/10.0) > 40.0) isWentCDHOutSide = true; 
@@ -1374,10 +1380,10 @@ void Util::AnaMcData2(MCData *mcdata,
     if( AncestorPDG[anc]==2112){
       nNeutrons++;
       isFromNeutron = true;
+      genNeutron = generation;
       if(nNeutrons==1){
         vtxRNeutron = AncestorVTX[anc].Perp()/10.;
         vtxZNeutron = AncestorVTX[anc].Z()/10.;
-        genNeutron = generation;
         Tools::H2(Form("vtxrz_n"),AncestorVTX[anc].Z()/10.,
             AncestorVTX[anc].Perp()/10.,
             750,-75.,75.,480,0.,120.);

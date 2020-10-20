@@ -56,7 +56,7 @@ const bool DoCDCRetiming = false;
 const bool DoKinFit = true;
 const bool IsVtxDoubleCheck = false;
 const bool UseDecayVtx = true;
-const unsigned int IsolationCutFlag = 1;
+const unsigned int IsolationCutFlag = 0;
 //-----------------------------------------//
 //--- covariance matrices for KinFitter ---//
 //-----------------------------------------//
@@ -146,6 +146,7 @@ private:
   double NeutralBetaCDH_vtx[2];//1:pip_vtx,2:pim_vtx  
   double dE;   // energy deposit on CDH [MeVee] (neutral candidate)
   int neutralseg;   //neutral candidate segment
+  int nhitOutCDC;
   TVector3 vtx_reaction; // 
   TVector3 vtx_pip_beam; // 
   TVector3 vtx_pim_beam; // 
@@ -325,6 +326,7 @@ void EventAnalysis::Initialize( ConfMan *conf )
   npippimTree->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
   npippimTree->Branch( "dE", &dE );
   npippimTree->Branch( "neutralseg", &neutralseg );
+  npippimTree->Branch( "nhitOutCDC", &nhitOutCDC );
   npippimTree->Branch( "vtx_reaction", &vtx_reaction );
   npippimTree->Branch( "vtx_pip_beam", &vtx_pip_beam );
   npippimTree->Branch( "vtx_pim_beam", &vtx_pim_beam );
@@ -856,16 +858,16 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     const int nCDCInner3Lay = Util::GetNHitsCDCInner3Lay(cdsMan);
     Tools::Fill1D(Form("CDHInner3Mul"),nCDCInner3Lay);
      
-    if(nCDCInner3Lay>6){
-      Clear(nAbort_CDCInner3Lay);
-      return true;
-    }
+    //if(nCDCInner3Lay>6){
+    //  Clear(nAbort_CDCInner3Lay);
+    //  return true;
+    //}
 
     const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
     Pos_CDH.SetZ(-1.*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
-    
+    nhitOutCDC = nCDCforVeto;
     //** neutral particle in CDH **//
-    if( !nCDCforVeto ) {
+    //if( !nCDCforVeto ) {
       if(NeutralCDHseg.size()!=1) {
         std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
       } else {
@@ -1478,7 +1480,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         //** fill tree **//
 
       } // if( GeomTools::GetID(vtx_react)==CID_Fiducial )
-    } // if( !nCDCforVeto )
+    //} // if( !nCDCforVeto )
   }//pi+,pi-X event
   else {
     Clear( nAbort_pipi );
@@ -1634,6 +1636,7 @@ void EventAnalysis::Clear( int &nAbort)
 
   dE=-9999.;
   neutralseg=-1;
+  nhitOutCDC=-1;
   vtx_reaction.SetXYZ(-9999.,-9999.,-9999.);
   vtx_pip_beam.SetXYZ(-9999.,-9999.,-9999.);
   vtx_pim_beam.SetXYZ(-9999.,-9999.,-9999.);
