@@ -3772,8 +3772,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     if(diffPhinpim<-1.0*TMath::Pi()) diffPhinpim += 2.0*TMath::Pi();
     else if(diffPhinpim>1.0*TMath::Pi()) diffPhinpim -= 2.0*TMath::Pi();
     if(IsolationFlag==1) {
-      if(0< diffPhinpim && diffPhinpim <0.5) continue;
-      if(-0.5< diffPhinpim && diffPhinpim <0.) continue;
+      //if(0< diffPhinpim && diffPhinpim <0.5) continue;
+      //if(-0.5< diffPhinpim && diffPhinpim <0.) continue;
+      if( (diffPhinpim*diffPhinpim)/0.6/0.6+diffpim.Z()*diffpim.Z()/25.0/25.0 <1 ) continue;
+
     } else if(IsolationFlag==2) {
       if(0< diffPhinpim && diffPhinpim <1) continue;
       if(-1.< diffPhinpim && diffPhinpim <0.) continue;
@@ -3784,8 +3786,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
     else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
     if(IsolationFlag==1) {
-      if(0< diffPhinpip && diffPhinpip <0.5) continue;
-      if(-0.5< diffPhinpip && diffPhinpip <0.) continue;
+      //if(0< diffPhinpip && diffPhinpip <0.5) continue;
+      //if(-0.5< diffPhinpip && diffPhinpip <0.) continue;
+      if( (diffPhinpip*diffPhinpip)/0.5/0.5+diffpip.Z()*diffpip.Z()/25.0/25.0 <1 ) continue;
     } else if(IsolationFlag==2) {
       if(0< diffPhinpip && diffPhinpip <1.0) continue;
       if(-1.0< diffPhinpip && diffPhinpip <0.) continue;

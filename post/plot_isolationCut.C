@@ -1,22 +1,53 @@
-void plot_isolationCut(){
+void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v196_out.root"){
+  
+  TFile *f = new TFile(filename,"READ");
+  f->cd();
+
   TCanvas *c1 = new  TCanvas("c1","c1");
+  TH2D* diff2d_CDC_CDH_pim = (TH2D*)f->Get("diff2d_CDC_CDH_pim");
   diff2d_CDC_CDH_pim->Draw("colz");
 
   TCanvas *c2 = new  TCanvas("c2","c2");
+  TH2D* diff2d_CDC_CDH_pip = (TH2D*)f->Get("diff2d_CDC_CDH_pip");
   diff2d_CDC_CDH_pip->Draw("colz");
   
   TCanvas *c3 = new TCanvas("c3","c3");
-  diff2d_CDC_CDH_pim->ProjectionX()->Draw("HE");
-  diff2d_CDC_CDH_pip->ProjectionX("pippx");
+  TH1D *pimpx = (TH1D*) diff2d_CDC_CDH_pim->ProjectionX();;
+  TH1D *pippx = (TH1D*) diff2d_CDC_CDH_pip->ProjectionX();
+  pimpx->Draw("HE");
   pippx->SetLineColor(2);
   pippx->Draw("HEsame");
   
   TCanvas *c4 = new TCanvas("c4","c4");
-  diff2d_CDC_CDH_pim->ProjectionY()->Draw("HE");
-  diff2d_CDC_CDH_pip->ProjectionY("pippy");
+  TH1D* pimpy = (TH1D*) diff2d_CDC_CDH_pim->ProjectionY();
+  TH1D* pippy = (TH1D*) diff2d_CDC_CDH_pip->ProjectionY();
+  pimpy->Draw("HE");
   pippy->SetLineColor(2);
   pippy->Draw("HEsame");
+  
+  TCanvas *c1_1 = new  TCanvas("c1_1","c1_1");
+  TH2D* diff2d_CDC_CDH_pim_woSid_won = (TH2D*)f->Get("diff2d_CDC_CDH_pim_woSid_won");
+  diff2d_CDC_CDH_pim_woSid_won->Draw("colz");
 
+  TCanvas *c2_2 = new  TCanvas("c2_2","c2_2");
+  TH2D* diff2d_CDC_CDH_pip_woSid_won = (TH2D*)f->Get("diff2d_CDC_CDH_pip_woSid_won");
+  diff2d_CDC_CDH_pip_woSid_won->Draw("colz");
+  
+  TCanvas *c3_3 = new TCanvas("c3_3","c3_3");
+  TH1D *pimpx_woSid_won = (TH1D*) diff2d_CDC_CDH_pim_woSid_won->ProjectionX();;
+  TH1D *pippx_woSid_won = (TH1D*) diff2d_CDC_CDH_pip_woSid_won->ProjectionX();
+  pimpx_woSid_won->Draw("HE");
+  pippx_woSid_won->SetLineColor(2);
+  pippx_woSid_won->Draw("HEsame");
+  
+  TCanvas *c4_4 = new TCanvas("c4_4","c4_4");
+  TH1D* pimpy_woSid_won = (TH1D*) diff2d_CDC_CDH_pim_woSid_won->ProjectionY();
+  TH1D* pippy_woSid_won = (TH1D*) diff2d_CDC_CDH_pip_woSid_won->ProjectionY();
+  pimpy_woSid_won->Draw("HE");
+  pippy_woSid_won->SetLineColor(2);
+  pippy_woSid_won->Draw("HEsame");
+  
+  /*
   TCanvas *c5 = new TCanvas("c5","c5");
   MMnmiss_diffphi_CDC_CDH_pim->Draw("colz");
 
@@ -28,6 +59,8 @@ void plot_isolationCut(){
 
   TCanvas *c8 = new TCanvas("c8","c8");
   MMnmiss_diffphi_CDC_CDH_pip_woK0_wSid->Draw("colz");
+  */
+
   
   TCanvas *c9 = new TCanvas("c9","c9");
   pimmom_diffphi_CDC_CDH_pim->Draw("colz");
@@ -58,4 +91,26 @@ void plot_isolationCut(){
   
   TCanvas *c18 = new TCanvas("c18","c18");
   nmom_diffz_CDC_CDH_pip->Draw("colz");
+  
+
+  /*
+  TCanvas *c = NULL;
+  TSeqCollection *SCol = gROOT->GetListOfCanvases();
+  int size = SCol->GetSize();
+  //TIter next(gROOT->GetListOfCanvases());
+  TIter next(SCol);
+  TString pdfname = std::string("isolation.pdf");
+  for(int i=0; i<size; i++) {
+    c= (TCanvas*)next();
+    c->Draw();
+    c->cd();
+    c->Modified();
+    c->Update();
+    if(i==0) c->Print(pdfname+"(",Form("Title:%s",c->GetTitle()));
+    else if(i==size-1)c->Print(pdfname+")",Form("Title:%s",c->GetTitle()));
+    else c->Print(pdfname,Form("Title:%s",c->GetTitle()));
+  }
+ */
+
 }
+
