@@ -50,7 +50,7 @@ TVector3 *CDH_Pos_pim2 = NULL;
 TVector3 *CDH_Pos_pip2 = NULL;
 
 
-void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v196.root")
+void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v199.root")
 {
   TFile *f = new TFile(filename,"READ");
   //TFile *f = new TFile("sim_piSpn_dE0_Al.root");
@@ -78,6 +78,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v196.root")
   tree->SetBranchAddress( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
   tree->SetBranchAddress( "dE", &dE );
   tree->SetBranchAddress( "neutralseg", &neutralseg );  
+  tree->SetBranchAddress( "nhitOutCDC", &nhitOutCDC ); //charge veto by Outer 3 layer of 3cdc
   tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
   tree->SetBranchAddress( "vtx_pip_beam",&vtx_pip_beam);
   tree->SetBranchAddress( "vtx_pim_beam",&vtx_pim_beam);
@@ -130,6 +131,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v196.root")
   treeMIX->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx2);
   treeMIX->Branch( "dE", &dE2 );
   treeMIX->Branch( "neutralseg", &neutralseg2 );
+  treeMIX->Branch( "nhitOutCDC", &nhitOutCDC ); //charge veto by Outer 3 layer of 3cdc
   treeMIX->Branch( "vtx_reaction", &vtx_reaction2 );
   treeMIX->Branch( "vtx_pip_beam", &vtx_pip_beam2 );
   treeMIX->Branch( "vtx_pim_beam", &vtx_pim_beam2 );
@@ -211,6 +213,19 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v196.root")
     //Sigma- production in CDS
     if( (anacuts::Sigmam_MIN_wide<MassNPim && MassNPim<anacuts::Sigmam_MAX_wide)) SigmawideMFlag=true;
     
+    TVector3 diffpim = (*CDH_Pos)-(*CDH_Pos_pim);
+    double diffPhinpim = (*CDH_Pos).Phi()-(*CDH_Pos_pim).Phi();
+    if(diffPhinpim<-1.0*TMath::Pi()) diffPhinpim += 2.0*TMath::Pi();
+    else if(diffPhinpim>1.0*TMath::Pi()) diffPhinpim -= 2.0*TMath::Pi();
+    if( (diffPhinpim*diffPhinpim)/0.6/0.6+diffpim.Z()*diffpim.Z()/25.0/25.0 <1 ) continue;
+    
+    TVector3 diffpip = (*CDH_Pos)-(*CDH_Pos_pip);
+    double diffPhinpip = (*CDH_Pos).Phi()-(*CDH_Pos_pip).Phi();
+    if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
+    else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
+    if( (diffPhinpip*diffPhinpip)/0.5/0.5+diffpip.Z()*diffpip.Z()/25.0/25.0 <1 ) continue;
+
+
     if(!MissNwideFlag && !SigmawidePFlag && !SigmawideMFlag){
       vec_LVec_n.push_back(*LVec_n);
       //vec_dE.push_back(dE);
