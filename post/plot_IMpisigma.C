@@ -168,6 +168,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   tree->SetBranchAddress( "NeutralBetaCDH", &NeutralBetaCDH );
   tree->SetBranchAddress( "NeutralBetaCDH_beam", &NeutralBetaCDH_beam );//from v192
   tree->SetBranchAddress( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
+  tree->SetBranchAddress( "tofpim",&tofpim);
+  tree->SetBranchAddress( "tofpip",&tofpip);
+  tree->SetBranchAddress( "tofn",&tofn);
   tree->SetBranchAddress( "dE", &dE );
   tree->SetBranchAddress( "neutralseg", &neutralseg );  
   tree->SetBranchAddress( "nhitOutCDC", &nhitOutCDC ); //charge veto by Outer 3 layer of 3cdc

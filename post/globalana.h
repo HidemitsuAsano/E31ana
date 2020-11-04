@@ -21,6 +21,9 @@
   double NeutralBetaCDH; // velocity of neutral particle on CDH
   double NeutralBetaCDH_beam; // velocity of neutral particle on CDH
   double NeutralBetaCDH_vtx[2]; // velocity of neutral particle on CDH,0: Spmode 1:Smmode
+  double tofpim;
+  double tofpip;
+  double tofn;
   double dE;   // energy deposit on CDH
   int neutralseg;
   int nhitOutCDC;
