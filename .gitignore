@@ -16,6 +16,9 @@ simpost/sakumacro/
 post/sakumacro/
 conf/CVS/
 param/CVS/
+param/
 lib/
 bin/
 CVS/
+pat1/
+pat2_fail/
