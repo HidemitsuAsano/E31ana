@@ -81,6 +81,9 @@ TLorentzVector mom_n_Sm;      // 4-momentum(neutron)
 double NeutralBetaCDH; // veracity of neutral particle on CDH
 double NeutralBetaCDH_beam; // veracity of neutral particle on CDH
 double NeutralBetaCDH_vtx[2]; // veracity of neutral particle on CDH
+double tofpim;
+double tofpip;
+double tofn;
 double dE;   // energy deposit on CDH
 int neutralseg;   // energy deposit on CDH
 int nhitOutCDC;
@@ -289,6 +292,9 @@ int main( int argc, char** argv )
   npippimTree->Branch( "NeutralBetaCDH", &NeutralBetaCDH );
   npippimTree->Branch( "NeutralBetaCDH_beam", &NeutralBetaCDH_beam );
   npippimTree->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx);
+  npippimTree->Branch( "tofpim",tofpim);
+  npippimTree->Branch( "tofpip",tofpip);
+  npippimTree->Branch( "tofn",tofn);
   npippimTree->Branch( "dE", &dE );
   npippimTree->Branch( "neutralseg", &neutralseg );
   npippimTree->Branch( "nhitOutCDC", &nhitOutCDC );
@@ -1076,9 +1082,11 @@ int main( int argc, char** argv )
         if(pid == CDS_PiMinus){
           Tools::Fill2D("PID_CDS_PIM_beta_select",1./beta_calc,mom);
           Tools::Fill2D("PID_CDS_PIM_select",mass2,mom);
+          tofpim = correctedtof;
         }else if(pid == CDS_PiPlus){
           Tools::Fill2D("PID_CDS_PIP_beta_select",1./beta_calc,mom);
           Tools::Fill2D("PID_CDS_PIP_select",mass2,mom);
+          tofpip = correctedtof;
         }
         else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton_select",mass2,mom);
         else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon_select",mass2,mom);
@@ -1162,7 +1170,8 @@ int main( int argc, char** argv )
       
       int nCDCforVeto = 0;
       if(IsrecoPassed){
-        nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
+        //nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
+        nCDCforVeto = Util::GetNHitsCDCOuterNoAss(Pos_CDH,cdsMan,cdstrackMan,cdscuts::chargevetoangle);
         Util::AnaPipPimCDCCDH(Pos_CDH,NeutralCDHseg,pip_ID[0],pim_ID[0],cdsMan,cdstrackMan);
       }
       //Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is wrong in SIM [20170925]
@@ -1253,6 +1262,10 @@ int main( int argc, char** argv )
 
         
         double ntof = ncdhhit->ctmean()-ctmT0-beamtof;
+        tofpim =- beamtof;
+        tofpip =- beamtof;
+        tofn = ntof;
+
         Tools::Fill1D(Form("CDH%d_T0%d_TOF_Neutral",ncdhhit->seg() ,t0seg),ntof);
         //std::cout <<"cdh time "<<  ncdhhit->ctmean() << std::endl;
         //std::cout << "ctmt0   " << ctmT0 << std::endl;
@@ -2055,6 +2068,9 @@ void InitTreeVal()
   NeutralBetaCDH=-9999.; // veracity of neutral particle on CDH
   NeutralBetaCDH_vtx[0]=-9999.; // veracity of neutral particle on CDH
   NeutralBetaCDH_vtx[1]=-9999.; // veracity of neutral particle on CDH
+  tofpim=-9999.;
+  tofpip=-9999.;
+  tofn=-9999.;
   dE=-9999.;   // energy deposit on CDH
   neutralseg =-1;   // energy deposit on CDH
   nhitOutCDC = -1;

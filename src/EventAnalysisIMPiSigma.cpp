@@ -144,6 +144,9 @@ private:
   double NeutralBetaCDH; // velocity of neutral particle on CDH from decay vtx 
   double NeutralBetaCDH_beam; // velocity of neutral particle on CDH from decay vtx 
   double NeutralBetaCDH_vtx[2];//1:pip_vtx,2:pim_vtx  
+  double tofpim;
+  double tofpip;
+  double tofn;
   double dE;   // energy deposit on CDH [MeVee] (neutral candidate)
   int neutralseg;   //neutral candidate segment
   int nhitOutCDC;
@@ -325,6 +328,9 @@ void EventAnalysis::Initialize( ConfMan *conf )
   npippimTree->Branch( "NeutralBetaCDH", &NeutralBetaCDH );
   npippimTree->Branch( "NeutralBetaCDH_beam", &NeutralBetaCDH_beam );
   npippimTree->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
+  npippimTree->Branch( "tofpim",tofpim);
+  npippimTree->Branch( "tofpip",tofpip);
+  npippimTree->Branch( "tofn",tofn);
   npippimTree->Branch( "dE", &dE );
   npippimTree->Branch( "neutralseg", &neutralseg );
   npippimTree->Branch( "nhitOutCDC", &nhitOutCDC );
@@ -755,7 +761,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       }
       if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
             Beam_Kaon, beta_calc, mass2, correctedtof ) ) {
-
       }
       //const int pid = TrackTools::PIDcorr_wide(mom,mass2);
       const int pid = TrackTools::PIDcorr(mom,mass2);
@@ -765,9 +770,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       if(pid == CDS_PiMinus){
         Tools::Fill2D("PID_CDS_PIM_beta_select",1./beta_calc,mom);
         Tools::Fill2D("PID_CDS_PIM_select",mass2,mom);
+        tofpim = correctedtof;//tree val.
       }else if(pid == CDS_PiPlus){
         Tools::Fill2D("PID_CDS_PIP_beta_select",1./beta_calc,mom);
         Tools::Fill2D("PID_CDS_PIP_select",mass2,mom);
+        tofpip = correctedtof;//tree val.
       }
       else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton_select",mass2,mom);
       else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon_select",mass2,mom);
@@ -865,7 +872,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     //  return true;
     //}
 
-    const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
+    //const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
+    const int nCDCforVeto = Util::GetNHitsCDCOuterNoAss(Pos_CDH,cdsMan,trackMan,cdscuts::chargevetoangle);
     Pos_CDH.SetZ(-1.*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
     //** neutral particle in CDH **//
     //if( !nCDCforVeto ) {
@@ -960,6 +968,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       else nlen = (Pos_CDH-vtx_react).Mag();
       
       Tools::Fill2D(Form("ntof_nlen"),ntof,nlen);
+
+      //subtract T0-target beam tof
+      tofpim =-beamtof;
+      tofpip =-beamtof;
+      tofn = ntof;//tree val.
       //nlen_vtx[0] = (Pos_CDH-vtx_pip).Mag();
       //nlen_vtx[1] = (Pos_CDH-vtx_pim).Mag();
       double nlen_beam = (Pos_CDH-vtx_beam).Mag();
@@ -1020,10 +1033,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
       LVec_pim.SetVectM( P_pim, piMass );
       LVec_pip.SetVectM( P_pip, piMass );
-      LVec_n.SetVectM(   P_n,   nMass );//CDS n
-      LVec_n_beam.SetVectM(   P_n_beam,   nMass );//CDS n
+      LVec_n.SetVectM( P_n, nMass );//CDS n
+      LVec_n_beam.SetVectM( P_n_beam, nMass );//CDS n
       for(int ivtx=0;ivtx<2;ivtx++){
-        LVec_n_vtx[ivtx].SetVectM(  P_n_vtx[ivtx],   nMass );//CDS n
+        LVec_n_vtx[ivtx].SetVectM( P_n_vtx[ivtx], nMass );//CDS n
       }
       
       /*
@@ -1086,7 +1099,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       Tools::Fill2D( Form("dE_betainv"), 1./NeutralBetaCDH, ncdhhit->emean() );
       Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
       
-       
 
       Tools::Fill2D(Form("Vtx_ZX_nofid"),vtxpip_mean.Z(),vtxpip_mean.X());
       Tools::Fill2D(Form("Vtx_ZY_nofid"),vtxpip_mean.Z(),vtxpip_mean.Y());
@@ -1636,6 +1648,9 @@ void EventAnalysis::Clear( int &nAbort)
   NeutralBetaCDH_beam=-9999.;
   NeutralBetaCDH_vtx[0]=-9999.;
   NeutralBetaCDH_vtx[1]=-9999.;
+  tofpim=-9999.;
+  tofpip=-9999.;
+  tofn=-9999.;
 
   dE=-9999.;
   neutralseg=-1;

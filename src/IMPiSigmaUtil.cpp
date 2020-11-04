@@ -213,6 +213,68 @@ int Util::GetNHitsCDCOuter(const TVector3 PosCDH, CDSHitMan *cdsman, const doubl
   return nCDChit;
 }
 
+//returns # of cdc hits of layer 15 and 16 within -+ 15 degree of the CDH hit,
+//which are not associated with CDS tracks
+int Util::GetNHitsCDCOuterNoAss(const TVector3 PosCDH, CDSHitMan *cdsman,CDSTrackingMan *trackman, const double rangedeg)
+{
+  int nCDChit = 0;
+  static bool state=false;
+  if(!state){
+    std::cout << __FILE__ << " L." << __LINE__ << " CDC charge veto (No. Association) angle +/- " << rangedeg << std::endl; 
+    state = true;
+  }
+  const double PhiMin = -rangedeg/360.*TwoPi; // rad
+  const double PhiMax =  rangedeg/360.*TwoPi; // rad
+  for( int ilr=14; ilr<16; ilr++ ) { // charge veto using layer 14, 15
+    for( int icdchit=0; icdchit<cdsman->nCDC(ilr); icdchit++ ) {
+      CDCHit *cdc=cdsman->CDC(ilr,icdchit);
+      
+      bool AssFlag = false;
+      for( int it=0; it<trackman->nGoodTrack(); it++ ) {
+        CDSTrack *track = trackman->Track( trackman->GoodTrackID(it) );
+        int ntrackhit = track->nTrackHit(ilr);
+        for(int ihit=0;ihit<ntrackhit;ihit++){
+          CDCHit *cdcass =  track->hit(cdsman,ilr,ihit);
+          if(cdcass == cdc) AssFlag = true;
+          if(AssFlag){
+            //std::cout << "cdc       angle " << cdc->wpos().Phi()  << std::endl;
+            //std::cout << "cdchitass angle " << cdcass->wpos().Phi()  << std::endl;
+          }
+        }
+      }
+
+      /*
+      int s7nCluster = trackman->nCluster(7);
+      std::cout << "s7nCluster " << s7nCluster << std::endl;
+      for(int iclss7=0;iclss7<s7nCluster;iclss7++){
+        HitCluster *s7Cluster = trackman->Cluster(7,iclss7);
+        int nhit = s7Cluster->nHit();
+        std::cout << "nhit " << nhit << std::endl;
+        for(int ihit=0;ihit<nhit;ihit++){
+          CDCHit *cdchitass = s7Cluster->CDC(cdsman,ihit);
+          if(cdc == cdchitass) AssFlag = true;
+          std::cout << "cdc       angle " << cdc->wpos().Phi()  << std::endl;
+          std::cout << "cdchitass angle " << cdchitass->wpos().Phi()  << std::endl;
+        }
+      }*/
+     
+      TVector3 Pos_CDC = cdc->wpos();
+      Pos_CDC.SetZ(0); // only xy pos is used
+      const double angle = Pos_CDC.Angle(PosCDH); // rad
+      Tools::Fill1D( Form("diff_CDH_CDC"), angle/TwoPi*360 );
+      if( !AssFlag && (PhiMin<angle && angle<PhiMax) ){ 
+        nCDChit++;
+        //std::cerr<<"CDC "<<ilr<<" "<<icdchit<<" "<<cdc->wire()<<" -> "<<Pos_CDC.Phi()/TwoPi*360.
+        //  <<" deg :: diff = "<<angle/TwoPi*360<<" deg"<<std::endl;
+        //std::cerr << "AssFlag " << AssFlag << std::endl;
+      }
+    }//icdchit
+  }//ilr
+  
+  return nCDChit;
+}
+
+
 void Util::AnaPipPimCDCCDH(const TVector3 PosCDH,const std::vector <int> &seg, const int pip_ID, const int pim_ID, CDSHitMan *cdsman,CDSTrackingMan *trackman)
 {
   CDSTrack *track_pip = trackman->Track( pip_ID ); // only 1 track
@@ -1204,6 +1266,8 @@ void Util::AnaMcData(MCData *mcdata,
     Tools::H2(Form("CDHdE_generation_ncan_select"),ncaninfo.gen, ncaninfo.dE,10,0,10, 100,0,10);
     Tools::H2(Form("CDHdE_mom_ncan_select"),ncaninfo.mom,ncaninfo.dE,200,0,2, 100,0,10);
     Tools::H1("ncan_time_select",ncaninfo.time,1000,0,100);
+    Tools::H1("ncan_pim_time_select",ncaninfo.time-piminfo.time,1000,-100,100);
+    Tools::H1("ncan_pip_time_select",ncaninfo.time-pipinfo.time,1000,-100,100);
     double parentvtxr=Util::FillAncestryVertexR(mcdata,ncaninfo.dhitncan,ncaninfo.dE);
     double parentvtxz=Util::FillAncestryVertexZ(mcdata,ncaninfo.dhitncan,ncaninfo.dE);
     if(ncaninfo.dE>2.0){
