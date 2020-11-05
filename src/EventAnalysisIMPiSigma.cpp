@@ -328,9 +328,9 @@ void EventAnalysis::Initialize( ConfMan *conf )
   npippimTree->Branch( "NeutralBetaCDH", &NeutralBetaCDH );
   npippimTree->Branch( "NeutralBetaCDH_beam", &NeutralBetaCDH_beam );
   npippimTree->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
-  npippimTree->Branch( "tofpim",tofpim);
-  npippimTree->Branch( "tofpip",tofpip);
-  npippimTree->Branch( "tofn",tofn);
+  npippimTree->Branch( "tofpim",&tofpim);
+  npippimTree->Branch( "tofpip",&tofpip);
+  npippimTree->Branch( "tofn",&tofn);
   npippimTree->Branch( "dE", &dE );
   npippimTree->Branch( "neutralseg", &neutralseg );
   npippimTree->Branch( "nhitOutCDC", &nhitOutCDC );
@@ -743,7 +743,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     }
 
     //added Jul.28th,2019
-    //purpose 
+    //purpose
+    double tofpim_b = 0;
+    double tofpip_b = 0;
     for( int it=0; it<trackMan->nGoodTrack(); it++ ) {
       CDSTrack *track = trackMan->Track( trackMan->GoodTrackID(it) );
 
@@ -778,7 +780,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       }
       else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton_select",mass2,mom);
       else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon_select",mass2,mom);
-    }
+    }//nGoodTrack
     if(Verbosity) std::cout<<"### filled: Event_Number, Block_Event_Number, CDC_Event_Number = "
                              <<Event_Number<<" , "<<Block_Event_Number<<" , "<<CDC_Event_Number<<std::endl;
     nFill_pippim++;
@@ -970,8 +972,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       Tools::Fill2D(Form("ntof_nlen"),ntof,nlen);
 
       //subtract T0-target beam tof
-      tofpim =-beamtof;
-      tofpip =-beamtof;
+      tofpim -=beamtof;
+      tofpip -=beamtof;
       tofn = ntof;//tree val.
       //nlen_vtx[0] = (Pos_CDH-vtx_pip).Mag();
       //nlen_vtx[1] = (Pos_CDH-vtx_pim).Mag();

@@ -292,9 +292,9 @@ int main( int argc, char** argv )
   npippimTree->Branch( "NeutralBetaCDH", &NeutralBetaCDH );
   npippimTree->Branch( "NeutralBetaCDH_beam", &NeutralBetaCDH_beam );
   npippimTree->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx);
-  npippimTree->Branch( "tofpim",tofpim);
-  npippimTree->Branch( "tofpip",tofpip);
-  npippimTree->Branch( "tofn",tofn);
+  npippimTree->Branch( "tofpim",&tofpim);
+  npippimTree->Branch( "tofpip",&tofpip);
+  npippimTree->Branch( "tofn",&tofn);
   npippimTree->Branch( "dE", &dE );
   npippimTree->Branch( "neutralseg", &neutralseg );
   npippimTree->Branch( "nhitOutCDC", &nhitOutCDC );
@@ -1262,8 +1262,8 @@ int main( int argc, char** argv )
 
         
         double ntof = ncdhhit->ctmean()-ctmT0-beamtof;
-        tofpim =- beamtof;
-        tofpip =- beamtof;
+        tofpim -= beamtof;
+        tofpip -= beamtof;
         tofn = ntof;
 
         Tools::Fill1D(Form("CDH%d_T0%d_TOF_Neutral",ncdhhit->seg() ,t0seg),ntof);
