@@ -772,11 +772,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       if(pid == CDS_PiMinus){
         Tools::Fill2D("PID_CDS_PIM_beta_select",1./beta_calc,mom);
         Tools::Fill2D("PID_CDS_PIM_select",mass2,mom);
-        tofpim = correctedtof;//tree val.
+        tofpim = tof;//tree val.
       }else if(pid == CDS_PiPlus){
         Tools::Fill2D("PID_CDS_PIP_beta_select",1./beta_calc,mom);
         Tools::Fill2D("PID_CDS_PIP_select",mass2,mom);
-        tofpip = correctedtof;//tree val.
+        tofpip = tof;//tree val.
       }
       else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton_select",mass2,mom);
       else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon_select",mass2,mom);

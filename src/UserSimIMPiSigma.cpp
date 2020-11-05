@@ -1082,11 +1082,11 @@ int main( int argc, char** argv )
         if(pid == CDS_PiMinus){
           Tools::Fill2D("PID_CDS_PIM_beta_select",1./beta_calc,mom);
           Tools::Fill2D("PID_CDS_PIM_select",mass2,mom);
-          tofpim = correctedtof;
+          tofpim = tof;
         }else if(pid == CDS_PiPlus){
           Tools::Fill2D("PID_CDS_PIP_beta_select",1./beta_calc,mom);
           Tools::Fill2D("PID_CDS_PIP_select",mass2,mom);
-          tofpip = correctedtof;
+          tofpip = tof;
         }
         else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton_select",mass2,mom);
         else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon_select",mass2,mom);
