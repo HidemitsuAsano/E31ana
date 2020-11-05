@@ -1,4 +1,4 @@
-void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v196_out.root"){
+void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v201_out.root"){
   
   TFile *f = new TFile(filename,"READ");
   f->cd();
@@ -24,7 +24,27 @@ void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v196_out.roo
   pimpy->Draw("HE");
   pippy->SetLineColor(2);
   pippy->Draw("HEsame");
-  
+
+  TCanvas *c5 = new TCanvas("c5","c5");
+  TH2D* diff2d_CDC_CDH_pim_phi_tof = (TH2D*)f->Get("diff2d_CDC_CDH_pim_phi_tof");
+  diff2d_CDC_CDH_pim_phi_tof->RebinY(2);
+  diff2d_CDC_CDH_pim_phi_tof->Draw("colz");
+
+  TCanvas *c6 = new TCanvas("c6","c6");
+  TH2D* diff2d_CDC_CDH_pim_z_tof = (TH2D*)f->Get("diff2d_CDC_CDH_pim_z_tof");
+  diff2d_CDC_CDH_pim_z_tof->RebinY(2);
+  diff2d_CDC_CDH_pim_z_tof->Draw("colz");
+
+  TCanvas *c7 = new TCanvas("c7","c7");
+  TH2D* diff2d_CDC_CDH_pip_phi_tof = (TH2D*)f->Get("diff2d_CDC_CDH_pip_phi_tof");
+  diff2d_CDC_CDH_pip_phi_tof->RebinY(2);
+  diff2d_CDC_CDH_pip_phi_tof->Draw("colz");
+
+  TCanvas *c8 = new TCanvas("c8","c8");
+  TH2D* diff2d_CDC_CDH_pip_z_tof = (TH2D*)f->Get("diff2d_CDC_CDH_pip_z_tof");
+  diff2d_CDC_CDH_pip_z_tof->RebinY(2);
+  diff2d_CDC_CDH_pip_z_tof->Draw("colz");
+
   TCanvas *c1_1 = new  TCanvas("c1_1","c1_1");
   TH2D* diff2d_CDC_CDH_pim_woSid_won = (TH2D*)f->Get("diff2d_CDC_CDH_pim_woSid_won");
   diff2d_CDC_CDH_pim_woSid_won->Draw("colz");
@@ -47,6 +67,9 @@ void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v196_out.roo
   pippy_woSid_won->SetLineColor(2);
   pippy_woSid_won->Draw("HEsame");
   
+
+
+
   /*
   TCanvas *c5 = new TCanvas("c5","c5");
   MMnmiss_diffphi_CDC_CDH_pim->Draw("colz");
