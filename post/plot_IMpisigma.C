@@ -63,6 +63,10 @@ const unsigned int sidebandtype=0;
 //1 round cut
 const unsigned int IsolationFlag=1;
 
+const bool CDCChargeVetoFlag=true;
+
+const bool ForwardVetoFlag=true;
+
 const bool IsMCweighting = true;
 
 //color def.
@@ -119,6 +123,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   std::cout << std::endl;
   std::cout << std::endl;
 
+  std::cout << "IsolationFlag ? " << IsolationFlag << std::endl;
+  std::cout << "CDCChargeVetoFlag ? " << CDCChargeVetoFlag << std::endl;
+  std::cout << "ForwardVetoFlag ? " << ForwardVetoFlag << std::endl;
+
+
   std::cout << "MC weighting ? " << std::endl;
   if(IsMCweighting) std::cout << "Yes" << std::endl;
   else              std::cout << "No"  << std::endl;
@@ -174,6 +183,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   tree->SetBranchAddress( "dE", &dE );
   tree->SetBranchAddress( "neutralseg", &neutralseg );  
   tree->SetBranchAddress( "nhitOutCDC", &nhitOutCDC ); //charge veto by Outer 3 layer of 3cdc
+  tree->SetBranchAddress( "ForwardCharge", &ForwardCharge);
   tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
   tree->SetBranchAddress( "vtx_pip_beam",&vtx_pip_beam);
   tree->SetBranchAddress( "vtx_pim_beam",&vtx_pim_beam);
@@ -3763,7 +3773,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     if(IsolationFlag==1) {
       //if(0< diffPhinpim && diffPhinpim <0.5) continue;
       //if(-0.5< diffPhinpim && diffPhinpim <0.) continue;
-      if( (diffPhinpim*diffPhinpim)/0.6/0.6+diffpim.Z()*diffpim.Z()/25.0/25.0 <1 ) continue;
+
+      //round cut
+      if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.60/0.60+diffpim.Z()*diffpim.Z()/25.0/25.0 <1 ) continue;
 
     } else if(IsolationFlag==2) {
       if(0< diffPhinpim && diffPhinpim <1) continue;
@@ -3778,11 +3790,17 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     if(IsolationFlag==1) {
       //if(0< diffPhinpip && diffPhinpip <0.5) continue;
       //if(-0.5< diffPhinpip && diffPhinpip <0.) continue;
-      if( (diffPhinpip*diffPhinpip)/0.5/0.5+diffpip.Z()*diffpip.Z()/25.0/25.0 <1 ) continue;
+      
+      //round cut
+      if( ((diffPhinpip+0.05)*(diffPhinpip+0.05))/0.4/0.4+diffpip.Z()*diffpip.Z()/25.0/25.0 <1 ) continue;
     } else if(IsolationFlag==2) {
       if(0< diffPhinpip && diffPhinpip <1.0) continue;
       if(-1.0< diffPhinpip && diffPhinpip <0.) continue;
     }
+
+    if(CDCChargeVetoFlag && (nhitOutCDC!=0) ) continue;
+
+    if(ForwardVetoFlag && ForwardCharge) continue;
     
     TVector3 diffpippim = (*CDH_Pos_pip)-(*CDH_Pos_pim);
     double diffPhipippim = (*CDH_Pos_pip).Phi()-(*CDH_Pos_pim).Phi();
@@ -4056,58 +4074,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           weight *= fweight_Mompippim_vSp26->Eval(LVec_pip_pim.P());
           weight *= fweight_Momnpip_vSp27->Eval(LVec_pip_n.P());
           weight *= fweight_Momnpim_vSp28->Eval(LVec_pim_n.P());
-          
-          //weight *= fweight_MMnmiss_vSp1->Interpolate(nmiss_mass);
-          //weight *= fweight_IMnpip_vSp2->Interpolate(LVec_pip_n.M());
-          //weight *= fweight_IMnpim_vSp3->Interpolate(LVec_pim_n.M());
-          //weight *= fweight_IMpippim_vSp4->Interpolate(LVec_pip_pim.M());
-          //weight *= fweight_nmom_vSp5->Interpolate((*LVec_n).P());
-          //weight *= fweight_Momnpip_vSp6->Interpolate(LVec_pip_n.P());
-          //weight *= fweight_Momnpim_vSp7->Interpolate(LVec_pim_n.P());
-          //weight *= fweight_Mompippim_vSp8->Interpolate(LVec_pip_pim.P());
-          //weight *= fweight_MMnmiss_vSp9->Interpolate(nmiss_mass);
-          //weight *= fweight_IMnpip_vSp10->Interpolate(LVec_pip_n.M());
-          //weight *= fweight_IMnpim_vSp11->Interpolate(LVec_pim_n.M());
-          //weight *= fweight_IMpippim_vSp12->Interpolate(LVec_pip_pim.M());
-          //weight *= fweight_nmom_vSp13->Interpolate((*LVec_n).P());
-          //weight *= fweight_Momnpip_vSp14->Interpolate(LVec_pip_n.P());
-          //weight *= fweight_Mompippim_vSp15->Interpolate(LVec_pip_pim.P());
-          //weight *= fweight_MMnmiss_vSp16->Interpolate(nmiss_mass);
-          //weight *= fweight_Mompippim_vSp17->Interpolate(LVec_pip_pim.P());
-          //weight *= fweight_IMpippim_vSp18->Interpolate(LVec_pip_pim.M());
-          //weight *= fweight_IMnpip_vSp19->Interpolate(LVec_pip_n.M());
-          //weight *= fweight_IMnpim_vSp20->Interpolate(LVec_pim_n.M());
-          //weight *= fweight_Momnpip_vSp21->Interpolate(LVec_pip_n.P());
-          //weight *= fweight_MMnmiss_vSp22->Interpolate(nmiss_mass);
-          //weight *= fweight_IMpippim_vSp23->Interpolate(LVec_pip_pim.M());
-          //weight *= fweight_Mompippim_vSp24->Interpolate(LVec_pip_pim.P());
-          //weight *= fweight_Momnpim_vSp25->Interpolate(LVec_pim_n.P());
-          //weight *= fweight_MMnmiss_vSp26->Interpolate(nmiss_mass);
-          //weight *= fweight_IMpippim_vSp27->Interpolate(LVec_pip_pim.M());
-          //weight *= fweight_Mompippim_vSp28->Interpolate(LVec_pip_pim.P());
-          //weight *= fweight_IMnpip_vSp29->Interpolate(LVec_pip_n.M());
-          
-          /*
-          //weight *= fweight_IMnpim_IMnpip_vSp23->Interpolate(LVec_pip_n.M(),LVec_pim_n.M());
-          //weight *= fweight_MMnmiss_vSp24->Interpolate(nmiss_mass);
-          //weight *= fweight_IMpippim_vSp25->Interpolate(LVec_pip_pim.M());
-          weight *= fweight_q_nmom_vSp26->Interpolate((*LVec_n).P(),qkn.P());
-          //weight *= fweight_MMnmiss_IMpippim_vSp27->Interpolate(LVec_pip_pim.M(),nmiss_mass);
-          //weight *= fweight_IMnpim_IMnpip_vSp28->Interpolate(LVec_pip_n.M(),LVec_pim_n.M());
-          //weight *= fweight_MMnmiss_IMpippim_vSp29->Interpolate(LVec_pip_pim.M(),nmiss_mass);
-          weight *= fweight_q_nmom_vSp30->Interpolate((*LVec_n).P(),qkn.P());
-          //weight *= fweight_IMnpim_IMnpip_vSp31->Interpolate(LVec_pip_n.M(),LVec_pim_n.M());
-          //weight *= fweight_MMnmiss_IMpippim_vSp32->Interpolate(LVec_pip_pim.M(),nmiss_mass);
-          //weight *= fweight_IMnpim_IMnpip_vSp33->Interpolate(LVec_pip_n.M(),LVec_pim_n.M());
-          //weight *= fweight_IMnpip_vSp34->Interpolate(LVec_pip_n.M());
-          //weight *= fweight_IMnpip_vSp37->Interpolate(LVec_pip_n.M());
-          weight *= fweight_IMnpim_vSp38->Eval(LVec_pim_n.M());
-          weight *= fweight_IMnpip_vSp39->Eval(LVec_pip_n.M());
-          //weight *= fweight_IMpippim_vSp42->Interpolate(LVec_pip_pim.M());
-          weight *= fweight_MMnmiss_vSp21->Eval(nmiss_mass);
-          weight *= fweight_IMpippim_vSp22->Eval(LVec_pip_pim.M());
-          weight *= fweight_q_nmom_vSp46->Interpolate((*LVec_n).P(),qkn.P());
-          */
         }else if(SimFakeK0mode) { //wK0
           weight = 0;
           //weight *= fweight_q_wK0_v377->Eval((qkn.P()));
