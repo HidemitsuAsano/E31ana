@@ -1,4 +1,4 @@
-void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v201_out.root"){
+void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v201_out_iso.root"){
   
   TFile *f = new TFile(filename,"READ");
   f->cd();
@@ -68,7 +68,12 @@ void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v201_out.roo
   pippy_woSid_won->Draw("HEsame");
   
 
-
+  TCanvas *c5_5 = new TCanvas("c5_5","c5_5");
+  TH1D* npimtof_woSid_won = (TH1D*) diff2d_CDC_CDH_pim_phi_tof->ProjectionY();
+  TH1D* npiptof_woSid_won = (TH1D*) diff2d_CDC_CDH_pip_phi_tof->ProjectionY();
+  npimtof_woSid_won->Draw("HE");
+  npiptof_woSid_won->SetLineColor(2);
+  npiptof_woSid_won->Draw("HEsame");
 
   /*
   TCanvas *c5 = new TCanvas("c5","c5");

@@ -27,6 +27,7 @@
   double dE;   // energy deposit on CDH
   int neutralseg;
   int nhitOutCDC;
+  int ForwardCharge;
   double mcncanvtxr;
   double mcncanvtxz;
   int mcncdsgen;
