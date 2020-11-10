@@ -71,7 +71,7 @@ const bool ForwardVetoFlag=true;
 //BG flag -> handle BG region for _woSid_won histograms
 //0 : all BG  = excludes missing neutron and Sigma+/- (cross cut)
 //1 : BG near sigal region = addional excluded region for BG
-const int  BGFlag_woSid_won=1;
+const int  BGFlag_woSid_won=0;
 
 const bool IsMCweighting = true;
 
@@ -540,6 +540,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* IMnpim_IMnpip_dE_woK0_n;//
   TH2F* IMnpim_IMnpip_dE_woK0_wSid_n;//
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n;//
+  TH2F* IMnpim_IMnpip_dE_woSid;//
   TH2F* IMnpim_IMnpip_dE_woSid_won;//
   TH2F* IMnpim_IMnpip_dE_woK0_woSid;//
   TH2F* IMnpim_IMnpip_dE_woK0_woSid_won;//
@@ -656,9 +657,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* MMnmiss_Mompippim_dE_wK0_woSidn_won;// (miss n & Sigma+/-) is rejected
   TH2F* MMnmiss_IMnpip_dE;
   TH2F* MMnmiss_IMnpip_dE_fake;
+  TH2F* MMnmiss_IMnpip_dE_woSid;
   TH2F* MMnmiss_IMnpip_dE_woSid_won;
   TH2F* MMnmiss_IMnpim_dE;
   TH2F* MMnmiss_IMnpim_dE_fake;
+  TH2F* MMnmiss_IMnpim_dE_woSid;
   TH2F* MMnmiss_IMnpim_dE_woSid_won;
   TH2F* MMnmiss_IMnpip_dE_woK0;
   TH2F* MMnmiss_IMnpim_dE_woK0;
@@ -1534,6 +1537,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   MMnmiss_IMnpip_dE_fake->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   MMnmiss_IMnpip_dE_fake->SetYTitle("Miss Mass. [GeV/c^{2}]");
   
+  MMnmiss_IMnpip_dE_woSid = new TH2F("MMnmiss_IMnpip_dE_woSid", "MMnmiss_IMnpip_dE_woSid",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
+  MMnmiss_IMnpip_dE_woSid->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  MMnmiss_IMnpip_dE_woSid->SetYTitle("Miss Mass. [GeV/c^{2}]");
+  
   MMnmiss_IMnpip_dE_woSid_won = new TH2F("MMnmiss_IMnpip_dE_woSid_won", "MMnmiss_IMnpip_dE_woSid_won",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMnpip_dE_woSid_won->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   MMnmiss_IMnpip_dE_woSid_won->SetYTitle("Miss Mass. [GeV/c^{2}]");
@@ -1602,6 +1609,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   MMnmiss_IMnpim_dE_fake->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMnpim_dE_fake->SetYTitle("Miss Mass. [GeV/c^{2}]");
 
+  MMnmiss_IMnpim_dE_woSid = new TH2F("MMnmiss_IMnpim_dE_woSid", "MMnmiss_IMnpim_dE_woSid",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
+  MMnmiss_IMnpim_dE_woSid->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  MMnmiss_IMnpim_dE_woSid->SetYTitle("Miss Mass. [GeV/c^{2}]");
+  
   MMnmiss_IMnpim_dE_woSid_won = new TH2F("MMnmiss_IMnpim_dE_woSid_won", "MMnmiss_IMnpim_dE_woSid_won",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMnpim_dE_woSid_won->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMnpim_dE_woSid_won->SetYTitle("Miss Mass. [GeV/c^{2}]");
@@ -1747,6 +1758,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0_wSid_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_woK0_wSid_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
 
+  IMnpim_IMnpip_dE_woSid = new TH2F("IMnpim_IMnpip_dE_woSid","IMnpim_IMnpip_dE_woSid",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  IMnpim_IMnpip_dE_woSid->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpim_IMnpip_dE_woSid->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  
   IMnpim_IMnpip_dE_woSid_won = new TH2F("IMnpim_IMnpip_dE_woSid_won","IMnpim_IMnpip_dE_woSid_won",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_woSid_won->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_woSid_won->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
@@ -4235,7 +4250,12 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       nmom_diffz_CDC_CDH_pip->Fill(diffpip.z(),(*LVec_n).P());
       q_MMnmiss->Fill(nmiss_mass,qkn.P(),weight);
 
-
+      if(!SigmawidePFlag && !SigmawideMFlag ) { 
+        IMnpim_IMnpip_dE_woSid->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
+        MMnmiss_IMnpip_dE_woSid->Fill(LVec_pip_n.M(),nmiss_mass,weight);
+        MMnmiss_IMnpim_dE_woSid->Fill(LVec_pim_n.M(),nmiss_mass,weight);
+      }
+      
       if(IsBGregion){
         diff2d_CDC_CDH_pim_woSid_won->Fill(diffPhinpim,diffpim.z());
         diff2d_CDC_CDH_pim_phi_tof_woSid_won->Fill(diffPhinpim,difftofnpim);
