@@ -32,8 +32,13 @@ TLorentzVector *react_pi2=NULL;      // generated 4-momentum(neutron)
 double NeutralBetaCDH2; // velocity of neutral particle on CDH
 double NeutralBetaCDH_beam2; // velocity of neutral particle on CDH
 double NeutralBetaCDH_vtx2[2]; // velocity of neutral particle on CDH,0: Spmode 1:Smmode
+double tofpim2;
+double tofpip2;
+double tofn2;
 double dE2;   // energy deposit on CDH
 int neutralseg2;
+int nhitOutCDC2;
+int ForwardCharge2;
 double mcncanvtxr2;
 double mcncanvtxz2;
 int mcncdsgen2;
@@ -50,7 +55,7 @@ TVector3 *CDH_Pos_pim2 = NULL;
 TVector3 *CDH_Pos_pip2 = NULL;
 
 
-void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v199.root")
+void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
 {
   TFile *f = new TFile(filename,"READ");
   //TFile *f = new TFile("sim_piSpn_dE0_Al.root");
@@ -76,9 +81,13 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v199.root")
   tree->SetBranchAddress( "NeutralBetaCDH", &NeutralBetaCDH );
   tree->SetBranchAddress( "NeutralBetaCDH_beam", &NeutralBetaCDH_beam );//from v192
   tree->SetBranchAddress( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
+  tree->SetBranchAddress( "tofpim",&tofpim);
+  tree->SetBranchAddress( "tofpip",&tofpip);
+  tree->SetBranchAddress( "tofn",&tofn);
   tree->SetBranchAddress( "dE", &dE );
   tree->SetBranchAddress( "neutralseg", &neutralseg );  
   tree->SetBranchAddress( "nhitOutCDC", &nhitOutCDC ); //charge veto by Outer 3 layer of 3cdc
+  tree->SetBranchAddress( "ForwardCharge", &ForwardCharge);
   tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
   tree->SetBranchAddress( "vtx_pip_beam",&vtx_pip_beam);
   tree->SetBranchAddress( "vtx_pim_beam",&vtx_pim_beam);
@@ -129,9 +138,13 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v199.root")
   treeMIX->Branch( "NeutralBetaCDH", &NeutralBetaCDH2 );
   treeMIX->Branch( "NeutralBetaCDH_beam", &NeutralBetaCDH_beam2 );
   treeMIX->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx2);
+  treeMIX->Branch( "tofpim",&tofpim2);
+  treeMIX->Branch( "tofpip",&tofpip2);
+  treeMIX->Branch( "tofn",&tofn2);
   treeMIX->Branch( "dE", &dE2 );
   treeMIX->Branch( "neutralseg", &neutralseg2 );
-  treeMIX->Branch( "nhitOutCDC", &nhitOutCDC ); //charge veto by Outer 3 layer of 3cdc
+  treeMIX->Branch( "nhitOutCDC", &nhitOutCDC2 ); //charge veto by Outer 3 layer of 3cdc
+  treeMIX->Branch( "ForwardCharge", &ForwardCharge2);
   treeMIX->Branch( "vtx_reaction", &vtx_reaction2 );
   treeMIX->Branch( "vtx_pip_beam", &vtx_pip_beam2 );
   treeMIX->Branch( "vtx_pim_beam", &vtx_pim_beam2 );
@@ -158,10 +171,11 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v199.root")
   std::cout << "dE cut:" << anacuts::dE_MIN << std::endl;
   //mixed variables
   std::vector <TLorentzVector> vec_LVec_n;
-  //std::vector <double> vec_dE;
-  //std::vector <double> vec_NeutralBetaCDH;
+  std::vector <double> vec_dE;
+  std::vector <double> vec_NeutralBetaCDH;
   std::vector <TVector3> vec_CDH_Pos;
-  //std::vector <int> vec_neutralseg;
+  std::vector <int> vec_neutralseg;
+  std::vector <double> vec_tofn;
 
   for ( Int_t i=0; i<nevent; i++ ) {
     tree->GetEvent(i);
@@ -213,6 +227,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v199.root")
     //Sigma- production in CDS
     if( (anacuts::Sigmam_MIN_wide<MassNPim && MassNPim<anacuts::Sigmam_MAX_wide)) SigmawideMFlag=true;
     
+    /*
     TVector3 diffpim = (*CDH_Pos)-(*CDH_Pos_pim);
     double diffPhinpim = (*CDH_Pos).Phi()-(*CDH_Pos_pim).Phi();
     if(diffPhinpim<-1.0*TMath::Pi()) diffPhinpim += 2.0*TMath::Pi();
@@ -224,22 +239,24 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v199.root")
     if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
     else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
     if( (diffPhinpip*diffPhinpip)/0.5/0.5+diffpip.Z()*diffpip.Z()/25.0/25.0 <1 ) continue;
-
+    */
 
     if(!MissNwideFlag && !SigmawidePFlag && !SigmawideMFlag){
       vec_LVec_n.push_back(*LVec_n);
-      //vec_dE.push_back(dE);
-      //vec_NeutralBetaCDH.push_back(NeutralBetaCDH);
+      vec_dE.push_back(dE);
+      vec_NeutralBetaCDH.push_back(NeutralBetaCDH);
       vec_CDH_Pos.push_back(*CDH_Pos);
-      //vec_neutralseg.push_back(neutralseg);
+      vec_neutralseg.push_back(neutralseg);
+      vec_tofn.push_back(tofn);
     }
   }
 
   decltype(vec_LVec_n)::iterator last_n = vec_LVec_n.end();
-  //decltype(vec_dE)::iterator last_dE = vec_dE.end();
-  //decltype(vec_NeutralBetaCDH)::iterator last_Beta =vec_NeutralBetaCDH.end();
+  decltype(vec_dE)::iterator last_dE = vec_dE.end();
+  decltype(vec_NeutralBetaCDH)::iterator last_Beta =vec_NeutralBetaCDH.end();
   decltype(vec_CDH_Pos)::iterator last_CDH_Pos = vec_CDH_Pos.end();
-  //decltype(vec_neutralseg)::iterator last_neutralseg = vec_neutralseg.end();
+  decltype(vec_neutralseg)::iterator last_neutralseg = vec_neutralseg.end();
+  decltype(vec_tofn)::iterator last_tofn = vec_tofn.end();
   
   const size_t nsize=vec_LVec_n.size();
   for ( Int_t i=0; i<nevent*10; i++ ) {
@@ -253,10 +270,11 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v199.root")
     *LVec_pim2 = *LVec_pim;
     //decrement iterators 
     last_n--;
-    //last_dE--;
-    //last_Beta--;
+    last_dE--;
+    last_Beta--;
     last_CDH_Pos--;
-    //last_neutralseg--;
+    last_neutralseg--;
+    last_tofn--;
     //std::cout << (*last_n).P() << std::endl;
     //std::cout << *last_dE << std::endl;
     //std::cout << *last_Beta << std::endl;
@@ -267,19 +285,30 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v199.root")
     if(i!=0 &&  (i%(nsize-1)==0)){
      std::cout << "L." << __LINE__ <<  "  "  << i << std::endl;
      last_n+=(nsize-1);
+     last_dE+=(nsize-1);
+     last_Beta+=(nsize-1);
      last_CDH_Pos+=(nsize-1);
+     last_neutralseg+=(nsize-1);
+     last_tofn+=(nsize-1);
     }
+
     if((*LVec_n2).P() < 0.0001){
       std::cout << (*LVec_n2).P() << std::endl;
     }
     *LVec_n_beam2 = *LVec_n_beam;
     *LVec_n_Sp2 = *LVec_n_Sp;
     *LVec_n_Sm2 = *LVec_n_Sm;
-    //NeutralBetaCDH2 = *last_Beta;
-    NeutralBetaCDH2 = NeutralBetaCDH;
-    dE2 = dE;
-    //neutralseg2 = *last_neutralseg;
-    neutralseg2 = neutralseg;
+    NeutralBetaCDH2 = *last_Beta;
+    //NeutralBetaCDH2 = NeutralBetaCDH;
+    tofpim2 = tofpim;  
+    tofpip2 = tofpip;  
+    tofn2   = *last_tofn;    
+    //dE2 = dE;
+    dE2 = *last_dE;
+    neutralseg2 = *last_neutralseg;
+    nhitOutCDC2 = 0;
+    ForwardCharge2 = 0;
+    //neutralseg2 = neutralseg;
     *CA_pip2 = *CA_pip;
     *CA_pim2 = *CA_pim;
     *CDH_Pos2 = *last_CDH_Pos;
