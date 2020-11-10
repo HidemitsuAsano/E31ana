@@ -71,7 +71,7 @@ const bool ForwardVetoFlag=true;
 //BG flag -> handle BG region for _woSid_won histograms
 //0 : all BG  = excludes missing neutron and Sigma+/- (cross cut)
 //1 : BG near sigal region = addional excluded region for BG
-const int  BGFlag_woSid_won=0;
+const int  BGFlag_woSid_won=1;
 
 const bool IsMCweighting = true;
 
@@ -656,8 +656,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* MMnmiss_Mompippim_dE_wK0_woSidn_won;// (miss n & Sigma+/-) is rejected
   TH2F* MMnmiss_IMnpip_dE;
   TH2F* MMnmiss_IMnpip_dE_fake;
+  TH2F* MMnmiss_IMnpip_dE_woSid_won;
   TH2F* MMnmiss_IMnpim_dE;
   TH2F* MMnmiss_IMnpim_dE_fake;
+  TH2F* MMnmiss_IMnpim_dE_woSid_won;
   TH2F* MMnmiss_IMnpip_dE_woK0;
   TH2F* MMnmiss_IMnpim_dE_woK0;
   TH2F* MMnmiss_IMnpip_dE_woK0_woSm;
@@ -1531,6 +1533,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   MMnmiss_IMnpip_dE_fake = new TH2F("MMnmiss_IMnpip_dE_fake", "MMnmiss_IMnpip_dE_fake",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMnpip_dE_fake->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   MMnmiss_IMnpip_dE_fake->SetYTitle("Miss Mass. [GeV/c^{2}]");
+  
+  MMnmiss_IMnpip_dE_woSid_won = new TH2F("MMnmiss_IMnpip_dE_woSid_won", "MMnmiss_IMnpip_dE_woSid_won",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
+  MMnmiss_IMnpip_dE_woSid_won->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  MMnmiss_IMnpip_dE_woSid_won->SetYTitle("Miss Mass. [GeV/c^{2}]");
 
   MMnmiss_IMnpip_dE_woK0 = new TH2F("MMnmiss_IMnpip_dE_woK0", "MMnmiss_IMnpip_dE_woK0",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMnpip_dE_woK0->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
@@ -1596,6 +1602,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   MMnmiss_IMnpim_dE_fake->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMnpim_dE_fake->SetYTitle("Miss Mass. [GeV/c^{2}]");
 
+  MMnmiss_IMnpim_dE_woSid_won = new TH2F("MMnmiss_IMnpim_dE_woSid_won", "MMnmiss_IMnpim_dE_woSid_won",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
+  MMnmiss_IMnpim_dE_woSid_won->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  MMnmiss_IMnpim_dE_woSid_won->SetYTitle("Miss Mass. [GeV/c^{2}]");
+  
   MMnmiss_IMnpim_dE_woK0 = new TH2F("MMnmiss_IMnpim_dE_woK0", "MMnmiss_IMnpim_dE_woK0",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMnpim_dE_woK0->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMnpim_dE_woK0->SetYTitle("Miss Mass. [GeV/c^{2}]");
@@ -4050,6 +4060,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         IsBGregion = true;
       }
     }
+    //exclude pi+pi-lambda+n_true, pi+pi-pi0+lambda+n_true and so on
+    //pick up n_fake events as much as possible
+    else if(BGFlag_woSid_won==1){
+      if(!SigmawidePFlag && !SigmawideMFlag && !MissNwideFlag ){
+        IsBGregion = true;
+      }
+      if( anacuts::neutron_MAX_wide <=nmiss_mass) IsBGregion = false;
+    }
 
     //std::cout << __LINE__ << std::endl;
     double weight = 1.0;
@@ -4231,7 +4249,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         IMnpim_IMnpip_dE_woSid_won->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         MMnmiss_IMpippim_dE_woSid_won->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
         q_nmom_woSid_won->Fill((*LVec_n).P(),qkn.P(),weight);
-
+        MMnmiss_IMnpip_dE_woSid_won->Fill(LVec_pip_n.M(),nmiss_mass,weight);
+        MMnmiss_IMnpim_dE_woSid_won->Fill(LVec_pim_n.M(),nmiss_mass,weight);
         Momnpim_Momnpip_dE_woSid_won->Fill(LVec_pip_n.P(),LVec_pim_n.P(),weight);
         Momnpim_Mompippim_dE_woSid_won->Fill(LVec_pip_pim.P(),LVec_pim_n.P(),weight);
         pimmom_diffphi_CDC_CDH_pim_woSid_won->Fill(diffPhinpim,(*LVec_pim).P());
