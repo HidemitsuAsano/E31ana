@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <TROOT.h>
 #include <TFile.h>
 #include <TTree.h>
 #include <TString.h>
@@ -57,6 +58,10 @@ TVector3 *CDH_Pos_pip2 = NULL;
 
 void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
 {
+  if(gROOT->GetVersionInt() < 60000){
+    std::cout << "Use ROOT6 " << std::endl;
+    return;
+  }
   TFile *f = new TFile(filename,"READ");
   //TFile *f = new TFile("sim_piSpn_dE0_Al.root");
   TTree *tree = (TTree*)f->Get("EventTree");
@@ -117,7 +122,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
   }
   
   TString outname = std::string(filename);
-  outname.Replace(std::string(filename).size()-5,5,"_MIX.root");
+  outname.Replace(std::string(filename).size()-5,5,"_MIX_cut2.root");
 
 
   TFile *fout = new TFile(outname.Data(),"RECREATE");
@@ -227,91 +232,85 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
     //Sigma- production in CDS
     if( (anacuts::Sigmam_MIN_wide<MassNPim && MassNPim<anacuts::Sigmam_MAX_wide)) SigmawideMFlag=true;
     
-    /*
+    
     TVector3 diffpim = (*CDH_Pos)-(*CDH_Pos_pim);
     double diffPhinpim = (*CDH_Pos).Phi()-(*CDH_Pos_pim).Phi();
     if(diffPhinpim<-1.0*TMath::Pi()) diffPhinpim += 2.0*TMath::Pi();
     else if(diffPhinpim>1.0*TMath::Pi()) diffPhinpim -= 2.0*TMath::Pi();
-    if( (diffPhinpim*diffPhinpim)/0.6/0.6+diffpim.Z()*diffpim.Z()/25.0/25.0 <1 ) continue;
-    
+    if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.60/0.60+diffpim.Z()*diffpim.Z()/25.0/25.0 <1 ) continue;
+
     TVector3 diffpip = (*CDH_Pos)-(*CDH_Pos_pip);
     double diffPhinpip = (*CDH_Pos).Phi()-(*CDH_Pos_pip).Phi();
     if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
     else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
-    if( (diffPhinpip*diffPhinpip)/0.5/0.5+diffpip.Z()*diffpip.Z()/25.0/25.0 <1 ) continue;
-    */
+    if( ((diffPhinpip+0.05)*(diffPhinpip+0.05))/0.4/0.4+diffpip.Z()*diffpip.Z()/25.0/25.0 <1 ) continue;
 
     if(!MissNwideFlag && !SigmawidePFlag && !SigmawideMFlag){
       vec_LVec_n.push_back(*LVec_n);
-      vec_dE.push_back(dE);
       vec_NeutralBetaCDH.push_back(NeutralBetaCDH);
-      vec_CDH_Pos.push_back(*CDH_Pos);
-      vec_neutralseg.push_back(neutralseg);
       vec_tofn.push_back(tofn);
+      vec_dE.push_back(dE);
+      vec_neutralseg.push_back(neutralseg);
+      vec_CDH_Pos.push_back(*CDH_Pos);
     }
   }
 
   decltype(vec_LVec_n)::iterator last_n = vec_LVec_n.end();
-  decltype(vec_dE)::iterator last_dE = vec_dE.end();
   decltype(vec_NeutralBetaCDH)::iterator last_Beta =vec_NeutralBetaCDH.end();
-  decltype(vec_CDH_Pos)::iterator last_CDH_Pos = vec_CDH_Pos.end();
-  decltype(vec_neutralseg)::iterator last_neutralseg = vec_neutralseg.end();
   decltype(vec_tofn)::iterator last_tofn = vec_tofn.end();
+  decltype(vec_dE)::iterator last_dE = vec_dE.end();
+  decltype(vec_neutralseg)::iterator last_neutralseg = vec_neutralseg.end();
+  decltype(vec_CDH_Pos)::iterator last_CDH_Pos = vec_CDH_Pos.end();
   
   const size_t nsize=vec_LVec_n.size();
   for ( Int_t i=0; i<nevent*10; i++ ) {
     tree->GetEvent(i%(nevent-1));
     if(i%50000==0) std::cout << "Event# " << i << std::endl;
+    //decrement iterators 
+    last_n--;
+    last_Beta--;
+    last_tofn--;
+    last_dE--;
+    last_neutralseg--;
+    last_CDH_Pos--;
+    //std::cout << (*last_n).P() << std::endl;
+    //std::cout << *last_Beta << std::endl;
+    //std::cout << *last_tofn << std::endl;
+    //std::cout << *last_dE << std::endl;
+    //std::cout << *last_neutralseg << std::endl;
+    //std::cout << (*last_CDH_Pos).Phi() << std::endl;
+
+
     *LVec_beam2 =  *LVec_beam;
     *LVec_beam_Sp2 = *LVec_beam_Sp;
     *LVec_beam_Sm2 = *LVec_beam_Sm;
     *LVec_target2 = *LVec_target;
     *LVec_pip2 = *LVec_pip;
     *LVec_pim2 = *LVec_pim;
-    //decrement iterators 
-    last_n--;
-    last_dE--;
-    last_Beta--;
-    last_CDH_Pos--;
-    last_neutralseg--;
-    last_tofn--;
-    //std::cout << (*last_n).P() << std::endl;
-    //std::cout << *last_dE << std::endl;
-    //std::cout << *last_Beta << std::endl;
-    //std::cout << (*last_CDH_Pos).Phi() << std::endl;
-    //std::cout << *last_neutralseg << std::endl;
-
-    *LVec_n2 = *last_n;
-    if(i!=0 &&  (i%(nsize-1)==0)){
-     std::cout << "L." << __LINE__ <<  "  "  << i << std::endl;
-     last_n+=(nsize-1);
-     last_dE+=(nsize-1);
-     last_Beta+=(nsize-1);
-     last_CDH_Pos+=(nsize-1);
-     last_neutralseg+=(nsize-1);
-     last_tofn+=(nsize-1);
-    }
-
+    *LVec_n2 = *last_n;//mixing param.
     if((*LVec_n2).P() < 0.0001){
+      std::cout << "Something is wrong " << std::endl;
       std::cout << (*LVec_n2).P() << std::endl;
     }
     *LVec_n_beam2 = *LVec_n_beam;
     *LVec_n_Sp2 = *LVec_n_Sp;
     *LVec_n_Sm2 = *LVec_n_Sm;
-    NeutralBetaCDH2 = *last_Beta;
-    //NeutralBetaCDH2 = NeutralBetaCDH;
+    NeutralBetaCDH2 = NeutralBetaCDH;
+    //NeutralBetaCDH2 = *last_Beta;//mixing param.
     tofpim2 = tofpim;  
     tofpip2 = tofpip;  
+    //tofn2   = tofn; //mixing param.   
     tofn2   = *last_tofn;    
-    //dE2 = dE;
-    dE2 = *last_dE;
-    neutralseg2 = *last_neutralseg;
-    nhitOutCDC2 = 0;
-    ForwardCharge2 = 0;
-    //neutralseg2 = neutralseg;
+    dE2 = dE;
+    //dE2 = *last_dE; //mixing param.
+    neutralseg2 = neutralseg;
+    //neutralseg2 = *last_neutralseg; //mixing param.
+    nhitOutCDC2 = nhitOutCDC;
+    ForwardCharge2 = ForwardCharge;
     *CA_pip2 = *CA_pip;
     *CA_pim2 = *CA_pim;
-    *CDH_Pos2 = *last_CDH_Pos;
+    *CDH_Pos2 = *CDH_Pos;
+    //*CDH_Pos2 = *last_CDH_Pos;//mixing param.
     *CDH_Pos_pim2 = *CDH_Pos_pim;
     *CDH_Pos_pip2 = *CDH_Pos_pip;
     if(SimSpmode || SimSmmode){
@@ -323,6 +322,17 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
       *react_nmiss2 = *react_nmiss;
       *react_Sigma2 = *react_Sigma;
       *react_pi2 = *react_pi;
+    }
+    
+    //re-use mixing param.
+    if(i!=0 &&  (i%(nsize-1)==0)){
+     std::cout << "L." << __LINE__ <<  "  "  << i << std::endl;
+     last_n+=(nsize-1);
+     last_Beta+=(nsize-1);
+     last_tofn+=(nsize-1);
+     last_dE+=(nsize-1);
+     last_neutralseg+=(nsize-1);
+     last_CDH_Pos+=(nsize-1);
     }
     treeMIX->Fill();
   }
