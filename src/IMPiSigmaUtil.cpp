@@ -1418,7 +1418,8 @@ void Util::AnaMcData2(MCData *mcdata,
   unsigned int nNeutrons = 0;
   int genNeutron = -1;
   bool isWentCDHOutSide = false;
-  
+  bool isinFiducialORinCDH = true;
+
   while(true){
     //std::cout << __LINE__ << std::endl;
     if(generation == 1) break;
@@ -1429,6 +1430,17 @@ void Util::AnaMcData2(MCData *mcdata,
     AncestorVTX[anc] = AncestorTr[anc]->vertex();
     AncestorPDG[anc] = AncestorTr[anc]->pdgID();
     Track *parenttrack_p = Util::FindTrackFromMcIndex(mcdata,AncestorTrackID[anc]);
+    
+    //check vertex pos.
+    //Since Sigma has some flight length, it can go out side of target volume
+    if(GeomTools::GetID(AncestorVTX[anc])==CID_TarCell){
+      isinFiducialORinCDH = false;
+    }else if( (AncestorVTX[anc].Perp()/10.0 > 12 ) &&
+              (AncestorVTX[anc].Z()/10.0 < -15.0) && 
+              (5 < AncestorVTX[anc].Z()/10.0) ){
+      isinFiducialORinCDH = false;
+    }
+    if(GeomTools::GetID(AncestorVTX[anc])==CID_CDH)  isinFiducialORinCDH = true;
 
     if(anc==0){
       Tools::H2(Form("vtxrz_cdhhitparenet"),AncestorVTX[anc].Z()/10.,
@@ -1489,12 +1501,12 @@ void Util::AnaMcData2(MCData *mcdata,
 
   int pattern=0;
   if( isFromNeutron && !isFromSigma  && !isFromPion && isWentCDHOutSide ) pattern=1;//BG neutron
-  else if( isFromNeutron && isFromSigma && !isFromPion && isSigmaNeutronChain && !isWentCDHOutSide ) pattern=2;//Signal 
+  else if( isFromNeutron && isFromSigma && !isFromPion && isSigmaNeutronChain && !isWentCDHOutSide && isinFiducialORinCDH ) pattern=2;//Signal 
   else if( isFromNeutron && isFromSigma && !isFromPion && isSigmaNeutronChain && isWentCDHOutSide ) pattern=3;//BG 
   else if( isFromNeutron && isFromSigma && !isFromPion && !isSigmaNeutronChain ) pattern=4;//BG
   else if( isFromNeutron && !isFromSigma && isFromPion ) pattern=5;//BG
   else if( isFromNeutron && isFromSigma  && isFromPion ) pattern=6;//BG
-  else if( isFromNeutron && !isFromSigma && !isFromPion && !isWentCDHOutSide) pattern=7;//BG but initial neutron
+  else if( isFromNeutron && !isFromSigma && !isFromPion && !isWentCDHOutSide && isinFiducialORinCDH) pattern=7;//BG but initial neutron
   //std::cout << "pattern = " << pattern << std::endl;
   Tools::H1(Form("NfakePattern"),pattern,10,-0.5,9.5);
   

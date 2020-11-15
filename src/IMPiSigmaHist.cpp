@@ -16,6 +16,7 @@ void InitBasicHist(const bool MCFlag)
   Tools::newTH1F( Form("npimangle"),628, 0, 2*3.14);
   Tools::newTH1F( Form("npipangle"),628, 0, 2*3.14);
   Tools::newTH1F( Form("CDCInner3Mul"),20,0,20);
+  Tools::newTH1F( Form("NCDCOutHit"),30,0,30);
 
   if(MCFlag){
     //vertex reso//

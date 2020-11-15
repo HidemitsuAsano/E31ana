@@ -1173,6 +1173,7 @@ int main( int argc, char** argv )
         //nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
         nCDCforVeto = Util::GetNHitsCDCOuterNoAss(Pos_CDH,cdsMan,cdstrackMan,cdscuts::chargevetoangle);
         Util::AnaPipPimCDCCDH(Pos_CDH,NeutralCDHseg,pip_ID[0],pim_ID[0],cdsMan,cdstrackMan);
+        Tools::Fill1D(Form("NCDCOutHit"),nCDCforVeto);
       }
       //Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is wrong in SIM [20170925]
       Pos_CDH.SetZ(ncdhhit->hitpos());
@@ -1922,7 +1923,7 @@ int main( int argc, char** argv )
             dE = ncdhhit->emean();
             neutralseg = ncdhhit->seg();
             nhitOutCDC = nCDCforVeto;
-            ForwardCharge = forwardcharge;
+            ForwardCharge = (int)forwardcharge;
             mom_n_Sp = LVec_n_vtx[0];            // 4-momentum(neutron)
             mom_n_Sm = LVec_n_vtx[1];            // 4-momentum(neutron)
             mom_beam_Sp = LVec_beam_vtx[0];

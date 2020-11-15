@@ -876,6 +876,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
     //const int nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
     const int nCDCforVeto = Util::GetNHitsCDCOuterNoAss(Pos_CDH,cdsMan,trackMan,cdscuts::chargevetoangle);
+    Tools::Fill1D(Form("NCDCOutHit"),nCDCforVeto);
     Pos_CDH.SetZ(-1.*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
     //** neutral particle in CDH **//
     //if( !nCDCforVeto ) {
@@ -1541,8 +1542,8 @@ void EventAnalysis::Finalize()
   std::cout<<" nAbort_flagbmom      = "<<nAbort_flagbmom<<std::endl;
   std::cout<<" nAbort_ftarget       = "<<nAbort_ftarget<<std::endl;
   std::cout<<" nAbort_CDHiso        = "<<nAbort_CDHiso<<std::endl;
-  std::cout<<" nAbort_CDCInner3Lay   = "<<nAbort_CDCInner3Lay<<std::endl;
-  std::cout<<" nAbort_nAbort_pipi   = "<<nAbort_pipi<<std::endl;
+  std::cout<<" nAbort_CDCInner3Lay  = "<<nAbort_CDCInner3Lay<<std::endl;
+  std::cout<<" nAbort_pipi          = "<<nAbort_pipi<<std::endl;
   std::cout<<" nAbort_end           = "<<nAbort_end<<std::endl;
   std::cout<<"========= Abort counter ========="<<std::endl;
   std::cout<<"*** # of pi+ pi- n events = "<<nFill_npippim<<" ***"<<std::endl;
