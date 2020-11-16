@@ -416,6 +416,10 @@ void QACDS(TFile *f){
   TH1F* h1_diff_CDH_pip = (TH1F*)f->Get("diff_CDH_pip");
   h1_diff_CDH_pip->SetLineColor(3);
   h1_diff_CDH_pip->Draw("same");
+  TLegend *leg_diff_CDH = new TLegend(0.6,0.7,0.9,0.9);
+  leg_diff_CDH->AddEntry(h1_diff_CDH_pim,"#pi^{-}","L");
+  leg_diff_CDH->AddEntry(h1_diff_CDH_pip,"#pi^{+}","L");
+  leg_diff_CDH->Draw();
   
   TCanvas *cdiff_CDH_CDC = new TCanvas("cdiff_CDH_CDC","diff_CDH_CDC");
   TH1F* h1_diff_CDH_CDC = (TH1F*)f->Get("diff_CDH_CDC");
@@ -450,6 +454,8 @@ void QACDS(TFile *f){
   h1_4mevcut->Draw("same");
   h1_6mevcut->SetLineColor(4);
   h1_6mevcut->Draw("same");
+
+  
   
   TCanvas *c_dE_fiducial = new TCanvas("c_dE_fiducial","dE_betainv_fid_beta");
   TH2F* h2_dE_betainv_fid_beta = (TH2F*)f->Get("dE_betainv_fid_beta");
@@ -478,10 +484,14 @@ void QACDS(TFile *f){
 
   TCanvas *cCDH_mom_TOF_pi = new TCanvas("cCDH_mom_TOF_pi","CDH_mom_TOF_pi");
   TH2F* CDH_mom_TOF_pi = (TH2F*)f->Get("CDH_mom_TOF_pi");
-  CDH_mom_TOF_pi = (TH2F*)f->Get("CDH_mom_TOF_pi");
   CDH_mom_TOF_pi->SetXTitle("TOF (meas. - cal.) [nsec]");
   CDH_mom_TOF_pi->ProjectionX()->Draw();
- 
+  
+  TCanvas *cNCDCOutHit = new TCanvas("cNCDCOutHit","cNCDCOutHit");
+  TH1F* NCDCOutHit = (TH1F*)f->Get("NCDCOutHit");
+  NCDCOutHit->SetXTitle("Nhits CDC Outer 2 layers");
+  NCDCOutHit->Draw();
+  
 
   return;
 }
