@@ -1,5 +1,6 @@
-void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v201_out_iso.root"){
+void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v202_out_iso.root"){
   
+  gStyle->SetOptStat("e");
   TFile *f = new TFile(filename,"READ");
   f->cd();
 
@@ -9,6 +10,7 @@ void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v201_out_iso
 
   TCanvas *c2 = new  TCanvas("c2","c2");
   TH2D* diff2d_CDC_CDH_pip = (TH2D*)f->Get("diff2d_CDC_CDH_pip");
+  diff2d_CDC_CDH_pip->SetMaximum(diff2d_CDC_CDH_pim->GetMaximum());
   diff2d_CDC_CDH_pip->Draw("colz");
   
   TCanvas *c3 = new TCanvas("c3","c3");
