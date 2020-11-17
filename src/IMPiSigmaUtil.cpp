@@ -1428,40 +1428,55 @@ void Util::AnaMcData2(MCData *mcdata,
     //get the Track of the parent particle which fired CDH
     AncestorTr[anc]=Util::FindTrackFromMcIndex(mcdata,AncestorTrackID[anc]);
     AncestorVTX[anc] = AncestorTr[anc]->vertex();
+    AncestorVTX[anc] *=0.1;
     AncestorPDG[anc] = AncestorTr[anc]->pdgID();
     Track *parenttrack_p = Util::FindTrackFromMcIndex(mcdata,AncestorTrackID[anc]);
     
+    //if(GeomTools::GetID(AncestorVTX[anc])==CID_CDH){
+    //std::cout << __LINE__ << std::endl;
+    //std::cout << "GeomID " << GeomTools::GetID(AncestorVTX[anc]) << std::endl;
+    //std::cout << "vtxr " << AncestorVTX[anc].Perp() << std::endl;
+    //std::cout << "vtxz " << AncestorVTX[anc].Z() << std::endl;
+    //std::cout << std::endl;
+    //}
+
     //check vertex pos.
     //Since Sigma has some flight length, it can go out side of target volume
-    if(GeomTools::GetID(AncestorVTX[anc])==CID_TarCell){
+    if(GeomTools::GetID(AncestorVTX[anc])==CID_TarChm || 
+       //GeomTools::GetID(AncestorVTX[anc])==CID_TarSys ||
+       GeomTools::GetID(AncestorVTX[anc])==CID_RadS ||
+       GeomTools::GetID(AncestorVTX[anc])==CID_TarCFRP ||
+       GeomTools::GetID(AncestorVTX[anc])==CID_TarCap// ||
+       //GeomTools::GetID(AncestorVTX[anc])==CID_TarCell 
+    ){
       isinFiducialORinCDH = false;
-    }else if( (AncestorVTX[anc].Perp()/10.0 > 12 ) &&
-              (AncestorVTX[anc].Z()/10.0 < -15.0) && 
-              (5 < AncestorVTX[anc].Z()/10.0) ){
+    }else if( (AncestorVTX[anc].Perp() > 10 ) &&
+             // ((AncestorVTX[anc].Z() < -15.0) || (5 < AncestorVTX[anc].Z())) && 
+              (GeomTools::GetID(AncestorVTX[anc])!=CID_CDH)
+              ){
       isinFiducialORinCDH = false;
     }
-    if(GeomTools::GetID(AncestorVTX[anc])==CID_CDH)  isinFiducialORinCDH = true;
 
     if(anc==0){
-      Tools::H2(Form("vtxrz_cdhhitparenet"),AncestorVTX[anc].Z()/10.,
-          AncestorVTX[anc].Perp()/10.,
+      Tools::H2(Form("vtxrz_cdhhitparenet"),AncestorVTX[anc].Z(),
+          AncestorVTX[anc].Perp(),
           750,-75.,75.,480,0.,120.);
       Tools::H1(Form("gen_cdhhitparent"),generation,10,0,10);
-      firstvtxr = AncestorVTX[anc].Perp()/10.0;
-      firstvtxz = AncestorVTX[anc].Z()/10.0;
+      firstvtxr = AncestorVTX[anc].Perp();
+      firstvtxz = AncestorVTX[anc].Z();
     }
-    if( (AncestorVTX[anc].Perp()/10.0) > 58.0) isWentCDHOutSide = true;
-    if( fabs(AncestorVTX[anc].Z()/10.0) > 40.0) isWentCDHOutSide = true; 
+    if( (AncestorVTX[anc].Perp()) > 58.0) isWentCDHOutSide = true;
+    if( fabs(AncestorVTX[anc].Z()) > 40.0) isWentCDHOutSide = true; 
 
     if( AncestorPDG[anc]==2112){
       nNeutrons++;
       isFromNeutron = true;
       genNeutron = generation;
       if(nNeutrons==1){
-        vtxRNeutron = AncestorVTX[anc].Perp()/10.;
-        vtxZNeutron = AncestorVTX[anc].Z()/10.;
-        Tools::H2(Form("vtxrz_n"),AncestorVTX[anc].Z()/10.,
-            AncestorVTX[anc].Perp()/10.,
+        vtxRNeutron = AncestorVTX[anc].Perp();
+        vtxZNeutron = AncestorVTX[anc].Z();
+        Tools::H2(Form("vtxrz_n"),AncestorVTX[anc].Z(),
+            AncestorVTX[anc].Perp(),
             750,-75.,75.,480,0.,120.);
       }
     }
