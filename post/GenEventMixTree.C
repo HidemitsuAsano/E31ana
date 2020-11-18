@@ -122,7 +122,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
   }
   
   TString outname = std::string(filename);
-  outname.Replace(std::string(filename).size()-5,5,"_MIX_cut2.root");
+  outname.Replace(std::string(filename).size()-5,5,"_MIX_cut3.root");
 
 
   TFile *fout = new TFile(outname.Data(),"RECREATE");
@@ -244,15 +244,15 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
     if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
     else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
     if( ((diffPhinpip+0.05)*(diffPhinpip+0.05))/0.4/0.4+diffpip.Z()*diffpip.Z()/25.0/25.0 <1 ) continue;
-
-    if(!MissNwideFlag && !SigmawidePFlag && !SigmawideMFlag){
+    
+    //if(!MissNwideFlag && !SigmawidePFlag && !SigmawideMFlag){
       vec_LVec_n.push_back(*LVec_n);
       vec_NeutralBetaCDH.push_back(NeutralBetaCDH);
       vec_tofn.push_back(tofn);
       vec_dE.push_back(dE);
       vec_neutralseg.push_back(neutralseg);
       vec_CDH_Pos.push_back(*CDH_Pos);
-    }
+    //}
   }
 
   decltype(vec_LVec_n)::iterator last_n = vec_LVec_n.end();
@@ -309,8 +309,8 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
     ForwardCharge2 = ForwardCharge;
     *CA_pip2 = *CA_pip;
     *CA_pim2 = *CA_pim;
-    *CDH_Pos2 = *CDH_Pos;
-    //*CDH_Pos2 = *last_CDH_Pos;//mixing param.
+    //*CDH_Pos2 = *CDH_Pos;
+    *CDH_Pos2 = *last_CDH_Pos;//mixing param.
     *CDH_Pos_pim2 = *CDH_Pos_pim;
     *CDH_Pos_pip2 = *CDH_Pos_pip;
     if(SimSpmode || SimSmmode){
