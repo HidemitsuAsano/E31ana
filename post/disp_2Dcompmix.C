@@ -5,8 +5,8 @@ void disp_2Dcompmix()
 {
   TFile *fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso.root");
   TFile *fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut3_out_iso.root");
-  std::cout << fr->Print() << std::endl;
-  std::cout << fmix->Print() << std::endl;
+  fr->Print() ;
+  fmix->Print();
 
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
@@ -136,7 +136,8 @@ void disp_2Dcompmix()
 
 
   return;
-
+  
+  /*
   //draw BG at first
   TH2D* IMnpim_IMnpip_woSid_won_data = (TH2D*)fr->Get("IMnpim_IMnpip_dE_woSid_won");IMnpim_IMnpip_woSid_won_data->Print();
   TH2D* IMnpim_IMnpip_woSid_won_mix= (TH2D*)fmix->Get("IMnpim_IMnpip_dE_woSid_won");IMnpim_IMnpip_woSid_won_mix->Print();
@@ -1824,6 +1825,6 @@ void disp_2Dcompmix()
   fgaus_S->SetLineColor(3);
   fgaus_S->SetNpx(10000);
   fgaus_S->Draw("same");
-
+  */
 
 }
