@@ -22,7 +22,8 @@ void disp_2Dcompmix()
   TFile *fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut3_out_iso.root");
   fr->Print() ;
   fmix->Print();
-
+  
+  gStyle->SetPalette(1);
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
   TH1::SetDefaultSumw2();
@@ -75,26 +76,43 @@ void disp_2Dcompmix()
   TCanvas *cMMnmiss_IMnpip_dE_woK0_woSm_data_cut = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_data_cut","cMMnmiss_IMnpip_dE_woK0_woSm_data_cut",800,800);
   MMnmiss_IMnpip_dE_woK0_woSm_data->Draw("colz");
   MMnmiss_IMnpip_dE_woK0_woSm_vici_data->SetMaximum(MMnmiss_IMnpip_dE_woK0_woSm_data->GetMaximum());
-  MMnmiss_IMnpip_dE_woK0_woSm_vici_data->Draw("contzsame");
+  MMnmiss_IMnpip_dE_woK0_woSm_vici_data->Draw("colzsame");
+  
+  TCanvas *cMMnmiss_IMnpip_dE_woK0_woSm_data_cutext = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_data_cutext","cMMnmiss_IMnpip_dE_woK0_woSm_data_cutext",800,800);
+  MMnmiss_IMnpip_dE_woK0_woSm_data->Draw("colz");
+  MMnmiss_IMnpip_dE_woK0_woSm_viciext_data->SetMaximum(MMnmiss_IMnpip_dE_woK0_woSm_data->GetMaximum());
+  MMnmiss_IMnpip_dE_woK0_woSm_viciext_data->Draw("colzsame");
   
   //mixed data
   TCanvas *cMMnmiss_IMnpip_dE_woK0_woSm_mix_cut = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_mix_cut","cMMnmiss_IMnpip_dE_woK0_woSm_mix_cut",800,800);
   MMnmiss_IMnpip_dE_woK0_woSm_mix->Draw("colz");
   MMnmiss_IMnpip_dE_woK0_woSm_vici_mix->SetMaximum(MMnmiss_IMnpip_dE_woK0_woSm_mix->GetMaximum());
-  MMnmiss_IMnpip_dE_woK0_woSm_vici_mix->Draw("contzsame");
+  MMnmiss_IMnpip_dE_woK0_woSm_vici_mix->Draw("colzsame");
   
+  TCanvas *cMMnmiss_IMnpip_dE_woK0_woSm_mix_cutext = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_mix_cutext","cMMnmiss_IMnpip_dE_woK0_woSm_mix_cutext",800,800);
+  MMnmiss_IMnpip_dE_woK0_woSm_mix->Draw("colz");
+  MMnmiss_IMnpip_dE_woK0_woSm_viciext_mix->SetMaximum(MMnmiss_IMnpip_dE_woK0_woSm_mix->GetMaximum());
+  MMnmiss_IMnpip_dE_woK0_woSm_viciext_mix->Draw("colzsame");
+
+
   //
   //compare data and mixed events
   //
-  TCanvas *cMMnmiss_IMnpip_dE_woK0_woSm_comp = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_sup","cMMnmiss_IMnpip_dE_woK0_woSm_data_cut",800,800);
+  TCanvas *cMMnmiss_IMnpip_dE_woK0_woSm_comp = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_comp","cMMnmiss_IMnpip_dE_woK0_woSm_data_comp",1000,1000);
   cMMnmiss_IMnpip_dE_woK0_woSm_comp->Divide(2,2,0,0);
   cMMnmiss_IMnpip_dE_woK0_woSm_comp->cd(3);
-  MMnmiss_IMnpip_dE_woK0_woSm_data->Draw("colz");
-  MMnmiss_IMnpip_dE_woK0_woSm_vici_data->SetMaximum(MMnmiss_IMnpip_dE_woK0_woSm_data->GetMaximum());
-  MMnmiss_IMnpip_dE_woK0_woSm_vici_data->Draw("contzsame");
+  MMnmiss_IMnpip_dE_woK0_woSm_data->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpip_dE_woK0_woSm_data->GetYaxis()->SetRangeUser(0.7,1.1);
+  MMnmiss_IMnpip_dE_woK0_woSm_mix->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpip_dE_woK0_woSm_mix->GetYaxis()->SetRangeUser(0.7,1.1);
+  MMnmiss_IMnpip_dE_woK0_woSm_vici_data->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpip_dE_woK0_woSm_vici_data->GetYaxis()->SetRangeUser(0.7,1.1);
+  MMnmiss_IMnpip_dE_woK0_woSm_vici_mix->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpip_dE_woK0_woSm_vici_mix->GetYaxis()->SetRangeUser(0.7,1.1);
 
-  
-  //TCanvas *cMMnmiss_woK0_woSm_data_vici_sub = new TCanvas("cMMnmiss_woK0_woSm_data_vici_sub","cMMnmiss_woK0_woSm_data_vici_sub");
+  MMnmiss_IMnpip_dE_woK0_woSm_data->Draw("colz");
+  MMnmiss_IMnpip_dE_woK0_woSm_vici_data->Draw("colzsame");
+
   cMMnmiss_IMnpip_dE_woK0_woSm_comp->cd(1);
   MMnmiss_IMnpip_dE_woK0_woSm_vici_mix->Scale(mixScale);
   TH1D* IMnpip_woK0_woSm_vici_data = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSm_vici_data->ProjectionX("IMnpip_dE_woK0_woSm_vici_data");
@@ -106,9 +124,7 @@ void disp_2Dcompmix()
   cMMnmiss_IMnpip_dE_woK0_woSm_comp->cd(4);
   TH1D* MMnmiss_woK0_woSm_vici_data = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSm_vici_data->ProjectionY("MMnmiss_dE_woK0_woSm_vici_data");
   TH1D* MMnmiss_woK0_woSm_vici_mix  = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSm_vici_mix->ProjectionY("MMnmiss_dE_woK0_woSm_vici_mix");
-  //MMnmiss_woK0_woSm_vici_data->Draw("HE");
-  //MMnmiss_woK0_woSm_vici_mix->SetLineColor(2);
-  //MMnmiss_woK0_woSm_vici_mix->Draw("HEsame");
+
   TGraphErrors *gr_MMnmiss_woK0_woSm_vici_data = new TGraphErrors();
   TGraphErrors *gr_MMnmiss_woK0_woSm_vici_mix = new TGraphErrors();
   HistToRorateGraph(MMnmiss_woK0_woSm_vici_data,*gr_MMnmiss_woK0_woSm_vici_data);
@@ -117,6 +133,44 @@ void disp_2Dcompmix()
   gr_MMnmiss_woK0_woSm_vici_mix->SetMarkerColor(2);
   gr_MMnmiss_woK0_woSm_vici_mix->Draw("P");
   
+
+
+  //
+  //compare data and mixed events (ext hist.)
+  //
+  TCanvas *cMMnmiss_IMnpip_dE_woK0_woSm_comp2 = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_comp2","cMMnmiss_IMnpip_dE_woK0_woSm_data_comp2",1000,1000);
+  cMMnmiss_IMnpip_dE_woK0_woSm_comp2->Divide(2,2,0,0);
+  cMMnmiss_IMnpip_dE_woK0_woSm_comp2->cd(3);
+  MMnmiss_IMnpip_dE_woK0_woSm_data->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpip_dE_woK0_woSm_data->GetYaxis()->SetRangeUser(0.0,1.1);
+  MMnmiss_IMnpip_dE_woK0_woSm_viciext_data->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpip_dE_woK0_woSm_viciext_data->GetYaxis()->SetRangeUser(0.0,1.1);
+  MMnmiss_IMnpip_dE_woK0_woSm_viciext_mix->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpip_dE_woK0_woSm_viciext_mix->GetYaxis()->SetRangeUser(0.0,1.1);
+  MMnmiss_IMnpip_dE_woK0_woSm_data->Draw("colz");
+  MMnmiss_IMnpip_dE_woK0_woSm_viciext_data->Draw("colzsame");
+
+  cMMnmiss_IMnpip_dE_woK0_woSm_comp2->cd(1);
+  MMnmiss_IMnpip_dE_woK0_woSm_viciext_mix->Scale(mixScale);
+  TH1D* IMnpip_woK0_woSm_viciext_data = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSm_viciext_data->ProjectionX("IMnpip_dE_woK0_woSm_viciext_data");
+  TH1D* IMnpip_woK0_woSm_viciext_mix  = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSm_viciext_mix->ProjectionX("IMnpip_dE_woK0_woSm_viciext_mix");
+  IMnpip_woK0_woSm_viciext_data->Draw("HE");
+  IMnpip_woK0_woSm_viciext_mix->SetLineColor(2);
+  IMnpip_woK0_woSm_viciext_mix->Draw("HEsame");
+  
+  cMMnmiss_IMnpip_dE_woK0_woSm_comp2->cd(4);
+  TH1D* MMnmiss_woK0_woSm_viciext_data = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSm_viciext_data->ProjectionY("MMnmiss_dE_woK0_woSm_viciext_data");
+  TH1D* MMnmiss_woK0_woSm_viciext_mix  = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSm_viciext_mix->ProjectionY("MMnmiss_dE_woK0_woSm_viciext_mix");
+
+  TGraphErrors *gr_MMnmiss_woK0_woSm_viciext_data = new TGraphErrors();
+  TGraphErrors *gr_MMnmiss_woK0_woSm_viciext_mix = new TGraphErrors();
+  HistToRorateGraph(MMnmiss_woK0_woSm_viciext_data,*gr_MMnmiss_woK0_woSm_viciext_data);
+  HistToRorateGraph(MMnmiss_woK0_woSm_viciext_mix,*gr_MMnmiss_woK0_woSm_viciext_mix);
+  gr_MMnmiss_woK0_woSm_viciext_data->Draw("AP");
+  gr_MMnmiss_woK0_woSm_viciext_mix->SetMarkerColor(2);
+  gr_MMnmiss_woK0_woSm_viciext_mix->Draw("P");
+
+
   //and subtract
   
   //TH1D* MMnmiss_woK0_woSm_vici_data_sub = (TH1D*)MMnmiss_woK0_woSm_vici_data->Clone("MMnmiss_woK0_woSm_vici_data_sub");
@@ -142,7 +196,7 @@ void disp_2Dcompmix()
   cMMnmiss_IMnpim_dE_woK0_woSp_data_cut->cd(3);
   MMnmiss_IMnpim_dE_woK0_woSp_data->Draw("colz");
   MMnmiss_IMnpim_dE_woK0_woSp_vici_data->SetMaximum(MMnmiss_IMnpim_dE_woK0_woSp_data->GetMaximum());
-  MMnmiss_IMnpim_dE_woK0_woSp_vici_data->Draw("contzsame");
+  MMnmiss_IMnpim_dE_woK0_woSp_vici_data->Draw("colzsame");
   //TCanvas *cMMnmiss_woK0_woSp_data_vici = new TCanvas("cMMnmiss_woK0_woSp_data_vici","cMMnmiss_woK0_woSp_data_vici",800,800);
   TH1D* MMnmiss_woK0_woSp_vici_data = (TH1D*)MMnmiss_IMnpim_dE_woK0_woSp_vici_data->ProjectionY("MMnmiss_dE_woK0_woSp_vici_data");
   TH1D* MMnmiss_woK0_woSp_vici_mix  = (TH1D*)MMnmiss_IMnpim_dE_woK0_woSp_vici_mix->ProjectionY("MMnmiss_dE_woK0_woSp_vici_mix");
