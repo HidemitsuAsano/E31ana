@@ -3,12 +3,13 @@ const bool showBG = true;
 
 void HistToRorateGraph(TH1D* h1, TGraphErrors &gr)
 {
-  for(int ibin=0;ibin<h1->GetNbinsX();ibin++){
+  for(int ibin=1;ibin<=h1->GetNbinsX();ibin++){
     double cont = h1->GetBinContent(ibin);
     double err  = h1->GetBinError(ibin);
     double bincenter = h1->GetBinCenter(ibin);
     gr.SetPoint(ibin,cont,bincenter);
     gr.SetPointError(ibin,err,0);
+    if(cont < -1000) std::cout << ibin << " " << cont << std::endl;
   }
   gr.GetYaxis()->SetRangeUser(h1->GetXaxis()->GetXmin(),h1->GetXaxis()->GetXmax());
   gr.GetYaxis()->SetLabelSize(0);
@@ -22,7 +23,7 @@ void disp_2Dcompmix()
   TFile *fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut3_out_iso.root");
   fr->Print() ;
   fmix->Print();
-  
+   
   gStyle->SetPalette(1);
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
@@ -34,97 +35,99 @@ void disp_2Dcompmix()
 
 
   //just plot each 2d row histograms before scaling
-  TH2D* MMnmiss_IMnpip_dE_woK0_woSm_data = (TH2D*)fr->Get("MMnmiss_IMnpip_dE_woK0_woSm");
-  TCanvas *cMMnmiss_IMnpip_dE_woK0_woSm_data = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_data","cMMnmiss_IMnpip_dE_woK0_woSm_data",800,800);
-  MMnmiss_IMnpip_dE_woK0_woSm_data->Draw("colz");
+  TH2D* MMnmiss_IMnpip_woK0_woSm_data = (TH2D*)fr->Get("MMnmiss_IMnpip_dE_woK0_woSm");
+  TCanvas *cMMnmiss_IMnpip_woK0_woSm_data = new TCanvas("cMMnmiss_IMnpip_woK0_woSm_data","cMMnmiss_IMnpip_woK0_woSm_data",800,800);
+  MMnmiss_IMnpip_woK0_woSm_data->Draw("colz");
 
-  TH2D* MMnmiss_IMnpim_dE_woK0_woSp_data = (TH2D*)fr->Get("MMnmiss_IMnpim_dE_woK0_woSp");
-  TCanvas *cMMnmiss_IMnpim_dE_woK0_woSp_data = new TCanvas("cMMnmiss_IMnpim_dE_woK0_woSp_data","cMMnmiss_IMnpim_dE_woK0_woSp_data",800,800);
-  MMnmiss_IMnpim_dE_woK0_woSp_data->Draw("colz");
+  TH2D* MMnmiss_IMnpim_woK0_woSp_data = (TH2D*)fr->Get("MMnmiss_IMnpim_dE_woK0_woSp");
+  TCanvas *cMMnmiss_IMnpim_woK0_woSp_data = new TCanvas("cMMnmiss_IMnpim_woK0_woSp_data","cMMnmiss_IMnpim_woK0_woSp_data",800,800);
+  MMnmiss_IMnpim_woK0_woSp_data->Draw("colz");
 
-  TH2D* MMnmiss_IMnpip_dE_woK0_woSm_mix = (TH2D*)fmix->Get("MMnmiss_IMnpip_dE_woK0_woSm");
-  TCanvas *cMMnmiss_IMnpip_dE_woK0_woSm_mix = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_mix","cMMnmiss_IMnpip_dE_woK0_woSm_mix",800,800);
-  MMnmiss_IMnpip_dE_woK0_woSm_mix->Draw("colz");
+  TH2D* MMnmiss_IMnpip_woK0_woSm_mix = (TH2D*)fmix->Get("MMnmiss_IMnpip_dE_woK0_woSm");
+  TCanvas *cMMnmiss_IMnpip_woK0_woSm_mix = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_mix","cMMnmiss_IMnpip_woK0_woSm_mix",800,800);
+  MMnmiss_IMnpip_woK0_woSm_mix->Draw("colz");
   
-  TH2D* MMnmiss_IMnpim_dE_woK0_woSp_mix = (TH2D*)fmix->Get("MMnmiss_IMnpim_dE_woK0_woSp");
-  TCanvas *cMMnmiss_IMnpim_dE_woK0_woSp_mix = new TCanvas("cMMnmiss_IMnpim_dE_woK0_woSp_mix","cMMnmiss_IMnpim_dE_woK0_woSp_mix",800,800);
-  MMnmiss_IMnpim_dE_woK0_woSp_mix->Draw("colz");
+  TH2D* MMnmiss_IMnpim_woK0_woSp_mix = (TH2D*)fmix->Get("MMnmiss_IMnpim_dE_woK0_woSp");
+  TCanvas *cMMnmiss_IMnpim_woK0_woSp_mix = new TCanvas("cMMnmiss_IMnpim_woK0_woSp_mix","cMMnmiss_IMnpim_woK0_woSp_mix",800,800);
+  MMnmiss_IMnpim_woK0_woSp_mix->Draw("colz");
   
-  TH2D* IMnpim_IMnpip_dE_woK0_woSp_vici_data = (TH2D*)fr->Get("IMnpim_IMnpip_dE_woK0_woSp_vici");
-  TCanvas *cIMnpim_IMnpip_dE_woK0_woSp_vici_data = new TCanvas("cIMnpim_IMnpip_dE_woK0_woSp_vici_data","cIMnpim_IMnpip_dE_woK0_woSp_vici_data",800,800);
-  IMnpim_IMnpip_dE_woK0_woSp_vici_data->Draw("colz");
+  TH2D* IMnpim_IMnpip_woK0_woSp_vici_data = (TH2D*)fr->Get("IMnpim_IMnpip_dE_woK0_woSp_vici");
+  TCanvas *cIMnpim_IMnpip_woK0_woSp_vici_data = new TCanvas("cIMnpim_IMnpip_woK0_woSp_vici_data","cIMnpim_IMnpip_woK0_woSp_vici_data",800,800);
+  IMnpim_IMnpip_woK0_woSp_vici_data->Draw("colz");
 
-  TH2D* IMnpim_IMnpip_dE_woK0_woSm_vici_data = (TH2D*)fr->Get("IMnpim_IMnpip_dE_woK0_woSm_vici");
-  TCanvas *cIMnpim_IMnpip_dE_woK0_woSm_vici_data = new TCanvas("cIMnpim_IMnpip_dE_woK0_woSm_vici_data","cIMnpim_IMnpip_dE_woK0_woSm_vici_data",800,800);
-  IMnpim_IMnpip_dE_woK0_woSm_vici_data->Draw("colz");
+  TH2D* IMnpim_IMnpip_woK0_woSm_vici_data = (TH2D*)fr->Get("IMnpim_IMnpip_dE_woK0_woSm_vici");
+  TCanvas *cIMnpim_IMnpip_woK0_woSm_vici_data = new TCanvas("cIMnpim_IMnpip_woK0_woSm_vici_data","cIMnpim_IMnpip_woK0_woSm_vici_data",800,800);
+  IMnpim_IMnpip_woK0_woSm_vici_data->Draw("colz");
   //
 
 
-  TH2D* MMnmiss_IMnpip_dE_woK0_woSm_vici_data = (TH2D*)fr->Get("MMnmiss_IMnpip_dE_woK0_woSm_vici");
-  TH2D* MMnmiss_IMnpim_dE_woK0_woSp_vici_data = (TH2D*)fr->Get("MMnmiss_IMnpim_dE_woK0_woSp_vici");
-  TH2D* MMnmiss_IMnpip_dE_woK0_woSm_viciext_data = (TH2D*)fr->Get("MMnmiss_IMnpip_dE_woK0_woSm_viciext");
-  TH2D* MMnmiss_IMnpim_dE_woK0_woSp_viciext_data = (TH2D*)fr->Get("MMnmiss_IMnpim_dE_woK0_woSp_viciext");
-  TH2D* MMnmiss_IMnpip_dE_woK0_woSm_vici_mix = (TH2D*)fmix->Get("MMnmiss_IMnpip_dE_woK0_woSm_vici");
-  TH2D* MMnmiss_IMnpim_dE_woK0_woSp_vici_mix = (TH2D*)fmix->Get("MMnmiss_IMnpim_dE_woK0_woSp_vici");
-  TH2D* MMnmiss_IMnpip_dE_woK0_woSm_viciext_mix = (TH2D*)fmix->Get("MMnmiss_IMnpip_dE_woK0_woSm_viciext");
-  TH2D* MMnmiss_IMnpim_dE_woK0_woSp_viciext_mix = (TH2D*)fmix->Get("MMnmiss_IMnpim_dE_woK0_woSp_viciext");
+  TH2D* MMnmiss_IMnpip_woK0_woSm_vici_data = (TH2D*)fr->Get("MMnmiss_IMnpip_dE_woK0_woSm_vici");
+  TH2D* MMnmiss_IMnpim_woK0_woSp_vici_data = (TH2D*)fr->Get("MMnmiss_IMnpim_dE_woK0_woSp_vici");
+  TH2D* MMnmiss_IMnpip_woK0_woSm_viciext_data = (TH2D*)fr->Get("MMnmiss_IMnpip_dE_woK0_woSm_viciext");
+  TH2D* MMnmiss_IMnpim_woK0_woSp_viciext_data = (TH2D*)fr->Get("MMnmiss_IMnpim_dE_woK0_woSp_viciext");
+  TH2D* MMnmiss_IMnpip_woK0_woSm_vici_mix = (TH2D*)fmix->Get("MMnmiss_IMnpip_dE_woK0_woSm_vici");
+  TH2D* MMnmiss_IMnpim_woK0_woSp_vici_mix = (TH2D*)fmix->Get("MMnmiss_IMnpim_dE_woK0_woSp_vici");
+  TH2D* MMnmiss_IMnpip_woK0_woSm_viciext_mix = (TH2D*)fmix->Get("MMnmiss_IMnpip_dE_woK0_woSm_viciext");
+  TH2D* MMnmiss_IMnpim_woK0_woSp_viciext_mix = (TH2D*)fmix->Get("MMnmiss_IMnpim_dE_woK0_woSp_viciext");
   
   //const double mixScale = 0.0496125;
   const double mixScale = 0.0490125;
 
   //real data
-  TCanvas *cMMnmiss_IMnpip_dE_woK0_woSm_data_cut = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_data_cut","cMMnmiss_IMnpip_dE_woK0_woSm_data_cut",800,800);
-  MMnmiss_IMnpip_dE_woK0_woSm_data->Draw("colz");
-  MMnmiss_IMnpip_dE_woK0_woSm_vici_data->SetMaximum(MMnmiss_IMnpip_dE_woK0_woSm_data->GetMaximum());
-  MMnmiss_IMnpip_dE_woK0_woSm_vici_data->Draw("colzsame");
+  TCanvas *cMMnmiss_IMnpip_woK0_woSm_data_cut = new TCanvas("cMMnmiss_IMnpip_woK0_woSm_data_cut","cMMnmiss_IMnpip_woK0_woSm_data_cut",800,800);
+  MMnmiss_IMnpip_woK0_woSm_data->Draw("colz");
+  MMnmiss_IMnpip_woK0_woSm_vici_data->SetMaximum(MMnmiss_IMnpip_woK0_woSm_data->GetMaximum());
+  MMnmiss_IMnpip_woK0_woSm_vici_data->Draw("cont3same");
   
-  TCanvas *cMMnmiss_IMnpip_dE_woK0_woSm_data_cutext = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_data_cutext","cMMnmiss_IMnpip_dE_woK0_woSm_data_cutext",800,800);
-  MMnmiss_IMnpip_dE_woK0_woSm_data->Draw("colz");
-  MMnmiss_IMnpip_dE_woK0_woSm_viciext_data->SetMaximum(MMnmiss_IMnpip_dE_woK0_woSm_data->GetMaximum());
-  MMnmiss_IMnpip_dE_woK0_woSm_viciext_data->Draw("colzsame");
+  TCanvas *cMMnmiss_IMnpip_woK0_woSm_data_cutext = new TCanvas("cMMnmiss_IMnpip_woK0_woSm_data_cutext","cMMnmiss_IMnpip_woK0_woSm_data_cutext",800,800);
+  MMnmiss_IMnpip_woK0_woSm_data->Draw("colz");
+  MMnmiss_IMnpip_woK0_woSm_viciext_data->SetMaximum(MMnmiss_IMnpip_woK0_woSm_data->GetMaximum());
+  MMnmiss_IMnpip_woK0_woSm_viciext_data->Draw("cont3same");
   
   //mixed data
-  TCanvas *cMMnmiss_IMnpip_dE_woK0_woSm_mix_cut = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_mix_cut","cMMnmiss_IMnpip_dE_woK0_woSm_mix_cut",800,800);
-  MMnmiss_IMnpip_dE_woK0_woSm_mix->Draw("colz");
-  MMnmiss_IMnpip_dE_woK0_woSm_vici_mix->SetMaximum(MMnmiss_IMnpip_dE_woK0_woSm_mix->GetMaximum());
-  MMnmiss_IMnpip_dE_woK0_woSm_vici_mix->Draw("colzsame");
+  TCanvas *cMMnmiss_IMnpip_woK0_woSm_mix_cut = new TCanvas("cMMnmiss_IMnpip_woK0_woSm_mix_cut","cMMnmiss_IMnpip_woK0_woSm_mix_cut",800,800);
+  MMnmiss_IMnpip_woK0_woSm_mix->Scale(mixScale);
+  MMnmiss_IMnpip_woK0_woSm_mix->Draw("colz");
+  MMnmiss_IMnpip_woK0_woSm_vici_mix->Scale(mixScale);
+  MMnmiss_IMnpip_woK0_woSm_vici_mix->SetMaximum(MMnmiss_IMnpip_woK0_woSm_mix->GetMaximum());
+  MMnmiss_IMnpip_woK0_woSm_vici_mix->Draw("cont3same");
   
-  TCanvas *cMMnmiss_IMnpip_dE_woK0_woSm_mix_cutext = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_mix_cutext","cMMnmiss_IMnpip_dE_woK0_woSm_mix_cutext",800,800);
-  MMnmiss_IMnpip_dE_woK0_woSm_mix->Draw("colz");
-  MMnmiss_IMnpip_dE_woK0_woSm_viciext_mix->SetMaximum(MMnmiss_IMnpip_dE_woK0_woSm_mix->GetMaximum());
-  MMnmiss_IMnpip_dE_woK0_woSm_viciext_mix->Draw("colzsame");
+  TCanvas *cMMnmiss_IMnpip_woK0_woSm_mix_cutext = new TCanvas("cMMnmiss_IMnpip_woK0_woSm_mix_cutext","cMMnmiss_IMnpip_woK0_woSm_mix_cutext",800,800);
+  MMnmiss_IMnpip_woK0_woSm_mix->Draw("colz");
+  MMnmiss_IMnpip_woK0_woSm_viciext_mix->SetMaximum(MMnmiss_IMnpip_woK0_woSm_mix->GetMaximum());
+  MMnmiss_IMnpip_woK0_woSm_viciext_mix->Draw("cont3same");
 
 
   //
   //compare data and mixed events
   //
-  TCanvas *cMMnmiss_IMnpip_dE_woK0_woSm_comp = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_comp","cMMnmiss_IMnpip_dE_woK0_woSm_data_comp",1000,1000);
-  cMMnmiss_IMnpip_dE_woK0_woSm_comp->Divide(2,2,0,0);
-  cMMnmiss_IMnpip_dE_woK0_woSm_comp->cd(3);
-  MMnmiss_IMnpip_dE_woK0_woSm_data->GetXaxis()->SetRangeUser(1.1,1.3);
-  MMnmiss_IMnpip_dE_woK0_woSm_data->GetYaxis()->SetRangeUser(0.7,1.1);
-  MMnmiss_IMnpip_dE_woK0_woSm_mix->GetXaxis()->SetRangeUser(1.1,1.3);
-  MMnmiss_IMnpip_dE_woK0_woSm_mix->GetYaxis()->SetRangeUser(0.7,1.1);
-  MMnmiss_IMnpip_dE_woK0_woSm_vici_data->GetXaxis()->SetRangeUser(1.1,1.3);
-  MMnmiss_IMnpip_dE_woK0_woSm_vici_data->GetYaxis()->SetRangeUser(0.7,1.1);
-  MMnmiss_IMnpip_dE_woK0_woSm_vici_mix->GetXaxis()->SetRangeUser(1.1,1.3);
-  MMnmiss_IMnpip_dE_woK0_woSm_vici_mix->GetYaxis()->SetRangeUser(0.7,1.1);
+  TCanvas *cMMnmiss_IMnpip_woK0_woSm_comp = new TCanvas("cMMnmiss_IMnpip_woK0_woSm_comp","cMMnmiss_IMnpip_woK0_woSm_data_comp",800,800);
+  cMMnmiss_IMnpip_woK0_woSm_comp->Divide(2,2,0,0);
+  cMMnmiss_IMnpip_woK0_woSm_comp->cd(3);
+  TH2D* MMnmiss_IMnpip_woK0_woSm_data_zoom = (TH2D*)MMnmiss_IMnpip_woK0_woSm_data->Clone("MMnmiss_IMnpip_woK0_woSm_data_zoom");
+  TH2D* MMnmiss_IMnpip_woK0_woSm_mix_zoom = (TH2D*)MMnmiss_IMnpip_woK0_woSm_mix->Clone("MMnmiss_IMnpip_woK0_woSm_mix_zoom");
+  MMnmiss_IMnpip_woK0_woSm_data_zoom->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpip_woK0_woSm_data_zoom->GetYaxis()->SetRangeUser(0.7,1.1);
+  MMnmiss_IMnpip_woK0_woSm_vici_data->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpip_woK0_woSm_vici_data->GetYaxis()->SetRangeUser(0.7,1.1);
+  MMnmiss_IMnpip_woK0_woSm_vici_mix->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpip_woK0_woSm_vici_mix->GetYaxis()->SetRangeUser(0.7,1.1);
+  MMnmiss_IMnpip_woK0_woSm_data_zoom->SetTitle("");
+  MMnmiss_IMnpip_woK0_woSm_data_zoom->GetXaxis()->SetLabelOffset(0.005);
+  MMnmiss_IMnpip_woK0_woSm_data_zoom->GetYaxis()->SetLabelOffset(0.005);
+  MMnmiss_IMnpip_woK0_woSm_data_zoom->Draw("colz");
+  MMnmiss_IMnpip_woK0_woSm_vici_data->Draw("colzsame");
 
-  MMnmiss_IMnpip_dE_woK0_woSm_data->Draw("colz");
-  MMnmiss_IMnpip_dE_woK0_woSm_vici_data->Draw("colzsame");
-
-  cMMnmiss_IMnpip_dE_woK0_woSm_comp->cd(1);
-  MMnmiss_IMnpip_dE_woK0_woSm_vici_mix->Scale(mixScale);
-  TH1D* IMnpip_woK0_woSm_vici_data = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSm_vici_data->ProjectionX("IMnpip_dE_woK0_woSm_vici_data");
-  TH1D* IMnpip_woK0_woSm_vici_mix  = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSm_vici_mix->ProjectionX("IMnpip_dE_woK0_woSm_vici_mix");
+  cMMnmiss_IMnpip_woK0_woSm_comp->cd(1);
+  TH1D* IMnpip_woK0_woSm_vici_data = (TH1D*)MMnmiss_IMnpip_woK0_woSm_vici_data->ProjectionX("IMnpip_woK0_woSm_vici_data");
+  TH1D* IMnpip_woK0_woSm_vici_mix  = (TH1D*)MMnmiss_IMnpip_woK0_woSm_vici_mix->ProjectionX("IMnpip_woK0_woSm_vici_mix");
   IMnpip_woK0_woSm_vici_data->Draw("HE");
   IMnpip_woK0_woSm_vici_mix->SetLineColor(2);
   IMnpip_woK0_woSm_vici_mix->Draw("HEsame");
   
-  cMMnmiss_IMnpip_dE_woK0_woSm_comp->cd(4);
-  TH1D* MMnmiss_woK0_woSm_vici_data = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSm_vici_data->ProjectionY("MMnmiss_dE_woK0_woSm_vici_data");
-  TH1D* MMnmiss_woK0_woSm_vici_mix  = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSm_vici_mix->ProjectionY("MMnmiss_dE_woK0_woSm_vici_mix");
-
+  cMMnmiss_IMnpip_woK0_woSm_comp->cd(4);
+  TH1D* MMnmiss_woK0_woSm_vici_data = (TH1D*)MMnmiss_IMnpip_woK0_woSm_vici_data->ProjectionY("MMnmiss_woK0_woSm_vici_data");
+  TH1D* MMnmiss_woK0_woSm_vici_mix  = (TH1D*)MMnmiss_IMnpip_woK0_woSm_vici_mix->ProjectionY("MMnmiss_woK0_woSm_vici_mix");
   TGraphErrors *gr_MMnmiss_woK0_woSm_vici_data = new TGraphErrors();
   TGraphErrors *gr_MMnmiss_woK0_woSm_vici_mix = new TGraphErrors();
   HistToRorateGraph(MMnmiss_woK0_woSm_vici_data,*gr_MMnmiss_woK0_woSm_vici_data);
@@ -138,29 +141,34 @@ void disp_2Dcompmix()
   //
   //compare data and mixed events (ext hist.)
   //
-  TCanvas *cMMnmiss_IMnpip_dE_woK0_woSm_comp2 = new TCanvas("cMMnmiss_IMnpip_dE_woK0_woSm_comp2","cMMnmiss_IMnpip_dE_woK0_woSm_data_comp2",1000,1000);
-  cMMnmiss_IMnpip_dE_woK0_woSm_comp2->Divide(2,2,0,0);
-  cMMnmiss_IMnpip_dE_woK0_woSm_comp2->cd(3);
-  MMnmiss_IMnpip_dE_woK0_woSm_data->GetXaxis()->SetRangeUser(1.1,1.3);
-  MMnmiss_IMnpip_dE_woK0_woSm_data->GetYaxis()->SetRangeUser(0.0,1.1);
-  MMnmiss_IMnpip_dE_woK0_woSm_viciext_data->GetXaxis()->SetRangeUser(1.1,1.3);
-  MMnmiss_IMnpip_dE_woK0_woSm_viciext_data->GetYaxis()->SetRangeUser(0.0,1.1);
-  MMnmiss_IMnpip_dE_woK0_woSm_viciext_mix->GetXaxis()->SetRangeUser(1.1,1.3);
-  MMnmiss_IMnpip_dE_woK0_woSm_viciext_mix->GetYaxis()->SetRangeUser(0.0,1.1);
-  MMnmiss_IMnpip_dE_woK0_woSm_data->Draw("colz");
-  MMnmiss_IMnpip_dE_woK0_woSm_viciext_data->Draw("colzsame");
+  TCanvas *cMMnmiss_IMnpip_woK0_woSm_comp2 = new TCanvas("cMMnmiss_IMnpip_woK0_woSm_comp2","cMMnmiss_IMnpip_woK0_woSm_data_comp2",800,800);
+  cMMnmiss_IMnpip_woK0_woSm_comp2->Divide(2,2,0,0);
+  cMMnmiss_IMnpip_woK0_woSm_comp2->cd(3);
+  TH2D* MMnmiss_IMnpip_woK0_woSm_data_zoom2 = (TH2D*)MMnmiss_IMnpip_woK0_woSm_data->Clone("MMnmiss_IMnpip_woK0_woSm_data_zoom2");
+  TH2D* MMnmiss_IMnpip_woK0_woSm_mix_zoom2 = (TH2D*)MMnmiss_IMnpip_woK0_woSm_mix->Clone("MMnmiss_IMnpip_woK0_woSm_mix_zoom2");
+  MMnmiss_IMnpip_woK0_woSm_data_zoom2->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpip_woK0_woSm_data_zoom2->GetYaxis()->SetRangeUser(0.0,1.1);
+  MMnmiss_IMnpip_woK0_woSm_viciext_data->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpip_woK0_woSm_viciext_data->GetYaxis()->SetRangeUser(0.0,1.1);
+  MMnmiss_IMnpip_woK0_woSm_viciext_mix->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpip_woK0_woSm_viciext_mix->GetYaxis()->SetRangeUser(0.0,1.1);
+  MMnmiss_IMnpip_woK0_woSm_data_zoom2->SetTitle("");
+  MMnmiss_IMnpip_woK0_woSm_data_zoom2->GetXaxis()->SetLabelOffset(0.005);
+  MMnmiss_IMnpip_woK0_woSm_data_zoom2->GetYaxis()->SetLabelOffset(0.005);
+  MMnmiss_IMnpip_woK0_woSm_data_zoom2->Draw("colz");
+  MMnmiss_IMnpip_woK0_woSm_viciext_data->Draw("colzsame");
 
-  cMMnmiss_IMnpip_dE_woK0_woSm_comp2->cd(1);
-  MMnmiss_IMnpip_dE_woK0_woSm_viciext_mix->Scale(mixScale);
-  TH1D* IMnpip_woK0_woSm_viciext_data = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSm_viciext_data->ProjectionX("IMnpip_dE_woK0_woSm_viciext_data");
-  TH1D* IMnpip_woK0_woSm_viciext_mix  = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSm_viciext_mix->ProjectionX("IMnpip_dE_woK0_woSm_viciext_mix");
+  cMMnmiss_IMnpip_woK0_woSm_comp2->cd(1);
+  MMnmiss_IMnpip_woK0_woSm_viciext_mix->Scale(mixScale);
+  TH1D* IMnpip_woK0_woSm_viciext_data = (TH1D*)MMnmiss_IMnpip_woK0_woSm_viciext_data->ProjectionX("IMnpip_woK0_woSm_viciext_data");
+  TH1D* IMnpip_woK0_woSm_viciext_mix  = (TH1D*)MMnmiss_IMnpip_woK0_woSm_viciext_mix->ProjectionX("IMnpip_woK0_woSm_viciext_mix");
   IMnpip_woK0_woSm_viciext_data->Draw("HE");
   IMnpip_woK0_woSm_viciext_mix->SetLineColor(2);
   IMnpip_woK0_woSm_viciext_mix->Draw("HEsame");
   
-  cMMnmiss_IMnpip_dE_woK0_woSm_comp2->cd(4);
-  TH1D* MMnmiss_woK0_woSm_viciext_data = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSm_viciext_data->ProjectionY("MMnmiss_dE_woK0_woSm_viciext_data");
-  TH1D* MMnmiss_woK0_woSm_viciext_mix  = (TH1D*)MMnmiss_IMnpip_dE_woK0_woSm_viciext_mix->ProjectionY("MMnmiss_dE_woK0_woSm_viciext_mix");
+  cMMnmiss_IMnpip_woK0_woSm_comp2->cd(4);
+  TH1D* MMnmiss_woK0_woSm_viciext_data = (TH1D*)MMnmiss_IMnpip_woK0_woSm_viciext_data->ProjectionY("MMnmiss_woK0_woSm_viciext_data");
+  TH1D* MMnmiss_woK0_woSm_viciext_mix  = (TH1D*)MMnmiss_IMnpip_woK0_woSm_viciext_mix->ProjectionY("MMnmiss_woK0_woSm_viciext_mix");
 
   TGraphErrors *gr_MMnmiss_woK0_woSm_viciext_data = new TGraphErrors();
   TGraphErrors *gr_MMnmiss_woK0_woSm_viciext_mix = new TGraphErrors();
@@ -172,9 +180,45 @@ void disp_2Dcompmix()
 
 
   //and subtract
+  TCanvas *cMMnmiss_IMnpip_woK0_woSm_data_sub = new TCanvas("cMMnmiss_IMnpip_woK0_woSm_data_sub","cMMnmiss_IMnpip_woK0_woSm_data_sub",800,800);
+  cMMnmiss_IMnpip_woK0_woSm_data_sub->Divide(2,2,0,0);
+  cMMnmiss_IMnpip_woK0_woSm_data_sub->cd(3);
+  TH2D* MMnmiss_IMnpip_woK0_woSm_data_sub = (TH2D*)MMnmiss_IMnpip_woK0_woSm_data->Clone("MMnmiss_IMnpip_woK0_woSm_data_sub");
+  MMnmiss_IMnpip_woK0_woSm_data_sub->Add(MMnmiss_IMnpip_woK0_woSm_mix,-1.0);
+  //MMnmiss_IMnpip_woK0_woSm_data_sub->RebinX(2);
+  //MMnmiss_IMnpip_woK0_woSm_data_sub->RebinY(2);
+  MMnmiss_IMnpip_woK0_woSm_data_sub->Draw("colz");
+  cMMnmiss_IMnpip_woK0_woSm_data_sub->cd(1);
+  TH1D* IMnpip_woK0_woSm_data_sub = (TH1D*)MMnmiss_IMnpip_woK0_woSm_data_sub->ProjectionX("IMnpip_woK0_woSm_data_sub");
+  IMnpip_woK0_woSm_data_sub->Draw("HE");
+  cMMnmiss_IMnpip_woK0_woSm_data_sub->cd(4);
+  TH1D* MMnmiss_woK0_woSm_data_sub = (TH1D*)MMnmiss_IMnpip_woK0_woSm_data_sub->ProjectionY("MMnmiss_woK0_woSm_data_sub");
+  TGraphErrors *gr_MMnmiss_woK0_woSm_data_sub = new TGraphErrors();
+  HistToRorateGraph(MMnmiss_woK0_woSm_data_sub,*gr_MMnmiss_woK0_woSm_data_sub);
+  gr_MMnmiss_woK0_woSm_data_sub->Draw("AP");
+  //gr_MMnmiss_woK0_woSm_data_sub->Print("all");
+
+
+  TCanvas *cMMnmiss_IMnpip_woK0_woSm_data_sub_zoom = new TCanvas("cMMnmiss_IMnpip_woK0_woSm_data_sub_zoom","cMMnmiss_IMnpip_woK0_woSm_data_sub_zoom",800,800);
+  cMMnmiss_IMnpip_woK0_woSm_data_sub_zoom->Divide(2,2,0,0);
+  cMMnmiss_IMnpip_woK0_woSm_data_sub_zoom->cd(3);
+  TH2D* MMnmiss_IMnpip_woK0_woSm_data_sub_zoom = (TH2D*)MMnmiss_IMnpip_woK0_woSm_data_zoom->Clone("MMnmiss_IMnpip_woK0_woSm_data_sub_zoom");
+  MMnmiss_IMnpip_woK0_woSm_data_sub_zoom->Add(MMnmiss_IMnpip_woK0_woSm_mix_zoom,-1.0);
+  MMnmiss_IMnpip_woK0_woSm_data_sub_zoom->SetTitle("");
+  MMnmiss_IMnpip_woK0_woSm_data_sub_zoom->GetXaxis()->SetLabelOffset(0.005);
+  MMnmiss_IMnpip_woK0_woSm_data_sub_zoom->GetYaxis()->SetLabelOffset(0.005);
+  MMnmiss_IMnpip_woK0_woSm_data_sub_zoom->Draw("colz");
   
-  //TH1D* MMnmiss_woK0_woSm_vici_data_sub = (TH1D*)MMnmiss_woK0_woSm_vici_data->Clone("MMnmiss_woK0_woSm_vici_data_sub");
-  //MMnmiss_woK0_woSm_vici_data_sub->Add(MMnmiss_woK0_woSm_vici_mix,-1.0);
+  cMMnmiss_IMnpip_woK0_woSm_data_sub_zoom->cd(1);
+  TH1D* IMnpip_woK0_woSm_data_vici_sub = (TH1D*)MMnmiss_IMnpip_woK0_woSm_data_sub_zoom->ProjectionX("IMnpip_woK0_woSm_data_vici_sub");
+  IMnpip_woK0_woSm_data_vici_sub->Draw("HE");
+  
+  
+  cMMnmiss_IMnpip_woK0_woSm_data_sub_zoom->cd(4);
+  TH1D* MMnmiss_woK0_woSm_data_vici_sub = (TH1D*)MMnmiss_IMnpip_woK0_woSm_data_sub_zoom->ProjectionY("MMnmiss_woK0_woSm_data_vici_sub");
+  TGraphErrors *gr_MMnmiss_woK0_woSm_data_vici_sub = new TGraphErrors();
+  HistToRorateGraph(MMnmiss_woK0_woSm_data_vici_sub,*gr_MMnmiss_woK0_woSm_data_vici_sub);
+  gr_MMnmiss_woK0_woSm_data_vici_sub->Draw("AP");
   //MMnmiss_woK0_woSm_vici_data_sub->Draw("HE");
   
   //TCanvas *cMMnmiss_woK0_woSm_data_vici = new TCanvas("cMMnmiss_woK0_woSm_data_vici","cMMnmiss_woK0_woSm_data_vici",800,800);
@@ -184,23 +228,20 @@ void disp_2Dcompmix()
   //
  // TCanvas *cIMnpip_woK0_woSm_data_vici = new TCanvas("cIMnpip_woK0_woSm_data_vici","cIMnpip_woK0_woSm_data_vici",800,800);
   
-  TCanvas *cIMnpip_woK0_woSm_data_vici_sub = new TCanvas("cIMnpip_woK0_woSm_data_vici_sub","cIMnpip_woK0_woSm_data_vici_sub");
-  TH1D* IMnpip_woK0_woSm_data_vici_sub = (TH1D*)IMnpip_woK0_woSm_vici_data->Clone("IMnpip_woK0_woSm_data_vici_sub");
-  IMnpip_woK0_woSm_data_vici_sub->Add(IMnpip_woK0_woSm_vici_mix,-1.0);
-  IMnpip_woK0_woSm_data_vici_sub->Draw("HE");
+  //TCanvas *cIMnpip_woK0_woSm_data_vici_sub = new TCanvas("cIMnpip_woK0_woSm_data_vici_sub","cIMnpip_woK0_woSm_data_vici_sub");
 
 
   //MMnmiss vs IMnpim
-  TCanvas *cMMnmiss_IMnpim_dE_woK0_woSp_data_cut = new TCanvas("cMMnmiss_IMnpim_dE_woK0_woSp_data_cut","cMMnmiss_IMnpim_dE_woK0_woSp_data_cut",1000,1000);
-  cMMnmiss_IMnpim_dE_woK0_woSp_data_cut->Divide(2,2,0,0);
-  cMMnmiss_IMnpim_dE_woK0_woSp_data_cut->cd(3);
-  MMnmiss_IMnpim_dE_woK0_woSp_data->Draw("colz");
-  MMnmiss_IMnpim_dE_woK0_woSp_vici_data->SetMaximum(MMnmiss_IMnpim_dE_woK0_woSp_data->GetMaximum());
-  MMnmiss_IMnpim_dE_woK0_woSp_vici_data->Draw("colzsame");
+  TCanvas *cMMnmiss_IMnpim_woK0_woSp_data_cut = new TCanvas("cMMnmiss_IMnpim_woK0_woSp_data_cut","cMMnmiss_IMnpim_woK0_woSp_data_cut",800,800);
+  cMMnmiss_IMnpim_woK0_woSp_data_cut->Divide(2,2,0,0);
+  cMMnmiss_IMnpim_woK0_woSp_data_cut->cd(3);
+  MMnmiss_IMnpim_woK0_woSp_data->Draw("colz");
+  MMnmiss_IMnpim_woK0_woSp_vici_data->SetMaximum(MMnmiss_IMnpim_woK0_woSp_data->GetMaximum());
+  MMnmiss_IMnpim_woK0_woSp_vici_data->Draw("colzsame");
   //TCanvas *cMMnmiss_woK0_woSp_data_vici = new TCanvas("cMMnmiss_woK0_woSp_data_vici","cMMnmiss_woK0_woSp_data_vici",800,800);
-  TH1D* MMnmiss_woK0_woSp_vici_data = (TH1D*)MMnmiss_IMnpim_dE_woK0_woSp_vici_data->ProjectionY("MMnmiss_dE_woK0_woSp_vici_data");
-  TH1D* MMnmiss_woK0_woSp_vici_mix  = (TH1D*)MMnmiss_IMnpim_dE_woK0_woSp_vici_mix->ProjectionY("MMnmiss_dE_woK0_woSp_vici_mix");
-  cMMnmiss_IMnpim_dE_woK0_woSp_data_cut->cd(4);
+  TH1D* MMnmiss_woK0_woSp_vici_data = (TH1D*)MMnmiss_IMnpim_woK0_woSp_vici_data->ProjectionY("MMnmiss_woK0_woSp_vici_data");
+  TH1D* MMnmiss_woK0_woSp_vici_mix  = (TH1D*)MMnmiss_IMnpim_woK0_woSp_vici_mix->ProjectionY("MMnmiss_woK0_woSp_vici_mix");
+  cMMnmiss_IMnpim_woK0_woSp_data_cut->cd(4);
   MMnmiss_woK0_woSp_vici_data->Draw("HE");
   MMnmiss_woK0_woSp_vici_mix->SetLineColor(2);
   MMnmiss_woK0_woSp_vici_mix->Scale(mixScale);
@@ -215,8 +256,8 @@ void disp_2Dcompmix()
   
   //
   TCanvas *cIMnpim_woK0_woSp_data_vici = new TCanvas("cIMnpim_woK0_woSp_data_vici","cIMnpim_woK0_woSp_data_vici",800,800);
-  TH1D* IMnpim_woK0_woSp_vici_data = (TH1D*)MMnmiss_IMnpim_dE_woK0_woSp_vici_data->ProjectionX("IMnpim_dE_woK0_woSp_vici_data");
-  TH1D* IMnpim_woK0_woSp_vici_mix  = (TH1D*)MMnmiss_IMnpim_dE_woK0_woSp_vici_mix->ProjectionX("IMnpim_dE_woK0_woSp_vici_mix");
+  TH1D* IMnpim_woK0_woSp_vici_data = (TH1D*)MMnmiss_IMnpim_woK0_woSp_vici_data->ProjectionX("IMnpim_woK0_woSp_vici_data");
+  TH1D* IMnpim_woK0_woSp_vici_mix  = (TH1D*)MMnmiss_IMnpim_woK0_woSp_vici_mix->ProjectionX("IMnpim_woK0_woSp_vici_mix");
   IMnpim_woK0_woSp_vici_data->Draw("HE");
   IMnpim_woK0_woSp_vici_mix->SetLineColor(2);
   IMnpim_woK0_woSp_vici_mix->Scale(mixScale);
@@ -234,14 +275,14 @@ void disp_2Dcompmix()
   
   /*
   //draw BG at first
-  TH2D* IMnpim_IMnpip_woSid_won_data = (TH2D*)fr->Get("IMnpim_IMnpip_dE_woSid_won");IMnpim_IMnpip_woSid_won_data->Print();
-  TH2D* IMnpim_IMnpip_woSid_won_mix= (TH2D*)fmix->Get("IMnpim_IMnpip_dE_woSid_won");IMnpim_IMnpip_woSid_won_mix->Print();
+  TH2D* IMnpim_IMnpip_woSid_won_data = (TH2D*)fr->Get("IMnpim_IMnpip_woSid_won");IMnpim_IMnpip_woSid_won_data->Print();
+  TH2D* IMnpim_IMnpip_woSid_won_mix= (TH2D*)fmix->Get("IMnpim_IMnpip_woSid_won");IMnpim_IMnpip_woSid_won_mix->Print();
    
   const double ndata = IMnpim_IMnpip_woSid_won_data->Integral();
   const double nmix = IMnpim_IMnpip_woSid_won_mix->Integral();
   IMnpim_IMnpip_woSid_won_mix->Scale(ndata/nmix);
 
-  TCanvas *cIMnpim_IMnpip_woSid_won = new TCanvas("cIMnpim_IMnpip_woSid_won","cIMnpim_IMnpip_woSid_won",1000,1000);
+  TCanvas *cIMnpim_IMnpip_woSid_won = new TCanvas("cIMnpim_IMnpip_woSid_won","cIMnpim_IMnpip_woSid_won",800,800);
   cIMnpim_IMnpip_woSid_won->Divide(2,2,0,0);
   cIMnpim_IMnpip_woSid_won->cd(3);
   IMnpim_IMnpip_woSid_won_data->SetTitle("");
@@ -314,7 +355,7 @@ void disp_2Dcompmix()
   gr_IMnpim_woSid_won_mix->SetMarkerColor(6);
   gr_IMnpim_woSid_won_mix->Draw("P");
    
-  TCanvas *cIMnpim_IMnpip_woSid_won_2 = new TCanvas("cIMnpim_IMnpip_woSid_won_2","cIMnpim_IMnpip_woSid_won_2",1000,1000);
+  TCanvas *cIMnpim_IMnpip_woSid_won_2 = new TCanvas("cIMnpim_IMnpip_woSid_won_2","cIMnpim_IMnpip_woSid_won_2",800,800);
   cIMnpim_IMnpip_woSid_won_2->Divide(2,2);
   cIMnpim_IMnpip_woSid_won_2->cd(1);
   TH2D* IMnpim_IMnpip_woSid_won_data_2 = (TH2D*)IMnpim_IMnpip_woSid_won_data->Clone("IMnpim_IMnpip_woSid_won_data_2");
@@ -358,11 +399,11 @@ void disp_2Dcompmix()
   //
   //BG2 MMnmiss vs IMpipim
   //
-  TH2D* MMnmiss_IMpippim_woSid_won_data = (TH2D*)fr->Get("MMnmiss_IMpippim_dE_woSid_won");MMnmiss_IMpippim_woSid_won_data->Print();
-  TH2D* MMnmiss_IMpippim_woSid_won_mix = (TH2D*)fmix->Get("MMnmiss_IMpippim_dE_woSid_won");MMnmiss_IMpippim_woSid_won_mix->Print();
+  TH2D* MMnmiss_IMpippim_woSid_won_data = (TH2D*)fr->Get("MMnmiss_IMpippim_woSid_won");MMnmiss_IMpippim_woSid_won_data->Print();
+  TH2D* MMnmiss_IMpippim_woSid_won_mix = (TH2D*)fmix->Get("MMnmiss_IMpippim_woSid_won");MMnmiss_IMpippim_woSid_won_mix->Print();
   MMnmiss_IMpippim_woSid_won_mix->Scale(ndata/nmix);
 
-  TCanvas *cMMnmiss_IMpippim_woSid_won = new TCanvas("cMMnmiss_IMpippim_woSid_won","cMMnmiss_IMpippim_woSid_won",1000,1000);
+  TCanvas *cMMnmiss_IMpippim_woSid_won = new TCanvas("cMMnmiss_IMpippim_woSid_won","cMMnmiss_IMpippim_woSid_won",800,800);
   cMMnmiss_IMpippim_woSid_won ->Divide(2,2,0,0);
   
  
@@ -431,7 +472,7 @@ void disp_2Dcompmix()
   gr_MMnmiss_woSid_won_mix->SetMarkerColor(6);
   gr_MMnmiss_woSid_won_mix->Draw("P");
 
-  TCanvas *cMMnmiss_IMpippim_woSid_won_2 = new TCanvas("cMMnmiss_IMpippim_woSid_won_2","cMMnmiss_IMpippim_woSid_won_2",1000,1000);
+  TCanvas *cMMnmiss_IMpippim_woSid_won_2 = new TCanvas("cMMnmiss_IMpippim_woSid_won_2","cMMnmiss_IMpippim_woSid_won_2",800,800);
   cMMnmiss_IMpippim_woSid_won_2->Divide(2,2);
   cMMnmiss_IMpippim_woSid_won_2->cd(1);
   TH2D* MMnmiss_IMpippim_woSid_won_data_2 = (TH2D*)MMnmiss_IMpippim_woSid_won_data->Clone("MMnmiss_IMpippim_woSid_won_data_2");
@@ -497,7 +538,7 @@ void disp_2Dcompmix()
   TH2D* q_nmom_woSid_won_mixK0nX = (TH2D*)q_nmom_wK0_woSid_won_mix->Clone("q_nmom_wSid_won_mixK0nX");
   q_nmom_woSid_won_mixK0nX->Add(q_nmom_wK0_woSid_won_mixgeta,-1.0);
   
-  TCanvas *cq_nmom_woSid_won = new TCanvas("cq_nmom_woSid_won","cq_nmom_woSid_won",1000,1000);
+  TCanvas *cq_nmom_woSid_won = new TCanvas("cq_nmom_woSid_won","cq_nmom_woSid_won",800,800);
   cq_nmom_woSid_won ->Divide(2,2,0,0);
   
  
@@ -607,7 +648,7 @@ void disp_2Dcompmix()
   gr_q_woSid_won_mixK0nX->SetMarkerColor(3);
   if(showBG)gr_q_woSid_won_mixK0nX->Draw("P");
 
-  TCanvas *cq_nmom_woSid_won_2 = new TCanvas("cq_nmom_woSid_won_2","cq_nmom_woSid_won_2",1000,1000);
+  TCanvas *cq_nmom_woSid_won_2 = new TCanvas("cq_nmom_woSid_won_2","cq_nmom_woSid_won_2",800,800);
   cq_nmom_woSid_won_2->Divide(2,2);
   cq_nmom_woSid_won_2->cd(1);
   TH2D* q_nmom_woSid_won_data_2 = (TH2D*)q_nmom_woSid_won_data->Clone("q_nmom_woSid_won_data_2");
@@ -659,7 +700,7 @@ void disp_2Dcompmix()
   //q_IMnpipi_woSid_won_mix->Add(q_IMnpipi_wK0_woSid_won_mixgeta);
    
   
-  TCanvas *cq_IMnpipi_woSid_won = new TCanvas("cq_IMnpipi_woSid_won","cq_IMnpipi_woSid_won",1000,1000);
+  TCanvas *cq_IMnpipi_woSid_won = new TCanvas("cq_IMnpipi_woSid_won","cq_IMnpipi_woSid_won",800,800);
   cq_IMnpipi_woSid_won ->Divide(2,2,0,0);
   
  
@@ -729,7 +770,7 @@ void disp_2Dcompmix()
   gr_q_woSid_won_mix_2->SetMarkerColor(6);
   gr_q_woSid_won_mix_2->Draw("P");
 
-  TCanvas *cq_IMnpipi_woSid_won_2 = new TCanvas("cq_IMnpipi_woSid_won_2","cq_IMnpipi_woSid_won_2",1000,1000);
+  TCanvas *cq_IMnpipi_woSid_won_2 = new TCanvas("cq_IMnpipi_woSid_won_2","cq_IMnpipi_woSid_won_2",800,800);
   cq_IMnpipi_woSid_won_2->Divide(2,2);
   cq_IMnpipi_woSid_won_2->cd(1);
   TH2D* q_IMnpipi_woSid_won_data_2 = (TH2D*)q_IMnpipi_woSid_won_data->Clone("q_IMnpipi_woSid_won_data_2");
@@ -771,7 +812,7 @@ void disp_2Dcompmix()
   const double Slow = 1.0;
   const double Shigh = 1.7;
   
-  TCanvas *cIMnpim_IMnpip_n = new TCanvas("cIMnpim_IMnpip_n", "cIMnpim_IMnpip_n",1000,1000);     
+  TCanvas *cIMnpim_IMnpip_n = new TCanvas("cIMnpim_IMnpip_n", "cIMnpim_IMnpip_n",800,800);     
   cIMnpim_IMnpip_n->Divide(2,2,0,0);                                                             
   TH2D* IMnpim_IMnpip_n_rdata = (TH2D*)f->Get("IMnpim_IMnpip_n_rdata");                          
   TH2D* IMnpim_IMnpip_n_mix    = (TH2D*)f->Get("IMnpim_IMnpip_n_mix");                             
@@ -852,7 +893,7 @@ void disp_2Dcompmix()
   IMnpim_IMnpip_wSid_n_mixpipinX->Print();
   TH2D* IMnpim_IMnpip_wSid_n_mixK0nX = (TH2D*)IMnpim_IMnpip_wK0_wSid_n_mix->Clone("IMnpim_IMnpip_wSid_n_mixK0nX");
   
-  TCanvas *cIMnpim_IMnpip_wSid_n = new TCanvas("cIMnpim_IMnpip_wSid_n","cIMnpim_IMnpip_wSid_n",1000,1000);
+  TCanvas *cIMnpim_IMnpip_wSid_n = new TCanvas("cIMnpim_IMnpip_wSid_n","cIMnpim_IMnpip_wSid_n",800,800);
   cIMnpim_IMnpip_wSid_n->Divide(2,2,0,0);
   cIMnpim_IMnpip_wSid_n->cd(3);
   IMnpim_IMnpip_wSid_n_data->SetTitle("");
@@ -969,7 +1010,7 @@ void disp_2Dcompmix()
   if(showBG)gr_IMnpim_wSid_n_mixK0nX->Draw("P");
   
   //BG-subtracted 
-  TCanvas *cIMnpim_IMnpip_wSid_n_sub = new TCanvas("cIMnpim_IMnpip_wSid_n_sub","cIMnpim_IMnpip_wSid_n_sub",1000,1000);
+  TCanvas *cIMnpim_IMnpip_wSid_n_sub = new TCanvas("cIMnpim_IMnpip_wSid_n_sub","cIMnpim_IMnpip_wSid_n_sub",800,800);
   cIMnpim_IMnpip_wSid_n_sub->Divide(2,2,0,0);
   cIMnpim_IMnpip_wSid_n_sub->cd(3);
   TH2D* IMnpim_IMnpip_wSid_n_data_sub = (TH2D*)IMnpim_IMnpip_wSid_n_data->Clone("IMnpim_IMnpip_wSid_n_data_sub");
@@ -1014,7 +1055,7 @@ void disp_2Dcompmix()
   MMnmiss_IMpippim_wSid_mix->Add(MMnmiss_IMpippim_wK0_wSid_mixgeta,1.0);
   MMnmiss_IMpippim_wSid_mix->Print();
   
-  TCanvas *cMMnmiss_IMpippim_wSid = new TCanvas("cMMnmiss_IMpippim_wSid","cMMnmiss_IMpippim_wSid",1000,1000);
+  TCanvas *cMMnmiss_IMpippim_wSid = new TCanvas("cMMnmiss_IMpippim_wSid","cMMnmiss_IMpippim_wSid",800,800);
   cMMnmiss_IMpippim_wSid->Divide(2,2,0,0);
   cMMnmiss_IMpippim_wSid->cd(3);
   MMnmiss_IMpippim_wSid_data->SetTitle("");
@@ -1095,7 +1136,7 @@ void disp_2Dcompmix()
   MMnmiss_IMpippim_wSid_n_mixpipinX->Print();
   TH2D* MMnmiss_IMpippim_wSid_n_mixK0nX = (TH2D*)MMnmiss_IMpippim_wK0_wSid_n_mix->Clone("MMnmiss_IMpippim_wSid_n_mixK0nX");
   
-  TCanvas *cMMnmiss_IMpippim_wSid_n = new TCanvas("cMMnmiss_IMpippim_wSid_n","cMMnmiss_IMpippim_wSid_n",1000,1000);
+  TCanvas *cMMnmiss_IMpippim_wSid_n = new TCanvas("cMMnmiss_IMpippim_wSid_n","cMMnmiss_IMpippim_wSid_n",800,800);
   cMMnmiss_IMpippim_wSid_n->Divide(2,2,0,0);
   cMMnmiss_IMpippim_wSid_n->cd(3);
   MMnmiss_IMpippim_wSid_n_data->SetTitle("");
@@ -1202,7 +1243,7 @@ void disp_2Dcompmix()
   if(showBG)gr_MMnmiss_wSid_n_mixK0nX->Draw("P");
 
   //BG-subtracted 
-  TCanvas *cMMnmiss_IMpippim_wSid_n_sub = new TCanvas("cMMnmiss_IMpippim_wSid_n_sub","cMMnmiss_IMpippim_wSid_n_sub",1000,1000);
+  TCanvas *cMMnmiss_IMpippim_wSid_n_sub = new TCanvas("cMMnmiss_IMpippim_wSid_n_sub","cMMnmiss_IMpippim_wSid_n_sub",800,800);
   cMMnmiss_IMpippim_wSid_n_sub->Divide(2,2,0,0);
   cMMnmiss_IMpippim_wSid_n_sub->cd(3);
   TH2D* MMnmiss_IMpippim_wSid_n_data_sub = (TH2D*)MMnmiss_IMpippim_wSid_n_data->Clone("MMnmiss_IMpippim_wSid_n_data_sub");
@@ -1250,7 +1291,7 @@ void disp_2Dcompmix()
   q_nmom_wSid_n_mixpipinX->Print();
   TH2D* q_nmom_wSid_n_mixK0nX = (TH2D*)q_nmom_wK0_wSid_n_mix->Clone("q_nmom_wSid_n_mixK0nX");
   
-  TCanvas *cq_nmom_wSid_n = new TCanvas("cq_nmom_wSid_n","cq_nmom_wSid_n",1000,1000);
+  TCanvas *cq_nmom_wSid_n = new TCanvas("cq_nmom_wSid_n","cq_nmom_wSid_n",800,800);
   cq_nmom_wSid_n->Divide(2,2,0,0);
   cq_nmom_wSid_n->cd(3);
   q_nmom_wSid_n_data->SetTitle("");
@@ -1357,7 +1398,7 @@ void disp_2Dcompmix()
   if(showBG)gr_q_wSid_n_mixK0nX->Draw("P");
 
   //BG-subtracted 
-  TCanvas *cq_nmom_wSid_n_sub = new TCanvas("cq_nmom_wSid_n_sub","cq_nmom_wSid_n_sub",1000,1000);
+  TCanvas *cq_nmom_wSid_n_sub = new TCanvas("cq_nmom_wSid_n_sub","cq_nmom_wSid_n_sub",800,800);
   cq_nmom_wSid_n_sub->Divide(2,2,0,0);
   cq_nmom_wSid_n_sub->cd(3);
   TH2D* q_nmom_wSid_n_data_sub = (TH2D*)q_nmom_wSid_n_data->Clone("q_nmom_wSid_n_data_sub");
@@ -1406,7 +1447,7 @@ void disp_2Dcompmix()
   q_IMnpipi_wSid_n_mixpipinX->Print();
   TH2D* q_IMnpipi_wSid_n_mixK0nX = (TH2D*)q_IMnpipi_wK0_wSid_n_mix->Clone("q_IMnpipi_wSid_n_mixK0nX");
   
-  TCanvas *cq_IMnpipi_wSid_n = new TCanvas("cq_IMnpipi_wSid_n","cq_IMnpipi_wSid_n",1000,1000);
+  TCanvas *cq_IMnpipi_wSid_n = new TCanvas("cq_IMnpipi_wSid_n","cq_IMnpipi_wSid_n",800,800);
   cq_IMnpipi_wSid_n->Divide(2,2,0,0);
   cq_IMnpipi_wSid_n->cd(3);
   q_IMnpipi_wSid_n_data->SetTitle("");
@@ -1472,7 +1513,7 @@ void disp_2Dcompmix()
   if(showBG)gr_q_wSid_n_mixK0nX->Draw("P");
 
 
-  TCanvas *cq_IMnpipi_wSid_n_2 = new TCanvas("cq_IMnpipi_wSid_n_2","cq_IMnpipi_wSid_n_2",1000,800);
+  TCanvas *cq_IMnpipi_wSid_n_2 = new TCanvas("cq_IMnpipi_wSid_n_2","cq_IMnpipi_wSid_n_2",800,800);
   cq_IMnpipi_wSid_n_2->Divide(2,1);
   cq_IMnpipi_wSid_n_2->cd(1);
   TH2D* q_IMnpipi_wSid_n_data_2 = (TH2D*)q_IMnpipi_wSid_n_data->Clone("q_IMnpipi_wSid_n_data_2");
@@ -1490,7 +1531,7 @@ void disp_2Dcompmix()
   q_IMnpipi_wSid_n_mix_2->Draw("colz");
   gPad->SetLeftMargin(0);
 
-  TCanvas *cq_IMnpipi_wSid_n_0 = new TCanvas("cq_IMnpipi_wSid_n_0","cq_IMnpipi_wSid_n_0",1000,1000);
+  TCanvas *cq_IMnpipi_wSid_n_0 = new TCanvas("cq_IMnpipi_wSid_n_0","cq_IMnpipi_wSid_n_0",800,800);
   cq_IMnpipi_wSid_n_0->Divide(2,2,0,0);
   cq_IMnpipi_wSid_n_0->cd(3);
   TH2D* q_IMnpipi_wSid_n_data_0 = (TH2D*)q_IMnpipi_wSid_n_data->Clone("q_IMnpipi_wSid_n_data_0");
@@ -1601,7 +1642,7 @@ void disp_2Dcompmix()
   if(showBG)gr_q_wSid_n_mixK0nX_0->Draw("P");
 
 
-  TCanvas *cq_IMnpipi_wSid_n_350 = new TCanvas("cq_IMnpipi_wSid_n_350","cq_IMnpipi_wSid_n_350",1000,1000);
+  TCanvas *cq_IMnpipi_wSid_n_350 = new TCanvas("cq_IMnpipi_wSid_n_350","cq_IMnpipi_wSid_n_350",800,800);
   cq_IMnpipi_wSid_n_350->Divide(2,2,0,0);
   cq_IMnpipi_wSid_n_350->cd(3);
   TH2D* q_IMnpipi_wSid_n_data_350 = (TH2D*)q_IMnpipi_wSid_n_data->Clone("q_IMnpipi_wSid_n_data_350");
@@ -1712,7 +1753,7 @@ void disp_2Dcompmix()
   if(showBG)gr_q_wSid_n_mixK0nX_350->Draw("P");
 
   //subtracted 
-  TCanvas *cq_IMnpipi_wSid_n_sub = new TCanvas("cq_IMnpipi_wSid_n_sub","cq_IMnpipi_wSid_n_sub",1000,1000);
+  TCanvas *cq_IMnpipi_wSid_n_sub = new TCanvas("cq_IMnpipi_wSid_n_sub","cq_IMnpipi_wSid_n_sub",800,800);
   TH2D* q_IMnpipi_wSid_n_sub = (TH2D*)q_IMnpipi_wSid_n_data->Clone("q_IMnpipi_wSid_n_data");
   TH2D* q_IMnpipi_wSid_n_mix_no0 = (TH2D*)q_IMnpipi_wSid_n_mix->Clone("q_IMnpipi_wSid_n_mix_no0");
   //clean up 0 count bin
@@ -1750,7 +1791,7 @@ void disp_2Dcompmix()
   f_L1520->SetParameter(4,1.405);
   f_L1520->SetParameter(5,0.050);
   f_L1520->SetLineColor(2);
-  f_L1520->SetNpx(1000);
+  f_L1520->SetNpx(800);
   //f_L1520->Draw("same");
 
   TF1* f_bf = new TF1("f_bf","4.1*TMath::BreitWigner(x, 1.5195, 0.0156)+7.2*TMath::BreitWigner(x, 1.4051, 0.050)",1,2);
@@ -1765,7 +1806,7 @@ void disp_2Dcompmix()
   TH2D* q_IMnpipi_wK0_wSid_n_data_sub = (TH2D*)q_IMnpipi_wK0_wSid_n_data->Clone("q_IMnpipi_wK0_wSid_n_data_sub");
   q_IMnpipi_wK0_wSid_n_data_sub->Add(q_IMnpipi_wK0_wSid_n_mix,-1.0);
   q_IMnpipi_wK0_wSid_n_data_sub->Add(q_IMnpipi_wK0_wSid_n_mixgeta,-1.0);
-  TCanvas *cq_IMnpipi_wK0_wSid_n_data_sub = new TCanvas("cq_IMnpipi_wK0_wSid_n_data_sub","cq_IMnpipi_wK0_wSid_n_data_sub",1000,1000);
+  TCanvas *cq_IMnpipi_wK0_wSid_n_data_sub = new TCanvas("cq_IMnpipi_wK0_wSid_n_data_sub","cq_IMnpipi_wK0_wSid_n_data_sub",800,800);
   cq_IMnpipi_wK0_wSid_n_data_sub->Divide(2,2,0,0);
   cq_IMnpipi_wK0_wSid_n_data_sub->cd(3);
   q_IMnpipi_wK0_wSid_n_data_sub->RebinX(2);
@@ -1866,13 +1907,13 @@ void disp_2Dcompmix()
   //other signal checks
   //MMnmiss 
   TCanvas *cMMnmiss_BG_comp = new TCanvas("cMMnmiss_BG_comp","cMMnmiss_BG_comp");
-  TH2D* MMnmiss_IMpippim_dE_wSid_reco = (TH2D*)fGSp->Get("MMnmiss_IMpippim_dE_wSid");
-  TH2D* MMnmiss_IMpippim_dE_wSid_fake = (TH2D*)fGSp->Get("MMnmiss_IMpippim_dE_wSid_fake");
-  //MMnmiss_IMpippim_dE_wSid_true->Add(MMnmiss_IMpippim_dE_wSid_fake,-1);
-  MMnmiss_IMpippim_dE_wSid_reco->RebinX(4);
-  MMnmiss_IMpippim_dE_wSid_fake->RebinX(4);
-  TH1D* MMnmiss_reco = (TH1D*)MMnmiss_IMpippim_dE_wSid_reco->ProjectionY("MMnmiss_reco");
-  TH1D* MMnmiss_fake = (TH1D*)MMnmiss_IMpippim_dE_wSid_fake->ProjectionY("MMnmiss_fake");
+  TH2D* MMnmiss_IMpippim_wSid_reco = (TH2D*)fGSp->Get("MMnmiss_IMpippim_wSid");
+  TH2D* MMnmiss_IMpippim_wSid_fake = (TH2D*)fGSp->Get("MMnmiss_IMpippim_wSid_fake");
+  //MMnmiss_IMpippim_wSid_true->Add(MMnmiss_IMpippim_wSid_fake,-1);
+  MMnmiss_IMpippim_wSid_reco->RebinX(4);
+  MMnmiss_IMpippim_wSid_fake->RebinX(4);
+  TH1D* MMnmiss_reco = (TH1D*)MMnmiss_IMpippim_wSid_reco->ProjectionY("MMnmiss_reco");
+  TH1D* MMnmiss_fake = (TH1D*)MMnmiss_IMpippim_wSid_fake->ProjectionY("MMnmiss_fake");
   MMnmiss_reco->Draw("HE");
   MMnmiss_fake->SetLineColor(2);
   MMnmiss_fake->Draw("HEsame");
@@ -1881,13 +1922,13 @@ void disp_2Dcompmix()
 
   //IMnpip 
   TCanvas *cIMnpip_BG_comp = new TCanvas("cIMnpip_BG_comp","cIMnpip_BG_comp");
-  TH2D* IMnpim_IMnpip_dE_n_reco = (TH2D*)fGSp->Get("IMnpim_IMnpip_dE_n");
-  TH2D* IMnpim_IMnpip_dE_n_fake = (TH2D*)fGSp->Get("IMnpim_IMnpip_dE_n_fake");
-  //MMnmiss_IMpippim_dE_wSid_true->Add(MMnmiss_IMpippim_dE_wSid_fake,-1);
-  //MMnmiss_IMpippim_dE_wSid_true->RebinX(4);
-  //MMnmiss_IMpippim_dE_wSid_fake->RebinX(4);
-  TH1D* IMnpip_reco = (TH1D*)IMnpim_IMnpip_dE_n_reco->ProjectionX("IMnpip_reco");
-  TH1D* IMnpip_fake = (TH1D*)IMnpim_IMnpip_dE_n_fake->ProjectionX("IMnpip_fake");
+  TH2D* IMnpim_IMnpip_n_reco = (TH2D*)fGSp->Get("IMnpim_IMnpip_n");
+  TH2D* IMnpim_IMnpip_n_fake = (TH2D*)fGSp->Get("IMnpim_IMnpip_n_fake");
+  //MMnmiss_IMpippim_wSid_true->Add(MMnmiss_IMpippim_wSid_fake,-1);
+  //MMnmiss_IMpippim_wSid_true->RebinX(4);
+  //MMnmiss_IMpippim_wSid_fake->RebinX(4);
+  TH1D* IMnpip_reco = (TH1D*)IMnpim_IMnpip_n_reco->ProjectionX("IMnpip_reco");
+  TH1D* IMnpip_fake = (TH1D*)IMnpim_IMnpip_n_fake->ProjectionX("IMnpip_fake");
   IMnpip_reco->Draw("HE");
   IMnpip_fake->SetLineColor(2);
   IMnpip_fake->Draw("HEsame");
@@ -1905,7 +1946,7 @@ void disp_2Dcompmix()
   fgaus_MM->SetParameter(1,anacuts::neutron_center);
   fgaus_MM->SetParameter(2,anacuts::neutron_sigma);
   fgaus_MM->SetLineColor(3);
-  fgaus_MM->SetNpx(10000);
+  fgaus_MM->SetNpx(8000);
   fgaus_MM->Draw("same");
 
   TCanvas *cIMnip_sub = new TCanvas("cIMnpip_sub","cIMnpip_sub");
@@ -1914,11 +1955,11 @@ void disp_2Dcompmix()
   IMnpip_sub->Add(IMnpip_fake,-1.0);
   IMnpip_sub->Draw("HE");
   TF1 *fgaus_S = new TF1("fgaus_S","gaus",0.5,1.5);
-  fgaus_S->SetParameter(0,11000);
+  fgaus_S->SetParameter(0,1800);
   fgaus_S->SetParameter(1,anacuts::Sigmap_center);
   fgaus_S->SetParameter(2,anacuts::Sigmap_sigma);
   fgaus_S->SetLineColor(3);
-  fgaus_S->SetNpx(10000);
+  fgaus_S->SetNpx(8000);
   fgaus_S->Draw("same");
   */
 
