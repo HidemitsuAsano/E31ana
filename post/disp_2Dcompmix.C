@@ -113,8 +113,8 @@ void disp_2Dcompmix()
   MMnmiss_IMnpip_woK0_woSm_vici_mix->GetXaxis()->SetRangeUser(1.1,1.3);
   MMnmiss_IMnpip_woK0_woSm_vici_mix->GetYaxis()->SetRangeUser(0.7,1.1);
   MMnmiss_IMnpip_woK0_woSm_data_zoom->SetTitle("");
-  MMnmiss_IMnpip_woK0_woSm_data_zoom->GetXaxis()->SetLabelOffset(0.005);
-  MMnmiss_IMnpip_woK0_woSm_data_zoom->GetYaxis()->SetLabelOffset(0.005);
+  //MMnmiss_IMnpip_woK0_woSm_data_zoom->GetXaxis()->SetLabelOffset(0.005);
+  //MMnmiss_IMnpip_woK0_woSm_data_zoom->GetYaxis()->SetLabelOffset(0.005);
   MMnmiss_IMnpip_woK0_woSm_data_zoom->Draw("colz");
   MMnmiss_IMnpip_woK0_woSm_vici_data->Draw("colzsame");
 
@@ -153,8 +153,8 @@ void disp_2Dcompmix()
   MMnmiss_IMnpip_woK0_woSm_viciext_mix->GetXaxis()->SetRangeUser(1.1,1.3);
   MMnmiss_IMnpip_woK0_woSm_viciext_mix->GetYaxis()->SetRangeUser(0.0,1.1);
   MMnmiss_IMnpip_woK0_woSm_data_zoom2->SetTitle("");
-  MMnmiss_IMnpip_woK0_woSm_data_zoom2->GetXaxis()->SetLabelOffset(0.005);
-  MMnmiss_IMnpip_woK0_woSm_data_zoom2->GetYaxis()->SetLabelOffset(0.005);
+  //MMnmiss_IMnpip_woK0_woSm_data_zoom2->GetXaxis()->SetLabelOffset(0.005);
+  //MMnmiss_IMnpip_woK0_woSm_data_zoom2->GetYaxis()->SetLabelOffset(0.005);
   MMnmiss_IMnpip_woK0_woSm_data_zoom2->Draw("colz");
   MMnmiss_IMnpip_woK0_woSm_viciext_data->Draw("colzsame");
 
@@ -178,13 +178,19 @@ void disp_2Dcompmix()
   gr_MMnmiss_woK0_woSm_viciext_mix->SetMarkerColor(2);
   gr_MMnmiss_woK0_woSm_viciext_mix->Draw("P");
 
+  TCanvas *cMMnmiss_IMnpip_woK0_woSm_data_sub2 = new TCanvas("cMMnmiss_IMnpip_woK0_woSm_data_sub2","cMMnmiss_IMnpip_woK0_woSm_data_sub2",800,800);
+  TH2D* MMnmiss_IMnpip_woK0_woSm_data_sub = (TH2D*)MMnmiss_IMnpip_woK0_woSm_data->Clone("MMnmiss_IMnpip_woK0_woSm_data_sub");
+  //gStyle->SetPalette(53);
+  MMnmiss_IMnpip_woK0_woSm_data_sub->Add(MMnmiss_IMnpip_woK0_woSm_mix,-1.0);
+  TH2D* MMnmiss_IMnpip_woK0_woSm_data_subRebin = (TH2D*)MMnmiss_IMnpip_woK0_woSm_data_sub->Clone("MMnmiss_IMnpip_woK0_woSm_data_subRebin");
+  MMnmiss_IMnpip_woK0_woSm_data_subRebin->RebinX(2);
+  MMnmiss_IMnpip_woK0_woSm_data_subRebin->RebinY(2);
+  MMnmiss_IMnpip_woK0_woSm_data_subRebin->Draw("colz");
 
   //and subtract
   TCanvas *cMMnmiss_IMnpip_woK0_woSm_data_sub = new TCanvas("cMMnmiss_IMnpip_woK0_woSm_data_sub","cMMnmiss_IMnpip_woK0_woSm_data_sub",800,800);
   cMMnmiss_IMnpip_woK0_woSm_data_sub->Divide(2,2,0,0);
   cMMnmiss_IMnpip_woK0_woSm_data_sub->cd(3);
-  TH2D* MMnmiss_IMnpip_woK0_woSm_data_sub = (TH2D*)MMnmiss_IMnpip_woK0_woSm_data->Clone("MMnmiss_IMnpip_woK0_woSm_data_sub");
-  MMnmiss_IMnpip_woK0_woSm_data_sub->Add(MMnmiss_IMnpip_woK0_woSm_mix,-1.0);
   //MMnmiss_IMnpip_woK0_woSm_data_sub->RebinX(2);
   //MMnmiss_IMnpip_woK0_woSm_data_sub->RebinY(2);
   MMnmiss_IMnpip_woK0_woSm_data_sub->SetTitle("");
@@ -198,16 +204,19 @@ void disp_2Dcompmix()
   HistToRorateGraph(MMnmiss_woK0_woSm_data_sub,*gr_MMnmiss_woK0_woSm_data_sub);
   gr_MMnmiss_woK0_woSm_data_sub->Draw("AP");
   //gr_MMnmiss_woK0_woSm_data_sub->Print("all");
+   
+ 
 
 
+  //draw vicinity subtracted
   TCanvas *cMMnmiss_IMnpip_woK0_woSm_vici_data_sub = new TCanvas("cMMnmiss_IMnpip_woK0_woSm_vici_data_sub","cMMnmiss_IMnpip_woK0_woSm_vici_data_sub",800,800);
   cMMnmiss_IMnpip_woK0_woSm_vici_data_sub->Divide(2,2,0,0);
   cMMnmiss_IMnpip_woK0_woSm_vici_data_sub->cd(3);
   TH2D* MMnmiss_IMnpip_woK0_woSm_vici_data_sub = (TH2D*)MMnmiss_IMnpip_woK0_woSm_vici_data->Clone("MMnmiss_IMnpip_woK0_woSm_vici_data_sub");
   MMnmiss_IMnpip_woK0_woSm_vici_data_sub->Add(MMnmiss_IMnpip_woK0_woSm_vici_mix,-1.0);
   MMnmiss_IMnpip_woK0_woSm_vici_data_sub->SetTitle("");
-  MMnmiss_IMnpip_woK0_woSm_vici_data_sub->GetXaxis()->SetLabelOffset(0.005);
-  MMnmiss_IMnpip_woK0_woSm_vici_data_sub->GetYaxis()->SetLabelOffset(0.005);
+  //MMnmiss_IMnpip_woK0_woSm_vici_data_sub->GetXaxis()->SetLabelOffset(0.005);
+  //MMnmiss_IMnpip_woK0_woSm_vici_data_sub->GetYaxis()->SetLabelOffset(0.005);
   MMnmiss_IMnpip_woK0_woSm_vici_data_sub->Draw("colz");
   
   cMMnmiss_IMnpip_woK0_woSm_vici_data_sub->cd(1);
