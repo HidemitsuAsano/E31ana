@@ -1,5 +1,6 @@
 void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v202_out_iso.root"){
   
+  gStyle->SetPalette(1);
   gStyle->SetOptStat("e");
   TFile *f = new TFile(filename,"READ");
   f->cd();
@@ -93,11 +94,14 @@ void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v202_out_iso
 
   
   TCanvas *c9 = new TCanvas("c9","c9");
+  TH2D* pimmom_diffphi_CDC_CDH_pim = (TH2D*)f->Get("pimmom_diffphi_CDC_CDH_pim");
   pimmom_diffphi_CDC_CDH_pim->Draw("colz");
   
   TCanvas *c10 = new TCanvas("c10","c10");
+  TH2D* pipmom_diffphi_CDC_CDH_pip = (TH2D*)f->Get("pipmom_diffphi_CDC_CDH_pip");
   pipmom_diffphi_CDC_CDH_pip->Draw("colz");
 
+  /*
   TCanvas *c11 = new TCanvas("c11","c11");
   nmom_diffphi_CDC_CDH_pim->Draw("colz");
 
@@ -121,7 +125,7 @@ void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v202_out_iso
   
   TCanvas *c18 = new TCanvas("c18","c18");
   nmom_diffz_CDC_CDH_pip->Draw("colz");
-  
+  */
 
   /*
   TCanvas *c = NULL;
