@@ -3864,11 +3864,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
       //round cut
       if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.60/0.60+diffpim.Z()*diffpim.Z()/25.0/25.0 <1 ) continue;
-
+      //for mixed events, avoid sharing same CDH segments
+      if( -0.12< diffPhinpim  && diffPhinpim < 0.12 ) continue;
     } else if(IsolationFlag==2) {
       //if(0< diffPhinpim && diffPhinpim <1) continue;
       //if(-1.< diffPhinpim && diffPhinpim <0.) continue;
       if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.60/0.60+diffpim.Z()*diffpim.Z()/25.0/25.0 >=1 ) continue;
+      //for mixed events, avoid sharing same CDH segments
+      if( -0.12< diffPhinpim  && diffPhinpim < 0.12 ) continue;
     }
 
     TVector3 diffpip = (*CDH_Pos)-(*CDH_Pos_pip);
@@ -3882,10 +3885,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       
       //round cut
       if( ((diffPhinpip+0.05)*(diffPhinpip+0.05))/0.4/0.4+diffpip.Z()*diffpip.Z()/25.0/25.0 <1 ) continue;
+      //for mixed events, avoid sharing same CDH segments
+      if( -0.12< diffPhinpip  && diffPhinpip < 0.12 ) continue;
     } else if(IsolationFlag==2) {
       //if(0< diffPhinpip && diffPhinpip <1.0) continue;
       //if(-1.0< diffPhinpip && diffPhinpip <0.) continue;
       if( ((diffPhinpip+0.05)*(diffPhinpip+0.05))/0.4/0.4+diffpip.Z()*diffpip.Z()/25.0/25.0 >=1 ) continue;
+      //for mixed events, avoid sharing same CDH segments
+      if( -0.12< diffPhinpip  && diffPhinpip < 0.12 ) continue;
     }
 
     if(CDCChargeVetoFlag && (nhitOutCDC!=0) ) continue;
