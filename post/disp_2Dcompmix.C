@@ -20,7 +20,7 @@ void HistToRorateGraph(TH1D* h1, TGraphErrors &gr)
 void disp_2Dcompmix()
 {
   TFile *fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso.root");
-  TFile *fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut3_out_iso.root");
+  TFile *fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut5_out_iso.root");
   fr->Print() ;
   fmix->Print();
    
@@ -68,7 +68,8 @@ void disp_2Dcompmix()
   TH2D* MMnmiss_IMnpim_woK0_woSp_viciext_mix = (TH2D*)fmix->Get("MMnmiss_IMnpim_dE_woK0_woSp_viciext");
   
   //const double mixScale = 0.0496125;
-  const double mixScale = 0.0490125;
+ // const double mixScale = 0.0490125;
+  const double mixScale = 0.0450125;
 
   //real data
   TCanvas *cMMnmiss_IMnpip_woK0_woSm_data_cut = new TCanvas("cMMnmiss_IMnpip_woK0_woSm_data_cut","cMMnmiss_IMnpip_woK0_woSm_data_cut",800,800);
