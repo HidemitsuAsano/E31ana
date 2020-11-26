@@ -1,5 +1,5 @@
 //plot woSid 3 plots
-void plot_woSid(const char *filename="evanaIMpisigma_npippim_v201_out_iso.root")
+void plot_woSid(const char *filename="evanaIMpisigma_npippim_v202_out_iso.root")
 {
   gStyle->SetOptStat(0);
   TFile *f = new TFile(filename,"READ");
