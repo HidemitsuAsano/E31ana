@@ -650,6 +650,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* Momnpip_Mompippim_dE_wK0_wSid_n;
 
   TH2F* MMnmiss_IMpippim_dE_woK0_woSid;
+  TH2F* MMnmiss_IMpippim_dE_woSid;
   TH2F* MMnmiss_IMpippim_dE_woSid_won;
   TH2F* MMnmiss_IMpippim_dE_woK0_woSid_won;
   TH2F* MMnmiss_IMpippim_dE_woK0_woSidn;// (miss n & Sigma+/-) is rejected
@@ -1525,6 +1526,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   MMnmiss_IMpippim_dE_woK0_woSid->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMpippim_dE_woK0_woSid->SetYTitle("Miss Mass. [GeV/c^{2}]");
 
+  MMnmiss_IMpippim_dE_woSid = new TH2F("MMnmiss_IMpippim_dE_woSid", "MMnmiss_IMpippim_dE_woSid",nbinpippim,0.,1.0,nbinnmiss, nmisslow, nmisshigh);
+  MMnmiss_IMpippim_dE_woSid->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  MMnmiss_IMpippim_dE_woSid->SetYTitle("Miss Mass. [GeV/c^{2}]");
+  
   MMnmiss_IMpippim_dE_woSid_won = new TH2F("MMnmiss_IMpippim_dE_woSid_won", "MMnmiss_IMpippim_dE_woSid_won",nbinpippim,0.,1.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMpippim_dE_woSid_won->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMpippim_dE_woSid_won->SetYTitle("Miss Mass. [GeV/c^{2}]");
@@ -4359,6 +4364,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         IMnpim_IMnpip_dE_woSid->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         MMnmiss_IMnpip_dE_woSid->Fill(LVec_pip_n.M(),nmiss_mass,weight);
         MMnmiss_IMnpim_dE_woSid->Fill(LVec_pim_n.M(),nmiss_mass,weight);
+        MMnmiss_IMpippim_dE_woSid->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
       }
       
       if(IsBGregion){
