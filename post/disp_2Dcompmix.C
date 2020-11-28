@@ -69,7 +69,8 @@ void disp_2Dcompmix()
   
   //const double mixScale = 0.0496125;
  // const double mixScale = 0.0490125;
-  const double mixScale = 0.0450125;
+  //const double mixScale = 0.0450125;
+  const double mixScale = 1.0;
 
   //real data
   TCanvas *cMMnmiss_IMnpip_woK0_woSm_data_cut = new TCanvas("cMMnmiss_IMnpip_woK0_woSm_data_cut","cMMnmiss_IMnpip_woK0_woSm_data_cut",800,800);
