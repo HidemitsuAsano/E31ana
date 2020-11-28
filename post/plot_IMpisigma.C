@@ -746,6 +746,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* q_IMnpipi_wSid_n_fake_pat2;
   TH2F* q_IMnpipi_wSid_n_fake_pat7;
   TH2F* q_IMnpipi_woK0_wSid_n;
+  TH2F* q_IMnpipi_woK0_wSid_n_woSp;
+  TH2F* q_IMnpipi_woK0_wSid_n_woSm;
   TH2F* q_IMnpipi_wK0_wSid_n;
   TH2F* q_IMpiSigma_gen;//fine bins
   TH2F* q_IMpiSigma_wSid_n_genacc;//fine bins,  reaction data
@@ -2304,9 +2306,17 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   q_IMnpipi_wSid_n_fake_pat7->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_wSid_n_fake_pat7->SetYTitle("Mom. Transfer [GeV/c]");
 
-  q_IMnpipi_woK0_wSid_n = new TH2F(Form("q_IMnpipi_woK0_wSid_n"),Form("q_IMnpipi_woK0_wSid_n"), nbinIMnpipi,1,2, nbinq,0,1.5);
+  q_IMnpipi_woK0_wSid_n = new TH2F("q_IMnpipi_woK0_wSid_n","q_IMnpipi_woK0_wSid_n", nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_woK0_wSid_n->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMnpipi_woK0_wSid_n_woSp = new TH2F("q_IMnpipi_woK0_wSid_n_woSp","q_IMnpipi_woK0_wSid_n_woSp", nbinIMnpipi,1,2, nbinq,0,1.5);
+  q_IMnpipi_woK0_wSid_n_woSp->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMnpipi_woK0_wSid_n_woSp->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMnpipi_woK0_wSid_n_woSm = new TH2F("q_IMnpipi_woK0_wSid_n_woSm","q_IMnpipi_woK0_wSid_n_woSm", nbinIMnpipi,1,2, nbinq,0,1.5);
+  q_IMnpipi_woK0_wSid_n_woSm->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMnpipi_woK0_wSid_n_woSm->SetYTitle("Mom. Transfer [GeV/c]");
 
   q_IMnpipi_wK0_wSid_n = new TH2F(Form("q_IMnpipi_wK0_wSid_n"),Form("q_IMnpipi_wK0_wSid_n"), nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_wK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -3864,17 +3874,17 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     if(diffPhinpim<-1.0*TMath::Pi()) diffPhinpim += 2.0*TMath::Pi();
     else if(diffPhinpim>1.0*TMath::Pi()) diffPhinpim -= 2.0*TMath::Pi();
     if(IsolationFlag==1) {
-      //if(0< diffPhinpim && diffPhinpim <0.5) continue;
-      //if(-0.5< diffPhinpim && diffPhinpim <0.) continue;
-
       //round cut
       if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.60/0.60+diffpim.Z()*diffpim.Z()/25.0/25.0 <1 ) continue;
+      if( -0.12< diffPhinpim  && diffPhinpim < 0.12 ) continue;
+    }else if(IsolationFlag==2){ 
+      //round cut wide
+      if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.65/0.65+diffpim.Z()*diffpim.Z()/28.0/28.0 <1 ) continue;
       //for mixed events, avoid sharing same CDH segments
       if( -0.12< diffPhinpim  && diffPhinpim < 0.12 ) continue;
-    } else if(IsolationFlag==2) {
-      //if(0< diffPhinpim && diffPhinpim <1) continue;
-      //if(-1.< diffPhinpim && diffPhinpim <0.) continue;
-      if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.60/0.60+diffpim.Z()*diffpim.Z()/25.0/25.0 >=1 ) continue;
+    } else if(IsolationFlag==3) {
+      //if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.60/0.60+diffpim.Z()*diffpim.Z()/25.0/25.0 >=1 ) continue;
+      if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.65/0.65+diffpim.Z()*diffpim.Z()/28.0/28.0 >=1 ) continue;
       //for mixed events, avoid sharing same CDH segments
       if( -0.12< diffPhinpim  && diffPhinpim < 0.12 ) continue;
     }
@@ -3884,7 +3894,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     const double difftofnpip = tofn - tofpip;
     if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
     else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
-    if(IsolationFlag==1) {
+    if(IsolationFlag==1 || IsolationFlag==2) {
       //if(0< diffPhinpip && diffPhinpip <0.5) continue;
       //if(-0.5< diffPhinpip && diffPhinpip <0.) continue;
       
@@ -3892,7 +3902,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       if( ((diffPhinpip+0.05)*(diffPhinpip+0.05))/0.4/0.4+diffpip.Z()*diffpip.Z()/25.0/25.0 <1 ) continue;
       //for mixed events, avoid sharing same CDH segments
       if( -0.12< diffPhinpip  && diffPhinpip < 0.12 ) continue;
-    } else if(IsolationFlag==2) {
+    } else if(IsolationFlag==3) {
       //if(0< diffPhinpip && diffPhinpip <1.0) continue;
       //if(-1.0< diffPhinpip && diffPhinpip <0.) continue;
       if( ((diffPhinpip+0.05)*(diffPhinpip+0.05))/0.4/0.4+diffpip.Z()*diffpip.Z()/25.0/25.0 >=1 ) continue;
@@ -4194,7 +4204,13 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
     //std::cout << __LINE__ << std::endl;
     double weight = 1.0;
+    weight = 4.24608060240400029e-02;
     static bool isState = false;
+    if(!isState){
+      std::cout  << " weighting factor " << weight << std::endl;
+      isState = true;
+    }
+
     if(IsMCweighting) {
       if(!SimFakemode_gSp && !SimFakemode_gSm){//mc for real data
         if(SimFakemode) { //w/o K0
@@ -4272,8 +4288,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     //---including K0 --------------------------------------------------------------
 
     //std::cout << __LINE__ << std::endl;
-    NHitCDCOut->Fill(nhitOutCDC);
-    IsForwardCharge->Fill(ForwardCharge);
+    NHitCDCOut->Fill(nhitOutCDC,weight);
+    IsForwardCharge->Fill(ForwardCharge,weight);
     CDHphi_betainv_fid->Fill(1./NeutralBetaCDH,(*CDH_Pos).Phi());
     CDHz_betainv_fid->Fill(1./NeutralBetaCDH,(*CDH_Pos).z());
     dE_betainv_fid->Fill(1./NeutralBetaCDH,dE);
@@ -4295,8 +4311,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       dE_IMnpip->Fill(LVec_pip_n.M(),dE);
     }
     if(NBetaOK && MissNFlag) {
-      dE_IMnpim_n->Fill(LVec_pim_n.M(),dE);
-      dE_IMnpip_n->Fill(LVec_pip_n.M(),dE);
+      dE_IMnpim_n->Fill(LVec_pim_n.M(),dE,weight);
+      dE_IMnpip_n->Fill(LVec_pip_n.M(),dE,weight);
     }
     if(NBetaOK && NdEOK) {
 
@@ -5145,6 +5161,13 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         nmom_nmissmom_woK0_wSid_n->Fill(LVec_nmiss.P(),(*LVec_n).P(),weight);
         diff2d_CDC_CDH_pim_woK0_wSid_n->Fill(diffPhinpim,diffpim.z(),weight);
         diff2d_CDC_CDH_pip_woK0_wSid_n->Fill(diffPhinpip,diffpip.z(),weight);
+        
+        if(!SigmaMFlag){
+          q_IMnpipi_woK0_wSid_n_woSm->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+        }
+        if(!SigmaPFlag){
+          q_IMnpipi_woK0_wSid_n_woSp->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+        }
         //std::cout << __LINE__ << std::endl;
         if(SimSpmode || SimSmmode){
           //std::cout << __LINE__ << std::endl;
@@ -7579,6 +7602,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   if(IsolationFlag==0) outname.Replace(std::string(filename).size()-5,5,"_out.root");
   else if(IsolationFlag==1) outname.Replace(std::string(filename).size()-5,5,"_out_iso.root");
   else if(IsolationFlag==2) outname.Replace(std::string(filename).size()-5,5,"_out_iso2.root");
+  else if(IsolationFlag==3) outname.Replace(std::string(filename).size()-5,5,"_out_iso3.root");
   //outname.Replace(std::string(filename).size()-5,5,"_outncutK015.root");
   TFile *fout = new TFile(outname.Data(),"RECREATE");
   fout->Print();
