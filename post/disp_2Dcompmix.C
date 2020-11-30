@@ -57,7 +57,6 @@ void disp_2Dcompmix()
   IMnpim_IMnpip_woK0_woSm_vici_data->Draw("colz");
   //
 
-
   TH2D* MMnmiss_IMnpip_woK0_woSm_vici_data = (TH2D*)fr->Get("MMnmiss_IMnpip_dE_woK0_woSm_vici");
   TH2D* MMnmiss_IMnpim_woK0_woSp_vici_data = (TH2D*)fr->Get("MMnmiss_IMnpim_dE_woK0_woSp_vici");
   TH2D* MMnmiss_IMnpip_woK0_woSm_viciext_data = (TH2D*)fr->Get("MMnmiss_IMnpip_dE_woK0_woSm_viciext");
@@ -67,9 +66,6 @@ void disp_2Dcompmix()
   TH2D* MMnmiss_IMnpip_woK0_woSm_viciext_mix = (TH2D*)fmix->Get("MMnmiss_IMnpip_dE_woK0_woSm_viciext");
   TH2D* MMnmiss_IMnpim_woK0_woSp_viciext_mix = (TH2D*)fmix->Get("MMnmiss_IMnpim_dE_woK0_woSp_viciext");
   
-  //const double mixScale = 0.0496125;
- // const double mixScale = 0.0490125;
-  //const double mixScale = 0.0450125;
   const double mixScale = 1.0;
 
   //real data
@@ -389,6 +385,60 @@ void disp_2Dcompmix()
   HistToRorateGraph(MMnmiss_woK0_woSp_vici_data_sub,*gr_MMnmiss_woK0_woSp_vici_data_sub);
   gr_MMnmiss_woK0_woSp_vici_data_sub->Draw("AP");
   
+  
+  TH2D* q_IMnpipi_woK0_wSid_n_woSm_data = (TH2D*)fr->Get("q_IMnpipi_woK0_wSid_n_woSm");
+  TH2D* q_IMnpipi_woK0_wSid_n_woSm_mix  = (TH2D*)fmix->Get("q_IMnpipi_woK0_wSid_n_woSm");
+  
+
+  TCanvas *cq_IMnpipi_woK0_wSid_n_woSm_comp= new TCanvas("cq_IMnpipi_woK0_wSid_n_woSm_comp","cq_IMnpipi_woK0_wSid_n_woSm_comp");
+  cq_IMnpipi_woK0_wSid_n_woSm_comp->cd();
+  TH1D* IMnpipi_woK0_wSid_n_woSm_data = (TH1D*)q_IMnpipi_woK0_wSid_n_woSm_data->ProjectionX("IMnpipi_woK0_wSid_n_woSm_data");
+  IMnpipi_woK0_wSid_n_woSm_data->Draw("HE");
+  TH1D* IMnpipi_woK0_wSid_n_woSm_mix = (TH1D*)q_IMnpipi_woK0_wSid_n_woSm_mix->ProjectionX("IMnpipi_woK0_wSid_n_woSm_mix");
+  IMnpipi_woK0_wSid_n_woSm_mix->SetLineColor(2);
+  IMnpipi_woK0_wSid_n_woSm_mix->Draw("HEsame");
+
+  TCanvas *cq_IMnpipi_woK0_wSid_n_woSm_comp_0 = new TCanvas("cq_IMnpipi_woK0_wSid_n_woSm_comp_0","cq_IMnpipi_woK0_wSid_n_woSm_comp_0");
+  cq_IMnpipi_woK0_wSid_n_woSm_comp_0->cd();
+  const int bin350 = q_IMnpipi_woK0_wSid_n_woSm_data->GetYaxis()->FindBin(0.35);
+  TH1D* IMnpipi_woK0_wSid_n_woSm_data_0 = (TH1D*)q_IMnpipi_woK0_wSid_n_woSm_data->ProjectionX("IMnpipi_woK0_wSid_n_woSm_data_0",1,bin350-1);
+  IMnpipi_woK0_wSid_n_woSm_data_0->Draw("HE");
+  TH1D* IMnpipi_woK0_wSid_n_woSm_mix_0 = (TH1D*)q_IMnpipi_woK0_wSid_n_woSm_mix->ProjectionX("IMnpipi_woK0_wSid_n_woSm_mix_0",1,bin350-1);
+  IMnpipi_woK0_wSid_n_woSm_mix_0->SetLineColor(2);
+  IMnpipi_woK0_wSid_n_woSm_mix_0->Draw("HEsame");
+
+
+  TCanvas *cq_IMnpipi_woK0_wSid_n_woSm_comp_350 = new TCanvas("cq_IMnpipi_woK0_wSid_n_woSm_comp_350","cq_IMnpipi_woK0_wSid_n_woSm_comp_350");
+  cq_IMnpipi_woK0_wSid_n_woSm_comp_350->cd();
+  TH1D* IMnpipi_woK0_wSid_n_woSm_data_350 = (TH1D*)q_IMnpipi_woK0_wSid_n_woSm_data->ProjectionX("IMnpipi_woK0_wSid_n_woSm_data_350",bin350,500);
+  IMnpipi_woK0_wSid_n_woSm_data_350->Draw("HE");
+  TH1D* IMnpipi_woK0_wSid_n_woSm_mix_350 = (TH1D*)q_IMnpipi_woK0_wSid_n_woSm_mix->ProjectionX("IMnpipi_woK0_wSid_n_woSm_mix_350",bin350,500);
+  IMnpipi_woK0_wSid_n_woSm_mix_350->SetLineColor(2);
+  IMnpipi_woK0_wSid_n_woSm_mix_350->Draw("HEsame");
+
+  TH2D* q_IMnpipi_woK0_wSid_n_woSp_data = (TH2D*)fr->Get("q_IMnpipi_woK0_wSid_n_woSp");
+  TH2D* q_IMnpipi_woK0_wSid_n_woSp_mix  = (TH2D*)fmix->Get("q_IMnpipi_woK0_wSid_n_woSp");
+  
+  TCanvas *cq_IMnpipi_woK0_wSid_n_woSp_comp_0 = new TCanvas("cq_IMnpipi_woK0_wSid_n_woSp_comp_0","cq_IMnpipi_woK0_wSid_n_woSp_comp_0");
+  cq_IMnpipi_woK0_wSid_n_woSp_comp_0->cd();
+  TH1D* IMnpipi_woK0_wSid_n_woSp_data_0 = (TH1D*)q_IMnpipi_woK0_wSid_n_woSp_data->ProjectionX("IMnpipi_woK0_wSid_n_woSp_data_0",1,bin350-1);
+  IMnpipi_woK0_wSid_n_woSp_data_0->Draw("HE");
+  TH1D* IMnpipi_woK0_wSid_n_woSp_mix_0 = (TH1D*)q_IMnpipi_woK0_wSid_n_woSp_mix->ProjectionX("IMnpipi_woK0_wSid_n_woSp_mix_0",1,bin350-1);
+  IMnpipi_woK0_wSid_n_woSp_mix_0->SetLineColor(2);
+  IMnpipi_woK0_wSid_n_woSp_mix_0->Draw("HEsame");
+
+
+  TCanvas *cq_IMnpipi_woK0_wSid_n_woSp_comp_350 = new TCanvas("cq_IMnpipi_woK0_wSid_n_woSp_comp_350","cq_IMnpipi_woK0_wSid_n_woSp_comp_350");
+  cq_IMnpipi_woK0_wSid_n_woSp_comp_350->cd();
+  TH1D* IMnpipi_woK0_wSid_n_woSp_data_350 = (TH1D*)q_IMnpipi_woK0_wSid_n_woSp_data->ProjectionX("IMnpipi_woK0_wSid_n_woSp_data_350",bin350,500);
+  IMnpipi_woK0_wSid_n_woSp_data_350->Draw("HE");
+  TH1D* IMnpipi_woK0_wSid_n_woSp_mix_350 = (TH1D*)q_IMnpipi_woK0_wSid_n_woSp_mix->ProjectionX("IMnpipi_woK0_wSid_n_woSp_mix_350",bin350,500);
+  IMnpipi_woK0_wSid_n_woSp_mix_350->SetLineColor(2);
+  IMnpipi_woK0_wSid_n_woSp_mix_350->Draw("HEsame");
+
+
+
+
 
 
   /*
