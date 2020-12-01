@@ -464,8 +464,8 @@ void disp_2Dcompmix()
   TH1D* IMpippim_vici_woSp_data = (TH1D*)IMpippim_IMnpim_vici_woSp_data->ProjectionY("IMpippim_vici_woSp_data");
   TH1D* IMpippim_vici_woSp_mix  = (TH1D*)IMpippim_IMnpim_vici_woSp_mix->ProjectionY("IMpippim_vici_woSp_mix");
   TH1D* IMpippim_vici_woSp_comp = IMpippim_vici_woSp_data->Clone("IMpippim_vici_woSp_comp");
-  IMpippim_vici_woSp_comp->Rebin(4);
-  IMpippim_vici_woSp_mix->Rebin(4);
+  IMpippim_vici_woSp_comp->Rebin(8);
+  IMpippim_vici_woSp_mix->Rebin(8);
   IMpippim_vici_woSp_comp->Add(IMpippim_vici_woSp_mix,-1);
   IMpippim_vici_woSp_comp->Draw("HE");
   
@@ -474,12 +474,12 @@ void disp_2Dcompmix()
   TH1D* IMpippim_vici_woSm_data = (TH1D*)IMpippim_IMnpip_vici_woSm_data->ProjectionY("IMpippim_vici_woSm_data");
   TH1D* IMpippim_vici_woSm_mix  = (TH1D*)IMpippim_IMnpip_vici_woSm_mix->ProjectionY("IMpippim_vici_woSm_mix");
   TH1D* IMpippim_vici_woSm_comp = IMpippim_vici_woSm_data->Clone("IMpippim_vici_woSm_comp");
-  IMpippim_vici_woSm_comp->Rebin(4);
-  IMpippim_vici_woSm_mix->Rebin(4);
+  IMpippim_vici_woSm_comp->Rebin(8);
+  IMpippim_vici_woSm_mix->Rebin(8);
   IMpippim_vici_woSm_comp->Add(IMpippim_vici_woSm_mix,-1);
   IMpippim_vici_woSm_comp->Draw("HE");
   
-
+  
 
 
 
