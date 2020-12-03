@@ -940,6 +940,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* q_nmom_n_wSid;
   TH2F* IMpippim_IMnpipi_n;
   TH2F* IMpippim_IMnpipi_n_wSid;
+  TH2F* IMpippim_IMnpipi_n_wSid_woSp;
+  TH2F* IMpippim_IMnpipi_n_wSid_woSm;
   TH2F* IMpippim_IMnpip_vici;
   TH2F* IMpippim_IMnpip_vici_woSm;
   TH2F* IMpippim_IMnpip_n;
@@ -3040,6 +3042,15 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMpippim_IMnpipi_n_wSid = new TH2F("IMpippim_IMnpipi_n_wSid","IMpippim_IMnpipi_n_wSid",100,1,2,nbinpippim,0,1);
   IMpippim_IMnpipi_n_wSid->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   IMpippim_IMnpipi_n_wSid->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  
+  IMpippim_IMnpipi_n_wSid_woSp = new TH2F("IMpippim_IMnpipi_n_wSid_woSp","IMpippim_IMnpipi_n_wSid_woSp",100,1,2,nbinpippim,0,1);
+  IMpippim_IMnpipi_n_wSid_woSp->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  IMpippim_IMnpipi_n_wSid_woSp->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+
+  IMpippim_IMnpipi_n_wSid_woSm = new TH2F("IMpippim_IMnpipi_n_wSid_woSm","IMpippim_IMnpipi_n_wSid_woSm",100,1,2,nbinpippim,0,1);
+  IMpippim_IMnpipi_n_wSid_woSm->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  IMpippim_IMnpipi_n_wSid_woSm->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+
 
   IMpippim_IMnpip_vici = new TH2F("IMpippim_IMnpip_vici","IMpippim_IMnpip_vici",nbinIMnpi,1,2,nbinpippim,0,1);
   IMpippim_IMnpip_vici->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
@@ -4772,9 +4783,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         
         if(!SigmaMFlag){
           IMpippim_IMnpip_wSid_n_woSm->Fill(LVec_pip_n.M(),LVec_pip_pim.M(),weight);
+          IMpippim_IMnpipi_n_wSid_woSm->Fill(LVec_pip_pim_n.M(), LVec_pip_pim.M(),weight);
         }
         if(!SigmaPFlag){
           IMpippim_IMnpim_wSid_n_woSp->Fill(LVec_pim_n.M(),LVec_pip_pim.M(),weight);
+          IMpippim_IMnpipi_n_wSid_woSp->Fill(LVec_pip_pim_n.M(), LVec_pip_pim.M(),weight);
         }
 
         //reaction data - mcData matching
@@ -7602,7 +7615,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   //TIter next(gROOT->GetListOfCanvases());
   TIter next(SCol);
   for(int i=0; i<size; i++) {
-    //while((c= (TCanvas*)next())){
+    //while((c= (TCanvas*)next()))
     //pdf->NewPage();
     c= (TCanvas*)next();
     c->Draw();
@@ -7686,7 +7699,13 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   else if(IsolationFlag==2) outname.Replace(std::string(filename).size()-5,5,"_out_iso2.root");
   else if(IsolationFlag==3) outname.Replace(std::string(filename).size()-5,5,"_out_iso3.root");
   //outname.Replace(std::string(filename).size()-5,5,"_outncutK015.root");
-  TFile *fout = new TFile(outname.Data(),"RECREATE");
+  
+  if(qvalcutflag==1) outname.Replace(std::string(outname).size()-5,5,"_qlo.root");
+  if(qvalcutflag==2) outname.Replace(std::string(outname).size()-5,5,"_qhi.root");
+
+  
+    
+    TFile *fout = new TFile(outname.Data(),"RECREATE");
   fout->Print();
   fout->cd();
   while( (obj = (TObject*)nexthist2())!=nullptr) {
