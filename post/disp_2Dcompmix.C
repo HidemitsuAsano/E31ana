@@ -371,6 +371,7 @@ void disp_2Dcompmix()
   cq_IMnpipi_woK0_wSid_n_woSm_comp_0->cd();
   const int bin350 = q_IMnpipi_woK0_wSid_n_woSm_data->GetYaxis()->FindBin(0.35);
   TH1D* IMnpipi_woK0_wSid_n_woSm_data_0 = (TH1D*)q_IMnpipi_woK0_wSid_n_woSm_data->ProjectionX("IMnpipi_woK0_wSid_n_woSm_data_0",1,bin350-1);
+  IMnpipi_woK0_wSid_n_woSm_data_0->SetTitle("IMnpipi_woK0_wSid_n_woSm_data_0");
   IMnpipi_woK0_wSid_n_woSm_data_0->Draw("HE");
   TH1D* IMnpipi_woK0_wSid_n_woSm_mix_0 = (TH1D*)q_IMnpipi_woK0_wSid_n_woSm_mix->ProjectionX("IMnpipi_woK0_wSid_n_woSm_mix_0",1,bin350-1);
   IMnpipi_woK0_wSid_n_woSm_mix_0->SetLineColor(2);
@@ -380,6 +381,7 @@ void disp_2Dcompmix()
   TCanvas *cq_IMnpipi_woK0_wSid_n_woSm_comp_350 = new TCanvas("cq_IMnpipi_woK0_wSid_n_woSm_comp_350","cq_IMnpipi_woK0_wSid_n_woSm_comp_350");
   cq_IMnpipi_woK0_wSid_n_woSm_comp_350->cd();
   TH1D* IMnpipi_woK0_wSid_n_woSm_data_350 = (TH1D*)q_IMnpipi_woK0_wSid_n_woSm_data->ProjectionX("IMnpipi_woK0_wSid_n_woSm_data_350",bin350,500);
+  IMnpipi_woK0_wSid_n_woSm_data_350->SetTitle("IMnpipi_woK0_wSid_n_woSm_data_350");
   IMnpipi_woK0_wSid_n_woSm_data_350->Draw("HE");
   TH1D* IMnpipi_woK0_wSid_n_woSm_mix_350 = (TH1D*)q_IMnpipi_woK0_wSid_n_woSm_mix->ProjectionX("IMnpipi_woK0_wSid_n_woSm_mix_350",bin350,500);
   IMnpipi_woK0_wSid_n_woSm_mix_350->SetLineColor(2);
