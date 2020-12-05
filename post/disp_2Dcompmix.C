@@ -354,7 +354,11 @@ void disp_2Dcompmix()
   HistToRorateGraph(MMnmiss_woK0_woSp_vici_data_sub,*gr_MMnmiss_woK0_woSp_vici_data_sub);
   gr_MMnmiss_woK0_woSp_vici_data_sub->Draw("AP");
   
-  
+  TH2D* IMnpim_IMnpip_n_data = (TH2D*)fr->Get("IMnpim_IMnpip_dE_n");
+  TH2D* IMnpim_IMnpip_n_mix = (TH2D*)fmix->Get("IMnpim_IMnpip_dE_n");
+
+
+
   TH2D* q_IMnpipi_woK0_wSid_n_woSm_data = (TH2D*)fr->Get("q_IMnpipi_woK0_wSid_n_woSm");
   TH2D* q_IMnpipi_woK0_wSid_n_woSm_mix  = (TH2D*)fmix->Get("q_IMnpipi_woK0_wSid_n_woSm");
   
