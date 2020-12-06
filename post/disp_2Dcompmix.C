@@ -356,6 +356,40 @@ void disp_2Dcompmix()
   
   TH2D* IMnpim_IMnpip_n_data = (TH2D*)fr->Get("IMnpim_IMnpip_dE_n");
   TH2D* IMnpim_IMnpip_n_mix = (TH2D*)fmix->Get("IMnpim_IMnpip_dE_n");
+  
+  TCanvas *cIMnpim_IMnpip_n_sub = new TCanvas("cIMnpim_IMnpip_n_sub","cIMnpim_IMnpip_n_sub");
+  TH2D* IMnpim_IMnpip_n_sub = (TH2D*)IMnpim_IMnpip_n_data->Clone("IMnpim_IMnpip_n_sub");
+  IMnpim_IMnpip_n_sub->RebinX(2);
+  IMnpim_IMnpip_n_sub->RebinY(2);
+  IMnpim_IMnpip_n_mix->RebinX(2);
+  IMnpim_IMnpip_n_mix->RebinY(2);
+  IMnpim_IMnpip_n_sub->Add(IMnpim_IMnpip_n_mix,-1.);
+  IMnpim_IMnpip_n_sub->SetTitle("IMnpim_IMnpip_n_sub");
+  IMnpim_IMnpip_n_sub->Draw("colz");
+  
+  TH2D* IMnpim_IMnpip_wK0_n_data = (TH2D*)fr->Get("IMnpim_IMnpip_dE_wK0_n");
+  TH2D* IMnpim_IMnpip_wK0_n_mix  = (TH2D*)fmix->Get("IMnpim_IMnpip_dE_wK0_n");
+  TCanvas *cIMnpim_IMnpip_wK0_n_sub = new TCanvas("cIMnpim_IMnpip_wK0_n_sub","cIMnpim_IMnpip_wK0_n_sub");
+  TH2D* IMnpim_IMnpip_wK0_n_sub = (TH2D*)IMnpim_IMnpip_wK0_n_data->Clone("IMnpim_IMnpip_wK0_n_sub");
+  IMnpim_IMnpip_wK0_n_sub->RebinX(2);
+  IMnpim_IMnpip_wK0_n_sub->RebinY(2);
+  IMnpim_IMnpip_wK0_n_mix->RebinX(2);
+  IMnpim_IMnpip_wK0_n_mix->RebinY(2);
+  IMnpim_IMnpip_wK0_n_sub->Add(IMnpim_IMnpip_wK0_n_mix,-1.);
+  IMnpim_IMnpip_wK0_n_sub->SetTitle("IMnpim_IMnpip_wK0_n_sub");
+  IMnpim_IMnpip_wK0_n_sub->Draw("colz");
+ 
+  TH2D* IMnpim_IMnpip_wK0_wSid_n_data = (TH2D*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n");
+  TH2D* IMnpim_IMnpip_wK0_wSid_n_mix  = (TH2D*)fmix->Get("IMnpim_IMnpip_dE_wK0_wSid_n");
+  TCanvas *cIMnpim_IMnpip_wK0_wSid_n_sub = new TCanvas("cIMnpim_IMnpip_wK0_wSid_n_sub","cIMnpim_IMnpip_wK0_wSid_n_sub");
+  TH2D* IMnpim_IMnpip_wK0_wSid_n_sub = (TH2D*)IMnpim_IMnpip_wK0_wSid_n_data->Clone("IMnpim_IMnpip_wK0_wSid_n_sub");
+  IMnpim_IMnpip_wK0_wSid_n_sub->RebinX(2);
+  IMnpim_IMnpip_wK0_wSid_n_sub->RebinY(2);
+  IMnpim_IMnpip_wK0_wSid_n_mix->RebinX(2);
+  IMnpim_IMnpip_wK0_wSid_n_mix->RebinY(2);
+  IMnpim_IMnpip_wK0_wSid_n_sub->Add(IMnpim_IMnpip_wK0_wSid_n_mix,-1.);
+  IMnpim_IMnpip_wK0_wSid_n_sub->SetTitle("IMnpim_IMnpip_wK0_wSid_n_sub");
+  IMnpim_IMnpip_wK0_wSid_n_sub->Draw("colz");
 
 
 
