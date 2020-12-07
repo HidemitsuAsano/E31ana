@@ -110,8 +110,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   std::cout << "infile " << filename <<std::endl;
   TString pdfname = std::string(filename);
   if(qvalcutflag==0) pdfname.Replace(std::string(filename).size()-5,6,".pdf");
-  if(qvalcutflag==1) pdfname.Replace(std::string(filename).size()-5,8,"_1.pdf");
-  if(qvalcutflag==2) pdfname.Replace(std::string(filename).size()-5,8,"_2.pdf");
+  if(qvalcutflag==1) pdfname.Replace(std::string(filename).size()-5,8,"_qlo.pdf");
+  if(qvalcutflag==2) pdfname.Replace(std::string(filename).size()-5,8,"_qhi.pdf");
   std::cout << "pdfname: " << pdfname << std::endl;
   std::cout << std::endl;
 
@@ -521,7 +521,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* diff2D_nmom_IMnpip_recomc_wSid_n_fake1;//store reconstructed data - mcData
   
 
-
   TH2F* IMnpim_IMnpip_dE;
   TH2F* IMnpim_IMnpip_dE_woK0;
   TH2F* IMnpim_IMnpip_dE_woK0_woSp_vici;//select vicinity of the signal
@@ -754,6 +753,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* q_IMnpipi_woK0_wSid_n_woSp;
   TH2F* q_IMnpipi_woK0_wSid_n_woSm;
   TH2F* q_IMnpipi_wK0_wSid_n;
+  TH2F* q_IMnpipi_wK0_woSid_n;
   TH2F* q_IMpiSigma_gen;//fine bins
   TH2F* q_IMpiSigma_wSid_n_genacc;//fine bins,  reaction data
   TH2F* q_IMnpipi_wSid_n_acc;//fine bins, McData
@@ -2341,10 +2341,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   q_IMnpipi_woK0_wSid_n_woSm->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_woK0_wSid_n_woSm->SetYTitle("Mom. Transfer [GeV/c]");
 
-  q_IMnpipi_wK0_wSid_n = new TH2F(Form("q_IMnpipi_wK0_wSid_n"),Form("q_IMnpipi_wK0_wSid_n"), nbinIMnpipi,1,2, nbinq,0,1.5);
+  q_IMnpipi_wK0_wSid_n = new TH2F("q_IMnpipi_wK0_wSid_n","q_IMnpipi_wK0_wSid_n", nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_wK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_wK0_wSid_n->SetYTitle("Mom. Transfer [GeV/c]");
 
+  q_IMnpipi_wK0_woSid_n = new TH2F("q_IMnpipi_wK0_woSid_n","q_IMnpipi_wK0_woSid_n", nbinIMnpipi,1,2, nbinq,0,1.5);
+  q_IMnpipi_wK0_woSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMnpipi_wK0_woSid_n->SetYTitle("Mom. Transfer [GeV/c]");
+  
   q_IMpiSigma_gen = new TH2F(Form("q_IMpiSigma_gen"),Form("q_IMpiSigma_gen"),nbinpippim,1,2,300,0,1.5);
   if(SimSpmode) {
     q_IMpiSigma_gen->SetXTitle("true IM(#Sigma^{+}#pi^{-}) [GeV/c^{2}]");
@@ -4957,9 +4961,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           }
         }
       }
-      if(!SigmaPFlag && !SigmaMFlag) {
+
+      if(!SigmawidePFlag && !SigmawideMFlag) {
         IMpippim_DCApipibeam_wK0_woSid_n->Fill(dca_pipibeam,LVec_pip_pim.M(),weight);
         nmom_IMnpipi_wK0_woSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P(),weight);
+        q_IMnpipi_wK0_woSid_n->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
       }
 
       Mompippim_IMnpipi_dE_wK0_n->Fill(LVec_pip_pim_n.M(),LVec_pip_pim.P(),weight);
