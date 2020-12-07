@@ -24,6 +24,8 @@ const bool showBG = true;
 #include <TGraphErrors.h>
 #include <TGraphAsymmErrors.h>
 
+#include "../src/GlobalVariables.h"
+
 void HistToRorateGraph(TH1D* h1, TGraphErrors &gr)
 {
   for(int ibin=1;ibin<=h1->GetNbinsX();ibin++){
@@ -720,7 +722,49 @@ void disp_2Dcompmix()
   IMnpipi_wK0_wSid_n_sub_350->Draw("HEsame");
   
 
+  TH2D* MMnmiss_IMpippim_woSid_data = (TH2D*)fr->Get("MMnmiss_IMpippim_dE_woSid");
+  TH2D* MMnmiss_IMpippim_woSid_mix  = (TH2D*)fmix->Get("MMnmiss_IMpippim_dE_woSid");
+  TCanvas *cMMnmiss_IMpippim_woSid = new TCanvas("cMMnmiss_IMpippim_woSid","cMMnmiss_IMpippim_woSid");
+  TH2D* MMnmiss_IMpippim_woSid_sub = (TH2D*)MMnmiss_IMpippim_woSid_data->Clone("MMnmiss_IMpippim_woSid_sub");
+  MMnmiss_IMpippim_woSid_sub->RebinX(4);
+  MMnmiss_IMpippim_woSid_sub->RebinY(2);
+  MMnmiss_IMpippim_woSid_mix->RebinX(4);
+  MMnmiss_IMpippim_woSid_mix->RebinY(2);
+  MMnmiss_IMpippim_woSid_sub->Add(MMnmiss_IMpippim_woSid_mix,-1);
+  MMnmiss_IMpippim_woSid_sub->SetTitle("MMnmiss_IMpippim_woSid_sub");
+  MMnmiss_IMpippim_woSid_sub->Draw("colz");
 
+
+  TH2D* IMnpim_IMnpip_wK0_woSid_n_data = (TH2D*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
+  TH2D* IMnpim_IMnpip_wK0_woSid_n_mix = (TH2D*)fmix->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
+  TCanvas *cIMnpim_IMnpip_wK0_woSid_n = new TCanvas("cIMnpim_IMnpip_wK0_woSid_n","cIMnpim_IMnpip_wK0_woSid_n");
+  TH2D* IMnpim_IMnpip_wK0_woSid_n_sub = (TH2D*)IMnpim_IMnpip_wK0_woSid_n_data->Clone("IMnpim_IMnpip_wK0_woSid_n_sub");
+  IMnpim_IMnpip_wK0_woSid_n_sub->RebinX(2);
+  IMnpim_IMnpip_wK0_woSid_n_sub->RebinY(2);
+  IMnpim_IMnpip_wK0_woSid_n_mix->RebinX(2);
+  IMnpim_IMnpip_wK0_woSid_n_mix->RebinY(2);
+  IMnpim_IMnpip_wK0_woSid_n_sub->Add(IMnpim_IMnpip_wK0_woSid_n_mix,-1);
+  IMnpim_IMnpip_wK0_woSid_n_sub->SetTitle("IMnpim_IMnpip_wK0_woSid_n_sub");
+  IMnpim_IMnpip_wK0_woSid_n_sub->Draw("colz");
+
+
+  TH2D* q_IMnpipi_wK0_woSid_n_data = (TH2D*)fr->Get("q_IMnpipi_wK0_woSid_n");
+  TH2D* q_IMnpipi_wK0_woSid_n_mix  = (TH2D*)fmix->Get("q_IMnpipi_wK0_woSid_n");
+  TCanvas *cq_IMnpipi_wK0_woSid_n = new TCanvas("cq_IMnpipi_wK0_woSid_n","cq_IMnpipi_wK0_woSid_n");
+  TH2D* q_IMnpipi_wK0_woSid_n_sub = (TH2D*)q_IMnpipi_wK0_woSid_n_data->Clone("q_IMnpipi_wK0_woSid_n_sub");
+  q_IMnpipi_wK0_woSid_n_sub->Add(q_IMnpipi_wK0_woSid_n_mix,-1);
+  q_IMnpipi_wK0_woSid_n_sub->SetTitle("q_IMnpipi_wK0_woSid_n_sub");
+  q_IMnpipi_wK0_woSid_n_sub->Draw("colz");
+
+  const double Kp_mass = pMass + kpMass;
+  TF1 *fkp = new TF1("f", "sqrt(((x*x-[0]*[0]-[1]*[1])/(2*[0]))*((x*x-[0]*[0]-[1]*[1])/(2*[0]))-[1]*[1])",Kp_mass-0.0001,2);
+  fkp->SetParameter(0,nMass);
+  fkp->SetParameter(1,kpMass);
+  //fkp->SetLineColor(4);
+  fkp->SetLineWidth(5);
+  fkp->SetLineStyle(4);
+  fkp->SetLineColorAlpha(kPink, 0.35);
+  fkp->Draw("same");
   
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
