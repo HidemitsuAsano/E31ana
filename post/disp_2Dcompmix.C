@@ -646,6 +646,16 @@ void disp_2Dcompmix()
   IMpippim_wSid_n_woSm_comp->Add(IMpippim_wSid_n_woSm_mix,-1);
   IMpippim_wSid_n_woSm_comp->Draw("HE");
   
+  TCanvas *cIMpippim_IMnpipi_n_wSid = new TCanvas("cIMpippim_IMnpipi_n_wSid","cIMpippim_IMnpipi_n_wSid");
+  TH2D* IMpippim_IMnpipi_n_wSid_data = (TH2D*)fr->Get("IMpippim_IMnpipi_n_wSid");
+  TH2D* IMpippim_IMnpipi_n_wSid_mix  = (TH2D*)fmix->Get("IMpippim_IMnpipi_n_wSid");
+  IMpippim_IMnpipi_n_wSid_data->RebinX(2);
+  IMpippim_IMnpipi_n_wSid_mix->RebinX(2);
+  IMpippim_IMnpipi_n_wSid_data->RebinY(10);
+  IMpippim_IMnpipi_n_wSid_mix->RebinY(10);
+  TH2D* IMpippim_IMnpipi_n_wSid_sub  = (TH2D*)IMpippim_IMnpipi_n_wSid_data->Clone("IMpippim_IMnpipi_n_wSid_sub");
+  IMpippim_IMnpipi_n_wSid_sub->Add(IMpippim_IMnpipi_n_wSid_mix,-1);
+  IMpippim_IMnpipi_n_wSid_sub->Draw("colz");
 
 
   TCanvas *cIMpippim_IMnpipi_n_wSid_woSp = new TCanvas("cIMpippim_IMnpipi_n_wSid_woSp","cIMpippim_IMnpipi_n_wSid_woSp");
@@ -670,6 +680,12 @@ void disp_2Dcompmix()
   IMpippim_IMnpipi_n_wSid_woSm_sub->Add(IMpippim_IMnpipi_n_wSid_woSm_mix,-1);
   IMpippim_IMnpipi_n_wSid_woSm_sub->Draw("colz");
   
+
+
+
+
+
+
   TCanvas *cIMpippim_n_wSid_woSm1450 = new TCanvas("cIMpippim_n_wSid_woSm1450","cIMpippim_n_wSid_woSm1450");
   const int bin1450 = IMpippim_IMnpipi_n_wSid_woSm_sub->GetXaxis()->FindBin(1.450);
   TH1D* IMpippim_n_wSid_woSm1450 = (TH1D*)IMpippim_IMnpipi_n_wSid_woSm_sub->ProjectionY("IMpippim_n_wSid_woSm1450",bin1450,bin1450);
@@ -756,12 +772,30 @@ void disp_2Dcompmix()
   q_IMnpipi_wK0_woSid_n_sub->SetTitle("q_IMnpipi_wK0_woSid_n_sub");
   q_IMnpipi_wK0_woSid_n_sub->Draw("colz");
 
+
+  TH2D* q_IMpippim_wSid_n_data = (TH2D*)fr->Get("q_IMpippim_wSid_n");
+  TH2D* q_IMpippim_wSid_n_mix  = (TH2D*)fmix->Get("q_IMpippim_wSid_n");
+  TCanvas *cq_IMpippim_wSid_n = new TCanvas("cq_IMpippim_wSid_n","cq_IMpippim_wSid_n");
+  TH2D* q_IMpippim_wSid_n_sub = (TH2D*)q_IMpippim_wSid_n_data->Clone("q_IMpippim_wSid_n_sub");
+  q_IMpippim_wSid_n_sub->RebinX(5);
+  q_IMpippim_wSid_n_mix->RebinX(5);
+  q_IMpippim_wSid_n_sub->RebinY(2);
+  q_IMpippim_wSid_n_mix->RebinY(2);
+  q_IMpippim_wSid_n_sub->Add(q_IMpippim_wSid_n_mix,-1);
+  q_IMpippim_wSid_n_sub->SetTitle("q_IMpippim_wSid_n_sub");
+  q_IMpippim_wSid_n_sub->Draw("colz");
+
+
+
+
+
+
   const double Kp_mass = pMass + kpMass;
   TF1 *fkp = new TF1("f", "sqrt(((x*x-[0]*[0]-[1]*[1])/(2*[0]))*((x*x-[0]*[0]-[1]*[1])/(2*[0]))-[1]*[1])",Kp_mass-0.0001,2);
   fkp->SetParameter(0,nMass);
   fkp->SetParameter(1,kpMass);
   //fkp->SetLineColor(4);
-  fkp->SetLineWidth(5);
+  fkp->SetLineWidth(6);
   fkp->SetLineStyle(4);
   fkp->SetLineColorAlpha(kPink, 0.35);
   fkp->Draw("same");
