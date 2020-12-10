@@ -42,11 +42,23 @@ void HistToRorateGraph(TH1D* h1, TGraphErrors &gr)
   return;
 }
 
-void disp_2Dcompmix()
+void disp_2Dcompmix(const int qcut=0)
 {
-  TFile *fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso.root");
-  TFile *fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso.root");
-  fr->Print() ;
+  TFile *fr; 
+  TFile *fmix; 
+  if(qcut==0){
+    fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso.root");
+    fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso.root");
+  }
+  else if(qcut==1){
+    fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi.root");
+    fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qhi.root");
+  }
+  else if(qcut==2){
+    fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo.root");
+    fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qlo.root");
+  }
+  fr->Print();
   fmix->Print();
    
   gStyle->SetPalette(1);
@@ -763,6 +775,23 @@ void disp_2Dcompmix()
   IMnpim_IMnpip_wK0_woSid_n_sub->SetTitle("IMnpim_IMnpip_wK0_woSid_n_sub");
   IMnpim_IMnpip_wK0_woSid_n_sub->Draw("colz");
 
+  TH2D* q_IMnpipi_wK0_n_data = (TH2D*)fr->Get("q_IMnpipi_wK0_n");
+  TH2D* q_IMnpipi_wK0_n_mix  = (TH2D*)fmix->Get("q_IMnpipi_wK0_n");
+  TCanvas *cq_IMnpipi_wK0_n = new TCanvas("cq_IMnpipi_wK0_n","cq_IMnpipi_wK0_n");
+  TH2D* q_IMnpipi_wK0_n_sub = (TH2D*)q_IMnpipi_wK0_n_data->Clone("q_IMnpipi_wK0_n_sub");
+  q_IMnpipi_wK0_n_sub->Add(q_IMnpipi_wK0_n_mix,-1);
+  q_IMnpipi_wK0_n_sub->SetTitle("q_IMnpipi_wK0_n_sub");
+  q_IMnpipi_wK0_n_sub->Draw("colz");
+  
+  TCanvas *cIMnpipi_wK0_n_sub_0 = new TCanvas("cIMnpipi_wK0_n_sub_0","cIMnpipi_wK0_n_sub_0");
+  TH1D* IMnpipi_wK0_n_sub_0 = (TH1D*)q_IMnpipi_wK0_n_sub->ProjectionX("IMnpipi_wK0_n_sub_0",0,bin350);
+  IMnpipi_wK0_n_sub_0->SetTitle("IMnpipi_wK0_n_sub_0");
+  IMnpipi_wK0_n_sub_0->Draw("HE");
+
+  TCanvas *cIMnpipi_wK0_n_sub_350 = new TCanvas("cIMnpipi_wK0_n_sub_350","cIMnpipi_wK0_n_sub_350");
+  TH1D* IMnpipi_wK0_n_sub_350 = (TH1D*)q_IMnpipi_wK0_n_sub->ProjectionX("IMnpipi_wK0_n_sub_350",bin350,500);
+  IMnpipi_wK0_n_sub_350->SetTitle("IMnpipi_wK0_n_sub_350");
+  IMnpipi_wK0_n_sub_350->Draw("HE");
 
   TH2D* q_IMnpipi_wK0_woSid_n_data = (TH2D*)fr->Get("q_IMnpipi_wK0_woSid_n");
   TH2D* q_IMnpipi_wK0_woSid_n_mix  = (TH2D*)fmix->Get("q_IMnpipi_wK0_woSid_n");
@@ -771,7 +800,16 @@ void disp_2Dcompmix()
   q_IMnpipi_wK0_woSid_n_sub->Add(q_IMnpipi_wK0_woSid_n_mix,-1);
   q_IMnpipi_wK0_woSid_n_sub->SetTitle("q_IMnpipi_wK0_woSid_n_sub");
   q_IMnpipi_wK0_woSid_n_sub->Draw("colz");
+  
+  TCanvas *cIMnpipi_wK0_woSid_n_sub_0 = new TCanvas("cIMnpipi_wK0_woSid_n_sub_0","cIMnpipi_wK0_woSid_n_sub_0");
+  TH1D* IMnpipi_wK0_woSid_n_sub_0 = (TH1D*)q_IMnpipi_wK0_woSid_n_sub->ProjectionX("IMnpipi_wK0_woSid_n_sub_0",0,bin350);
+  IMnpipi_wK0_woSid_n_sub_0->SetTitle("IMnpipi_wK0_woSid_n_sub_0");
+  IMnpipi_wK0_woSid_n_sub_0->Draw("HE");
 
+  TCanvas *cIMnpipi_wK0_woSid_n_sub_350 = new TCanvas("cIMnpipi_wK0_woSid_n_sub_350","cIMnpipi_wK0_woSid_n_sub_350");
+  TH1D* IMnpipi_wK0_woSid_n_sub_350 = (TH1D*)q_IMnpipi_wK0_woSid_n_sub->ProjectionX("IMnpipi_wK0_woSid_n_sub_350",bin350,500);
+  IMnpipi_wK0_woSid_n_sub_350->SetTitle("IMnpipi_wK0_woSid_n_sub_350");
+  IMnpipi_wK0_woSid_n_sub_350->Draw("HE");
 
   TH2D* q_IMpippim_wSid_n_data = (TH2D*)fr->Get("q_IMpippim_wSid_n");
   TH2D* q_IMpippim_wSid_n_mix  = (TH2D*)fmix->Get("q_IMpippim_wSid_n");
@@ -804,7 +842,10 @@ void disp_2Dcompmix()
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
   int size = SCol->GetSize();
   TIter next(SCol);
-  TString pdfname = "disp_mixcomp.pdf";
+  TString pdfname;
+  if(qcut==0) pdfname= "disp_mixcomp.pdf";
+  if(qcut==1) pdfname= "disp_mixcomp_qhi.pdf";
+  if(qcut==2) pdfname= "disp_mixcomp_qlo.pdf";
   for(int i=0;i<size;i++){
     //pdf->NewPage();
     c= (TCanvas*)next();
