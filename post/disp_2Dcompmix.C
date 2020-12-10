@@ -825,9 +825,6 @@ void disp_2Dcompmix(const int qcut=0)
 
 
 
-
-
-
   const double Kp_mass = pMass + kpMass;
   TF1 *fkp = new TF1("f", "sqrt(((x*x-[0]*[0]-[1]*[1])/(2*[0]))*((x*x-[0]*[0]-[1]*[1])/(2*[0]))-[1]*[1])",Kp_mass-0.0001,2);
   fkp->SetParameter(0,nMass);

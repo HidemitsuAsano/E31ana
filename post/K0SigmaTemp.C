@@ -84,30 +84,46 @@ void K0SigmaTemp()
   TH2F* IMpippim_IMnpim_n_woSp_bin_qlo_data[nbintemplate];
   TH2F* IMpippim_IMnpip_n_woSm_bin_qlo_mix[nbintemplate];
   TH2F* IMpippim_IMnpim_n_woSp_bin_qlo_mix[nbintemplate];
+  TH2F* IMpippim_IMnpip_n_Sp_bin_data[nbintemplate];
+  TH2F* IMpippim_IMnpim_n_Sm_bin_data[nbintemplate];
+  TH2F* IMpippim_IMnpip_n_Sp_bin_mix[nbintemplate];
+  TH2F* IMpippim_IMnpim_n_Sm_bin_mix[nbintemplate];
+  TH2F* IMpippim_IMnpip_n_Sp_bin_qhi_data[nbintemplate];
+  TH2F* IMpippim_IMnpim_n_Sm_bin_qhi_data[nbintemplate];
+  TH2F* IMpippim_IMnpip_n_Sp_bin_qhi_mix[nbintemplate];
+  TH2F* IMpippim_IMnpim_n_Sm_bin_qhi_mix[nbintemplate];
+  TH2F* IMpippim_IMnpip_n_Sp_bin_qlo_data[nbintemplate];
+  TH2F* IMpippim_IMnpim_n_Sm_bin_qlo_data[nbintemplate];
+  TH2F* IMpippim_IMnpip_n_Sp_bin_qlo_mix[nbintemplate];
+  TH2F* IMpippim_IMnpim_n_Sm_bin_qlo_mix[nbintemplate];
   
   for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
-    float binlow=1.0+(float)ibin*1./nbintemplate;
-    float binhigh=1.0+(float)(ibin+1.0)*1./nbintemplate;
-    
-    IMpippim_IMnpip_n_bin_data[nbintemplate]
-    = new TH2F(Form("IMpippim_IMnpip_n_woSm_bin%d",ibin),Form("IMpippim_IMnpip_n_woSm %0.2f-%0.2f",binlow,binhigh)
-        ,nbinIMnpi,1,2,nbinpippim,0,1);
-
+    IMpippim_IMnpip_n_bin_data[ibin] = (TH2F*)fr->Get(Form("IMpippim_IMnpip_n_bin%d",ibin));
+    IMpippim_IMnpip_n_bin_mix[ibin] = (TH2F*)fmix->Get(Form("IMpippim_IMnpip_n_bin%d",ibin));
+    IMpippim_IMnpip_n_bin_qhi_data[ibin] = (TH2F*)frqhi->Get(Form("IMpippim_IMnpip_n_bin%d",ibin));
+    IMpippim_IMnpip_n_bin_qhi_mix[ibin] = (TH2F*)fmixqhi->Get(Form("IMpippim_IMnpip_n_bin%d",ibin));
+    IMpippim_IMnpip_n_bin_qlo_data[ibin] = (TH2F*)frqlo->Get(Form("IMpippim_IMnpip_n_bin%d",ibin));
+    IMpippim_IMnpip_n_bin_qlo_mix[ibin] = (TH2F*)fmixqlo->Get(Form("IMpippim_IMnpip_n_bin%d",ibin));
+    IMpippim_IMnpip_n_Sp_bin_data[ibin] = (TH2F*)fr->Get(Form("IMpippim_IMnpip_n_Sp_bin%d",ibin));
+    IMpippim_IMnpip_n_Sp_bin_mix[ibin] = (TH2F*)fmix->Get(Form("IMpippim_IMnpip_n_Sp_bin%d",ibin));
+    IMpippim_IMnpip_n_Sp_bin_qhi_data[ibin] = (TH2F*)frqhi->Get(Form("IMpippim_IMnpip_n_Sp_bin%d",ibin));
+    IMpippim_IMnpip_n_Sp_bin_qhi_mix[ibin] = (TH2F*)fmixqhi->Get(Form("IMpippim_IMnpip_n_Sp_bin%d",ibin));
+    IMpippim_IMnpip_n_Sp_bin_qlo_data[ibin] = (TH2F*)frqlo->Get(Form("IMpippim_IMnpip_n_Sp_bin%d",ibin));
+    IMpippim_IMnpip_n_Sp_bin_qlo_mix[ibin] = (TH2F*)fmixqlo->Get(Form("IMpippim_IMnpip_n_Sp_bin%d",ibin));
+    IMpippim_IMnpim_n_Sm_bin_data[ibin] = (TH2F*)fr->Get(Form("IMpippim_IMnpim_n_Sm_bin%d",ibin));
+    IMpippim_IMnpim_n_Sm_bin_mix[ibin] = (TH2F*)fmix->Get(Form("IMpippim_IMnpim_n_Sm_bin%d",ibin));
+    IMpippim_IMnpim_n_Sm_bin_qhi_data[ibin] = (TH2F*)frqhi->Get(Form("IMpippim_IMnpim_n_Sm_bin%d",ibin));
+    IMpippim_IMnpim_n_Sm_bin_qhi_mix[ibin] = (TH2F*)fmixqhi->Get(Form("IMpippim_IMnpim_n_Sm_bin%d",ibin));
+    IMpippim_IMnpim_n_Sm_bin_qlo_data[ibin] = (TH2F*)frqlo->Get(Form("IMpippim_IMnpim_n_Sm_bin%d",ibin));
+    IMpippim_IMnpim_n_Sm_bin_qlo_mix[ibin] = (TH2F*)fmixqlo->Get(Form("IMpippim_IMnpim_n_Sm_bin%d",ibin));
   }
 
-  MMnmiss_IMnpim_woK0_woSp_data_sub->Draw("colz");
-  cMMnmiss_IMnpim_woK0_woSp_data_sub->cd(1);
-  TH1D* IMnpim_woK0_woSp_data_sub = (TH1D*)MMnmiss_IMnpim_woK0_woSp_data_sub->ProjectionX("IMnpim_woK0_woSp_data_sub");
-  IMnpim_woK0_woSp_data_sub->Draw("HE");
-  cMMnmiss_IMnpim_woK0_woSp_data_sub->cd(4);
-  TH1D* MMnmiss_woK0_woSp_data_sub = (TH1D*)MMnmiss_IMnpim_woK0_woSp_data_sub->ProjectionY("MMnmiss_woK0_woSp_data_sub");
-  TGraphErrors *gr_MMnmiss_woK0_woSp_data_sub = new TGraphErrors();
-  HistToRorateGraph(MMnmiss_woK0_woSp_data_sub,*gr_MMnmiss_woK0_woSp_data_sub);
-  gr_MMnmiss_woK0_woSp_data_sub->Draw("AP");
-  //gr_MMnmiss_woK0_woSp_data_sub->Print("all");
-   
- 
+  //subtract
 
+  for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
+
+  
+  }
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
