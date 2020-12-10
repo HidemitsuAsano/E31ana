@@ -266,7 +266,8 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
   decltype(vec_CDH_Pos)::iterator last_CDH_Pos = vec_CDH_Pos.end();
   
   const size_t nsize=vec_LVec_n.size();
-  for ( Int_t i=0; i<nevent*10; i++ ) {
+  const int npipipairused = 10;
+  for ( Int_t i=0; i<nevent*npipipairused; i++ ) {
     tree->GetEvent(i%(nevent-1));
     if(i%50000==0) std::cout << "Event# " << i << std::endl;
     //decrement iterators 
