@@ -52,7 +52,11 @@ void K0SigmaTemp()
   TFile *fmixqlo = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qlo.root");
   fr->Print() ;
   fmix->Print();
-   
+  frqhi->Print() ;
+  fmixqhi->Print();
+  frqlo->Print() ;
+  fmixqlo->Print();
+  
   gStyle->SetPalette(1);
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
@@ -344,16 +348,12 @@ void K0SigmaTemp()
 
   //subtract
 
-  for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
-
-  
-  }
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
   int size = SCol->GetSize();
   TIter next(SCol);
-  TString pdfname = "disp_mixcomp.pdf";
+  TString pdfname = "K0SigmaTemp.pdf";
   for(int i=0;i<size;i++){
     //pdf->NewPage();
     c= (TCanvas*)next();
@@ -374,6 +374,16 @@ void K0SigmaTemp()
   }
   
 
+  TIter nexthist2(gDirectory->GetList());
+  TFile *fout = new TFile("K0SigmaTemp.root","RECREATE");
+  fout->Print();
+  fout->cd();
+  TObject *obj = nullptr;
+  while( (obj = (TObject*)nexthist2())!=nullptr) {
+    obj->Write();
+  }
+  fout->cd();
+  fout->Close();
 
 
   return;
