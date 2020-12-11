@@ -742,6 +742,8 @@ void disp_2Dcompmix(const int qcut=0)
   IMnpipi_wK0_wSid_n_sub_0->SetLineColor(2);
   IMnpipi_wK0_wSid_n_sub_0->Draw("HEsame");
 
+
+
   TCanvas *cIMnpipi_wK0_wSid_n_sub_350 = new TCanvas("cIMnpipi_wK0_wSid_n_sub_350","cIMnpipi_wK0_wSid_n_sub_350");
   TH1D* IMnpipi_wK0_wSid_n_sub_350 = (TH1D*)q_IMnpipi_wK0_wSid_n_sub->ProjectionX("IMnpipi_wK0_wSid_n_sub_350",bin350,5000);
   IMnpipi_wK0_wSid_n_sub_350->SetTitle("IMnpipi_wK0_wSid_n_sub_350");
@@ -749,6 +751,12 @@ void disp_2Dcompmix(const int qcut=0)
   IMnpipi_wK0_wSid_n_sub_350->SetLineColor(2);
   IMnpipi_wK0_wSid_n_sub_350->Draw("HEsame");
   
+  TCanvas *cIMnpipi_wK0_wSid_n_sub_350_sub = new TCanvas("cIMnpipi_wK0_wSid_n_sub_350_sub","cIMnpipi_wK0_wSid_n_sub_350_sub");
+  TH1D* h1 = (TH1D*)IMnpipi_wK0_wSid_n_sub_350->Clone("h1");
+  h1->Scale(0.7);
+  TH1D* h2 = (TH1D*)IMnpipi_wSid_n_sub_350->Clone("h2");
+  h2->Add(h1,-1);
+  h2->Draw("HE");
 
   TH2D* MMnmiss_IMpippim_woSid_data = (TH2D*)fr->Get("MMnmiss_IMpippim_dE_woSid");
   TH2D* MMnmiss_IMpippim_woSid_mix  = (TH2D*)fmix->Get("MMnmiss_IMpippim_dE_woSid");

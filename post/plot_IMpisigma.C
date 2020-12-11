@@ -950,6 +950,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* IMpippim_IMnpip_n_bin[nbintemplate];
   TH2F* IMpippim_IMnpip_n_woSm;
   TH2F* IMpippim_IMnpip_n_woSm_bin[nbintemplate];
+  TH2F* IMpippim_IMnpip_n_woSmdia;
+  TH2F* IMpippim_IMnpip_n_woSmdia_bin[nbintemplate];
   TH2F* IMpippim_IMnpip_wSid_n_woSm;
   TH2F* IMpippim_IMnpip_wSid_n_woSm_bin[nbintemplate];
   TH2F* IMpippim_IMnpip_woK0_wSid_n;
@@ -959,6 +961,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* IMpippim_IMnpim_n_bin[nbintemplate];
   TH2F* IMpippim_IMnpim_n_woSp;
   TH2F* IMpippim_IMnpim_n_woSp_bin[nbintemplate];
+  TH2F* IMpippim_IMnpim_n_woSpdia;
+  TH2F* IMpippim_IMnpim_n_woSpdia_bin[nbintemplate];
   TH2F* IMpippim_IMnpim_wSid_n_woSp;
   TH2F* IMpippim_IMnpim_wSid_n_woSp_bin[nbintemplate];
   TH2F* IMpippim_IMnpim_woK0_wSid_n;
@@ -3091,7 +3095,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     IMpippim_IMnpip_n_bin[ibin]->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   }
   
-  IMpippim_IMnpip_n_woSm = new TH2F("IMpippim_IMnpip_n","IMpippim_IMnpip_n",nbinIMnpi,1,2,nbinpippim,0,1);
+  IMpippim_IMnpip_n_woSm = new TH2F("IMpippim_IMnpip_n_woSm","IMpippim_IMnpip_n_woSm",nbinIMnpi,1,2,nbinpippim,0,1);
   IMpippim_IMnpip_n_woSm->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMpippim_IMnpip_n_woSm->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   
@@ -3102,6 +3106,20 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         ,nbinIMnpi,1,2,nbinpippim,0,1);
     IMpippim_IMnpip_n_woSm_bin[ibin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
     IMpippim_IMnpip_n_woSm_bin[ibin]->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  }
+  
+  //select SigmaP by diagonal cut
+  IMpippim_IMnpip_n_woSmdia = new TH2F("IMpippim_IMnpip_n_woSmdia","IMpippim_IMnpip_n_woSmdia",nbinIMnpi,1,2,nbinpippim,0,1);
+  IMpippim_IMnpip_n_woSmdia->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  IMpippim_IMnpip_n_woSmdia->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  
+  for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
+    float binlow=1.0+(float)ibin*1./nbintemplate;
+    float binhigh=1.0+(float)(ibin+1.0)*1./nbintemplate;
+    IMpippim_IMnpip_n_woSmdia_bin[ibin] = new TH2F(Form("IMpippim_IMnpip_n_woSmdia_bin%d",ibin),Form("IMpippim_IMnpip_n_woSmdia %0.2f-%0.2f",binlow,binhigh)
+        ,nbinIMnpi,1,2,nbinpippim,0,1);
+    IMpippim_IMnpip_n_woSmdia_bin[ibin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+    IMpippim_IMnpip_n_woSmdia_bin[ibin]->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   }
   
   IMpippim_IMnpip_wSid_n_woSm = new TH2F("IMpippim_IMnpip_wSid_n_woSm","IMpippim_IMnpip_wSid_n_woSm",nbinIMnpi,1,2,nbinpippim,0,1);
@@ -3158,6 +3176,19 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         ,nbinIMnpi,1,2,nbinpippim,0,1);
     IMpippim_IMnpim_n_woSp_bin[ibin]->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
     IMpippim_IMnpim_n_woSp_bin[ibin]->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  }
+  
+  IMpippim_IMnpim_n_woSpdia = new TH2F("IMpippim_IMnpim_n_woSpdia","IMpippim_IMnpim_n_woSpdia",nbinIMnpi,1,2,nbinpippim,0,1);
+  IMpippim_IMnpim_n_woSpdia->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  IMpippim_IMnpim_n_woSpdia->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+
+  for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
+    float binlow=1.0+(float)ibin*1./nbintemplate;
+    float binhigh=1.0+(float)(ibin+1.0)*1./nbintemplate;
+    IMpippim_IMnpim_n_woSpdia_bin[ibin] = new TH2F(Form("IMpippim_IMnpim_n_woSpdia_bin%d",ibin),Form("IMpippim_IMnpim_n_woSpdia %0.2f-%0.2f",binlow,binhigh)
+        ,nbinIMnpi,1,2,nbinpippim,0,1);
+    IMpippim_IMnpim_n_woSpdia_bin[ibin]->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+    IMpippim_IMnpim_n_woSpdia_bin[ibin]->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   }
 
   IMpippim_IMnpim_wSid_n_woSp = new TH2F("IMpippim_IMnpim_wSid_n_woSp","IMpippim_IMnpim_wSid_n_woSp",nbinIMnpi,1,2,nbinpippim,0,1);
@@ -4759,11 +4790,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       nmom_IMnpip_dE_n->Fill(LVec_pip_n.M(),(*LVec_n).P());
       if(SigmaPcutFlag[sigmacuttype]) {
         nmom_IMnpip_dE_n_Sp->Fill(LVec_pip_n.M(),(*LVec_n).P(),weight);
-        IMnpim_IMnpip_dE_n_Sp->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         q_IMnpipi_wSid_n_Sp->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
         q_IMpiSigma_wSid_n_Sp_genacc->Fill(LVec_piSigma_react.M()/1000.,qkn_react.P()/1000.);
         q_IMnpipi_wSid_n_Sp_acc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
         q_IMnpipi_wSid_n_Sp_acc_reco->Fill(LVec_pip_pim_n.M(),qkn.P());
+        IMnpim_IMnpip_dE_n_Sp->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         if(!SigmawideMFlag){
           q_IMnpipi_wSid_n_Sp_woSm->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
         }
@@ -4787,11 +4818,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
       if(SigmaMcutFlag[sigmacuttype]) {
         nmom_IMnpim_dE_n_Sm->Fill(LVec_pim_n.M(),(*LVec_n).P(),weight);
-        IMnpim_IMnpip_dE_n_Sm->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         q_IMnpipi_wSid_n_Sm->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
         q_IMpiSigma_wSid_n_Sm_genacc->Fill(LVec_piSigma_react.M()/1000.,qkn_react.P()/1000.);
         q_IMnpipi_wSid_n_Sm_acc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
         q_IMnpipi_wSid_n_Sm_acc_reco->Fill(LVec_pip_pim_n.M(),qkn.P());
+        IMnpim_IMnpip_dE_n_Sm->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         if(!SigmawidePFlag){
           q_IMnpipi_wSid_n_Sm_woSp->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
         }
@@ -4832,7 +4863,15 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         IMpippim_IMnpim_n_woSp->Fill(LVec_pim_n.M(),LVec_pip_pim.M(),weight);
         IMpippim_IMnpim_n_woSp_bin[binnum]->Fill(LVec_pim_n.M(),LVec_pip_pim.M(),weight);
       }
-
+      
+      if(!SigmaMcutFlag[sigmacuttype]) {
+        IMpippim_IMnpip_n_woSmdia->Fill(LVec_pip_n.M(),LVec_pip_pim.M(),weight);
+        IMpippim_IMnpip_n_woSmdia_bin[binnum]->Fill(LVec_pip_n.M(),LVec_pip_pim.M(),weight);
+      }
+      if(!SigmaPcutFlag[sigmacuttype])  {
+        IMpippim_IMnpim_n_woSpdia->Fill(LVec_pim_n.M(),LVec_pip_pim.M(),weight);
+        IMpippim_IMnpim_n_woSpdia_bin[binnum]->Fill(LVec_pim_n.M(),LVec_pip_pim.M(),weight);
+      }
 
       
       q_IMnpip_n->Fill(LVec_pip_n.M(),qkn.P(),weight);
@@ -7809,7 +7848,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
   
     
-    TFile *fout = new TFile(outname.Data(),"RECREATE");
+  TFile *fout = new TFile(outname.Data(),"RECREATE");
   fout->Print();
   fout->cd();
   while( (obj = (TObject*)nexthist2())!=nullptr) {
