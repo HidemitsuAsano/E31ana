@@ -3909,8 +3909,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       if(!IsFakebyVTX)MMnpim_MMnpip_mc->Fill(LVec_pip_nmiss_mc.M(),LVec_pim_nmiss_mc.M());
     }
 
+    bool K0Flag=false;
     bool K0rejectFlag=false;
-    bool K0rejectFlag_narrow=false;
     bool MissNFlag=false;
     bool MissNwideFlag=false;
     bool NBetaOK=false;
@@ -4363,7 +4363,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
     //K0 rejection using original momentum
     if( (LVec_pip_pim.M()<anacuts::pipi_MIN || anacuts::pipi_MAX<LVec_pip_pim.M())) K0rejectFlag=true;
-    if( (LVec_pip_pim.M()<anacuts::pipi_MIN_narrow || anacuts::pipi_MAX_narrow<LVec_pip_pim.M())) K0rejectFlag_narrow=true;
+    if( (anacuts::pipi_MIN_narrow < LVec_pip_pim.M())  && (LVec_pip_pim.M() < anacuts::pipi_MAX_narrow)) K0Flag=true;
 
     bool IsBGregion = false;
     if(BGFlag_woSid_won==0){
@@ -4481,7 +4481,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     pimmom_IMnpim->Fill(LVec_pim_n.M(),(*LVec_pim).P());
     if(NBetaOK) {
       dE_nmom_fid_beta->Fill((*LVec_n).P(),dE);
-      if(!K0rejectFlag) dE_nmom_fid_beta_wK0->Fill((*LVec_n).P(),dE);
+      if(K0Flag) dE_nmom_fid_beta_wK0->Fill((*LVec_n).P(),dE);
       dE_MMom_fid_beta->Fill(LVec_nmiss.P(),dE);
       dE_MMass_fid_beta->Fill(LVec_nmiss.M(),dE);
       if(SigmaPFlag || SigmaMFlag) {
@@ -4602,7 +4602,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       }
 
 
-      if(!K0rejectFlag) {
+      if(K0Flag) {
         IMnpim_IMnpip_dE_wK0->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         nmom_cosn_wK0->Fill(cos_ncdslab,(*LVec_n).P(),weight);
         nmom_cosK0_wK0->Fill(cos_K0CM,(*LVec_n).P(),weight);
@@ -4877,10 +4877,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       q_IMnpip_n->Fill(LVec_pip_n.M(),qkn.P(),weight);
       q_IMnpim_n->Fill(LVec_pim_n.M(),qkn.P(),weight);
       q_nmom_n->Fill((*LVec_n).P(),qkn.P(),weight);
-      if(!K0rejectFlag || SigmaPFlag) {
+      if(K0Flag || SigmaPFlag) {
         IMpippim_IMnpip_n_cross->Fill(LVec_pip_n.M(),LVec_pip_pim.M(),weight);
       }
-      if(!K0rejectFlag || SigmaMFlag) {
+      if(K0Flag || SigmaMFlag) {
         IMpippim_IMnpim_n_cross->Fill(LVec_pim_n.M(),LVec_pip_pim.M(),weight);
       }
 
@@ -5052,7 +5052,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
     //std::cout << __LINE__ << std::endl;
     //selection K0
-    if(!K0rejectFlag && NBetaOK && NdEOK && MissNFlag) {
+    if(K0Flag && NBetaOK && NdEOK && MissNFlag) {
       nmom_cosn_wK0_n->Fill(cos_ncdslab,(*LVec_n).P(),weight);
       if(cos_nmiss>0.95 ) {
         nmom_cosn_wK0_n_forward->Fill(cos_ncdslab,(*LVec_n).P(),weight);
