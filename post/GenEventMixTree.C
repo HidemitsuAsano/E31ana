@@ -122,7 +122,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
   }
   
   TString outname = std::string(filename);
-  outname.Replace(std::string(filename).size()-5,5,"_MIX_cut5.root");
+  outname.Replace(std::string(filename).size()-5,5,"_MIX_cut4.root");
 
 
   TFile *fout = new TFile(outname.Data(),"RECREATE");
@@ -237,8 +237,8 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
     double diffPhinpim = (*CDH_Pos).Phi()-(*CDH_Pos_pim).Phi();
     if(diffPhinpim<-1.0*TMath::Pi()) diffPhinpim += 2.0*TMath::Pi();
     else if(diffPhinpim>1.0*TMath::Pi()) diffPhinpim -= 2.0*TMath::Pi();
-    //if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.60/0.60+diffpim.Z()*diffpim.Z()/25.0/25.0 <1 ) continue;
-    if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.65/0.65+diffpim.Z()*diffpim.Z()/28.0/28.0 <1 ) continue;
+    if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.60/0.60+diffpim.Z()*diffpim.Z()/25.0/25.0 <1 ) continue;
+    //if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.65/0.65+diffpim.Z()*diffpim.Z()/28.0/28.0 <1 ) continue;
 
     TVector3 diffpip = (*CDH_Pos)-(*CDH_Pos_pip);
     double diffPhinpip = (*CDH_Pos).Phi()-(*CDH_Pos_pip).Phi();

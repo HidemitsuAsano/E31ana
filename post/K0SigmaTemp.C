@@ -181,8 +181,10 @@ void K0SigmaTemp()
   IMpippim_IMnpim_n_mix = (TH2F*)fmix->Get("IMpippim_IMnpim_n");
   IMpippim_IMnpip_n_sub = (TH2F*)IMpippim_IMnpip_n_data->Clone("IMpippim_IMnpip_n_sub");
   IMpippim_IMnpip_n_sub->Add(IMpippim_IMnpip_n_mix,-1.0); 
+  IMpippim_IMnpip_n_sub->SetTitle("IMpippim_IMnpip_n_sub");
   IMpippim_IMnpim_n_sub = (TH2F*)IMpippim_IMnpim_n_data->Clone("IMpippim_IMnpim_n_sub");
   IMpippim_IMnpim_n_sub->Add(IMpippim_IMnpim_n_mix,-1.0); 
+  IMpippim_IMnpim_n_sub->SetTitle("IMpippim_IMnpim_n_sub");
   
   IMpippim_IMnpip_n_qhi_data = (TH2F*)frqhi->Get("IMpippim_IMnpip_n");
   IMpippim_IMnpim_n_qhi_data = (TH2F*)frqhi->Get("IMpippim_IMnpim_n");
@@ -190,8 +192,10 @@ void K0SigmaTemp()
   IMpippim_IMnpim_n_qhi_mix = (TH2F*)fmixqhi->Get("IMpippim_IMnpim_n");
   IMpippim_IMnpip_n_qhi_sub = (TH2F*)IMpippim_IMnpip_n_qhi_data->Clone("IMpippim_IMnpip_n_qhi_sub");
   IMpippim_IMnpip_n_qhi_sub->Add(IMpippim_IMnpip_n_qhi_mix,-1.0); 
+  IMpippim_IMnpip_n_qhi_sub->SetTitle("IMpippim_IMnpip_n_qhi_sub");
   IMpippim_IMnpim_n_qhi_sub = (TH2F*)IMpippim_IMnpim_n_qhi_data->Clone("IMpippim_IMnpim_n_qhi_sub");
   IMpippim_IMnpim_n_qhi_sub->Add(IMpippim_IMnpim_n_qhi_mix,-1.0); 
+  IMpippim_IMnpim_n_qhi_sub->SetTitle("IMpippim_IMnpim_n_qhi_sub");
 
   IMpippim_IMnpip_n_qlo_data = (TH2F*)frqlo->Get("IMpippim_IMnpip_n");
   IMpippim_IMnpim_n_qlo_data = (TH2F*)frqlo->Get("IMpippim_IMnpim_n");
@@ -199,9 +203,10 @@ void K0SigmaTemp()
   IMpippim_IMnpim_n_qlo_mix = (TH2F*)fmixqlo->Get("IMpippim_IMnpim_n");
   IMpippim_IMnpip_n_qlo_sub = (TH2F*)IMpippim_IMnpip_n_qlo_data->Clone("IMpippim_IMnpip_n_qlo_sub");
   IMpippim_IMnpip_n_qlo_sub->Add(IMpippim_IMnpip_n_qlo_mix,-1.0); 
+  IMpippim_IMnpip_n_qlo_sub->SetTitle("IMpippim_IMnpip_n_qlo_sub");
   IMpippim_IMnpim_n_qlo_sub = (TH2F*)IMpippim_IMnpim_n_qlo_data->Clone("IMpippim_IMnpim_n_qlo_sub");
   IMpippim_IMnpim_n_qlo_sub->Add(IMpippim_IMnpim_n_qlo_mix,-1.0); 
-  
+  IMpippim_IMnpim_n_qlo_sub->SetTitle("IMpippim_IMnpim_n_qlo_sub");
   
   IMpippim_IMnpip_n_woSm_data = (TH2F*)fr->Get("IMpippim_IMnpip_n_woSm");
   IMpippim_IMnpim_n_woSp_data = (TH2F*)fr->Get("IMpippim_IMnpim_n_woSp");
@@ -209,26 +214,34 @@ void K0SigmaTemp()
   IMpippim_IMnpim_n_woSp_mix = (TH2F*)fmix->Get("IMpippim_IMnpim_n_woSp");
   IMpippim_IMnpip_n_woSm_sub = (TH2F*)IMpippim_IMnpip_n_woSm_data->Clone("IMpippim_IMnpip_n_woSm_sub");
   IMpippim_IMnpip_n_woSm_sub->Add(IMpippim_IMnpip_n_woSm_mix,-1.0); 
+  IMpippim_IMnpip_n_woSm_sub->SetTitle("IMpippim_IMnpip_n_woSm_sub");
   IMpippim_IMnpim_n_woSp_sub = (TH2F*)IMpippim_IMnpim_n_woSp_data->Clone("IMpippim_IMnpim_n_woSp_sub");
   IMpippim_IMnpim_n_woSp_sub->Add(IMpippim_IMnpim_n_woSp_mix,-1.0); 
+  IMpippim_IMnpim_n_woSp_sub->SetTitle("IMpippim_IMnpim_n_woSp_sub");
   
+
   IMpippim_IMnpip_n_woSm_qhi_data = (TH2F*)frqhi->Get("IMpippim_IMnpip_n_woSm");
   IMpippim_IMnpim_n_woSp_qhi_data = (TH2F*)frqhi->Get("IMpippim_IMnpim_n_woSp");
   IMpippim_IMnpip_n_woSm_qhi_mix = (TH2F*)fmixqhi->Get("IMpippim_IMnpip_n_woSm");
   IMpippim_IMnpim_n_woSp_qhi_mix = (TH2F*)fmixqhi->Get("IMpippim_IMnpim_n_woSp");
   IMpippim_IMnpip_n_woSm_qhi_sub = (TH2F*)IMpippim_IMnpip_n_woSm_qhi_data->Clone("IMpippim_IMnpip_n_woSm_qhi_sub");
   IMpippim_IMnpip_n_woSm_qhi_sub->Add(IMpippim_IMnpip_n_woSm_qhi_mix,-1.0); 
+  IMpippim_IMnpip_n_woSm_qhi_sub->SetTitle("IMpippim_IMnpip_n_woSm_qhi_sub");
   IMpippim_IMnpim_n_woSp_qhi_sub = (TH2F*)IMpippim_IMnpim_n_woSp_qhi_data->Clone("IMpippim_IMnpim_n_woSp_qhi_sub");
   IMpippim_IMnpim_n_woSp_qhi_sub->Add(IMpippim_IMnpim_n_woSp_qhi_mix,-1.0); 
-  
+  IMpippim_IMnpim_n_woSp_qhi_sub->SetTitle("IMpippim_IMnpim_n_woSp_qhi_sub");
+
+
   IMpippim_IMnpip_n_woSm_qlo_data = (TH2F*)frqlo->Get("IMpippim_IMnpip_n_woSm");
   IMpippim_IMnpim_n_woSp_qlo_data = (TH2F*)frqlo->Get("IMpippim_IMnpim_n_woSp");
   IMpippim_IMnpip_n_woSm_qlo_mix = (TH2F*)fmixqlo->Get("IMpippim_IMnpip_n_woSm");
   IMpippim_IMnpim_n_woSp_qlo_mix = (TH2F*)fmixqlo->Get("IMpippim_IMnpim_n_woSp");
   IMpippim_IMnpip_n_woSm_qlo_sub = (TH2F*)IMpippim_IMnpip_n_woSm_qlo_data->Clone("IMpippim_IMnpip_n_woSm_qlo_sub");
   IMpippim_IMnpip_n_woSm_qlo_sub->Add(IMpippim_IMnpip_n_woSm_qlo_mix,-1.0); 
+  IMpippim_IMnpip_n_woSm_qlo_sub->SetTitle("IMpippim_IMnpip_n_woSm_qlo_sub");
   IMpippim_IMnpim_n_woSp_qlo_sub = (TH2F*)IMpippim_IMnpim_n_woSp_qlo_data->Clone("IMpippim_IMnpim_n_woSp_qlo_sub");
   IMpippim_IMnpim_n_woSp_qlo_sub->Add(IMpippim_IMnpim_n_woSp_qlo_mix,-1.0); 
+  IMpippim_IMnpim_n_woSp_qlo_sub->SetTitle("IMpippim_IMnpim_n_woSp_qlo_sub");
   
   IMpippim_IMnpip_n_woSmdia_data = (TH2F*)fr->Get("IMpippim_IMnpip_n_woSmdia");
   IMpippim_IMnpim_n_woSpdia_data = (TH2F*)fr->Get("IMpippim_IMnpim_n_woSpdia");
@@ -236,8 +249,10 @@ void K0SigmaTemp()
   IMpippim_IMnpim_n_woSpdia_mix = (TH2F*)fmix->Get("IMpippim_IMnpim_n_woSpdia");
   IMpippim_IMnpip_n_woSmdia_sub = (TH2F*)IMpippim_IMnpip_n_woSmdia_data->Clone("IMpippim_IMnpip_n_woSmdia_sub");
   IMpippim_IMnpip_n_woSmdia_sub->Add(IMpippim_IMnpip_n_woSmdia_mix,-1.0); 
+  IMpippim_IMnpip_n_woSmdia_sub->SetTitle("IMpippim_IMnpip_n_woSmdia_sub");
   IMpippim_IMnpim_n_woSpdia_sub = (TH2F*)IMpippim_IMnpim_n_woSpdia_data->Clone("IMpippim_IMnpim_n_woSpdia_sub");
   IMpippim_IMnpim_n_woSpdia_sub->Add(IMpippim_IMnpim_n_woSpdia_mix,-1.0); 
+  IMpippim_IMnpim_n_woSpdia_sub->SetTitle("IMpippim_IMnpim_n_woSpdia_sub");
   
   IMpippim_IMnpip_n_woSmdia_qhi_data = (TH2F*)frqhi->Get("IMpippim_IMnpip_n_woSmdia");
   IMpippim_IMnpim_n_woSpdia_qhi_data = (TH2F*)frqhi->Get("IMpippim_IMnpim_n_woSpdia");
@@ -245,9 +260,10 @@ void K0SigmaTemp()
   IMpippim_IMnpim_n_woSpdia_qhi_mix = (TH2F*)fmixqhi->Get("IMpippim_IMnpim_n_woSpdia");
   IMpippim_IMnpip_n_woSmdia_qhi_sub = (TH2F*)IMpippim_IMnpip_n_woSmdia_qhi_data->Clone("IMpippim_IMnpip_n_woSmdia_qhi_sub");
   IMpippim_IMnpip_n_woSmdia_qhi_sub->Add(IMpippim_IMnpip_n_woSmdia_qhi_mix,-1.0); 
+  IMpippim_IMnpip_n_woSmdia_qhi_sub->SetTitle("IMpippim_IMnpip_n_woSmdia_qhi_sub");
   IMpippim_IMnpim_n_woSpdia_qhi_sub = (TH2F*)IMpippim_IMnpim_n_woSpdia_qhi_data->Clone("IMpippim_IMnpim_n_woSpdia_qhi_sub");
   IMpippim_IMnpim_n_woSpdia_qhi_sub->Add(IMpippim_IMnpim_n_woSpdia_qhi_mix,-1.0); 
-  
+  IMpippim_IMnpim_n_woSpdia_qhi_sub->SetTitle("IMpippim_IMnpim_n_woSpdia_qhi_sub");
   
   IMpippim_IMnpip_n_woSmdia_qlo_data = (TH2F*)frqlo->Get("IMpippim_IMnpip_n_woSmdia");
   IMpippim_IMnpim_n_woSpdia_qlo_data = (TH2F*)frqlo->Get("IMpippim_IMnpim_n_woSpdia");
@@ -255,8 +271,10 @@ void K0SigmaTemp()
   IMpippim_IMnpim_n_woSpdia_qlo_mix = (TH2F*)fmixqlo->Get("IMpippim_IMnpim_n_woSpdia");
   IMpippim_IMnpip_n_woSmdia_qlo_sub = (TH2F*)IMpippim_IMnpip_n_woSmdia_qlo_data->Clone("IMpippim_IMnpip_n_woSmdia_qlo_sub");
   IMpippim_IMnpip_n_woSmdia_qlo_sub->Add(IMpippim_IMnpip_n_woSmdia_qlo_mix,-1.0); 
+  IMpippim_IMnpip_n_woSmdia_qlo_sub->SetTitle("IMpippim_IMnpip_n_woSmdia_qlo_sub");
   IMpippim_IMnpim_n_woSpdia_qlo_sub = (TH2F*)IMpippim_IMnpim_n_woSpdia_qlo_data->Clone("IMpippim_IMnpim_n_woSpdia_qlo_sub");
   IMpippim_IMnpim_n_woSpdia_qlo_sub->Add(IMpippim_IMnpim_n_woSpdia_qlo_mix,-1.0); 
+  IMpippim_IMnpim_n_woSpdia_qlo_sub->SetTitle("IMpippim_IMnpim_n_woSpdia_qlo_sub");
 
 
   for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
@@ -345,8 +363,186 @@ void K0SigmaTemp()
     IMpippim_IMnpim_n_woSpdia_bin_qlo_sub[ibin] = (TH2F*)IMpippim_IMnpim_n_woSpdia_bin_qlo_data[ibin]->Clone(Form("IMpippim_IMnpim_n_woSpdia_qlo_sub_bin%d",ibin));
     IMpippim_IMnpim_n_woSpdia_bin_qlo_sub[ibin]->Add(IMpippim_IMnpim_n_woSpdia_bin_qlo_mix[ibin],-1.0);
   }
+  
+  TCanvas *cIMpippim_IMnpip_n_sub = new TCanvas("cIMpippim_IMnpip_n_sub","cIMpippim_IMnpip_n_sub",800,800);
+  cIMpippim_IMnpip_n_sub->Divide(2,2,0,0);
+  cIMpippim_IMnpip_n_sub->cd(3);
+  IMpippim_IMnpip_n_sub->RebinY(2);
+  IMpippim_IMnpip_n_sub->Draw("colz");
+  cIMpippim_IMnpip_n_sub->cd(1);
+  TH1D* IMnpip_n_sub = (TH1D*)IMpippim_IMnpip_n_sub->ProjectionX("IMnpip_n_sub");
+  IMnpip_n_sub->Draw("HE");
+  cIMpippim_IMnpip_n_sub->cd(4);
+  TH1D* IMpippim_n_sub = (TH1D*)IMpippim_IMnpip_n_sub->ProjectionY("IMpippim_n_sub");
+  TGraphErrors *gr_IMpippim_n_sub = new TGraphErrors();
+  HistToRorateGraph(IMpippim_n_sub,*gr_IMpippim_n_sub);
+  gr_IMpippim_n_sub->Draw("AP");
+  
+  TCanvas *cIMpippim_IMnpip_n_woSmdia_sub = new TCanvas("cIMpippim_IMnpip_n_woSmdia_sub","cIMpippim_IMnpip_n_woSmdia_sub",800,800);
+  cIMpippim_IMnpip_n_woSmdia_sub->Divide(2,2,0,0);
+  cIMpippim_IMnpip_n_woSmdia_sub->cd(3);
+  IMpippim_IMnpip_n_woSmdia_sub->RebinY(2);
+  IMpippim_IMnpip_n_woSmdia_sub->Draw("colz");
+  cIMpippim_IMnpip_n_woSmdia_sub->cd(1);
+  TH1D* IMnpip_n_woSmdia_sub = (TH1D*)IMpippim_IMnpip_n_woSmdia_sub->ProjectionX("IMnpip_n_woSmdia_sub");
+  IMnpip_n_woSmdia_sub->Draw("HE");
+  cIMpippim_IMnpip_n_woSmdia_sub->cd(4);
+  TH1D* IMpippim_n_woSmdia_sub = (TH1D*)IMpippim_IMnpip_n_woSmdia_sub->ProjectionY("IMpippim_n_woSmdia_sub");
+  TGraphErrors *gr_IMpippim_n_woSmdia_sub = new TGraphErrors();
+  HistToRorateGraph(IMpippim_n_woSmdia_sub,*gr_IMpippim_n_woSmdia_sub);
+  gr_IMpippim_n_woSmdia_sub->Draw("AP");
+  
+  TCanvas *cIMpippim_IMnpim_n_sub = new TCanvas("cIMpippim_IMnpim_n_sub","cIMpippim_IMnpim_n_sub",800,800);
+  cIMpippim_IMnpim_n_sub->Divide(2,2,0,0);
+  cIMpippim_IMnpim_n_sub->cd(3);
+  IMpippim_IMnpim_n_sub->RebinY(2);
+  IMpippim_IMnpim_n_sub->Draw("colz");
+  cIMpippim_IMnpim_n_sub->cd(1);
+  TH1D* IMnpim_n_sub = (TH1D*)IMpippim_IMnpim_n_sub->ProjectionX("IMnpim_n_sub");
+  IMnpim_n_sub->Draw("HE");
+  cIMpippim_IMnpim_n_sub->cd(4);
+  gr_IMpippim_n_sub->Draw("AP");
+  
+  TCanvas *cIMpippim_IMnpim_n_woSpdia_sub = new TCanvas("cIMpippim_IMnpim_n_woSpdia_sub","cIMpippim_IMnpim_n_woSpdia_sub",800,800);
+  cIMpippim_IMnpim_n_woSpdia_sub->Divide(2,2,0,0);
+  cIMpippim_IMnpim_n_woSpdia_sub->cd(3);
+  IMpippim_IMnpim_n_woSpdia_sub->RebinY(2);
+  IMpippim_IMnpim_n_woSpdia_sub->Draw("colz");
+  cIMpippim_IMnpim_n_woSpdia_sub->cd(1);
+  TH1D* IMnpim_n_woSpdia_sub = (TH1D*)IMpippim_IMnpim_n_woSpdia_sub->ProjectionX("IMnpim_n_woSpdia_sub");
+  IMnpim_n_woSpdia_sub->Draw("HE");
+  cIMpippim_IMnpim_n_woSpdia_sub->cd(4);
+  TH1D* IMpippim_n_woSpdia_sub = (TH1D*)IMpippim_IMnpim_n_woSpdia_sub->ProjectionY("IMpippim_n_woSpdia_sub");
+  TGraphErrors *gr_IMpippim_n_woSpdia_sub = new TGraphErrors();
+  HistToRorateGraph(IMpippim_n_woSpdia_sub,*gr_IMpippim_n_woSpdia_sub);
+  gr_IMpippim_n_woSpdia_sub->Draw("AP");
+  
+  if(!gROOT->IsBatch()){
+    TCanvas *cIMpippim_IMnpip_n_sub_bin22 = new TCanvas("cIMpippim_IMnpip_n_sub_bin22","cIMpippim_IMnpip_n_sub_bin22",800,800);
+    cIMpippim_IMnpip_n_sub_bin22->Divide(2,2,0,0);
+    cIMpippim_IMnpip_n_sub_bin22->cd(3);
+    IMpippim_IMnpip_n_bin_sub[22]->RebinX(4);
+    IMpippim_IMnpip_n_bin_sub[22]->RebinY(4);
+    IMpippim_IMnpip_n_bin_sub[22]->Draw("colz");
+    cIMpippim_IMnpip_n_sub_bin22->cd(1);
+    TH1D* IMnpip_n_sub_bin22 = (TH1D*)IMpippim_IMnpip_n_bin_sub[22]->ProjectionX("IMnpip_n_sub_bin22");
+    IMnpip_n_sub_bin22->Draw("E");
+    cIMpippim_IMnpip_n_sub_bin22->cd(4);
+    TH1D* IMpippim_n_sub_bin22 = (TH1D*)IMpippim_IMnpip_n_bin_sub[22]->ProjectionY("IMpippim_n_sub_bin22");
+    TGraphErrors *gr_IMpippim_n_sub_bin22 = new TGraphErrors();
+    HistToRorateGraph(IMpippim_n_sub_bin22,*gr_IMpippim_n_sub_bin22);
+    gr_IMpippim_n_sub_bin22->Draw("AP");
+    
+    TCanvas *cIMpippim_IMnpip_n_sub_qhi_bin22 = new TCanvas("cIMpippim_IMnpip_n_sub_qhi_bin22","cIMpippim_IMnpip_n_sub_qhi_bin22",800,800);
+    cIMpippim_IMnpip_n_sub_qhi_bin22->Divide(2,2,0,0);
+    cIMpippim_IMnpip_n_sub_qhi_bin22->cd(3);
+    IMpippim_IMnpip_n_bin_qhi_sub[22]->RebinX(4);
+    IMpippim_IMnpip_n_bin_qhi_sub[22]->RebinY(4);
+    IMpippim_IMnpip_n_bin_qhi_sub[22]->Draw("colz");
+    cIMpippim_IMnpip_n_sub_qhi_bin22->cd(1);
+    TH1D* IMnpip_n_sub_qhi_bin22 = (TH1D*)IMpippim_IMnpip_n_bin_qhi_sub[22]->ProjectionX("IMnpip_n_sub_qhi_bin22");
+    IMnpip_n_sub_qhi_bin22->Draw("E");
+    cIMpippim_IMnpip_n_sub_qhi_bin22->cd(4);
+    TH1D* IMpippim_n_sub_qhi_bin22 = (TH1D*)IMpippim_IMnpip_n_bin_qhi_sub[22]->ProjectionY("IMpippim_n_sub_qhi_bin22");
+    TGraphErrors *gr_IMpippim_n_sub_qhi_bin22 = new TGraphErrors();
+    HistToRorateGraph(IMpippim_n_sub_qhi_bin22,*gr_IMpippim_n_sub_qhi_bin22);
+    gr_IMpippim_n_sub_qhi_bin22->Draw("AP");
+    
+    TCanvas *cIMpippim_IMnpip_n_woSmdia_sub_bin22 = new TCanvas("cIMpippim_IMnpip_n_woSmdia_sub_bin22","cIMpippim_IMnpip_n_woSmdia_sub_bin22",800,800);
+    cIMpippim_IMnpip_n_woSmdia_sub_bin22->Divide(2,2,0,0);
+    cIMpippim_IMnpip_n_woSmdia_sub_bin22->cd(3);
+    IMpippim_IMnpip_n_woSmdia_bin_sub[22]->RebinX(4);
+    IMpippim_IMnpip_n_woSmdia_bin_sub[22]->RebinY(4);
+    IMpippim_IMnpip_n_woSmdia_bin_sub[22]->Draw("colz");
+    cIMpippim_IMnpip_n_woSmdia_sub_bin22->cd(1);
+    TH1D* IMnpip_n_woSmdia_sub_bin22 = (TH1D*)IMpippim_IMnpip_n_woSmdia_bin_sub[22]->ProjectionX("IMnpip_n_woSmdia_sub_bin22");
+    IMnpip_n_woSmdia_sub_bin22->Draw("E");
+    cIMpippim_IMnpip_n_woSmdia_sub_bin22->cd(4);
+    TH1D* IMpippim_n_woSmdia_sub_bin22 = (TH1D*)IMpippim_IMnpip_n_woSmdia_bin_sub[22]->ProjectionY("IMpippim_n_woSmdia_sub_bin22");
+    TGraphErrors *gr_IMpippim_n_woSmdia_sub_bin22 = new TGraphErrors();
+    HistToRorateGraph(IMpippim_n_woSmdia_sub_bin22,*gr_IMpippim_n_woSmdia_sub_bin22);
+    gr_IMpippim_n_woSmdia_sub_bin22->Draw("AP");
+    
+    TCanvas *cIMpippim_IMnpip_n_woSmdia_sub_qhi_bin22 = new TCanvas("cIMpippim_IMnpip_n_woSmdia_sub_qhi_bin22","cIMpippim_IMnpip_n_woSmdia_sub_qhi_bin22",800,800);
+    cIMpippim_IMnpip_n_woSmdia_sub_qhi_bin22->Divide(2,2,0,0);
+    cIMpippim_IMnpip_n_woSmdia_sub_qhi_bin22->cd(3);
+    IMpippim_IMnpip_n_woSmdia_bin_qhi_sub[22]->RebinX(4);
+    IMpippim_IMnpip_n_woSmdia_bin_qhi_sub[22]->RebinY(4);
+    IMpippim_IMnpip_n_woSmdia_bin_qhi_sub[22]->Draw("colz");
+    cIMpippim_IMnpip_n_woSmdia_sub_qhi_bin22->cd(1);
+    TH1D* IMnpip_n_woSmdia_sub_qhi_bin22 = (TH1D*)IMpippim_IMnpip_n_woSmdia_bin_qhi_sub[22]->ProjectionX("IMnpip_n_woSmdia_sub_qhi_bin22");
+    IMnpip_n_woSmdia_sub_qhi_bin22->Draw("E");
+    cIMpippim_IMnpip_n_woSmdia_sub_qhi_bin22->cd(4);
+    TH1D* IMpippim_n_woSmdia_sub_qhi_bin22 = (TH1D*)IMpippim_IMnpip_n_woSmdia_bin_qhi_sub[22]->ProjectionY("IMpippim_n_woSmdia_sub_qhi_bin22");
+    TGraphErrors *gr_IMpippim_n_woSmdia_sub_qhi_bin22 = new TGraphErrors();
+    HistToRorateGraph(IMpippim_n_woSmdia_sub_qhi_bin22,*gr_IMpippim_n_woSmdia_sub_qhi_bin22);
+    gr_IMpippim_n_woSmdia_sub_qhi_bin22->Draw("AP");
+    
+    TCanvas *cIMpippim_IMnpip_n_woSmdia_sub_qlo_bin22 = new TCanvas("cIMpippim_IMnpip_n_woSmdia_sub_qlo_bin22","cIMpippim_IMnpip_n_woSmdia_sub_qlo_bin22",800,800);
+    cIMpippim_IMnpip_n_woSmdia_sub_qlo_bin22->Divide(2,2,0,0);
+    cIMpippim_IMnpip_n_woSmdia_sub_qlo_bin22->cd(3);
+    IMpippim_IMnpip_n_woSmdia_bin_qlo_sub[22]->RebinX(4);
+    IMpippim_IMnpip_n_woSmdia_bin_qlo_sub[22]->RebinY(4);
+    IMpippim_IMnpip_n_woSmdia_bin_qlo_sub[22]->Draw("colz");
+    cIMpippim_IMnpip_n_woSmdia_sub_qlo_bin22->cd(1);
+    TH1D* IMnpip_n_woSmdia_sub_qlo_bin22 = (TH1D*)IMpippim_IMnpip_n_woSmdia_bin_qlo_sub[22]->ProjectionX("IMnpip_n_woSmdia_sub_qlo_bin22");
+    IMnpip_n_woSmdia_sub_qlo_bin22->Draw("E");
+    cIMpippim_IMnpip_n_woSmdia_sub_qlo_bin22->cd(4);
+    TH1D* IMpippim_n_woSmdia_sub_qlo_bin22 = (TH1D*)IMpippim_IMnpip_n_woSmdia_bin_qlo_sub[22]->ProjectionY("IMpippim_n_woSmdia_sub_qlo_bin22");
+    TGraphErrors *gr_IMpippim_n_woSmdia_sub_qlo_bin22 = new TGraphErrors();
+    HistToRorateGraph(IMpippim_n_woSmdia_sub_qlo_bin22,*gr_IMpippim_n_woSmdia_sub_qlo_bin22);
+    gr_IMpippim_n_woSmdia_sub_qlo_bin22->Draw("AP");
+  
+  
+    TCanvas *cIMpippim_IMnpim_n_woSpdia_sub_bin22 = new TCanvas("cIMpippim_IMnpim_n_woSpdia_sub_bin22","cIMpippim_IMnpim_n_woSpdia_sub_bin22",800,800);
+    cIMpippim_IMnpim_n_woSpdia_sub_bin22->Divide(2,2,0,0);
+    cIMpippim_IMnpim_n_woSpdia_sub_bin22->cd(3);
+    IMpippim_IMnpim_n_woSpdia_bin_sub[22]->RebinX(4);
+    IMpippim_IMnpim_n_woSpdia_bin_sub[22]->RebinY(4);
+    IMpippim_IMnpim_n_woSpdia_bin_sub[22]->Draw("colz");
+    cIMpippim_IMnpim_n_woSpdia_sub_bin22->cd(1);
+    TH1D* IMnpim_n_woSpdia_sub_bin22 = (TH1D*)IMpippim_IMnpim_n_woSpdia_bin_sub[22]->ProjectionX("IMnpim_n_woSpdia_sub_bin22");
+    IMnpim_n_woSpdia_sub_bin22->Draw("E");
+    cIMpippim_IMnpim_n_woSpdia_sub_bin22->cd(4);
+    TH1D* IMpippim_n_woSpdia_sub_bin22 = (TH1D*)IMpippim_IMnpim_n_woSpdia_bin_sub[22]->ProjectionY("IMpippim_n_woSpdia_sub_bin22");
+    TGraphErrors *gr_IMpippim_n_woSpdia_sub_bin22 = new TGraphErrors();
+    HistToRorateGraph(IMpippim_n_woSpdia_sub_bin22,*gr_IMpippim_n_woSpdia_sub_bin22);
+    gr_IMpippim_n_woSpdia_sub_bin22->Draw("AP");
+    
+    TCanvas *cIMpippim_IMnpim_n_woSpdia_sub_qhi_bin22 = new TCanvas("cIMpippim_IMnpim_n_woSpdia_sub_qhi_bin22","cIMpippim_IMnpim_n_woSpdia_sub_qhi_bin22",800,800);
+    cIMpippim_IMnpim_n_woSpdia_sub_qhi_bin22->Divide(2,2,0,0);
+    cIMpippim_IMnpim_n_woSpdia_sub_qhi_bin22->cd(3);
+    IMpippim_IMnpim_n_woSpdia_bin_qhi_sub[22]->RebinX(4);
+    IMpippim_IMnpim_n_woSpdia_bin_qhi_sub[22]->RebinY(4);
+    IMpippim_IMnpim_n_woSpdia_bin_qhi_sub[22]->Draw("colz");
+    cIMpippim_IMnpim_n_woSpdia_sub_qhi_bin22->cd(1);
+    TH1D* IMnpim_n_woSpdia_sub_qhi_bin22 = (TH1D*)IMpippim_IMnpim_n_woSpdia_bin_qhi_sub[22]->ProjectionX("IMnpim_n_woSpdia_sub_qhi_bin22");
+    IMnpim_n_woSpdia_sub_qhi_bin22->Draw("E");
+    cIMpippim_IMnpim_n_woSpdia_sub_qhi_bin22->cd(4);
+    TH1D* IMpippim_n_woSpdia_sub_qhi_bin22 = (TH1D*)IMpippim_IMnpim_n_woSpdia_bin_qhi_sub[22]->ProjectionY("IMpippim_n_woSpdia_sub_qhi_bin22");
+    TGraphErrors *gr_IMpippim_n_woSpdia_sub_qhi_bin22 = new TGraphErrors();
+    HistToRorateGraph(IMpippim_n_woSpdia_sub_qhi_bin22,*gr_IMpippim_n_woSpdia_sub_qhi_bin22);
+    gr_IMpippim_n_woSpdia_sub_qhi_bin22->Draw("AP");
+    
+    TCanvas *cIMpippim_IMnpim_n_woSpdia_sub_qlo_bin22 = new TCanvas("cIMpippim_IMnpim_n_woSpdia_sub_qlo_bin22","cIMpippim_IMnpim_n_woSpdia_sub_qlo_bin22",800,800);
+    cIMpippim_IMnpim_n_woSpdia_sub_qlo_bin22->Divide(2,2,0,0);
+    cIMpippim_IMnpim_n_woSpdia_sub_qlo_bin22->cd(3);
+    IMpippim_IMnpim_n_woSpdia_bin_qlo_sub[22]->RebinX(4);
+    IMpippim_IMnpim_n_woSpdia_bin_qlo_sub[22]->RebinY(4);
+    IMpippim_IMnpim_n_woSpdia_bin_qlo_sub[22]->Draw("colz");
+    cIMpippim_IMnpim_n_woSpdia_sub_qlo_bin22->cd(1);
+    TH1D* IMnpim_n_woSpdia_sub_qlo_bin22 = (TH1D*)IMpippim_IMnpim_n_woSpdia_bin_qlo_sub[22]->ProjectionX("IMnpim_n_woSpdia_sub_qlo_bin22");
+    IMnpim_n_woSpdia_sub_qlo_bin22->Draw("E");
+    cIMpippim_IMnpim_n_woSpdia_sub_qlo_bin22->cd(4);
+    TH1D* IMpippim_n_woSpdia_sub_qlo_bin22 = (TH1D*)IMpippim_IMnpim_n_woSpdia_bin_qlo_sub[22]->ProjectionY("IMpippim_n_woSpdia_sub_qlo_bin22");
+    TGraphErrors *gr_IMpippim_n_woSpdia_sub_qlo_bin22 = new TGraphErrors();
+    HistToRorateGraph(IMpippim_n_woSpdia_sub_qlo_bin22,*gr_IMpippim_n_woSpdia_sub_qlo_bin22);
+    gr_IMpippim_n_woSpdia_sub_qlo_bin22->Draw("AP");
+  
+  
+  }
 
-  //subtract
+
 
 
   TCanvas *c = NULL;
