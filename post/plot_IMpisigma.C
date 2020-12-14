@@ -1,7 +1,4 @@
 //asano memo 
-//v198 remove isolation cut, CDC charge veto->nhitOutCDC
-//v197 tried CDC inner veto 
-//v196 usual isolation cut + CDC charge veto
 
 #include <iostream>
 #include <vector>
@@ -715,6 +712,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* Momnpim_Mompippim_dE_wK0_woSid_won;
   TH2F* Momnpip_Mompippim_dE_woK0_woSid_won;
   TH2F* Momnpip_Mompippim_dE_wK0_woSid_won;
+  TH2F* MMnpim_MMnpip;
   TH2F* MMnpim_MMnpip_n;
   TH2F* MMnpim_MMnpip_mc;
   TH2F* MMnpim_MMnpip_wSid_n;
@@ -2199,6 +2197,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   nmom_Momnpip_woK0_n_Sp->SetXTitle("Mom.(n#pi^{+}) [GeV/c]");
   nmom_Momnpip_woK0_n_Sp->SetYTitle("nmom. [GeV/c]");
 
+  MMnpim_MMnpip = new TH2F("MMnpim_MMnpip","MMnpim_MMnpip",280, 1, 1.7, 280, 1, 1.7);
+  MMnpim_MMnpip->SetXTitle("IM(n_{miss}#pi^{+}) [GeV/c^{2}]");
+  MMnpim_MMnpip->SetYTitle("IM(n_{miss}#pi^{-}) [GeV/c^{2}]");
+  
   MMnpim_MMnpip_n = new TH2F(Form("MMnpim_MMnpip_n"),Form("MMnpim_MMnpip_n"),280, 1, 1.7, 280, 1, 1.7);
   MMnpim_MMnpip_n->SetXTitle("IM(n_{miss}#pi^{+}) [GeV/c^{2}]");
   MMnpim_MMnpip_n->SetYTitle("IM(n_{miss}#pi^{-}) [GeV/c^{2}]");
@@ -2667,11 +2669,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   nmom_IMnpipi_wK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   nmom_IMnpipi_wK0_wSid_n->SetYTitle("nmom  [GeV/c]");
   
-  nmom_IMnpipi_wK0_woSid_won = new TH2F(Form("nmom_IMnpipi_wK0_woSid_won"),Form("nmom_IMnpipi_wK0_woSid_won"), nbinIMnpipi,1,2,nbinnmom,0,1.0);
+  nmom_IMnpipi_wK0_woSid_won = new TH2F("nmom_IMnpipi_wK0_woSid_won","nmom_IMnpipi_wK0_woSid_won", nbinIMnpipi,1,2,nbinnmom,0,1.0);
   nmom_IMnpipi_wK0_woSid_won->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   nmom_IMnpipi_wK0_woSid_won->SetYTitle("nmom  [GeV/c]");
 
-  nmom_IMnpipi_wK0_woSid_n = new TH2F(Form("nmom_IMnpipi_wK0_woSid_n"),Form("nmom_IMnpipi_wK0_woSid_n"), nbinIMnpipi,1,2,nbinnmom,0,1.0);
+  nmom_IMnpipi_wK0_woSid_n = new TH2F("nmom_IMnpipi_wK0_woSid_n","nmom_IMnpipi_wK0_woSid_n", nbinIMnpipi,1,2,nbinnmom,0,1.0);
   nmom_IMnpipi_wK0_woSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   nmom_IMnpipi_wK0_woSid_n->SetYTitle("nmom  [GeV/c]");
 
@@ -4506,6 +4508,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       nmom_IMpippim->Fill(LVec_pip_pim.M(),(*LVec_n).P(),weight);
       nmom_MK0bar2->Fill(LVec_K0bar.M2(),(*LVec_n).P(),weight);
       MMnmiss_IMpippim_dE->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
+      MMnpim_MMnpip->Fill(LVec_pip_nmiss.M(),LVec_pim_nmiss.M());
       if(SimSpmode || SimSmmode){
         if(IsFakebyVTX || IsFakeN2){
           MMnmiss_IMnpip_dE_fake->Fill(LVec_pip_n.M(),nmiss_mass,weight);

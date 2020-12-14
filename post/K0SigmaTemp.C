@@ -44,18 +44,22 @@ void HistToRorateGraph(TH1D* h1, TGraphErrors &gr)
 
 void K0SigmaTemp()
 {
-  TFile *fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso.root");
-  TFile *fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso.root");
-  TFile *frqhi = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi.root");
-  TFile *fmixqhi = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qhi.root");
-  TFile *frqlo = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo.root");
-  TFile *fmixqlo = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qlo.root");
-  fr->Print() ;
-  fmix->Print();
-  frqhi->Print() ;
-  fmixqhi->Print();
-  frqlo->Print() ;
-  fmixqlo->Print();
+  TFile *fr[3]={NULL};
+  TFile *fmix[3]={NULL};
+  
+  
+  fr[0] = TFile::Open("evanaIMpisigma_npippim_v202_out_iso.root");
+  fmix[1] = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso.root");
+  fr[1] = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo.root");
+  fmix[1] = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qlo.root");
+  fr[2] = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi.root");
+  fmix[2] = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qhi.root");
+  fr[0]->Print() ;
+  fmix[0]->Print();
+  fr[1]->Print() ;
+  fmix[1]->Print();
+  fr[2]->Print() ;
+  fmix[2]->Print();
   
   gStyle->SetPalette(1);
   gStyle->SetOptStat(0);
@@ -64,14 +68,14 @@ void K0SigmaTemp()
   gStyle->SetErrorX(0.);  
 
   const unsigned int nbintemplate = 50;
-  TH2F* IMpippim_IMnpip_n_data;
-  TH2F* IMpippim_IMnpim_n_data;
-  TH2F* IMpippim_IMnpip_n_bin_data[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_bin_data[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_mix;
-  TH2F* IMpippim_IMnpim_n_mix;
-  TH2F* IMpippim_IMnpip_n_bin_mix[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_bin_mix[nbintemplate];
+  TH2F* IMpippim_IMnpip_n_data[3];
+  TH2F* IMpippim_IMnpim_n_data[3];
+  TH2F* IMpippim_IMnpip_n_bin_data[nbintemplate][3];
+  TH2F* IMpippim_IMnpim_n_bin_data[nbintemplate][3];
+  TH2F* IMpippim_IMnpip_n_mix[3];
+  TH2F* IMpippim_IMnpim_n_mix[3];
+  TH2F* IMpippim_IMnpip_n_bin_mix[nbintemplate][3];
+  TH2F* IMpippim_IMnpim_n_bin_mix[nbintemplate][3];
   TH2F* IMpippim_IMnpip_n_sub;
   TH2F* IMpippim_IMnpim_n_sub;
   TH2F* IMpippim_IMnpip_n_bin_sub[nbintemplate];

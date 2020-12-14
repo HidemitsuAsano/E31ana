@@ -45,18 +45,45 @@ void HistToRorateGraph(TH1D* h1, TGraphErrors &gr)
 void disp_2Dcompmix(const int qcut=0)
 {
   TFile *fr; 
-  TFile *fmix; 
+  TFile *fmix;
+  bool RealDatamode = true;
+  bool SimSpmode = false;
+  bool SimSmmode = false;
   if(qcut==0){
-    fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso.root");
-    fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso.root");
+    if(RealDatamode){
+      fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso.root");
+      fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso.root");
+    }else if(SimSpmode){
+      fr = TFile::Open("simIMpisigma_nSppim_pippimn_v132_out_iso.root");
+      fmix = TFile::Open("simIMpisigma_nSppim_pippimn_v132_MIX_cut4_out_iso.root");
+    }else if(SimSmmode){
+      fr = TFile::Open("simIMpisigma_nSmpip_pippimn_v132_out_iso.root");
+      fmix = TFile::Open("simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso.root");
+    }
   }
   else if(qcut==1){
-    fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi.root");
-    fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qhi.root");
+    if(RealDatamode){
+      fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo.root");
+      fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qlo.root");
+    }else if(SimSpmode){
+      fr = TFile::Open("simIMpisigma_nSppim_pippimn_v132_out_iso_qlo.root");
+      fmix = TFile::Open("simIMpisigma_nSppim_pippimn_v132_MIX_cut4_out_iso_qlo.root");
+    }else if(SimSmmode){
+      fr = TFile::Open("simIMpisigma_nSmpip_pippimn_v132_out_iso_qlo.root");
+      fmix = TFile::Open("simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso_qlo.root");
+    }
   }
   else if(qcut==2){
-    fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo.root");
-    fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qlo.root");
+    if(RealDatamode){
+      fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi.root");
+      fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qhi.root");
+    }else if(SimSpmode){
+      fr = TFile::Open("simIMpisigma_nSppim_pippimn_v132_out_iso_qhi.root");
+      fmix = TFile::Open("simIMpisigma_nSppim_pippimn_v132_MIX_cut4_out_iso_qhi.root");
+    }else if(SimSmmode){
+      fr = TFile::Open("simIMpisigma_nSmpip_pippimn_v132_out_iso_qhi.root");
+      fmix = TFile::Open("simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso_qhi.root");
+    }
   }
   fr->Print();
   fmix->Print();
@@ -492,7 +519,6 @@ void disp_2Dcompmix(const int qcut=0)
 
   TCanvas *cq_IMnpipi_wSid_n_Sp_comp_0 = new TCanvas("cq_IMnpipi_wSid_n_Sp_comp_0","cq_IMnpipi_wSid_n_Sp_comp_0");
   cq_IMnpipi_wSid_n_Sp_comp_0->cd();
-  //const int bin350 = q_IMnpipi_wSid_n_Sp_data->GetYaxis()->FindBin(0.35);
   TH1D* IMnpipi_wSid_n_Sp_data_0 = (TH1D*)q_IMnpipi_wSid_n_Sp_data->ProjectionX("IMnpipi_wSid_n_Sp_data_0",1,bin350-1);
   IMnpipi_wSid_n_Sp_data_0->SetTitle("IMnpipi_wSid_n_Sp_data_0");
   IMnpipi_wSid_n_Sp_data_0->Draw("HE");
@@ -832,9 +858,7 @@ void disp_2Dcompmix(const int qcut=0)
   q_IMpippim_wSid_n_sub->Add(q_IMpippim_wSid_n_mix,-1);
   q_IMpippim_wSid_n_sub->SetTitle("q_IMpippim_wSid_n_sub");
   q_IMpippim_wSid_n_sub->Draw("colz");
-
-
-
+  
   const double Kp_mass = pMass + kpMass;
   TF1 *fkp = new TF1("f", "sqrt(((x*x-[0]*[0]-[1]*[1])/(2*[0]))*((x*x-[0]*[0]-[1]*[1])/(2*[0]))-[1]*[1])",Kp_mass-0.0001,2);
   fkp->SetParameter(0,nMass);
@@ -844,6 +868,49 @@ void disp_2Dcompmix(const int qcut=0)
   fkp->SetLineStyle(4);
   fkp->SetLineColorAlpha(kPink, 0.35);
   fkp->Draw("same");
+
+  TH2D* nmom_IMnpipi_wSid_n_data = (TH2D*)fr->Get("nmom_IMnpipi_wSid_n");
+  TH2D* nmom_IMnpipi_wSid_n_mix  = (TH2D*)fmix->Get("nmom_IMnpipi_wSid_n");
+  TCanvas *cnmom_IMnpipi_wSid_n = new TCanvas("cnmom_IMnpipi_wSid_n","cnmom_IMnpipi_wSid_n");
+  cnmom_IMnpipi_wSid_n->Divide(2,2,0,0);
+  cnmom_IMnpipi_wSid_n->cd(3);
+  TH2D* nmom_IMnpipi_wSid_n_sub = (TH2D*)nmom_IMnpipi_wSid_n_data->Clone("nmom_IMnpipi_wSid_n_sub");
+  nmom_IMnpipi_wSid_n_sub->RebinY(5);
+  nmom_IMnpipi_wSid_n_mix->RebinY(5);
+  nmom_IMnpipi_wSid_n_sub->Add(nmom_IMnpipi_wSid_n_mix,-1);
+  nmom_IMnpipi_wSid_n_sub->SetTitle("nmom_IMnpipi_wSid_n_sub");
+  nmom_IMnpipi_wSid_n_sub->Draw("colz");
+  cnmom_IMnpipi_wSid_n->cd(1);
+  TH1D* IMnpipi_wSid_n_sub = (TH1D*)nmom_IMnpipi_wSid_n_sub->ProjectionX("IMnpipi_wSid_n_sub");
+  IMnpipi_wSid_n_sub->Draw("HE");
+  cnmom_IMnpipi_wSid_n->cd(4);
+  TH1D* nmom_wSid_n_sub = (TH1D*)nmom_IMnpipi_wSid_n_sub->ProjectionY("nmom_wSid_n_sub");
+  TGraphErrors *gr_nmom_wSid_n_sub = new TGraphErrors();
+  HistToRorateGraph(nmom_wSid_n_sub,*gr_nmom_wSid_n_sub);
+  gr_nmom_wSid_n_sub->Draw("AC");
+
+
+  TH2D* nmom_IMnpipi_wK0_woSid_n_data = (TH2D*)fr->Get("nmom_IMnpipi_wK0_woSid_n");
+  TH2D* nmom_IMnpipi_wK0_woSid_n_mix  = (TH2D*)fmix->Get("nmom_IMnpipi_wK0_woSid_n");
+  TCanvas *cnmom_IMnpipi_wK0_woSid_n = new TCanvas("cnmom_IMnpipi_wK0_woSid_n","cnmom_IMnpipi_wK0_woSid_n");
+  cnmom_IMnpipi_wK0_woSid_n->Divide(2,2,0,0);
+  cnmom_IMnpipi_wK0_woSid_n->cd(3);
+  TH2D* nmom_IMnpipi_wK0_woSid_n_sub = (TH2D*)nmom_IMnpipi_wK0_woSid_n_data->Clone("nmom_IMnpipi_wK0_woSid_n_sub");
+  nmom_IMnpipi_wK0_woSid_n_sub->RebinY(5);
+  nmom_IMnpipi_wK0_woSid_n_mix->RebinY(5);
+  nmom_IMnpipi_wK0_woSid_n_sub->Add(nmom_IMnpipi_wK0_woSid_n_mix,-1);
+  nmom_IMnpipi_wK0_woSid_n_sub->SetTitle("nmom_IMnpipi_wK0_woSid_n_sub");
+  nmom_IMnpipi_wK0_woSid_n_sub->Draw("colz");
+  cnmom_IMnpipi_wK0_woSid_n->cd(1);
+  TH1D* IMnpipi_wK0_woSid_n_sub = (TH1D*)nmom_IMnpipi_wK0_woSid_n_sub->ProjectionX("IMnpipi_wK0_woSid_n_sub");
+  IMnpipi_wK0_woSid_n_sub->Draw("HE");
+  cnmom_IMnpipi_wK0_woSid_n->cd(4);
+  TH1D* nmom_wK0_woSid_n_sub = (TH1D*)nmom_IMnpipi_wK0_woSid_n_sub->ProjectionY("nmom_wK0_woSid_n_sub");
+  TGraphErrors *gr_nmom_wK0_woSid_n_sub = new TGraphErrors();
+  HistToRorateGraph(nmom_wK0_woSid_n_sub,*gr_nmom_wK0_woSid_n_sub);
+  gr_nmom_wK0_woSid_n_sub->Draw("AC");
+
+
   
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
@@ -851,8 +918,8 @@ void disp_2Dcompmix(const int qcut=0)
   TIter next(SCol);
   TString pdfname;
   if(qcut==0) pdfname= "disp_mixcomp.pdf";
-  if(qcut==1) pdfname= "disp_mixcomp_qhi.pdf";
-  if(qcut==2) pdfname= "disp_mixcomp_qlo.pdf";
+  if(qcut==1) pdfname= "disp_mixcomp_qlo.pdf";
+  if(qcut==2) pdfname= "disp_mixcomp_qhi.pdf";
   for(int i=0;i<size;i++){
     //pdf->NewPage();
     c= (TCanvas*)next();
