@@ -876,6 +876,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* nmissmom_cosK0nmiss_wK0_n;//
   TH2F* nmom_K0mom;//K0 selection,
   TH2F* nmom_K0mom_n;//K0 selection, missing neutron cut
+  TH2F* nmom_K0mom_woSid_n;//K0 selection, missing neutron cut
   TH2F* nmom_nmissmom_wK0;//K0 selection
   TH2F* nmom_nmissmom_wK0_n;//K0 selection, missing neutron cut
   TH2F* nmom_nmissmom_wK0_wSid;//Sigma selection, missing neutron cut
@@ -2877,8 +2878,16 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   nmissmom_cosK0nmiss_wK0_n = new TH2F("nmissmom_cosK0nmiss_wK0_n","nmissmom_cosK0nmiss_wK0_n",100,-1.0,1.0,100,0,1.5);
 
   nmom_K0mom = new TH2F("nmom_K0mom","nmom_K0mom",100,0,1.0,nbinnmom,0,1.0);
+  nmom_K0mom->SetXTitle("K^{0} mom [GeV/c]");  
+  nmom_K0mom->SetYTitle("n_{CDS} mom [GeV/c]");
 
   nmom_K0mom_n = new TH2F("nmom_K0mom_n","nmom_K0mom_n",100,0,1.0,nbinnmom,0,1.0);
+  nmom_K0mom_n->SetXTitle("K^{0} mom [GeV/c]");  
+  nmom_K0mom_n->SetYTitle("n_{CDS} mom [GeV/c]");
+  
+  nmom_K0mom_woSid_n = new TH2F("nmom_K0mom_woSid_n","nmom_K0mom_woSid_n",100,0,1.0,nbinnmom,0,1.0);
+  nmom_K0mom_woSid_n->SetXTitle("K^{0} mom [GeV/c]");  
+  nmom_K0mom_woSid_n->SetYTitle("n_{CDS} mom [GeV/c]");
 
   nmom_nmissmom_wK0 = new TH2F("nmom_nmissmom_wK0","nmom_nmissmom_wK0",100,0,1.5,nbinnmom,0,1.0);//
 
@@ -4508,7 +4517,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       nmom_IMpippim->Fill(LVec_pip_pim.M(),(*LVec_n).P(),weight);
       nmom_MK0bar2->Fill(LVec_K0bar.M2(),(*LVec_n).P(),weight);
       MMnmiss_IMpippim_dE->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
-      MMnpim_MMnpip->Fill(LVec_pip_nmiss.M(),LVec_pim_nmiss.M());
+      MMnpim_MMnpip->Fill(LVec_pip_nmiss.M(),LVec_pim_nmiss.M(),weight);
       if(SimSpmode || SimSmmode){
         if(IsFakebyVTX || IsFakeN2){
           MMnmiss_IMnpip_dE_fake->Fill(LVec_pip_n.M(),nmiss_mass,weight);
@@ -5106,6 +5115,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         nmom_IMnpipi_wK0_woSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P(),weight);
         q_IMnpipi_wK0_woSid_n->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
         IMnpim_IMnpip_dE_wK0_woSid_n->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
+        nmom_K0mom_woSid_n->Fill(LVec_pip_pim.P(),(*LVec_n).P(),weight);
       }
 
       Mompippim_IMnpipi_dE_wK0_n->Fill(LVec_pip_pim_n.M(),LVec_pip_pim.P(),weight);
