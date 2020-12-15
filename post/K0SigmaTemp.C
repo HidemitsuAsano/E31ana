@@ -76,210 +76,71 @@ void K0SigmaTemp()
   TH2F* IMpippim_IMnpim_n_mix[3];
   TH2F* IMpippim_IMnpip_n_bin_mix[nbintemplate][3];
   TH2F* IMpippim_IMnpim_n_bin_mix[nbintemplate][3];
-  TH2F* IMpippim_IMnpip_n_sub;
-  TH2F* IMpippim_IMnpim_n_sub;
-  TH2F* IMpippim_IMnpip_n_bin_sub[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_bin_sub[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_qhi_data;
-  TH2F* IMpippim_IMnpim_n_qhi_data;
-  TH2F* IMpippim_IMnpip_n_bin_qhi_data[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_bin_qhi_data[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_qhi_mix;
-  TH2F* IMpippim_IMnpim_n_qhi_mix;
-  TH2F* IMpippim_IMnpip_n_bin_qhi_mix[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_bin_qhi_mix[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_qhi_sub;
-  TH2F* IMpippim_IMnpim_n_qhi_sub;
-  TH2F* IMpippim_IMnpip_n_bin_qhi_sub[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_bin_qhi_sub[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_qlo_data;
-  TH2F* IMpippim_IMnpim_n_qlo_data;
-  TH2F* IMpippim_IMnpip_n_bin_qlo_data[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_bin_qlo_data[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_qlo_mix;
-  TH2F* IMpippim_IMnpim_n_qlo_mix;
-  TH2F* IMpippim_IMnpip_n_bin_qlo_mix[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_bin_qlo_mix[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_qlo_sub;
-  TH2F* IMpippim_IMnpim_n_qlo_sub;
-  TH2F* IMpippim_IMnpip_n_bin_qlo_sub[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_bin_qlo_sub[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSm_data;
-  TH2F* IMpippim_IMnpim_n_woSp_data;
-  TH2F* IMpippim_IMnpip_n_woSm_bin_data[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSp_bin_data[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSm_mix;
-  TH2F* IMpippim_IMnpim_n_woSp_mix;
-  TH2F* IMpippim_IMnpip_n_woSm_bin_mix[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSp_bin_mix[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSm_sub;
-  TH2F* IMpippim_IMnpim_n_woSp_sub;
-  TH2F* IMpippim_IMnpip_n_woSm_bin_sub[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSp_bin_sub[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSm_qhi_data;
-  TH2F* IMpippim_IMnpim_n_woSp_qhi_data;
-  TH2F* IMpippim_IMnpip_n_woSm_bin_qhi_data[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSp_bin_qhi_data[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSm_qhi_mix;
-  TH2F* IMpippim_IMnpim_n_woSp_qhi_mix;
-  TH2F* IMpippim_IMnpip_n_woSm_bin_qhi_mix[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSp_bin_qhi_mix[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSm_qhi_sub;
-  TH2F* IMpippim_IMnpim_n_woSp_qhi_sub;
-  TH2F* IMpippim_IMnpip_n_woSm_bin_qhi_sub[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSp_bin_qhi_sub[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSm_qlo_data;
-  TH2F* IMpippim_IMnpim_n_woSp_qlo_data;
-  TH2F* IMpippim_IMnpip_n_woSm_bin_qlo_data[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSp_bin_qlo_data[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSm_qlo_mix;
-  TH2F* IMpippim_IMnpim_n_woSp_qlo_mix;
-  TH2F* IMpippim_IMnpip_n_woSm_bin_qlo_mix[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSp_bin_qlo_mix[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSm_qlo_sub;
-  TH2F* IMpippim_IMnpim_n_woSp_qlo_sub;
-  TH2F* IMpippim_IMnpip_n_woSm_bin_qlo_sub[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSp_bin_qlo_sub[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSmdia_data;
-  TH2F* IMpippim_IMnpim_n_woSpdia_data;
-  TH2F* IMpippim_IMnpip_n_woSmdia_bin_data[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSpdia_bin_data[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSmdia_mix;
-  TH2F* IMpippim_IMnpim_n_woSpdia_mix;
-  TH2F* IMpippim_IMnpip_n_woSmdia_bin_mix[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSpdia_bin_mix[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSmdia_sub;
-  TH2F* IMpippim_IMnpim_n_woSpdia_sub;
-  TH2F* IMpippim_IMnpip_n_woSmdia_bin_sub[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSpdia_bin_sub[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSmdia_qhi_data;
-  TH2F* IMpippim_IMnpim_n_woSpdia_qhi_data;
-  TH2F* IMpippim_IMnpip_n_woSmdia_bin_qhi_data[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSpdia_bin_qhi_data[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSmdia_qhi_mix;
-  TH2F* IMpippim_IMnpim_n_woSpdia_qhi_mix;
-  TH2F* IMpippim_IMnpip_n_woSmdia_bin_qhi_mix[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSpdia_bin_qhi_mix[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSmdia_qhi_sub;
-  TH2F* IMpippim_IMnpim_n_woSpdia_qhi_sub;
-  TH2F* IMpippim_IMnpip_n_woSmdia_bin_qhi_sub[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSpdia_bin_qhi_sub[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSmdia_qlo_data;
-  TH2F* IMpippim_IMnpim_n_woSpdia_qlo_data;
-  TH2F* IMpippim_IMnpip_n_woSmdia_bin_qlo_data[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSpdia_bin_qlo_data[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSmdia_qlo_mix;
-  TH2F* IMpippim_IMnpim_n_woSpdia_qlo_mix;
-  TH2F* IMpippim_IMnpip_n_woSmdia_bin_qlo_mix[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSpdia_bin_qlo_mix[nbintemplate];
-  TH2F* IMpippim_IMnpip_n_woSmdia_qlo_sub;
-  TH2F* IMpippim_IMnpim_n_woSpdia_qlo_sub;
-  TH2F* IMpippim_IMnpip_n_woSmdia_bin_qlo_sub[nbintemplate];
-  TH2F* IMpippim_IMnpim_n_woSpdia_bin_qlo_sub[nbintemplate];
+  TH2F* IMpippim_IMnpip_n_sub[3];
+  TH2F* IMpippim_IMnpim_n_sub[3];
+  TH2F* IMpippim_IMnpip_n_bin_sub[nbintemplate][3];
+  TH2F* IMpippim_IMnpim_n_bin_sub[nbintemplate][3];
+  TH2F* IMpippim_IMnpip_n_woSm_data[3];
+  TH2F* IMpippim_IMnpim_n_woSp_data[3];
+  TH2F* IMpippim_IMnpip_n_woSm_bin_data[nbintemplate][3];
+  TH2F* IMpippim_IMnpim_n_woSp_bin_data[nbintemplate][3];
+  TH2F* IMpippim_IMnpip_n_woSm_mix[3];
+  TH2F* IMpippim_IMnpim_n_woSp_mix[3];
+  TH2F* IMpippim_IMnpip_n_woSm_bin_mix[nbintemplate][3];
+  TH2F* IMpippim_IMnpim_n_woSp_bin_mix[nbintemplate][3];
+  TH2F* IMpippim_IMnpip_n_woSm_sub[3];
+  TH2F* IMpippim_IMnpim_n_woSp_sub[3];
+  TH2F* IMpippim_IMnpip_n_woSm_bin_sub[nbintemplate][3];
+  TH2F* IMpippim_IMnpim_n_woSp_bin_sub[nbintemplate][3];
+  TH2F* IMpippim_IMnpip_n_woSmdia_data[3];
+  TH2F* IMpippim_IMnpim_n_woSpdia_data[3];
+  TH2F* IMpippim_IMnpip_n_woSmdia_bin_data[nbintemplate][3];
+  TH2F* IMpippim_IMnpim_n_woSpdia_bin_data[nbintemplate][3];
+  TH2F* IMpippim_IMnpip_n_woSmdia_mix[3];
+  TH2F* IMpippim_IMnpim_n_woSpdia_mix[3];
+  TH2F* IMpippim_IMnpip_n_woSmdia_bin_mix[nbintemplate][3];
+  TH2F* IMpippim_IMnpim_n_woSpdia_bin_mix[nbintemplate][3];
+  TH2F* IMpippim_IMnpip_n_woSmdia_sub[3];
+  TH2F* IMpippim_IMnpim_n_woSpdia_sub[3];
+  TH2F* IMpippim_IMnpip_n_woSmdia_bin_sub[nbintemplate][3];
+  TH2F* IMpippim_IMnpim_n_woSpdia_bin_sub[nbintemplate][3];
   
-
-
-  IMpippim_IMnpip_n_data = (TH2F*)fr->Get("IMpippim_IMnpip_n");
-  IMpippim_IMnpim_n_data = (TH2F*)fr->Get("IMpippim_IMnpim_n");
-  IMpippim_IMnpip_n_mix = (TH2F*)fmix->Get("IMpippim_IMnpip_n");
-  IMpippim_IMnpim_n_mix = (TH2F*)fmix->Get("IMpippim_IMnpim_n");
-  IMpippim_IMnpip_n_sub = (TH2F*)IMpippim_IMnpip_n_data->Clone("IMpippim_IMnpip_n_sub");
-  IMpippim_IMnpip_n_sub->Add(IMpippim_IMnpip_n_mix,-1.0); 
-  IMpippim_IMnpip_n_sub->SetTitle("IMpippim_IMnpip_n_sub");
-  IMpippim_IMnpim_n_sub = (TH2F*)IMpippim_IMnpim_n_data->Clone("IMpippim_IMnpim_n_sub");
-  IMpippim_IMnpim_n_sub->Add(IMpippim_IMnpim_n_mix,-1.0); 
-  IMpippim_IMnpim_n_sub->SetTitle("IMpippim_IMnpim_n_sub");
+  const char cqcut[][6]= {"qlo","qhi"};
+  for(int iqcut=0;iqcut<3;iqcut++){
+    IMpippim_IMnpip_n_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpip_n");
+    IMpippim_IMnpim_n_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpim_n");
+    IMpippim_IMnpip_n_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMpippim_IMnpip_n");
+    IMpippim_IMnpim_n_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMpippim_IMnpim_n");
+    IMpippim_IMnpip_n_sub[iqcut] = (TH2F*)IMpippim_IMnpip_n_data[iqcut]->Clone(Form("IMpippim_IMnpip_n_sub_%s",cqcut[iqcut]));
+    IMpippim_IMnpip_n_sub[iqcut]->Add(IMpippim_IMnpip_n_mix[iqcut],-1.0); 
+    IMpippim_IMnpip_n_sub[iqcut]->SetTitle(Form("IMpippim_IMnpip_n_sub_%s",cqcut[iqcut]));
+    IMpippim_IMnpim_n_sub[iqcut] = (TH2F*)IMpippim_IMnpim_n_data[iqcut]->Clone(Form("IMpippim_IMnpim_n_sub_%s",cqcut[iqcut]));
+    IMpippim_IMnpim_n_sub[iqcut]->Add(IMpippim_IMnpim_n_mix[iqcut],-1.0); 
+    IMpippim_IMnpim_n_sub[iqcut]->SetTitle(Form("IMpippim_IMnpim_n_sub_%s",cqcut[iqcut]));
+    
+    IMpippim_IMnpip_n_woSm_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpip_n_woSm");
+    IMpippim_IMnpim_n_woSp_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpim_n_woSp");
+    IMpippim_IMnpip_n_woSm_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMpippim_IMnpip_n_woSm");
+    IMpippim_IMnpim_n_woSp_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMpippim_IMnpim_n_woSp");
+    IMpippim_IMnpip_n_woSm_sub[iqcut] = (TH2F*)IMpippim_IMnpip_n_woSm_data[iqcut]->Clone(Form("IMpippim_IMnpip_n_woSm_sub_%s",cqcut[iqcut]));
+    IMpippim_IMnpip_n_woSm_sub[iqcut]->Add(IMpippim_IMnpip_n_woSm_mix[iqcut],-1.0); 
+    IMpippim_IMnpip_n_woSm_sub[iqcut]->SetTitle(Form("IMpippim_IMnpip_n_woSm_sub_%s",cqcut[iqcut]));
+    IMpippim_IMnpim_n_woSp_sub[iqcut] = (TH2F*)IMpippim_IMnpim_n_woSp_data[iqcut]->Clone(Form("IMpippim_IMnpim_n_woSp_sub_%s",cqcut[iqcut]));
+    IMpippim_IMnpim_n_woSp_sub[iqcut]->Add(IMpippim_IMnpim_n_woSp_mix[iqcut],-1.0); 
+    IMpippim_IMnpim_n_woSp_sub[iqcut]->SetTitle(Form("IMpippim_IMnpim_n_woSp_sub_%s",cqcut[iqcut]));
+    
+    IMpippim_IMnpip_n_woSmdia_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpip_n_woSmdia");
+    IMpippim_IMnpim_n_woSpdia_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpim_n_woSpdia");
+    IMpippim_IMnpip_n_woSmdia_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMpippim_IMnpip_n_woSmdia");
+    IMpippim_IMnpim_n_woSpdia_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMpippim_IMnpim_n_woSpdia");
+    IMpippim_IMnpip_n_woSmdia_sub[iqcut] = (TH2F*)IMpippim_IMnpip_n_woSmdia_data[iqcut]->Clone(Form("IMpippim_IMnpip_n_woSmdia_sub_%s",cqcut[iqcut]));
+    IMpippim_IMnpip_n_woSmdia_sub[iqcut]->Add(IMpippim_IMnpip_n_woSmdia_mix[iqcut],-1.0); 
+    IMpippim_IMnpip_n_woSmdia_sub[iqcut]->SetTitle(Form("IMpippim_IMnpip_n_woSmdia_sub_%s",cqcut[iqcut]));
+    IMpippim_IMnpim_n_woSpdia_sub[iqcut] = (TH2F*)IMpippim_IMnpim_n_woSpdia_data[iqcut]->Clone(Form("IMpippim_IMnpim_n_woSpdia_sub_%s",cqcut[iqcut]));
+    IMpippim_IMnpim_n_woSpdia_sub[iqcut]->Add(IMpippim_IMnpim_n_woSpdia_mix[iqcut],-1.0); 
+    IMpippim_IMnpim_n_woSpdia_sub[iqcut]->SetTitle(Form("IMpippim_IMnpim_n_woSpdia_sub_%s",cqcut[iqcut]));
+  }
   
-  IMpippim_IMnpip_n_qhi_data = (TH2F*)frqhi->Get("IMpippim_IMnpip_n");
-  IMpippim_IMnpim_n_qhi_data = (TH2F*)frqhi->Get("IMpippim_IMnpim_n");
-  IMpippim_IMnpip_n_qhi_mix = (TH2F*)fmixqhi->Get("IMpippim_IMnpip_n");
-  IMpippim_IMnpim_n_qhi_mix = (TH2F*)fmixqhi->Get("IMpippim_IMnpim_n");
-  IMpippim_IMnpip_n_qhi_sub = (TH2F*)IMpippim_IMnpip_n_qhi_data->Clone("IMpippim_IMnpip_n_qhi_sub");
-  IMpippim_IMnpip_n_qhi_sub->Add(IMpippim_IMnpip_n_qhi_mix,-1.0); 
-  IMpippim_IMnpip_n_qhi_sub->SetTitle("IMpippim_IMnpip_n_qhi_sub");
-  IMpippim_IMnpim_n_qhi_sub = (TH2F*)IMpippim_IMnpim_n_qhi_data->Clone("IMpippim_IMnpim_n_qhi_sub");
-  IMpippim_IMnpim_n_qhi_sub->Add(IMpippim_IMnpim_n_qhi_mix,-1.0); 
-  IMpippim_IMnpim_n_qhi_sub->SetTitle("IMpippim_IMnpim_n_qhi_sub");
-
-  IMpippim_IMnpip_n_qlo_data = (TH2F*)frqlo->Get("IMpippim_IMnpip_n");
-  IMpippim_IMnpim_n_qlo_data = (TH2F*)frqlo->Get("IMpippim_IMnpim_n");
-  IMpippim_IMnpip_n_qlo_mix = (TH2F*)fmixqlo->Get("IMpippim_IMnpip_n");
-  IMpippim_IMnpim_n_qlo_mix = (TH2F*)fmixqlo->Get("IMpippim_IMnpim_n");
-  IMpippim_IMnpip_n_qlo_sub = (TH2F*)IMpippim_IMnpip_n_qlo_data->Clone("IMpippim_IMnpip_n_qlo_sub");
-  IMpippim_IMnpip_n_qlo_sub->Add(IMpippim_IMnpip_n_qlo_mix,-1.0); 
-  IMpippim_IMnpip_n_qlo_sub->SetTitle("IMpippim_IMnpip_n_qlo_sub");
-  IMpippim_IMnpim_n_qlo_sub = (TH2F*)IMpippim_IMnpim_n_qlo_data->Clone("IMpippim_IMnpim_n_qlo_sub");
-  IMpippim_IMnpim_n_qlo_sub->Add(IMpippim_IMnpim_n_qlo_mix,-1.0); 
-  IMpippim_IMnpim_n_qlo_sub->SetTitle("IMpippim_IMnpim_n_qlo_sub");
-  
-  IMpippim_IMnpip_n_woSm_data = (TH2F*)fr->Get("IMpippim_IMnpip_n_woSm");
-  IMpippim_IMnpim_n_woSp_data = (TH2F*)fr->Get("IMpippim_IMnpim_n_woSp");
-  IMpippim_IMnpip_n_woSm_mix = (TH2F*)fmix->Get("IMpippim_IMnpip_n_woSm");
-  IMpippim_IMnpim_n_woSp_mix = (TH2F*)fmix->Get("IMpippim_IMnpim_n_woSp");
-  IMpippim_IMnpip_n_woSm_sub = (TH2F*)IMpippim_IMnpip_n_woSm_data->Clone("IMpippim_IMnpip_n_woSm_sub");
-  IMpippim_IMnpip_n_woSm_sub->Add(IMpippim_IMnpip_n_woSm_mix,-1.0); 
-  IMpippim_IMnpip_n_woSm_sub->SetTitle("IMpippim_IMnpip_n_woSm_sub");
-  IMpippim_IMnpim_n_woSp_sub = (TH2F*)IMpippim_IMnpim_n_woSp_data->Clone("IMpippim_IMnpim_n_woSp_sub");
-  IMpippim_IMnpim_n_woSp_sub->Add(IMpippim_IMnpim_n_woSp_mix,-1.0); 
-  IMpippim_IMnpim_n_woSp_sub->SetTitle("IMpippim_IMnpim_n_woSp_sub");
-  
-
-  IMpippim_IMnpip_n_woSm_qhi_data = (TH2F*)frqhi->Get("IMpippim_IMnpip_n_woSm");
-  IMpippim_IMnpim_n_woSp_qhi_data = (TH2F*)frqhi->Get("IMpippim_IMnpim_n_woSp");
-  IMpippim_IMnpip_n_woSm_qhi_mix = (TH2F*)fmixqhi->Get("IMpippim_IMnpip_n_woSm");
-  IMpippim_IMnpim_n_woSp_qhi_mix = (TH2F*)fmixqhi->Get("IMpippim_IMnpim_n_woSp");
-  IMpippim_IMnpip_n_woSm_qhi_sub = (TH2F*)IMpippim_IMnpip_n_woSm_qhi_data->Clone("IMpippim_IMnpip_n_woSm_qhi_sub");
-  IMpippim_IMnpip_n_woSm_qhi_sub->Add(IMpippim_IMnpip_n_woSm_qhi_mix,-1.0); 
-  IMpippim_IMnpip_n_woSm_qhi_sub->SetTitle("IMpippim_IMnpip_n_woSm_qhi_sub");
-  IMpippim_IMnpim_n_woSp_qhi_sub = (TH2F*)IMpippim_IMnpim_n_woSp_qhi_data->Clone("IMpippim_IMnpim_n_woSp_qhi_sub");
-  IMpippim_IMnpim_n_woSp_qhi_sub->Add(IMpippim_IMnpim_n_woSp_qhi_mix,-1.0); 
-  IMpippim_IMnpim_n_woSp_qhi_sub->SetTitle("IMpippim_IMnpim_n_woSp_qhi_sub");
-
-
-  IMpippim_IMnpip_n_woSm_qlo_data = (TH2F*)frqlo->Get("IMpippim_IMnpip_n_woSm");
-  IMpippim_IMnpim_n_woSp_qlo_data = (TH2F*)frqlo->Get("IMpippim_IMnpim_n_woSp");
-  IMpippim_IMnpip_n_woSm_qlo_mix = (TH2F*)fmixqlo->Get("IMpippim_IMnpip_n_woSm");
-  IMpippim_IMnpim_n_woSp_qlo_mix = (TH2F*)fmixqlo->Get("IMpippim_IMnpim_n_woSp");
-  IMpippim_IMnpip_n_woSm_qlo_sub = (TH2F*)IMpippim_IMnpip_n_woSm_qlo_data->Clone("IMpippim_IMnpip_n_woSm_qlo_sub");
-  IMpippim_IMnpip_n_woSm_qlo_sub->Add(IMpippim_IMnpip_n_woSm_qlo_mix,-1.0); 
-  IMpippim_IMnpip_n_woSm_qlo_sub->SetTitle("IMpippim_IMnpip_n_woSm_qlo_sub");
-  IMpippim_IMnpim_n_woSp_qlo_sub = (TH2F*)IMpippim_IMnpim_n_woSp_qlo_data->Clone("IMpippim_IMnpim_n_woSp_qlo_sub");
-  IMpippim_IMnpim_n_woSp_qlo_sub->Add(IMpippim_IMnpim_n_woSp_qlo_mix,-1.0); 
-  IMpippim_IMnpim_n_woSp_qlo_sub->SetTitle("IMpippim_IMnpim_n_woSp_qlo_sub");
-  
-  IMpippim_IMnpip_n_woSmdia_data = (TH2F*)fr->Get("IMpippim_IMnpip_n_woSmdia");
-  IMpippim_IMnpim_n_woSpdia_data = (TH2F*)fr->Get("IMpippim_IMnpim_n_woSpdia");
-  IMpippim_IMnpip_n_woSmdia_mix = (TH2F*)fmix->Get("IMpippim_IMnpip_n_woSmdia");
-  IMpippim_IMnpim_n_woSpdia_mix = (TH2F*)fmix->Get("IMpippim_IMnpim_n_woSpdia");
-  IMpippim_IMnpip_n_woSmdia_sub = (TH2F*)IMpippim_IMnpip_n_woSmdia_data->Clone("IMpippim_IMnpip_n_woSmdia_sub");
-  IMpippim_IMnpip_n_woSmdia_sub->Add(IMpippim_IMnpip_n_woSmdia_mix,-1.0); 
-  IMpippim_IMnpip_n_woSmdia_sub->SetTitle("IMpippim_IMnpip_n_woSmdia_sub");
-  IMpippim_IMnpim_n_woSpdia_sub = (TH2F*)IMpippim_IMnpim_n_woSpdia_data->Clone("IMpippim_IMnpim_n_woSpdia_sub");
-  IMpippim_IMnpim_n_woSpdia_sub->Add(IMpippim_IMnpim_n_woSpdia_mix,-1.0); 
-  IMpippim_IMnpim_n_woSpdia_sub->SetTitle("IMpippim_IMnpim_n_woSpdia_sub");
-  
-  IMpippim_IMnpip_n_woSmdia_qhi_data = (TH2F*)frqhi->Get("IMpippim_IMnpip_n_woSmdia");
-  IMpippim_IMnpim_n_woSpdia_qhi_data = (TH2F*)frqhi->Get("IMpippim_IMnpim_n_woSpdia");
-  IMpippim_IMnpip_n_woSmdia_qhi_mix = (TH2F*)fmixqhi->Get("IMpippim_IMnpip_n_woSmdia");
-  IMpippim_IMnpim_n_woSpdia_qhi_mix = (TH2F*)fmixqhi->Get("IMpippim_IMnpim_n_woSpdia");
-  IMpippim_IMnpip_n_woSmdia_qhi_sub = (TH2F*)IMpippim_IMnpip_n_woSmdia_qhi_data->Clone("IMpippim_IMnpip_n_woSmdia_qhi_sub");
-  IMpippim_IMnpip_n_woSmdia_qhi_sub->Add(IMpippim_IMnpip_n_woSmdia_qhi_mix,-1.0); 
-  IMpippim_IMnpip_n_woSmdia_qhi_sub->SetTitle("IMpippim_IMnpip_n_woSmdia_qhi_sub");
-  IMpippim_IMnpim_n_woSpdia_qhi_sub = (TH2F*)IMpippim_IMnpim_n_woSpdia_qhi_data->Clone("IMpippim_IMnpim_n_woSpdia_qhi_sub");
-  IMpippim_IMnpim_n_woSpdia_qhi_sub->Add(IMpippim_IMnpim_n_woSpdia_qhi_mix,-1.0); 
-  IMpippim_IMnpim_n_woSpdia_qhi_sub->SetTitle("IMpippim_IMnpim_n_woSpdia_qhi_sub");
-  
-  IMpippim_IMnpip_n_woSmdia_qlo_data = (TH2F*)frqlo->Get("IMpippim_IMnpip_n_woSmdia");
-  IMpippim_IMnpim_n_woSpdia_qlo_data = (TH2F*)frqlo->Get("IMpippim_IMnpim_n_woSpdia");
-  IMpippim_IMnpip_n_woSmdia_qlo_mix = (TH2F*)fmixqlo->Get("IMpippim_IMnpip_n_woSmdia");
-  IMpippim_IMnpim_n_woSpdia_qlo_mix = (TH2F*)fmixqlo->Get("IMpippim_IMnpim_n_woSpdia");
-  IMpippim_IMnpip_n_woSmdia_qlo_sub = (TH2F*)IMpippim_IMnpip_n_woSmdia_qlo_data->Clone("IMpippim_IMnpip_n_woSmdia_qlo_sub");
-  IMpippim_IMnpip_n_woSmdia_qlo_sub->Add(IMpippim_IMnpip_n_woSmdia_qlo_mix,-1.0); 
-  IMpippim_IMnpip_n_woSmdia_qlo_sub->SetTitle("IMpippim_IMnpip_n_woSmdia_qlo_sub");
-  IMpippim_IMnpim_n_woSpdia_qlo_sub = (TH2F*)IMpippim_IMnpim_n_woSpdia_qlo_data->Clone("IMpippim_IMnpim_n_woSpdia_qlo_sub");
-  IMpippim_IMnpim_n_woSpdia_qlo_sub->Add(IMpippim_IMnpim_n_woSpdia_qlo_mix,-1.0); 
-  IMpippim_IMnpim_n_woSpdia_qlo_sub->SetTitle("IMpippim_IMnpim_n_woSpdia_qlo_sub");
-
 
   for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
     IMpippim_IMnpip_n_bin_data[ibin] = (TH2F*)fr->Get(Form("IMpippim_IMnpip_n_bin%d",ibin));
@@ -291,24 +152,6 @@ void K0SigmaTemp()
     IMpippim_IMnpim_n_bin_sub[ibin] = (TH2F*)IMpippim_IMnpim_n_bin_data[ibin]->Clone(Form("IMpippim_IMnpim_n_sub_bin%d",ibin));
     IMpippim_IMnpim_n_bin_sub[ibin]->Add(IMpippim_IMnpim_n_bin_mix[ibin],-1.0);
     
-    IMpippim_IMnpip_n_bin_qhi_data[ibin] = (TH2F*)frqhi->Get(Form("IMpippim_IMnpip_n_bin%d",ibin));
-    IMpippim_IMnpim_n_bin_qhi_data[ibin] = (TH2F*)frqhi->Get(Form("IMpippim_IMnpim_n_bin%d",ibin));
-    IMpippim_IMnpip_n_bin_qhi_mix[ibin] = (TH2F*)fmixqhi->Get(Form("IMpippim_IMnpip_n_bin%d",ibin));
-    IMpippim_IMnpim_n_bin_qhi_mix[ibin] = (TH2F*)fmixqhi->Get(Form("IMpippim_IMnpim_n_bin%d",ibin));
-    IMpippim_IMnpip_n_bin_qhi_sub[ibin] = (TH2F*)IMpippim_IMnpip_n_bin_qhi_data[ibin]->Clone(Form("IMpippim_IMnpip_n_qhi_sub_bin%d",ibin));
-    IMpippim_IMnpip_n_bin_qhi_sub[ibin]->Add(IMpippim_IMnpip_n_bin_qhi_mix[ibin],-1.0);
-    IMpippim_IMnpim_n_bin_qhi_sub[ibin] = (TH2F*)IMpippim_IMnpim_n_bin_qhi_data[ibin]->Clone(Form("IMpippim_IMnpim_n_qhi_sub_bin%d",ibin));
-    IMpippim_IMnpim_n_bin_qhi_sub[ibin]->Add(IMpippim_IMnpim_n_bin_qhi_mix[ibin],-1.0);
-    
-    IMpippim_IMnpip_n_bin_qlo_data[ibin] = (TH2F*)frqlo->Get(Form("IMpippim_IMnpip_n_bin%d",ibin));
-    IMpippim_IMnpim_n_bin_qlo_data[ibin] = (TH2F*)frqlo->Get(Form("IMpippim_IMnpim_n_bin%d",ibin));
-    IMpippim_IMnpip_n_bin_qlo_mix[ibin] = (TH2F*)fmixqlo->Get(Form("IMpippim_IMnpip_n_bin%d",ibin));
-    IMpippim_IMnpim_n_bin_qlo_mix[ibin] = (TH2F*)fmixqlo->Get(Form("IMpippim_IMnpim_n_bin%d",ibin));
-    IMpippim_IMnpip_n_bin_qlo_sub[ibin] = (TH2F*)IMpippim_IMnpip_n_bin_qlo_data[ibin]->Clone(Form("IMpippim_IMnpip_n_qlo_sub_bin%d",ibin));
-    IMpippim_IMnpip_n_bin_qlo_sub[ibin]->Add(IMpippim_IMnpip_n_bin_qlo_mix[ibin],-1.0);
-    IMpippim_IMnpim_n_bin_qlo_sub[ibin] = (TH2F*)IMpippim_IMnpim_n_bin_qlo_data[ibin]->Clone(Form("IMpippim_IMnpim_n_qlo_sub_bin%d",ibin));
-    IMpippim_IMnpim_n_bin_qlo_sub[ibin]->Add(IMpippim_IMnpim_n_bin_qlo_mix[ibin],-1.0);
-    
     IMpippim_IMnpip_n_woSm_bin_data[ibin] = (TH2F*)fr->Get(Form("IMpippim_IMnpip_n_woSm_bin%d",ibin));
     IMpippim_IMnpim_n_woSp_bin_data[ibin] = (TH2F*)fr->Get(Form("IMpippim_IMnpim_n_woSp_bin%d",ibin));
     IMpippim_IMnpip_n_woSm_bin_mix[ibin] = (TH2F*)fmix->Get(Form("IMpippim_IMnpip_n_woSm_bin%d",ibin));
@@ -318,27 +161,6 @@ void K0SigmaTemp()
     IMpippim_IMnpim_n_woSp_bin_sub[ibin] = (TH2F*)IMpippim_IMnpim_n_woSp_bin_data[ibin]->Clone(Form("IMpippim_IMnpim_n_woSp_sub_bin%d",ibin));
     IMpippim_IMnpim_n_woSp_bin_sub[ibin]->Add(IMpippim_IMnpim_n_woSp_bin_mix[ibin],-1.0);
 
-
-    IMpippim_IMnpip_n_woSm_bin_qhi_data[ibin] = (TH2F*)frqhi->Get(Form("IMpippim_IMnpip_n_woSm_bin%d",ibin));
-    IMpippim_IMnpim_n_woSp_bin_qhi_data[ibin] = (TH2F*)frqhi->Get(Form("IMpippim_IMnpim_n_woSp_bin%d",ibin));
-    IMpippim_IMnpip_n_woSm_bin_qhi_mix[ibin] = (TH2F*)fmixqhi->Get(Form("IMpippim_IMnpip_n_woSm_bin%d",ibin));
-    IMpippim_IMnpim_n_woSp_bin_qhi_mix[ibin] = (TH2F*)fmixqhi->Get(Form("IMpippim_IMnpim_n_woSp_bin%d",ibin));
-    IMpippim_IMnpip_n_woSm_bin_qhi_sub[ibin] = (TH2F*)IMpippim_IMnpip_n_woSm_bin_qhi_data[ibin]->Clone(Form("IMpippim_IMnpip_n_woSm_qhi_sub_bin%d",ibin));
-    IMpippim_IMnpip_n_woSm_bin_qhi_sub[ibin]->Add(IMpippim_IMnpip_n_woSm_bin_qhi_mix[ibin],-1.0);
-    IMpippim_IMnpim_n_woSp_bin_qhi_sub[ibin] = (TH2F*)IMpippim_IMnpim_n_woSp_bin_qhi_data[ibin]->Clone(Form("IMpippim_IMnpim_n_woSp_qhi_sub_bin%d",ibin));
-    IMpippim_IMnpim_n_woSp_bin_qhi_sub[ibin]->Add(IMpippim_IMnpim_n_woSp_bin_qhi_mix[ibin],-1.0);
-    
-    
-    IMpippim_IMnpip_n_woSm_bin_qlo_data[ibin] = (TH2F*)frqlo->Get(Form("IMpippim_IMnpip_n_woSm_bin%d",ibin));
-    IMpippim_IMnpim_n_woSp_bin_qlo_data[ibin] = (TH2F*)frqlo->Get(Form("IMpippim_IMnpim_n_woSp_bin%d",ibin));
-    IMpippim_IMnpip_n_woSm_bin_qlo_mix[ibin] = (TH2F*)fmixqlo->Get(Form("IMpippim_IMnpip_n_woSm_bin%d",ibin));
-    IMpippim_IMnpim_n_woSp_bin_qlo_mix[ibin] = (TH2F*)fmixqlo->Get(Form("IMpippim_IMnpim_n_woSp_bin%d",ibin));
-    IMpippim_IMnpip_n_woSm_bin_qlo_sub[ibin] = (TH2F*)IMpippim_IMnpip_n_woSm_bin_qlo_data[ibin]->Clone(Form("IMpippim_IMnpip_n_woSm_qlo_sub_bin%d",ibin));
-    IMpippim_IMnpip_n_woSm_bin_qlo_sub[ibin]->Add(IMpippim_IMnpip_n_woSm_bin_qlo_mix[ibin],-1.0);
-    IMpippim_IMnpim_n_woSp_bin_qlo_sub[ibin] = (TH2F*)IMpippim_IMnpim_n_woSp_bin_qlo_data[ibin]->Clone(Form("IMpippim_IMnpim_n_woSp_qlo_sub_bin%d",ibin));
-    IMpippim_IMnpim_n_woSp_bin_qlo_sub[ibin]->Add(IMpippim_IMnpim_n_woSp_bin_qlo_mix[ibin],-1.0);
-    
-
     IMpippim_IMnpip_n_woSmdia_bin_data[ibin] = (TH2F*)fr->Get(Form("IMpippim_IMnpip_n_woSmdia_bin%d",ibin));
     IMpippim_IMnpim_n_woSpdia_bin_data[ibin] = (TH2F*)fr->Get(Form("IMpippim_IMnpim_n_woSpdia_bin%d",ibin));
     IMpippim_IMnpip_n_woSmdia_bin_mix[ibin] = (TH2F*)fmix->Get(Form("IMpippim_IMnpip_n_woSmdia_bin%d",ibin));
@@ -347,25 +169,6 @@ void K0SigmaTemp()
     IMpippim_IMnpip_n_woSmdia_bin_sub[ibin]->Add(IMpippim_IMnpip_n_woSmdia_bin_mix[ibin],-1.0);
     IMpippim_IMnpim_n_woSpdia_bin_sub[ibin] = (TH2F*)IMpippim_IMnpim_n_woSpdia_bin_data[ibin]->Clone(Form("IMpippim_IMnpim_n_woSpdia_sub_bin%d",ibin));
     IMpippim_IMnpim_n_woSpdia_bin_sub[ibin]->Add(IMpippim_IMnpim_n_woSpdia_bin_mix[ibin],-1.0);
-    
-    
-    IMpippim_IMnpip_n_woSmdia_bin_qhi_data[ibin] = (TH2F*)frqhi->Get(Form("IMpippim_IMnpip_n_woSmdia_bin%d",ibin));
-    IMpippim_IMnpim_n_woSpdia_bin_qhi_data[ibin] = (TH2F*)frqhi->Get(Form("IMpippim_IMnpim_n_woSpdia_bin%d",ibin));
-    IMpippim_IMnpip_n_woSmdia_bin_qhi_mix[ibin] = (TH2F*)fmixqhi->Get(Form("IMpippim_IMnpip_n_woSmdia_bin%d",ibin));
-    IMpippim_IMnpim_n_woSpdia_bin_qhi_mix[ibin] = (TH2F*)fmixqhi->Get(Form("IMpippim_IMnpim_n_woSpdia_bin%d",ibin));
-    IMpippim_IMnpip_n_woSmdia_bin_qhi_sub[ibin] = (TH2F*)IMpippim_IMnpip_n_woSmdia_bin_qhi_data[ibin]->Clone(Form("IMpippim_IMnpip_n_woSmdia_qhi_sub_bin%d",ibin));
-    IMpippim_IMnpip_n_woSmdia_bin_qhi_sub[ibin]->Add(IMpippim_IMnpip_n_woSmdia_bin_qhi_mix[ibin],-1.0);
-    IMpippim_IMnpim_n_woSpdia_bin_qhi_sub[ibin] = (TH2F*)IMpippim_IMnpim_n_woSpdia_bin_qhi_data[ibin]->Clone(Form("IMpippim_IMnpim_n_woSpdia_qhi_sub_bin%d",ibin));
-    IMpippim_IMnpim_n_woSpdia_bin_qhi_sub[ibin]->Add(IMpippim_IMnpim_n_woSpdia_bin_qhi_mix[ibin],-1.0);
-    
-    IMpippim_IMnpip_n_woSmdia_bin_qlo_data[ibin] = (TH2F*)frqlo->Get(Form("IMpippim_IMnpip_n_woSmdia_bin%d",ibin));
-    IMpippim_IMnpim_n_woSpdia_bin_qlo_data[ibin] = (TH2F*)frqlo->Get(Form("IMpippim_IMnpim_n_woSpdia_bin%d",ibin));
-    IMpippim_IMnpim_n_woSpdia_bin_qlo_mix[ibin] = (TH2F*)fmixqlo->Get(Form("IMpippim_IMnpim_n_woSpdia_bin%d",ibin));
-    IMpippim_IMnpip_n_woSmdia_bin_qlo_mix[ibin] = (TH2F*)fmixqlo->Get(Form("IMpippim_IMnpip_n_woSmdia_bin%d",ibin));
-    IMpippim_IMnpip_n_woSmdia_bin_qlo_sub[ibin] = (TH2F*)IMpippim_IMnpip_n_woSmdia_bin_qlo_data[ibin]->Clone(Form("IMpippim_IMnpip_n_woSmdia_qlo_sub_bin%d",ibin));
-    IMpippim_IMnpip_n_woSmdia_bin_qlo_sub[ibin]->Add(IMpippim_IMnpip_n_woSmdia_bin_qlo_mix[ibin],-1.0);
-    IMpippim_IMnpim_n_woSpdia_bin_qlo_sub[ibin] = (TH2F*)IMpippim_IMnpim_n_woSpdia_bin_qlo_data[ibin]->Clone(Form("IMpippim_IMnpim_n_woSpdia_qlo_sub_bin%d",ibin));
-    IMpippim_IMnpim_n_woSpdia_bin_qlo_sub[ibin]->Add(IMpippim_IMnpim_n_woSpdia_bin_qlo_mix[ibin],-1.0);
   }
   
   TCanvas *cIMpippim_IMnpip_n_sub = new TCanvas("cIMpippim_IMnpip_n_sub","cIMpippim_IMnpip_n_sub",800,800);
