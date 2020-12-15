@@ -837,6 +837,19 @@ void disp_2Dcompmix(const int qcut=0)
   q_IMnpipi_wK0_woSid_n_sub->SetTitle("q_IMnpipi_wK0_woSid_n_sub");
   q_IMnpipi_wK0_woSid_n_sub->Draw("colz");
   
+  const double Kp_mass = pMass + kpMass;
+  TF1 *fkp = new TF1("f", "sqrt(((x*x-[0]*[0]-[1]*[1])/(2*[0]))*((x*x-[0]*[0]-[1]*[1])/(2*[0]))-[1]*[1])",Kp_mass-0.0001,2);
+  fkp->SetParameter(0,nMass);
+  fkp->SetParameter(1,kpMass);
+  fkp->SetLineColor(4);
+  fkp->SetLineWidth(6);
+  fkp->SetLineStyle(4);
+  fkp->SetLineColorAlpha(kPink, 0.35);
+  fkp->Draw("same");
+
+
+
+
   TCanvas *cIMnpipi_wK0_woSid_n_sub_0 = new TCanvas("cIMnpipi_wK0_woSid_n_sub_0","cIMnpipi_wK0_woSid_n_sub_0");
   TH1D* IMnpipi_wK0_woSid_n_sub_0 = (TH1D*)q_IMnpipi_wK0_woSid_n_sub->ProjectionX("IMnpipi_wK0_woSid_n_sub_0",0,bin350);
   IMnpipi_wK0_woSid_n_sub_0->SetTitle("IMnpipi_wK0_woSid_n_sub_0");
@@ -859,15 +872,6 @@ void disp_2Dcompmix(const int qcut=0)
   q_IMpippim_wSid_n_sub->SetTitle("q_IMpippim_wSid_n_sub");
   q_IMpippim_wSid_n_sub->Draw("colz");
   
-  const double Kp_mass = pMass + kpMass;
-  TF1 *fkp = new TF1("f", "sqrt(((x*x-[0]*[0]-[1]*[1])/(2*[0]))*((x*x-[0]*[0]-[1]*[1])/(2*[0]))-[1]*[1])",Kp_mass-0.0001,2);
-  fkp->SetParameter(0,nMass);
-  fkp->SetParameter(1,kpMass);
-  //fkp->SetLineColor(4);
-  fkp->SetLineWidth(6);
-  fkp->SetLineStyle(4);
-  fkp->SetLineColorAlpha(kPink, 0.35);
-  fkp->Draw("same");
 
   TH2D* nmom_IMnpipi_wSid_n_data = (TH2D*)fr->Get("nmom_IMnpipi_wSid_n");
   TH2D* nmom_IMnpipi_wSid_n_mix  = (TH2D*)fmix->Get("nmom_IMnpipi_wSid_n");
@@ -887,8 +891,27 @@ void disp_2Dcompmix(const int qcut=0)
   TH1D* nmom_wSid_n_sub = (TH1D*)nmom_IMnpipi_wSid_n_sub->ProjectionY("nmom_wSid_n_sub");
   TGraphErrors *gr_nmom_wSid_n_sub = new TGraphErrors();
   HistToRorateGraph(nmom_wSid_n_sub,*gr_nmom_wSid_n_sub);
-  gr_nmom_wSid_n_sub->Draw("AC");
+  gr_nmom_wSid_n_sub->Draw("AP");
 
+  TH2D* nmom_IMnpipi_wK0_n_data = (TH2D*)fr->Get("nmom_IMnpipi_wK0_n");
+  TH2D* nmom_IMnpipi_wK0_n_mix  = (TH2D*)fmix->Get("nmom_IMnpipi_wK0_n");
+  TCanvas *cnmom_IMnpipi_wK0_n = new TCanvas("cnmom_IMnpipi_wK0_n","cnmom_IMnpipi_wK0_n");
+  cnmom_IMnpipi_wK0_n->Divide(2,2,0,0);
+  cnmom_IMnpipi_wK0_n->cd(3);
+  TH2D* nmom_IMnpipi_wK0_n_sub = (TH2D*)nmom_IMnpipi_wK0_n_data->Clone("nmom_IMnpipi_wK0_n_sub");
+  nmom_IMnpipi_wK0_n_sub->RebinY(5);
+  nmom_IMnpipi_wK0_n_mix->RebinY(5);
+  nmom_IMnpipi_wK0_n_sub->Add(nmom_IMnpipi_wK0_n_mix,-1);
+  nmom_IMnpipi_wK0_n_sub->SetTitle("nmom_IMnpipi_wK0_n_sub");
+  nmom_IMnpipi_wK0_n_sub->Draw("colz");
+  cnmom_IMnpipi_wK0_n->cd(1);
+  TH1D* IMnpipi_wK0_n_sub = (TH1D*)nmom_IMnpipi_wK0_n_sub->ProjectionX("IMnpipi_wK0_n_sub");
+  IMnpipi_wK0_n_sub->Draw("HE");
+  cnmom_IMnpipi_wK0_n->cd(4);
+  TH1D* nmom_wK0_n_sub = (TH1D*)nmom_IMnpipi_wK0_n_sub->ProjectionY("nmom_wK0_n_sub");
+  TGraphErrors *gr_nmom_wK0_n_sub = new TGraphErrors();
+  HistToRorateGraph(nmom_wK0_n_sub,*gr_nmom_wK0_n_sub);
+  gr_nmom_wK0_n_sub->Draw("AP");
 
   TH2D* nmom_IMnpipi_wK0_woSid_n_data = (TH2D*)fr->Get("nmom_IMnpipi_wK0_woSid_n");
   TH2D* nmom_IMnpipi_wK0_woSid_n_mix  = (TH2D*)fmix->Get("nmom_IMnpipi_wK0_woSid_n");
@@ -908,7 +931,27 @@ void disp_2Dcompmix(const int qcut=0)
   TH1D* nmom_wK0_woSid_n_sub = (TH1D*)nmom_IMnpipi_wK0_woSid_n_sub->ProjectionY("nmom_wK0_woSid_n_sub");
   TGraphErrors *gr_nmom_wK0_woSid_n_sub = new TGraphErrors();
   HistToRorateGraph(nmom_wK0_woSid_n_sub,*gr_nmom_wK0_woSid_n_sub);
-  gr_nmom_wK0_woSid_n_sub->Draw("AC");
+  gr_nmom_wK0_woSid_n_sub->Draw("AP");
+
+
+  TH2D* nmom_K0mom_woSid_n_data = (TH2D*)fr->Get("nmom_K0mom_woSid_n");
+  TH2D* nmom_K0mom_woSid_n_mix  = (TH2D*)fmix->Get("nmom_K0mom_woSid_n");
+  TCanvas *cnmom_K0mom_woSid_n = new TCanvas("cnmom_K0mom_woSid_n","cnmom_K0mom_woSid_n");
+  cnmom_K0mom_woSid_n->Divide(2,2,0,0);
+  cnmom_K0mom_woSid_n->cd(3);
+  TH2D* nmom_K0mom_woSid_n_sub = (TH2D*)nmom_K0mom_woSid_n_data->Clone("nmom_K0mom_woSid_n_sub");
+  nmom_K0mom_woSid_n_sub->RebinY(5);
+  nmom_K0mom_woSid_n_mix->RebinY(5);
+  nmom_K0mom_woSid_n_sub->Add(nmom_K0mom_woSid_n_mix,-1);
+  nmom_K0mom_woSid_n_sub->SetTitle("nmom_K0mom_woSid_n_sub");
+  nmom_K0mom_woSid_n_sub->Draw("colz");
+  cnmom_K0mom_woSid_n->cd(1);
+  TH1D* K0mom_woSid_n_sub = (TH1D*)nmom_K0mom_woSid_n_sub->ProjectionX("K0mom_woSid_n_sub");
+  K0mom_woSid_n_sub->Draw("HE");
+  cnmom_K0mom_woSid_n->cd(4);
+  gr_nmom_wK0_woSid_n_sub->Draw("AP");
+  
+
 
 
   
@@ -917,9 +960,21 @@ void disp_2Dcompmix(const int qcut=0)
   int size = SCol->GetSize();
   TIter next(SCol);
   TString pdfname;
-  if(qcut==0) pdfname= "disp_mixcomp.pdf";
-  if(qcut==1) pdfname= "disp_mixcomp_qlo.pdf";
-  if(qcut==2) pdfname= "disp_mixcomp_qhi.pdf";
+  if(qcut==0){
+    pdfname= "disp_mixcomp.pdf";
+    if(SimSpmode) pdfname= "disp_mixcomp_simSp.pdf";
+    if(SimSmmode) pdfname= "disp_mixcomp_simSm.pdf";
+  }
+  if(qcut==1){
+    pdfname= "disp_mixcomp_qlo.pdf";
+    if(SimSpmode) pdfname= "disp_mixcomp_qlo_simSp.pdf";
+    if(SimSmmode) pdfname= "disp_mixcomp_qlo_simSm.pdf";
+  }
+  if(qcut==2){
+    pdfname= "disp_mixcomp_qhi.pdf";
+    if(SimSpmode) pdfname= "disp_mixcomp_qhi_simSp.pdf";
+    if(SimSmmode) pdfname= "disp_mixcomp_qhi_simSm.pdf";
+  }
   for(int i=0;i<size;i++){
     //pdf->NewPage();
     c= (TCanvas*)next();

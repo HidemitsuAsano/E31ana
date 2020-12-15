@@ -161,7 +161,11 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
   treeMIX->Branch( "CDH_Pos_pim",&CDH_Pos_pim2);
   treeMIX->Branch( "CDH_Pos_pip",&CDH_Pos_pip2);
   if(SimSpmode || SimSmmode) {
-    treeMIX->Branch( "mcmom_beam",   &mcmom_beam2 );
+    treeMIX->Branch( "mcncanvtxr",&mcncanvtxr2);
+    treeMIX->Branch( "mcncanvtxz",&mcncanvtxz2);
+    treeMIX->Branch( "mcncdsgen", &mcncdsgen2);
+    treeMIX->Branch( "mcpattern", &mcpattern2);
+    treeMIX->Branch( "mcmom_beam", &mcmom_beam2 );
     treeMIX->Branch( "mcmom_pip", &mcmom_pip2 );
     treeMIX->Branch( "mcmom_pim", &mcmom_pim2 );
     treeMIX->Branch( "mcmom_ncds", &mcmom_ncds2 );
@@ -318,6 +322,10 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
     *CDH_Pos_pim2 = *CDH_Pos_pim;
     *CDH_Pos_pip2 = *CDH_Pos_pip;
     if(SimSpmode || SimSmmode){
+      mcncanvtxr2 = mcncanvtxr;
+      mcncanvtxz2 = mcncanvtxz;
+      mcncdsgen2  = mcncdsgen;
+      mcpattern2  = mcpattern;
       *mcmom_beam2 = *mcmom_beam;
       *mcmom_pip2 = *mcmom_pip;
       *mcmom_pim2 = *mcmom_pim;
