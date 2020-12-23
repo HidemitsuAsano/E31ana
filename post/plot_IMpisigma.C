@@ -750,6 +750,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* q_IMnpipi_wSid_n_fake;
   TH2F* q_IMnpipi_wSid_n_fake_pat2;
   TH2F* q_IMnpipi_wSid_n_fake_pat7;
+  TH2F* q_IMnpipi_wSid_n_wocross;
   TH2F* q_IMnpipi_woK0_wSid_n;
   TH2F* q_IMnpipi_woK0_wSid_n_woSp;
   TH2F* q_IMnpipi_woK0_wSid_n_woSm;
@@ -2363,6 +2364,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   q_IMnpipi_wSid_n_fake_pat7 = new TH2F("q_IMnpipi_wSid_n_fake_pat7","q_IMnpipi_wSid_n_fake_pat7",nbinIMnpipi,1,2,nbinq,0,1.5);
   q_IMnpipi_wSid_n_fake_pat7->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_wSid_n_fake_pat7->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMnpipi_wSid_n_wocross = new TH2F("q_IMnpipi_wSid_n_wocross","q_IMnpipi_wSid_n_wocross",nbinIMnpipi,1,2,nbinq,0,1.5);
+  q_IMnpipi_wSid_n_wocross->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMnpipi_wSid_n_wocross->SetYTitle("Mom. Transfer [GeV/c]");
 
   q_IMnpipi_woK0_wSid_n = new TH2F("q_IMnpipi_woK0_wSid_n","q_IMnpipi_woK0_wSid_n", nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -4986,6 +4991,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           IMpippim_IMnpim_wSid_n_woSp->Fill(LVec_pim_n.M(),LVec_pip_pim.M(),weight);
           IMpippim_IMnpim_wSid_n_woSp_bin[binnum]->Fill(LVec_pim_n.M(),LVec_pip_pim.M(),weight);
           IMpippim_IMnpipi_n_wSid_woSp->Fill(LVec_pip_pim_n.M(), LVec_pip_pim.M(),weight);
+        }
+        
+        if(!SigmawidePFlag && !SigmawideMFlag){
+          q_IMnpipi_wSid_n_wocross->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
         }
 
         //reaction data - mcData matching

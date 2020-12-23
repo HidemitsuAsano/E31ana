@@ -54,11 +54,11 @@ void disp_2Dcompmix(const int qcut=0)
       fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso.root");
       fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso.root");
     }else if(SimSpmode){
-      fr = TFile::Open("simIMpisigma_nSppim_pippimn_v132_out_iso.root");
-      fmix = TFile::Open("simIMpisigma_nSppim_pippimn_v132_MIX_cut4_out_iso.root");
+      fr = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_out_iso.root");
+      fmix = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_MIX_cut4_out_iso.root");
     }else if(SimSmmode){
-      fr = TFile::Open("simIMpisigma_nSmpip_pippimn_v132_out_iso.root");
-      fmix = TFile::Open("simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso.root");
+      fr = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_out_iso.root");
+      fmix = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso.root");
     }
   }
   else if(qcut==1){
@@ -66,11 +66,11 @@ void disp_2Dcompmix(const int qcut=0)
       fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo.root");
       fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qlo.root");
     }else if(SimSpmode){
-      fr = TFile::Open("simIMpisigma_nSppim_pippimn_v132_out_iso_qlo.root");
-      fmix = TFile::Open("simIMpisigma_nSppim_pippimn_v132_MIX_cut4_out_iso_qlo.root");
+      fr = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_out_iso_qlo.root");
+      fmix = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_MIX_cut4_out_iso_qlo.root");
     }else if(SimSmmode){
-      fr = TFile::Open("simIMpisigma_nSmpip_pippimn_v132_out_iso_qlo.root");
-      fmix = TFile::Open("simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso_qlo.root");
+      fr = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_out_iso_qlo.root");
+      fmix = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso_qlo.root");
     }
   }
   else if(qcut==2){
@@ -78,11 +78,11 @@ void disp_2Dcompmix(const int qcut=0)
       fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi.root");
       fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qhi.root");
     }else if(SimSpmode){
-      fr = TFile::Open("simIMpisigma_nSppim_pippimn_v132_out_iso_qhi.root");
-      fmix = TFile::Open("simIMpisigma_nSppim_pippimn_v132_MIX_cut4_out_iso_qhi.root");
+      fr = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_out_iso_qhi.root");
+      fmix = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_MIX_cut4_out_iso_qhi.root");
     }else if(SimSmmode){
-      fr = TFile::Open("simIMpisigma_nSmpip_pippimn_v132_out_iso_qhi.root");
-      fmix = TFile::Open("simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso_qhi.root");
+      fr = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_out_iso_qhi.root");
+      fmix = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso_qhi.root");
     }
   }
   fr->Print();
@@ -952,6 +952,25 @@ void disp_2Dcompmix(const int qcut=0)
   gr_nmom_wK0_woSid_n_sub->Draw("AP");
   
 
+  TH2D* nmom_IMnpipi_wSid_n_data = (TH2D*)fr->Get("nmom_IMnpipi_wSid_n");
+  TH2D* nmom_IMnpipi_wSid_n_mix  = (TH2D*)fmix->Get("nmom_IMnpipi_wSid_n");
+  TCanvas *cnmom_IMnpipi_wSid_n = new TCanvas("cnmom_IMnpipi_wSid_n","cnmom_IMnpipi_wSid_n");
+  cnmom_IMnpipi_wSid_n->Divide(2,2,0,0);
+  cnmom_IMnpipi_wSid_n->cd(3);
+  TH2D* nmom_IMnpipi_wSid_n_sub = (TH2D*)nmom_IMnpipi_wSid_n_data->Clone("nmom_IMnpipi_wSid_n_sub");
+  nmom_IMnpipi_wSid_n_sub->RebinY(5);
+  nmom_IMnpipi_wSid_n_mix->RebinY(5);
+  nmom_IMnpipi_wSid_n_sub->Add(nmom_IMnpipi_wSid_n_mix,-1);
+  nmom_IMnpipi_wSid_n_sub->SetTitle("nmom_IMnpipi_wSid_n_sub");
+  nmom_IMnpipi_wSid_n_sub->Draw("colz");
+  cnmom_IMnpipi_wSid_n->cd(1);
+  TH1D* IMnpipi_wSid_n_sub = (TH1D*)nmom_IMnpipi_wSid_n_sub->ProjectionX("IMnpipi_wSid_n_sub");
+  IMnpipi_wSid_n_sub->Draw("HE");
+  cnmom_IMnpipi_wSid_n->cd(4);
+  TH1D* nmom_wSid_n_sub = (TH1D*)nmom_IMnpipi_wSid_n_sub->ProjectionY("nmom_wSid_n_sub");
+  TGraphErrors *gr_nmom_wSid_n_sub = new TGraphErrors();
+  HistToRorateGraph(nmom_wSid_n_sub,*gr_nmom_wSid_n_sub);
+  gr_nmom_wSid_n_sub->Draw("AP");
 
 
   
