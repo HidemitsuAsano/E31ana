@@ -30,6 +30,7 @@ namespace anacuts {
 
   //neutron cut of CDS, this is necesarry due to the range of CDH3 trigger
   const double nmomcut = 0.14;
+  //const double nmomcut = 0.20;
 
   const double Sigma_NSigmacut = 2.0;
   const double Sigmap_center = 1.18911;

@@ -527,6 +527,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* IMnpim_IMnpip_dE_wK0;
   TH2F* IMnpim_IMnpip_dE_wK0_woSid_n;
   TH2F* IMnpim_IMnpip_dE_n;//
+  const unsigned int nbintemplate = 50;
+  TH2F* IMnpim_IMnpip_dE_n_bin[nbintemplate];//
   //TH2F* IMnpim_IMnpip_dE_n_reg[100];// for template fit
   TH2F* IMnpim_IMnpim_mc_dE_n;//
   TH2F* IMnpim_IMnpim_mc_dE_n_vtx;//
@@ -538,6 +540,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* IMnpip_IMnpip_mc_dE_n_vtx_pat7;//
   TH2F* IMnpim_IMnpip_dE_n_fake;//for GEANT4 sim.
   TH2F* IMnpim_IMnpip_dE_wSid_n;
+  TH2F* IMnpim_IMnpip_dE_wSid_n_bin[nbintemplate];
   TH2F* IMnpim_IMnpip_dE_wSid_n_fake;//for GEANT4 sim.
   TH2F* IMnpim_IMnpip_dE_wSid_n_fake_pat2;//for GEANT4 sim.
   TH2F* IMnpim_IMnpip_dE_wSid_n_fake_pat7;//for GEANT4 sim.
@@ -947,7 +950,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* IMpippim_IMnpipi_n_wSid_woSm;
   TH2F* IMpippim_IMnpip_vici;
   TH2F* IMpippim_IMnpip_vici_woSm;
-  const unsigned int nbintemplate = 50;
   TH2F* IMpippim_IMnpip_n;
   TH2F* IMpippim_IMnpip_n_bin[nbintemplate];
   TH2F* IMpippim_IMnpip_n_woSm;
@@ -1436,6 +1438,15 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE_wSid_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wSid_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   
+  for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
+    float binlow=1.0+(float)ibin*1./nbintemplate;
+    float binhigh=1.0+(float)(ibin+1.0)*1./nbintemplate;
+    IMnpim_IMnpip_dE_wSid_n_bin[ibin] = new TH2F(Form("IMnpim_IMnpip_wSid_n_bin%d",ibin),Form("IMnpim_IMnpip_wSid_n %0.2f-%0.2f",binlow,binhigh)
+        ,nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+    IMnpim_IMnpip_dE_wSid_n_bin[ibin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+    IMnpim_IMnpip_dE_wSid_n_bin[ibin]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  }
+  
   IMnpim_IMnpip_dE_wSid_n_fake = new TH2F("IMnpim_IMnpip_dE_wSid_n_fake", "IMnpim_IMnpip_dE_wSid_n_fake",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wSid_n_fake->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wSid_n_fake->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
@@ -1820,6 +1831,17 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE_n = new TH2F("IMnpim_IMnpip_dE_n","IMnpim_IMnpip_dE_n",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  
+  for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
+    float binlow=1.0+(float)ibin*1./nbintemplate;
+    float binhigh=1.0+(float)(ibin+1.0)*1./nbintemplate;
+    IMnpim_IMnpip_dE_n_bin[ibin] = new TH2F(Form("IMnpim_IMnpip_dE_n_bin%d",ibin),Form("IMnpim_IMnpip_dE_n %0.2f-%0.2f",binlow,binhigh)
+          ,nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+    IMnpim_IMnpip_dE_n_bin[ibin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+    IMnpim_IMnpip_dE_n_bin[ibin]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  }
+
+
   
   IMnpim_IMnpim_mc_dE_n = new TH2F("IMnpim_IMnpim_mc_dE_n","IMnpim_IMnpim_mc_dE_n",nbinIMnpi, 1, 2.0, nbinIMnpi, -1.0, 1.0);
   IMnpim_IMnpim_mc_dE_n->SetXTitle("reco. IM(n#pi^{-}) [GeV/c^{2}]");
@@ -4106,6 +4128,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     if(IsolationFlag==1) {
       //round cut
       if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.60/0.60+diffpim.Z()*diffpim.Z()/25.0/25.0 <1 ) continue;
+      //for mixed events, avoid sharing same CDH segments
       if( -0.12< diffPhinpim  && diffPhinpim < 0.12 ) continue;
     }else if(IsolationFlag==2){ 
       //round cut wide
@@ -4993,7 +5016,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           IMpippim_IMnpipi_n_wSid_woSp->Fill(LVec_pip_pim_n.M(), LVec_pip_pim.M(),weight);
         }
         
-        if(!SigmawidePFlag && !SigmawideMFlag){
+        if(!(SigmawidePFlag && SigmawideMFlag)){
           q_IMnpipi_wSid_n_wocross->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
         }
 
