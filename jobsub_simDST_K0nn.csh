@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="3"
+set Version="5"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simK0nn${Version}/"
 set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 
