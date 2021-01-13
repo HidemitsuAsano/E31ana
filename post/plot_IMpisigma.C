@@ -2436,13 +2436,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   
   for(int ithcut=0;ithcut<nthetacut;ithcut++){
     int cuttheta = 5*(ithcut+1);
-    q_IMnpipi_wSid_n_thetacut[ithcut] = new TH2F(Form("q_IMnpipi_wSid_n_thetacut%d",ithcut),Form("q_IMnpipi_wSid_n #theta_{CM} below %d^{#circ}",cuttheta),
+    q_IMnpipi_wSid_n_thetacut[ithcut] = new TH2F(Form("q_IMnpipi_wSid_n_thetacut%d",ithcut),Form("q_IMnpipi_wSid_n #theta_{lab} below %d^{#circ}",cuttheta),
                                                 nbinIMnpipi,1,2,nbinq,0,1.5); 
     q_IMnpipi_wSid_n_thetacut[ithcut]->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");      
     q_IMnpipi_wSid_n_thetacut[ithcut]->SetYTitle("Mom. Transfer [GeV/c]");                
   }
-
-
 
   q_IMnpipi_wSid_n_fake = new TH2F("q_IMnpipi_wSid_n_fake","q_IMnpipi_wSid_n_fake",nbinIMnpipi,1,2,nbinq,0,1.5);
   q_IMnpipi_wSid_n_fake->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -3863,17 +3861,18 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     // calc cos(theta) of missing npi+pi- //
     TVector3 boost = (*LVec_target+*LVec_beam).BoostVector();
     TVector3 boost_vtx[2] = {(*LVec_target+*LVec_beam_Sp).BoostVector(),(*LVec_target+*LVec_beam_Sm).BoostVector()} ;
+    double cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());
+    
     TLorentzVector LVec_npipimiss_CM = LVec_npipimiss;
     TLorentzVector LVec_beam_CM = *LVec_beam;
     LVec_npipimiss_CM.Boost(-boost);
     LVec_beam_CM.Boost(-boost);
-    double cos_nmiss = LVec_npipimiss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_npipimiss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
+    double cos_nmissCM = LVec_npipimiss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_npipimiss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
     //cos(theta) of n_cds in lab
     double cos_ncdslab = (SimFakemode || SimFakeK0mode) ?  (*LVec_n).CosTheta() : LVec_n->Vect().Dot(LVec_beam->Vect())/(LVec_n->Vect().Mag()*LVec_beam->Vect().Mag());
     TLorentzVector LVec_n_CM = *LVec_n;
     LVec_n_CM.Boost(-boost);
     double cos_ncdsCM = LVec_n_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_n_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
-
 
     double cos_pim = (SimFakemode || SimFakeK0mode) ? (*LVec_pim).CosTheta() : (*LVec_pim).Vect().Dot((*LVec_beam).Vect())/((*LVec_pim).Vect().Mag()*(*LVec_beam).Vect().Mag());
     double cos_pip = (SimFakemode || SimFakeK0mode) ? (*LVec_pip).CosTheta() : (*LVec_pip).Vect().Dot((*LVec_beam).Vect())/((*LVec_pip).Vect().Mag()*(*LVec_beam).Vect().Mag());
@@ -4858,7 +4857,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         nmom_cosK0_wK0->Fill(cos_K0CM,(*LVec_n).P(),weight);
         nmom_cosK0n_wK0->Fill(cos_K0_ncds_CM,(*LVec_n).P(),weight);
         K0mom_cosK0_wK0->Fill(cos_K0CM,LVec_pip_pim.P(),weight);
-        nmissmom_cosnmiss_wK0->Fill(cos_nmiss,LVec_npipimiss.P(),weight);
+        nmissmom_cosnmiss_wK0->Fill(cos_nmissCM,LVec_npipimiss.P(),weight);
         nmom_K0mom->Fill(LVec_pip_pim.P(),(*LVec_n).P(),weight);
         nmom_nmissmom_wK0->Fill(LVec_npipimiss.P(),(*LVec_n).P(),weight);
         nmissmom_K0mom->Fill(LVec_pip_pim.P(),LVec_npipimiss.P(),weight);
@@ -5159,12 +5158,12 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         q_IMpippim_wSid_n->Fill(LVec_pip_pim.M(),qkn.P(),weight);
         IMnpim_IMnpip_dE_wSid_n->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         IMnpim_IMnpip_dE_wSid_n_bin[binnum]->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
-        Cosn_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),cos_nmiss,weight);
+        Cosn_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),cos_nmissCM,weight);
         dE_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),dE,weight);
         IMpippim_IMnpipi_n_wSid->Fill(LVec_pip_pim_n.M(), LVec_pip_pim.M(),weight);
         nmom_IMpippim_wSid_n->Fill(LVec_pip_pim.M(),(*LVec_n).P(),weight);
         nmom_cosn_wSid_n->Fill(cos_ncdslab,(*LVec_n).P(),weight);
-        nmom_cosnmiss_wSid_n->Fill(cos_nmiss,(*LVec_n).P(),weight);
+        nmom_cosnmiss_wSid_n->Fill(cos_nmissCM,(*LVec_n).P(),weight);
         mnmom_IMpippim_wSid_n->Fill(LVec_pip_pim.M(),(LVec_npipimiss).P(),weight);
         q_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
         q_nmom_wSid_n->Fill((*LVec_n).P(), qkn.P(),weight);
@@ -5348,16 +5347,16 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     //selection K0
     if(K0Flag && NBetaOK && NdEOK && MissNFlag) {
       nmom_cosn_wK0_n->Fill(cos_ncdslab,(*LVec_n).P(),weight);
-      if(cos_nmiss>0.95 ) {
+      if(cos_nmissCM>0.95 ) {
         nmom_cosn_wK0_n_forward->Fill(cos_ncdslab,(*LVec_n).P(),weight);
       }
       IMnpim_IMnpip_dE_wK0_n->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
       nmom_cosK0_wK0_n->Fill(cos_K0CM,(*LVec_n).P(),weight);
       nmom_cosK0n_wK0_n->Fill(cos_K0_ncds_CM,(*LVec_n).P(),weight);
-      nmom_cosnmiss_wK0_n->Fill(cos_nmiss,(*LVec_n).P(),weight);
+      nmom_cosnmiss_wK0_n->Fill(cos_nmissCM,(*LVec_n).P(),weight);
       nmom_cosnnmiss_wK0_n->Fill(cos_nmiss_ncds_CM,(*LVec_n).P(),weight);
       K0mom_cosK0_wK0_n->Fill(cos_K0CM,LVec_pip_pim.P(),weight);
-      nmissmom_cosnmiss_wK0_n->Fill(cos_nmiss,LVec_npipimiss.P(),weight);
+      nmissmom_cosnmiss_wK0_n->Fill(cos_nmissCM,LVec_npipimiss.P(),weight);
       nmissmom_cosK0nmiss_wK0_n->Fill(cos_nmiss_pippim_CM,LVec_npipimiss.P(),weight);
       nmom_K0mom_n->Fill(LVec_pip_pim.P(),(*LVec_n).P(),weight);
       nmom_nmissmom_wK0_n->Fill(LVec_npipimiss.P(),(*LVec_n).P(),weight);
@@ -5699,7 +5698,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         Momnpim_Mompippim_dE_woK0_wSid_n->Fill(LVec_pip_pim.P(),LVec_pim_n.P(),weight);
         Momnpip_Mompippim_dE_woK0_wSid_n->Fill(LVec_pip_pim.P(),LVec_pip_n.P(),weight);
         dE_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),dE,weight);
-        Cosn_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),cos_nmiss,weight);
+        Cosn_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),cos_nmissCM,weight);
         q_IMpiSigma_woK0_wSid_n_genacc->Fill(LVec_piSigma_react.M()/1000.,qkn_react.P()/1000.);
         q_IMnpipi_woK0_wSid_n_acc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P(),weight);
         q_IMnpipi_woK0_wSid_n_acc_reco->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
@@ -5709,7 +5708,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         IMpippim_IMnpip_woK0_wSid_n->Fill(LVec_pip_n.M(),LVec_pip_pim.M(),weight);
         IMpippim_IMnpim_woK0_wSid_n->Fill(LVec_pim_n.M(),LVec_pip_pim.M(),weight);
         nmom_cosn_woK0_wSid_n->Fill(cos_ncdslab,(*LVec_n).P(),weight);
-        nmom_cosnmiss_woK0_wSid_n->Fill(cos_nmiss,(*LVec_n).P(),weight);
+        nmom_cosnmiss_woK0_wSid_n->Fill(cos_nmissCM,(*LVec_n).P(),weight);
         DCA_pip_beam->Fill( dca_pip_beam,weight);
         DCA_pim_beam->Fill( dca_pim_beam,weight );
         DCA_pip_pim->Fill(dca_pip_pim,weight);
