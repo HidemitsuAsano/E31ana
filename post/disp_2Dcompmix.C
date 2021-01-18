@@ -1066,6 +1066,7 @@ void disp_2Dcompmix(const int qcut=0)
   lIMnpipi_wSid_n_thetacut->AddEntry(IMnpipi_wSid_n_thetacut_sub[1],"#theta_{lab} below 10^{#circ}","L");
   lIMnpipi_wSid_n_thetacut->AddEntry(IMnpipi_wSid_n_thetacut_sub[2],"#theta_{lab} below 15^{#circ}","L");
   lIMnpipi_wSid_n_thetacut->Draw();
+  
   /*
   TH2D* nmom_IMnpipi_wSid_n_data = (TH2D*)fr->Get("nmom_IMnpipi_wSid_n");
   TH2D* nmom_IMnpipi_wSid_n_mix  = (TH2D*)fmix->Get("nmom_IMnpipi_wSid_n");
