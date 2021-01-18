@@ -3862,7 +3862,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     TVector3 boost = (*LVec_target+*LVec_beam).BoostVector();
     TVector3 boost_vtx[2] = {(*LVec_target+*LVec_beam_Sp).BoostVector(),(*LVec_target+*LVec_beam_Sm).BoostVector()} ;
     double cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());
-    
+    double nmissthetalab = acos(cos_nmisslab);
+
     TLorentzVector LVec_npipimiss_CM = LVec_npipimiss;
     TLorentzVector LVec_beam_CM = *LVec_beam;
     LVec_npipimiss_CM.Boost(-boost);
@@ -5166,6 +5167,12 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         nmom_cosnmiss_wSid_n->Fill(cos_nmissCM,(*LVec_n).P(),weight);
         mnmom_IMpippim_wSid_n->Fill(LVec_pip_pim.M(),(LVec_npipimiss).P(),weight);
         q_IMnpipi_wSid_n->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+        
+        for(int icut=0;icut<nthetacut;icut++){
+          if(nmissthetalab< TMath::Pi()/nthetacut*(icut+1)) {
+            q_IMnpipi_wSid_n_thetacut[icut]->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+          }           
+        }
         q_nmom_wSid_n->Fill((*LVec_n).P(), qkn.P(),weight);
         q_IMpiSigma_wSid_n_genacc->Fill(LVec_piSigma_react.M()/1000.,qkn_react.P()/1000.,weight);
         q_IMnpipi_wSid_n_acc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P(),weight);
