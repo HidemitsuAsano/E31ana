@@ -1038,6 +1038,34 @@ void disp_2Dcompmix(const int qcut=0)
   gr_nmom_wK0_woSid_n_sub->Draw("AP");
   
   
+  const int nthetacut=36; //180/5=36
+  TH2D* q_IMnpipi_wSid_n_thetacut_data[nthetacut];
+  TH2D* q_IMnpipi_wSid_n_thetacut_mix[nthetacut];
+  TH2D* q_IMnpipi_wSid_n_thetacut_sub[nthetacut];
+  TH2D* IMnpipi_wSid_n_thetacut_sub[nthetacut];
+  for(int icut=0;icut<nthetacut;icut++){
+    q_IMnpipi_wSid_n_thetacut_data[icut] = (TH2D*)fr->Get(Form("q_IMnpipi_wSid_n_thetacut%d",icut));
+    q_IMnpipi_wSid_n_thetacut_mix[icut]  = (TH2D*)fmix->Get(Form("q_IMnpipi_wSid_n_thetacut%d",icut));
+    q_IMnpipi_wSid_n_thetacut_sub[icut] = (TH2D*)q_IMnpipi_wSid_n_thetacut_data[icut]->Clone(Form("q_IMnpipi_wSid_n_thetacut_sub%d",icut));
+    IMnpipi_wSid_n_thetacut_sub[icut] = (TH2D*)q_IMnpipi_wSid_n_thetacut_sub[icut]->ProjectionX(Form("IMnpipi_wSid_n_thetacut_sub%d",icut));
+  }
+  
+  //TCanvas *cq_IMnpipi_wSid_n_thetacut = new TCanvas("cq_IMnpipi_wSid_n_thetacut","cq_IMnpipi_wSid_n_thetacut");
+  //q_IMnpipi_wSid_n_thetacut_sub[2]->Draw("colz");
+  //q_IMnpipi_wSid_n_thetacut_sub[1]->Draw("colzsame");
+  //q_IMnpipi_wSid_n_thetacut_sub[0]->Draw("colzsame");
+
+  TCanvas *cIMnpipi_wSid_n_thetacut = new TCanvas("cIMnpipi_wSid_n_thetacut","cIMnpipi_wSid_n_thetacut");
+  IMnpipi_wSid_n_thetacut_sub[2]->SetLineColor(3);
+  IMnpipi_wSid_n_thetacut_sub[2]->Draw("HE");
+  IMnpipi_wSid_n_thetacut_sub[0]->Draw("HEsame");
+  IMnpipi_wSid_n_thetacut_sub[1]->SetLineColor(2);
+  IMnpipi_wSid_n_thetacut_sub[1]->Draw("HEsame");
+  TLegend *lIMnpipi_wSid_n_thetacut = new TLegend(0.6,0.7,0.9,0.9);
+  lIMnpipi_wSid_n_thetacut->AddEntry(IMnpipi_wSid_n_thetacut_sub[0],"#theta_{lab} below 5^{#circ}","L");
+  lIMnpipi_wSid_n_thetacut->AddEntry(IMnpipi_wSid_n_thetacut_sub[1],"#theta_{lab} below 10^{#circ}","L");
+  lIMnpipi_wSid_n_thetacut->AddEntry(IMnpipi_wSid_n_thetacut_sub[2],"#theta_{lab} below 15^{#circ}","L");
+  lIMnpipi_wSid_n_thetacut->Draw();
   /*
   TH2D* nmom_IMnpipi_wSid_n_data = (TH2D*)fr->Get("nmom_IMnpipi_wSid_n");
   TH2D* nmom_IMnpipi_wSid_n_mix  = (TH2D*)fmix->Get("nmom_IMnpipi_wSid_n");
