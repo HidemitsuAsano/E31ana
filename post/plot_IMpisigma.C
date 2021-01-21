@@ -527,7 +527,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* IMnpim_IMnpip_dE_wK0;
   TH2F* IMnpim_IMnpip_dE_wK0_woSid_n;
   TH2F* IMnpim_IMnpip_dE_n;//
-  const unsigned int nbintemplate = 50;
+  const unsigned int nbintemplate = 100;
   TH2F* IMnpim_IMnpip_dE_n_bin[nbintemplate];//
   //TH2F* IMnpim_IMnpip_dE_n_reg[100];// for template fit
   TH2F* IMnpim_IMnpim_mc_dE_n;//
