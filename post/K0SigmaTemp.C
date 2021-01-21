@@ -69,7 +69,7 @@ void K0SigmaTemp()
   TH1::SetDefaultSumw2();
   gStyle->SetErrorX(0.);  
 
-  const unsigned int nbintemplate = 50;
+  const unsigned int nbintemplate = 100;
   TH2F* IMpippim_IMnpip_n_data[3];
   TH2F* IMpippim_IMnpim_n_data[3];
   TH2F* IMpippim_IMnpip_n_bin_data[nbintemplate][3];
@@ -82,6 +82,30 @@ void K0SigmaTemp()
   TH2F* IMpippim_IMnpim_n_sub[3];
   TH2F* IMpippim_IMnpip_n_bin_sub[nbintemplate][3];
   TH2F* IMpippim_IMnpim_n_bin_sub[nbintemplate][3];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_data[3];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_bin_data[nbintemplate][3];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_mix[3];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_bin_mix[nbintemplate][3];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_sub[3];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_bin_sub[nbintemplate][3];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_data[3];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_bin_data[nbintemplate][3];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_mix[3];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_bin_mix[nbintemplate][3];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_sub[3];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_bin_sub[nbintemplate][3];
+  TH2F* IMpippim_IMnpip_wK0_n_data[3];
+  TH2F* IMpippim_IMnpip_wK0_n_bin_data[nbintemplate][3];
+  TH2F* IMpippim_IMnpip_wK0_n_mix[3];
+  TH2F* IMpippim_IMnpip_wK0_n_bin_mix[nbintemplate][3];
+  TH2F* IMpippim_IMnpip_wK0_n_sub[3];
+  TH2F* IMpippim_IMnpip_wK0_n_bin_sub[nbintemplate][3];
+  TH2F* IMpippim_IMnpim_wK0_n_data[3];
+  TH2F* IMpippim_IMnpim_wK0_n_bin_data[nbintemplate][3];
+  TH2F* IMpippim_IMnpim_wK0_n_mix[3];
+  TH2F* IMpippim_IMnpim_wK0_n_bin_mix[nbintemplate][3];
+  TH2F* IMpippim_IMnpim_wK0_n_sub[3];
+  TH2F* IMpippim_IMnpim_wK0_n_bin_sub[nbintemplate][3];
   TH2F* IMpippim_IMnpip_n_woSm_data[3];
   TH2F* IMpippim_IMnpim_n_woSp_data[3];
   TH2F* IMpippim_IMnpip_n_woSm_bin_data[nbintemplate][3];
@@ -118,7 +142,20 @@ void K0SigmaTemp()
   TH2F* IMpippim_IMnpim_wK0orwSid_n_woSpdia_sub[3];
   TH2F* IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[nbintemplate][3];
   TH2F* IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[nbintemplate][3];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_data[3];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_bin_data[nbintemplate][3];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_mix[3];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_bin_mix[nbintemplate][3];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_sub[3];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_bin_sub[nbintemplate][3];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_data[3];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_bin_data[nbintemplate][3];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_mix[3];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_bin_mix[nbintemplate][3];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_sub[3];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_bin_sub[nbintemplate][3];
   
+
   const char cqcut[][6]= {"all","qlo","qhi"};
   for(int iqcut=0;iqcut<3;iqcut++){
     IMpippim_IMnpip_n_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpip_n");
@@ -134,6 +171,36 @@ void K0SigmaTemp()
     IMpippim_IMnpim_n_sub[iqcut]->Add(IMpippim_IMnpim_n_mix[iqcut],-1.0); 
     IMpippim_IMnpim_n_sub[iqcut]->SetTitle(Form("IMpippim_IMnpim_n_sub_%s",cqcut[iqcut]));
     if(RemoveNegative)IMpippim_IMnpim_n_sub[iqcut]->SetMinimum(0);
+
+    IMpippim_IMnpip_wSid_n_Sp_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpip_wSid_n_Sp");
+    IMpippim_IMnpip_wSid_n_Sp_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMpippim_IMnpip_wSid_n_Sp");
+    IMpippim_IMnpip_wSid_n_Sp_sub[iqcut] = (TH2F*)IMpippim_IMnpip_wSid_n_Sp_data[iqcut]->Clone(Form("IMpippim_IMnpip_wSid_n_Sp_sub_%s",cqcut[iqcut]));
+    IMpippim_IMnpip_wSid_n_Sp_sub[iqcut]->Add(IMpippim_IMnpip_wSid_n_Sp_mix[iqcut],-1.0);
+    IMpippim_IMnpip_wSid_n_Sp_sub[iqcut]->SetTitle(Form("IMpippim_IMnpip_wSid_n_Sp_sub_%s",cqcut[iqcut]));
+    if(RemoveNegative)IMpippim_IMnpip_wSid_n_Sp_sub[iqcut]->SetMinimum(0);
+
+    IMpippim_IMnpim_wSid_n_Sm_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpim_wSid_n_Sp");
+    IMpippim_IMnpim_wSid_n_Sm_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMpippim_IMnpim_wSid_n_Sp");
+    IMpippim_IMnpim_wSid_n_Sm_sub[iqcut] = (TH2F*)IMpippim_IMnpim_wSid_n_Sm_data[iqcut]->Clone(Form("IMpippim_IMnpim_wSid_n_Sm_sub_%s",cqcut[iqcut]));
+    IMpippim_IMnpim_wSid_n_Sm_sub[iqcut]->Add(IMpippim_IMnpim_wSid_n_Sm_mix[iqcut],-1.0);
+    IMpippim_IMnpim_wSid_n_Sm_sub[iqcut]->SetTitle(Form("IMpippim_IMnpim_wSid_n_Sm_sub_%s",cqcut[iqcut]));
+    if(RemoveNegative)IMpippim_IMnpim_wSid_n_Sm_sub[iqcut]->SetMinimum(0);
+   
+    IMpippim_IMnpip_wK0_n_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpip_wK0_n");
+    IMpippim_IMnpip_wK0_n_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMpippim_IMnpip_wK0_n");
+    IMpippim_IMnpip_wK0_n_sub[iqcut] = (TH2F*)IMpippim_IMnpip_wK0_n_data[iqcut]->Clone(Form("IMpippim_IMnpip_wK0_n_sub_%s",cqcut[iqcut]));
+    IMpippim_IMnpip_wK0_n_sub[iqcut]->Add(IMpippim_IMnpip_wK0_n_mix[iqcut],-1.0);
+    IMpippim_IMnpip_wK0_n_sub[iqcut]->SetTitle(Form("IMpippim_IMnpip_wK0_n_sub_%s",cqcut[iqcut]));
+    if(RemoveNegative)IMpippim_IMnpip_wK0_n_sub[iqcut]->SetMinimum(0);
+
+    IMpippim_IMnpim_wK0_n_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpim_wK0_n");
+    IMpippim_IMnpim_wK0_n_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMpippim_IMnpim_wK0_n");
+    IMpippim_IMnpim_wK0_n_sub[iqcut] = (TH2F*)IMpippim_IMnpim_wK0_n_data[iqcut]->Clone(Form("IMpippim_IMnpim_wK0_n_sub_%s",cqcut[iqcut]));
+    IMpippim_IMnpim_wK0_n_sub[iqcut]->Add(IMpippim_IMnpim_wK0_n_mix[iqcut],-1.0);
+    IMpippim_IMnpim_wK0_n_sub[iqcut]->SetTitle(Form("IMpippim_IMnpim_wK0_n_sub_%s",cqcut[iqcut]));
+    if(RemoveNegative)IMpippim_IMnpim_wK0_n_sub[iqcut]->SetMinimum(0);
+
+
 
     IMpippim_IMnpip_n_woSm_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpip_n_woSm");
     IMpippim_IMnpip_n_woSm_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMpippim_IMnpip_n_woSm");
@@ -178,6 +245,21 @@ void K0SigmaTemp()
     IMpippim_IMnpim_wK0orwSid_n_woSpdia_sub[iqcut]->Add(IMpippim_IMnpim_wK0orwSid_n_woSpdia_mix[iqcut],-1.0); 
     IMpippim_IMnpim_wK0orwSid_n_woSpdia_sub[iqcut]->SetTitle(Form("IMpippim_IMnpim_wK0orwSid_n_woSpdia_sub_%s",cqcut[iqcut]));
     if(RemoveNegative)IMpippim_IMnpim_wK0orwSid_n_woSpdia_sub[iqcut]->SetMinimum(0);
+    
+
+    IMnpim_IMnpip_wSid_n_Sp_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMnpim_IMnpip_wSid_n_Sp");
+    IMnpim_IMnpip_wSid_n_Sp_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMnpim_IMnpip_wSid_n_Sp");
+    IMnpim_IMnpip_wSid_n_Sp_sub[iqcut] = (TH2F*)IMnpim_IMnpip_wSid_n_Sp_data[iqcut]->Clone(Form("IMnpim_IMnpip_wSid_n_Sp_%s",cqcut[iqcut]));
+    IMnpim_IMnpip_wSid_n_Sp_sub[iqcut]->Add(IMnpim_IMnpip_wSid_n_Sp_mix[iqcut],-1);
+    IMnpim_IMnpip_wSid_n_Sp_sub[iqcut]->SetTitle(Form("IMnpim_IMnpip_wSid_n_Sp_%s",cqcut[iqcut]));
+
+
+    IMnpim_IMnpip_wSid_n_Sm_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMnpim_IMnpip_wSid_n_Sm");
+    IMnpim_IMnpip_wSid_n_Sm_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMnpim_IMnpip_wSid_n_Sm");
+    IMnpim_IMnpip_wSid_n_Sm_sub[iqcut] = (TH2F*)IMnpim_IMnpip_wSid_n_Sm_data[iqcut]->Clone(Form("IMnpim_IMnpip_wSid_n_Sm_%s",cqcut[iqcut]));
+    IMnpim_IMnpip_wSid_n_Sm_sub[iqcut]->Add(IMnpim_IMnpip_wSid_n_Sm_mix[iqcut],-1);
+    IMnpim_IMnpip_wSid_n_Sm_sub[iqcut]->SetTitle(Form("IMnpim_IMnpip_wSid_n_Sm_%s",cqcut[iqcut]));
+
 
     std::cout << iqcut  << std::endl;
     for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
