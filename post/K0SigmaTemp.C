@@ -471,77 +471,99 @@ void K0SigmaTemp()
   //TH1D* IMpippim_n_woSmdia_sub_bin[nbintemplate][3];
   TH1D* IMpippim_n_sub_bin_1[nbintemplate][3];
   //TGraphErrors *gr_IMpippim_n_woSmdia_sub_bin[nbintemplate][3];
-  TGraphErrors *gr_IMpippim_n_sub_bin[nbintemplate][3];
+  TGraphErrors *gr_IMpippim_n_sub_bin_1[nbintemplate][3];
   TCanvas *cIMpippim_IMnpip_n_sub_bin_cut[nbintemplate][3];
   //TH1D* IMnpip_wK0orwSid_n_sub_bin[nbintemplate][3];
-  TH1D* IMnpip_wSid_n_Sp_sub_bin[nbintemplate][3];
-  TH1D* IMpipppim_wK0_n_sub_bin[nbintemplate][3];
+  //TH1D* IMnpip_wSid_n_Sp_sub_bin[nbintemplate][3];
+  TH1D* IMnpip_wK0_n_sub_bin[nbintemplate][3];
+  TH1D* IMpippim_wSid_n_Sp_sub_bin[nbintemplate][3];
   //TH1D* IMpippim_wK0orwSid_n_woSmdia_sub_bin[nbintemplate][3];
   //TH1D* IMnpip_wSid_Sp_n_sub_bin_Sp[nbintemplate][3];
   //TH1D* IMpippim_n_sub_bin_1[nbintemplate][3];
   //TGraphErrors *gr_IMpippim_wK0orwSid_n_woSmdia_sub_bin[nbintemplate][3];
   //TGraphErrors *gr_IMpippim_n_sub_bin_1[nbintemplate][3];
-  TGraphErrors *gr_IMpippim_wK0_n_sub_bin_1[nbintemplate][3];
+  //TGraphErrors *gr_IMpippim_wK0_n_sub_bin_1[nbintemplate][3];
+  TGraphErrors *gr_IMpippim_wSid_n_Sp_sub_bin[nbintemplate][3];
   
   for(int ibin=20;ibin<nbintemplate;ibin++){
     for(int iq=0;iq<3;iq++){
+      //first canvas to display IM(pi+pi-) vs IM(npi+) and their simple projection just to see the signal and other background 
+      //no complicated cut at this moment
       cIMpippim_IMnpip_n_sub_bin[ibin][iq] = new TCanvas(Form("cIMpippim_IMnpip_n_sub_bin%d_%d",ibin,iq),Form("cIMpippim_IMnpip_n_sub_bin%d_%d",ibin,iq),800,800);
       cIMpippim_IMnpip_n_sub_bin[ibin][iq]->Divide(2,2,0,0);
       cIMpippim_IMnpip_n_sub_bin[ibin][iq]->cd(3);
-      //IMpippim_IMnpip_n_woSmdia_bin_sub[ibin][i]->RebinX(4);
-      //IMpippim_IMnpip_n_woSmdia_bin_sub[ibin][i]->RebinY(5);
-      //IMpippim_IMnpip_n_woSmdia_bin_sub[ibin][i]->Draw("colz");
-      IMpippim_IMnpip_n_bin_sub[ibin][i]->RebinX(4);
-      IMpippim_IMnpip_n_bin_sub[ibin][i]->RebinY(5);
-      IMpippim_IMnpip_n_bin_sub[ibin][i]->Draw("colz");
-      cIMpippim_IMnpip_n_sub_bin[ibin][i]->cd(1);
-      //IMnpip_n_sub_bin[ibin][i] = (TH1D*)IMpippim_IMnpip_n_woSmdia_bin_sub[ibin][i]->ProjectionX(Form("IMnpip_n_sub_bin%d_%d",ibin,i));
-      IMnpip_n_sub_bin[ibin][i] = (TH1D*)IMpippim_IMnpip_n_bin_sub[ibin][i]->ProjectionX(Form("IMnpip_n_sub_bin%d_%d",ibin,i));
-      IMnpip_n_sub_bin[ibin][i]->SetTitle(Form("IMnpip_n_sub_bin%d_%d",ibin,i));
-      IMnpip_n_sub_bin[ibin][i]->Draw("HE");
-      cIMpippim_IMnpip_n_sub_bin[ibin][i]->cd(4);
-      //IMpippim_n_woSmdia_sub_bin[ibin][i] = (TH1D*)IMpippim_IMnpip_n_woSmdia_bin_sub[ibin][i]->ProjectionY(Form("IMpippim_n_woSmdia_sub_bin%d_%d",ibin,i));
-      IMpippim_n_sub_bin_1[ibin][i] = (TH1D*)IMpippim_IMnpip_n_bin_sub[ibin][i]->ProjectionY(Form("IMpippim_n_sub_bin_1_%d_%d",ibin,i));
-      //gr_IMpippim_n_woSmdia_sub_bin[ibin][i] = new TGraphErrors();
-      gr_IMpippim_n_sub_bin_1[ibin][i] = new TGraphErrors();
-      HistToRorateGraph(IMpippim_n_sub_bin_1[ibin][i],*gr_IMpippim_n_sub_bin_1[ibin][i]);
-      //gr_IMpippim_n_woSmdia_sub_bin[ibin][i]->Draw("AP");
-      gr_IMpippim_n_sub_bin_1[ibin][i]->Draw("AP");
-
-      cIMpippim_IMnpip_n_sub_bin_cut[ibin][i] = new TCanvas(Form("cIMpippim_IMnpip_n_sub_bin_cut_%d_%d",ibin,i),Form("cIMpippim_IMnpip_n_sub_bin_cut%d_%d",ibin,i),800,800);
-      cIMpippim_IMnpip_n_sub_bin_cut[ibin][i]->Divide(2,2,0,0);
-      cIMpippim_IMnpip_n_sub_bin_cut[ibin][i]->cd(3);
+      //IMpippim_IMnpip_n_woSmdia_bin_sub[ibin][iq]->RebinX(4);
+      //IMpippim_IMnpip_n_woSmdia_bin_sub[ibin][iq]->RebinY(5);
+      //IMpippim_IMnpip_n_woSmdia_bin_sub[ibin][iq]->Draw("colz");
+      IMpippim_IMnpip_n_bin_sub[ibin][iq]->RebinX(4);
+      IMpippim_IMnpip_n_bin_sub[ibin][iq]->RebinY(5);
+      IMpippim_IMnpip_n_bin_sub[ibin][iq]->Draw("colz");
+      cIMpippim_IMnpip_n_sub_bin[ibin][iq]->cd(1);
+      //IMnpip_n_sub_bin[ibin][iq] = (TH1D*)IMpippim_IMnpip_n_woSmdia_bin_sub[ibin][iq]->ProjectionX(Form("IMnpip_n_sub_bin%d_%d",ibin,i));
+      IMnpip_n_sub_bin[ibin][iq] = (TH1D*)IMpippim_IMnpip_n_bin_sub[ibin][iq]->ProjectionX(Form("IMnpip_n_sub_bin%d_%d",ibin,iq));
+      IMnpip_n_sub_bin[ibin][iq]->SetTitle(Form("IMnpip_n_sub_bin%d_%d",ibin,iq));
+      IMnpip_n_sub_bin[ibin][iq]->Draw("HE");
+      cIMpippim_IMnpip_n_sub_bin[ibin][iq]->cd(4);
+      //IMpippim_n_woSmdia_sub_bin[ibin][iq] = (TH1D*)IMpippim_IMnpip_n_woSmdia_bin_sub[ibin][iq]->ProjectionY(Form("IMpippim_n_woSmdia_sub_bin%d_%d",ibin,i));
+      IMpippim_n_sub_bin_1[ibin][iq] = (TH1D*)IMpippim_IMnpip_n_bin_sub[ibin][iq]->ProjectionY(Form("IMpippim_n_sub_bin_1_%d_%d",ibin,iq));
+      //gr_IMpippim_n_woSmdia_sub_bin[ibin][iq] = new TGraphErrors();
+      gr_IMpippim_n_sub_bin_1[ibin][iq] = new TGraphErrors();
+      HistToRorateGraph(IMpippim_n_sub_bin_1[ibin][iq],*gr_IMpippim_n_sub_bin_1[ibin][iq]);
+      //gr_IMpippim_n_woSmdia_sub_bin[ibin][iq]->Draw("AP");
+      gr_IMpippim_n_sub_bin_1[ibin][iq]->Draw("AP");
       
-      //IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][i]->RebinX(4);
-      //IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][i]->RebinY(5);
-      //IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][i]->Draw("colz");
-      IMpippim_IMnpip_wK0orwSid_n_bin_sub[ibin][i]->RebinX(4);
-      IMpippim_IMnpip_wK0orwSid_n_bin_sub[ibin][i]->RebinY(5);
-      IMpippim_IMnpip_wK0orwSid_n_bin_sub[ibin][i]->Draw("colz");
-      cIMpippim_IMnpip_n_sub_bin_cut[ibin][i]->cd(1);
-      IMnpip_wK0orwSid_n_sub_bin[ibin][i] = (TH1D*)IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][i]->ProjectionX(Form("IMnpip_wK0orwSid_n_sub_bin%d_%d",ibin,i));
-      IMnpip_wK0orwSid_n_sub_bin[ibin][i] ->SetTitle(Form("IMnpip_wK0orwSid_n_sub_bin%d_%d",ibin,i));
-      IMnpip_wK0orwSid_n_sub_bin[ibin][i]->Draw("HE");
-      cIMpippim_IMnpip_n_sub_bin_cut[ibin][i]->cd(4);
-      IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][i] = (TH1D*)IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][i]->ProjectionY(Form("IMpippim_wK0orwSid_n_woSmdia_sub_bin%d_%d",ibin,i));
-      gr_IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][i] = new TGraphErrors();
-      HistToRorateGraph(IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][i],*gr_IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][i]);
-      gr_IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][i]->Draw("AP");
-      cIMpippim_IMnpip_n_sub_bin_cut[ibin][i]->cd(2);
+      //2nd canvas to display the calculation of decomposion of K0, Sigma+,Sigma- 
+      //2D plot in canvas(3) has cut to select K0 or Sigma+
+      //projection plot in canvas(1) select Sigma+ events candidate + (Sigma+ & K0 ) overlap events
+      //projection plot in canvas(4) select K0     events candidate + (Sigma+ & K0 ) overlap events 
+      cIMpippim_IMnpip_n_sub_bin_cut[ibin][iq] 
+      = new TCanvas(Form("cIMpippim_IMnpip_n_sub_bin_cut_%d_%d",ibin,iq),Form("cIMpippim_IMnpip_n_sub_bin_cut%d_%d",ibin,iq),800,800);
+      cIMpippim_IMnpip_n_sub_bin_cut[ibin][iq]->Divide(2,2,0,0);
+      cIMpippim_IMnpip_n_sub_bin_cut[ibin][iq]->cd(3);
+      
+      //IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][iq]->RebinX(4);
+      //IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][iq]->RebinY(5);
+      //IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][iq]->Draw("colz");
+      IMpippim_IMnpip_wK0orwSid_n_bin_sub[ibin][iq]->RebinX(4);
+      IMpippim_IMnpip_wK0orwSid_n_bin_sub[ibin][iq]->RebinY(5);
+      IMpippim_IMnpip_wK0orwSid_n_bin_sub[ibin][iq]->Draw("colz");
+      cIMpippim_IMnpip_n_sub_bin_cut[ibin][iq]->cd(1);
+      //IMnpip_wK0orwSid_n_sub_bin[ibin][iq] = (TH1D*)IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][iq]->ProjectionX(Form("IMnpip_wK0orwSid_n_sub_bin%d_%d",ibin,iq));
+      //IMnpip_wK0orwSid_n_sub_bin[ibin][iq] ->SetTitle(Form("IMnpip_wK0orwSid_n_sub_bin%d_%d",ibin,i));
+      //IMnpip_wK0orwSid_n_sub_bin[ibin][iq]->Draw("HE");
+      IMnpip_wK0_n_sub_bin[ibin][iq] = (TH1D*)IMpippim_IMnpip_wK0_n_bin_sub[ibin][iq]->ProjectionX(Form("IMnpip_wK0_n_sub_bin%d_%d",ibin,iq));
+      IMnpip_wK0_n_sub_bin[ibin][iq]->SetTitle(Form("IMnpip_wK0_n_sub_bin%d_%d",ibin,iq));
+      IMnpip_wK0_n_sub_bin[ibin][iq]->Draw("HE");
+
+      cIMpippim_IMnpip_n_sub_bin_cut[ibin][iq]->cd(4);
+      //IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][iq]
+      //= (TH1D*)IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][iq]->ProjectionY(Form("IMpippim_wK0orwSid_n_woSmdia_sub_bin%d_%d",ibin,iq));
+      IMpippim_wSid_n_Sp_sub_bin[ibin][iq]
+      = (TH1D*)IMpippim_IMnpip_wSid_n_Sp_bin_sub[ibin][iq]->ProjectionY(Form("IMpippim_wSid_n_Sp_sub_bin%d_%d",ibin,iq));
+
+      //gr_IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][iq] = new TGraphErrors();
+      gr_IMpippim_wSid_n_Sp_sub_bin[ibin][iq] = new TGraphErrors();
+      HistToRorateGraph(IMpippim_wSid_n_Sp_sub_bin[ibin][iq],*gr_IMpippim_wSid_n_Sp_sub_bin[ibin][iq]);
+      //gr_IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][iq]->Draw("AP");
+      gr_IMpippim_wSid_n_Sp_sub_bin[ibin][iq]->Draw("AP");
+      
+      cIMpippim_IMnpip_n_sub_bin_cut[ibin][iq]->cd(2);
       TPaveText *pt = new TPaveText(.05,.05,.95,.7);
-      int binpipi_MIN = IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][i]->GetXaxis()->FindBin(anacuts::pipi_MIN_narrow);
-      int binpipi_MAX = IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][i]->GetXaxis()->FindBin(anacuts::pipi_MAX_narrow);
-      int binpipi_MIN_4sigma = IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][i]->GetXaxis()->FindBin(anacuts::pipi_MIN_narrow-4.0*anacuts::K0_sigma);
-      double inteK0 = IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][i]->Integral(binpipi_MIN,binpipi_MAX);
-      double inteK0sidelo = IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][i]->Integral(binpipi_MIN_4sigma,binpipi_MIN-1);
+      //int binpipi_MIN = IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::pipi_MIN_narrow);
+      int binpipi_MIN = IMpippim_wSid_n_Sp_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::pipi_MIN_narrow);
+      //int binpipi_MAX = IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::pipi_MAX_narrow);
+      int binpipi_MAX = IMpippim_wSid_n_Sp_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::pipi_MAX_narrow);
+      int binpipi_MIN_4sigma = IMpippim_wSid_n_Sp_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::pipi_MIN_narrow-4.0*anacuts::K0_sigma);
+      double inteK0 = IMpippim_wSid_n_Sp_sub_bin[ibin][iq]->Integral(binpipi_MIN,binpipi_MAX);
+      double inteK0sidelo = IMpippim_wSid_n_Sp_sub_bin[ibin][iq]->Integral(binpipi_MIN_4sigma,binpipi_MIN-1);
       double K0net = inteK0-inteK0sidelo;
-      int binnpip_MIN = IMnpip_wK0orwSid_n_sub_bin[ibin][i]->GetXaxis()->FindBin(anacuts::Sigmap_MIN);
-      int binnpip_MIN_2sigma = IMnpip_wK0orwSid_n_sub_bin[ibin][i]->GetXaxis()->FindBin(anacuts::Sigmap_MIN-2.0*anacuts::Sigmap_sigma);
-      int binnpip_MAX = IMnpip_wK0orwSid_n_sub_bin[ibin][i]->GetXaxis()->FindBin(anacuts::Sigmap_MAX);
-      int binnpip_MAX_2sigma = IMnpip_wK0orwSid_n_sub_bin[ibin][i]->GetXaxis()->FindBin(anacuts::Sigmap_MAX+2.0*anacuts::Sigmap_sigma);
-      double inteSp = IMnpip_wK0orwSid_n_sub_bin[ibin][i]->Integral(binnpip_MIN,binnpip_MAX);
-      double inteSpsidelo = IMnpip_wK0orwSid_n_sub_bin[ibin][i]->Integral(binnpip_MIN_2sigma,binnpip_MIN-1);
-      double inteSpsidehi = IMnpip_wK0orwSid_n_sub_bin[ibin][i]->Integral(binnpip_MAX+1,binnpip_MAX_2sigma);
+      int binnpip_MIN = IMnpip_wK0_n_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::Sigmap_MIN);
+      int binnpip_MIN_2sigma = IMnpip_wK0_n_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::Sigmap_MIN-2.0*anacuts::Sigmap_sigma);
+      int binnpip_MAX = IMnpip_wK0_n_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::Sigmap_MAX);
+      int binnpip_MAX_2sigma = IMnpip_wK0_n_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::Sigmap_MAX+2.0*anacuts::Sigmap_sigma);
+      double inteSp = IMnpip_wK0_n_sub_bin[ibin][iq]->Integral(binnpip_MIN,binnpip_MAX);
+      double inteSpsidelo = IMnpip_wK0_n_sub_bin[ibin][iq]->Integral(binnpip_MIN_2sigma,binnpip_MIN-1);
+      double inteSpsidehi = IMnpip_wK0_n_sub_bin[ibin][iq]->Integral(binnpip_MAX+1,binnpip_MAX_2sigma);
       double Spnet = inteSp - inteSpsidelo - inteSpsidehi;
 
       pt->AddText(Form("K0 count %0.2f ",inteK0));
@@ -562,55 +584,56 @@ void K0SigmaTemp()
   TH1D* IMpippim_wK0orwSid_n_woSpdia_sub_bin[50][3];
   TGraphErrors *gr_IMpippim_wK0orwSid_n_woSpdia_sub_bin[50][3];
   for(int ibin=20;ibin<50;ibin++){
-    for(int i=0;i<3;i++){
-      cIMpippim_IMnpim_n_sub_bin[ibin][i] = new TCanvas(Form("cIMpippim_IMnpim_n_sub_bin%d_%d",ibin,i),Form("cIMpippim_IMnpim_n_sub_bin%d_%d",ibin,i),800,800);
-      cIMpippim_IMnpim_n_sub_bin[ibin][i]->Divide(2,2,0,0);
-      cIMpippim_IMnpim_n_sub_bin[ibin][i]->cd(3);
-      IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][i]->RebinX(4);
-      IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][i]->RebinY(5);
-      IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][i]->Draw("colz");
-      cIMpippim_IMnpim_n_sub_bin[ibin][i]->cd(1);
-      IMnpim_n_sub_bin[ibin][i] = (TH1D*)IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][i]->ProjectionX(Form("IMnpim_n_sub_bin%d_%d",ibin,i));
-      IMnpim_n_sub_bin[ibin][i]->SetTitle(Form("IMnpim_n_sub_bin%d_%d",ibin,i));
-      IMnpim_n_sub_bin[ibin][i]->Draw("HE");
-      cIMpippim_IMnpim_n_sub_bin[ibin][i]->cd(4);
-      IMpippim_n_woSpdia_sub_bin[ibin][i] = (TH1D*)IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][i]->ProjectionY(Form("IMpippim_n_woSpdia_sub_bin%d_%d",ibin,i));
-      gr_IMpippim_n_woSpdia_sub_bin[ibin][i] = new TGraphErrors();
-      HistToRorateGraph(IMpippim_n_woSpdia_sub_bin[ibin][i],*gr_IMpippim_n_woSpdia_sub_bin[ibin][i]);
-      gr_IMpippim_n_woSpdia_sub_bin[ibin][i]->Draw("AP");
+    for(int iq=0;iq<3;iq++){
+      cIMpippim_IMnpim_n_sub_bin[ibin][iq] = new TCanvas(Form("cIMpippim_IMnpim_n_sub_bin%d_%d",ibin,iq),Form("cIMpippim_IMnpim_n_sub_bin%d_%d",ibin,iq),800,800);
+      cIMpippim_IMnpim_n_sub_bin[ibin][iq]->Divide(2,2,0,0);
+      cIMpippim_IMnpim_n_sub_bin[ibin][iq]->cd(3);
+      IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][iq]->RebinX(4);
+      IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][iq]->RebinY(5);
+      IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][iq]->Draw("colz");
+      cIMpippim_IMnpim_n_sub_bin[ibin][iq]->cd(1);
+      IMnpim_n_sub_bin[ibin][iq] = (TH1D*)IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][iq]->ProjectionX(Form("IMnpim_n_sub_bin%d_%d",ibin,iq));
+      IMnpim_n_sub_bin[ibin][iq]->SetTitle(Form("IMnpim_n_sub_bin%d_%d",ibin,iq));
+      IMnpim_n_sub_bin[ibin][iq]->Draw("HE");
+      cIMpippim_IMnpim_n_sub_bin[ibin][iq]->cd(4);
+      IMpippim_n_woSpdia_sub_bin[ibin][iq] = (TH1D*)IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][iq]->ProjectionY(Form("IMpippim_n_woSpdia_sub_bin%d_%d",ibin,iq));
+      gr_IMpippim_n_woSpdia_sub_bin[ibin][iq] = new TGraphErrors();
+      HistToRorateGraph(IMpippim_n_woSpdia_sub_bin[ibin][iq],*gr_IMpippim_n_woSpdia_sub_bin[ibin][iq]);
+      gr_IMpippim_n_woSpdia_sub_bin[ibin][iq]->Draw("AP");
 
-      cIMpippim_IMnpim_n_sub_bin_cut[ibin][i] = new TCanvas(Form("cIMpippim_IMnpim_n_sub_bin_cut_%d_%d",ibin,i),Form("cIMpippim_IMnpim_n_sub_bin_cut%d_%d",ibin,i),800,800);
-      cIMpippim_IMnpim_n_sub_bin_cut[ibin][i]->Divide(2,2,0,0);
-      cIMpippim_IMnpim_n_sub_bin_cut[ibin][i]->cd(3);
-      IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][i]->RebinX(4);
-      IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][i]->RebinY(5);
-      IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][i]->Draw("colz");
-      cIMpippim_IMnpim_n_sub_bin_cut[ibin][i]->cd(1);
-      IMnpim_wK0orwSid_n_sub_bin[ibin][i] = (TH1D*)IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][i]->ProjectionX(Form("IMnpim_wK0orwSid_n_sub_bin%d_%d",ibin,i));
-      IMnpim_wK0orwSid_n_sub_bin[ibin][i] ->SetTitle(Form("IMnpim_wK0orwSid_n_sub_bin%d_%d",ibin,i));
-      IMnpim_wK0orwSid_n_sub_bin[ibin][i]->Draw("HE");
-      cIMpippim_IMnpim_n_sub_bin_cut[ibin][i]->cd(4);
-      IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][i] = (TH1D*)IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][i]->ProjectionY(Form("IMpippim_wK0orwSid_n_woSpdia_sub_bin%d_%d",ibin,i));
-      gr_IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][i] = new TGraphErrors();
-      HistToRorateGraph(IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][i],*gr_IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][i]);
-      gr_IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][i]->Draw("AP");
+      cIMpippim_IMnpim_n_sub_bin_cut[ibin][iq] = new TCanvas(Form("cIMpippim_IMnpim_n_sub_bin_cut_%d_%d",ibin,iq),Form("cIMpippim_IMnpim_n_sub_bin_cut%d_%d",ibin,iq),800,800);
+      cIMpippim_IMnpim_n_sub_bin_cut[ibin][iq]->Divide(2,2,0,0);
+      cIMpippim_IMnpim_n_sub_bin_cut[ibin][iq]->cd(3);
+      IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][iq]->RebinX(4);
+      IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][iq]->RebinY(5);
+      IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][iq]->Draw("colz");
+      cIMpippim_IMnpim_n_sub_bin_cut[ibin][iq]->cd(1);
+      IMnpim_wK0orwSid_n_sub_bin[ibin][iq] = (TH1D*)IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][iq]->ProjectionX(Form("IMnpim_wK0orwSid_n_sub_bin%d_%d",ibin,iq));
+      IMnpim_wK0orwSid_n_sub_bin[ibin][iq] ->SetTitle(Form("IMnpim_wK0orwSid_n_sub_bin%d_%d",ibin,iq));
+      IMnpim_wK0orwSid_n_sub_bin[ibin][iq]->Draw("HE");
+      cIMpippim_IMnpim_n_sub_bin_cut[ibin][iq]->cd(4);
+      IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][iq]
+      = (TH1D*)IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][iq]->ProjectionY(Form("IMpippim_wK0orwSid_n_woSpdia_sub_bin%d_%d",ibin,iq));
+      gr_IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][iq] = new TGraphErrors();
+      HistToRorateGraph(IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][iq],*gr_IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][iq]);
+      gr_IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][iq]->Draw("AP");
       
-      cIMpippim_IMnpim_n_sub_bin_cut[ibin][i]->cd(2);
+      cIMpippim_IMnpim_n_sub_bin_cut[ibin][iq]->cd(2);
       TPaveText *pt = new TPaveText(.05,.05,.95,.7);
-      int binpipi_MIN = IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][i]->GetXaxis()->FindBin(anacuts::pipi_MIN_narrow);
-      int binpipi_MAX = IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][i]->GetXaxis()->FindBin(anacuts::pipi_MAX_narrow);
-      int binpipi_MIN_4sigma = IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][i]->GetXaxis()->FindBin(anacuts::pipi_MIN_narrow-4.0*anacuts::K0_sigma);
+      int binpipi_MIN = IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::pipi_MIN_narrow);
+      int binpipi_MAX = IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::pipi_MAX_narrow);
+      int binpipi_MIN_4sigma = IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::pipi_MIN_narrow-4.0*anacuts::K0_sigma);
       
-      double inteK0 = IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][i]->Integral(binpipi_MIN,binpipi_MAX);
-      double inteK0sidelo = IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][i]->Integral(binpipi_MIN_4sigma,binpipi_MIN-1);
+      double inteK0 = IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][iq]->Integral(binpipi_MIN,binpipi_MAX);
+      double inteK0sidelo = IMpippim_wK0orwSid_n_woSpdia_sub_bin[ibin][iq]->Integral(binpipi_MIN_4sigma,binpipi_MIN-1);
       double K0net = inteK0-inteK0sidelo;
-      int binnpim_MIN = IMnpim_wK0orwSid_n_sub_bin[ibin][i]->GetXaxis()->FindBin(anacuts::Sigmam_MIN);
-      int binnpim_MIN_2sigma = IMnpim_wK0orwSid_n_sub_bin[ibin][i]->GetXaxis()->FindBin(anacuts::Sigmam_MIN-2.0*anacuts::Sigmam_sigma);
-      int binnpim_MAX = IMnpim_wK0orwSid_n_sub_bin[ibin][i]->GetXaxis()->FindBin(anacuts::Sigmam_MAX);
-      int binnpim_MAX_2sigma = IMnpim_wK0orwSid_n_sub_bin[ibin][i]->GetXaxis()->FindBin(anacuts::Sigmam_MAX+2.0*anacuts::Sigmam_sigma);
-      double inteSm = IMnpim_wK0orwSid_n_sub_bin[ibin][i]->Integral(binnpim_MIN,binnpim_MAX);
-      double inteSmsidelo = IMnpim_wK0orwSid_n_sub_bin[ibin][i]->Integral(binnpim_MIN_2sigma,binnpim_MIN-1);
-      double inteSmsidehi = IMnpim_wK0orwSid_n_sub_bin[ibin][i]->Integral(binnpim_MAX+1,binnpim_MAX_2sigma);
+      int binnpim_MIN = IMnpim_wK0orwSid_n_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::Sigmam_MIN);
+      int binnpim_MIN_2sigma = IMnpim_wK0orwSid_n_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::Sigmam_MIN-2.0*anacuts::Sigmam_sigma);
+      int binnpim_MAX = IMnpim_wK0orwSid_n_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::Sigmam_MAX);
+      int binnpim_MAX_2sigma = IMnpim_wK0orwSid_n_sub_bin[ibin][iq]->GetXaxis()->FindBin(anacuts::Sigmam_MAX+2.0*anacuts::Sigmam_sigma);
+      double inteSm = IMnpim_wK0orwSid_n_sub_bin[ibin][iq]->Integral(binnpim_MIN,binnpim_MAX);
+      double inteSmsidelo = IMnpim_wK0orwSid_n_sub_bin[ibin][iq]->Integral(binnpim_MIN_2sigma,binnpim_MIN-1);
+      double inteSmsidehi = IMnpim_wK0orwSid_n_sub_bin[ibin][iq]->Integral(binnpim_MAX+1,binnpim_MAX_2sigma);
       double Smnet = inteSm- inteSmsidelo - inteSmsidehi;
 
       pt->AddText(Form("K0 count %0.2f ",inteK0));
