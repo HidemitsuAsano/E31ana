@@ -120,15 +120,15 @@ void K0SigmaTemp()
   TH2F* IMpippim_IMnpim_n_woSp_bin_sub[nbintemplate][3];
   TH2F* IMpippim_IMnpip_n_woSmdia_data[3];
   TH2F* IMpippim_IMnpim_n_woSpdia_data[3];
-  TH2F* IMpippim_IMnpip_n_woSmdia_bin_data[nbintemplate][3];
+  //TH2F* IMpippim_IMnpip_n_woSmdia_bin_data[nbintemplate][3];
   TH2F* IMpippim_IMnpim_n_woSpdia_bin_data[nbintemplate][3];
   TH2F* IMpippim_IMnpip_n_woSmdia_mix[3];
   TH2F* IMpippim_IMnpim_n_woSpdia_mix[3];
-  TH2F* IMpippim_IMnpip_n_woSmdia_bin_mix[nbintemplate][3];
+  //TH2F* IMpippim_IMnpip_n_woSmdia_bin_mix[nbintemplate][3];
   TH2F* IMpippim_IMnpim_n_woSpdia_bin_mix[nbintemplate][3];
   TH2F* IMpippim_IMnpip_n_woSmdia_sub[3];
   TH2F* IMpippim_IMnpim_n_woSpdia_sub[3];
-  TH2F* IMpippim_IMnpip_n_woSmdia_bin_sub[nbintemplate][3];
+  //TH2F* IMpippim_IMnpip_n_woSmdia_bin_sub[nbintemplate][3];
   TH2F* IMpippim_IMnpim_n_woSpdia_bin_sub[nbintemplate][3];
   TH2F* IMpippim_IMnpip_wK0orwSid_n_data[3];
   TH2F* IMpippim_IMnpim_wK0orwSid_n_data[3];
@@ -169,7 +169,8 @@ void K0SigmaTemp()
   
 
   const char cqcut[][6]= {"all","qlo","qhi"};
-  for(int iqcut=0;iqcut<3;iqcut++){
+  const int nqcut=1;
+  for(int iqcut=0;iqcut<nqcut;iqcut++){
     IMpippim_IMnpip_n_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpip_n");
     IMpippim_IMnpip_n_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMpippim_IMnpip_n");
     IMpippim_IMnpip_n_sub[iqcut] = (TH2F*)IMpippim_IMnpip_n_data[iqcut]->Clone(Form("IMpippim_IMnpip_n_sub_%s",cqcut[iqcut]));
@@ -349,12 +350,12 @@ void K0SigmaTemp()
       //IMpippim_IMnpip_n_woSmdia_bin_sub[ibin][iqcut]->Add(IMpippim_IMnpip_n_woSmdia_bin_mix[ibin][iqcut],-1.0);
       //if(RemoveNegative)IMpippim_IMnpip_n_woSmdia_bin_sub[ibin][iqcut]->SetMinimum(0);
       
-      IMpippim_IMnpim_n_woSpdia_bin_data[ibin][iqcut] = (TH2F*)fr[iqcut]->Get(Form("IMpippim_IMnpim_n_woSpdia_bin%d",ibin));
-      IMpippim_IMnpim_n_woSpdia_bin_mix[ibin][iqcut] = (TH2F*)fmix[iqcut]->Get(Form("IMpippim_IMnpim_n_woSpdia_bin%d",ibin));
-      IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][iqcut]
-      = (TH2F*)IMpippim_IMnpim_n_woSpdia_bin_data[ibin][iqcut]->Clone(Form("IMpippim_IMnpim_n_woSpdia_sub_bin%d_%s",ibin,cqcut[iqcut]));
-      IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][iqcut]->Add(IMpippim_IMnpim_n_woSpdia_bin_mix[ibin][iqcut],-1.0);
-      if(RemoveNegative)IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][iqcut]->SetMinimum(0);
+      //IMpippim_IMnpim_n_woSpdia_bin_data[ibin][iqcut] = (TH2F*)fr[iqcut]->Get(Form("IMpippim_IMnpim_n_woSpdia_bin%d",ibin));
+      //IMpippim_IMnpim_n_woSpdia_bin_mix[ibin][iqcut] = (TH2F*)fmix[iqcut]->Get(Form("IMpippim_IMnpim_n_woSpdia_bin%d",ibin));
+      //IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][iqcut]
+      //= (TH2F*)IMpippim_IMnpim_n_woSpdia_bin_data[ibin][iqcut]->Clone(Form("IMpippim_IMnpim_n_woSpdia_sub_bin%d_%s",ibin,cqcut[iqcut]));
+      //IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][iqcut]->Add(IMpippim_IMnpim_n_woSpdia_bin_mix[ibin][iqcut],-1.0);
+      //if(RemoveNegative)IMpippim_IMnpim_n_woSpdia_bin_sub[ibin][iqcut]->SetMinimum(0);
 
       IMpippim_IMnpip_wK0orwSid_n_bin_data[ibin][iqcut] = (TH2F*)fr[iqcut]->Get(Form("IMpippim_IMnpip_wK0orwSid_n_bin%d",ibin));
       IMpippim_IMnpip_wK0orwSid_n_bin_mix[ibin][iqcut] = (TH2F*)fmix[iqcut]->Get(Form("IMpippim_IMnpip_wK0orwSid_n_bin%d",ibin));
@@ -370,19 +371,19 @@ void K0SigmaTemp()
       IMpippim_IMnpim_wK0orwSid_n_bin_sub[ibin][iqcut]->Add(IMpippim_IMnpim_wK0orwSid_n_bin_mix[ibin][iqcut],-1.0);
       if(RemoveNegative)IMpippim_IMnpim_wK0orwSid_n_bin_sub[ibin][iqcut]->SetMinimum(0);
 
-      IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_data[ibin][iqcut] = (TH2F*)fr[iqcut]->Get(Form("IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin%d",ibin));
-      IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_mix[ibin][iqcut] = (TH2F*)fmix[iqcut]->Get(Form("IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin%d",ibin));
-      IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][iqcut]
-      = (TH2F*)IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_data[ibin][iqcut]->Clone(Form("IMpippim_IMnpip_wK0orwSid_n_woSmdia_sub_bin%d_%s",ibin,cqcut[iqcut]));
-      IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][iqcut]->Add(IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_mix[ibin][iqcut],-1.0);
-      if(RemoveNegative)IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][iqcut]->SetMinimum(0);
+      //IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_data[ibin][iqcut] = (TH2F*)fr[iqcut]->Get(Form("IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin%d",ibin));
+      //IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_mix[ibin][iqcut] = (TH2F*)fmix[iqcut]->Get(Form("IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin%d",ibin));
+      //IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][iqcut]
+      //= (TH2F*)IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_data[ibin][iqcut]->Clone(Form("IMpippim_IMnpip_wK0orwSid_n_woSmdia_sub_bin%d_%s",ibin,cqcut[iqcut]));
+      //IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][iqcut]->Add(IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_mix[ibin][iqcut],-1.0);
+      //if(RemoveNegative)IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin_sub[ibin][iqcut]->SetMinimum(0);
       
-      IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_data[ibin][iqcut] = (TH2F*)fr[iqcut]->Get(Form("IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin%d",ibin));
-      IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_mix[ibin][iqcut] = (TH2F*)fmix[iqcut]->Get(Form("IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin%d",ibin));
-      IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][iqcut]
-      = (TH2F*)IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_data[ibin][iqcut]->Clone(Form("IMpippim_IMnpim_wK0orwSid_n_woSpdia_sub_bin%d_%s",ibin,cqcut[iqcut]));
-      IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][iqcut]->Add(IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_mix[ibin][iqcut],-1.0);
-      if(RemoveNegative)IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][iqcut]->SetMinimum(0);
+      //IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_data[ibin][iqcut] = (TH2F*)fr[iqcut]->Get(Form("IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin%d",ibin));
+      //IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_mix[ibin][iqcut] = (TH2F*)fmix[iqcut]->Get(Form("IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin%d",ibin));
+      //IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][iqcut]
+      //= (TH2F*)IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_data[ibin][iqcut]->Clone(Form("IMpippim_IMnpim_wK0orwSid_n_woSpdia_sub_bin%d_%s",ibin,cqcut[iqcut]));
+      //IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][iqcut]->Add(IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_mix[ibin][iqcut],-1.0);
+      //if(RemoveNegative)IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin_sub[ibin][iqcut]->SetMinimum(0);
     
       IMnpim_IMnpip_wSid_n_Sp_bin_data[ibin][iqcut] = (TH2F*)fr[iqcut]->Get(Form("IMnpim_IMnpip_wSid_n_Sp_bin%d",ibin));
       IMnpim_IMnpip_wSid_n_Sp_bin_mix[ibin][iqcut] = (TH2F*)fmix[iqcut]->Get(Form("IMnpim_IMnpip_wSid_n_Sp_bin%d",ibin));
@@ -399,7 +400,6 @@ void K0SigmaTemp()
       IMnpim_IMnpip_wSid_n_Sm_bin_sub[ibin][iqcut]->Add(IMnpim_IMnpip_wSid_n_Sm_bin_mix[ibin][iqcut],-1);
       IMnpim_IMnpip_wSid_n_Sm_bin_sub[ibin][iqcut]->SetTitle(Form("IMnpim_IMnpip_wSid_n_Sm_bin%d_%s",ibin,cqcut[iqcut]));
       if(RemoveNegative)IMnpim_IMnpip_wSid_n_Sm_bin_sub[ibin][iqcut]->SetMinimum(0);
-    
     }
   }
 
@@ -475,10 +475,9 @@ void K0SigmaTemp()
   TH1D* IMnpip_wK0_n_sub_bin_select[nbintemplate][3];
   TH1D* IMpippim_wSid_n_Sp_sub_bin[nbintemplate][3];
   TGraphErrors *gr_IMpippim_wSid_n_Sp_sub_bin[nbintemplate][3];
-  TGraphErrors *gr_IMpippim_wSid_n_Sp_sub_bin_select[nbintemplate][3];
   
   for(unsigned int ibin=40;ibin<nbintemplate;ibin++){
-    for(int iq=0;iq<3;iq++){
+    for(int iq=0;iq<nqcut;iq++){
       //first canvas to display IM(pi+pi-) vs IM(npi+) and their simple projection just to see the signal and other background 
       //no complicated cut at this moment
       cIMpippim_IMnpip_n_sub_bin[ibin][iq] = new TCanvas(Form("cIMpippim_IMnpip_n_sub_bin%d_%d",ibin,iq),Form("cIMpippim_IMnpip_n_sub_bin%d_%d",ibin,iq),800,800);
@@ -558,16 +557,16 @@ void K0SigmaTemp()
     }
   }
 
-  TCanvas *cIMpippim_IMnpim_n_sub_bin[50][3];
-  TH1D* IMnpim_n_sub_bin[50][3];
-  TH1D* IMpippim_n_woSpdia_sub_bin[50][3];
-  TGraphErrors *gr_IMpippim_n_woSpdia_sub_bin[50][3];
-  TCanvas *cIMpippim_IMnpim_n_sub_bin_cut[50][3];
-  TH1D* IMnpim_wK0orwSid_n_sub_bin[50][3];
-  TH1D* IMpippim_wK0orwSid_n_woSpdia_sub_bin[50][3];
-  TGraphErrors *gr_IMpippim_wK0orwSid_n_woSpdia_sub_bin[50][3];
+  TCanvas *cIMpippim_IMnpim_n_sub_bin[nbintemplate][nqcut];
+  TH1D* IMnpim_n_sub_bin[nbintemplate][nqcut];
+  TH1D* IMpippim_n_woSpdia_sub_bin[nbintemplate][nqcut];
+  TGraphErrors *gr_IMpippim_n_woSpdia_sub_bin[nbintemplate][nqcut];
+  TCanvas *cIMpippim_IMnpim_n_sub_bin_cut[nbintemplate][nqcut];
+  TH1D* IMnpim_wK0orwSid_n_sub_bin[nbintemplate][nqcut];
+  TH1D* IMpippim_wK0orwSid_n_woSpdia_sub_bin[nbintemplate][nqcut];
+  TGraphErrors *gr_IMpippim_wK0orwSid_n_woSpdia_sub_bin[nbintemplate][nqcut];
   for(unsigned int ibin=40;ibin<nbintemplate;ibin++){
-    for(int iq=0;iq<3;iq++){
+    for(int iq=0;iq<nqcut;iq++){
       cIMpippim_IMnpim_n_sub_bin[ibin][iq] = new TCanvas(Form("cIMpippim_IMnpim_n_sub_bin%d_%d",ibin,iq),Form("cIMpippim_IMnpim_n_sub_bin%d_%d",ibin,iq),800,800);
       cIMpippim_IMnpim_n_sub_bin[ibin][iq]->Divide(2,2,0,0);
       cIMpippim_IMnpim_n_sub_bin[ibin][iq]->cd(3);
