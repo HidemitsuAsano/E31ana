@@ -476,6 +476,7 @@ void K0SigmaTemp()
   //TH1D* IMnpip_wK0orwSid_n_sub_bin[nbintemplate][3];
   //TH1D* IMnpip_wSid_n_Sp_sub_bin[nbintemplate][3];
   TH1D* IMnpip_wK0_n_sub_bin[nbintemplate][3];
+  TH1D* IMnpip_wK0_n_sub_bin_select[nbintemplate][3];
   TH1D* IMpippim_wSid_n_Sp_sub_bin[nbintemplate][3];
   //TH1D* IMpippim_wK0orwSid_n_woSmdia_sub_bin[nbintemplate][3];
   //TH1D* IMnpip_wSid_Sp_n_sub_bin_Sp[nbintemplate][3];
@@ -484,6 +485,7 @@ void K0SigmaTemp()
   //TGraphErrors *gr_IMpippim_n_sub_bin_1[nbintemplate][3];
   //TGraphErrors *gr_IMpippim_wK0_n_sub_bin_1[nbintemplate][3];
   TGraphErrors *gr_IMpippim_wSid_n_Sp_sub_bin[nbintemplate][3];
+  TGraphErrors *gr_IMpippim_wSid_n_Sp_sub_bin_select[nbintemplate][3];
   
   for(int ibin=20;ibin<nbintemplate;ibin++){
     for(int iq=0;iq<3;iq++){
@@ -534,6 +536,12 @@ void K0SigmaTemp()
       IMnpip_wK0_n_sub_bin[ibin][iq] = (TH1D*)IMpippim_IMnpip_wK0_n_bin_sub[ibin][iq]->ProjectionX(Form("IMnpip_wK0_n_sub_bin%d_%d",ibin,iq));
       IMnpip_wK0_n_sub_bin[ibin][iq]->SetTitle(Form("IMnpip_wK0_n_sub_bin%d_%d",ibin,iq));
       IMnpip_wK0_n_sub_bin[ibin][iq]->Draw("HE");
+      IMnpip_wK0_n_sub_bin_select[ibin][iq] = (TH1D*)IMnpip_wK0_n_sub_bin[ibin][iq]->Clone(Form("IMnpip_wK0_n_sub_bin%d_%d_select",ibin,iq));
+      IMnpip_wK0_n_sub_bin_select[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
+      IMnpip_wK0_n_sub_bin_select[ibin][iq]->SetLineColor(2);
+      IMnpip_wK0_n_sub_bin_select[ibin][iq]->SetFillColor(2);
+      IMnpip_wK0_n_sub_bin_select[ibin][iq]->Draw("HEsame");
+
 
       cIMpippim_IMnpip_n_sub_bin_cut[ibin][iq]->cd(4);
       //IMpippim_wK0orwSid_n_woSmdia_sub_bin[ibin][iq]
@@ -583,7 +591,7 @@ void K0SigmaTemp()
   TH1D* IMnpim_wK0orwSid_n_sub_bin[50][3];
   TH1D* IMpippim_wK0orwSid_n_woSpdia_sub_bin[50][3];
   TGraphErrors *gr_IMpippim_wK0orwSid_n_woSpdia_sub_bin[50][3];
-  for(int ibin=20;ibin<50;ibin++){
+  for(int ibin=40;ibin<nbintemplate;ibin++){
     for(int iq=0;iq<3;iq++){
       cIMpippim_IMnpim_n_sub_bin[ibin][iq] = new TCanvas(Form("cIMpippim_IMnpim_n_sub_bin%d_%d",ibin,iq),Form("cIMpippim_IMnpim_n_sub_bin%d_%d",ibin,iq),800,800);
       cIMpippim_IMnpim_n_sub_bin[ibin][iq]->Divide(2,2,0,0);
