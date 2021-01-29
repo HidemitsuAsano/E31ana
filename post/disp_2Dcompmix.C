@@ -792,6 +792,7 @@ void disp_2Dcompmix(const int qcut=0)
   TH2D* q_IMnpipi_wSid_n_sub = (TH2D*)q_IMnpipi_wSid_n_data->Clone("q_IMnpipi_wSid_n_sub");
   q_IMnpipi_wSid_n_sub->Add(q_IMnpipi_wSid_n_mix,-1);
   q_IMnpipi_wSid_n_sub->SetTitle("q_IMnpipi_wSid_n_sub");
+  q_IMnpipi_wSid_n_sub->SetMinimum(0);
   q_IMnpipi_wSid_n_sub->Draw("colz");
 
   //TMultiGraph *mg = (TMultiGraph*)fnu->Get("mg");
@@ -807,11 +808,11 @@ void disp_2Dcompmix(const int qcut=0)
   gr_98->SetLineWidth(2);
   th->SetLineWidth(2);
   
-  gr_0->Draw("c");
-  gr_100->Draw("c");
-  gr_99->Draw("c");
-  gr_98->Draw("c");
-  th->Draw("c");
+  //gr_0->Draw("c");
+  //gr_100->Draw("c");
+  //gr_99->Draw("c");
+  //gr_98->Draw("c");
+  //th->Draw("c");
 
   TCanvas *cIMnpipi_wSid_n_sub_0 = new TCanvas("cIMnpipi_wSid_n_sub_0","cIMnpipi_wSid_n_sub_0");
   TH1D* IMnpipi_wSid_n_sub_0 = (TH1D*)q_IMnpipi_wSid_n_sub->ProjectionX("IMnpipi_wSid_n_sub_0",1,bin350-1);
