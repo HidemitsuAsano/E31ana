@@ -4050,11 +4050,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     if( (qkn.P()>=anacuts::qvalcut) && (qvalcutflag==1) ) continue;
     if( (qkn.P()<anacuts::qvalcut) && (qvalcutflag==2) ) continue;
     if( (*LVec_n).P()<anacuts::nmomcut) continue;
-    //if( (*LVec_n).P()<0.20) continue;
-    //if(LVec_pip_pim_n.M() < 1.45) continue;
-    //if(LVec_pip_pim_n.M() > 1.55) continue;
-    //if(dcapippim < 1) continue;
-    //if(LVec_pip_pim_n.M()<1.45 ) continue;
     //double chi2 = kfSpmode_chi2<kfSmmode_chi2 ? kfSpmode_chi2:kfSmmode_chi2;
     double pvalue = -9999;
     if(UseKinFit) pvalue = kfSmmode_pvalue<kfSpmode_pvalue ? kfSpmode_pvalue:kfSmmode_pvalue;
@@ -4310,7 +4305,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       //for mixed events, avoid sharing same CDH segments
       if( -0.12< diffPhinpim  && diffPhinpim < 0.12 ) continue;
     } else if(IsolationFlag==3) {
-      //if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.60/0.60+diffpim.Z()*diffpim.Z()/25.0/25.0 >=1 ) continue;
       if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.65/0.65+diffpim.Z()*diffpim.Z()/28.0/28.0 >=1 ) continue;
       //for mixed events, avoid sharing same CDH segments
       if( -0.12< diffPhinpim  && diffPhinpim < 0.12 ) continue;

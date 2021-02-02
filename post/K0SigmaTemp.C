@@ -182,7 +182,7 @@ void K0SigmaTemp()
   
 
   const char cqcut[][6]= {"all","qlo","qhi"};
-  const int nqcut=1;
+  const int nqcut=3;
   for(int iqcut=0;iqcut<nqcut;iqcut++){
     IMpippim_IMnpip_n_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpip_n");
     IMpippim_IMnpip_n_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMpippim_IMnpip_n");
@@ -225,7 +225,6 @@ void K0SigmaTemp()
     IMpippim_IMnpim_wK0_n_sub[iqcut]->Add(IMpippim_IMnpim_wK0_n_mix[iqcut],-1.0);
     IMpippim_IMnpim_wK0_n_sub[iqcut]->SetTitle(Form("IMpippim_IMnpim_wK0_n_sub_%s",cqcut[iqcut]));
     if(RemoveNegative)IMpippim_IMnpim_wK0_n_sub[iqcut]->SetMinimum(0);
-
 
     IMpippim_IMnpip_n_woSm_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpip_n_woSm");
     IMpippim_IMnpip_n_woSm_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMpippim_IMnpip_n_woSm");
@@ -283,6 +282,13 @@ void K0SigmaTemp()
     IMpippim_IMnpim_wK0orwSid_n_woSpdia_sub[iqcut]->Add(IMpippim_IMnpim_wK0orwSid_n_woSpdia_mix[iqcut],-1.0); 
     IMpippim_IMnpim_wK0orwSid_n_woSpdia_sub[iqcut]->SetTitle(Form("IMpippim_IMnpim_wK0orwSid_n_woSpdia_sub_%s",cqcut[iqcut]));
     if(RemoveNegative)IMpippim_IMnpim_wK0orwSid_n_woSpdia_sub[iqcut]->SetMinimum(0);
+    
+    IMnpim_IMnpip_n_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMnpim_IMnpip_dE_n");
+    IMnpim_IMnpip_n_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMnpim_IMnpip_dE_n");
+    IMnpim_IMnpip_n_sub[iqcut] = (TH2F*)IMnpim_IMnpip_n_data[iqcut]->Clone(Form("IMnpim_IMnpip_n_%s",cqcut[iqcut]));
+    IMnpim_IMnpip_n_sub[iqcut]->Add(IMnpim_IMnpip_n_mix[iqcut],-1);
+    IMnpim_IMnpip_n_sub[iqcut]->SetTitle(Form("IMnpim_IMnpip_n_%s",cqcut[iqcut]));
+    if(RemoveNegative)IMnpim_IMnpip_n_sub[iqcut]->SetMinimum(0);
     
     IMnpim_IMnpip_wSid_n_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMnpim_IMnpip_dE_wSid_n");
     IMnpim_IMnpip_wSid_n_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMnpim_IMnpip_dE_wSid_n");
@@ -368,7 +374,6 @@ void K0SigmaTemp()
       IMpippim_IMnpim_n_woSp_bin_sub[ibin][iqcut] = (TH2F*)IMpippim_IMnpim_n_woSp_bin_data[ibin][iqcut]->Clone(Form("IMpippim_IMnpim_n_woSp_sub_bin%d_%s",ibin,cqcut[iqcut]));
       IMpippim_IMnpim_n_woSp_bin_sub[ibin][iqcut]->Add(IMpippim_IMnpim_n_woSp_bin_mix[ibin][iqcut],-1.0);
       if(RemoveNegative)IMpippim_IMnpim_n_woSp_bin_sub[ibin][iqcut]->SetMinimum(0);
-
 
       //IMpippim_IMnpip_n_woSmdia_bin_data[ibin][iqcut] = (TH2F*)fr[iqcut]->Get(Form("IMpippim_IMnpip_n_woSmdia_bin%d",ibin));
       //IMpippim_IMnpip_n_woSmdia_bin_mix[ibin][iqcut] = (TH2F*)fmix[iqcut]->Get(Form("IMpippim_IMnpip_n_woSmdia_bin%d",ibin));
@@ -587,7 +592,7 @@ void K0SigmaTemp()
       double Spnet = inteSp - inteSpsidelo - inteSpsidehi;
 
       pt->AddText(Form("K0 count %0.2f ",inteK0));
-      pt->AddText(Form("K0 net   %0.2f ",K0net));
+      pt->AddText(Form("K0 side (lo) %0.2f ",K0net));
       pt->AddText(Form("Sigma+ count %0.2f ",inteSp));
       pt->AddText(Form("Sigma+ net   %0.2f ",Spnet));
       pt->AddText(Form("K0 ratio in cross  %0.2f ",K0net/(K0net+Spnet))); 
