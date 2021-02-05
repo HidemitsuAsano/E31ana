@@ -352,8 +352,6 @@ void K0SigmaTemp()
   TH1D* IMpippim_wSid_n_Sp_sub_bin_sidelo[nbintemplate][nqcut];
   TH1D* IMpippim_wSid_n_Sp_sub_bin_sidelo2[nbintemplate][nqcut];//2 sigma to 6 sigma away when there is no higher side
   TH1D* IMpippim_wSid_n_Sp_sub_bin_sidehi[nbintemplate][nqcut];
-  //TGraphErrors *gr_IMpippim_wSid_n_Sp_sub_bin[nbintemplate][nqcut];
-  //TGraphErrors *gr_IMpippim_wSid_n_Sp_sub_bin[nbintemplate][nqcut];
   
   for(unsigned int ibin=40;ibin<nbintemplate;ibin++){
     for(int iq=0;iq<nqcut;iq++){
@@ -481,8 +479,13 @@ void K0SigmaTemp()
   TCanvas *cIMpippim_IMnpim_n_sub_bin_cut[nbintemplate][nqcut];
   TH1D* IMnpim_wK0_n_sub_bin[nbintemplate][nqcut];
   TH1D* IMnpim_wK0_n_sub_bin_select[nbintemplate][nqcut];
+  TH1D* IMnpim_wK0_n_sub_bin_select_sidelo[nbintemplate][nqcut];
+  TH1D* IMnpim_wK0_n_sub_bin_select_sidehi[nbintemplate][nqcut];
   TH1D* IMpippim_wSid_n_Sm_sub_bin[nbintemplate][nqcut];
-  TGraphErrors *gr_IMpippim_wSid_n_Sm_sub_bin[nbintemplate][nqcut];
+  TH1D* IMpippim_wSid_n_Sm_sub_bin_select[nbintemplate][nqcut];
+  TH1D* IMpippim_wSid_n_Sm_sub_bin_selectlo[nbintemplate][nqcut];
+  TH1D* IMpippim_wSid_n_Sm_sub_bin_selectlo2[nbintemplate][nqcut];
+  TH1D* IMpippim_wSid_n_Sm_sub_bin_selecthi[nbintemplate][nqcut];
   
   for(unsigned int ibin=40;ibin<nbintemplate;ibin++){
     for(int iq=0;iq<nqcut;iq++){
@@ -529,6 +532,16 @@ void K0SigmaTemp()
       IMnpim_wK0_n_sub_bin_select[ibin][iq]->SetLineColor(2);
       IMnpim_wK0_n_sub_bin_select[ibin][iq]->SetFillColor(2);
       IMnpim_wK0_n_sub_bin_select[ibin][iq]->Draw("HEsame");
+      IMnpim_wK0_n_sub_bin_selectlo[ibin][iq] = (TH1D*)IMnpim_wK0_n_sub_bin[ibin][iq]->Clone(Form("IMnpim_wK0_n_sub_bin%d_%d_selectlo",ibin,iq));
+      IMnpim_wK0_n_sub_bin_selecthi[ibin][iq] = (TH1D*)IMnpim_wK0_n_sub_bin[ibin][iq]->Clone(Form("IMnpim_wK0_n_sub_bin%d_%d_selecthi",ibin,iq));
+      IMnpim_wK0_n_sub_bin_selectlo[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN-4.0*anacuts::Sigmam_sigma,anacuts::Sigmam_MIN-2.0*anacuts::Sigmam_sigma);
+      IMnpim_wK0_n_sub_bin_selecthi[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MAX+2.0*anacuts::Sigmam_sigma,anacuts::Sigmam_MAX+4.0*anacuts::Sigmam_sigma);
+      IMnpim_wK0_n_sub_bin_selectlo[ibin][iq]->SetLineColor(4);
+      IMnpim_wK0_n_sub_bin_selectlo[ibin][iq]->SetFillColor(4);
+      IMnpim_wK0_n_sub_bin_selecthi[ibin][iq]->SetLineColor(4);
+      IMnpim_wK0_n_sub_bin_selecthi[ibin][iq]->SetFillColor(4);
+      IMnpim_wK0_n_sub_bin_selectlo[ibin][iq]->Draw("HEsame");
+      IMnpim_wK0_n_sub_bin_selecthi[ibin][iq]->Draw("HEsame");
       
       
       cIMpippim_IMnpim_n_sub_bin_cut[ibin][iq]->cd(4);
