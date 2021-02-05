@@ -793,6 +793,7 @@ void disp_2Dcompmix(const int qcut=0)
   q_IMnpipi_wSid_n_sub->Add(q_IMnpipi_wSid_n_mix,-1);
   q_IMnpipi_wSid_n_sub->SetTitle("q_IMnpipi_wSid_n_sub");
   q_IMnpipi_wSid_n_sub->SetMinimum(0);
+  q_IMnpipi_wSid_n_sub->GetXaxis()->SetRangeUser(1.35,1.50);
   q_IMnpipi_wSid_n_sub->Draw("colz");
 
   //TMultiGraph *mg = (TMultiGraph*)fnu->Get("mg");
@@ -1052,6 +1053,9 @@ void disp_2Dcompmix(const int qcut=0)
   //q_IMnpipi_wSid_n_thetacut_sub[2]->Draw("colz");
   //q_IMnpipi_wSid_n_thetacut_sub[1]->Draw("colzsame");
   //q_IMnpipi_wSid_n_thetacut_sub[0]->Draw("colzsame");
+  
+
+
 
   TCanvas *cIMnpipi_wSid_n_thetacut = new TCanvas("cIMnpipi_wSid_n_thetacut","cIMnpipi_wSid_n_thetacut");
   IMnpipi_wSid_n_thetacut_sub[2]->SetLineColor(3);
@@ -1065,6 +1069,15 @@ void disp_2Dcompmix(const int qcut=0)
   lIMnpipi_wSid_n_thetacut->AddEntry(IMnpipi_wSid_n_thetacut_sub[2],"#theta_{lab} below 15^{#circ}","L");
   lIMnpipi_wSid_n_thetacut->Draw();
   
+  TCanvas *cboss = new TCanvas("cboss","cboss");
+  TH2D* q_IMnpipi_wSid_n_thetacut15_sub = (TH2D*)q_IMnpipi_wSid_n_thetacut_sub[2]->Clone("q_IMnpipi_wSid_n_thetacut15_sub");
+  q_IMnpipi_wSid_n_thetacut15_sub->GetXaxis()->SetRangeUser(1.35,1.50);
+  TH1D* IMnpipi_wSid_n_thetacut15_sub = q_IMnpipi_wSid_n_thetacut15_sub->ProjectionX("IMnpipi_wSid_n_thetacut15_sub");
+  IMnpipi_wSid_n_thetacut15_sub->Draw("H");
+  
+    
+    
+    
   /*
   TH2D* nmom_IMnpipi_wSid_n_data = (TH2D*)fr->Get("nmom_IMnpipi_wSid_n");
   TH2D* nmom_IMnpipi_wSid_n_mix  = (TH2D*)fmix->Get("nmom_IMnpipi_wSid_n");
