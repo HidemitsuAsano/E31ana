@@ -462,15 +462,14 @@ void K0SigmaTemp()
       double Spnet = inteSp - inteSpsidelo - inteSpsidehi;
       
       pt->AddText(Form("IM(n#pi^{-#}pi^{+}  %0.2f-%0.2f",1.0+ibin*1.0/nbintemplate,1.0+(ibin+1.0)/nbintemplate)); 
-      pt->AddText(Form("K0 count %0.2f ",inteK0));
+      pt->AddText(Form("K0 count     %0.2f ",inteK0));
       pt->AddText(Form("K0 side low  %0.2f ",inteK0sidelo));
       pt->AddText(Form("K0 side high %0.2f ",inteK0sidehi));
-      pt->AddText(Form("K0 net   %0.2f    ", inteK0-inteK0sidelo-inteK0sidehi));
+      pt->AddText(Form("K0 net (model)  %0.2f    ", inteK0-inteK0sidelo-inteK0sidehi));
       pt->AddText(Form("Sigma+ count %0.2f ",inteSp));
       pt->AddText(Form("Sigma+ side low   %0.2f ",inteSpsidelo));
       pt->AddText(Form("Sigma+ side high  %0.2f ",inteSpsidehi));
-      pt->AddText(Form("Sigma+ net  %0.2f ", inteSp-inteSpsidelo-inteSpsidehi));
-      pt->AddText(Form("K0 ratio in cross  %0.2f ",K0net/(K0net+Spnet))); 
+      pt->AddText(Form("Sigma+ net (model)  %0.2f ", inteSp-inteSpsidelo-inteSpsidehi));
       pt->Draw();
     }
   }
