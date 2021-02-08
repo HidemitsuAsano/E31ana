@@ -612,12 +612,16 @@ void K0SigmaTemp()
   TH1D* IMnpip_n_sub_bin_2[nbintemplate][nqcut];
   TH1D* IMnpim_n_sub_bin_2[nbintemplate][nqcut];
   TGraphErrors *gr_IMnpim_n_sub_bin_2[nbintemplate][nqcut];
-  
   TCanvas *cIMnpim_IMnpip_n_sub_bin_cut[nbintemplate][nqcut];
   TH1D* IMnpip_wSid_n_Sm_sub_bin[nbintemplate][nqcut];
   TH1D* IMnpip_wSid_n_Sm_sub_bin_select[nbintemplate][nqcut];
+  TH1D* IMnpip_wSid_n_Sm_sub_bin_sidelo[nbintemplate][nqcut];
+  TH1D* IMnpip_wSid_n_Sm_sub_bin_sidehi[nbintemplate][nqcut];
   TH1D* IMnpim_wSid_n_Sp_sub_bin[nbintemplate][nqcut];
-  TGraphErrors *gr_IMnpim_wSid_n_Sp_sub_bin[nbintemplate][nqcut];
+  TH1D* IMnpim_wSid_n_Sp_sub_bin_select[nbintemplate][nqcut];
+  TH1D* IMnpim_wSid_n_Sp_sub_bin_sidelo[nbintemplate][nqcut];
+  TH1D* IMnpim_wSid_n_Sp_sub_bin_sidelo2[nbintemplate][nqcut];
+  TH1D* IMnpim_wSid_n_Sp_sub_bin_sidelohi[nbintemplate][nqcut];
   
   for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
     for(int iq=0;iq<nqcut;iq++){
@@ -660,20 +664,24 @@ void K0SigmaTemp()
       cIMnpim_IMnpip_n_sub_bin_cut[ibin][iq]->cd(1);
       IMnpip_wSid_n_Sm_sub_bin[ibin][iq] = (TH1D*)IMnpim_IMnpip_wSid_n_Sm_bin_sub[ibin][iq]->ProjectionX(Form("IMnpip_wSid_n_Sm_sub_bin%d_%d",ibin,iq));
       IMnpip_wSid_n_Sm_sub_bin[ibin][iq]->SetTitle(Form("IMnpip_wSid_n_Sm_sub_bin%d_%d",ibin,iq));
-      IMnpip_wSid_n_Sm_sub_bin[ibin][iq]->Draw("HE");
+      IMnpip_wSid_n_Sm_sub_bin[ibin][iq]->Draw("H");
       IMnpip_wSid_n_Sm_sub_bin_select[ibin][iq] = (TH1D*)IMnpip_wSid_n_Sm_sub_bin[ibin][iq]->Clone(Form("IMnpip_wSid_n_Sm_sub_bin%d_%d_select",ibin,iq));
       IMnpip_wSid_n_Sm_sub_bin_select[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
       IMnpip_wSid_n_Sm_sub_bin_select[ibin][iq]->SetLineColor(2);
       IMnpip_wSid_n_Sm_sub_bin_select[ibin][iq]->SetFillColor(2);
-      IMnpip_wSid_n_Sm_sub_bin_select[ibin][iq]->Draw("HEsame");
+      IMnpip_wSid_n_Sm_sub_bin_select[ibin][iq]->Draw("Hsame");
       
       cIMnpim_IMnpip_n_sub_bin_cut[ibin][iq]->cd(4);
       IMnpim_wSid_n_Sp_sub_bin[ibin][iq]
       = (TH1D*)IMnpim_IMnpip_wSid_n_Sp_bin_sub[ibin][iq]->ProjectionY(Form("IMnpim_wSid_n_Sp_sub_bin%d_%d",ibin,iq));
-      
-      gr_IMnpim_wSid_n_Sp_sub_bin[ibin][iq] = new TGraphErrors();
-      HistToRorateGraph(IMnpim_wSid_n_Sp_sub_bin[ibin][iq],*gr_IMnpim_wSid_n_Sp_sub_bin[ibin][iq]);
-      gr_IMnpim_wSid_n_Sp_sub_bin[ibin][iq]->Draw("AP");
+      IMnpim_wSid_n_Sp_sub_bin[ibin][iq]->Draw("H");
+      IMnpim_wSid_n_Sp_sub_bin_select[ibin][iq] = (TH1D*)IMnpim_wSid_n_Sp_sub_bin[ibin][iq]->Clone(Form("IMnpim_wSid_n_Sp_sub_bin%d_%d_select",ibin,iq));
+      IMnpim_wSid_n_Sp_sub_bin_select[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
+      IMnpim_wSid_n_Sp_sub_bin_select[ibin][iq]->SetLineColor(2);
+      IMnpim_wSid_n_Sp_sub_bin_select[ibin][iq]->SetFillColor(2);
+      IMnpim_wSid_n_Sp_sub_bin_select[ibin][iq]->Draw("Hsame");
+      IMnpim_wSid_n_Sp_sub_bin_sidelo[ibin][iq] = (TH1D*)IMnpim_wSid_n_Sp_sub_bin[ibin][iq]->Clone(Form("IMnpim_wSid_n_Sp_sub_bin%d_%d_sidelo",ibin,iq));
+
       
       cIMnpim_IMnpip_n_sub_bin_cut[ibin][iq]->cd(2);
       TPaveText *pt = new TPaveText(.05,.05,.95,.7);
