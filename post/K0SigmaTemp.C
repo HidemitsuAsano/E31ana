@@ -71,88 +71,88 @@ void K0SigmaTemp()
   gStyle->SetErrorX(0.);  
 
   const unsigned int nbintemplate = 100;
-  TH2F* IMpippim_IMnpip_n_data[3];
-  TH2F* IMpippim_IMnpim_n_data[3];
-  TH2F* IMpippim_IMnpip_n_bin_data[nbintemplate][3];
-  TH2F* IMpippim_IMnpim_n_bin_data[nbintemplate][3];
-  TH2F* IMpippim_IMnpip_n_mix[3];
-  TH2F* IMpippim_IMnpim_n_mix[3];
-  TH2F* IMpippim_IMnpip_n_bin_mix[nbintemplate][3];
-  TH2F* IMpippim_IMnpim_n_bin_mix[nbintemplate][3];
-  TH2F* IMpippim_IMnpip_n_sub[3];
-  TH2F* IMpippim_IMnpim_n_sub[3];
-  TH2F* IMpippim_IMnpip_n_bin_sub[nbintemplate][3];
-  TH2F* IMpippim_IMnpim_n_bin_sub[nbintemplate][3];
-  TH2F* IMpippim_IMnpip_wSid_n_Sp_data[3];
-  TH2F* IMpippim_IMnpip_wSid_n_Sp_bin_data[nbintemplate][3];
-  TH2F* IMpippim_IMnpip_wSid_n_Sp_mix[3];
-  TH2F* IMpippim_IMnpip_wSid_n_Sp_bin_mix[nbintemplate][3];
-  TH2F* IMpippim_IMnpip_wSid_n_Sp_sub[3];
-  TH2F* IMpippim_IMnpip_wSid_n_Sp_bin_sub[nbintemplate][3];
-  TH2F* IMpippim_IMnpim_wSid_n_Sm_data[3];
-  TH2F* IMpippim_IMnpim_wSid_n_Sm_bin_data[nbintemplate][3];
-  TH2F* IMpippim_IMnpim_wSid_n_Sm_mix[3];
-  TH2F* IMpippim_IMnpim_wSid_n_Sm_bin_mix[nbintemplate][3];
-  TH2F* IMpippim_IMnpim_wSid_n_Sm_sub[3];
-  TH2F* IMpippim_IMnpim_wSid_n_Sm_bin_sub[nbintemplate][3];
-  TH2F* IMpippim_IMnpip_wK0_n_data[3];
-  TH2F* IMpippim_IMnpip_wK0_n_bin_data[nbintemplate][3];
-  TH2F* IMpippim_IMnpip_wK0_n_mix[3];
-  TH2F* IMpippim_IMnpip_wK0_n_bin_mix[nbintemplate][3];
-  TH2F* IMpippim_IMnpip_wK0_n_sub[3];
-  TH2F* IMpippim_IMnpip_wK0_n_bin_sub[nbintemplate][3];
-  TH2F* IMpippim_IMnpim_wK0_n_data[3];
-  TH2F* IMpippim_IMnpim_wK0_n_bin_data[nbintemplate][3];
-  TH2F* IMpippim_IMnpim_wK0_n_mix[3];
-  TH2F* IMpippim_IMnpim_wK0_n_bin_mix[nbintemplate][3];
-  TH2F* IMpippim_IMnpim_wK0_n_sub[3];
-  TH2F* IMpippim_IMnpim_wK0_n_bin_sub[nbintemplate][3];
-  TH2F* IMpippim_IMnpip_wK0orwSid_n_data[3];
-  TH2F* IMpippim_IMnpim_wK0orwSid_n_data[3];
-  TH2F* IMpippim_IMnpip_wK0orwSid_n_bin_data[nbintemplate][3];
-  TH2F* IMpippim_IMnpim_wK0orwSid_n_bin_data[nbintemplate][3];
-  TH2F* IMpippim_IMnpip_wK0orwSid_n_mix[3];
-  TH2F* IMpippim_IMnpim_wK0orwSid_n_mix[3];
-  TH2F* IMpippim_IMnpip_wK0orwSid_n_bin_mix[nbintemplate][3];
-  TH2F* IMpippim_IMnpim_wK0orwSid_n_bin_mix[nbintemplate][3];
-  TH2F* IMpippim_IMnpip_wK0orwSid_n_sub[3];
-  TH2F* IMpippim_IMnpim_wK0orwSid_n_sub[3];
-  TH2F* IMpippim_IMnpip_wK0orwSid_n_bin_sub[nbintemplate][3];
-  TH2F* IMpippim_IMnpim_wK0orwSid_n_bin_sub[nbintemplate][3];
-  TH2F* IMnpim_IMnpip_n_data[3];
-  TH2F* IMnpim_IMnpip_n_bin_data[nbintemplate][3];
-  TH2F* IMnpim_IMnpip_n_mix[3];
-  TH2F* IMnpim_IMnpip_n_bin_mix[nbintemplate][3];
-  TH2F* IMnpim_IMnpip_n_sub[3];
-  TH2F* IMnpim_IMnpip_n_bin_sub[nbintemplate][3];
-  TH2F* IMnpim_IMnpip_wSid_n_data[3];
-  TH2F* IMnpim_IMnpip_wSid_n_bin_data[nbintemplate][3];
-  TH2F* IMnpim_IMnpip_wSid_n_mix[3];
-  TH2F* IMnpim_IMnpip_wSid_n_bin_mix[nbintemplate][3];
-  TH2F* IMnpim_IMnpip_wSid_n_sub[3];
-  TH2F* IMnpim_IMnpip_wSid_n_bin_sub[nbintemplate][3];
-  TH2F* IMnpim_IMnpip_wK0orwSid_n_data[3];
-  TH2F* IMnpim_IMnpip_wK0orwSid_n_bin_data[nbintemplate][3];
-  TH2F* IMnpim_IMnpip_wK0orwSid_n_mix[3];
-  TH2F* IMnpim_IMnpip_wK0orwSid_n_bin_mix[nbintemplate][3];
-  TH2F* IMnpim_IMnpip_wK0orwSid_n_sub[3];
-  TH2F* IMnpim_IMnpip_wK0orwSid_n_bin_sub[nbintemplate][3];
-  TH2F* IMnpim_IMnpip_wSid_n_Sp_data[3];
-  TH2F* IMnpim_IMnpip_wSid_n_Sp_bin_data[nbintemplate][3];
-  TH2F* IMnpim_IMnpip_wSid_n_Sp_mix[3];
-  TH2F* IMnpim_IMnpip_wSid_n_Sp_bin_mix[nbintemplate][3];
-  TH2F* IMnpim_IMnpip_wSid_n_Sp_sub[3];
-  TH2F* IMnpim_IMnpip_wSid_n_Sp_bin_sub[nbintemplate][3];
-  TH2F* IMnpim_IMnpip_wSid_n_Sm_data[3];
-  TH2F* IMnpim_IMnpip_wSid_n_Sm_bin_data[nbintemplate][3];
-  TH2F* IMnpim_IMnpip_wSid_n_Sm_mix[3];
-  TH2F* IMnpim_IMnpip_wSid_n_Sm_bin_mix[nbintemplate][3];
-  TH2F* IMnpim_IMnpip_wSid_n_Sm_sub[3];
-  TH2F* IMnpim_IMnpip_wSid_n_Sm_bin_sub[nbintemplate][3];
+  const int nqcut=1;
+  TH2F* IMpippim_IMnpip_n_data[nqcut];
+  TH2F* IMpippim_IMnpim_n_data[nqcut];
+  TH2F* IMpippim_IMnpip_n_bin_data[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpim_n_bin_data[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpip_n_mix[nqcut];
+  TH2F* IMpippim_IMnpim_n_mix[nqcut];
+  TH2F* IMpippim_IMnpip_n_bin_mix[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpim_n_bin_mix[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpip_n_sub[nqcut];
+  TH2F* IMpippim_IMnpim_n_sub[nqcut];
+  TH2F* IMpippim_IMnpip_n_bin_sub[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpim_n_bin_sub[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_data[nqcut];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_bin_data[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_mix[nqcut];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_bin_mix[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_sub[nqcut];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_bin_sub[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_data[nqcut];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_bin_data[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_mix[nqcut];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_bin_mix[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_sub[nqcut];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_bin_sub[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpip_wK0_n_data[nqcut];
+  TH2F* IMpippim_IMnpip_wK0_n_bin_data[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpip_wK0_n_mix[nqcut];
+  TH2F* IMpippim_IMnpip_wK0_n_bin_mix[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpip_wK0_n_sub[nqcut];
+  TH2F* IMpippim_IMnpip_wK0_n_bin_sub[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpim_wK0_n_data[nqcut];
+  TH2F* IMpippim_IMnpim_wK0_n_bin_data[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpim_wK0_n_mix[nqcut];
+  TH2F* IMpippim_IMnpim_wK0_n_bin_mix[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpim_wK0_n_sub[nqcut];
+  TH2F* IMpippim_IMnpim_wK0_n_bin_sub[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpip_wK0orwSid_n_data[nqcut];
+  TH2F* IMpippim_IMnpim_wK0orwSid_n_data[nqcut];
+  TH2F* IMpippim_IMnpip_wK0orwSid_n_bin_data[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpim_wK0orwSid_n_bin_data[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpip_wK0orwSid_n_mix[nqcut];
+  TH2F* IMpippim_IMnpim_wK0orwSid_n_mix[nqcut];
+  TH2F* IMpippim_IMnpip_wK0orwSid_n_bin_mix[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpim_wK0orwSid_n_bin_mix[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpip_wK0orwSid_n_sub[nqcut];
+  TH2F* IMpippim_IMnpim_wK0orwSid_n_sub[nqcut];
+  TH2F* IMpippim_IMnpip_wK0orwSid_n_bin_sub[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpim_wK0orwSid_n_bin_sub[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_n_data[nqcut];
+  TH2F* IMnpim_IMnpip_n_bin_data[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_n_mix[nqcut];
+  TH2F* IMnpim_IMnpip_n_bin_mix[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_n_sub[nqcut];
+  TH2F* IMnpim_IMnpip_n_bin_sub[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_data[nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_bin_data[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_mix[nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_bin_mix[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_sub[nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_bin_sub[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_wK0orwSid_n_data[nqcut];
+  TH2F* IMnpim_IMnpip_wK0orwSid_n_bin_data[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_wK0orwSid_n_mix[nqcut];
+  TH2F* IMnpim_IMnpip_wK0orwSid_n_bin_mix[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_wK0orwSid_n_sub[nqcut];
+  TH2F* IMnpim_IMnpip_wK0orwSid_n_bin_sub[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_data[nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_bin_data[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_mix[nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_bin_mix[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_sub[nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_bin_sub[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_data[nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_bin_data[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_mix[nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_bin_mix[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_sub[nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_bin_sub[nbintemplate][nqcut];
   
 
   const char cqcut[][6]= {"all","qlo","qhi"};
-  const int nqcut=1;
   for(int iqcut=0;iqcut<nqcut;iqcut++){
     IMpippim_IMnpip_n_data[iqcut] = (TH2F*)fr[iqcut]->Get("IMpippim_IMnpip_n");
     IMpippim_IMnpip_n_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("IMpippim_IMnpip_n");
@@ -358,6 +358,12 @@ void K0SigmaTemp()
       if(RemoveNegative)IMnpim_IMnpip_wSid_n_Sm_bin_sub[ibin][iqcut]->SetMinimum(0);
     }
   }
+  
+  
+  int ngroup = 3;
+  TH1D* IMnpipi_overlapdeco_K0[ngroup][nqcut];
+  TH1D* IMnpipi_overlapdeco_Sp[ngroup][nqcut];
+  TH1D* IMnpipi_overlapdeco_Sm[ngroup][nqcut];
 
   TCanvas *cIMpippim_IMnpip_n_sub_bin[nbintemplate][nqcut];
   TH1D* IMnpip_n_sub_bin[nbintemplate][nqcut];
@@ -373,10 +379,39 @@ void K0SigmaTemp()
   TH1D* IMpippim_wSid_n_Sp_sub_bin_sidelo[nbintemplate][nqcut];
   TH1D* IMpippim_wSid_n_Sp_sub_bin_sidelo2[nbintemplate][nqcut];//2 sigma to 6 sigma away when there is no higher side
   TH1D* IMpippim_wSid_n_Sp_sub_bin_sidehi[nbintemplate][nqcut];
-  int ngroup = 3;
-  TH1D* IMnpipi_overlapdeco_K0[ngroup][nqcut];
-  TH1D* IMnpipi_overlapdeco_Sp[ngroup][nqcut];
-  TH1D* IMnpipi_overlapdeco_Sm[ngroup][nqcut];
+  //IM(pi+pi-) vs IM(npi-) correlations
+  TCanvas *cIMpippim_IMnpim_n_sub_bin[nbintemplate][nqcut];
+  TH1D* IMnpim_n_sub_bin[nbintemplate][nqcut];
+  TH1D* IMpippim_n_sub_bin_2[nbintemplate][nqcut];
+  TGraphErrors *gr_IMpippim_n_sub_bin_2[nbintemplate][nqcut];
+  TCanvas *cIMpippim_IMnpim_n_sub_bin_cut[nbintemplate][nqcut];
+  TH1D* IMnpim_wK0_n_sub_bin[nbintemplate][nqcut];
+  TH1D* IMnpim_wK0_n_sub_bin_select[nbintemplate][nqcut];
+  TH1D* IMnpim_wK0_n_sub_bin_sidelo[nbintemplate][nqcut];
+  TH1D* IMnpim_wK0_n_sub_bin_sidehi[nbintemplate][nqcut];
+  TH1D* IMpippim_wSid_n_Sm_sub_bin[nbintemplate][nqcut];
+  TH1D* IMpippim_wSid_n_Sm_sub_bin_select[nbintemplate][nqcut];
+  TH1D* IMpippim_wSid_n_Sm_sub_bin_sidelo[nbintemplate][nqcut];
+  TH1D* IMpippim_wSid_n_Sm_sub_bin_sidelo2[nbintemplate][nqcut];
+  TH1D* IMpippim_wSid_n_Sm_sub_bin_sidehi[nbintemplate][nqcut];
+  
+  TCanvas *cIMnpim_IMnpip_n_sub_bin[nbintemplate][nqcut];
+  TH1D* IMnpip_n_sub_bin_2[nbintemplate][nqcut];
+  TH1D* IMnpim_n_sub_bin_2[nbintemplate][nqcut];
+  TGraphErrors *gr_IMnpim_n_sub_bin_2[nbintemplate][nqcut];
+  TCanvas *cIMnpim_IMnpip_n_sub_bin_cut[nbintemplate][nqcut];
+  TH1D* IMnpip_wSid_n_Sm_sub_bin[nbintemplate][nqcut];
+  TH1D* IMnpip_wSid_n_Sm_sub_bin_select[nbintemplate][nqcut];
+  TH1D* IMnpip_wSid_n_Sm_sub_bin_sidelo[nbintemplate][nqcut];//2 sigma
+  TH1D* IMnpip_wSid_n_Sm_sub_bin_sidelo2[nbintemplate][nqcut];//4 sigma
+  TH1D* IMnpip_wSid_n_Sm_sub_bin_sidehi[nbintemplate][nqcut];//2 sigma
+  TH1D* IMnpip_wSid_n_Sm_sub_bin_sidehi2[nbintemplate][nqcut];//4 simga
+  TH1D* IMnpim_wSid_n_Sp_sub_bin[nbintemplate][nqcut];
+  TH1D* IMnpim_wSid_n_Sp_sub_bin_select[nbintemplate][nqcut];
+  TH1D* IMnpim_wSid_n_Sp_sub_bin_sidelo[nbintemplate][nqcut];//2 sigma
+  TH1D* IMnpim_wSid_n_Sp_sub_bin_sidelo2[nbintemplate][nqcut];//4 sigma
+  TH1D* IMnpim_wSid_n_Sp_sub_bin_sidehi[nbintemplate][nqcut];//2 sigma
+  TH1D* IMnpim_wSid_n_Sp_sub_bin_sidehi2[nbintemplate][nqcut];//4 sigma
   
   for(int ig=0;ig<ngroup;ig++){
     for(int iq=0;iq<nqcut;iq++){
@@ -388,6 +423,7 @@ void K0SigmaTemp()
 
   for(unsigned int ibin=40;ibin<nbintemplate;ibin++){
     for(int iq=0;iq<nqcut;iq++){
+      /*
       //first canvas to display IM(pi+pi-) vs IM(npi+) and their simple projection just to see the signal and other background 
       //no complicated cut at this moment
       cIMpippim_IMnpip_n_sub_bin[ibin][iq] = new TCanvas(Form("cIMpippim_IMnpip_n_sub_bin%d_%d",ibin,iq),Form("cIMpippim_IMnpip_n_sub_bin%d_%d",ibin,iq),800,800);
@@ -407,7 +443,7 @@ void K0SigmaTemp()
       gr_IMpippim_n_sub_bin_1[ibin][iq] = new TGraphErrors();
       HistToRorateGraph(IMpippim_n_sub_bin_1[ibin][iq],*gr_IMpippim_n_sub_bin_1[ibin][iq]);
       gr_IMpippim_n_sub_bin_1[ibin][iq]->Draw("AP");
-      
+      */
       //2nd canvas to display the calculation of decomposion of K0, Sigma+,Sigma- 
       //2D plot in canvas(3) has cut to select K0 or Sigma+
       //projection plot in canvas(1) select Sigma+ events candidate + (Sigma+ & K0 ) overlap events
@@ -510,28 +546,8 @@ void K0SigmaTemp()
       pt->Draw();
       IMnpipi_overlapdeco_K0[0][iq]->Fill(1.0+ibin*1.0/nbintemplate,K0net);
       IMnpipi_overlapdeco_Sp[0][iq]->Fill(1.0+ibin*1.0/nbintemplate,Spnet);
-    }
-  }
-
-  //IM(pi+pi-) vs IM(npi-) correlations
-
-  TCanvas *cIMpippim_IMnpim_n_sub_bin[nbintemplate][nqcut];
-  TH1D* IMnpim_n_sub_bin[nbintemplate][nqcut];
-  TH1D* IMpippim_n_sub_bin_2[nbintemplate][nqcut];
-  TGraphErrors *gr_IMpippim_n_sub_bin_2[nbintemplate][nqcut];
-  TCanvas *cIMpippim_IMnpim_n_sub_bin_cut[nbintemplate][nqcut];
-  TH1D* IMnpim_wK0_n_sub_bin[nbintemplate][nqcut];
-  TH1D* IMnpim_wK0_n_sub_bin_select[nbintemplate][nqcut];
-  TH1D* IMnpim_wK0_n_sub_bin_sidelo[nbintemplate][nqcut];
-  TH1D* IMnpim_wK0_n_sub_bin_sidehi[nbintemplate][nqcut];
-  TH1D* IMpippim_wSid_n_Sm_sub_bin[nbintemplate][nqcut];
-  TH1D* IMpippim_wSid_n_Sm_sub_bin_select[nbintemplate][nqcut];
-  TH1D* IMpippim_wSid_n_Sm_sub_bin_sidelo[nbintemplate][nqcut];
-  TH1D* IMpippim_wSid_n_Sm_sub_bin_sidelo2[nbintemplate][nqcut];
-  TH1D* IMpippim_wSid_n_Sm_sub_bin_sidehi[nbintemplate][nqcut];
-  
-  for(unsigned int ibin=40;ibin<nbintemplate;ibin++){
-    for(int iq=0;iq<nqcut;iq++){
+      
+      /*
       //first canvas to display IM(pi+pi-) vs IM(npi-) and their simple projection just to see the signal and other background 
       //no complicated cut at this moment
       cIMpippim_IMnpim_n_sub_bin[ibin][iq] = new TCanvas(Form("cIMpippim_IMnpim_n_sub_bin%d_%d",ibin,iq),Form("cIMpippim_IMnpim_n_sub_bin%d_%d",ibin,iq),800,800);
@@ -551,6 +567,7 @@ void K0SigmaTemp()
       gr_IMpippim_n_sub_bin_2[ibin][iq] = new TGraphErrors();
       HistToRorateGraph(IMpippim_n_sub_bin_2[ibin][iq],*gr_IMpippim_n_sub_bin_2[ibin][iq]);
       gr_IMpippim_n_sub_bin_2[ibin][iq]->Draw("AP");
+      */
 
       //2nd canvas to display the calculation of decomposion of K0, Sigma+,Sigma- 
       //2D plot in canvas(3) has cut to select K0 or Sigma-
@@ -621,62 +638,38 @@ void K0SigmaTemp()
       //gr_IMpippim_wSid_n_Sm_sub_bin[ibin][iq]->Draw("AP");
       
       cIMpippim_IMnpim_n_sub_bin_cut[ibin][iq]->cd(2);
-      TPaveText *pt = new TPaveText(.05,.05,.95,.7);
-      double inteK0 = IMpippim_wSid_n_Sm_sub_bin_select[ibin][iq]->Integral();
-      double inteK0sidelo = IMpippim_wSid_n_Sm_sub_bin_sidelo[ibin][iq]->Integral();
-      double inteK0sidelo2 = IMpippim_wSid_n_Sm_sub_bin_sidelo2[ibin][iq]->Integral();
-      double inteK0sidehi = IMpippim_wSid_n_Sm_sub_bin_sidehi[ibin][iq]->Integral();
-      double K0net = 0.0;
-      if(ibin>47) K0net = inteK0-inteK0sidelo-inteK0sidehi;
-      else        K0net = inteK0-inteK0sidelo2;
-      if(K0net<0.0) K0net = 0.0; 
-      double inteSm = IMnpim_wK0_n_sub_bin_select[ibin][iq]->Integral();
-      double inteSmsidelo = IMnpim_wK0_n_sub_bin_sidelo[ibin][iq]->Integral();
-      double inteSmsidehi = IMnpim_wK0_n_sub_bin_sidehi[ibin][iq]->Integral();
-      double Smnet = inteSm- inteSmsidelo - inteSmsidehi;
-      if(Smnet<0.0) Smnet = 0.0;
+      TPaveText *pt2 = new TPaveText(.05,.05,.95,.7);
+      double inteK0_g2 = IMpippim_wSid_n_Sm_sub_bin_select[ibin][iq]->Integral();
+      double inteK0sidelo_g2 = IMpippim_wSid_n_Sm_sub_bin_sidelo[ibin][iq]->Integral();
+      double inteK0sidelo2_g2 = IMpippim_wSid_n_Sm_sub_bin_sidelo2[ibin][iq]->Integral();
+      double inteK0sidehi_g2 = IMpippim_wSid_n_Sm_sub_bin_sidehi[ibin][iq]->Integral();
+      double K0net_g2 = 0.0;
+      if(ibin>47) K0net_g2 = inteK0_g2-inteK0sidelo_g2-inteK0sidehi_g2;
+      else        K0net_g2 = inteK0_g2-inteK0sidelo2_g2;
+      if(K0net_g2<0.0) K0net_g2 = 0.0; 
+      double inteSm_g2 = IMnpim_wK0_n_sub_bin_select[ibin][iq]->Integral();
+      double inteSmsidelo_g2 = IMnpim_wK0_n_sub_bin_sidelo[ibin][iq]->Integral();
+      double inteSmsidehi_g2 = IMnpim_wK0_n_sub_bin_sidehi[ibin][iq]->Integral();
+      double Smnet_g2 = inteSm_g2- inteSmsidelo_g2 - inteSmsidehi_g2;
+      if(Smnet_g2<0.0) Smnet_g2 = 0.0;
 
-      pt->AddText(Form("IM(n#pi^{-}#pi^{+})  %0.2f-%0.2f",1.0+ibin*1.0/nbintemplate,1.0+(ibin+1.0)/nbintemplate)); 
-      pt->AddText(Form("K0 count %0.2f ",inteK0));
+      pt2->AddText(Form("IM(n#pi^{-}#pi^{+})  %0.2f-%0.2f",1.0+ibin*1.0/nbintemplate,1.0+(ibin+1.0)/nbintemplate)); 
+      pt2->AddText(Form("K0 count %0.2f ",inteK0_g2));
       if(ibin>47){
-        pt->AddText(Form("K0 side low  %0.2f ",inteK0sidelo));
-        pt->AddText(Form("K0 side high %0.2f ",inteK0sidehi));
+        pt2->AddText(Form("K0 side low  %0.2f ",inteK0sidelo_g2));
+        pt2->AddText(Form("K0 side high %0.2f ",inteK0sidehi_g2));
       }else{
-        pt->AddText(Form("K0 side low  %0.2f ",inteK0sidelo2));
+        pt2->AddText(Form("K0 side low  %0.2f ",inteK0sidelo2_g2));
       }
-      pt->AddText(Form("K0 net  (model)  %0.2f ",K0net));
-      pt->AddText(Form("Sigma- count %0.2f ",inteSm));
-      pt->AddText(Form("Sigma- side low   %0.2f ",inteSmsidelo));
-      pt->AddText(Form("Sigma- side high  %0.2f ",inteSmsidehi));
-      pt->AddText(Form("Sigma- net (model)  %0.2f ", Smnet));
-      pt->Draw();
-      IMnpipi_overlapdeco_K0[1][iq]->Fill(1.0+ibin*1.0/nbintemplate,K0net);
-      IMnpipi_overlapdeco_Sm[1][iq]->Fill(1.0+ibin*1.0/nbintemplate,Smnet);
-    }
-  }
-
-  std::cout << "Sigma- vs Sigma+ decompositon " << std::endl;
-
-  TCanvas *cIMnpim_IMnpip_n_sub_bin[nbintemplate][nqcut];
-  TH1D* IMnpip_n_sub_bin_2[nbintemplate][nqcut];
-  TH1D* IMnpim_n_sub_bin_2[nbintemplate][nqcut];
-  TGraphErrors *gr_IMnpim_n_sub_bin_2[nbintemplate][nqcut];
-  TCanvas *cIMnpim_IMnpip_n_sub_bin_cut[nbintemplate][nqcut];
-  TH1D* IMnpip_wSid_n_Sm_sub_bin[nbintemplate][nqcut];
-  TH1D* IMnpip_wSid_n_Sm_sub_bin_select[nbintemplate][nqcut];
-  TH1D* IMnpip_wSid_n_Sm_sub_bin_sidelo[nbintemplate][nqcut];//2 sigma
-  TH1D* IMnpip_wSid_n_Sm_sub_bin_sidelo2[nbintemplate][nqcut];//4 sigma
-  TH1D* IMnpip_wSid_n_Sm_sub_bin_sidehi[nbintemplate][nqcut];//2 sigma
-  TH1D* IMnpip_wSid_n_Sm_sub_bin_sidehi2[nbintemplate][nqcut];//4 simga
-  TH1D* IMnpim_wSid_n_Sp_sub_bin[nbintemplate][nqcut];
-  TH1D* IMnpim_wSid_n_Sp_sub_bin_select[nbintemplate][nqcut];
-  TH1D* IMnpim_wSid_n_Sp_sub_bin_sidelo[nbintemplate][nqcut];//2 sigma
-  TH1D* IMnpim_wSid_n_Sp_sub_bin_sidelo2[nbintemplate][nqcut];//4 sigma
-  TH1D* IMnpim_wSid_n_Sp_sub_bin_sidehi[nbintemplate][nqcut];//2 sigma
-  TH1D* IMnpim_wSid_n_Sp_sub_bin_sidehi2[nbintemplate][nqcut];//4 sigma
-  
-  for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
-    for(int iq=0;iq<nqcut;iq++){
+      pt2->AddText(Form("K0 net  (model)  %0.2f ",K0net_g2));
+      pt2->AddText(Form("Sigma- count %0.2f ",inteSm_g2));
+      pt2->AddText(Form("Sigma- side low   %0.2f ",inteSmsidelo_g2));
+      pt2->AddText(Form("Sigma- side high  %0.2f ",inteSmsidehi_g2));
+      pt2->AddText(Form("Sigma- net (model)  %0.2f ", Smnet_g2));
+      pt2->Draw();
+      IMnpipi_overlapdeco_K0[1][iq]->Fill(1.0+ibin*1.0/nbintemplate,K0net_g2);
+      IMnpipi_overlapdeco_Sm[1][iq]->Fill(1.0+ibin*1.0/nbintemplate,Smnet_g2);
+      
       /*
       //first canvas to display IM(npi-) vs IM(npi+) and their simple projection just to see the signal and other background 
       //no complicated cut at this moment
@@ -764,30 +757,30 @@ void K0SigmaTemp()
 
 
       cIMnpim_IMnpip_n_sub_bin_cut[ibin][iq]->cd(2);
-      TPaveText *pt = new TPaveText(.05,.05,.95,.7);
-      double inteSm = IMnpim_wSid_n_Sp_sub_bin_select[ibin][iq]->Integral();
-      double inteSmsidelo = IMnpim_wSid_n_Sp_sub_bin_sidelo[ibin][iq]->Integral();
-      double inteSmsidehi = IMnpim_wSid_n_Sp_sub_bin_sidehi[ibin][iq]->Integral();
-      double Smnet = inteSm-inteSmsidelo-inteSmsidehi;
-      if(Smnet<0.0) Smnet = 0.0;
-      double inteSp = IMnpip_wSid_n_Sm_sub_bin_select[ibin][iq]->Integral();
-      double inteSpsidelo = IMnpip_wSid_n_Sm_sub_bin_sidelo[ibin][iq]->Integral();
-      double inteSpsidehi = IMnpip_wSid_n_Sm_sub_bin_sidehi[ibin][iq]->Integral();
-      double Spnet = inteSp- inteSpsidelo - inteSpsidehi;
-      if(Spnet<0.0) Spnet = 0.0;
+      TPaveText *pt3 = new TPaveText(.05,.05,.95,.7);
+      double inteSm_g3 = IMnpim_wSid_n_Sp_sub_bin_select[ibin][iq]->Integral();
+      double inteSmsidelo_g3 = IMnpim_wSid_n_Sp_sub_bin_sidelo[ibin][iq]->Integral();
+      double inteSmsidehi_g3 = IMnpim_wSid_n_Sp_sub_bin_sidehi[ibin][iq]->Integral();
+      double Smnet_g3 = inteSm_g3-inteSmsidelo_g3-inteSmsidehi_g3;
+      if(Smnet_g3<0.0) Smnet_g3 = 0.0;
+      double inteSp_g3 = IMnpip_wSid_n_Sm_sub_bin_select[ibin][iq]->Integral();
+      double inteSpsidelo_g3 = IMnpip_wSid_n_Sm_sub_bin_sidelo[ibin][iq]->Integral();
+      double inteSpsidehi_g3 = IMnpip_wSid_n_Sm_sub_bin_sidehi[ibin][iq]->Integral();
+      double Spnet_g3 = inteSp_g3- inteSpsidelo_g3 - inteSpsidehi_g3;
+      if(Spnet_g3<0.0) Spnet_g3 = 0.0;
 
-      pt->AddText(Form("IM(n#pi^{-}#pi^{+})  %0.2f-%0.2f",1.0+ibin*1.0/nbintemplate,1.0+(ibin+1.0)/nbintemplate)); 
-      pt->AddText(Form("Sigma- count %0.2f ",inteSm));
-      pt->AddText(Form("Sigma- side low   %0.2f ",inteSmsidelo));
-      pt->AddText(Form("Sigma- side high  %0.2f ",inteSmsidehi));
-      pt->AddText(Form("Sigma- net (model) %0.2f ", Smnet));
-      pt->AddText(Form("Sigma+ count %0.2f ",inteSp));
-      pt->AddText(Form("Sigma+ side low   %0.2f ",inteSpsidelo));
-      pt->AddText(Form("Sigma+ side high   %0.2f ",inteSpsidehi));
-      pt->AddText(Form("Sigma+ net (model) %0.2f ",Spnet)); 
-      pt->Draw();
-      IMnpipi_overlapdeco_Sm[2][iq]->Fill(1.0+ibin*1.0/nbintemplate,Smnet);
-      IMnpipi_overlapdeco_Sp[2][iq]->Fill(1.0+ibin*1.0/nbintemplate,Spnet);
+      pt3->AddText(Form("IM(n#pi^{-}#pi^{+})  %0.2f-%0.2f",1.0+ibin*1.0/nbintemplate,1.0+(ibin+1.0)/nbintemplate)); 
+      pt3->AddText(Form("Sigma- count %0.2f ",inteSm_g3));
+      pt3->AddText(Form("Sigma- side low   %0.2f ",inteSmsidelo_g3));
+      pt3->AddText(Form("Sigma- side high  %0.2f ",inteSmsidehi_g3));
+      pt3->AddText(Form("Sigma- net (model) %0.2f ", Smnet_g3));
+      pt3->AddText(Form("Sigma+ count %0.2f ",inteSp_g3));
+      pt3->AddText(Form("Sigma+ side low   %0.2f ",inteSpsidelo_g3));
+      pt3->AddText(Form("Sigma+ side high   %0.2f ",inteSpsidehi_g3));
+      pt3->AddText(Form("Sigma+ net (model) %0.2f ",Spnet_g3)); 
+      pt3->Draw();
+      IMnpipi_overlapdeco_Sm[2][iq]->Fill(1.0+ibin*1.0/nbintemplate,Smnet_g3);
+      IMnpipi_overlapdeco_Sp[2][iq]->Fill(1.0+ibin*1.0/nbintemplate,Spnet_g3);
     }
   }
    
