@@ -542,7 +542,7 @@ void K0SigmaTemp()
       pt->AddText(Form("Sigma+ count %0.2f ",inteSp));
       pt->AddText(Form("Sigma+ side low   %0.2f ",inteSpsidelo));
       pt->AddText(Form("Sigma+ side high  %0.2f ",inteSpsidehi));
-      pt->AddText(Form("Sigma+ net (model)  %0.2f ", inteSp-inteSpsidelo-inteSpsidehi));
+      pt->AddText(Form("Sigma+ net (model)  %0.2f ", Spnet));
       pt->Draw();
       IMnpipi_overlapdeco_K0[0][iq]->Fill(1.0+ibin*1.0/nbintemplate,K0net);
       IMnpipi_overlapdeco_Sp[0][iq]->Fill(1.0+ibin*1.0/nbintemplate,Spnet);
