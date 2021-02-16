@@ -71,7 +71,7 @@ void K0SigmaTemp()
   gStyle->SetErrorX(0.);  
 
   const unsigned int nbintemplate = 100;
-  const int nqcut=1;
+  const int nqcut=3;
   TH2F* IMpippim_IMnpip_n_data[nqcut];
   TH2F* IMpippim_IMnpim_n_data[nqcut];
   TH2F* IMpippim_IMnpip_n_bin_data[nbintemplate][nqcut];
@@ -450,7 +450,7 @@ void K0SigmaTemp()
       //projection plot in canvas(4) select K0     events candidate + (Sigma+ & K0 ) overlap events 
       cIMpippim_IMnpip_n_sub_bin_cut[ibin][iq] 
       = new TCanvas(Form("cIMpippim_IMnpip_n_sub_bin_cut_%d_%d",ibin,iq),Form("cIMpippim_IMnpip_n_sub_bin_cut%d_%d",ibin,iq),800,800);
-      cIMpippim_IMnpip_n_sub_bin_cut[ibin][iq]->Divide(2,2,0,0);
+      cIMpippim_IMnpip_n_sub_bin_cut[ibin][iq]->Divide(2,2);
       cIMpippim_IMnpip_n_sub_bin_cut[ibin][iq]->cd(3);
       
       IMpippim_IMnpip_wK0orwSid_n_bin_sub[ibin][iq]->RebinX(4);
@@ -495,8 +495,8 @@ void K0SigmaTemp()
       IMpippim_wSid_n_Sp_sub_bin_sidehi[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::pipi_MAX_narrow+2.0*anacuts::K0_sigma,anacuts::pipi_MAX_narrow+4.0*anacuts::K0_sigma);
       IMpippim_wSid_n_Sp_sub_bin_sidelo[ibin][iq]->SetLineColor(4);
       IMpippim_wSid_n_Sp_sub_bin_sidelo[ibin][iq]->SetFillColor(4);
-      IMpippim_wSid_n_Sp_sub_bin_sidelo2[ibin][iq]->SetLineColor(3);
-      IMpippim_wSid_n_Sp_sub_bin_sidelo2[ibin][iq]->SetFillColor(3);
+      IMpippim_wSid_n_Sp_sub_bin_sidelo2[ibin][iq]->SetLineColor(4);
+      IMpippim_wSid_n_Sp_sub_bin_sidelo2[ibin][iq]->SetFillColor(4);
       IMpippim_wSid_n_Sp_sub_bin_sidehi[ibin][iq]->SetLineColor(4);
       IMpippim_wSid_n_Sp_sub_bin_sidehi[ibin][iq]->SetFillColor(4);
       if(ibin>47){
@@ -575,7 +575,7 @@ void K0SigmaTemp()
       //projection plot in canvas(4) select K0     events candidate + (Sigma- & K0 ) overlap events 
       cIMpippim_IMnpim_n_sub_bin_cut[ibin][iq]
       = new TCanvas(Form("cIMpippim_IMnpim_n_sub_bin_cut_%d_%d",ibin,iq),Form("cIMpippim_IMnpim_n_sub_bin_cut%d_%d",ibin,iq),800,800);
-      cIMpippim_IMnpim_n_sub_bin_cut[ibin][iq]->Divide(2,2,0,0);
+      cIMpippim_IMnpim_n_sub_bin_cut[ibin][iq]->Divide(2,2);
       cIMpippim_IMnpim_n_sub_bin_cut[ibin][iq]->cd(3);
 
       IMpippim_IMnpim_wK0orwSid_n_bin_sub[ibin][iq]->RebinX(4);
@@ -697,7 +697,7 @@ void K0SigmaTemp()
       //projection plot in canvas(4) select Sigma- events candidate + (Sigma- & Sigma- ) overlap events 
       cIMnpim_IMnpip_n_sub_bin_cut[ibin][iq]
       = new TCanvas(Form("cIMnpim_IMnpip_n_sub_bin_cut_%d_%d",ibin,iq),Form("cIMnpim_IMnpip_n_sub_bin_cut%d_%d",ibin,iq),800,800);
-      cIMnpim_IMnpip_n_sub_bin_cut[ibin][iq]->Divide(2,2,0,0);
+      cIMnpim_IMnpip_n_sub_bin_cut[ibin][iq]->Divide(2,2);
       cIMnpim_IMnpip_n_sub_bin_cut[ibin][iq]->cd(3);
 
       IMnpim_IMnpip_wK0orwSid_n_bin_sub[ibin][iq]->RebinX(4);
