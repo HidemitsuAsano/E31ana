@@ -618,7 +618,12 @@ void K0SigmaTemp()
       IMpippim_wSid_n_Sm_sub_bin_sidelo2[ibin][iq] = (TH1D*)IMpippim_wSid_n_Sm_sub_bin[ibin][iq]->Clone(Form("IMpippim_wSid_n_Sm_sub_bin_%d_%d_sidelo2",ibin,iq));
       IMpippim_wSid_n_Sm_sub_bin_sidehi[ibin][iq] = (TH1D*)IMpippim_wSid_n_Sm_sub_bin[ibin][iq]->Clone(Form("IMpippim_wSid_n_Sm_sub_bin_%d_%d_sidehi",ibin,iq));
       IMpippim_wSid_n_Sm_sub_bin_sidelo[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::pipi_MIN_narrow-4.0*anacuts::K0_sigma,anacuts::pipi_MIN_narrow-2.0*anacuts::K0_sigma);
-      IMpippim_wSid_n_Sm_sub_bin_sidelo2[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::pipi_MIN_narrow-6.0*anacuts::K0_sigma,anacuts::pipi_MIN_narrow-2.0*anacuts::K0_sigma);
+      if(ibin==45){
+        IMpippim_wSid_n_Sm_sub_bin_sidelo2[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::pipi_MIN_narrow-14.0*anacuts::K0_sigma,anacuts::pipi_MIN_narrow-10.0*anacuts::K0_sigma);
+      }else{
+        IMpippim_wSid_n_Sm_sub_bin_sidelo2[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::pipi_MIN_narrow-6.0*anacuts::K0_sigma,anacuts::pipi_MIN_narrow-2.0*anacuts::K0_sigma);
+      }
+        
       IMpippim_wSid_n_Sm_sub_bin_sidehi[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::pipi_MAX_narrow+2.0*anacuts::K0_sigma,anacuts::pipi_MAX_narrow+4.0*anacuts::K0_sigma);
       IMpippim_wSid_n_Sm_sub_bin_sidelo[ibin][iq]->SetLineColor(4);
       IMpippim_wSid_n_Sm_sub_bin_sidelo[ibin][iq]->SetFillColor(4);
@@ -731,16 +736,18 @@ void K0SigmaTemp()
       IMnpip_wSid_n_Sm_sub_bin_sidehi[ibin][iq]->SetFillColor(4);
       IMnpip_wSid_n_Sm_sub_bin_sidehi2[ibin][iq]->SetLineColor(4);
       IMnpip_wSid_n_Sm_sub_bin_sidehi2[ibin][iq]->SetFillColor(4);
-      if(ibin>42){
+      if(ibin<42){
+        IMnpip_wSid_n_Sm_sub_bin_sidelo2[ibin][iq]->Draw("Hsame");
+      }else if(42 <= ibin && ibin<44){
         IMnpip_wSid_n_Sm_sub_bin_sidelo[ibin][iq]->Draw("Hsame");
         IMnpip_wSid_n_Sm_sub_bin_sidehi[ibin][iq]->Draw("Hsame");
-      }else{
-        IMnpip_wSid_n_Sm_sub_bin_sidelo2[ibin][iq]->Draw("Hsame");
+      }else if(44 <= ibin){
+        IMnpip_wSid_n_Sm_sub_bin_sidehi2[ibin][iq]->Draw("Hsame");
       }
-
       cIMnpim_IMnpip_n_sub_bin_cut[ibin][iq]->cd(4);
       IMnpim_wSid_n_Sp_sub_bin[ibin][iq]
       = (TH1D*)IMnpim_IMnpip_wSid_n_Sp_bin_sub[ibin][iq]->ProjectionY(Form("IMnpim_wSid_n_Sp_sub_bin%d_%d",ibin,iq));
+      IMnpip_wSid_n_Sm_sub_bin[ibin][iq]->SetTitle(Form("IMnpim_wSid_n_Sp_sub_bin%d_%d",ibin,iq));
       IMnpim_wSid_n_Sp_sub_bin[ibin][iq]->Draw("H");
       IMnpim_wSid_n_Sp_sub_bin_select[ibin][iq] = (TH1D*)IMnpim_wSid_n_Sp_sub_bin[ibin][iq]->Clone(Form("IMnpim_wSid_n_Sp_sub_bin%d_%d_select",ibin,iq));
       IMnpim_wSid_n_Sp_sub_bin_select[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
@@ -763,11 +770,13 @@ void K0SigmaTemp()
       IMnpim_wSid_n_Sp_sub_bin_sidehi[ibin][iq]->SetFillColor(4);
       IMnpim_wSid_n_Sp_sub_bin_sidehi2[ibin][iq]->SetLineColor(4);
       IMnpim_wSid_n_Sp_sub_bin_sidehi2[ibin][iq]->SetFillColor(4);
-      if(ibin>42){
+      if(ibin <=42){
+        IMnpim_wSid_n_Sp_sub_bin_sidelo2[ibin][iq]->Draw("Hsame");
+      }else if(42 < ibin && ibin<45){
         IMnpim_wSid_n_Sp_sub_bin_sidelo[ibin][iq]->Draw("Hsame");
         IMnpim_wSid_n_Sp_sub_bin_sidehi[ibin][iq]->Draw("Hsame");
-      }else{
-        IMnpim_wSid_n_Sp_sub_bin_sidelo2[ibin][iq]->Draw("Hsame");
+      }else if(45 <= ibin){
+        IMnpim_wSid_n_Sp_sub_bin_sidehi2[ibin][iq]->Draw("Hsame");
       }
 
       cIMnpim_IMnpip_n_sub_bin_cut[ibin][iq]->cd(2);
@@ -778,8 +787,9 @@ void K0SigmaTemp()
       double inteSmsidehi_g3 = IMnpim_wSid_n_Sp_sub_bin_sidehi[ibin][iq]->Integral();
       double inteSmsidehi2_g3 = IMnpim_wSid_n_Sp_sub_bin_sidehi2[ibin][iq]->Integral();
       double Smnet_g3 = 0;
-      if(ibin>42)Smnet_g3 = inteSm_g3-inteSmsidelo_g3-inteSmsidehi_g3;
-      else Smnet_g3 = inteSm_g3 - inteSmsidelo2_g3; 
+      if(ibin<42) Smnet_g3 = inteSm_g3-inteSmsidelo2_g3;
+      else if(42<=ibin && ibin<44) Smnet_g3 = inteSm_g3 - inteSmsidelo_g3-inteSmsidehi_g3; 
+      else Smnet_g3 = inteSm_g3 - inteSmsidehi2_g3;                      
       if(Smnet_g3<0.0) Smnet_g3 = 0.0;
 
       double inteSp_g3 = IMnpip_wSid_n_Sm_sub_bin_select[ibin][iq]->Integral();
@@ -788,25 +798,30 @@ void K0SigmaTemp()
       double inteSpsidehi_g3 = IMnpip_wSid_n_Sm_sub_bin_sidehi[ibin][iq]->Integral();
       double inteSpsidehi2_g3 = IMnpip_wSid_n_Sm_sub_bin_sidehi2[ibin][iq]->Integral();
       double Spnet_g3 = 0;
-      if(ibin>42) Spnet_g3 = inteSp_g3- inteSpsidelo_g3 - inteSpsidehi_g3;
-      else Spnet_g3 = inteSp_g3 - inteSpsidelo2_g3;
+      if(ibin<42) Spnet_g3 = inteSp_g3- inteSpsidelo2_g3;
+      else if(42< ibin &&  ibin<45) Spnet_g3 = inteSp_g3 - inteSpsidehi_g3 - inteSpsidelo_g3;
+      else Spnet_g3 = inteSp_g3 - inteSpsidehi2_g3;
       if(Spnet_g3<0.0) Spnet_g3 = 0.0;
 
       pt3->AddText(Form("IM(n#pi^{-}#pi^{+})  %0.2f-%0.2f",1.0+ibin*1.0/nbintemplate,1.0+(ibin+1.0)/nbintemplate)); 
       pt3->AddText(Form("Sigma- count %0.2f ",inteSm_g3));
-      if(ibin>42){
+      if(ibin<=42){
+        pt3->AddText(Form("Sigma- side low2   %0.2f ",inteSmsidelo2_g3));
+      }else if(42 < ibin && ibin<45){
         pt3->AddText(Form("Sigma- side low   %0.2f ",inteSmsidelo_g3));
         pt3->AddText(Form("Sigma- side high  %0.2f ",inteSmsidehi_g3));
       }else{
-        pt3->AddText(Form("Sigma- side low2   %0.2f ",inteSmsidelo2_g3));
+        pt3->AddText(Form("Sigma- side high2   %0.2f ",inteSmsidehi2_g3));
       } 
       pt3->AddText(Form("Sigma- net (model) %0.2f ", Smnet_g3));
       pt3->AddText(Form("Sigma+ count %0.2f ",inteSp_g3));
-      if(ibin>42){
+      if(ibin <=42){
+        pt3->AddText(Form("Sigma+ side low2   %0.2f ",inteSpsidelo2_g3));
+      }else if(42 < ibin && ibin<45){
         pt3->AddText(Form("Sigma+ side low   %0.2f ",inteSpsidelo_g3));
         pt3->AddText(Form("Sigma+ side high   %0.2f ",inteSpsidehi_g3));
       }else{
-        pt3->AddText(Form("Sigma+ side low2   %0.2f ",inteSpsidelo2_g3));
+        pt3->AddText(Form("Sigma+ side high2   %0.2f ",inteSpsidehi2_g3));
       }
       pt3->AddText(Form("Sigma+ net (model) %0.2f ",Spnet_g3)); 
       pt3->Draw();
