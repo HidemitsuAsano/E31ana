@@ -660,14 +660,14 @@ void K0SigmaTemp()
       if(Smnet_g2<0.0) Smnet_g2 = 0.0;
 
       pt2->AddText(Form("IM(n#pi^{-}#pi^{+})  %0.2f-%0.2f",1.0+ibin*1.0/nbintemplate,1.0+(ibin+1.0)/nbintemplate)); 
-      pt2->AddText(Form("K0 count %0.2f ",inteK0_g2));
+      pt2->AddText(Form("K0 count %0.2f ",inteK0_g2));// 
       if(ibin>51){
         pt2->AddText(Form("K0 side low  %0.2f ",inteK0sidelo_g2));
         pt2->AddText(Form("K0 side high %0.2f ",inteK0sidehi_g2));
       }else{
         pt2->AddText(Form("K0 side low (4 sigma)  %0.2f ",inteK0sidelo2_g2));
       }
-      pt2->AddText(Form("K0 net  (model)  %0.2f ",K0net_g2));
+      pt2->AddText(Form("K0 net  (model)  %0.2f ",K0net_g2)); //K0 in (K0 ^ Sm)     
       pt2->AddText(Form("Sigma- count %0.2f ",inteSm_g2));
       pt2->AddText(Form("Sigma- side low   %0.2f ",inteSmsidelo_g2));
       pt2->AddText(Form("Sigma- side high  %0.2f ",inteSmsidehi_g2));
@@ -840,7 +840,7 @@ void K0SigmaTemp()
         pt3->AddText(Form("Sigma+ side low   %0.2f ",inteSpsidelo_g3));
         pt3->AddText(Form("Sigma+ side high   %0.2f ",inteSpsidehi_g3));
       }else{
-        pt3->AddText(Form("Sigma+ side high2 (4 sigma)  %0.2f ",inteSpsidehi2_g3));
+        pt3->AddText(Form("Sigma+ side high (4 sigma)  %0.2f ",inteSpsidehi2_g3));
       }
       pt3->AddText(Form("Sigma+ net (model) %0.2f ",Spnet_g3)); 
       pt3->Draw();
