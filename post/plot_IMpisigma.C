@@ -552,6 +552,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* IMnpim_IMnpip_dE_wSid_n_fake_pat7;//for GEANT4 sim.
   TH2F* IMnpim_IMnpip_dE_woK0_n;//
   TH2F* IMnpim_IMnpip_dE_woK0_wSid_n;//
+  TH2F* IMnpim_IMnpip_dE_woK0_wSid_n_woSm;//
+  TH2F* IMnpim_IMnpip_dE_woK0_wSid_n_woSp;//
   TH2F* IMnpim_IMnpip_dE_woK0_wSid_n_bin[nbintemplate];//
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n;//
   TH2F* IMnpim_IMnpip_dE_woSid;//
@@ -1950,6 +1952,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0_wSid_n = new TH2F(Form("IMnpim_IMnpip_dE_woK0_wSid_n"),Form("IMnpim_IMnpip_dE_woK0_wSid_n"),nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_woK0_wSid_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_woK0_wSid_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  
+  IMnpim_IMnpip_dE_woK0_wSid_n_woSm = new TH2F("IMnpim_IMnpip_dE_woK0_wSid_n_woSm","IMnpim_IMnpip_dE_woK0_wSid_n_woSm",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  IMnpim_IMnpip_dE_woK0_wSid_n_woSm->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpim_IMnpip_dE_woK0_wSid_n_woSm->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  
+  IMnpim_IMnpip_dE_woK0_wSid_n_woSp = new TH2F("IMnpim_IMnpip_dE_woK0_wSid_n_woSp","IMnpim_IMnpip_dE_woK0_wSid_n_woSp",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  IMnpim_IMnpip_dE_woK0_wSid_n_woSp->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpim_IMnpip_dE_woK0_wSid_n_woSp->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   
   for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
     float binlow=1.0+(float)ibin*1./nbintemplate;
@@ -5426,7 +5436,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         }
       }
 
-      if(!SigmawidePFlag && !SigmawideMFlag) {
+      if(!SigmaPFlag && !SigmaMFlag) {
         IMpippim_DCApipibeam_wK0_woSid_n->Fill(dca_pipibeam,LVec_pip_pim.M(),weight);
         nmom_IMnpipi_wK0_woSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P(),weight);
         q_IMnpipi_wK0_woSid_n->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
@@ -5738,9 +5748,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         
         if(!SigmaMFlag){
           q_IMnpipi_woK0_wSid_n_woSm->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+          IMnpim_IMnpip_dE_woK0_wSid_n_woSm->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         }
         if(!SigmaPFlag){
           q_IMnpipi_woK0_wSid_n_woSp->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+          IMnpim_IMnpip_dE_woK0_wSid_n_woSp->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         }
         //std::cout << __LINE__ << std::endl;
         if(SimSpmode || SimSmmode){
