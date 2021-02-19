@@ -415,9 +415,9 @@ void K0SigmaTemp()
   
   for(int ig=0;ig<ngroup;ig++){
     for(int iq=0;iq<nqcut;iq++){
-      IMnpipi_overlapdeco_K0[ig][iq] = new TH1D(Form("IMnpipi_overlapdeco_K0_g%d_%d",ig,iq),Form("IMnpipi_overlapdeco_K0_g%d_%d",ig,iq),100,1,2);
-      IMnpipi_overlapdeco_Sp[ig][iq] = new TH1D(Form("IMnpipi_overlapdeco_Sp_g%d_%d",ig,iq),Form("IMnpipi_overlapdeco_Sp_g%d_%d",ig,iq),100,1,2);
-      IMnpipi_overlapdeco_Sm[ig][iq] = new TH1D(Form("IMnpipi_overlapdeco_Sm_g%d_%d",ig,iq),Form("IMnpipi_overlapdeco_Sm_g%d_%d",ig,iq),100,1,2);
+      if(ig!=2)IMnpipi_overlapdeco_K0[ig][iq] = new TH1D(Form("IMnpipi_overlapdeco_K0_g%d_%d",ig,iq),Form("IMnpipi_overlapdeco_K0_g%d_%d",ig,iq),100,1,2);
+      if(ig!=1)IMnpipi_overlapdeco_Sp[ig][iq] = new TH1D(Form("IMnpipi_overlapdeco_Sp_g%d_%d",ig,iq),Form("IMnpipi_overlapdeco_Sp_g%d_%d",ig,iq),100,1,2);
+      if(ig!=0)IMnpipi_overlapdeco_Sm[ig][iq] = new TH1D(Form("IMnpipi_overlapdeco_Sm_g%d_%d",ig,iq),Form("IMnpipi_overlapdeco_Sm_g%d_%d",ig,iq),100,1,2);
     }
   }
 
@@ -521,17 +521,28 @@ void K0SigmaTemp()
       double inteK0sidelo = IMpippim_wSid_n_Sp_sub_bin_sidelo[ibin][iq]->Integral();  //>Integral(binpipi_MIN_4sigma,binpipi_MIN-1);
       double inteK0sidelo2 = IMpippim_wSid_n_Sp_sub_bin_sidelo2[ibin][iq]->Integral();  //>Integral(binpipi_MIN_4sigma,binpipi_MIN-1);
       double inteK0sidehi = IMpippim_wSid_n_Sp_sub_bin_sidehi[ibin][iq]->Integral();  //>Integral(binpipi_MIN_4sigma,binpipi_MIN-1);
-      double K0net = 0.0; 
-      if(ibin>51) K0net = inteK0-inteK0sidelo-inteK0sidehi;
-      else        K0net = inteK0-inteK0sidelo2;
-      if(K0net<0.0) K0net = 0.0;
+      double K0estimated=0.0;
+      double K0overlap = 0.0; 
+      if(ibin>51) K0estimated = inteK0sidelo+inteK0sidehi;
+      else        K0estimated = inteK0sidelo2;
+      K0overlap = inteK0-K0estimated;
+      if(K0estimated<0.0) K0estimated=0.0;
+      if(K0overlap<0.0) {
+        K0overlap = 0.0;
+        K0estimated=0.0;
+      }
       double inteSp = IMnpip_wK0_n_sub_bin_select[ibin][iq]->Integral();  //->Integral(binnpip_MIN,binnpip_MAX);
       double inteSpsidelo = IMnpip_wK0_n_sub_bin_sidelo[ibin][iq]->Integral();  //(binnpip_MIN_2sigma,binnpip_MIN-1);
       double inteSpsidehi = IMnpip_wK0_n_sub_bin_sidehi[ibin][iq]->Integral();//(binnpip_MAX+1,binnpip_MAX_2sigma);
-      double Spnet = inteSp - inteSpsidelo - inteSpsidehi;
-      if(Spnet<0.0) Spnet = 0.0;
-      
-      pt->AddText(Form("IM(n#pi^{-}#pi^{+})  %0.2f-%0.2f",1.0+ibin*1.0/nbintemplate,1.0+(ibin+1.0)/nbintemplate)); 
+      double Spestimated = 0.0;
+      Spestimated = inteSpsidelo + inteSpsidehi;
+      double Spoverlap = inteSp - Spestimated;
+      if(Spestimated<0.0) Spestimated = 0.0;
+      if(Spoverlap<0.0){
+        Spoverlap = 0.0;
+        Spestimated = 0.0;
+      }
+      pt->AddText(Form("IM(n#pi^{-}#pi^{+})  %0.2f-%0.2f %s",1.0+ibin*1.0/nbintemplate,1.0+(ibin+1.0)/nbintemplate,cqcut[iq])); 
       pt->AddText(Form("K0 count     %0.2f ",inteK0));
       if(ibin>51){
         pt->AddText(Form("K0 side low  %0.2f ",inteK0sidelo));
@@ -539,14 +550,16 @@ void K0SigmaTemp()
       }else{
         pt->AddText(Form("K0 side low (4 sigma)  %0.2f ",inteK0sidelo2));
       }
-      pt->AddText(Form("K0 net (model)  %0.2f    ", K0net));
+      pt->AddText(Form("K0 estimated %0.2f ", K0estimated));
       pt->AddText(Form("Sigma+ count %0.2f ",inteSp));
       pt->AddText(Form("Sigma+ side low   %0.2f ",inteSpsidelo));
       pt->AddText(Form("Sigma+ side high  %0.2f ",inteSpsidehi));
-      pt->AddText(Form("Sigma+ net (model)  %0.2f ", Spnet));
+      pt->AddText(Form("Sigma+ estimated %0.2f ", Spestimated));
       pt->Draw();
-      IMnpipi_overlapdeco_K0[0][iq]->Fill(1.0+ibin*1.0/nbintemplate,K0net);
-      IMnpipi_overlapdeco_Sp[0][iq]->Fill(1.0+ibin*1.0/nbintemplate,Spnet);
+      IMnpipi_overlapdeco_K0[0][iq]->SetBinContent(ibin,K0estimated);
+      IMnpipi_overlapdeco_K0[0][iq]->SetBinError(ibin,sqrt(K0estimated));
+      IMnpipi_overlapdeco_Sp[0][iq]->SetBinContent(ibin,Spestimated);
+      IMnpipi_overlapdeco_Sp[0][iq]->SetBinError(ibin,sqrt(Spestimated));
       
       /*
       //first canvas to display IM(pi+pi-) vs IM(npi-) and their simple projection just to see the signal and other background 
@@ -586,7 +599,7 @@ void K0SigmaTemp()
       IMpippim_IMnpim_wK0orwSid_n_bin_sub[ibin][iq]->Draw("colz");
       cIMpippim_IMnpim_n_sub_bin_cut[ibin][iq]->cd(1);
       IMnpim_wK0_n_sub_bin[ibin][iq] = (TH1D*)IMpippim_IMnpim_wK0_n_bin_sub[ibin][iq]->ProjectionX(Form("IMnpim_wK0_n_sub_bin%d_%d",ibin,iq));
-      IMnpim_wK0_n_sub_bin[ibin][iq] ->SetTitle(Form("IMnpim_wK0_n_sub_bin%d_%d",ibin,iq));
+      IMnpim_wK0_n_sub_bin[ibin][iq]->SetTitle(Form("IMnpim_wK0_n_sub_bin%d_%d",ibin,iq));
       IMnpim_wK0_n_sub_bin[ibin][iq]->Draw("H");
       IMnpim_wK0_n_sub_bin_select[ibin][iq] = (TH1D*)IMnpim_wK0_n_sub_bin[ibin][iq]->Clone(Form("IMnpim_wK0_n_sub_bin%d_%d_select",ibin,iq));
       IMnpim_wK0_n_sub_bin_select[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
@@ -649,17 +662,27 @@ void K0SigmaTemp()
       double inteK0sidelo_g2 = IMpippim_wSid_n_Sm_sub_bin_sidelo[ibin][iq]->Integral();
       double inteK0sidelo2_g2 = IMpippim_wSid_n_Sm_sub_bin_sidelo2[ibin][iq]->Integral();
       double inteK0sidehi_g2 = IMpippim_wSid_n_Sm_sub_bin_sidehi[ibin][iq]->Integral();
-      double K0net_g2 = 0.0;
-      if(ibin>51) K0net_g2 = inteK0_g2-inteK0sidelo_g2-inteK0sidehi_g2;
-      else        K0net_g2 = inteK0_g2-inteK0sidelo2_g2;
-      if(K0net_g2<0.0) K0net_g2 = 0.0; 
+      double K0overlap_g2 = 0.0;
+      double K0estimated_g2 = 0.0;
+      if(ibin>51) K0estimated_g2 = inteK0sidelo_g2+inteK0sidehi_g2;
+      else        K0estimated_g2 = inteK0sidelo2_g2;
+      K0overlap_g2 = K0estimated_g2;
+      if(K0estimated_g2<0.0) K0estimated_g2 = 0.0;
+      if(K0overlap_g2<0.0){
+        K0overlap_g2 = 0.0; 
+        K0estimated_g2 = 0.0;
+      }
       double inteSm_g2 = IMnpim_wK0_n_sub_bin_select[ibin][iq]->Integral();
       double inteSmsidelo_g2 = IMnpim_wK0_n_sub_bin_sidelo[ibin][iq]->Integral();
       double inteSmsidehi_g2 = IMnpim_wK0_n_sub_bin_sidehi[ibin][iq]->Integral();
-      double Smnet_g2 = inteSm_g2- inteSmsidelo_g2 - inteSmsidehi_g2;
-      if(Smnet_g2<0.0) Smnet_g2 = 0.0;
-
-      pt2->AddText(Form("IM(n#pi^{-}#pi^{+})  %0.2f-%0.2f",1.0+ibin*1.0/nbintemplate,1.0+(ibin+1.0)/nbintemplate)); 
+      double Smestimated_g2 = inteSmsidelo_g2 + inteSmsidehi_g2;
+      double Smoverlap_g2 = inteSm_g2 - Smestimated_g2;
+      if(Smestimated_g2 <0.0) Smestimated_g2 = 0.0;
+      if(Smoverlap_g2<0.0) {
+         Smoverlap_g2 = 0.0;
+         Smestimated_g2 = 0.0;
+      }
+      pt2->AddText(Form("IM(n#pi^{-}#pi^{+})  %0.2f-%0.2f %s",1.0+ibin*1.0/nbintemplate,1.0+(ibin+1.0)/nbintemplate,cqcut[iq])); 
       pt2->AddText(Form("K0 count %0.2f ",inteK0_g2));// 
       if(ibin>51){
         pt2->AddText(Form("K0 side low  %0.2f ",inteK0sidelo_g2));
@@ -667,14 +690,16 @@ void K0SigmaTemp()
       }else{
         pt2->AddText(Form("K0 side low (4 sigma)  %0.2f ",inteK0sidelo2_g2));
       }
-      pt2->AddText(Form("K0 net  (model)  %0.2f ",K0net_g2)); //K0 in (K0 ^ Sm)     
+      pt2->AddText(Form("K0 estimated  %0.2f ",K0estimated_g2)); //K0 in (K0 ^ Sm)     
       pt2->AddText(Form("Sigma- count %0.2f ",inteSm_g2));
       pt2->AddText(Form("Sigma- side low   %0.2f ",inteSmsidelo_g2));
       pt2->AddText(Form("Sigma- side high  %0.2f ",inteSmsidehi_g2));
-      pt2->AddText(Form("Sigma- net (model)  %0.2f ", Smnet_g2));
+      pt2->AddText(Form("Sigma- estimated  %0.2f ", Smestimated_g2));
       pt2->Draw();
-      IMnpipi_overlapdeco_K0[1][iq]->Fill(1.0+ibin*1.0/nbintemplate,K0net_g2);
-      IMnpipi_overlapdeco_Sm[1][iq]->Fill(1.0+ibin*1.0/nbintemplate,Smnet_g2);
+      IMnpipi_overlapdeco_K0[1][iq]->SetBinContent(ibin,K0estimated_g2);
+      IMnpipi_overlapdeco_K0[1][iq]->SetBinError(ibin,sqrt(K0estimated_g2));
+      IMnpipi_overlapdeco_Sm[1][iq]->SetBinContent(ibin,Smestimated_g2);
+      IMnpipi_overlapdeco_Sm[1][iq]->SetBinError(ibin,sqrt(Smestimated_g2));
       
       /*
       //first canvas to display IM(npi-) vs IM(npi+) and their simple projection just to see the signal and other background 
@@ -799,53 +824,68 @@ void K0SigmaTemp()
       double inteSmsidelo2_g3 = IMnpim_wSid_n_Sp_sub_bin_sidelo2[ibin][iq]->Integral();
       double inteSmsidehi_g3 = IMnpim_wSid_n_Sp_sub_bin_sidehi[ibin][iq]->Integral();
       double inteSmsidehi2_g3 = IMnpim_wSid_n_Sp_sub_bin_sidehi2[ibin][iq]->Integral();
-      double Smnet_g3 = 0;
-      if(ibin<42) Smnet_g3 = inteSm_g3-inteSmsidelo2_g3;
-      else if(ibin==42) Smnet_g3 = inteSm_g3 - inteSmsidehi_g3*2.0;
-      else if(42<ibin && ibin<44) Smnet_g3 = inteSm_g3 - inteSmsidelo_g3-inteSmsidehi_g3; 
-      else Smnet_g3 = inteSm_g3 - inteSmsidehi2_g3;                      
-      if(Smnet_g3<0.0) Smnet_g3 = 0.0;
-
+      double Smestimated_g3 = 0.0;
+      double Smoverlap_g3 = 0.0;
+      
+      if(ibin<42) Smestimated_g3 = inteSmsidelo2_g3;
+      else if(ibin==42) Smestimated_g3 = inteSmsidehi_g3*2.0;
+      else if(42<ibin && ibin<44) Smestimated_g3 = inteSmsidelo_g3+inteSmsidehi_g3; 
+      else Smestimated_g3 = inteSmsidehi2_g3;     
+      if(Smestimated_g3<0.0) Smestimated_g3 = 0.0;
+      Smoverlap_g3 = inteSm_g3 - Smestimated_g3;
+      if(Smoverlap_g3<0.0){
+        Smoverlap_g3 = 0.0;
+        Smestimated_g3 = 0.0;
+      }
       double inteSp_g3 = IMnpip_wSid_n_Sm_sub_bin_select[ibin][iq]->Integral();
       double inteSpsidelo_g3 = IMnpip_wSid_n_Sm_sub_bin_sidelo[ibin][iq]->Integral();
       double inteSpsidelo2_g3 = IMnpip_wSid_n_Sm_sub_bin_sidelo2[ibin][iq]->Integral();
       double inteSpsidehi_g3 = IMnpip_wSid_n_Sm_sub_bin_sidehi[ibin][iq]->Integral();
       double inteSpsidehi2_g3 = IMnpip_wSid_n_Sm_sub_bin_sidehi2[ibin][iq]->Integral();
-      double Spnet_g3 = 0;
-      if(ibin<42) Spnet_g3 = inteSp_g3- inteSpsidelo2_g3;
-      else if(ibin==42) Spnet_g3 = inteSp_g3 - inteSpsidehi_g3*2.0;
-      else if(42< ibin &&  ibin<44) Spnet_g3 = inteSp_g3 - inteSpsidehi_g3 - inteSpsidelo_g3;
-      else Spnet_g3 = inteSp_g3 - inteSpsidehi2_g3;
-      if(Spnet_g3<0.0) Spnet_g3 = 0.0;
-
-      pt3->AddText(Form("IM(n#pi^{-}#pi^{+})  %0.2f-%0.2f",1.0+ibin*1.0/nbintemplate,1.0+(ibin+1.0)/nbintemplate)); 
+      double Spestimated_g3 = 0.0;
+      double Spoverlap_g3 = 0.0;
+      
+      if(ibin<42) Spestimated_g3 = inteSpsidelo2_g3;
+      else if(ibin==42) Spestimated_g3 = inteSpsidehi_g3*2.0;
+      else if(42< ibin &&  ibin<44) Spestimated_g3 = inteSpsidehi_g3 + inteSpsidelo_g3;
+      else Spestimated_g3 = inteSpsidehi2_g3;
+      Spoverlap_g3 = inteSp_g3 - Spestimated_g3;
+      if(Spestimated_g3<0.0) Spestimated_g3 = 0.0;
+      if(Spoverlap_g3<0.0) {
+        Spoverlap_g3 = 0.0;
+        Spestimated_g3 = 0.0;
+      }
+      pt3->AddText(Form("IM(n#pi^{-}#pi^{+})  %0.2f-%0.2f %s",1.0+ibin*1.0/nbintemplate,1.0+(ibin+1.0)/nbintemplate,cqcut[iq])); 
       pt3->AddText(Form("Sigma- count %0.2f ",inteSm_g3));
       if(ibin<42){
         pt3->AddText(Form("Sigma- side low (4 sigma)   %0.2f ",inteSmsidelo2_g3));
       }else if(ibin==42){
         pt3->AddText(Form("Sigma- side high*2   %0.2f ",inteSmsidehi_g3*2.0));
-      }else if(42 < ibin && ibin<45){
+      }else if(42 < ibin && ibin<44){
         pt3->AddText(Form("Sigma- side low   %0.2f ",inteSmsidelo_g3));
         pt3->AddText(Form("Sigma- side high  %0.2f ",inteSmsidehi_g3));
       }else{
         pt3->AddText(Form("Sigma- side high (4 sigma)   %0.2f ",inteSmsidehi2_g3));
       } 
-      pt3->AddText(Form("Sigma- net (model) %0.2f ", Smnet_g3));
+      pt3->AddText(Form("Sigma- estimated %0.2f ", Smestimated_g3));
       pt3->AddText(Form("Sigma+ count %0.2f ",inteSp_g3));
       if(ibin <42){
         pt3->AddText(Form("Sigma+ side low (4 sigma)   %0.2f ",inteSpsidelo2_g3));
       }else if(ibin==42){
         pt3->AddText(Form("Sigma+ side high*2   %0.2f ",inteSpsidehi_g3*2.0));
-      }else if(42 < ibin && ibin<45){
+      }else if(42 < ibin && ibin<44){
         pt3->AddText(Form("Sigma+ side low   %0.2f ",inteSpsidelo_g3));
         pt3->AddText(Form("Sigma+ side high   %0.2f ",inteSpsidehi_g3));
       }else{
         pt3->AddText(Form("Sigma+ side high (4 sigma)  %0.2f ",inteSpsidehi2_g3));
       }
-      pt3->AddText(Form("Sigma+ net (model) %0.2f ",Spnet_g3)); 
+      pt3->AddText(Form("Sigma+ estimated %0.2f ",Spestimated_g3)); 
       pt3->Draw();
-      IMnpipi_overlapdeco_Sm[2][iq]->Fill(1.0+ibin*1.0/nbintemplate,Smnet_g3);
-      IMnpipi_overlapdeco_Sp[2][iq]->Fill(1.0+ibin*1.0/nbintemplate,Spnet_g3);
+
+      IMnpipi_overlapdeco_Sm[2][iq]->SetBinContent(ibin,Smestimated_g3);
+      IMnpipi_overlapdeco_Sm[2][iq]->SetBinError(ibin,sqrt(Smestimated_g3));
+      IMnpipi_overlapdeco_Sp[2][iq]->SetBinContent(ibin,Spestimated_g3);
+      IMnpipi_overlapdeco_Sp[2][iq]->SetBinError(ibin,sqrt(Spestimated_g3));
     }
   }
    
@@ -854,12 +894,18 @@ void K0SigmaTemp()
   TCanvas *csum_K0[ngroup][nqcut];
   for(int ig=0;ig<ngroup;ig++){
     for(int iq=0;iq<nqcut;iq++){
-    csum_K0[ig][iq] = new TCanvas(Form("csum_K0_g%d_q%d",ig,iq),Form("csum_K0_g%d_q%d",ig,iq));
-    IMnpipi_overlapdeco_K0[ig][iq]->Draw("H");
-    csum_Sp[ig][iq] = new TCanvas(Form("csum_Sp_g%d_q%d",ig,iq),Form("csum_Sp_g%d_q%d",ig,iq));
-    IMnpipi_overlapdeco_Sp[ig][iq]->Draw("H");
-    csum_Sm[ig][iq] = new TCanvas(Form("csum_Sm_g%d_q%d",ig,iq),Form("csum_Sm_g%d_q%d",ig,iq));
-    IMnpipi_overlapdeco_Sm[ig][iq]->Draw("H");
+      if(ig!=2){
+        csum_K0[ig][iq] = new TCanvas(Form("csum_K0_g%d_q%d",ig,iq),Form("csum_K0_g%d_q%d",ig,iq));
+        IMnpipi_overlapdeco_K0[ig][iq]->Draw("H");
+      }
+      if(ig!=1){  
+        csum_Sp[ig][iq] = new TCanvas(Form("csum_Sp_g%d_q%d",ig,iq),Form("csum_Sp_g%d_q%d",ig,iq));
+        IMnpipi_overlapdeco_Sp[ig][iq]->Draw("H");
+      }
+      if(ig!=0){
+        csum_Sm[ig][iq] = new TCanvas(Form("csum_Sm_g%d_q%d",ig,iq),Form("csum_Sm_g%d_q%d",ig,iq));
+        IMnpipi_overlapdeco_Sm[ig][iq]->Draw("H");
+      }
     }
   }
 
