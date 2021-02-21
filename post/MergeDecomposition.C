@@ -17,6 +17,7 @@ void MergeDecomposition()
   fmix[2]->Print();
 
   TFile *fdecompos = TFile::Open("K0SigmaTemp.root","READ");
+  fdecompos->Print();
 
   const int nqcut=3;
   const char cqcut[][6]= {"all","qlo","qhi"};
@@ -56,9 +57,9 @@ void MergeDecomposition()
   for(int ig=0;ig<ngroup;ig++){
     for(int iq=0;iq<nqcut;iq++){
       std::cout << ig << " " << iq << std::endl;
-      if(ig!=2)IMnpipi_overladeco_K0[ig][iq] = (TH1D*)fdecompos->Get(Form("IMnpipi_overlapdeco_K0_g%d_%d",ig,iq));
-      if(ig!=1)IMnpipi_overladeco_Sp[ig][iq] = (TH1D*)fdecompos->Get(Form("IMnpipi_overlapdeco_Sp_g%d_%d",ig,iq));
-      if(ig!=0)IMnpipi_overladeco_Sm[ig][iq] = (TH1D*)fdecompos->Get(Form("IMnpipi_overlapdeco_Sm_g%d_%d",ig,iq));
+      if(ig!=2)IMnpipi_overlapdeco_K0[ig][iq] = (TH1D*)fdecompos->Get(Form("IMnpipi_overlapdeco_K0_g%d_%d",ig,iq));
+      if(ig!=1)IMnpipi_overlapdeco_Sp[ig][iq] = (TH1D*)fdecompos->Get(Form("IMnpipi_overlapdeco_Sp_g%d_%d",ig,iq));
+      if(ig!=0)IMnpipi_overlapdeco_Sm[ig][iq] = (TH1D*)fdecompos->Get(Form("IMnpipi_overlapdeco_Sm_g%d_%d",ig,iq));
     }
   }
 
