@@ -24,12 +24,15 @@ void MergeDecomposition()
   TH2D* q_IMnpipi_woK0_wSid_n_woSm_data[nqcut];
   TH2D* q_IMnpipi_woK0_wSid_n_woSm_mix[nqcut];
   TH2D* q_IMnpipi_woK0_wSid_n_woSm_sub[nqcut];
+  TH1D* IMnpipi_woK0_wSid_n_woSm_sub[nqcut];
   TH2D* q_IMnpipi_woK0_wSid_n_woSp_data[nqcut];
   TH2D* q_IMnpipi_woK0_wSid_n_woSp_mix[nqcut];
   TH2D* q_IMnpipi_woK0_wSid_n_woSp_sub[nqcut];
+  TH1D* IMnpipi_woK0_wSid_n_woSp_sub[nqcut];
   TH2D* q_IMnpipi_wK0_woSid_n_data[nqcut];
   TH2D* q_IMnpipi_wK0_woSid_n_mix[nqcut];
   TH2D* q_IMnpipi_wK0_woSid_n_sub[nqcut];
+  TH1D* IMnpipi_wK0_woSid_n_sub[nqcut];
 
   for(int iqcut=0;iqcut<nqcut;iqcut++){
     q_IMnpipi_woK0_wSid_n_woSm_data[iqcut] = (TH2D*)fr[iqcut]->Get("q_IMnpipi_woK0_wSid_n_woSm");
@@ -62,13 +65,13 @@ void MergeDecomposition()
       if(ig!=0)IMnpipi_overlapdeco_Sm[ig][iq] = (TH1D*)fdecompos->Get(Form("IMnpipi_overlapdeco_Sm_g%d_%d",ig,iq));
     }
   }
-
-
-
-
-
-
-
+ 
+  for(int iqcut=0;iqcut<nqcut;iqcut++){
+    IMnpipi_woK0_wSid_n_woSm_sub[iqcut] = q_IMnpipi_woK0_wSid_n_woSm_sub[iqcut]->ProjectionX(Form("IMnpipi_woK0_wSid_n_woSm_sub_%d",iqcut));
+    IMnpipi_woK0_wSid_n_woSp_sub[iqcut] = q_IMnpipi_woK0_wSid_n_woSp_sub[iqcut]->ProjectionX(Form("IMnpipi_woK0_wSid_n_woSp_sub_%d",iqcut));
+    IMnpipi_wK0_woSid_n_sub[iqcut] = q_IMnpipi_wK0_woSid_n_sub[iqcut]->ProjectionX(Form("IMnpipi_wK0_woSid_n_sub_%d",iqcut));
+  }
+ 
 
 
 }
