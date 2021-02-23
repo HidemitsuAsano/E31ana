@@ -59,7 +59,7 @@ void MergeDecomposition()
   TH1D* IMnpipi_overlapdeco_K0[ngroup][nqcut];
   TH1D* IMnpipi_overlapdeco_Sp[ngroup][nqcut];
   TH1D* IMnpipi_overlapdeco_Sm[ngroup][nqcut];
-
+  
   for(int ig=0;ig<ngroup;ig++){
     for(int iq=0;iq<nqcut;iq++){
       std::cout << ig << " " << iq << std::endl;
@@ -69,40 +69,59 @@ void MergeDecomposition()
     }
   }
  
+  TH1D* IMnpipi_overlapToK0[nqcut];
+  TH1D* IMnpipi_overlapToSp[nqcut];
+  TH1D* IMnpipi_overlapToSm[nqcut];
+
   for(int iqcut=0;iqcut<nqcut;iqcut++){
     IMnpipi_woK0_wSid_n_woSm_sub[iqcut] = (TH1D*)q_IMnpipi_woK0_wSid_n_woSm_sub[iqcut]->ProjectionX(Form("IMnpipi_woK0_wSid_n_woSm_sub_%d",iqcut));
     IMnpipi_woK0_wSid_n_woSm_sub_merge[iqcut] = (TH1D*)IMnpipi_woK0_wSid_n_woSm_sub[iqcut]->Clone(Form("IMnpipi_woK0_wSid_n_woSm_sub_merge_%d",iqcut));
-    IMnpipi_woK0_wSid_n_woSm_sub_merge[iqcut]->Add(IMnpipi_overlapdeco_Sp[0][iqcut]);
-    IMnpipi_woK0_wSid_n_woSm_sub_merge[iqcut]->Add(IMnpipi_overlapdeco_Sp[2][iqcut]);
+    IMnpipi_overlapToSp[iqcut] = (TH1D*)IMnpipi_overlapdeco_Sp[0][iqcut]->Clone(Form("IMnpipi_overlapToSp_%d",iqcut));
+    IMnpipi_overlapToSp[iqcut]->Add(IMnpipi_overlapdeco_Sp[2][iqcut]);
+    IMnpipi_woK0_wSid_n_woSm_sub_merge[iqcut]->Add(IMnpipi_overlapToSp[iqcut]);
     IMnpipi_woK0_wSid_n_woSp_sub[iqcut] = (TH1D*)q_IMnpipi_woK0_wSid_n_woSp_sub[iqcut]->ProjectionX(Form("IMnpipi_woK0_wSid_n_woSp_sub_%d",iqcut));
     IMnpipi_woK0_wSid_n_woSp_sub_merge[iqcut] = (TH1D*)IMnpipi_woK0_wSid_n_woSp_sub[iqcut]->Clone(Form("IMnpipi_woK0_wSid_n_woSp_sub_merge_%d",iqcut));
-    IMnpipi_woK0_wSid_n_woSp_sub_merge[iqcut]->Add(IMnpipi_overlapdeco_Sm[1][iqcut]);
-    IMnpipi_woK0_wSid_n_woSp_sub_merge[iqcut]->Add(IMnpipi_overlapdeco_Sm[2][iqcut]);
+    IMnpipi_overlapToSm[iqcut] = (TH1D*)IMnpipi_overlapdeco_Sm[1][iqcut]->Clone(Form("IMnpipi_overlapToSm_%d",iqcut));
+    IMnpipi_overlapToSm[iqcut]->Add(IMnpipi_overlapdeco_Sm[2][iqcut]); 
+    IMnpipi_woK0_wSid_n_woSp_sub_merge[iqcut]->Add(IMnpipi_overlapToSm[iqcut]);
     IMnpipi_wK0_woSid_n_sub[iqcut] = (TH1D*)q_IMnpipi_wK0_woSid_n_sub[iqcut]->ProjectionX(Form("IMnpipi_wK0_woSid_n_sub_%d",iqcut));
     IMnpipi_wK0_woSid_n_sub_merge[iqcut] = (TH1D*)IMnpipi_wK0_woSid_n_sub[iqcut]->Clone(Form("IMnpipi_wK0_woSid_n_sub_merge_%d",iqcut));
-    IMnpipi_wK0_woSid_n_sub_merge[iqcut]->Add(IMnpipi_overlapdeco_K0[0][iqcut]);
-    IMnpipi_wK0_woSid_n_sub_merge[iqcut]->Add(IMnpipi_overlapdeco_K0[1][iqcut]);
+    IMnpipi_overlapToK0[iqcut] = (TH1D*)IMnpipi_overlapdeco_K0[0][iqcut]->Clone(Form("IMnpipi_overlapToK0_%d",iqcut));
+    IMnpipi_overlapToK0[iqcut]->Add(IMnpipi_overlapdeco_K0[1][iqcut]); 
+    IMnpipi_wK0_woSid_n_sub_merge[iqcut]->Add(IMnpipi_overlapToK0[iqcut]);
   }
   
   TCanvas *cmerge_Sp[3];
   for(int iqcut=0;iqcut<nqcut;iqcut++){
     cmerge_Sp[iqcut] = new TCanvas(Form("cmerge_Sp%d",iqcut),Form("cmerge_Sp%d",iqcut));
     cmerge_Sp[iqcut]->cd();
+    IMnpipi_woK0_wSid_n_woSm_sub_merge[iqcut]->SetLineColor(3);
     IMnpipi_woK0_wSid_n_woSm_sub_merge[iqcut]->Draw("HE");
+    IMnpipi_woK0_wSid_n_woSm_sub[iqcut]->Draw("HEsame");
+    IMnpipi_overlapToSp[iqcut]->SetLineColor(2);
+    IMnpipi_overlapToSp[iqcut]->Draw("HEsame");
   }
   
   TCanvas *cmerge_Sm[3];
   for(int iqcut=0;iqcut<nqcut;iqcut++){
     cmerge_Sm[iqcut] = new TCanvas(Form("cmerge_Sm%d",iqcut),Form("cmerge_Sm%d",iqcut));
     cmerge_Sm[iqcut]->cd();
+    IMnpipi_woK0_wSid_n_woSp_sub_merge[iqcut]->SetLineColor(3);
     IMnpipi_woK0_wSid_n_woSp_sub_merge[iqcut]->Draw("HE");
+    IMnpipi_woK0_wSid_n_woSp_sub[iqcut]->Draw("HEsame");
+    IMnpipi_overlapToSm[iqcut]->SetLineColor(2);
+    IMnpipi_overlapToSm[iqcut]->Draw("HEsame");
   }
 
   TCanvas *cmerge_K0[3];
   for(int iqcut=0;iqcut<nqcut;iqcut++){
     cmerge_K0[iqcut] = new TCanvas(Form("cmerge_K0%d",iqcut),Form("cmerge_K0%d",iqcut));
     cmerge_K0[iqcut]->cd();
+    IMnpipi_wK0_woSid_n_sub_merge[iqcut]->SetLineColor(3);
     IMnpipi_wK0_woSid_n_sub_merge[iqcut]->Draw("HE");
+    IMnpipi_wK0_woSid_n_sub[iqcut]->Draw("HEsame");
+    IMnpipi_overlapToK0[iqcut]->SetLineColor(2);
+    IMnpipi_overlapToK0[iqcut]->Draw("HEsame");
   }
   
 
