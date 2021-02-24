@@ -36,6 +36,7 @@ void MergeDecomposition()
   TH2D* q_IMnpipi_wK0_woSid_n_sub[nqcut];
   TH1D* IMnpipi_wK0_woSid_n_sub[nqcut];
   TH1D* IMnpipi_wK0_woSid_n_sub_merge[nqcut];
+  TH1D* IMnpipi_wK0_wSid_n_SpSm[nqcut];//for double-counting subtraction
 
   for(int iqcut=0;iqcut<nqcut;iqcut++){
     q_IMnpipi_woK0_wSid_n_woSm_data[iqcut] = (TH2D*)fr[iqcut]->Get("q_IMnpipi_woK0_wSid_n_woSm");
@@ -68,6 +69,12 @@ void MergeDecomposition()
       if(ig!=0)IMnpipi_overlapdeco_Sm[ig][iq] = (TH1D*)fdecompos->Get(Form("IMnpipi_overlapdeco_Sm_g%d_%d",ig,iq));
     }
   }
+
+  for(int iq=0;iq<nqcut;iq++){
+    IMnpipi_wK0_wSid_n_SpSm[iq] = (TH1D*)fdecompos->Get(Form("IMnpipi_wK0_wSid_n_SpSm_%d",iq));
+  }
+
+
  
   TH1D* IMnpipi_overlapToK0[nqcut];
   TH1D* IMnpipi_overlapToSp[nqcut];
@@ -78,16 +85,23 @@ void MergeDecomposition()
     IMnpipi_woK0_wSid_n_woSm_sub_merge[iqcut] = (TH1D*)IMnpipi_woK0_wSid_n_woSm_sub[iqcut]->Clone(Form("IMnpipi_woK0_wSid_n_woSm_sub_merge_%d",iqcut));
     IMnpipi_overlapToSp[iqcut] = (TH1D*)IMnpipi_overlapdeco_Sp[0][iqcut]->Clone(Form("IMnpipi_overlapToSp_%d",iqcut));
     IMnpipi_overlapToSp[iqcut]->Add(IMnpipi_overlapdeco_Sp[2][iqcut]);
+    //subtract double-counting 
+    IMnpipi_overlapToSp[iqcut]->Add(IMnpipi_wK0_wSid_n_SpSm[iqcut],-1);
     IMnpipi_woK0_wSid_n_woSm_sub_merge[iqcut]->Add(IMnpipi_overlapToSp[iqcut]);
+
     IMnpipi_woK0_wSid_n_woSp_sub[iqcut] = (TH1D*)q_IMnpipi_woK0_wSid_n_woSp_sub[iqcut]->ProjectionX(Form("IMnpipi_woK0_wSid_n_woSp_sub_%d",iqcut));
     IMnpipi_woK0_wSid_n_woSp_sub_merge[iqcut] = (TH1D*)IMnpipi_woK0_wSid_n_woSp_sub[iqcut]->Clone(Form("IMnpipi_woK0_wSid_n_woSp_sub_merge_%d",iqcut));
     IMnpipi_overlapToSm[iqcut] = (TH1D*)IMnpipi_overlapdeco_Sm[1][iqcut]->Clone(Form("IMnpipi_overlapToSm_%d",iqcut));
     IMnpipi_overlapToSm[iqcut]->Add(IMnpipi_overlapdeco_Sm[2][iqcut]); 
+    //subtract double-counting 
+    IMnpipi_overlapToSm[iqcut]->Add(IMnpipi_wK0_wSid_n_SpSm[iqcut],-1);
     IMnpipi_woK0_wSid_n_woSp_sub_merge[iqcut]->Add(IMnpipi_overlapToSm[iqcut]);
     IMnpipi_wK0_woSid_n_sub[iqcut] = (TH1D*)q_IMnpipi_wK0_woSid_n_sub[iqcut]->ProjectionX(Form("IMnpipi_wK0_woSid_n_sub_%d",iqcut));
     IMnpipi_wK0_woSid_n_sub_merge[iqcut] = (TH1D*)IMnpipi_wK0_woSid_n_sub[iqcut]->Clone(Form("IMnpipi_wK0_woSid_n_sub_merge_%d",iqcut));
     IMnpipi_overlapToK0[iqcut] = (TH1D*)IMnpipi_overlapdeco_K0[0][iqcut]->Clone(Form("IMnpipi_overlapToK0_%d",iqcut));
     IMnpipi_overlapToK0[iqcut]->Add(IMnpipi_overlapdeco_K0[1][iqcut]); 
+    //subtract double-counting 
+    IMnpipi_overlapToK0[iqcut]->Add(IMnpipi_wK0_wSid_n_SpSm[iqcut],-1);
     IMnpipi_wK0_woSid_n_sub_merge[iqcut]->Add(IMnpipi_overlapToK0[iqcut]);
   }
   
