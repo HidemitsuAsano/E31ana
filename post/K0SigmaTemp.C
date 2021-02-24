@@ -571,6 +571,7 @@ void K0SigmaTemp()
       //IMnpip_wK0_n_sub_bin_sidelo[ibin][iq]->SetFillColor(4);
       IMnpip_wK0_n_sub_bin_sidehi[ibin][iq]->SetLineColor(4);
       //IMnpip_wK0_n_sub_bin_sidehi[ibin][iq]->SetFillColor(4);
+      //double err_IMnpip_wK0=0.0;
       if(ibin==44){
         IMnpip_wK0_n_sub_bin_sidehi[ibin][iq]->Draw("HISTsame");
       }else{
