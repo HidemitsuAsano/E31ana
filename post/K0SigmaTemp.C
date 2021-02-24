@@ -151,6 +151,13 @@ void K0SigmaTemp()
   TH2F* IMnpim_IMnpip_wSid_n_Sm_sub[nqcut];
   TH2F* IMnpim_IMnpip_wSid_n_Sm_bin_sub[nbintemplate][nqcut];
   
+  //for the overlap of S+ & S- & K0 counting 
+  TH2F* q_IMnpipi_wK0_wSid_n_SpSm_data[nqcut];
+  TH2F* q_IMnpipi_wK0_wSid_n_SpSm_mix[nqcut];
+  TH2F* q_IMnpipi_wK0_wSid_n_SpSm_sub[nqcut];
+  TH1D* IMnpipi_wK0_wSid_n_SpSm_sub[nqcut];
+  TCanvas *cq_IMnpipi_wK0_wSid_n_SpSm_sub[nqcut];
+  double OverlapCount[nbintemplate][nqcut]; 
 
   const char cqcut[][6]= {"all","qlo","qhi"};
   for(int iqcut=0;iqcut<nqcut;iqcut++){
@@ -251,8 +258,22 @@ void K0SigmaTemp()
     IMnpim_IMnpip_wSid_n_Sm_sub[iqcut]->Add(IMnpim_IMnpip_wSid_n_Sm_mix[iqcut],-1);
     IMnpim_IMnpip_wSid_n_Sm_sub[iqcut]->SetTitle(Form("IMnpim_IMnpip_wSid_n_Sm_%s",cqcut[iqcut]));
     if(RemoveNegative)IMnpim_IMnpip_wSid_n_Sm_sub[iqcut]->SetMinimum(0);
+    
 
-    std::cout << iqcut  << std::endl;
+    q_IMnpipi_wK0_wSid_n_SpSm_data[iqcut] = (TH2F*)fr[iqcut]->Get("q_IMnpipi_wK0_wSid_n_SpSm");
+    q_IMnpipi_wK0_wSid_n_SpSm_mix[iqcut] = (TH2F*)fmix[iqcut]->Get("q_IMnpipi_wK0_wSid_n_SpSm");
+    q_IMnpipi_wK0_wSid_n_SpSm_sub[iqcut] = (TH2F*)q_IMnpipi_wK0_wSid_n_SpSm_data[iqcut]->Clone(Form("q_IMnpipi_wK0_wSid_n_SpSm_sub_%s",cqcut[iqcut]));
+    q_IMnpipi_wK0_wSid_n_SpSm_sub[iqcut]->Add(q_IMnpipi_wK0_wSid_n_SpSm_mix[iqcut],-1.0);
+    q_IMnpipi_wK0_wSid_n_SpSm_sub[iqcut]->SetTitle(Form("q_IMnpipi_wK0_wSid_n_SpSm_%s",cqcut[iqcut]));
+    cq_IMnpipi_wK0_wSid_n_SpSm_sub[iqcut] = new TCanvas(Form("q_IMnpipi_wK0_wSid_n_SpSm_%s",cqcut[iqcut]),Form("q_IMnpipi_wK0_wSid_n_SpSm_%s",cqcut[iqcut]));
+    IMnpipi_wK0_wSid_n_SpSm_sub[iqcut] = (TH1D*)q_IMnpipi_wK0_wSid_n_SpSm_sub[iqcut]->ProjectionX(Form("IMnpipi_wK0_wSid_n_SpSm_%d",iqcut));
+    IMnpipi_wK0_wSid_n_SpSm_sub[iqcut]->Draw("HISTE");
+    
+    for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
+      OverlapCount[ibin][iqcut] = IMnpipi_wK0_wSid_n_SpSm_sub[iqcut]->GetBinContent(ibin);
+      if(OverlapCount[ibin][iqcut]<0.0) OverlapCount[ibin][iqcut]=0.0;
+    }
+
     for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
       std::cout << iqcut << "  " << ibin << std::endl;
       IMpippim_IMnpip_n_bin_data[ibin][iqcut] = (TH2F*)fr[iqcut]->Get(Form("IMpippim_IMnpip_n_bin%d",ibin));
