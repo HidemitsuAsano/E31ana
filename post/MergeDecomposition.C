@@ -114,10 +114,15 @@ void MergeDecomposition()
     cmerge_Sp[iqcut] = new TCanvas(Form("cmerge_Sp%d",iqcut),Form("cmerge_Sp%d",iqcut));
     cmerge_Sp[iqcut]->cd();
     IMnpipi_woK0_wSid_n_woSm_sub_merge[iqcut]->SetLineColor(3);
-    IMnpipi_woK0_wSid_n_woSm_sub_merge[iqcut]->Draw("HE");
-    IMnpipi_woK0_wSid_n_woSm_sub[iqcut]->Draw("HEsame");
+    IMnpipi_woK0_wSid_n_woSm_sub_merge[iqcut]->SetMarkerColor(3);
+    IMnpipi_woK0_wSid_n_woSm_sub_merge[iqcut]->SetMarkerStyle(20);
+    IMnpipi_woK0_wSid_n_woSm_sub_merge[iqcut]->Draw("E");
+    IMnpipi_woK0_wSid_n_woSm_sub[iqcut]->SetMarkerStyle(20);
+    IMnpipi_woK0_wSid_n_woSm_sub[iqcut]->Draw("Esame");
     IMnpipi_overlapToSp[iqcut]->SetLineColor(2);
-    IMnpipi_overlapToSp[iqcut]->Draw("HEsame");
+    IMnpipi_overlapToSp[iqcut]->SetMarkerStyle(20);
+    IMnpipi_overlapToSp[iqcut]->SetMarkerColor(2);
+    IMnpipi_overlapToSp[iqcut]->Draw("Esame");
   }
   
   TCanvas *cmerge_Sm[nqcut];
@@ -125,10 +130,15 @@ void MergeDecomposition()
     cmerge_Sm[iqcut] = new TCanvas(Form("cmerge_Sm%d",iqcut),Form("cmerge_Sm%d",iqcut));
     cmerge_Sm[iqcut]->cd();
     IMnpipi_woK0_wSid_n_woSp_sub_merge[iqcut]->SetLineColor(3);
-    IMnpipi_woK0_wSid_n_woSp_sub_merge[iqcut]->Draw("HE");
-    IMnpipi_woK0_wSid_n_woSp_sub[iqcut]->Draw("HEsame");
+    IMnpipi_woK0_wSid_n_woSp_sub_merge[iqcut]->SetMarkerColor(3);
+    IMnpipi_woK0_wSid_n_woSp_sub_merge[iqcut]->SetMarkerStyle(20);
+    IMnpipi_woK0_wSid_n_woSp_sub_merge[iqcut]->Draw("E");
+    IMnpipi_woK0_wSid_n_woSp_sub[iqcut]->SetMarkerStyle(20);
+    IMnpipi_woK0_wSid_n_woSp_sub[iqcut]->Draw("Esame");
     IMnpipi_overlapToSm[iqcut]->SetLineColor(2);
-    IMnpipi_overlapToSm[iqcut]->Draw("HEsame");
+    IMnpipi_overlapToSm[iqcut]->SetMarkerColor(2);
+    IMnpipi_overlapToSm[iqcut]->SetMarkerStyle(20);
+    IMnpipi_overlapToSm[iqcut]->Draw("Esame");
   }
 
   TCanvas *cmerge_K0[nqcut];
@@ -136,10 +146,15 @@ void MergeDecomposition()
     cmerge_K0[iqcut] = new TCanvas(Form("cmerge_K0%d",iqcut),Form("cmerge_K0%d",iqcut));
     cmerge_K0[iqcut]->cd();
     IMnpipi_wK0_woSid_n_sub_merge[iqcut]->SetLineColor(3);
-    IMnpipi_wK0_woSid_n_sub_merge[iqcut]->Draw("HE");
-    IMnpipi_wK0_woSid_n_sub[iqcut]->Draw("HEsame");
+    IMnpipi_wK0_woSid_n_sub_merge[iqcut]->SetMarkerColor(3);
+    IMnpipi_wK0_woSid_n_sub_merge[iqcut]->SetMarkerStyle(20);
+    IMnpipi_wK0_woSid_n_sub_merge[iqcut]->Draw("E");
+    IMnpipi_wK0_woSid_n_sub[iqcut]->SetMarkerStyle(20);
+    IMnpipi_wK0_woSid_n_sub[iqcut]->Draw("Esame");
     IMnpipi_overlapToK0[iqcut]->SetLineColor(2);
-    IMnpipi_overlapToK0[iqcut]->Draw("HEsame");
+    IMnpipi_overlapToK0[iqcut]->SetMarkerColor(2);
+    IMnpipi_overlapToK0[iqcut]->SetMarkerStyle(20);
+    IMnpipi_overlapToK0[iqcut]->Draw("Esame");
   }
   
 
