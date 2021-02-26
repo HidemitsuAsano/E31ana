@@ -1,7 +1,7 @@
 void MergeDecomposition()
 {
-  TFile *fr[3] = {NULL};
-  TFile *fmix[3] = {NULL};
+  TFile *fr[4] = {NULL};
+  TFile *fmix[4] = {NULL};
 
   fr[0] = TFile::Open("evanaIMpisigma_npippim_v202_out_iso.root","READ");
   fmix[0] = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso.root","READ");
@@ -9,18 +9,22 @@ void MergeDecomposition()
   fmix[1] = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qlo.root","READ");
   fr[2] = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi.root","READ");
   fmix[2] = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qhi.root","READ");
+  fr[3] = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_theta15.root","READ");
+  fmix[3] = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_theta15.root","READ");
   fr[0]->Print();
   fmix[0]->Print();
   fr[1]->Print();
   fmix[1]->Print();
   fr[2]->Print();
   fmix[2]->Print();
+  fr[3]->Print();
+  fmix[3]->Print();
 
   TFile *fdecompos = TFile::Open("K0SigmaTemp.root","READ");
   fdecompos->Print();
 
-  const int nqcut=3;
-  const char cqcut[][6]= {"all","qlo","qhi"};
+  const int nqcut=4;
+  const char cqcut[][10]= {"all","qlo","qhi","theta"};
   TH2D* q_IMnpipi_woK0_wSid_n_woSm_data[nqcut];
   TH2D* q_IMnpipi_woK0_wSid_n_woSm_mix[nqcut];
   TH2D* q_IMnpipi_woK0_wSid_n_woSm_sub[nqcut];
@@ -105,7 +109,7 @@ void MergeDecomposition()
     IMnpipi_wK0_woSid_n_sub_merge[iqcut]->Add(IMnpipi_overlapToK0[iqcut]);
   }
   
-  TCanvas *cmerge_Sp[3];
+  TCanvas *cmerge_Sp[nqcut];
   for(int iqcut=0;iqcut<nqcut;iqcut++){
     cmerge_Sp[iqcut] = new TCanvas(Form("cmerge_Sp%d",iqcut),Form("cmerge_Sp%d",iqcut));
     cmerge_Sp[iqcut]->cd();
@@ -116,7 +120,7 @@ void MergeDecomposition()
     IMnpipi_overlapToSp[iqcut]->Draw("HEsame");
   }
   
-  TCanvas *cmerge_Sm[3];
+  TCanvas *cmerge_Sm[nqcut];
   for(int iqcut=0;iqcut<nqcut;iqcut++){
     cmerge_Sm[iqcut] = new TCanvas(Form("cmerge_Sm%d",iqcut),Form("cmerge_Sm%d",iqcut));
     cmerge_Sm[iqcut]->cd();
@@ -127,7 +131,7 @@ void MergeDecomposition()
     IMnpipi_overlapToSm[iqcut]->Draw("HEsame");
   }
 
-  TCanvas *cmerge_K0[3];
+  TCanvas *cmerge_K0[nqcut];
   for(int iqcut=0;iqcut<nqcut;iqcut++){
     cmerge_K0[iqcut] = new TCanvas(Form("cmerge_K0%d",iqcut),Form("cmerge_K0%d",iqcut));
     cmerge_K0[iqcut]->cd();

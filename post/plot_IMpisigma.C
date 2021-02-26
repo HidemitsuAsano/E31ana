@@ -70,7 +70,7 @@ const bool ForwardVetoFlag=false;
 //1 : BG near sigal region = addional excluded region for BG
 const int  BGFlag_woSid_won=0;
 
-const bool IsMCweighting = true;
+const bool IsMCweighting = false;
 
 //color def.
 //Sp mode Signal :2 (red)
@@ -109,6 +109,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   if(qvalcutflag==0) pdfname.Replace(std::string(filename).size()-5,6,".pdf");
   if(qvalcutflag==1) pdfname.Replace(std::string(filename).size()-5,8,"_qlo.pdf");
   if(qvalcutflag==2) pdfname.Replace(std::string(filename).size()-5,8,"_qhi.pdf");
+  if(qvalcutflag==3) pdfname.Replace(std::string(filename).size()-5,8,"_theta15.pdf");
   std::cout << "pdfname: " << pdfname << std::endl;
   std::cout << std::endl;
 
@@ -1067,12 +1068,12 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
   const int nbinIMnpipi = 100;//1-2 GeV/c^2
   const int nbinq = 100;// 25;//0-1.5 GeV/c
-  const int nbinIMnpi = 400; //1-2 GeV/c^2
+  const int nbinIMnpi = 500; //1-2 GeV/c^2
   const int nbinnmiss = 150; //0-1.5 GeV/c
   const double nmisslow = 0.0;
   const double nmisshigh = 1.5;
   const int nbindE = 200;
-  const int nbinpippim = 1000;
+  const int nbinpippim = 500;//0-1 GeV/c^2
   const int nbinnmom = 400;
   const int nbinmomnpi = 150;
   const int nbinmompipi = 150;
@@ -3856,7 +3857,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     pt->AddText(Form("Mom. Transfer  < %0.2f ",anacuts::qvalcut));
   } else if(qvalcutflag == 2) {
     pt->AddText(Form("Mom. Transfer  > %0.2f ",anacuts::qvalcut));
+  }else if(qvalcutflag ==3){
+    pt->AddText(Form("nmiss thetacut 15 "));
   }
+  
   pt->AddText(Form("p-value cut: %f ",pvalcut));
   pt->AddText(Form("dE cut: %0.2f ",anacuts::dE_MIN));
   pt->AddText(Form("1/beta min.: %f ",1./anacuts::beta_MAX));
@@ -3898,7 +3902,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     TVector3 boost_vtx[2] = {(*LVec_target+*LVec_beam_Sp).BoostVector(),(*LVec_target+*LVec_beam_Sm).BoostVector()} ;
     double cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());
     double nmissthetalab = acos(cos_nmisslab);
-
+    if(qvalcutflag==3 && (nmissthetalab>15.0/180.0*TMath::Pi())) continue;
     TLorentzVector LVec_npipimiss_CM = LVec_npipimiss;
     TLorentzVector LVec_beam_CM = *LVec_beam;
     LVec_npipimiss_CM.Boost(-boost);
@@ -4662,6 +4666,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     double weight = 1.0;
     if(MIXmode){
       weight = 4.24608060240400029e-02;
+      if(SimSpmode) weight *=0.72;
+      if(SimSmmode) weight *=6.56913599999999986e-01;
     }
     static bool isState = false;
     if(!isState){
@@ -5658,7 +5664,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     }//K0reject, NbetaOK ,NdEOk
 
     //std::cout << __LINE__ << std::endl;
-    if(K0rejectFlag && NBetaOK && NdEOK && MissNFlag) {
+    if(!K0Flag && NBetaOK && NdEOK && MissNFlag) {
       IMnpim_IMnpip_dE_woK0_n->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
       IMnpip_CDHphi_dE_woK0_n->Fill((*CDH_Pos).Phi(),LVec_pip_n.M(),weight);
       IMnpip_CDHz_dE_woK0_n->Fill((*CDH_Pos).z(),LVec_pip_n.M(),weight);
@@ -8209,6 +8215,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   
   if(qvalcutflag==1) outname.Replace(std::string(outname).size()-5,5,"_qlo.root");
   if(qvalcutflag==2) outname.Replace(std::string(outname).size()-5,5,"_qhi.root");
+  if(qvalcutflag==3) outname.Replace(std::string(outname).size()-5,5,"_theta15.root");
 
   
     
