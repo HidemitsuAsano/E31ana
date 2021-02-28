@@ -4644,7 +4644,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     if(anacuts::neutron_MIN_wide<nmiss_mass && nmiss_mass<anacuts::neutron_MAX_wide ) MissNwideFlag=true;
 
     //K0 rejection using original momentum
-    if( (LVec_pip_pim.M()<anacuts::pipi_MIN || anacuts::pipi_MAX<LVec_pip_pim.M())) K0rejectFlag=true;
+    //if( (LVec_pip_pim.M()<anacuts::pipi_MIN || anacuts::pipi_MAX<LVec_pip_pim.M())) K0rejectFlag=true;
+    if( (LVec_pip_pim.M()<anacuts::pipi_MIN_narrow || anacuts::pipi_MAX_narrow<LVec_pip_pim.M())) K0rejectFlag=true;
     if( (anacuts::pipi_MIN_narrow < LVec_pip_pim.M())  && (LVec_pip_pim.M() < anacuts::pipi_MAX_narrow)) K0Flag=true;
 
     bool IsBGregion = false;
@@ -5463,6 +5464,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       Mompippim_IMnpipi_dE_wK0_n->Fill(LVec_pip_pim_n.M(),LVec_pip_pim.P(),weight);
       Mompippim_nmom_dE_wK0_n->Fill((*LVec_n).P(),LVec_pip_pim.P(),weight);
       q_IMnpipi_wK0_n->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+      
+      if(SigmaPFlag){
+        q_IMnpipi_wK0_wSid_n_Sp->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+      }
+
+      if(SigmaMFlag){
+        q_IMnpipi_wK0_wSid_n_Sm->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+      }
 
       if(SigmaPFlag || SigmaMFlag) {
         q_IMnpipi_wK0_wSid_n->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
@@ -5475,18 +5484,13 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
       if(SigmaPcutFlag[sigmacuttype]) {
         Mompippim_IMnpipi_dE_wK0_n_Sp->Fill(LVec_pip_pim_n.M(),LVec_pip_pim.P(),weight);
-        q_IMnpipi_wK0_wSid_n_Sp->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
       }
       
-    
-
-
       IMnpip_IMnpipi_wK0_n->Fill(LVec_pip_pim_n.M(),LVec_pip_n.M(),weight);
       IMnpim_IMnpipi_wK0_n->Fill(LVec_pip_pim_n.M(),LVec_pim_n.M(),weight);
 
       if(SigmaMcutFlag[sigmacuttype]) {
         Mompippim_IMnpipi_dE_wK0_n_Sm->Fill(LVec_pip_pim_n.M(),LVec_pip_pim.P(),weight);
-        q_IMnpipi_wK0_wSid_n_Sm->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
       }
       if(!SigmawideMFlag) {
         MMnmiss_IMnpip_dE_wK0_woSm_n->Fill(LVec_pip_n.M(),nmiss_mass,weight);
@@ -5664,7 +5668,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     }//K0reject, NbetaOK ,NdEOk
 
     //std::cout << __LINE__ << std::endl;
-    if(!K0Flag && NBetaOK && NdEOK && MissNFlag) {
+    if(K0rejectFlag && NBetaOK && NdEOK && MissNFlag) {
       IMnpim_IMnpip_dE_woK0_n->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
       IMnpip_CDHphi_dE_woK0_n->Fill((*CDH_Pos).Phi(),LVec_pip_n.M(),weight);
       IMnpip_CDHz_dE_woK0_n->Fill((*CDH_Pos).z(),LVec_pip_n.M(),weight);
