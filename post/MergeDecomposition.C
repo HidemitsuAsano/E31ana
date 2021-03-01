@@ -41,6 +41,27 @@ void MergeDecomposition()
   TH1D* IMnpipi_wK0_woSid_n_sub[nqcut];
   TH1D* IMnpipi_wK0_woSid_n_sub_merge[nqcut];
   TH1D* IMnpipi_wK0_wSid_n_SpSm[nqcut];//for double-counting subtraction
+  //checking histogram
+  TH2D* q_IMnpipi_wSid_n_Sp_data[nqcut];
+  TH2D* q_IMnpipi_wSid_n_Sp_mix[nqcut];
+  TH2D* q_IMnpipi_wSid_n_Sp_sub[nqcut];
+  TH2D* q_IMnpipi_wK0_wSid_n_Sp_data[nqcut];
+  TH2D* q_IMnpipi_wK0_wSid_n_Sp_mix[nqcut];
+  TH2D* q_IMnpipi_wK0_wSid_n_Sp_sub[nqcut];
+  TH2D* q_IMnpipi_wSid_n_Sm_data[nqcut];
+  TH2D* q_IMnpipi_wSid_n_Sm_mix[nqcut];
+  TH2D* q_IMnpipi_wSid_n_Sm_sub[nqcut];
+  TH2D* q_IMnpipi_wK0_wSid_n_Sm_data[nqcut];
+  TH2D* q_IMnpipi_wK0_wSid_n_Sm_mix[nqcut];
+  TH2D* q_IMnpipi_wK0_wSid_n_Sm_sub[nqcut];
+  TH2D* q_IMnpipi_wSid_n_SpSm_data[nqcut];
+  TH2D* q_IMnpipi_wSid_n_SpSm_mix[nqcut];
+  TH2D* q_IMnpipi_wSid_n_SpSm_sub[nqcut];
+  TH2D* q_IMnpipi_wK0_n_data[nqcut];
+  TH2D* q_IMnpipi_wK0_n_mix[nqcut];
+  TH2D* q_IMnpipi_wK0_n_sub[nqcut];
+
+
 
   for(int iqcut=0;iqcut<nqcut;iqcut++){
     q_IMnpipi_woK0_wSid_n_woSm_data[iqcut] = (TH2D*)fr[iqcut]->Get("q_IMnpipi_woK0_wSid_n_woSm");
@@ -57,9 +78,74 @@ void MergeDecomposition()
     q_IMnpipi_wK0_woSid_n_mix[iqcut] = (TH2D*)fmix[iqcut]->Get("q_IMnpipi_wK0_woSid_n");
     q_IMnpipi_wK0_woSid_n_sub[iqcut] = (TH2D*)q_IMnpipi_wK0_woSid_n_data[iqcut]->Clone(Form("q_IMnpipi_wK0_woSid_n_sub_%s",cqcut[iqcut]));
     q_IMnpipi_wK0_woSid_n_sub[iqcut]->Add(q_IMnpipi_wK0_woSid_n_mix[iqcut],-1.0);
+  
+    q_IMnpipi_wSid_n_Sp_data[iqcut] = (TH2D*)fr[iqcut]->Get("q_IMnpipi_wSid_n_Sp");
+    q_IMnpipi_wSid_n_Sp_mix[iqcut] = (TH2D*)fmix[iqcut]->Get("q_IMnpipi_wSid_n_Sp");
+    q_IMnpipi_wSid_n_Sp_sub[iqcut] = (TH2D*)q_IMnpipi_wSid_n_Sp_data[iqcut]->Clone(Form("q_IMnpipi_wSid_n_Sp_sub_%s",cqcut[iqcut]));
+    q_IMnpipi_wSid_n_Sp_sub[iqcut]->Add(q_IMnpipi_wSid_n_Sp_mix[iqcut],-1.0);
+  
+    q_IMnpipi_wK0_wSid_n_Sp_data[iqcut] = (TH2D*)fr[iqcut]->Get("q_IMnpipi_wK0_wSid_n_Sp");
+    q_IMnpipi_wK0_wSid_n_Sp_mix[iqcut] = (TH2D*)fmix[iqcut]->Get("q_IMnpipi_wK0_wSid_n_Sp");
+    q_IMnpipi_wK0_wSid_n_Sp_sub[iqcut] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sp_data[iqcut]->Clone(Form("q_IMnpipi_wK0_wSid_n_Sp_sub_%s",cqcut[iqcut]));
+    q_IMnpipi_wK0_wSid_n_Sp_sub[iqcut]->Add(q_IMnpipi_wK0_wSid_n_Sp_mix[iqcut],-1.0);
+  
+    q_IMnpipi_wSid_n_Sm_data[iqcut] = (TH2D*)fr[iqcut]->Get("q_IMnpipi_wSid_n_Sm");
+    q_IMnpipi_wSid_n_Sm_mix[iqcut] = (TH2D*)fmix[iqcut]->Get("q_IMnpipi_wSid_n_Sm");
+    q_IMnpipi_wSid_n_Sm_sub[iqcut] = (TH2D*)q_IMnpipi_wSid_n_Sm_data[iqcut]->Clone(Form("q_IMnpipi_wSid_n_Sm_sub_%s",cqcut[iqcut]));
+    q_IMnpipi_wSid_n_Sm_sub[iqcut]->Add(q_IMnpipi_wSid_n_Sm_mix[iqcut],-1.0);
+  
+    q_IMnpipi_wK0_wSid_n_Sm_data[iqcut] = (TH2D*)fr[iqcut]->Get("q_IMnpipi_wK0_wSid_n_Sm");
+    q_IMnpipi_wK0_wSid_n_Sm_mix[iqcut] = (TH2D*)fmix[iqcut]->Get("q_IMnpipi_wK0_wSid_n_Sm");
+    q_IMnpipi_wK0_wSid_n_Sm_sub[iqcut] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sm_data[iqcut]->Clone(Form("q_IMnpipi_wK0_wSid_n_Sm_sub_%s",cqcut[iqcut]));
+    q_IMnpipi_wK0_wSid_n_Sm_sub[iqcut]->Add(q_IMnpipi_wK0_wSid_n_Sm_mix[iqcut],-1.0);
+  
+    q_IMnpipi_wSid_n_SpSm_data[iqcut] = (TH2D*)fr[iqcut]->Get("q_IMnpipi_wSid_n_SpSm");
+    q_IMnpipi_wSid_n_SpSm_mix[iqcut] = (TH2D*)fmix[iqcut]->Get("q_IMnpipi_wSid_n_SpSm");
+    q_IMnpipi_wSid_n_SpSm_sub[iqcut] = (TH2D*)q_IMnpipi_wSid_n_SpSm_data[iqcut]->Clone(Form("q_IMnpipi_wSid_n_SpSm_sub_%s",cqcut[iqcut]));
+    q_IMnpipi_wSid_n_SpSm_sub[iqcut]->Add(q_IMnpipi_wSid_n_SpSm_mix[iqcut],-1.0);
+  
+    q_IMnpipi_wK0_n_data[iqcut] = (TH2D*)fr[iqcut]->Get("q_IMnpipi_wK0_n");
+    q_IMnpipi_wK0_n_mix[iqcut] = (TH2D*)fmix[iqcut]->Get("q_IMnpipi_wK0_n");
+    q_IMnpipi_wK0_n_sub[iqcut] = (TH2D*)q_IMnpipi_wK0_n_data[iqcut]->Clone(Form("q_IMnpipi_wK0_n_sub_%s",cqcut[iqcut]));
+    q_IMnpipi_wK0_n_sub[iqcut]->Add(q_IMnpipi_wK0_n_mix[iqcut],-1.0);
+  }
+  
+  TCanvas *cOverlapCheck[3][nqcut];
+  TH1D* IMnpipi_check_Sp[nqcut];
+  TH1D* IMnpipi_check_SpSm[nqcut];
+  TH1D* IMnpipi_check_wK0_Sp[nqcut];
+  TH1D* IMnpipi_check_Sm[nqcut];
+  TH1D* IMnpipi_check_wK0_Sm[nqcut];
+  TH1D* IMnpipi_check_K0[nqcut];
+  for(int iq=0;iq<nqcut;iq++){
+    cOverlapCheck[0][iq] = new TCanvas(Form("cOverlapCheck_Sp_%d",iq),Form("cOverlapCheck_Sp_%d",iq));
+    cOverlapCheck[0][iq]->cd();
+    IMnpipi_check_Sp[iq] = (TH1D*)q_IMnpipi_wSid_n_Sp_sub[iq]->ProjectionX(Form("IMnpipi_check_Sp_%d",iq));
+    IMnpipi_check_Sp[iq]->Draw("HE");
+    IMnpipi_check_SpSm[iq] = (TH1D*)q_IMnpipi_wSid_n_SpSm_sub[iq]->ProjectionX(Form("IMnpipi_check_SpSm_%d",iq));
+    IMnpipi_check_SpSm[iq]->SetLineColor(2);
+    IMnpipi_check_SpSm[iq]->Draw("HEsame");
+    IMnpipi_check_wK0_Sp[iq] = (TH1D*)q_IMnpipi_wK0_wSid_n_Sp_sub[iq]->ProjectionX(Form("IMnpipi_check_wK0_Sp_%d",iq));
+    IMnpipi_check_wK0_Sp[iq]->SetLineColor(3);
+    IMnpipi_check_wK0_Sp[iq]->Draw("HEsame");
+    cOverlapCheck[1][iq] = new TCanvas(Form("cOverlapCheck_Sm_%d",iq),Form("cOverlapCheck_Sm_%d",iq));
+    cOverlapCheck[1][iq]->cd();
+    IMnpipi_check_Sm[iq] = (TH1D*)q_IMnpipi_wSid_n_Sm_sub[iq]->ProjectionX(Form("IMnpipi_check_Sm_%d",iq));
+    IMnpipi_check_Sm[iq]->Draw("HE");
+    IMnpipi_check_SpSm[iq]->Draw("HEsame");
+    IMnpipi_check_wK0_Sm[iq] = (TH1D*)q_IMnpipi_wK0_wSid_n_Sm_sub[iq]->ProjectionX(Form("IMnpipi_check_wK0_Sm_%d",iq));
+    IMnpipi_check_wK0_Sm[iq]->SetLineColor(3);
+    IMnpipi_check_wK0_Sm[iq]->Draw("HEsame");
+    cOverlapCheck[2][iq] = new TCanvas(Form("cOverlapCheck_K0_%d",iq),Form("cOverlapCheck_K0_%d",iq));
+    cOverlapCheck[2][iq]->cd();
+    IMnpipi_check_K0[iq] = (TH1D*)q_IMnpipi_wK0_n_sub[iq]->ProjectionX(Form("IMnpipi_check_K0_%d",iq));
+    IMnpipi_check_K0[iq]->Draw("HE");
+    IMnpipi_check_wK0_Sp[iq]->Draw("HEsame");
+    IMnpipi_check_wK0_Sm[iq]->Draw("HEsame");
   }
 
   
+  return;
   const int ngroup = 3;
   TH1D* IMnpipi_overlapdeco_K0[ngroup][nqcut];
   TH1D* IMnpipi_overlapdeco_Sp[ngroup][nqcut];
@@ -79,7 +165,7 @@ void MergeDecomposition()
   }
 
 
- 
+  
   TH1D* IMnpipi_overlapToK0[nqcut];
   TH1D* IMnpipi_overlapToSp[nqcut];
   TH1D* IMnpipi_overlapToSm[nqcut];
