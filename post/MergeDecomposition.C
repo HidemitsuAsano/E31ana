@@ -136,12 +136,12 @@ void MergeDecomposition()
     IMnpipi_check_wK0_Sm[iq] = (TH1D*)q_IMnpipi_wK0_wSid_n_Sm_sub[iq]->ProjectionX(Form("IMnpipi_check_wK0_Sm_%d",iq));
     IMnpipi_check_wK0_Sm[iq]->SetLineColor(3);
     IMnpipi_check_wK0_Sm[iq]->Draw("HEsame");
-    cOverlapCheck[2][iq] = new TCanvas(Form("cOverlapCheck_K0_%d",iq),Form("cOverlapCheck_K0_%d",iq));
-    cOverlapCheck[2][iq]->cd();
-    IMnpipi_check_K0[iq] = (TH1D*)q_IMnpipi_wK0_n_sub[iq]->ProjectionX(Form("IMnpipi_check_K0_%d",iq));
-    IMnpipi_check_K0[iq]->Draw("HE");
-    IMnpipi_check_wK0_Sp[iq]->Draw("HEsame");
-    IMnpipi_check_wK0_Sm[iq]->Draw("HEsame");
+    //cOverlapCheck[2][iq] = new TCanvas(Form("cOverlapCheck_K0_%d",iq),Form("cOverlapCheck_K0_%d",iq));
+    //cOverlapCheck[2][iq]->cd();
+    //IMnpipi_check_K0[iq] = (TH1D*)q_IMnpipi_wK0_n_sub[iq]->ProjectionX(Form("IMnpipi_check_K0_%d",iq));
+    //IMnpipi_check_K0[iq]->Draw("HE");
+    //IMnpipi_check_wK0_Sp[iq]->Draw("HEsame");
+    //IMnpipi_check_wK0_Sm[iq]->Draw("HEsame");
   }
 
   
