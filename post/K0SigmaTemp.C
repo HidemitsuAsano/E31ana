@@ -28,6 +28,7 @@ const bool showBG = true;
 
 bool RemoveNegative = true;
 bool RebinMode = false;
+bool Sidefar=false;
 
 void HistToRorateGraph(TH1D* h1, TGraphErrors &gr)
 {
@@ -1080,16 +1081,28 @@ void K0SigmaTemp()
   TH2D* IMnpim_IMnpip_wSid_n_merge[10][nqcut];
   TH1D* IMnpip_wK0_merge[10][nqcut];
   TH1D* IMnpip_wK0_merge_select[10][nqcut];
+  TH1D* IMnpip_wK0_merge_lo[10][nqcut];
+  TH1D* IMnpip_wK0_merge_hi[10][nqcut];
   TH1D* IMpippim_Sp_merge[10][nqcut];
   TH1D* IMpippim_Sp_merge_select[10][nqcut];
+  TH1D* IMpippim_Sp_merge_lo[10][nqcut];
+  TH1D* IMpippim_Sp_merge_hi[10][nqcut];
   TH1D* IMnpim_wK0_merge[10][nqcut];
   TH1D* IMnpim_wK0_merge_select[10][nqcut];
+  TH1D* IMnpim_wK0_merge_lo[10][nqcut];
+  TH1D* IMnpim_wK0_merge_hi[10][nqcut];
   TH1D* IMpippim_Sm_merge[10][nqcut];
   TH1D* IMpippim_Sm_merge_select[10][nqcut];
+  TH1D* IMpippim_Sm_merge_lo[10][nqcut];
+  TH1D* IMpippim_Sm_merge_hi[10][nqcut];
   TH1D* IMnpip_Sm_merge[10][nqcut];
   TH1D* IMnpip_Sm_merge_select[10][nqcut];
+  TH1D* IMnpip_Sm_merge_lo[10][nqcut];
+  TH1D* IMnpip_Sm_merge_hi[10][nqcut];
   TH1D* IMnpim_Sp_merge[10][nqcut];
   TH1D* IMnpim_Sp_merge_select[10][nqcut];
+  TH1D* IMnpim_Sp_merge_lo[10][nqcut];
+  TH1D* IMnpim_Sp_merge_hi[10][nqcut];
   
   TCanvas *cIMpippim_IMnpip_merge[10][nqcut];
   TCanvas *cIMpippim_IMnpim_merge[10][nqcut];
@@ -1147,15 +1160,41 @@ void K0SigmaTemp()
       cIMpippim_IMnpip_merge[imerge][iqcut]->cd(1);
       IMnpip_wK0_merge[imerge][iqcut]->Draw("HIST");
       IMnpip_wK0_merge_select[imerge][iqcut] = (TH1D*)IMnpip_wK0_merge[imerge][iqcut]->Clone(Form("IMnpip_wK0_merge_select_%d_%d",imerge,iqcut));
+      IMnpip_wK0_merge_lo[imerge][iqcut] = (TH1D*)IMnpip_wK0_merge[imerge][iqcut]->Clone(Form("IMnpip_wK0_merge_lo_%d_%d",imerge,iqcut));
+      IMnpip_wK0_merge_hi[imerge][iqcut] = (TH1D*)IMnpip_wK0_merge[imerge][iqcut]->Clone(Form("IMnpip_wK0_merge_hi_%d_%d",imerge,iqcut));
       IMnpip_wK0_merge_select[imerge][iqcut]->SetLineColor(2);
+      IMnpip_wK0_merge_lo[imerge][iqcut]->SetLineColor(4);
+      IMnpip_wK0_merge_hi[imerge][iqcut]->SetLineColor(4);
       IMnpip_wK0_merge_select[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
+      if(Sidefar){
+        IMnpip_wK0_merge_lo[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN-4.0*anacuts::Sigmap_sigma, anacuts::Sigmap_MIN-2.0*anacuts::Sigmap_sigma);
+        IMnpip_wK0_merge_hi[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MAX+2.0*anacuts::Sigmap_sigma, anacuts::Sigmap_MAX+4.0*anacuts::Sigmap_sigma);
+      }else{
+        IMnpip_wK0_merge_lo[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN-2.0*anacuts::Sigmap_sigma, anacuts::Sigmap_MIN);
+        IMnpip_wK0_merge_hi[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MAX, anacuts::Sigmap_MAX+2.0*anacuts::Sigmap_sigma);
+      }
       IMnpip_wK0_merge_select[imerge][iqcut]->Draw("HISTsame");
+      IMnpip_wK0_merge_lo[imerge][iqcut]->Draw("HISTsame");
+      IMnpip_wK0_merge_hi[imerge][iqcut]->Draw("HISTsame");
       cIMpippim_IMnpip_merge[imerge][iqcut]->cd(4);
       IMpippim_Sp_merge[imerge][iqcut]->Draw("HIST");
       IMpippim_Sp_merge_select[imerge][iqcut] = (TH1D*)IMpippim_Sp_merge[imerge][iqcut]->Clone(Form("IMpippim_Sp_merge_select_%d_%d",imerge,iqcut));
+      IMpippim_Sp_merge_lo[imerge][iqcut] = (TH1D*)IMpippim_Sp_merge[imerge][iqcut]->Clone(Form("IMpippim_Sp_merge_lo_%d_%d",imerge,iqcut));
+      IMpippim_Sp_merge_hi[imerge][iqcut] = (TH1D*)IMpippim_Sp_merge[imerge][iqcut]->Clone(Form("IMpippim_Sp_merge_hi_%d_%d",imerge,iqcut));
       IMpippim_Sp_merge_select[imerge][iqcut]->SetLineColor(2);
+      IMpippim_Sp_merge_lo[imerge][iqcut]->SetLineColor(4);
+      IMpippim_Sp_merge_hi[imerge][iqcut]->SetLineColor(4);
       IMpippim_Sp_merge_select[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::pipi_MIN_narrow,anacuts::pipi_MAX_narrow);
+      if(Sidefar){
+        IMpippim_Sp_merge_lo[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::pipi_MIN_narrow-4.0*anacuts::K0_sigma,anacuts::pipi_MIN_narrow-2.0*anacuts::K0_sigma);
+        IMpippim_Sp_merge_hi[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::pipi_MAX_narrow+2.0*anacuts::K0_sigma,anacuts::pipi_MAX_narrow+4.0*anacuts::K0_sigma);
+      }else{
+        IMpippim_Sp_merge_lo[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::pipi_MIN_narrow-2.0*anacuts::K0_sigma,anacuts::pipi_MIN_narrow-0.0*anacuts::K0_sigma);
+        IMpippim_Sp_merge_hi[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::pipi_MAX_narrow+0.0*anacuts::K0_sigma,anacuts::pipi_MAX_narrow+2.0*anacuts::K0_sigma);
+      }
       IMpippim_Sp_merge_select[imerge][iqcut]->Draw("HISTsame");
+      IMpippim_Sp_merge_lo[imerge][iqcut]->Draw("HISTsame");
+      IMpippim_Sp_merge_hi[imerge][iqcut]->Draw("HISTsame");
 
       cIMpippim_IMnpim_merge[imerge][iqcut] = new TCanvas(Form("cIMpippim_IMnpim_merge%d_%d",imerge,iqcut),Form("cIMpippim_IMnpim_merge%d_%d",imerge,iqcut));
       cIMpippim_IMnpim_merge[imerge][iqcut]->Divide(2,2);
@@ -1165,15 +1204,42 @@ void K0SigmaTemp()
       cIMpippim_IMnpim_merge[imerge][iqcut]->cd(1);
       IMnpim_wK0_merge[imerge][iqcut]->Draw("HIST");
       IMnpim_wK0_merge_select[imerge][iqcut] = (TH1D*)IMnpim_wK0_merge[imerge][iqcut]->Clone(Form("IMnpim_wK0_merge_select_%d_%d",imerge,iqcut));
+      IMnpim_wK0_merge_lo[imerge][iqcut] = (TH1D*)IMnpim_wK0_merge[imerge][iqcut]->Clone(Form("IMnpim_wK0_merge_lo_%d_%d",imerge,iqcut));
+      IMnpim_wK0_merge_hi[imerge][iqcut] = (TH1D*)IMnpim_wK0_merge[imerge][iqcut]->Clone(Form("IMnpim_wK0_merge_hi_%d_%d",imerge,iqcut));
       IMnpim_wK0_merge_select[imerge][iqcut]->SetLineColor(2);
+      IMnpim_wK0_merge_lo[imerge][iqcut]->SetLineColor(4);
+      IMnpim_wK0_merge_hi[imerge][iqcut]->SetLineColor(4);
       IMnpim_wK0_merge_select[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
+      if(Sidefar){
+        IMnpim_wK0_merge_lo[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN-4.0*anacuts::Sigmam_sigma, anacuts::Sigmam_MIN-2.0*anacuts::Sigmam_sigma);
+        IMnpim_wK0_merge_hi[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MAX+2.0*anacuts::Sigmam_sigma, anacuts::Sigmam_MAX+4.0*anacuts::Sigmam_sigma);
+      }else{
+        IMnpim_wK0_merge_lo[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN-2.0*anacuts::Sigmam_sigma, anacuts::Sigmam_MIN-0.0*anacuts::Sigmam_sigma);
+        IMnpim_wK0_merge_hi[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MAX+0.0*anacuts::Sigmam_sigma, anacuts::Sigmam_MAX+2.0*anacuts::Sigmam_sigma);
+      }
       IMnpim_wK0_merge_select[imerge][iqcut]->Draw("HISTsame");
+      IMnpim_wK0_merge_lo[imerge][iqcut]->Draw("HISTsame");
+      IMnpim_wK0_merge_hi[imerge][iqcut]->Draw("HISTsame");
       cIMpippim_IMnpim_merge[imerge][iqcut]->cd(4);
       IMpippim_Sm_merge[imerge][iqcut]->Draw("HIST");
       IMpippim_Sm_merge_select[imerge][iqcut] = (TH1D*)IMpippim_Sm_merge[imerge][iqcut]->Clone(Form("IMpippim_Sm_merge_select_%d_%d",imerge,iqcut));
+      IMpippim_Sm_merge_lo[imerge][iqcut] = (TH1D*)IMpippim_Sm_merge[imerge][iqcut]->Clone(Form("IMpippim_Sm_merge_lo_%d_%d",imerge,iqcut));
+      IMpippim_Sm_merge_hi[imerge][iqcut] = (TH1D*)IMpippim_Sm_merge[imerge][iqcut]->Clone(Form("IMpippim_Sm_merge_hi_%d_%d",imerge,iqcut));
       IMpippim_Sm_merge_select[imerge][iqcut]->SetLineColor(2);
+      IMpippim_Sm_merge_lo[imerge][iqcut]->SetLineColor(4);
+      IMpippim_Sm_merge_hi[imerge][iqcut]->SetLineColor(4);
       IMpippim_Sm_merge_select[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::pipi_MIN_narrow,anacuts::pipi_MAX_narrow);
+      if(Sidefar){
+        IMpippim_Sm_merge_lo[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::pipi_MIN_narrow-4.0*anacuts::K0_sigma,anacuts::pipi_MIN_narrow-2.0*anacuts::K0_sigma);
+        IMpippim_Sm_merge_hi[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::pipi_MAX_narrow+2.0*anacuts::K0_sigma,anacuts::pipi_MAX_narrow+4.0*anacuts::K0_sigma);
+      }else{
+        IMpippim_Sm_merge_lo[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::pipi_MIN_narrow-2.0*anacuts::K0_sigma,anacuts::pipi_MIN_narrow-0.0*anacuts::K0_sigma);
+        IMpippim_Sm_merge_hi[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::pipi_MAX_narrow+0.0*anacuts::K0_sigma,anacuts::pipi_MAX_narrow+2.0*anacuts::K0_sigma);
+      }
+        
       IMpippim_Sm_merge_select[imerge][iqcut]->Draw("HISTsame");
+      IMpippim_Sm_merge_lo[imerge][iqcut]->Draw("HISTsame");
+      IMpippim_Sm_merge_hi[imerge][iqcut]->Draw("HISTsame");
       
 
       cIMnpim_IMnpip_merge[imerge][iqcut] = new TCanvas(Form("cIMnpim_IMnpip_merge%d_%d",imerge,iqcut),Form("cIMnpim_IMnpip_merge%d_%d",imerge,iqcut));
@@ -1184,16 +1250,33 @@ void K0SigmaTemp()
       cIMnpim_IMnpip_merge[imerge][iqcut]->cd(1);
       IMnpip_Sm_merge[imerge][iqcut]->Draw("HIST");
       IMnpip_Sm_merge_select[imerge][iqcut] = (TH1D*)IMnpip_Sm_merge[imerge][iqcut]->Clone(Form("IMnpip_Sm_merge_select_%d_%d",imerge,iqcut));
+      IMnpip_Sm_merge_lo[imerge][iqcut] = (TH1D*)IMnpip_Sm_merge[imerge][iqcut]->Clone(Form("IMnpip_Sm_merge_lo_%d_%d",imerge,iqcut));
+      IMnpip_Sm_merge_hi[imerge][iqcut] = (TH1D*)IMnpip_Sm_merge[imerge][iqcut]->Clone(Form("IMnpip_Sm_merge_hi_%d_%d",imerge,iqcut));
       IMnpip_Sm_merge_select[imerge][iqcut]->SetLineColor(2);
+      IMnpip_Sm_merge_lo[imerge][iqcut]->SetLineColor(4);
+      IMnpip_Sm_merge_hi[imerge][iqcut]->SetLineColor(4);
       IMnpip_Sm_merge_select[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
+      if(Sidefar){
+        IMnpip_Sm_merge_lo[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN-4.0*anacuts::Sigmap_sigma, anacuts::Sigmap_MIN-2.0*anacuts::Sigmap_sigma);
+        IMnpip_Sm_merge_hi[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MAX+2.0*anacuts::Sigmap_sigma, anacuts::Sigmap_MAX+4.0*anacuts::Sigmap_sigma);
+      }
       IMnpip_Sm_merge_select[imerge][iqcut]->Draw("HISTsame");
+      IMnpip_Sm_merge_lo[imerge][iqcut]->Draw("HISTsame");
+      IMnpip_Sm_merge_hi[imerge][iqcut]->Draw("HISTsame");
       cIMnpim_IMnpip_merge[imerge][iqcut]->cd(4);
       IMnpim_Sp_merge[imerge][iqcut]->Draw("HIST");
-      IMnpim_Sp_merge[imerge][iqcut]->Draw("HIST");
       IMnpim_Sp_merge_select[imerge][iqcut] = (TH1D*)IMnpim_Sp_merge[imerge][iqcut]->Clone(Form("IMnpim_Sp_merge_select_%d_%d",imerge,iqcut));
+      IMnpim_Sp_merge_lo[imerge][iqcut] = (TH1D*)IMnpim_Sp_merge[imerge][iqcut]->Clone(Form("IMnpim_Sp_merge_lo_%d_%d",imerge,iqcut));
+      IMnpim_Sp_merge_hi[imerge][iqcut] = (TH1D*)IMnpim_Sp_merge[imerge][iqcut]->Clone(Form("IMnpim_Sp_merge_hi_%d_%d",imerge,iqcut));
       IMnpim_Sp_merge_select[imerge][iqcut]->SetLineColor(2);
+      IMnpim_Sp_merge_lo[imerge][iqcut]->SetLineColor(4);
+      IMnpim_Sp_merge_hi[imerge][iqcut]->SetLineColor(4);
       IMnpim_Sp_merge_select[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
+      IMnpim_Sp_merge_lo[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN-4.0*anacuts::Sigmam_sigma, anacuts::Sigmam_MIN-2.0*anacuts::Sigmam_sigma);
+      IMnpim_Sp_merge_hi[imerge][iqcut]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MAX+2.0*anacuts::Sigmam_sigma, anacuts::Sigmam_MAX+4.0*anacuts::Sigmam_sigma);
       IMnpim_Sp_merge_select[imerge][iqcut]->Draw("HISTsame");
+      IMnpim_Sp_merge_lo[imerge][iqcut]->Draw("HISTsame");
+      IMnpim_Sp_merge_hi[imerge][iqcut]->Draw("HISTsame");
     }
   }
 
