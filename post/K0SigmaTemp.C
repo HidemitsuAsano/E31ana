@@ -1197,6 +1197,12 @@ void K0SigmaTemp()
       IMpippim_Sp_merge_hi[imerge][iqcut]->Draw("HISTsame");
       double K0lo_Sp = IMpippim_Sp_merge_lo[imerge][iqcut]->Integral();
       double K0hi_Sp = IMpippim_Sp_merge_hi[imerge][iqcut]->Integral();
+      double K0_overlap_Sp = IMpippim_Sp_merge_select->Integral();
+      double K0_estimated_Sp = K0_overlap_Sp - K0lo_Sp - K0hi_Sp;
+      if(K0_overlap_Sp<=0.0){
+        K0_overla_Sp = 0.0;
+        K0_estimated_Sp =0.0; 
+      }
 
       //Sigma- and K0 overlap 
       cIMpippim_IMnpim_merge[imerge][iqcut] = new TCanvas(Form("cIMpippim_IMnpim_merge%d_%d",imerge,iqcut),Form("cIMpippim_IMnpim_merge%d_%d",imerge,iqcut));
