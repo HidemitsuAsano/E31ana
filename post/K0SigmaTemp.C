@@ -27,7 +27,7 @@ const bool showBG = true;
 #include "../src/GlobalVariables.h"
 
 bool RemoveNegative = true;
-bool RebinMode = true;
+bool RebinMode = false;
 bool Sidefar=false;
 
 void HistToRorateGraph(TH1D* h1, TGraphErrors &gr)
@@ -1195,14 +1195,33 @@ void K0SigmaTemp()
       IMpippim_Sp_merge_select[imerge][iqcut]->Draw("HISTsame");
       IMpippim_Sp_merge_lo[imerge][iqcut]->Draw("HISTsame");
       IMpippim_Sp_merge_hi[imerge][iqcut]->Draw("HISTsame");
-      double K0lo_Sp = IMpippim_Sp_merge_lo[imerge][iqcut]->Integral();
-      double K0hi_Sp = IMpippim_Sp_merge_hi[imerge][iqcut]->Integral();
-      double K0_overlap_Sp = IMpippim_Sp_merge_select[imerge][iqcut]->Integral();
-      double K0_estimated_Sp = K0_overlap_Sp - K0lo_Sp - K0hi_Sp;
-      if(K0_overlap_Sp<=0.0){
-        K0_overlap_Sp = 0.0;
-        K0_estimated_Sp =0.0; 
+      double K0lo_wSp = IMpippim_Sp_merge_lo[imerge][iqcut]->Integral();
+      double K0hi_wSp = IMpippim_Sp_merge_hi[imerge][iqcut]->Integral();
+      double K0_overlap_wSp = IMpippim_Sp_merge_select[imerge][iqcut]->Integral();
+      double K0_estimated_wSp = K0_overlap_wSp - K0lo_wSp - K0hi_wSp;
+      if(K0_overlap_wSp<=0.0){
+        K0_overlap_wSp = 0.0;
+        K0_estimated_wSp =0.0; 
       }
+      if(K0_estimated_wSp<=0.0){
+         K0_estimated_wSp=0.0;
+      }
+      double Splo_wK0 = IMnpip_wK0_merge_lo[imerge][iqcut]->Integral();
+      double Sphi_wK0 = IMnpip_wK0_merge_hi[imerge][iqcut]->Integral();
+      double Sp_overlap_wK0 = IMnpip_wK0_merge_select[imerge][iqcut]->Integral();
+      double Sp_estimated_wK0 = Sp_overlap_wK0 - Splo_wK0 - Sphi_wK0;
+      if(Sp_overlap_wK0<=0.0){
+        Sp_overlap_wK0 = 0.0;
+        Sp_estimated_wK0 =0.0; 
+      }
+      if(Sp_estimated_wK0<=0.0){
+         Sp_estimated_wK0=0.0;
+      }
+      std::cout << "merge :" << imerge << " qcut " << iqcut  << std::endl;
+      std::cout << "Sp_estimated_wK0 " << Sp_estimated_wK0 << std::endl;
+      std::cout << "K0_estimated_wSp " << K0_estimated_wSp << std::endl;
+      std::cout << "Sp ratio" << Sp_estimated_wK0/(Sp_estimated_wK0+K0_estimated_wSp) << std::endl;
+      std::cout << "K0 ratio" << K0_estimated_wSp/(Sp_estimated_wK0+K0_estimated_wSp) << std::endl;
 
       //Sigma- and K0 overlap 
       cIMpippim_IMnpim_merge[imerge][iqcut] = new TCanvas(Form("cIMpippim_IMnpim_merge%d_%d",imerge,iqcut),Form("cIMpippim_IMnpim_merge%d_%d",imerge,iqcut));
@@ -1249,6 +1268,33 @@ void K0SigmaTemp()
       IMpippim_Sm_merge_select[imerge][iqcut]->Draw("HISTsame");
       IMpippim_Sm_merge_lo[imerge][iqcut]->Draw("HISTsame");
       IMpippim_Sm_merge_hi[imerge][iqcut]->Draw("HISTsame");
+      double K0lo_wSm = IMpippim_Sm_merge_lo[imerge][iqcut]->Integral();
+      double K0hi_wSm = IMpippim_Sm_merge_hi[imerge][iqcut]->Integral();
+      double K0_overlap_wSm = IMpippim_Sm_merge_select[imerge][iqcut]->Integral();
+      double K0_estimated_wSm = K0_overlap_wSm - K0lo_wSm - K0hi_wSm;
+      if(K0_overlap_wSm<=0.0){
+        K0_overlap_wSm = 0.0;
+        K0_estimated_wSm =0.0; 
+      }
+      if(K0_estimated_wSm<=0.0){
+         K0_estimated_wSm=0.0;
+      }
+      double Smlo_wK0 = IMnpim_wK0_merge_lo[imerge][iqcut]->Integral();
+      double Smhi_wK0 = IMnpim_wK0_merge_hi[imerge][iqcut]->Integral();
+      double Sm_overlap_wK0 = IMnpim_wK0_merge_select[imerge][iqcut]->Integral();
+      double Sm_estimated_wK0 = Sm_overlap_wK0 - Smlo_wK0 - Smhi_wK0;
+      if(Sm_overlap_wK0<=0.0){
+        Sm_overlap_wK0 = 0.0;
+        Sm_estimated_wK0 =0.0; 
+      }
+      if(Sm_estimated_wK0<0.0){
+         Sm_estimated_wK0=0.0;
+      }
+      std::cout << "merge :" << imerge << " qcut " << iqcut  << std::endl;
+      std::cout << "Sm_estimated_wK0 " << Sm_estimated_wK0 << std::endl;
+      std::cout << "K0_estimated_wSm " << K0_estimated_wSm << std::endl;
+      std::cout << "Sm ratio" << Sm_estimated_wK0/(Sm_estimated_wK0+K0_estimated_wSm) << std::endl;
+      std::cout << "K0 ratio" << K0_estimated_wSm/(Sm_estimated_wK0+K0_estimated_wSm) << std::endl;
       
 
       cIMnpim_IMnpip_merge[imerge][iqcut] = new TCanvas(Form("cIMnpim_IMnpip_merge%d_%d",imerge,iqcut),Form("cIMnpim_IMnpip_merge%d_%d",imerge,iqcut));
@@ -1294,6 +1340,34 @@ void K0SigmaTemp()
       IMnpim_Sp_merge_select[imerge][iqcut]->Draw("HISTsame");
       IMnpim_Sp_merge_lo[imerge][iqcut]->Draw("HISTsame");
       IMnpim_Sp_merge_hi[imerge][iqcut]->Draw("HISTsame");
+      double Splo_wSm = IMnpip_Sm_merge_lo[imerge][iqcut]->Integral();
+      double Sphi_wSm = IMnpip_Sm_merge_hi[imerge][iqcut]->Integral();
+      double Sp_overlap_wSm = IMnpip_Sm_merge_select[imerge][iqcut]->Integral();
+      double Sp_estimated_wSm = Sp_overlap_wSm - Splo_wSm - Sphi_wSm;
+      if(Sp_overlap_wSm<=0.0){
+        Sp_overlap_wSm = 0.0;
+        Sp_estimated_wSm =0.0; 
+      }
+      if(Sp_estimated_wSm<=0.0){
+         Sp_estimated_wSm=0.0;
+      }
+    
+      double Smlo_wSp = IMnpim_Sp_merge_lo[imerge][iqcut]->Integral();
+      double Smhi_wSp = IMnpim_Sp_merge_hi[imerge][iqcut]->Integral();
+      double Sm_overlap_wSp = IMnpim_Sp_merge_select[imerge][iqcut]->Integral();
+      double Sm_estimated_wSp = Sm_overlap_wSp - Smlo_wSp - Smhi_wSp;
+      if(Sm_overlap_wSp<=0.0){
+        Sm_overlap_wSp = 0.0;
+        Sm_estimated_wSp =0.0; 
+      }
+      if(Sm_estimated_wSp<=0.0){
+         Sm_estimated_wSp=0.0;
+      }
+      std::cout << "merge :" << imerge << " qcut " << iqcut  << std::endl;
+      std::cout << "Sp_estimated_wSm " << Sp_estimated_wSm << std::endl;
+      std::cout << "Sm_estimated_wSp " << Sm_estimated_wSp << std::endl;
+      std::cout << "Sp ratio" << Sp_estimated_wSm/(Sp_estimated_wSm+Sm_estimated_wSp) << std::endl;
+      std::cout << "Sm ratio" << Sm_estimated_wSp/(Sm_estimated_wSp+Sp_estimated_wSm) << std::endl;
     }
   }
 
@@ -1314,7 +1388,7 @@ void K0SigmaTemp()
     //TPaveText *pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
     c->Modified();
     c->Update();
-    std::cout << c->GetName() << std::endl;
+    //std::cout << c->GetName() << std::endl;
     //make 1 pdf file
     if(i==0) c->Print(pdfname+"(",Form("pdf Title:%s",c->GetTitle()));
     else if(i==size-1)c->Print(pdfname+")",Form("pdf Title:%s",c->GetTitle())); 
