@@ -1423,6 +1423,33 @@ void K0SigmaTemp()
       //std::cout << "Sm ratio" << Sm_estimated_wSp/(Sm_estimated_wSp+Sp_estimated_wSm) << std::endl;
     }
   }
+  
+  TCanvas *cIMnpipi_Sp_ratio_wK0_merge[nqcut];
+  TCanvas *cIMnpipi_K0_ratio_wSp_merge[nqcut];
+  TCanvas *cIMnpipi_Sm_ratio_wK0_merge[nqcut];
+  TCanvas *cIMnpipi_K0_ratio_wSm_merge[nqcut];
+  TCanvas *cIMnpipi_Sp_ratio_wSm_merge[nqcut];
+  TCanvas *cIMnpipi_Sm_ratio_wSp_merge[nqcut];
+  
+  for(int iq=0;iq<nqcut;iq++){
+    cIMnpipi_Sp_ratio_wK0_merge[iq] = new TCanvas(Form("cIMnpipi_Sp_ratio_wK0_merge_%d",iq),Form("cIMnpipi_Sp_ratio_wK0_merge_%d",iq));
+    IMnpipi_Sp_ratio_wK0_merge[iq]->Draw("HIST");
+
+    cIMnpipi_K0_ratio_wSp_merge[iq] = new TCanvas(Form("cIMnpipi_K0_ratio_wSp_merge_%d",iq),Form("cIMnpipi_K0_ratio_wSp_merge_%d",iq));
+    IMnpipi_K0_ratio_wSp_merge[iq]->Draw("HIST");
+    
+    cIMnpipi_Sm_ratio_wK0_merge[iq] = new TCanvas(Form("cIMnpipi_Sm_ratio_wK0_merge_%d",iq),Form("cIMnpipi_Sm_ratio_wK0_merge_%d",iq));
+    IMnpipi_Sm_ratio_wK0_merge[iq]->Draw("HIST");
+
+    cIMnpipi_K0_ratio_wSm_merge[iq] = new TCanvas(Form("cIMnpipi_K0_ratio_wSm_merge_%d",iq),Form("cIMnpipi_K0_ratio_wSm_merge_%d",iq));
+    IMnpipi_K0_ratio_wSm_merge[iq]->Draw("HIST");
+
+    cIMnpipi_Sp_ratio_wSm_merge[iq] = new TCanvas(Form("cIMnpipi_Sp_ratio_wSm_merge_%d",iq),Form("cIMnpipi_Sp_ratio_wSm_merge_%d",iq));
+    IMnpipi_Sp_ratio_wSm_merge[iq]->Draw("HIST");
+
+    cIMnpipi_Sm_ratio_wSp_merge[iq] = new TCanvas(Form("cIMnpipi_Sm_ratio_wSp_merge_%d",iq),Form("cIMnpipi_Sm_ratio_wSp_merge_%d",iq));
+    IMnpipi_Sm_ratio_wSp_merge[iq]->Draw("HIST");
+  }
 
 
 
