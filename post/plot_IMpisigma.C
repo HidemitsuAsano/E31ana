@@ -1076,7 +1076,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   const double nmisslow = 0.0;
   const double nmisshigh = 1.5;
   const int nbindE = 200;
-  const int nbinpippim = 900;//0-1 GeV/c^2
+  const int nbinpippim = 900;//0-0.9 GeV/c^2
   const int nbinnmom = 400;
   const int nbinmomnpi = 150;
   const int nbinmompipi = 150;
