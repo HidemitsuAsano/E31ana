@@ -20,7 +20,7 @@ void MergeDecomposition()
   fr[3]->Print();
   fmix[3]->Print();
 
-  TFile *fdecompos = TFile::Open("K0SigmaTemp.root","READ");
+  TFile *fdecompos = TFile::Open("K0SigmaTemp_Rebin.root","READ");
   fdecompos->Print();
 
   const int nqcut=4;
@@ -154,12 +154,12 @@ void MergeDecomposition()
     IMnpipi_overlapevt_SmK0[iq] = (TH1D*)q_IMnpipi_wK0_wSid_n_Sm_sub[iq]->ProjectionX(Form("IMnpipi_overlapevt_SmK0_%d",iq));
     IMnpipi_overlapevt_SmK0[iq]->SetLineColor(3);
     IMnpipi_overlapevt_SmK0[iq]->Draw("HEsame");
-    //cOverlapCheck[2][iq] = new TCanvas(Form("cOverlapCheck_K0_%d",iq),Form("cOverlapCheck_K0_%d",iq));
-    //cOverlapCheck[2][iq]->cd();
-    //IMnpipi_overlapevt_K0[iq] = (TH1D*)q_IMnpipi_wK0_n_sub[iq]->ProjectionX(Form("IMnpipi_overlapevt_K0_%d",iq));
-    //IMnpipi_overlapevt_K0[iq]->Draw("HE");
-    //IMnpipi_overlapevt_SpK0[iq]->Draw("HEsame");
-    //IMnpipi_overlapevt_SmK0[iq]->Draw("HEsame");
+    cOverlapCheck[2][iq] = new TCanvas(Form("cOverlapCheck_K0_%d",iq),Form("cOverlapCheck_K0_%d",iq));
+    cOverlapCheck[2][iq]->cd();
+    IMnpipi_overlapevt_K0[iq] = (TH1D*)q_IMnpipi_wK0_n_sub[iq]->ProjectionX(Form("IMnpipi_overlapevt_K0_%d",iq));
+    IMnpipi_overlapevt_K0[iq]->Draw("HE");
+    IMnpipi_overlapevt_SpK0[iq]->Draw("HEsame");
+    IMnpipi_overlapevt_SmK0[iq]->Draw("HEsame");
   }
   
   TCanvas *cwoK0_woSid_ncheck[nqcut];
@@ -173,8 +173,7 @@ void MergeDecomposition()
    IMnpim_IMnpip_woK0_woSid_n_sub[iq]->Draw("colz");
   }
 
-
-
+  
   const int ngroup = 3;
   TH1D* IMnpipi_overlapdeco_K0[ngroup][nqcut];
   TH1D* IMnpipi_overlapdeco_Sp[ngroup][nqcut];
@@ -222,6 +221,7 @@ void MergeDecomposition()
     IMnpipi_wK0_woSid_n_sub_merge[iq]->Add(IMnpipi_overlapToK0[iq]);
   }
   
+  /*
   TCanvas *cmerge_Sp[nqcut];
   for(int iq=0;iq<nqcut;iq++){
     cmerge_Sp[iq] = new TCanvas(Form("cmerge_Sp%d",iq),Form("cmerge_Sp%d",iq));
@@ -269,7 +269,7 @@ void MergeDecomposition()
     IMnpipi_overlapToK0[iq]->SetMarkerStyle(20);
     IMnpipi_overlapToK0[iq]->Draw("Esame");
   }
-  
+ */
   const int initbin[10]={40,52};
   const int startbin[10]={41,53};
   const int endbin[10]={52,100};
@@ -290,7 +290,29 @@ void MergeDecomposition()
     IMnpipi_Sp_ratio_wSm_merge[iq] = (TH1D*)fdecompos->Get(Form("IMnpipi_Sp_ratio_wSm_merge_%d",iq));
     IMnpipi_Sm_ratio_wSp_merge[iq] = (TH1D*)fdecompos->Get(Form("IMnpipi_Sm_ratio_wSp_merge_%d",iq));
   }
-   
+  
+  TCanvas *cratio[nqcut][6];
+  for(int iq=0;iq<nqcut;iq++){
+    cratio[iq][0] = new TCanvas(Form("cratio_q%d_0",iq),Form("cratio_q%d_0",iq));
+    IMnpipi_Sp_ratio_wK0_merge[iq]->Draw("HE");
+
+    cratio[iq][1] = new TCanvas(Form("cratio_q%d_1",iq),Form("cratio_q%d_1",iq));
+    IMnpipi_K0_ratio_wSp_merge[iq]->Draw("HE");
+
+    cratio[iq][2] = new TCanvas(Form("cratio_q%d_2",iq),Form("cratio_q%d_2",iq));
+    IMnpipi_Sm_ratio_wK0_merge[iq]->Draw("HE");
+
+    cratio[iq][3] = new TCanvas(Form("cratio_q%d_3",iq),Form("cratio_q%d_3",iq));
+    IMnpipi_K0_ratio_wSm_merge[iq]->Draw("HE");
+
+    cratio[iq][4] = new TCanvas(Form("cratio_q%d_4",iq),Form("cratio_q%d_4",iq));
+    IMnpipi_Sp_ratio_wSm_merge[iq]->Draw("HE");
+
+    cratio[iq][5] = new TCanvas(Form("cratio_q%d_5",iq),Form("cratio_q%d_5",iq));
+    IMnpipi_Sm_ratio_wSp_merge[iq]->Draw("HE");
+  }
+
+
   //decomposition using larger bin
   TH1D* IMnpipi_overlapToK02[nqcut];
   TH1D* IMnpipi_overlapToSp2[nqcut];
@@ -384,13 +406,14 @@ void MergeDecomposition()
   for(int iq=0;iq<nqcut;iq++){
     cmerge2_Sp[iq] = new TCanvas(Form("cmerge2_Sp%d",iq),Form("cmerge2_Sp%d",iq));
     cmerge2_Sp[iq]->cd();
+    //IMnpipi_overlapevt_Sp[iq]->SetMarkerStyle(24);
+    //IMnpipi_overlapevt_Sp[iq]->Draw("E");
     IMnpipi_Sp_merge2[iq]->SetLineColor(2);
     IMnpipi_Sp_merge2[iq]->SetMarkerColor(2);
     IMnpipi_Sp_merge2[iq]->SetMarkerStyle(20);
     IMnpipi_Sp_merge2[iq]->Draw("E");
-    /*
     IMnpipi_woK0_wSid_n_woSm_sub[iq]->SetMarkerStyle(24);
-    IMnpipi_woK0_wSid_n_woSm_sub[iq]->Draw("Esame");
+    IMnpipi_woK0_wSid_n_woSm_sub[iq]->Draw("Esame");    
     IMnpipi_ToSp_wK0[iq]->SetMarkerStyle(24);
     IMnpipi_ToSp_wK0[iq]->SetMarkerColor(3);
     IMnpipi_ToSp_wK0[iq]->SetLineColor(3);
@@ -400,12 +423,13 @@ void MergeDecomposition()
     IMnpipi_ToSp_wSm[iq]->SetLineColor(4);
     IMnpipi_ToSp_wSm[iq]->Draw("Esame");
     legSp[iq] = new TLegend(0.6,0.7,0.9,0.9);   
-    legSp[iq]->AddEntry(IMnpipi_Sp_merge2[iq],"Total","L");
-    legSp[iq]->AddEntry(IMnpipi_woK0_wSid_n_woSm_sub[iq],"No Overlap","L");
+    legSp[iq]->AddEntry(IMnpipi_Sp_merge2[iq],"#Sigma^{+} Total","L");
+    //legSp[iq]->AddEntry(IMnpipi_overlapevt_Sp[iq],"#Sigma^{+} like events","L");
+    legSp[iq]->AddEntry(IMnpipi_woK0_wSid_n_woSm_sub[iq],"#Sigma^{+} No overlap","L");
     legSp[iq]->AddEntry(IMnpipi_ToSp_wK0[iq],"Overlap with K^{0}","L");
     legSp[iq]->AddEntry(IMnpipi_ToSp_wSm[iq],"Overlap with #Sigma^{-}","L");
     legSp[iq]->Draw();
-    */
+    
   }
   
   TCanvas *cmerge2_Sm[nqcut];
@@ -413,11 +437,13 @@ void MergeDecomposition()
   for(int iq=0;iq<nqcut;iq++){
     cmerge2_Sm[iq] = new TCanvas(Form("cmerge2_Sm%d",iq),Form("cmerge2_Sm%d",iq));
     cmerge2_Sm[iq]->cd();
+    //IMnpipi_overlapevt_Sm[iq]->SetMarkerStyle(24);
+    //IMnpipi_overlapevt_Sm[iq]->Draw("E");
     IMnpipi_Sm_merge2[iq]->SetLineColor(2);
     IMnpipi_Sm_merge2[iq]->SetMarkerColor(2);
     IMnpipi_Sm_merge2[iq]->SetMarkerStyle(20);
     IMnpipi_Sm_merge2[iq]->Draw("E");
-    /*
+    
     IMnpipi_woK0_wSid_n_woSp_sub[iq]->SetMarkerStyle(24);
     IMnpipi_woK0_wSid_n_woSp_sub[iq]->Draw("Esame");
     IMnpipi_ToSm_wK0[iq]->SetMarkerStyle(24);
@@ -429,12 +455,12 @@ void MergeDecomposition()
     IMnpipi_ToSm_wSp[iq]->SetLineColor(4);
     IMnpipi_ToSm_wSp[iq]->Draw("Esame");
     legSm[iq] = new TLegend(0.6,0.7,0.9,0.9);   
-    legSm[iq]->AddEntry(IMnpipi_Sm_merge2[iq],"Total","L");
-    legSm[iq]->AddEntry(IMnpipi_woK0_wSid_n_woSp_sub[iq],"No Overlap","L");
+    legSm[iq]->AddEntry(IMnpipi_Sm_merge2[iq],"#Sigma^{-} Total","L");
+    //legSm[iq]->AddEntry(IMnpipi_overlapevt_Sm[iq],"#Sigma^{-} like events","L");
+    legSm[iq]->AddEntry(IMnpipi_woK0_wSid_n_woSp_sub[iq],"#Sigma^{-} No Overlap","L");
     legSm[iq]->AddEntry(IMnpipi_ToSm_wK0[iq],"Overlap with K^{0}","L");
     legSm[iq]->AddEntry(IMnpipi_ToSm_wSp[iq],"Overlap with #Sigma^{+}","L");
     legSm[iq]->Draw();
-    */
   }
   
   TCanvas *cmerge2_K0[nqcut];
@@ -442,13 +468,15 @@ void MergeDecomposition()
   for(int iq=0;iq<nqcut;iq++){
     cmerge2_K0[iq] = new TCanvas(Form("cmerge2_K0%d",iq),Form("cmerge2_K0%d",iq));
     cmerge2_K0[iq]->cd();
+    //IMnpipi_overlapevt_K0[iq]->SetMarkerStyle(24);
+    //IMnpipi_overlapevt_K0[iq]->Draw("E");
     IMnpipi_K0_merge2[iq]->SetLineColor(2);
     IMnpipi_K0_merge2[iq]->SetMarkerColor(2);
     IMnpipi_K0_merge2[iq]->SetMarkerStyle(20);
     IMnpipi_K0_merge2[iq]->Draw("E");
-    /*
     IMnpipi_wK0_woSid_n_sub[iq]->SetMarkerStyle(24);
     IMnpipi_wK0_woSid_n_sub[iq]->Draw("Esame");
+    
     IMnpipi_ToK0_wSp[iq]->SetMarkerStyle(24);
     IMnpipi_ToK0_wSp[iq]->SetMarkerColor(3);
     IMnpipi_ToK0_wSp[iq]->SetLineColor(3);
@@ -458,13 +486,13 @@ void MergeDecomposition()
     IMnpipi_ToK0_wSm[iq]->SetLineColor(4);
     IMnpipi_ToK0_wSm[iq]->Draw("Esame");
     legK0[iq] = new TLegend(0.6,0.7,0.9,0.9);   
-    legK0[iq]->AddEntry(IMnpipi_K0_merge2[iq],"Total","L");
-    legK0[iq]->AddEntry(IMnpipi_wK0_woSid_n_sub[iq],"No Overlap","L");
+    legK0[iq]->AddEntry(IMnpipi_K0_merge2[iq],"K^{0} Total","L");
+    legK0[iq]->AddEntry(IMnpipi_wK0_woSid_n_sub[iq],"K^{0} No Overlap","L");
+    //legK0[iq]->AddEntry(IMnpipi_overlapevt_K0[iq],"K^{0} like events","L");
     legK0[iq]->AddEntry(IMnpipi_ToK0_wSp[iq],"Overlap with #Sigma^{+}","L");
     legK0[iq]->AddEntry(IMnpipi_ToK0_wSm[iq],"Overlap with #Sigma^{-}","L");
     legK0[iq]->Draw();
-    */
-  }
+    }
   
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
