@@ -29,6 +29,7 @@ const bool showBG = true;
 bool RemoveNegative = true;
 bool RebinMode = true;
 bool Sidefar=false;
+bool FitNoWeight=true;
 
 void HistToRorateGraph(TH1D* h1, TGraphErrors &gr)
 {
@@ -70,26 +71,14 @@ void K0SigmaTemp()
   
   gROOT->SetBatch(1);
   gStyle->SetPalette(1);
-  //gStyle->SetOptStat(0);
+  gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
-  //TH1::SetDefaultSumw2();
+  TH1::SetDefaultSumw2();
   gStyle->SetErrorX(0.);  
 
   const unsigned int nbintemplate = 100;
   const int nqcut=4;
   const int qstart=0;
-  TH2F* IMpippim_IMnpip_n_data[nqcut];
-  TH2F* IMpippim_IMnpim_n_data[nqcut];
-  TH2F* IMpippim_IMnpip_n_bin_data[nbintemplate][nqcut];
-  TH2F* IMpippim_IMnpim_n_bin_data[nbintemplate][nqcut];
-  TH2F* IMpippim_IMnpip_n_mix[nqcut];
-  TH2F* IMpippim_IMnpim_n_mix[nqcut];
-  TH2F* IMpippim_IMnpip_n_bin_mix[nbintemplate][nqcut];
-  TH2F* IMpippim_IMnpim_n_bin_mix[nbintemplate][nqcut];
-  TH2F* IMpippim_IMnpip_n_sub[nqcut];
-  TH2F* IMpippim_IMnpim_n_sub[nqcut];
-  TH2F* IMpippim_IMnpip_n_bin_sub[nbintemplate][nqcut];
-  TH2F* IMpippim_IMnpim_n_bin_sub[nbintemplate][nqcut];
   TH2F* IMpippim_IMnpip_wSid_n_Sp_data[nqcut];
   TH2F* IMpippim_IMnpip_wSid_n_Sp_bin_data[nbintemplate][nqcut];
   TH2F* IMpippim_IMnpip_wSid_n_Sp_mix[nqcut];
@@ -168,20 +157,6 @@ void K0SigmaTemp()
   TH1D* IMnpim_wSid_n_Sp_sub[nqcut];
   const char cqcut[][10]= {"all","qlo","qhi","theta"};
   for(int iq=qstart;iq<nqcut;iq++){
-    IMpippim_IMnpip_n_data[iq] = (TH2F*)fr[iq]->Get("IMpippim_IMnpip_n");
-    IMpippim_IMnpip_n_mix[iq] = (TH2F*)fmix[iq]->Get("IMpippim_IMnpip_n");
-    IMpippim_IMnpip_n_sub[iq] = (TH2F*)IMpippim_IMnpip_n_data[iq]->Clone(Form("IMpippim_IMnpip_n_sub_%s",cqcut[iq]));
-    IMpippim_IMnpip_n_sub[iq]->Add(IMpippim_IMnpip_n_mix[iq],-1.0); 
-    IMpippim_IMnpip_n_sub[iq]->SetTitle(Form("IMpippim_IMnpip_n_sub_%s",cqcut[iq]));
-    if(RemoveNegative)IMpippim_IMnpip_n_sub[iq]->SetMinimum(0);
-    
-    IMpippim_IMnpim_n_data[iq] = (TH2F*)fr[iq]->Get("IMpippim_IMnpim_n");
-    IMpippim_IMnpim_n_mix[iq] = (TH2F*)fmix[iq]->Get("IMpippim_IMnpim_n");
-    IMpippim_IMnpim_n_sub[iq] = (TH2F*)IMpippim_IMnpim_n_data[iq]->Clone(Form("IMpippim_IMnpim_n_sub_%s",cqcut[iq]));
-    IMpippim_IMnpim_n_sub[iq]->Add(IMpippim_IMnpim_n_mix[iq],-1.0); 
-    IMpippim_IMnpim_n_sub[iq]->SetTitle(Form("IMpippim_IMnpim_n_sub_%s",cqcut[iq]));
-    if(RemoveNegative)IMpippim_IMnpim_n_sub[iq]->SetMinimum(0);
-    
     IMpippim_IMnpip_wSid_n_Sp_data[iq] = (TH2F*)fr[iq]->Get("IMpippim_IMnpip_wSid_n_Sp");
     IMpippim_IMnpip_wSid_n_Sp_mix[iq] = (TH2F*)fmix[iq]->Get("IMpippim_IMnpip_wSid_n_Sp");
     IMpippim_IMnpip_wSid_n_Sp_sub[iq] = (TH2F*)IMpippim_IMnpip_wSid_n_Sp_data[iq]->Clone(Form("IMpippim_IMnpip_wSid_n_Sp_sub_%s",cqcut[iq]));
@@ -348,17 +323,6 @@ void K0SigmaTemp()
 
     for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
       std::cout << iq << "  " << ibin << std::endl;
-      IMpippim_IMnpip_n_bin_data[ibin][iq] = (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpip_n_bin%d",ibin));
-      IMpippim_IMnpip_n_bin_mix[ibin][iq] = (TH2F*)fmix[iq]->Get(Form("IMpippim_IMnpip_n_bin%d",ibin));
-      IMpippim_IMnpip_n_bin_sub[ibin][iq] = (TH2F*)IMpippim_IMnpip_n_bin_data[ibin][iq]->Clone(Form("IMpippim_IMnpip_n_sub_bin%d_%s",ibin,cqcut[iq]));
-      IMpippim_IMnpip_n_bin_sub[ibin][iq]->Add(IMpippim_IMnpip_n_bin_mix[ibin][iq],-1.0);
-      if(RemoveNegative)IMpippim_IMnpip_n_bin_sub[ibin][iq]->SetMinimum(0);
-
-      IMpippim_IMnpim_n_bin_data[ibin][iq] = (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpim_n_bin%d",ibin));
-      IMpippim_IMnpim_n_bin_mix[ibin][iq] = (TH2F*)fmix[iq]->Get(Form("IMpippim_IMnpim_n_bin%d",ibin));
-      IMpippim_IMnpim_n_bin_sub[ibin][iq] = (TH2F*)IMpippim_IMnpim_n_bin_data[ibin][iq]->Clone(Form("IMpippim_IMnpim_n_sub_bin%d_%s",ibin,cqcut[iq]));
-      IMpippim_IMnpim_n_bin_sub[ibin][iq]->Add(IMpippim_IMnpim_n_bin_mix[ibin][iq],-1.0);
-      if(RemoveNegative)IMpippim_IMnpim_n_bin_sub[ibin][iq]->SetMinimum(0);
 
       IMpippim_IMnpip_wSid_n_Sp_bin_data[ibin][iq] = (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpip_wSid_n_Sp_bin%d",ibin));
       IMpippim_IMnpip_wSid_n_Sp_bin_mix[ibin][iq] = (TH2F*)fmix[iq]->Get(Form("IMpippim_IMnpip_wSid_n_Sp_bin%d",ibin));
@@ -1090,6 +1054,62 @@ void K0SigmaTemp()
   TH2D* IMpippim_IMnpip_wK0orwSid_n_merge[10][nqcut];
   TH2D* IMpippim_IMnpim_wK0orwSid_n_merge[10][nqcut];
   TH2D* IMnpim_IMnpip_wSid_n_merge[10][nqcut];
+  
+  //tuned bins 2d histograms
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_wbin_data[3][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_wbin_mix[3][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_wbin[3][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_wbin_data[3][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_wbin_mix[3][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_wbin[3][nqcut];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_wbin_data[3][nqcut];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_wbin_mix[3][nqcut];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_wbin[3][nqcut];
+  TH2F* IMpippim_IMnpip_wK0_n_wbin_data[3][nqcut];
+  TH2F* IMpippim_IMnpip_wK0_n_wbin_mix[3][nqcut];
+  TH2F* IMpippim_IMnpip_wK0_n_wbin[3][nqcut];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_wbin_data[3][nqcut];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_wbin_mix[3][nqcut];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_wbin[3][nqcut];
+  TH2F* IMpippim_IMnpim_wK0_n_wbin_data[3][nqcut];
+  TH2F* IMpippim_IMnpim_wK0_n_wbin_mix[3][nqcut];
+  TH2F* IMpippim_IMnpim_wK0_n_wbin[3][nqcut];
+  for(int iq=0;iq<nqcut;iq++){
+    for(int imerge=0;imerge<3;imerge++){
+      IMnpim_IMnpip_wSid_n_Sp_wbin_data[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMnpim_IMnpip_wSid_n_Sp_wbin%d",imerge));
+      IMnpim_IMnpip_wSid_n_Sp_wbin_mix[imerge][iq]= (TH2F*)fmix[iq]->Get(Form("IMnpim_IMnpip_wSid_n_Sp_wbin%d",imerge));
+      IMnpim_IMnpip_wSid_n_Sp_wbin[imerge][iq] = (TH2F*)IMnpim_IMnpip_wSid_n_Sp_wbin_data[imerge][iq]->Clone(Form("IMnpim_IMnpip_wSid_n_Sp_wbin%d_%d_sub",imerge,iq));
+      IMnpim_IMnpip_wSid_n_Sp_wbin[imerge][iq]->Add(IMnpim_IMnpip_wSid_n_Sp_wbin_mix[imerge][iq],-1.0);
+
+      IMnpim_IMnpip_wSid_n_Sm_wbin_data[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMnpim_IMnpip_wSid_n_Sm_wbin%d",imerge));
+      IMnpim_IMnpip_wSid_n_Sm_wbin_mix[imerge][iq]= (TH2F*)fmix[iq]->Get(Form("IMnpim_IMnpip_wSid_n_Sm_wbin%d",imerge));
+      IMnpim_IMnpip_wSid_n_Sm_wbin[imerge][iq] = (TH2F*)IMnpim_IMnpip_wSid_n_Sm_wbin_data[imerge][iq]->Clone(Form("IMnpim_IMnpip_wSid_n_Sm_wbin%d_%d_sub",imerge,iq));
+      IMnpim_IMnpip_wSid_n_Sm_wbin[imerge][iq]->Add(IMnpim_IMnpip_wSid_n_Sm_wbin_mix[imerge][iq],-1.0);
+
+      IMpippim_IMnpip_wSid_n_Sp_wbin_data[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpip_wSid_n_Sp_wbin%d",imerge));
+      IMpippim_IMnpip_wSid_n_Sp_wbin_mix[imerge][iq]= (TH2F*)fmix[iq]->Get(Form("IMpippim_IMnpip_wSid_n_Sp_wbin%d",imerge));
+      IMpippim_IMnpip_wSid_n_Sp_wbin[imerge][iq] = (TH2F*)IMpippim_IMnpip_wSid_n_Sp_wbin_data[imerge][iq]->Clone(Form("IMpippim_IMnpip_wSid_n_Sp_wbin%d_%d_sub",imerge,iq));
+      IMpippim_IMnpip_wSid_n_Sp_wbin[imerge][iq]->Add(IMpippim_IMnpip_wSid_n_Sp_wbin_mix[imerge][iq],-1.0);
+
+      IMpippim_IMnpip_wK0_n_wbin_data[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpip_wK0_n_wbin%d",imerge));
+      IMpippim_IMnpip_wK0_n_wbin_mix[imerge][iq]= (TH2F*)fmix[iq]->Get(Form("IMpippim_IMnpip_wK0_n_wbin%d",imerge));
+      IMpippim_IMnpip_wK0_n_wbin[imerge][iq] = (TH2F*)IMpippim_IMnpip_wK0_n_wbin_data[imerge][iq]->Clone(Form("IMpippim_IMnpip_wK0_n_wbin%d_%d_sub",imerge,iq));
+      IMpippim_IMnpip_wK0_n_wbin[imerge][iq]->Add(IMpippim_IMnpip_wK0_n_wbin_mix[imerge][iq],-1.0);
+
+      IMpippim_IMnpim_wSid_n_Sm_wbin_data[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpim_wSid_n_Sm_wbin%d",imerge));
+      IMpippim_IMnpim_wSid_n_Sm_wbin_mix[imerge][iq]= (TH2F*)fmix[iq]->Get(Form("IMpippim_IMnpim_wSid_n_Sm_wbin%d",imerge));
+      IMpippim_IMnpim_wSid_n_Sm_wbin[imerge][iq] = (TH2F*)IMpippim_IMnpim_wSid_n_Sm_wbin_data[imerge][iq]->Clone(Form("IMpippim_IMnpim_wSid_n_Sm_wbin%d_%d_sub",imerge,iq));
+      IMpippim_IMnpim_wSid_n_Sm_wbin[imerge][iq]->Add(IMpippim_IMnpim_wSid_n_Sm_wbin_mix[imerge][iq],-1.0);
+
+      IMpippim_IMnpim_wK0_n_wbin_data[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpim_wK0_n_wbin%d",imerge));
+      IMpippim_IMnpim_wK0_n_wbin_mix[imerge][iq]= (TH2F*)fmix[iq]->Get(Form("IMpippim_IMnpim_wK0_n_wbin%d",imerge));
+      IMpippim_IMnpim_wK0_n_wbin[imerge][iq] = (TH2F*)IMpippim_IMnpim_wK0_n_wbin_data[imerge][iq]->Clone(Form("IMpippim_IMnpim_wK0_n_wbin%d_%d_sub",imerge,iq));
+      IMpippim_IMnpim_wK0_n_wbin[imerge][iq]->Add(IMpippim_IMnpim_wK0_n_wbin_mix[imerge][iq],-1.0);
+    }
+  }
+
+
+  //projection hists
   TH1D* IMnpip_wK0_merge[10][nqcut];
   TH1D* IMnpip_wK0_merge_select[10][nqcut];
   TH1D* IMnpip_wK0_merge_lo[10][nqcut];
@@ -1131,18 +1151,30 @@ void K0SigmaTemp()
   TF1 *constfitK0wSm[10][nqcut];
   TF1 *constfitSpwSm[10][nqcut];
   TF1 *constfitSmwSp[10][nqcut];
-  const double frSpwK0s[10]={1.1,1.1,1.1};
-  const double frSpwK0e[10]={1.32,1.32,1.32};
-  const double frK0wSps[10]={0.28,0.3,0.28};
-  const double frK0wSpe[10]={0.57,0.7,0.57};
-  const double frSmwK0s[10]={1.1,1.12,1.1};
-  const double frSmwK0e[10]={1.32,1.3,1.32};
-  const double frK0wSms[10]={0.3,0.3,0.3};
-  const double frK0wSme[10]={0.57,0.64,0.57};
-  const double frSpwSms[10]={1.14,1.14,1.12};
-  const double frSpwSme[10]={1.28,1.28,1.30};
-  const double frSmwSps[10]={1.14,1.14,1.12};
-  const double frSmwSpe[10]={1.30,1.30,1.30};
+  const double frSpwK0s[2][nqcut]={{1.1,1.1,1.1,1.1},
+                                   {1.1,1.1,1.1,1.1}};
+  const double frSpwK0e[2][nqcut]={{1.32,1.32,1.30,1.32},
+                                   {1.32,1.30,1.32,1.32}};
+  const double frK0wSps[2][nqcut]={{0.28,0.28,0.30,0.28},
+                                   {0.30,0.30,0.30,0.30}};
+  const double frK0wSpe[2][nqcut]={{0.57,0.56,0.57,0.57},
+                                   {0.70,0.70,0.70,0.57}};
+  const double frSmwK0s[2][nqcut]={{1.1,1.12,1.1,1.1},
+                                   {1.17,1.17,1.17,1.17}};
+  const double frSmwK0e[2][nqcut]={{1.32,1.3,1.27,1.27},
+                                   {1.27,1.27,1.27,1.24}};
+  const double frK0wSms[2][nqcut]={{0.28,0.30,0.28,0.28},
+                                   {0.30,0.30,0.30,0.30}};
+  const double frK0wSme[2][nqcut]={{0.57,0.57,0.57,0.57},
+                                   {0.70,0.70,0.70,0.60}};
+  const double frSpwSms[2][nqcut]={{1.14,1.14,1.12,1.14},
+                                   {1.14,1.14,1.12,1.14}};
+  const double frSpwSme[2][nqcut]={{1.28,1.28,1.30,1.28},
+                                   {1.28,1.28,1.30,1.30}};
+  const double frSmwSps[2][nqcut]={{1.14,1.14,1.12,1.14},
+                                   {1.14,1.14,1.12,1.14}};
+  const double frSmwSpe[2][nqcut]={{1.30,1.30,1.30,1.30},
+                                   {1.30,1.30,1.30,1.30}};
   //merge
   //index 0 
   //1.40-1.52
@@ -1170,10 +1202,9 @@ void K0SigmaTemp()
   }
 
   std::cout << __LINE__ << std::endl;
+  
   for(int imerge=0;imerge<2;imerge++){
     for(int iq=0;iq<nqcut;iq++){
-      //index 0 group
-      //use M = 1.40-1.41 GeV bin for cloneing 
       IMpippim_IMnpip_wK0orwSid_n_merge[imerge][iq]  
         = (TH2D*)IMpippim_IMnpip_wK0orwSid_n_bin_sub[initbin[imerge]][iq]->Clone(Form("IMpippim_IMnpip_wK0orwSid_merge%d_%d",imerge,iq));
       IMpippim_IMnpip_wK0orwSid_n_merge[imerge][iq]->SetTitle(Form("IMpippim_IMnpip_wK0orwSid %0.2f-%0.2f %s",startval[imerge],endval[imerge],cqcut[iq]));
@@ -1182,25 +1213,19 @@ void K0SigmaTemp()
       IMpippim_IMnpim_wK0orwSid_n_merge[imerge][iq]->SetTitle(Form("IMpippim_IMnpim_wK0orwSid %0.2f-%0.2f %s",startval[imerge],endval[imerge],cqcut[iq]));
       IMnpim_IMnpip_wSid_n_merge[imerge][iq]
         = (TH2D*)IMnpim_IMnpip_wK0orwSid_n_bin_sub[initbin[imerge]][iq]->Clone(Form("IMnpim_IMnpip_wSid_n_merge%d_%d",imerge,iq));
-      IMnpim_IMnpip_wSid_n_merge[imerge][iq]->SetTitle(Form("IMnpim_IMnpip_wK0orwSid  %0.2f-%0.2f %s",startval[imerge],endval[imerge],cqcut[iq]));
-      IMnpip_wK0_merge[imerge][iq] = (TH1D*)IMnpip_wK0_n_sub_bin[initbin[imerge]][iq]->Clone(Form("IMnpip_wK0_merge%d_%d",imerge,iq));
-      IMpippim_Sp_merge[imerge][iq] = (TH1D*)IMpippim_wSid_n_Sp_sub_bin[initbin[imerge]][iq]->Clone(Form("IMpippim_Sp_merge%d_%d",imerge,iq));
-      IMnpim_wK0_merge[imerge][iq] = (TH1D*)IMnpim_wK0_n_sub_bin[initbin[imerge]][iq]->Clone(Form("IMnpim_wK0_merge%d_%d",imerge,iq));
-      IMpippim_Sm_merge[imerge][iq] = (TH1D*)IMpippim_wSid_n_Sm_sub_bin[initbin[imerge]][iq]->Clone(Form("IMpippim_Sm_merge%d_%d",imerge,iq));
-      IMnpip_Sm_merge[imerge][iq] = (TH1D*)IMnpip_wSid_n_Sm_sub_bin[initbin[imerge]][iq]->Clone(Form("IMnpip_Sm_merge%d_%d",imerge,iq));
-      IMnpim_Sp_merge[imerge][iq] = (TH1D*)IMnpim_wSid_n_Sp_sub_bin[initbin[imerge]][iq]->Clone(Form("IMnpim_Sp_merge%d_%d",imerge,iq));
+      
+      IMnpip_wK0_merge[imerge][iq] = (TH1D*)IMpippim_IMnpip_wK0_n_wbin[imerge+1][iq]->ProjectionX(Form("IMnpip_wK0_merge%d_%d",imerge,iq));
+      IMpippim_Sp_merge[imerge][iq] = (TH1D*)IMpippim_IMnpip_wSid_n_Sp_wbin[imerge+1][iq]->ProjectionY(Form("IMpippim_Sp_merge%d_%d",imerge,iq));
+      IMnpim_wK0_merge[imerge][iq] = (TH1D*)IMpippim_IMnpim_wK0_n_wbin[imerge+1][iq]->ProjectionX(Form("IMnpim_wK0_merge%d_%d",imerge,iq));
+      IMpippim_Sm_merge[imerge][iq] = (TH1D*)IMpippim_IMnpim_wSid_n_Sm_wbin[imerge+1][iq]->ProjectionY(Form("IMpippim_Sm_merge%d_%d",imerge,iq));
+      IMnpip_Sm_merge[imerge][iq] = (TH1D*)IMnpim_IMnpip_wSid_n_Sm_wbin[imerge+1][iq]->ProjectionX(Form("IMnpip_Sm_merge%d_%d",imerge,iq));
+      IMnpim_Sp_merge[imerge][iq] = (TH1D*)IMnpim_IMnpip_wSid_n_Sp_wbin[imerge+1][iq]->ProjectionY(Form("IMnpim_Sp_merge%d_%d",imerge,iq));
 
       std::cout << __LINE__ << std::endl;
       for(int ibin=startbin[imerge];ibin<endbin[imerge];ibin++){
         IMpippim_IMnpip_wK0orwSid_n_merge[imerge][iq]->Add(IMpippim_IMnpip_wK0orwSid_n_bin_sub[ibin][iq]);
         IMpippim_IMnpim_wK0orwSid_n_merge[imerge][iq]->Add(IMpippim_IMnpim_wK0orwSid_n_bin_sub[ibin][iq]);
         IMnpim_IMnpip_wSid_n_merge[imerge][iq]->Add(IMnpim_IMnpip_wK0orwSid_n_bin_sub[ibin][iq]);
-        IMnpip_wK0_merge[imerge][iq]->Add(IMnpip_wK0_n_sub_bin[ibin][iq]);
-        IMpippim_Sp_merge[imerge][iq]->Add(IMpippim_wSid_n_Sp_sub_bin[ibin][iq]);
-        IMnpim_wK0_merge[imerge][iq]->Add(IMnpim_wK0_n_sub_bin[ibin][iq]);
-        IMpippim_Sm_merge[imerge][iq]->Add(IMpippim_wSid_n_Sm_sub_bin[ibin][iq]);
-        IMnpip_Sm_merge[imerge][iq]->Add(IMnpip_wSid_n_Sm_sub_bin[ibin][iq]);
-        IMnpim_Sp_merge[imerge][iq]->Add(IMnpim_wSid_n_Sp_sub_bin[ibin][iq]);
       }
       std::cout << __LINE__ << std::endl;
       //Draw in Canvas 
@@ -1212,28 +1237,18 @@ void K0SigmaTemp()
       cIMpippim_IMnpip_merge[imerge][iq]->cd(1);
       IMnpip_wK0_merge[imerge][iq]->Draw("HE");
       IMnpip_wK0_merge_select[imerge][iq] = (TH1D*)IMnpip_wK0_merge[imerge][iq]->Clone(Form("IMnpip_wK0_merge_select_%d_%d",imerge,iq));
-      IMnpip_wK0_merge_lo[imerge][iq] = (TH1D*)IMnpip_wK0_merge[imerge][iq]->Clone(Form("IMnpip_wK0_merge_lo_%d_%d",imerge,iq));
-      IMnpip_wK0_merge_hi[imerge][iq] = (TH1D*)IMnpip_wK0_merge[imerge][iq]->Clone(Form("IMnpip_wK0_merge_hi_%d_%d",imerge,iq));
       IMnpip_wK0_merge_select[imerge][iq]->SetLineColor(2);
-      IMnpip_wK0_merge_lo[imerge][iq]->SetLineColor(4);
-      IMnpip_wK0_merge_hi[imerge][iq]->SetLineColor(4);
       if(!RebinMode){
         IMnpip_wK0_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
       }else{
-        IMnpip_wK0_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(1.18,1.20);
+        IMnpip_wK0_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(
+            IMnpip_wK0_merge_select[imerge][iq]->GetBinLowEdge(9),
+            IMnpip_wK0_merge_select[imerge][iq]->GetBinLowEdge(10)
+            );
       }
-      if(!RebinMode){
-        IMnpip_wK0_merge_lo[imerge][iq]->GetXaxis()->SetRangeUser(1.0, anacuts::Sigmap_MIN-1.0*anacuts::Sigmap_sigma);
-        IMnpip_wK0_merge_hi[imerge][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MAX+1.0*anacuts::Sigmap_sigma,1.8);
-      }else{
-        IMnpip_wK0_merge_lo[imerge][iq]->GetXaxis()->SetRangeUser(1.00,1.18);
-        IMnpip_wK0_merge_hi[imerge][iq]->GetXaxis()->SetRangeUser(1.20,1.80);
-      }
-       
-
       IMnpip_wK0_merge_lohi[imerge][iq] = (TH1D*)IMnpip_wK0_merge[imerge][iq]->Clone(Form("IMnpip_wK0_merge_lohi_%d_%d",imerge,iq));
-      IMnpip_wK0_merge_lohi[imerge][iq]->SetBinContent(10,0);
-      IMnpip_wK0_merge_lohi[imerge][iq]->SetBinError(10,0);
+      IMnpip_wK0_merge_lohi[imerge][iq]->SetBinContent(9,0);
+      IMnpip_wK0_merge_lohi[imerge][iq]->SetBinError(9,0);
       IMnpip_wK0_merge_lohi[imerge][iq]->SetLineColor(4);
       IMnpip_wK0_merge_lohi[imerge][iq]->Draw("HEsame");
       constfitSpwK0[imerge][iq] = new TF1(Form("fSpwK0%d%d",imerge,iq),"pol0");
@@ -1242,9 +1257,12 @@ void K0SigmaTemp()
       //IMnpip_wK0_merge_lo[imerge][iq]->Draw("HEsame");
       //IMnpip_wK0_merge_hi[imerge][iq]->Draw("HEsame");
       IMnpip_wK0_merge_lohi[imerge][iq]->Draw("HEsame");
-      IMnpip_wK0_merge_lohi[imerge][iq]->Fit(constfitSpwK0[imerge][iq],"","",frSpwK0s[imerge],frSpwK0e[imerge]);
-      double count_SpwK0 = IMnpip_wK0_merge_select[imerge][iq]->GetBinContent(10);
+      if(!FitNoWeight)IMnpip_wK0_merge_lohi[imerge][iq]->Fit(constfitSpwK0[imerge][iq],"","",frSpwK0s[imerge][iq],frSpwK0e[imerge][iq]);
+      else IMnpip_wK0_merge_lohi[imerge][iq]->Fit(constfitSpwK0[imerge][iq],"w","",frSpwK0s[imerge][iq],frSpwK0e[imerge][iq]);
+      double count_SpwK0 = IMnpip_wK0_merge_select[imerge][iq]->GetBinContent(9);
+      double err_SpwK0 = IMnpip_wK0_merge_select[imerge][iq]->GetBinError(9);
       double bg_SpwK0 =  constfitSpwK0[imerge][iq]->GetParameter(0);
+      double bg_SpwK0err =  constfitSpwK0[imerge][iq]->GetParError(0);
       cIMpippim_IMnpip_merge[imerge][iq]->cd(4);
       IMpippim_Sp_merge[imerge][iq]->Draw("HE");
       IMpippim_Sp_merge_select[imerge][iq] = (TH1D*)IMpippim_Sp_merge[imerge][iq]->Clone(Form("IMpippim_Sp_merge_select_%d_%d",imerge,iq));
@@ -1256,69 +1274,39 @@ void K0SigmaTemp()
       if(!RebinMode){
         IMpippim_Sp_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(anacuts::pipi_MIN_narrow,anacuts::pipi_MAX_narrow);
       }else{
-        IMpippim_Sp_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(0.480000001,0.51);
-      }
-      if(!RebinMode){
-        //IMpippim_Sp_merge_lo[imerge][iq]->GetXaxis()->SetRangeUser(0.2,anacuts::pipi_MIN_narrow-1.0*anacuts::K0_sigma);
-        //IMpippim_Sp_merge_hi[imerge][iq]->GetXaxis()->SetRangeUser(anacuts::pipi_MAX_narrow+1.0*anacuts::K0_sigma,0.9);
-      }else{
-        //IMpippim_Sp_merge_lo[imerge][iq]->GetXaxis()->SetRangeUser(0.2,0.48);
-        //IMpippim_Sp_merge_hi[imerge][iq]->GetXaxis()->SetRangeUser(0.51,0.9);
+        IMpippim_Sp_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(
+            IMpippim_Sp_merge_select[imerge][iq]->GetBinLowEdge(10),
+            IMpippim_Sp_merge_select[imerge][iq]->GetBinLowEdge(11));
       }
       IMpippim_Sp_merge_select[imerge][iq]->Draw("HEsame");
       IMpippim_Sp_merge_lohi[imerge][iq] = (TH1D*)IMpippim_Sp_merge[imerge][iq]->Clone(Form("IMpippim_Sp_merge_lohi_%d_%d",imerge,iq));
-      IMpippim_Sp_merge_lohi[imerge][iq]->SetBinContent(17,0);
-      IMpippim_Sp_merge_lohi[imerge][iq]->SetBinError(17,0);
+      IMpippim_Sp_merge_lohi[imerge][iq]->SetBinContent(10,0);
+      IMpippim_Sp_merge_lohi[imerge][iq]->SetBinError(10,0);
       IMpippim_Sp_merge_lohi[imerge][iq]->SetLineColor(4);
       IMpippim_Sp_merge_lohi[imerge][iq]->Draw("HEsame");
       constfitK0wSp[imerge][iq] = new TF1(Form("fK0wSp%d%d",imerge,iq),"pol0");
       constfitK0wSp[imerge][iq]->SetLineColor(3);
-      IMpippim_Sp_merge_lohi[imerge][iq]->Fit(constfitK0wSp[imerge][iq],"","",frK0wSps[imerge],frK0wSpe[imerge]);
-      double count_K0wSp = IMpippim_Sp_merge_select[imerge][iq]->GetBinContent(17);
+      if(!FitNoWeight)IMpippim_Sp_merge_lohi[imerge][iq]->Fit(constfitK0wSp[imerge][iq],"","",frK0wSps[imerge][iq],frK0wSpe[imerge][iq]);
+      else            IMpippim_Sp_merge_lohi[imerge][iq]->Fit(constfitK0wSp[imerge][iq],"w","",frK0wSps[imerge][iq],frK0wSpe[imerge][iq]);
+      double count_K0wSp = IMpippim_Sp_merge_select[imerge][iq]->GetBinContent(10);
+      double err_K0wSp = IMpippim_Sp_merge_select[imerge][iq]->GetBinError(10);
       double bg_K0wSp =  constfitK0wSp[imerge][iq]->GetParameter(0);
-
+      double bg_K0wSperr = constfitK0wSp[imerge][iq]->GetParError(0);
 
       cIMpippim_IMnpip_merge[imerge][iq]->cd(2);
       TPaveText *pt = new TPaveText(.05,.05,.95,.7);
-      pt->AddText(Form("Sigma+ on K0 count %0.2f",count_SpwK0)); 
-      pt->AddText(Form("Sigma+ bg %0.2f",bg_SpwK0)); 
-      pt->AddText(Form("K0 on Sigma+ count %0.2f",count_K0wSp)); 
-      pt->AddText(Form("K0 bg %0.2f",bg_K0wSp)); 
-      pt->AddText(Form("Sigma+/K0 ratio %0.2f", (count_SpwK0-bg_SpwK0)/(count_K0wSp-bg_K0wSp)));
+      //pt->AddText(Form("Sigma+ on K0 count %0.2f",count_SpwK0)); 
+      pt->AddText(Form("Sigma+ & K0 overlap %0.1f +/- %0.1f",count_SpwK0,err_K0wSp)); 
+      double errSpwK0 = sqrt(err_SpwK0*err_SpwK0+bg_SpwK0err*bg_SpwK0err);
+      pt->AddText(Form("Sigma+ estimated %0.1f +/- %0.1f",count_SpwK0 - bg_SpwK0,errSpwK0 )); 
+      //pt->AddText(Form("K0 on Sigma+ count %0.2f",count_K0wSp)); 
+      double errK0wSp = sqrt(err_K0wSp*err_K0wSp+bg_K0wSperr*bg_K0wSperr);
+      pt->AddText(Form("K0 estimated %0.1f +/- %0.1f",count_SpwK0 - bg_K0wSp,errK0wSp )); 
+      pt->AddText(Form("Sigma+/K0 ratio %0.1f +/- %0.1f", (count_SpwK0-bg_SpwK0)/(count_K0wSp-bg_K0wSp),
+          sqrt(errSpwK0*errSpwK0/pow(count_K0wSp-bg_K0wSp,2)+pow(count_SpwK0-bg_SpwK0 ,2)/pow(count_K0wSp-bg_K0wSp,4)*pow(errK0wSp,2))));
       pt->Draw();
-      //IMpippim_Sp_merge_lo[imerge][iq]->Draw("HEsame");
-      //IMpippim_Sp_merge_hi[imerge][iq]->Draw("HEsame");
-      //double K0lo_wSp = IMpippim_Sp_merge_lo[imerge][iq]->Integral();
-      //double K0hi_wSp = IMpippim_Sp_merge_hi[imerge][iq]->Integral();
-      //double K0_overlap_wSp = IMpippim_Sp_merge_select[imerge][iq]->Integral();
-      //double K0_estimated_wSp = K0_overlap_wSp - K0lo_wSp - K0hi_wSp;
-      //if(K0_overlap_wSp<=0.0){
-      //  K0_overlap_wSp = 0.0;
-      //  K0_estimated_wSp =0.0; 
-      // }
-      // if(K0_estimated_wSp<=0.0){
-      //    K0_estimated_wSp=0.0;
-      //}
-      //double Splo_wK0 = IMnpip_wK0_merge_lo[imerge][iq]->Integral();
-      //double Sphi_wK0 = IMnpip_wK0_merge_hi[imerge][iq]->Integral();
-      //double Sp_overlap_wK0 = IMnpip_wK0_merge_select[imerge][iq]->Integral();
-      //double Sp_estimated_wK0 = Sp_overlap_wK0 - Splo_wK0 - Sphi_wK0;
-      //if(Sp_overlap_wK0<=0.0){
-      //  Sp_overlap_wK0 = 0.0;
-      //  Sp_estimated_wK0 =0.0; 
-      //}
-      //if(Sp_estimated_wK0<=0.0){
-      //   Sp_estimated_wK0=0.0;
-      //}
-      
-      //double Sp_ratio_wK0 = 0.0;
-      //double K0_ratio_wSp = 0.0;
       double Sp_ratio_wK0 = (count_SpwK0-bg_SpwK0)/((count_SpwK0-bg_SpwK0)+(count_K0wSp-bg_K0wSp));
       double K0_ratio_wSp = (count_K0wSp-bg_K0wSp)/((count_SpwK0-bg_SpwK0)+(count_K0wSp-bg_K0wSp));
-      //if( (Sp_estimated_wK0+K0_estimated_wSp)>0.0){
-      //   Sp_ratio_wK0 =  Sp_estimated_wK0/(Sp_estimated_wK0+K0_estimated_wSp);
-      //   K0_ratio_wSp =  K0_estimated_wSp/(Sp_estimated_wK0+K0_estimated_wSp);
-     // }
       for(int ibin=initbin[imerge];ibin<endbin[imerge];ibin++){
         IMnpipi_Sp_ratio_wK0_merge[iq]->SetBinContent(ibin,Sp_ratio_wK0);
         IMnpipi_Sp_ratio_wK0_merge[iq]->SetBinError(ibin,0);
@@ -1327,11 +1315,6 @@ void K0SigmaTemp()
       }
 
       std::cout << __LINE__ << std::endl;
-      //std::cout << "merge :" << imerge << " qcut " << iq  << std::endl;
-      //std::cout << "Sp_estimated_wK0 " << Sp_estimated_wK0 << std::endl;
-      //std::cout << "K0_estimated_wSp " << K0_estimated_wSp << std::endl;
-      //std::cout << "Sp ratio" << Sp_estimated_wK0/(Sp_estimated_wK0+K0_estimated_wSp) << std::endl;
-      //std::cout << "K0 ratio" << K0_estimated_wSp/(Sp_estimated_wK0+K0_estimated_wSp) << std::endl;
 
       //Sigma- and K0 overlap 
       cIMpippim_IMnpim_merge[imerge][iq] = new TCanvas(Form("cIMpippim_IMnpim_merge%d_%d",imerge,iq),Form("cIMpippim_IMnpim_merge%d_%d",imerge,iq));
@@ -1342,116 +1325,74 @@ void K0SigmaTemp()
       cIMpippim_IMnpim_merge[imerge][iq]->cd(1);
       IMnpim_wK0_merge[imerge][iq]->Draw("HE");
       IMnpim_wK0_merge_select[imerge][iq] = (TH1D*)IMnpim_wK0_merge[imerge][iq]->Clone(Form("IMnpim_wK0_merge_select_%d_%d",imerge,iq));
-      IMnpim_wK0_merge_lo[imerge][iq] = (TH1D*)IMnpim_wK0_merge[imerge][iq]->Clone(Form("IMnpim_wK0_merge_lo_%d_%d",imerge,iq));
-      IMnpim_wK0_merge_hi[imerge][iq] = (TH1D*)IMnpim_wK0_merge[imerge][iq]->Clone(Form("IMnpim_wK0_merge_hi_%d_%d",imerge,iq));
       IMnpim_wK0_merge_select[imerge][iq]->SetLineColor(2);
-      IMnpim_wK0_merge_lo[imerge][iq]->SetLineColor(4);
-      IMnpim_wK0_merge_hi[imerge][iq]->SetLineColor(4);
       if(!RebinMode){
         IMnpim_wK0_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
       }else{
-        IMnpim_wK0_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(1.18,1.20);
+        IMnpim_wK0_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(
+            IMnpim_wK0_merge_select[imerge][iq]->GetBinLowEdge(9),
+            IMnpim_wK0_merge_select[imerge][iq]->GetBinLowEdge(10)); 
       }
 
-      if(!RebinMode){
-        IMnpim_wK0_merge_lo[imerge][iq]->GetXaxis()->SetRangeUser(1.0, anacuts::Sigmam_MIN-1.0*anacuts::Sigmam_sigma);
-        IMnpim_wK0_merge_hi[imerge][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MAX+1.0*anacuts::Sigmam_sigma, 1.8);
-      }else{
-        IMnpim_wK0_merge_lo[imerge][iq]->GetXaxis()->SetRangeUser(1.00,1.18);
-        IMnpim_wK0_merge_hi[imerge][iq]->GetXaxis()->SetRangeUser(1.20,1.80);
-      }
       IMnpim_wK0_merge_select[imerge][iq]->Draw("HEsame");
       IMnpim_wK0_merge_lohi[imerge][iq] = (TH1D*)IMnpim_wK0_merge[imerge][iq]->Clone(Form("IMnpim_wK0_merge_lohi_%d_%d",imerge,iq));
-      IMnpim_wK0_merge_lohi[imerge][iq]->SetBinContent(10,0);
-      IMnpim_wK0_merge_lohi[imerge][iq]->SetBinError(10,0);
+      IMnpim_wK0_merge_lohi[imerge][iq]->SetBinContent(9,0);
+      IMnpim_wK0_merge_lohi[imerge][iq]->SetBinError(9,0);
       IMnpim_wK0_merge_lohi[imerge][iq]->SetLineColor(4);
       IMnpim_wK0_merge_lohi[imerge][iq]->Draw("HEsame");
       constfitSmwK0[imerge][iq] = new TF1(Form("fSmwK0%d%d",imerge,iq),"pol0");
       constfitSmwK0[imerge][iq]->SetLineColor(3);
-      IMnpim_wK0_merge_lohi[imerge][iq]->Fit(constfitSmwK0[imerge][iq],"","",frSmwK0s[imerge],frSmwK0e[imerge]);
-      double count_SmwK0 = IMnpim_wK0_merge_select[imerge][iq]->GetBinContent(10);
+      if(!FitNoWeight)IMnpim_wK0_merge_lohi[imerge][iq]->Fit(constfitSmwK0[imerge][iq],"","",frSmwK0s[imerge][iq],frSmwK0e[imerge][iq]);
+      else            IMnpim_wK0_merge_lohi[imerge][iq]->Fit(constfitSmwK0[imerge][iq],"w","",frSmwK0s[imerge][iq],frSmwK0e[imerge][iq]);
+      double count_SmwK0 = IMnpim_wK0_merge_select[imerge][iq]->GetBinContent(9);
+      double err_SmwK0 = IMnpim_wK0_merge_select[imerge][iq]->GetBinError(9);
       double bg_SmwK0 =  constfitSmwK0[imerge][iq]->GetParameter(0);
-      //IMnpim_wK0_merge_lo[imerge][iq]->Draw("HEsame");
-      //IMnpim_wK0_merge_hi[imerge][iq]->Draw("HEsame");
+      double bg_SmwK0err =  constfitSmwK0[imerge][iq]->GetParError(0);
       
       
       cIMpippim_IMnpim_merge[imerge][iq]->cd(4);
       IMpippim_Sm_merge[imerge][iq]->Draw("HE");
       IMpippim_Sm_merge_select[imerge][iq] = (TH1D*)IMpippim_Sm_merge[imerge][iq]->Clone(Form("IMpippim_Sm_merge_select_%d_%d",imerge,iq));
-      IMpippim_Sm_merge_lo[imerge][iq] = (TH1D*)IMpippim_Sm_merge[imerge][iq]->Clone(Form("IMpippim_Sm_merge_lo_%d_%d",imerge,iq));
-      IMpippim_Sm_merge_hi[imerge][iq] = (TH1D*)IMpippim_Sm_merge[imerge][iq]->Clone(Form("IMpippim_Sm_merge_hi_%d_%d",imerge,iq));
       IMpippim_Sm_merge_select[imerge][iq]->SetLineColor(2);
-      IMpippim_Sm_merge_lo[imerge][iq]->SetLineColor(4);
-      IMpippim_Sm_merge_hi[imerge][iq]->SetLineColor(4);
       if(!RebinMode){
         IMpippim_Sm_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(anacuts::pipi_MIN_narrow,anacuts::pipi_MAX_narrow);
       }else{
-        IMpippim_Sm_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(0.48000001,0.51);
-      }
-        
-      if(!RebinMode){
-        IMpippim_Sm_merge_lo[imerge][iq]->GetXaxis()->SetRangeUser(0.2,anacuts::pipi_MIN_narrow-1.0*anacuts::K0_sigma);
-        IMpippim_Sm_merge_hi[imerge][iq]->GetXaxis()->SetRangeUser(anacuts::pipi_MAX_narrow+1.0*anacuts::K0_sigma,0.9);
-      }else{
-        IMpippim_Sm_merge_lo[imerge][iq]->GetXaxis()->SetRangeUser(0.20,0.48);
-        IMpippim_Sm_merge_hi[imerge][iq]->GetXaxis()->SetRangeUser(0.51,0.90);
+        IMpippim_Sm_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(
+            IMpippim_Sm_merge_select[imerge][iq]->GetBinLowEdge(10),
+            IMpippim_Sm_merge_select[imerge][iq]->GetBinLowEdge(11));
       }
         
       IMpippim_Sm_merge_select[imerge][iq]->Draw("HEsame");
       IMpippim_Sm_merge_lohi[imerge][iq] = (TH1D*)IMpippim_Sm_merge[imerge][iq]->Clone(Form("IMpippim_Sm_merge_lohi_%d_%d",imerge,iq));
       IMpippim_Sm_merge_lohi[imerge][iq]->SetLineColor(4);
-      IMpippim_Sm_merge_lohi[imerge][iq]->SetBinContent(17,0);
-      IMpippim_Sm_merge_lohi[imerge][iq]->SetBinError(17,0);
+      IMpippim_Sm_merge_lohi[imerge][iq]->SetBinContent(10,0);
+      IMpippim_Sm_merge_lohi[imerge][iq]->SetBinError(10,0);
       IMpippim_Sm_merge_lohi[imerge][iq]->Draw("HEsame");
       constfitK0wSm[imerge][iq] = new TF1(Form("fK0wSm%d%d",imerge,iq),"pol0");
       constfitK0wSm[imerge][iq]->SetLineColor(3);
-      IMpippim_Sm_merge_lohi[imerge][iq]->Fit(constfitK0wSm[imerge][iq],"","",frK0wSms[imerge],frK0wSme[imerge]);
-      double count_K0wSm = IMpippim_Sm_merge_select[imerge][iq]->GetBinContent(17);
+      if(!FitNoWeight) IMpippim_Sm_merge_lohi[imerge][iq]->Fit(constfitK0wSm[imerge][iq],"","",frK0wSms[imerge][iq],frK0wSme[imerge][iq]);
+      else             IMpippim_Sm_merge_lohi[imerge][iq]->Fit(constfitK0wSm[imerge][iq],"w","",frK0wSms[imerge][iq],frK0wSme[imerge][iq]);
+      double count_K0wSm = IMpippim_Sm_merge_select[imerge][iq]->GetBinContent(10);
+      double err_K0wSm = IMpippim_Sm_merge_select[imerge][iq]->GetBinError(10);
       double bg_K0wSm =  constfitK0wSm[imerge][iq]->GetParameter(0);
+      double bg_K0wSmerr =  constfitK0wSm[imerge][iq]->GetParError(0);
       
       cIMpippim_IMnpim_merge[imerge][iq]->cd(2);
       TPaveText *pt1 = new TPaveText(.05,.05,.95,.7);
-      pt1->AddText(Form("Sigma- on K0 count %0.2f",count_SmwK0)); 
-      pt1->AddText(Form("Sigma- bg %0.2f",bg_SmwK0)); 
-      pt1->AddText(Form("K0 on Sigma- count %0.2f",count_K0wSm)); 
-      pt1->AddText(Form("K0 bg %0.2f",bg_K0wSm)); 
-      pt1->AddText(Form("Sigma-/K0 ratio %0.2f", (count_SmwK0-bg_SmwK0)/(count_K0wSm-bg_K0wSm)));
+      pt1->AddText(Form("Sigma- & K0 overlap %0.1f +/- %0.1f",count_SmwK0,err_SmwK0)); 
+      double errSmwK0 = sqrt(err_SmwK0*err_SmwK0 + bg_SmwK0*bg_SmwK0);
+      //pt1->AddText(Form("Sigma- es %0.1f",bg_SmwK0)); 
+      pt1->AddText(Form("Sigma- estimated %0.1f +/- %0.1f",count_SmwK0-bg_SmwK0,errSmwK0)); 
+      //pt1->AddText(Form("K0 on Sigma- count %0.1f",count_K0wSm)); 
+      double errK0wSm = sqrt(err_K0wSm*err_K0wSm + bg_K0wSm*bg_K0wSm);
+      pt1->AddText(Form("K0 estimated %0.1f",count_K0wSm-bg_K0wSm,errK0wSm)); 
+      //pt1->AddText(Form("Sigma-/K0 ratio %0.2f", (count_SmwK0-bg_SmwK0)/(count_K0wSm-bg_K0wSm)));
+      pt1->AddText(Form("Sigma-/K0 ratio %0.1f +/- %0.1f", (count_SmwK0-bg_SmwK0)/(count_K0wSm-bg_K0wSm),
+          sqrt(errSmwK0*errSmwK0/pow(count_K0wSm-bg_K0wSm,2)+pow(count_SmwK0-bg_SmwK0 ,2)/pow(count_K0wSm-bg_K0wSm,4)*pow(errK0wSm,2))));
       pt1->Draw();
       
-      //std::cout << __LINE__ << std::endl;
-      //IMpippim_Sm_merge_lo[imerge][iq]->Draw("HEsame");
-      //IMpippim_Sm_merge_hi[imerge][iq]->Draw("HEsame");
-      /*
-      double K0lo_wSm = IMpippim_Sm_merge_lo[imerge][iq]->Integral();
-      double K0hi_wSm = IMpippim_Sm_merge_hi[imerge][iq]->Integral();
-      double K0_overlap_wSm = IMpippim_Sm_merge_select[imerge][iq]->Integral();
-      double K0_estimated_wSm = K0_overlap_wSm - K0lo_wSm - K0hi_wSm;
-      if(K0_overlap_wSm<=0.0){
-        K0_overlap_wSm = 0.0;
-        K0_estimated_wSm =0.0; 
-      }
-      if(K0_estimated_wSm<=0.0){
-         K0_estimated_wSm=0.0;
-      }
-      double Smlo_wK0 = IMnpim_wK0_merge_lo[imerge][iq]->Integral();
-      double Smhi_wK0 = IMnpim_wK0_merge_hi[imerge][iq]->Integral();
-      double Sm_overlap_wK0 = IMnpim_wK0_merge_select[imerge][iq]->Integral();
-      double Sm_estimated_wK0 = Sm_overlap_wK0 - Smlo_wK0 - Smhi_wK0;
-      if(Sm_overlap_wK0<=0.0){
-        Sm_overlap_wK0 = 0.0;
-        Sm_estimated_wK0 =0.0; 
-      }
-      if(Sm_estimated_wK0<0.0){
-         Sm_estimated_wK0=0.0;
-      }
-      */
       double Sm_ratio_wK0 = (count_SmwK0-bg_SmwK0)/((count_SmwK0-bg_SmwK0)+(count_K0wSm-bg_K0wSm));
       double K0_ratio_wSm = (count_K0wSm-bg_K0wSm)/((count_SmwK0-bg_SmwK0)+(count_K0wSm-bg_K0wSm));
-      //if( (Sm_estimated_wK0+K0_estimated_wSm)>0.0){
-      //   Sm_ratio_wK0 =  Sm_estimated_wK0/(Sm_estimated_wK0+K0_estimated_wSm);
-      //   K0_ratio_wSm =  K0_estimated_wSm/(Sm_estimated_wK0+K0_estimated_wSm);
-      //}
-
       for(int ibin=initbin[imerge];ibin<endbin[imerge];ibin++){
         IMnpipi_Sm_ratio_wK0_merge[iq]->SetBinContent(ibin,Sm_ratio_wK0);
         IMnpipi_Sm_ratio_wK0_merge[iq]->SetBinError(ibin,0);
@@ -1459,127 +1400,82 @@ void K0SigmaTemp()
         IMnpipi_K0_ratio_wSm_merge[iq]->SetBinError(ibin,0);
       }
 
-
-      //std::cout << "Sm_estimated_wK0 " << Sm_estimated_wK0 << std::endl;
-      //std::cout << "K0_estimated_wSm " << K0_estimated_wSm << std::endl;
-      //std::cout << "Sm ratio" << Sm_estimated_wK0/(Sm_estimated_wK0+K0_estimated_wSm) << std::endl;
-      //std::cout << "K0 ratio" << K0_estimated_wSm/(Sm_estimated_wK0+K0_estimated_wSm) << std::endl;
-      
-
       cIMnpim_IMnpip_merge[imerge][iq] = new TCanvas(Form("cIMnpim_IMnpip_merge%d_%d",imerge,iq),Form("cIMnpim_IMnpip_merge%d_%d",imerge,iq));
       cIMnpim_IMnpip_merge[imerge][iq]->Divide(2,2);
       cIMnpim_IMnpip_merge[imerge][iq]->cd(3);
       if(RemoveNegative)IMnpim_IMnpip_wSid_n_merge[imerge][iq]->SetMinimum(0);
+      IMnpim_IMnpip_wSid_n_merge[imerge][iq]->GetXaxis()->SetRangeUser(1,1.4);
+      IMnpim_IMnpip_wSid_n_merge[imerge][iq]->GetYaxis()->SetRangeUser(1,1.4);
       IMnpim_IMnpip_wSid_n_merge[imerge][iq]->Draw("colz");
       cIMnpim_IMnpip_merge[imerge][iq]->cd(1);
+      IMnpip_Sm_merge[imerge][iq]->GetXaxis()->SetRangeUser(1,1.4);
+      IMnpip_Sm_merge[imerge][iq]->SetMinimum(0);
       IMnpip_Sm_merge[imerge][iq]->Draw("HE");
       IMnpip_Sm_merge_select[imerge][iq] = (TH1D*)IMnpip_Sm_merge[imerge][iq]->Clone(Form("IMnpip_Sm_merge_select_%d_%d",imerge,iq));
-      IMnpip_Sm_merge_lo[imerge][iq] = (TH1D*)IMnpip_Sm_merge[imerge][iq]->Clone(Form("IMnpip_Sm_merge_lo_%d_%d",imerge,iq));
-      IMnpip_Sm_merge_hi[imerge][iq] = (TH1D*)IMnpip_Sm_merge[imerge][iq]->Clone(Form("IMnpip_Sm_merge_hi_%d_%d",imerge,iq));
       IMnpip_Sm_merge_select[imerge][iq]->SetLineColor(2);
-      IMnpip_Sm_merge_lo[imerge][iq]->SetLineColor(4);
-      IMnpip_Sm_merge_hi[imerge][iq]->SetLineColor(4);
       if(!RebinMode){
         IMnpip_Sm_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
       }else{
-        IMnpip_Sm_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(1.18,1.20);
+        IMnpip_Sm_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(
+            IMnpip_Sm_merge_select[imerge][iq]->GetBinLowEdge(9),
+            IMnpip_Sm_merge_select[imerge][iq]->GetBinLowEdge(10));
       }
       
-      if(!RebinMode){
-        IMnpip_Sm_merge_lo[imerge][iq]->GetXaxis()->SetRangeUser(1.00, anacuts::Sigmap_MIN-1.0*anacuts::Sigmap_sigma);
-        IMnpip_Sm_merge_hi[imerge][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MAX+1.0*anacuts::Sigmap_sigma, 1.8);
-      }else{
-        IMnpip_Sm_merge_lo[imerge][iq]->GetXaxis()->SetRangeUser(1.00,1.18);
-        IMnpip_Sm_merge_hi[imerge][iq]->GetXaxis()->SetRangeUser(1.20,1.80);
-      }
-
       IMnpip_Sm_merge_select[imerge][iq]->Draw("HEsame");
       IMnpip_Sm_merge_lohi[imerge][iq] = (TH1D*)IMnpip_Sm_merge[imerge][iq]->Clone(Form("IMnpip_Sm_merge_lohi_%d_%d",imerge,iq));
       IMnpip_Sm_merge_lohi[imerge][iq]->SetLineColor(4);
-      IMnpip_Sm_merge_lohi[imerge][iq]->SetBinContent(10,0);
-      IMnpip_Sm_merge_lohi[imerge][iq]->SetBinError(10,0);
+      IMnpip_Sm_merge_lohi[imerge][iq]->SetBinContent(9,0);
+      IMnpip_Sm_merge_lohi[imerge][iq]->SetBinError(9,0);
       IMnpip_Sm_merge_lohi[imerge][iq]->Draw("HEsame");
       constfitSpwSm[imerge][iq] = new TF1(Form("fSpwSm%d%d",imerge,iq),"pol0");
       constfitSpwSm[imerge][iq]->SetLineColor(3);
-      IMnpip_Sm_merge_lohi[imerge][iq]->Fit(constfitSpwSm[imerge][iq],"","",frSpwSms[imerge],frSpwSme[imerge]);
-      double count_SpwSm = IMnpip_Sm_merge_select[imerge][iq]->GetBinContent(10);
+      if(!FitNoWeight)IMnpip_Sm_merge_lohi[imerge][iq]->Fit(constfitSpwSm[imerge][iq],"","",frSpwSms[imerge][iq],frSpwSme[imerge][iq]);
+      else            IMnpip_Sm_merge_lohi[imerge][iq]->Fit(constfitSpwSm[imerge][iq],"w","",frSpwSms[imerge][iq],frSpwSme[imerge][iq]);
+      double count_SpwSm = IMnpip_Sm_merge_select[imerge][iq]->GetBinContent(9);
+      double err_SpwSm = IMnpip_Sm_merge_select[imerge][iq]->GetBinError(9);
       double bg_SpwSm =  constfitSpwSm[imerge][iq]->GetParameter(0);
+      double bg_SpwSmerr =  constfitSpwSm[imerge][iq]->GetParError(0);
 
-      //IMnpip_Sm_merge_lo[imerge][iq]->Draw("HEsame");
-      //IMnpip_Sm_merge_hi[imerge][iq]->Draw("HEsame");
       cIMnpim_IMnpip_merge[imerge][iq]->cd(4);
+      IMnpim_Sp_merge[imerge][iq]->GetXaxis()->SetRangeUser(1,1.4);
+      IMnpim_Sp_merge[imerge][iq]->SetMinimum(0);
       IMnpim_Sp_merge[imerge][iq]->Draw("HE");
       IMnpim_Sp_merge_select[imerge][iq] = (TH1D*)IMnpim_Sp_merge[imerge][iq]->Clone(Form("IMnpim_Sp_merge_select_%d_%d",imerge,iq));
-      IMnpim_Sp_merge_lo[imerge][iq] = (TH1D*)IMnpim_Sp_merge[imerge][iq]->Clone(Form("IMnpim_Sp_merge_lo_%d_%d",imerge,iq));
-      IMnpim_Sp_merge_hi[imerge][iq] = (TH1D*)IMnpim_Sp_merge[imerge][iq]->Clone(Form("IMnpim_Sp_merge_hi_%d_%d",imerge,iq));
       IMnpim_Sp_merge_select[imerge][iq]->SetLineColor(2);
-      IMnpim_Sp_merge_lo[imerge][iq]->SetLineColor(4);
-      IMnpim_Sp_merge_hi[imerge][iq]->SetLineColor(4);
       if(!RebinMode){
         IMnpim_Sp_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
       }else{
-        IMnpim_Sp_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(1.18,1.20);
+        IMnpim_Sp_merge_select[imerge][iq]->GetXaxis()->SetRangeUser(
+            IMnpim_Sp_merge_select[imerge][iq]->GetBinLowEdge(9),
+            IMnpim_Sp_merge_select[imerge][iq]->GetBinLowEdge(10));
       }
       
-      if(!RebinMode){
-        IMnpim_Sp_merge_lo[imerge][iq]->GetXaxis()->SetRangeUser(1.0, anacuts::Sigmam_MIN-1.0*anacuts::Sigmam_sigma);
-        IMnpim_Sp_merge_hi[imerge][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MAX+1.0*anacuts::Sigmam_sigma, 1.80);
-      }else{
-        IMnpim_Sp_merge_lo[imerge][iq]->GetXaxis()->SetRangeUser(1.00, 1.18);
-        IMnpim_Sp_merge_hi[imerge][iq]->GetXaxis()->SetRangeUser(1.20, 1.80);
-      }
       IMnpim_Sp_merge_select[imerge][iq]->Draw("HEsame");
       IMnpim_Sp_merge_lohi[imerge][iq] = (TH1D*)IMnpim_Sp_merge[imerge][iq]->Clone(Form("IMnpim_Sp_merge_lohi_%d_%d",imerge,iq));
       IMnpim_Sp_merge_lohi[imerge][iq]->SetLineColor(4);
-      IMnpim_Sp_merge_lohi[imerge][iq]->SetBinContent(10,0);
-      IMnpim_Sp_merge_lohi[imerge][iq]->SetBinError(10,0);
+      IMnpim_Sp_merge_lohi[imerge][iq]->SetBinContent(9,0);
+      IMnpim_Sp_merge_lohi[imerge][iq]->SetBinError(9,0);
       IMnpim_Sp_merge_lohi[imerge][iq]->Draw("HEsame");
       constfitSmwSp[imerge][iq] = new TF1(Form("fSmwSp%d%d",imerge,iq),"pol0");
       constfitSmwSp[imerge][iq]->SetLineColor(3);
-      IMnpim_Sp_merge_lohi[imerge][iq]->Fit(constfitSmwSp[imerge][iq],"","",frSmwSps[imerge],frSmwSpe[imerge]);
-      double count_SmwSp = IMnpim_Sp_merge_select[imerge][iq]->GetBinContent(10);
+      if(!FitNoWeight)IMnpim_Sp_merge_lohi[imerge][iq]->Fit(constfitSmwSp[imerge][iq],"","",frSmwSps[imerge][iq],frSmwSpe[imerge][iq]);
+      else            IMnpim_Sp_merge_lohi[imerge][iq]->Fit(constfitSmwSp[imerge][iq],"w","",frSmwSps[imerge][iq],frSmwSpe[imerge][iq]);
+      double count_SmwSp = IMnpim_Sp_merge_select[imerge][iq]->GetBinContent(9);
+      double err_SmwSp = IMnpim_Sp_merge_select[imerge][iq]->GetBinError(9);
       double bg_SmwSp =  constfitSmwSp[imerge][iq]->GetParameter(0);
+      double bg_SmwSperr =  constfitSmwSp[imerge][iq]->GetParError(0);
       cIMnpim_IMnpip_merge[imerge][iq]->cd(2);
       TPaveText *pt2 = new TPaveText(.05,.05,.95,.7);
-      pt2->AddText(Form("Sigma+ on Sigma- count %0.2f",count_SpwSm)); 
-      pt2->AddText(Form("Sigma+ bg %0.2f",bg_SpwSm)); 
-      pt2->AddText(Form("Simga- on Sigma+ count %0.2f",count_SmwSp)); 
-      pt2->AddText(Form("Sigma- bg %0.2f",bg_K0wSm)); 
-      pt2->AddText(Form("Sigma+/Sigma- ratio %0.2f", (count_SpwSm-bg_SpwSm)/(count_SmwSp-bg_SmwSp)));
+      pt2->AddText(Form("Sigma+ & Sigma- overlap %0.1f +/- %0.1f",count_SpwSm,err_SpwSm)); 
+      double errSpwSm = sqrt(err_SmwSp*err_SmwSp+bg_SpwSmerr*bg_SpwSmerr);
+      pt2->AddText(Form("Sigma+ estimated %0.1f +/- %0.1f",count_SpwSm-bg_SpwSm,errSpwSm)); 
+      //pt2->AddText(Form("Simga- on Sigma+ count %0.2f",count_SmwSp)); 
+      double errSmwSp = sqrt(err_SpwSm*err_SpwSm+bg_SmwSperr*bg_SmwSperr);
+      pt2->AddText(Form("Sigma- estimated %0.1f +/- %0.1f",count_SmwSp-bg_SmwSp,errSmwSp)); 
+      //pt2->AddText(Form("Sigma+/Sigma- ratio %0.1f +/- %0.1f", (count_SpwSm-bg_SpwSm)/(count_SmwSp-bg_SmwSp)));
+      pt2->AddText(Form("Sigma+/Sigma- ratio  %0.1f +/- %0.1f", (count_SpwSm-bg_SpwSm)/(count_SmwSp-bg_SmwSp),
+          sqrt(errSpwSm*errSpwSm/pow(count_SmwSp-bg_SmwSp,2)+pow(count_SpwSm-bg_SpwSm,2)/pow(count_SmwSp-bg_SmwSp,4)*pow(errSmwSp,2))));
       pt2->Draw();
-      //IMnpim_Sp_merge_lo[imerge][iq]->Draw("HEsame");
-      //IMnpim_Sp_merge_hi[imerge][iq]->Draw("HEsame");
-      /*
-      double Splo_wSm = IMnpip_Sm_merge_lo[imerge][iq]->Integral();
-      double Sphi_wSm = IMnpip_Sm_merge_hi[imerge][iq]->Integral();
-      double Sp_overlap_wSm = IMnpip_Sm_merge_select[imerge][iq]->Integral();
-      double Sp_estimated_wSm = Sp_overlap_wSm - Splo_wSm - Sphi_wSm;
-      if(Sp_overlap_wSm<=0.0){
-        Sp_overlap_wSm = 0.0;
-        Sp_estimated_wSm =0.0; 
-      }
-      if(Sp_estimated_wSm<=0.0){
-         Sp_estimated_wSm=0.0;
-      }
-    
-      double Smlo_wSp = IMnpim_Sp_merge_lo[imerge][iq]->Integral();
-      double Smhi_wSp = IMnpim_Sp_merge_hi[imerge][iq]->Integral();
-      double Sm_overlap_wSp = IMnpim_Sp_merge_select[imerge][iq]->Integral();
-      double Sm_estimated_wSp = Sm_overlap_wSp - Smlo_wSp - Smhi_wSp;
-      if(Sm_overlap_wSp<=0.0){
-        Sm_overlap_wSp = 0.0;
-        Sm_estimated_wSp =0.0; 
-      }
-      if(Sm_estimated_wSp<=0.0){
-         Sm_estimated_wSp=0.0;
-      }
-      
-      double Sp_ratio_wSm = 0.0;
-      double Sm_ratio_wSp = 0.0;
-      if( (Sp_estimated_wSm+Sm_estimated_wSp)>0.0){
-         Sp_ratio_wSm =  Sp_estimated_wSm/(Sp_estimated_wSm+Sm_estimated_wSp);
-         Sm_ratio_wSp =  Sm_estimated_wSp/(Sm_estimated_wSp+Sp_estimated_wSm);
-      }*/
 
       double Sp_ratio_wSm = (count_SpwSm-bg_SpwSm)/((count_SpwSm-bg_SpwSm)+(count_SmwSp-bg_SmwSp));
       double Sm_ratio_wSp = (count_SmwSp-bg_SmwSp)/((count_SmwSp-bg_SmwSp)+(count_SpwSm-bg_SpwSm));
@@ -1593,11 +1489,6 @@ void K0SigmaTemp()
         IMnpipi_Sm_ratio_wSp_merge[iq]->SetBinContent(ibin,Sm_ratio_wSp);
         IMnpipi_Sm_ratio_wSp_merge[iq]->SetBinError(ibin,0);
       }
-      //std::cout << "merge :" << imerge << " qcut " << iq  << std::endl;
-      //std::cout << "Sp_estimated_wSm " << Sp_estimated_wSm << std::endl;
-      //std::cout << "Sm_estimated_wSp " << Sm_estimated_wSp << std::endl;
-      //std::cout << "Sp ratio" << Sp_estimated_wSm/(Sp_estimated_wSm+Sm_estimated_wSp) << std::endl;
-      //std::cout << "Sm ratio" << Sm_estimated_wSp/(Sm_estimated_wSp+Sp_estimated_wSm) << std::endl;
     }
   }
   
