@@ -774,6 +774,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* q_IMnpipi_woK0_wSid_n_woSp;
   TH2F* q_IMnpipi_woK0_wSid_n_woSm;
   TH2F* q_IMnpipi_wK0_wSid_n;
+  TH2F* q_IMnpipi_wK0orwSid_n;
   TH2F* q_IMnpipi_wK0_woSid_n;
   TH2F* q_IMpiSigma_gen;//fine bins
   TH2F* q_IMpiSigma_wSid_n_genacc;//fine bins,  reaction data
@@ -2545,6 +2546,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   q_IMnpipi_wK0_wSid_n = new TH2F("q_IMnpipi_wK0_wSid_n","q_IMnpipi_wK0_wSid_n", nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_wK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_wK0_wSid_n->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMnpipi_wK0orwSid_n = new TH2F("q_IMnpipi_wK0orwSid_n","q_IMnpipi_wK0orwSid_n", nbinIMnpipi,1,2, nbinq,0,1.5);
+  q_IMnpipi_wK0orwSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMnpipi_wK0orwSid_n->SetYTitle("Mom. Transfer [GeV/c]");
 
   q_IMnpipi_wK0_woSid_n = new TH2F("q_IMnpipi_wK0_woSid_n","q_IMnpipi_wK0_woSid_n", nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_wK0_woSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -5466,17 +5471,17 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           IMpippim_IMnpim_wK0orwSid_n_bin[binnum]->Fill(LVec_pim_n.M(),LVec_pip_pim.M(),weight);
           IMnpim_IMnpip_dE_wK0orwSid_n->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
           IMnpim_IMnpip_dE_wK0orwSid_n_bin[binnum]->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
-
-        if(!SigmaMcutFlag[sigmacuttype]) {
-          IMpippim_IMnpip_wK0orwSid_n_woSmdia->Fill(LVec_pip_n.M(),LVec_pip_pim.M(),weight);
-          IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin[binnum]->Fill(LVec_pip_n.M(),LVec_pip_pim.M(),weight);
-        }
-        if(!SigmaPcutFlag[sigmacuttype]) {
-          IMpippim_IMnpim_wK0orwSid_n_woSpdia->Fill(LVec_pim_n.M(),LVec_pip_pim.M(),weight);
-          IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin[binnum]->Fill(LVec_pim_n.M(),LVec_pip_pim.M(),weight);
-        }
+          q_IMnpipi_wK0orwSid_n->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+          if(!SigmaMcutFlag[sigmacuttype]) {
+            IMpippim_IMnpip_wK0orwSid_n_woSmdia->Fill(LVec_pip_n.M(),LVec_pip_pim.M(),weight);
+            IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin[binnum]->Fill(LVec_pip_n.M(),LVec_pip_pim.M(),weight);
+          }
+          if(!SigmaPcutFlag[sigmacuttype]) {
+            IMpippim_IMnpim_wK0orwSid_n_woSpdia->Fill(LVec_pim_n.M(),LVec_pip_pim.M(),weight);
+            IMpippim_IMnpim_wK0orwSid_n_woSpdia_bin[binnum]->Fill(LVec_pim_n.M(),LVec_pip_pim.M(),weight);
+          }
       }
-    }//NBetaOK && NdEOK && MissNFlag
+        }//NBetaOK && NdEOK && MissNFlag
     //---including K0 end----------------------------------------------------------------------
 
     //std::cout << __LINE__ << std::endl;
@@ -8303,7 +8308,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
   TIter nexthist2(gDirectory->GetList());
   TString outname = std::string(filename);
-  if(IsolationFlag==0) outname.Replace(std::string(filename).size()-5,5,"_out.root");
+  if(IsolationFlag==0) outname.Replace(std::string(filename).size()-5,5,"_out_noiso.root");
   else if(IsolationFlag==1) outname.Replace(std::string(filename).size()-5,5,"_out_iso.root");
   else if(IsolationFlag==2) outname.Replace(std::string(filename).size()-5,5,"_out_iso2.root");
   else if(IsolationFlag==3) outname.Replace(std::string(filename).size()-5,5,"_out_iso3.root");

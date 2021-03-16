@@ -812,15 +812,15 @@ void disp_2Dcompmix(const int qcut=0)
   TGraph *th = (TGraph*)fnu->Get("th");
   gr_0->SetLineWidth(2);
   gr_100->SetLineWidth(2);
-  gr_99->SetLineWidth(2);
-  gr_98->SetLineWidth(2);
+  //gr_99->SetLineWidth(2);
+  //gr_98->SetLineWidth(2);
   th->SetLineWidth(2);
   
-  //gr_0->Draw("c");
-  //gr_100->Draw("c");
+  gr_0->Draw("c");
+  gr_100->Draw("c");
   //gr_99->Draw("c");
   //gr_98->Draw("c");
-  //th->Draw("c");
+  th->Draw("c");
 
   TCanvas *cIMnpipi_wSid_n_sub_0 = new TCanvas("cIMnpipi_wSid_n_sub_0","cIMnpipi_wSid_n_sub_0");
   TH1D* IMnpipi_wSid_n_sub_0 = (TH1D*)q_IMnpipi_wSid_n_sub->ProjectionX("IMnpipi_wSid_n_sub_0",1,bin350-1);
