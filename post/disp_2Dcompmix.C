@@ -46,9 +46,11 @@ void disp_2Dcompmix(const int qcut=0)
 {
   TFile *fr; 
   TFile *fmix;
-  bool RealDatamode = true;
+  bool RealDatamode = false;
   bool SimSpmode = false;
   bool SimSmmode = false;
+  bool SimK0mode = true;
+
   if(qcut==0){
     if(RealDatamode){
       fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso.root");
@@ -59,6 +61,9 @@ void disp_2Dcompmix(const int qcut=0)
     }else if(SimSmmode){
       fr = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_out_iso.root");
       fmix = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso.root");
+    }else if(SimK0mode){
+      fr = TFile::Open("../simpost/simIMpisigma_K0nn_pippimn_v11_out_iso.root");
+      fmix = TFile::Open("../simpost/simIMpiSigma_K0nn_pippim_v11_MIX_cut4_out_iso.root");
     }
   }
   else if(qcut==1){
@@ -71,6 +76,9 @@ void disp_2Dcompmix(const int qcut=0)
     }else if(SimSmmode){
       fr = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_out_iso_qlo.root");
       fmix = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso_qlo.root");
+    }else if(SimK0mode){
+      fr = TFile::Open("../simpost/simIMpisigma_K0nn_pippimn_v11_out_iso_qlo.root");
+      fmix = TFile::Open("../simpost/simIMpiSigma_K0nn_pippim_v11_MIX_cut4_out_iso_qlo.root");
     }
   }
   else if(qcut==2){
@@ -83,11 +91,23 @@ void disp_2Dcompmix(const int qcut=0)
     }else if(SimSmmode){
       fr = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_out_iso_qhi.root");
       fmix = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso_qhi.root");
+    }else if(SimK0mode){
+      fr = TFile::Open("../simpost/simIMpisigma_K0nn_pippimn_v11_out_iso_qhi.root");
+      fmix = TFile::Open("../simpost/simIMpiSigma_K0nn_pippim_v11_MIX_cut4_out_iso_qhi.root");
     }
   }else if(qcut==3){
     if(RealDatamode){
       fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_theta15.root");
       fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_theta15.root");
+    }else if(SimSpmode){
+      fr = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_out_iso_theta15.root");
+      fmix = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_MIX_cut4_out_iso_theta15.root");
+    }else if(SimSmmode){
+      fr = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_out_iso_theta15.root");
+      fmix = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso_theta15.root");
+    }else if(SimK0mode){
+      fr = TFile::Open("../simpost/simIMpisigma_K0nn_pippimn_v11_out_iso_theta15.root");
+      fmix = TFile::Open("../simpost/simIMpiSigma_K0nn_pippim_v11_MIX_cut4_out_iso_theta15.root");
     }
   }
 
