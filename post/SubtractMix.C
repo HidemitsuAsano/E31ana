@@ -25,34 +25,34 @@ void SubtractMix(const int mode=0)
     fnamem[3] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso_theta15.root",version);
   }else if(mode==1){
     const int version = 132;
-    fnamer[0] = Form("simIMpisigma_nSppim_pippimn_v%d_out_iso.root",version);
-    fnamem[0] = Form("simIMpisigma_nSppim_pippimn_v%d_MIX_cut4_out_iso.root",version);
-    fnamer[1] = Form("simIMpisigma_nSppim_pippimn_v%d_out_iso_qlo.root",version);
-    fnamem[1] = Form("simIMpisigma_nSppim_pippimn_v%d_MIX_cut4_out_iso_qlo.root",version);
-    fnamer[2] = Form("simIMpisigma_nSppim_pippimn_v%d_out_iso_qhi.root",version);
-    fnamem[2] = Form("simIMpisigma_nSppim_pippimn_v%d_MIX_cut4_out_iso_qhi.root",version);
-    fnamer[3] = Form("simIMpisigma_nSppim_pippimn_v%d_out_iso_theta15.root",version);
-    fnamem[3] = Form("simIMpisigma_nSppim_pippimn_v%d_MIX_cut4_out_iso_theta15.root",version);
+    fnamer[0] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_out_iso.root",version);
+    fnamem[0] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_MIX_cut4_out_iso.root",version);
+    fnamer[1] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_out_iso_qlo.root",version);
+    fnamem[1] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_MIX_cut4_out_iso_qlo.root",version);
+    fnamer[2] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_out_iso_qhi.root",version);
+    fnamem[2] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_MIX_cut4_out_iso_qhi.root",version);
+    fnamer[3] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_out_iso_theta15.root",version);
+    fnamem[3] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_MIX_cut4_out_iso_theta15.root",version);
   }else if(mode==2){
     const int version = 132;
-    fnamer[0] = Form("simIMpisigma_nSmpip_pippimn_v%d_out_iso.root",version);
-    fnamem[0] = Form("simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso.root",version);
-    fnamer[1] = Form("simIMpisigma_nSmpip_pippimn_v%d_out_iso_qlo.root",version);
-    fnamem[1] = Form("simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso_qlo.root",version);
-    fnamer[2] = Form("simIMpisigma_nSmpip_pippimn_v%d_out_iso_qhi.root",version);
-    fnamem[2] = Form("simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso_qhi.root",version);
-    fnamer[3] = Form("simIMpisigma_nSmpip_pippimn_v%d_out_iso_theta15.root",version);
-    fnamem[3] = Form("simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso_theta15.root",version);
+    fnamer[0] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_out_iso.root",version);
+    fnamem[0] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso.root",version);
+    fnamer[1] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_out_iso_qlo.root",version);
+    fnamem[1] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso_qlo.root",version);
+    fnamer[2] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_out_iso_qhi.root",version);
+    fnamem[2] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso_qhi.root",version);
+    fnamer[3] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_out_iso_theta15.root",version);
+    fnamem[3] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso_theta15.root",version);
   }else if(mode==3){
-    const int version = 132;
-    fnamer[0] = Form("simIMpisigma_nSmpip_pippimn_v%d_out_iso.root",version);
-    fnamem[0] = Form("simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso.root",version);
-    fnamer[1] = Form("simIMpisigma_nSmpip_pippimn_v%d_out_iso_qlo.root",version);
-    fnamem[1] = Form("simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso_qlo.root",version);
-    fnamer[2] = Form("simIMpisigma_nSmpip_pippimn_v%d_out_iso_qhi.root",version);
-    fnamem[2] = Form("simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso_qhi.root",version);
-    fnamer[3] = Form("simIMpisigma_nSmpip_pippimn_v%d_out_iso_theta15.root",version);
-    fnamem[3] = Form("simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso_theta15.root",version);
+    const int version = 11;
+    fnamer[0] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_out_iso.root",version);
+    fnamem[0] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_MIX_cut4_out_iso.root",version);
+    fnamer[1] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_out_iso_qlo.root",version);
+    fnamem[1] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_MIX_cut4_out_iso_qlo.root",version);
+    fnamer[2] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_out_iso_qhi.root",version);
+    fnamem[2] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_MIX_cut4_out_iso_qhi.root",version);
+    fnamer[3] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_out_iso_theta15.root",version);
+    fnamem[3] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_MIX_cut4_out_iso_theta15.root",version);
   }
   
   TIter *nexthistr[4];
