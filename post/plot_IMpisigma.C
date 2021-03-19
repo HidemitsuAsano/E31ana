@@ -647,6 +647,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* MMnmiss_IMpippim_dE;
   TH2F* MMnmiss_IMpippim_dE_viciSp;
   TH2F* MMnmiss_IMpippim_dE_viciSm;
+  TH2F* MMnmiss_IMpippim_dE_viciK0;
   TH2F* MMnmiss_IMpippim_dE_wSid;
   TH2F* MMnmiss_IMpippim_dE_wSid_fake;//for GEANT4 sim.
   TH2F* MMnmiss_IMpippim_dE_wSid_n;
@@ -1609,6 +1610,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   MMnmiss_IMpippim_dE_viciSm = new TH2F("MMnmiss_IMpippim_dE_viciSm", "MMnmiss_IMpippim_dE_viciSm",nbinpippim,0.,0.9,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMpippim_dE_viciSm->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMpippim_dE_viciSm->SetYTitle("Miss Mass. [GeV/c^{2}]");
+  
+  MMnmiss_IMpippim_dE_viciK0 = new TH2F("MMnmiss_IMpippim_dE_viciK0", "MMnmiss_IMpippim_dE_viciK0",nbinpippim,0.,0.9,nbinnmiss, nmisslow, nmisshigh);
+  MMnmiss_IMpippim_dE_viciK0->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  MMnmiss_IMpippim_dE_viciK0->SetYTitle("Miss Mass. [GeV/c^{2}]");
 
   MMnmiss_IMpippim_dE_wSid = new TH2F("MMnmiss_IMpippim_dE_wSid", "MMnmiss_IMpippim_dE_wSid",nbinpippim,0.,0.9,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMpippim_dE_wSid->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -4284,6 +4289,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     bool SigmawideMFlag=false;
     bool SigmaPMissNViciFlag=false;//select vicinity of the signal
     bool SigmaMMissNViciFlag=false;//select vicinity of the signal
+    bool K0MissNViciFlag=false;//select vicinity of the signal
     bool SigmaPMissNViciextFlag=false;//select vicinity of the signal
     bool SigmaMMissNViciextFlag=false;//select vicinity of the signal
     bool SigmaPsideFlag[3][ngap];//pattern, gap
@@ -4499,6 +4505,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     }
 
 
+    //vicinity of Sigma- & NMiss events
     if( (nmiss_mass >= anacuts::neutron_center) && 
         (pow(((MassNPim - anacuts::Sigmam_center)/5.0/anacuts::Sigmam_sigma),2.0) +
         pow(((nmiss_mass - anacuts::neutron_center)/3.0/anacuts::neutron_sigma),2.0) < 1.0)){
@@ -4515,6 +4522,15 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     if( (nmiss_mass < anacuts::neutron_center) && (fabs( MassNPim - anacuts::Sigmam_center) < 5.0*anacuts::Sigmam_sigma)){
       SigmaMMissNViciextFlag=true;
     }
+
+    
+    //vicinity of K0 & NMiss events
+    if( pow(((nmiss_mass - anacuts::neutron_center)/5.0/anacuts::neutron_sigma),2.0) + 
+        pow(((LVec_pip_pim.M() - anacuts::K0_center)/5.0/anacuts::K0_sigma),2.0) <1.0){
+      K0MissNViciFlag=true;
+    }
+
+
 
     //
     //diagonal cuts
@@ -4942,6 +4958,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         if(!SigmawideMFlag){
           IMpippim_IMnpip_vici_woSm->Fill(LVec_pip_n.M(),LVec_pip_pim.M(),weight);
         }
+      }
+
+      if(K0MissNViciFlag){
+        MMnmiss_IMpippim_dE_viciK0->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
       }
 
       if(!SigmawidePFlag && !SigmawideMFlag ) { 
