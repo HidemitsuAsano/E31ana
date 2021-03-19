@@ -63,7 +63,7 @@ void disp_2Dcompmix(const int qcut=0)
       fmix = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso.root");
     }else if(SimK0mode){
       fr = TFile::Open("../simpost/simIMpisigma_K0nn_pippimn_v11_out_iso.root");
-      fmix = TFile::Open("../simpost/simIMpiSigma_K0nn_pippim_v11_MIX_cut4_out_iso.root");
+      fmix = TFile::Open("../simpost/simIMpisigma_K0nn_pippimn_v11_MIX_cut4_out_iso.root");
     }
   }
   else if(qcut==1){
@@ -1177,21 +1177,25 @@ void disp_2Dcompmix(const int qcut=0)
     rootname= "disp_mixcomp.root";
     if(SimSpmode) rootname= "disp_mixcomp_simSp.root";
     if(SimSmmode) rootname= "disp_mixcomp_simSm.root";
+    if(SimK0mode) rootname= "disp_mixcomp_simK0.root";
   }
   if(qcut==1){
     rootname= "disp_mixcomp_qlo.root";
     if(SimSpmode) rootname= "disp_mixcomp_qlo_simSp.root";
     if(SimSmmode) rootname= "disp_mixcomp_qlo_simSm.root";
+    if(SimK0mode) rootname= "disp_mixcomp_qlo_simK0.root";
   }
   if(qcut==2){
     rootname= "disp_mixcomp_qhi.root";
     if(SimSpmode) rootname= "disp_mixcomp_qhi_simSp.root";
     if(SimSmmode) rootname= "disp_mixcomp_qhi_simSm.root";
+    if(SimK0mode) rootname= "disp_mixcomp_qhi_simK0.root";
   }
   if(qcut==3){
     rootname= "disp_mixcomp_theta15.root";
     if(SimSpmode) rootname= "disp_mixcomp_theta15_simSp.root";
     if(SimSmmode) rootname= "disp_mixcomp_theta15_simSm.root";
+    if(SimK0mode) rootname= "disp_mixcomp_theta15_simK0.root";
   }
 
 
