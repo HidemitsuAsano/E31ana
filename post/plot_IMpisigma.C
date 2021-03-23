@@ -4090,10 +4090,12 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       if(!IsFakebyVTX  &&  (*mcmom_nmiss).P()>0.01 && (*mcmom_nmiss).P()<100.0 && (*mcmom_ncds).P()>0.01 && (*mcmom_pip).P()>0.01 && (*mcmom_pim).P()>0.01) {
         IMnpim_MMnpim_mc_vtx->Fill(LVec_pim_nmiss_mc.M(),LVec_pim_n_mc.M());
         IMnpip_MMnpip_mc_vtx->Fill(LVec_pip_nmiss_mc.M(),LVec_pip_n_mc.M());
+        //true neutron from Sigma decay case
         if(mcpattern==2){
           IMnpim_MMnpim_mc_vtx_pat2->Fill(LVec_pim_nmiss_mc.M(),LVec_pim_n_mc.M());
           IMnpip_MMnpip_mc_vtx_pat2->Fill(LVec_pip_nmiss_mc.M(),LVec_pip_n_mc.M());
         }
+        //true initial neutron case
         if(mcpattern==7){
           IMnpim_MMnpim_mc_vtx_pat7->Fill(LVec_pim_nmiss_mc.M(),LVec_pim_n_mc.M());
           IMnpip_MMnpip_mc_vtx_pat7->Fill(LVec_pip_nmiss_mc.M(),LVec_pip_n_mc.M());
@@ -4302,19 +4304,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
     else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
     if(IsolationFlag==1 || IsolationFlag==2) {
-      //if(0< diffPhinpip && diffPhinpip <0.5) continue;
-      //if(-0.5< diffPhinpip && diffPhinpip <0.) continue;
-      
       //round cut
-      if( ((diffPhinpip+0.05)*(diffPhinpip+0.05))/0.4/0.4+diffpip.Z()*diffpip.Z()/25.0/25.0 <1 ) continue;
+      if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) continue;
       //for mixed events, avoid sharing same CDH segments
-      if( -0.12< diffPhinpip  && diffPhinpip < 0.12 ) continue;
+      if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) continue;
     } else if(IsolationFlag==3) {
-      //if(0< diffPhinpip && diffPhinpip <1.0) continue;
-      //if(-1.0< diffPhinpip && diffPhinpip <0.) continue;
-      if( ((diffPhinpip+0.05)*(diffPhinpip+0.05))/0.4/0.4+diffpip.Z()*diffpip.Z()/25.0/25.0 >=1 ) continue;
+      if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0)>=1 ) continue;
       //for mixed events, avoid sharing same CDH segments
-      if( -0.12< diffPhinpip  && diffPhinpip < 0.12 ) continue;
+      if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) continue;
     }
 
     if(CDCChargeVetoFlag && (nhitOutCDC!=0) ) continue;
