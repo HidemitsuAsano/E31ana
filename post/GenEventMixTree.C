@@ -73,6 +73,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
 
   bool SimSpmode = (std::string(filename).find("Sp")!= std::string::npos);
   bool SimSmmode = (std::string(filename).find("Sm")!= std::string::npos);
+  bool SimK0nnmode = (std::string(filename).find("K0nn")!= std::string::npos);
   tree->SetBranchAddress( "mom_beam",   &LVec_beam );
   tree->SetBranchAddress( "mom_beam_Sp",   &LVec_beam_Sp );
   tree->SetBranchAddress( "mom_beam_Sm",   &LVec_beam_Sm );
@@ -106,7 +107,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
   //tree->SetBranchAddress( "run_num", &run_num );
   //tree->SetBranchAddress( "event_num", &event_num );
   //tree->SetBranchAddress( "block_num", &block_num );
-  if(SimSpmode || SimSmmode) {
+  if(SimSpmode || SimSmmode || SimK0nnmode) {
     tree->SetBranchAddress( "mcncanvtxr", &mcncanvtxr);
     tree->SetBranchAddress( "mcncanvtxz", &mcncanvtxz);
     tree->SetBranchAddress( "mcncdsgen", &mcncdsgen);
@@ -122,6 +123,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
   }
   
   TString outname = std::string(filename);
+  //cut5 : remove missing n from event mixing
   outname.Replace(std::string(filename).size()-5,5,"_MIX_cut4.root");
 
 
@@ -160,7 +162,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
   treeMIX->Branch( "CDH_Pos",&CDH_Pos2);
   treeMIX->Branch( "CDH_Pos_pim",&CDH_Pos_pim2);
   treeMIX->Branch( "CDH_Pos_pip",&CDH_Pos_pip2);
-  if(SimSpmode || SimSmmode) {
+  if(SimSpmode || SimSmmode || SimK0nnmode) {
     treeMIX->Branch( "mcncanvtxr",&mcncanvtxr2);
     treeMIX->Branch( "mcncanvtxz",&mcncanvtxz2);
     treeMIX->Branch( "mcncdsgen", &mcncdsgen2);
@@ -236,21 +238,23 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
     //Sigma- production in CDS
     if( (anacuts::Sigmam_MIN_wide<MassNPim && MassNPim<anacuts::Sigmam_MAX_wide)) SigmawideMFlag=true;
     
+
     
     TVector3 diffpim = (*CDH_Pos)-(*CDH_Pos_pim);
     double diffPhinpim = (*CDH_Pos).Phi()-(*CDH_Pos_pim).Phi();
     if(diffPhinpim<-1.0*TMath::Pi()) diffPhinpim += 2.0*TMath::Pi();
     else if(diffPhinpim>1.0*TMath::Pi()) diffPhinpim -= 2.0*TMath::Pi();
     if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.60/0.60+diffpim.Z()*diffpim.Z()/25.0/25.0 <1 ) continue;
-    //if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.65/0.65+diffpim.Z()*diffpim.Z()/28.0/28.0 <1 ) continue;
+    if( -0.12< diffPhinpim  && diffPhinpim < 0.12 ) continue;
+
 
     TVector3 diffpip = (*CDH_Pos)-(*CDH_Pos_pip);
     double diffPhinpip = (*CDH_Pos).Phi()-(*CDH_Pos_pip).Phi();
     if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
     else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
     if( ((diffPhinpip+0.05)*(diffPhinpip+0.05))/0.4/0.4+diffpip.Z()*diffpip.Z()/25.0/25.0 <1 ) continue;
-    
-    //if(!MissNwideFlag && !SigmawidePFlag && !SigmawideMFlag){
+    if( -0.12< diffPhinpip  && diffPhinpip < 0.12 ) continue;
+    //if(!MissNwideFlag ){
       if(NBetaOK && NdEOK){
         vec_LVec_n.push_back(*LVec_n);
         vec_NeutralBetaCDH.push_back(NeutralBetaCDH);
@@ -321,7 +325,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
     *CDH_Pos2 = *last_CDH_Pos;//mixing param.
     *CDH_Pos_pim2 = *CDH_Pos_pim;
     *CDH_Pos_pip2 = *CDH_Pos_pip;
-    if(SimSpmode || SimSmmode){
+    if(SimSpmode || SimSmmode || SimK0nnmode){
       mcncanvtxr2 = mcncanvtxr;
       mcncanvtxz2 = mcncanvtxz;
       mcncdsgen2  = mcncdsgen;

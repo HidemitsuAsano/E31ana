@@ -27,7 +27,7 @@
 #include "anacuts.h"
 #include "globalana.h"
 //#include "weightfunc.h"
-#include "weightfuncGSp.h"
+//#include "weightfuncGSp.h"
 //#include "weightfuncGSm.h"
 
 const double pvalcut = 0.005;
@@ -71,6 +71,10 @@ const bool ForwardVetoFlag=false;
 const int  BGFlag_woSid_won=0;
 
 const bool IsMCweighting = false;
+
+//check GEANT4 info. to reject fake neutron events
+//maybe, also forward Sigma events should be rejected ?
+const bool SimRejectFake = true;
 
 //color def.
 //Sp mode Signal :2 (red)
@@ -134,6 +138,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
   std::cout << "MC weighting ? " << std::endl;
   if(IsMCweighting) std::cout << "Yes" << std::endl;
+  else              std::cout << "No"  << std::endl;
+  
+  std::cout << std::endl;
+  std::cout << "SimRejectFake ? "  << std::endl;
+  if(SimRejectFake) std::cout << "Yes" << std::endl;
   else              std::cout << "No"  << std::endl;
 
   bool SimSpmode = (std::string(filename).find("Sp")!= std::string::npos);
@@ -4615,8 +4624,18 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     double weight = 1.0;
     if(MIXmode){
       weight = 4.24608060240400029e-02;
-      if(SimSpmode) weight *=0.72;
-      if(SimSmmode) weight *=6.56913599999999986e-01;
+      if(SimSpmode){
+        weight *=0.72;
+        weight *=6.45779095649856028e-01;
+      }
+      if(SimSmmode){
+        weight *=6.56913599999999986e-01;
+        weight *=6.51604999999999879e-01;
+      }
+      if(SimK0nnmode){
+        weight *=5.69470101983999943e-01;
+        weight *=7.37894527999999994e-01;
+      }
     }
     static bool isState = false;
     if(!isState){
@@ -4666,7 +4685,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           //weight *= fweight_Momnpip_vSp27->Eval(LVec_pip_n.P());
           //weight *= fweight_Momnpim_vSp28->Eval(LVec_pim_n.P());
         }else if(SimFakeK0mode) { //wK0
-          weight = 0;
+          //weight = 0;
           //weight *= fweight_q_wK0_v377->Eval((qkn.P()));
           //weight *= fweight_MMnmiss_wK0_v378->Eval(nmiss_mass);
           //weight *= fweight_nmom_wK0_v379->Eval((*LVec_n).P());
@@ -4693,7 +4712,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           //weight *= fweight_IMnpip_vSm27->Eval(LVec_pip_n.M());
           //weight *= fweight_IMnpim_vSm28->Eval(LVec_pim_n.M());
         }else if(SimFakeK0mode) { //wK0
-          weight = 0;
+          //weight = 0;
           //weight *= fweight_q_wK0_v377->Eval((qkn.P()));
           //weight *= fweight_MMnmiss_wK0_v378->Eval(nmiss_mass);
           //weight *= fweight_nmom_wK0_v379->Eval((*LVec_n).P());
@@ -5018,13 +5037,13 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       }//izone
       */
 
-      MMnpim_MMnpip_n->Fill(LVec_pimmiss_nmiss.M(),LVec_pipmiss_nmiss.M());
+      MMnpim_MMnpip_n->Fill(LVec_pimmiss_nmiss.M(),LVec_pipmiss_nmiss.M(),weight);
       //MMnpim_MMnpip_n->Fill(LVec_pip_nmiss.M(),LVec_pim_nmiss.M());
       if(!SigmaPFlag  && !SigmaMFlag){
         //MMnpim_MMnpip_woSid_n->Fill(LVec_pip_nmiss.M(),LVec_pim_nmiss.M());
-        MMnpim_MMnpip_woSid_n->Fill(LVec_pimmiss_nmiss.M(),LVec_pipmiss_nmiss.M());
+        MMnpim_MMnpip_woSid_n->Fill(LVec_pimmiss_nmiss.M(),LVec_pipmiss_nmiss.M(),weight);
         if(K0rejectFlag){
-          MMnpim_MMnpip_woK0_woSid_n->Fill(LVec_pimmiss_nmiss.M(),LVec_pipmiss_nmiss.M());
+          MMnpim_MMnpip_woK0_woSid_n->Fill(LVec_pimmiss_nmiss.M(),LVec_pipmiss_nmiss.M(),weight);
           IMnpim_IMnpip_dE_woK0_woSid_n->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
           q_IMnpipi_woK0_woSid_n->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
         }
@@ -5039,8 +5058,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       dE_nmom->Fill((*LVec_n).P(),dE);
       npipmom->Fill(LVec_pip_n.P());
       npimmom->Fill(LVec_pim_n.P());
-      nmom_IMnpim_dE_n->Fill(LVec_pim_n.M(),(*LVec_n).P());
-      nmom_IMnpip_dE_n->Fill(LVec_pip_n.M(),(*LVec_n).P());
+      nmom_IMnpim_dE_n->Fill(LVec_pim_n.M(),(*LVec_n).P(),weight);
+      nmom_IMnpip_dE_n->Fill(LVec_pip_n.M(),(*LVec_n).P(),weight);
       if(SigmaPFlag) {
         nmom_IMnpip_dE_n_Sp->Fill(LVec_pip_n.M(),(*LVec_n).P(),weight);
         q_IMnpipi_wSid_n_Sp->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
@@ -8212,5 +8231,4 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   fout->Close();
 
 }
-
 
