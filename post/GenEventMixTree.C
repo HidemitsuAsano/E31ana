@@ -244,16 +244,16 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v202.root")
     double diffPhinpim = (*CDH_Pos).Phi()-(*CDH_Pos_pim).Phi();
     if(diffPhinpim<-1.0*TMath::Pi()) diffPhinpim += 2.0*TMath::Pi();
     else if(diffPhinpim>1.0*TMath::Pi()) diffPhinpim -= 2.0*TMath::Pi();
-    if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.60/0.60+diffpim.Z()*diffpim.Z()/25.0/25.0 <1 ) continue;
-    if( -0.12< diffPhinpim  && diffPhinpim < 0.12 ) continue;
-
+    if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ) continue;
+    //for mixed events, avoid sharing same CDH segments
+    if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
 
     TVector3 diffpip = (*CDH_Pos)-(*CDH_Pos_pip);
     double diffPhinpip = (*CDH_Pos).Phi()-(*CDH_Pos_pip).Phi();
     if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
     else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
-    if( ((diffPhinpip+0.05)*(diffPhinpip+0.05))/0.4/0.4+diffpip.Z()*diffpip.Z()/25.0/25.0 <1 ) continue;
-    if( -0.12< diffPhinpip  && diffPhinpip < 0.12 ) continue;
+    if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) continue;
+    if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) continue;
     //if(!MissNwideFlag ){
       if(NBetaOK && NdEOK){
         vec_LVec_n.push_back(*LVec_n);
