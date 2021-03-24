@@ -4284,18 +4284,18 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     else if(diffPhinpim>1.0*TMath::Pi()) diffPhinpim -= 2.0*TMath::Pi();
     if(IsolationFlag==1) {
       //round cut
-      if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.60/0.60+diffpim.Z()*diffpim.Z()/25.0/25.0 <1 ) continue;
+      if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ) continue;
       //for mixed events, avoid sharing same CDH segments
-      if( -0.12< diffPhinpim  && diffPhinpim < 0.12 ) continue;
+      if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
     }else if(IsolationFlag==2){ 
       //round cut wide
-      if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.65/0.65+diffpim.Z()*diffpim.Z()/28.0/28.0 <1 ) continue;
+      if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicutwide,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcutwide,2.0) <1 ) continue;
       //for mixed events, avoid sharing same CDH segments
-      if( -0.12< diffPhinpim  && diffPhinpim < 0.12 ) continue;
+      if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
     } else if(IsolationFlag==3) {
-      if( (diffPhinpim-0.05)*(diffPhinpim-0.05)/0.65/0.65+diffpim.Z()*diffpim.Z()/28.0/28.0 >=1 ) continue;
+      if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) >=1 ) continue;
       //for mixed events, avoid sharing same CDH segments
-      if( -0.12< diffPhinpim  && diffPhinpim < 0.12 ) continue;
+      if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
     }
 
     TVector3 diffpip = (*CDH_Pos)-(*CDH_Pos_pip);
@@ -8208,8 +8208,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TString outname = std::string(filename);
   if(IsolationFlag==0) outname.Replace(std::string(filename).size()-5,5,"_out_noiso.root");
   else if(IsolationFlag==1) outname.Replace(std::string(filename).size()-5,5,"_out_iso.root");
-  else if(IsolationFlag==2) outname.Replace(std::string(filename).size()-5,5,"_out_iso2.root");
-  else if(IsolationFlag==3) outname.Replace(std::string(filename).size()-5,5,"_out_iso3.root");
+  else if(IsolationFlag==2) outname.Replace(std::string(filename).size()-5,5,"_out_isowide.root");
+  else if(IsolationFlag==3) outname.Replace(std::string(filename).size()-5,5,"_out_isorev.root");
   //outname.Replace(std::string(filename).size()-5,5,"_outncutK015.root");
   
   if(qvalcutflag==1) outname.Replace(std::string(outname).size()-5,5,"_qlo.root");
