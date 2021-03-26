@@ -27,7 +27,7 @@ echo ${hname}
 while (1)
   @ njob=`bjobs | grep ${hname} | wc -l`
   if ( $njob < 1 ) then 
-    cd /gpfs/group/had/knucl/e15/asano/sim/fakemc/
+    cd /gpfs/group/had/knucl/e15/asano/sim/fakemc_test/
     hadd -f fakepippim_pippimn_sum.root fakepippim_pippimn[1-9].root fakepippim_pippimn1[0-9].root fakepippim_pippimn20.root
     break
   endif
