@@ -2416,6 +2416,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     q_IMpiSigma_gen->SetXTitle("true IM(#Sigma^{+}#pi^{-}) [GeV/c^{2}]");
   } else if(SimSmmode) {
     q_IMpiSigma_gen->SetXTitle("true IM(#Sigma^{-}#pi^{+}) [GeV/c^{2}]");
+  }else if(SimK0nnmode){
+    q_IMpiSigma_gen->SetXTitle("true IM(K^{0}n) [GeV/c^{2}]");
   }
   q_IMpiSigma_gen->SetYTitle("true Mom. Transfer [GeV/c]");
 
@@ -2424,6 +2426,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     q_IMpiSigma_wSid_n_genacc->SetXTitle("true IM(#Sigma^{+}#pi^{-}) [GeV/c^{2}]");
   } else if(SimSmmode) {
     q_IMpiSigma_wSid_n_genacc->SetXTitle("true IM(#Sigma^{-}#pi^{+}) [GeV/c^{2}]");
+  }else if(SimK0nnmode){
+    q_IMpiSigma_wSid_n_genacc->SetXTitle("true IM(K^{0}n) [GeV/c^{2}]");
   }
   q_IMpiSigma_wSid_n_genacc->SetYTitle("true Mom. Transfer [GeV/c]");
 
@@ -2440,6 +2444,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     q_IMpiSigma_woK0_wSid_n_genacc->SetXTitle("true IM(#Sigma^{+}#pi^{-}) [GeV/c^{2}]");
   } else if(SimSmmode) {
     q_IMpiSigma_woK0_wSid_n_genacc->SetXTitle("true IM(#Sigma^{-}#pi^{+}) [GeV/c^{2}]");
+  } else if(SimK0nnmode){
+    q_IMpiSigma_woK0_wSid_n_genacc->SetXTitle("true IM(K^{0}n) [GeV/c^{2}]");
   }
   q_IMpiSigma_woK0_wSid_n_genacc->SetYTitle("true Mom. Transfer [GeV/c]");
 
@@ -3883,12 +3889,12 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     LVec_pip_CM.Boost(-boost);
     double cos_pipCM = LVec_pip_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pip_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
 
-    if(SimSpmode || SimSmmode) {
+    if(SimSpmode || SimSmmode || SimK0nnmode) {
       TVector3 boost_mc =  (*LVec_target+*mcmom_beam).BoostVector();
     }
     TLorentzVector qkn_mc;
     TLorentzVector mcmom_nmiss_calc;
-    if(SimSpmode || SimSmmode) {
+    if(SimSpmode || SimSmmode || SimK0nnmode) {
       qkn_mc = *mcmom_beam-*mcmom_nmiss;
       mcmom_nmiss_calc = *LVec_target+*mcmom_beam-*mcmom_pip-*mcmom_pim-*mcmom_ncds;
     }
@@ -3905,7 +3911,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     // calc pi+pi- //
     TLorentzVector LVec_pip_pim = *LVec_pip+*LVec_pim;
     TLorentzVector LVec_pip_pim_mc;
-    if(SimSpmode || SimSmmode) {
+    if(SimSpmode || SimSmmode || SimK0nnmode) {
       LVec_pip_pim_mc = *mcmom_pip+*mcmom_pim;
     }
     TLorentzVector LVec_pip_pim_CM = LVec_pip_pim;
@@ -3931,7 +3937,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
 
     TLorentzVector LVec_pip_n_mc;
-    if(SimSpmode || SimSmmode) {
+    if(SimSpmode || SimSmmode || SimK0nnmode) {
       LVec_pip_n_mc  = *mcmom_pip+*mcmom_ncds;
     }
     TLorentzVector LVec_pip_n_vtx[2];
@@ -3952,7 +3958,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     if(phi_npim<-1.0*TMath::Pi()) phi_npim += 2.0*TMath::Pi();
     else if(phi_npim>1.0*TMath::Pi()) phi_npim -= 2.0*TMath::Pi();
     TLorentzVector LVec_pim_n_mc;
-    if(SimSpmode || SimSmmode) {
+    if(SimSpmode || SimSmmode || SimK0nnmode) {
       LVec_pim_n_mc = *mcmom_pim+*mcmom_ncds;
     }
     TLorentzVector LVec_pim_n_vtx[2];
@@ -3971,7 +3977,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     TLorentzVector LVec_pipmiss_nmiss = *LVec_target+*LVec_beam-*LVec_pim-*LVec_n;
 
     TLorentzVector LVec_pipmiss_nmiss_mc;
-    if(SimSpmode || SimSmmode) {
+    if(SimSpmode || SimSmmode || SimK0nnmode) {
       LVec_pipmiss_nmiss_mc = *LVec_target+*mcmom_beam-*mcmom_pim-*mcmom_ncds;
     }
     TLorentzVector LVec_pipmiss_nmiss_vtx[2];
@@ -3988,7 +3994,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     // calc missing pim+neutron //
     TLorentzVector LVec_pimmiss_nmiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_n;
     TLorentzVector LVec_pimmiss_nmiss_mc;
-    if(SimSpmode || SimSmmode) {
+    if(SimSpmode || SimSmmode || SimK0nnmode) {
       LVec_pimmiss_nmiss_mc = *LVec_target+*mcmom_beam-*mcmom_pip-*mcmom_ncds;
     }
     TLorentzVector LVec_pimmiss_nmiss_vtx[2];
@@ -4006,13 +4012,13 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     //calc pip_cds + missing neutron
     TLorentzVector LVec_pip_nmiss = *LVec_pip+LVec_npipimiss;
     TLorentzVector LVec_pip_nmiss_mc;
-    if(SimSpmode || SimSmmode){
+    if(SimSpmode || SimSmmode || SimK0nnmode){
       LVec_pip_nmiss_mc = *mcmom_pip+*mcmom_nmiss;
     }
     //calc pim_cds + missing neutron
     TLorentzVector LVec_pim_nmiss = *LVec_pim+LVec_npipimiss;
     TLorentzVector LVec_pim_nmiss_mc;
-    if(SimSpmode || SimSmmode){
+    if(SimSpmode || SimSmmode || SimK0nnmode){
       LVec_pim_nmiss_mc = *mcmom_pim+*mcmom_nmiss;
     }
 
@@ -4023,7 +4029,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     LVec_specn.SetVectM(P_specn,nMass);
     TLorentzVector LVec_K0bar = *LVec_pip+*LVec_pim+*LVec_n-LVec_specn;
     TLorentzVector LVec_pip_pim_n_mc;
-    if(SimSpmode || SimSmmode) {
+    if(SimSpmode || SimSmmode || SimK0nnmode) {
       LVec_pip_pim_n_mc = *mcmom_pip+*mcmom_pim+*mcmom_ncds;
     }
     TLorentzVector LVec_pip_pim_n_vtx[2];
@@ -4062,7 +4068,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     bool IsFakeN1 = false;
     bool IsFakeN2 = false;
     bool IsFakebyVTX = false;
-    if(SimSpmode || SimSmmode) {
+    if(SimSpmode || SimSmmode || SimK0nnmode) {
       if( (mcncanvtxr>58) || (fabs(mcncanvtxz)>40) ){
       //if( (mcncanvtxr>15) || (fabs(mcncanvtxz)>15) ){
         IsFakebyVTX = true;
@@ -4782,7 +4788,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         MMnmiss_IMpippim_dE_pat7->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
       }
       MMnpim_MMnpip->Fill(LVec_pimmiss_nmiss.M(),LVec_pipmiss_nmiss.M());
-      if(SimSpmode || SimSmmode){
+      if(SimSpmode || SimSmmode || SimK0nnmode){
         if(IsFakebyVTX || IsFakeN2){
           MMnmiss_IMnpip_dE_fake->Fill(LVec_pip_n.M(),nmiss_mass,weight);
           MMnmiss_IMnpim_dE_fake->Fill(LVec_pim_n.M(),nmiss_mass,weight);
@@ -4795,7 +4801,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         //q_MMnmiss_wSid->Fill(nmiss_mass,qkn.P(),weight);
         nmom_MMnmiss_wSid->Fill(nmiss_mass,(*LVec_n).P(),weight);
         
-        if(SimSpmode || SimSmmode){
+        if(SimSpmode || SimSmmode || SimK0nnmode){
           //if(IsFakebyVTX || IsFakeN2){
           if(!( (mcpattern==2)  ||  (mcpattern==7))) {// || IsFakebyVTX ){
             MMnmiss_IMpippim_dE_wSid_fake->Fill(LVec_pip_pim.M(),nmiss_mass);
@@ -5259,7 +5265,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         //reaction data - mcData matching
         bool IsMissMassNOK = false;
         bool IsMcNMassOK = false;
-        if(SimSpmode || SimSmmode){
+        if(SimSpmode || SimSmmode || SimK0nnmode){
           if(!IsFakebyVTX)MMnpim_MMnpip_wSid_n_mc->Fill(LVec_pip_nmiss_mc.M(),LVec_pim_nmiss_mc.M(),weight);
           double diffIMnpim_reactmc = LVec_pim_n.M()- LVec_pim_n_mc.M();
           double diffIMnpip_reactmc = LVec_pip_n.M()- LVec_pip_n_mc.M();
@@ -5446,7 +5452,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         Momnpim_Momnpip_dE_wK0_wSid_n->Fill(LVec_pip_n.P(),LVec_pim_n.P(),weight);
         Momnpim_Mompippim_dE_wK0_wSid_n->Fill(LVec_pip_pim.P(),LVec_pim_n.P(),weight);
         Momnpip_Mompippim_dE_wK0_wSid_n->Fill(LVec_pip_pim.P(),LVec_pip_n.P(),weight);
-        if(SimSpmode || SimSmmode){
+        if(SimSpmode || SimSmmode || SimK0nnmode){
           double diffIMnpim_recomc = LVec_pim_n.M()- LVec_pim_n_mc.M();
           double diffIMnpip_recomc = LVec_pip_n.M()- LVec_pip_n_mc.M();
           double diffMMnmiss_recomc = nmiss_mass - (*mcmom_nmiss).M();
@@ -5796,7 +5802,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           IMnpim_IMnpip_dE_woK0_wSid_n_woSp->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         }
         //std::cout << __LINE__ << std::endl;
-        if(SimSpmode || SimSmmode){
+        if(SimSpmode || SimSmmode || SimK0nnmode){
           //std::cout << __LINE__ << std::endl;
           double diffIMnpim_recomc = LVec_pim_n.M()- LVec_pim_n_mc.M();
           double diffIMnpip_recomc = LVec_pip_n.M()- LVec_pip_n_mc.M();
