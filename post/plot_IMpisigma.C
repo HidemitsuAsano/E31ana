@@ -1268,27 +1268,27 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   vtxr_diffMass_npim_ncan_wSid_n_mc->SetXTitle("diff. Mass. (n#pi^{-}) MCdata - React.");
   vtxr_diffMass_npim_ncan_wSid_n_mc->SetYTitle("n_{CDS} origin in R [cm] ");
   
-  vtxr_vtxz_mc = new TH2F("vtxr_vtxz_mc","vtxr_vtxz_mc",75,-75,75,48,0,120.0);
+  vtxr_vtxz_mc = new TH2F("vtxr_vtxz_mc","vtxr_vtxz_mc",75,-75,75,480,0,120.0);
   vtxr_vtxz_mc->SetXTitle("n_{CDS} origin in Z [cm] ");
   vtxr_vtxz_mc->SetYTitle("n_{CDS} origin in R [cm] ");
 
-  vtxr_vtxz_mc_pat2 = new TH2F("vtxr_vtxz_mc_pat2","vtxr_vtxz_mc_pat2",75,-75,75,48,0,120.0);
+  vtxr_vtxz_mc_pat2 = new TH2F("vtxr_vtxz_mc_pat2","vtxr_vtxz_mc_pat2",75,-75,75,480,0,120.0);
   vtxr_vtxz_mc_pat2->SetXTitle("n_{CDS} origin in Z [cm] ");
   vtxr_vtxz_mc_pat2->SetYTitle("n_{CDS} origin in R [cm] ");
   
-  vtxr_vtxz_mc_pat7 = new TH2F("vtxr_vtxz_mc_pat7","vtxr_vtxz_mc_pat7",75,-75,75,48,0,120.0);
+  vtxr_vtxz_mc_pat7 = new TH2F("vtxr_vtxz_mc_pat7","vtxr_vtxz_mc_pat7",75,-75,75,480,0,120.0);
   vtxr_vtxz_mc_pat7->SetXTitle("n_{CDS} origin in Z [cm] ");
   vtxr_vtxz_mc_pat7->SetYTitle("n_{CDS} origin in R [cm] ");
 
-  vtxr_vtxz_ncan_wSid_n_mc = new TH2F("vtxr_vtxz_ncan_wSid_n_mc","vtxr_vtxz_ncan_wSid_n_mc",75,-75,75,48,0,120.0);
+  vtxr_vtxz_ncan_wSid_n_mc = new TH2F("vtxr_vtxz_ncan_wSid_n_mc","vtxr_vtxz_ncan_wSid_n_mc",75,-75,75,480,0,120.0);
   vtxr_vtxz_ncan_wSid_n_mc->SetXTitle("n_{CDS} origin in Z [cm] ");
   vtxr_vtxz_ncan_wSid_n_mc->SetYTitle("n_{CDS} origin in R [cm] ");
   
-  vtxr_vtxz_ncan_wSid_n_mc_pat2 = new TH2F("vtxr_vtxz_ncan_wSid_n_mc_pat2","vtxr_vtxz_ncan_wSid_n_mc_pat2",75,-75,75,48,0,120.0);
+  vtxr_vtxz_ncan_wSid_n_mc_pat2 = new TH2F("vtxr_vtxz_ncan_wSid_n_mc_pat2","vtxr_vtxz_ncan_wSid_n_mc_pat2",75,-75,75,480,0,120.0);
   vtxr_vtxz_ncan_wSid_n_mc_pat2->SetXTitle("n_{CDS} origin in Z [cm] ");
   vtxr_vtxz_ncan_wSid_n_mc_pat2->SetYTitle("n_{CDS} origin in R [cm] ");
   
-  vtxr_vtxz_ncan_wSid_n_mc_pat7 = new TH2F("vtxr_vtxz_ncan_wSid_n_mc_pat7","vtxr_vtxz_ncan_wSid_n_mc_pat7",75,-75,75,48,0,120.0);
+  vtxr_vtxz_ncan_wSid_n_mc_pat7 = new TH2F("vtxr_vtxz_ncan_wSid_n_mc_pat7","vtxr_vtxz_ncan_wSid_n_mc_pat7",75,-75,75,480,0,120.0);
   vtxr_vtxz_ncan_wSid_n_mc_pat7->SetXTitle("n_{CDS} origin in Z [cm] ");
   vtxr_vtxz_ncan_wSid_n_mc_pat7->SetYTitle("n_{CDS} origin in R [cm] ");
 
@@ -6471,12 +6471,13 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   mg->Draw("c");
   f->cd();
 
-
+  /*
   TCanvas *cq_IMnpipi_wK0_n = new TCanvas("cq_IMnpipi_wK0_n","q_IMnpipi_wK0_n");
   cq_IMnpipi_wK0_n->cd();
-  q_IMnpipi_wK0_n->GetYaxis()->SetRangeUser(0,1.0);
+  //q_IMnpipi_wK0_n->GetYaxis()->SetRangeUser(0,1.0);
   q_IMnpipi_wK0_n->Draw("colz");
   fkp->Draw("same");
+  */
 
   TCanvas *cq_IMnpipi_wK0_n_px = new TCanvas("cq_IMnpipi_wK0_n_px","q_IMnpipi_wK0_n_px");
   cq_IMnpipi_wK0_n_px->cd();
