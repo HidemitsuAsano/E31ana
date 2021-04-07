@@ -1372,7 +1372,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   }
   
   
-  for(unsigned int iwbin=0;iwbin<nbintemplate;iwbin++){
+  for(unsigned int iwbin=0;iwbin<nwbin;iwbin++){
     IMnpim_IMnpip_dE_wK0orwSid_n_wbin[iwbin] = new TH2F(Form("IMnpim_IMnpip_dE_wK0orwSid_n_wbin%d",iwbin),
                                                         Form("IMnpim_IMnpip_dE_wK0orwSid_n %0.2f-%0.2f",wbinlow[iwbin],wbinhigh[iwbin]),
                                                         nbinIMnpip_wbin, IMnpip_wbinlow, IMnpip_wbinhigh, nbinIMnpim_wbin, IMnpim_wbinlow, IMnpim_wbinhigh);
