@@ -93,7 +93,12 @@ void Decomposition()
   TH1D* IMnpip_wSid_n_Sm[nqcut];
   TH1D* IMnpim_wSid_n_Sp[nqcut];
   const char cqcut[][10]= {"all","qlo","qhi","theta"};
+  std::cout << __LINE__ << std::endl;
   for(int iq=qstart;iq<nqcut;iq++){
+    q_IMnpipi_wK0_wSid_n_SpSm[iq] = (TH2F*)fr[iq]->Get("q_IMnpipi_wK0_wSid_n_SpSm");
+    cq_IMnpipi_wK0_wSid_n_SpSm[iq] = new TCanvas(Form("q_IMnpipi_wK0_wSid_n_SpSm_%s",cqcut[iq]),Form("q_IMnpipi_wK0_wSid_n_SpSm_%s",cqcut[iq]));
+    IMnpipi_wK0_wSid_n_SpSm[iq] = (TH1D*)q_IMnpipi_wK0_wSid_n_SpSm[iq]->ProjectionX(Form("IMnpipi_wK0_wSid_n_SpSm_%d",iq));
+    IMnpipi_wK0_wSid_n_SpSm[iq]->Draw("HISTE");
     for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
       OverlapCount[ibin][iq] = IMnpipi_wK0_wSid_n_SpSm[iq]->GetBinContent(ibin+1);
       if(OverlapCount[ibin][iq]<0.0) OverlapCount[ibin][iq]=0.0;
@@ -848,8 +853,8 @@ void Decomposition()
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
   int size = SCol->GetSize();
   TIter next(SCol);
-  TString pdfname = "K0SigmaTemp.pdf";
-  if(RebinMode) pdfname = "K0SigmaTemp_Rebin.pdf";
+  TString pdfname = "Decomposition.pdf";
+  if(RebinMode) pdfname = "Decomposition_Rebin.pdf";
   for(int i=0;i<size;i++){
     //pdf->NewPage();
     c= (TCanvas*)next();
