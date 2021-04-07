@@ -55,26 +55,31 @@ void Decomposition()
   const unsigned int nbintemplate = 100;
   const int nqcut=4;
   const int qstart=0;
-  TH2F* IMpippim_IMnpip_wSid_n_Sp_sub[nqcut];
-  TH2F* IMpippim_IMnpip_wSid_n_Sp_bin_sub[nbintemplate][nqcut];
-  TH2F* IMpippim_IMnpim_wSid_n_Sm_sub[nqcut];
-  TH2F* IMpippim_IMnpim_wSid_n_Sm_bin_sub[nbintemplate][nqcut];
-  TH2F* IMpippim_IMnpip_wK0_n_sub[nqcut];
-  TH2F* IMpippim_IMnpip_wK0_n_bin_sub[nbintemplate][nqcut];
-  TH2F* IMpippim_IMnpim_wK0_n_sub[nqcut];
-  TH2F* IMpippim_IMnpim_wK0_n_bin_sub[nbintemplate][nqcut];
-  TH2F* IMpippim_IMnpip_wK0orwSid_n_sub[nqcut];
-  TH2F* IMpippim_IMnpim_wK0orwSid_n_sub[nqcut];
-  TH2F* IMpippim_IMnpip_wK0orwSid_n_bin_sub[nbintemplate][nqcut];
-  TH2F* IMpippim_IMnpim_wK0orwSid_n_bin_sub[nbintemplate][nqcut];
-  TH2F* IMnpim_IMnpip_wK0orwSid_n_bin_sub[nbintemplate][nqcut];
-  TH2F* IMnpim_IMnpip_wSid_n_Sp_bin_sub[nbintemplate][nqcut];
-  TH2F* IMnpim_IMnpip_wSid_n_Sm_bin_sub[nbintemplate][nqcut];
+
+  //correlation plots including overlap region
+  TH2F* IMpippim_IMnpip_wSid_n_Sp[nqcut];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_bin[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm[nqcut];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_bin[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpip_wK0_n[nqcut];
+  TH2F* IMpippim_IMnpip_wK0_n_bin[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpim_wK0_n[nqcut];
+  TH2F* IMpippim_IMnpim_wK0_n_bin[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpip_wK0orwSid_n[nqcut];
+  TH2F* IMpippim_IMnpim_wK0orwSid_n[nqcut];
+  TH2F* IMpippim_IMnpip_wK0orwSid_n_bin[nbintemplate][nqcut];
+  TH2F* IMpippim_IMnpim_wK0orwSid_n_bin[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_wK0orwSid_n_bin[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_bin[nbintemplate][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_bin[nbintemplate][nqcut];
   
+  
+
+
   //for the overlap of S+ & S- & K0 counting 
-  TH2F* q_IMnpipi_wK0_wSid_n_SpSm_sub[nqcut];
-  TH1D* IMnpipi_wK0_wSid_n_SpSm_sub[nqcut];
-  TCanvas *cq_IMnpipi_wK0_wSid_n_SpSm_sub[nqcut];
+  TH2F* q_IMnpipi_wK0_wSid_n_SpSm[nqcut];
+  TH1D* IMnpipi_wK0_wSid_n_SpSm[nqcut];
+  TCanvas *cq_IMnpipi_wK0_wSid_n_SpSm[nqcut];
   double OverlapCount[nbintemplate][nqcut]; 
 
   TCanvas *cIMpippim_IMnpip_n_all[nqcut];
@@ -469,15 +474,16 @@ void Decomposition()
   TH2D* IMpippim_IMnpim_wK0orwSid_n_merge[10][nqcut];
   TH2D* IMnpim_IMnpip_wSid_n_merge[10][nqcut];
   
+  const int nwbin=3;
   //tuned bins 2d histograms
-  TH2F* IMnpim_IMnpip_wSid_n_Sp_wbin[3][nqcut];
-  TH2F* IMnpim_IMnpip_wSid_n_Sm_wbin[3][nqcut];
-  TH2F* IMpippim_IMnpip_wSid_n_Sp_wbin[3][nqcut];
-  TH2F* IMpippim_IMnpip_wK0_n_wbin[3][nqcut];
-  TH2F* IMpippim_IMnpim_wSid_n_Sm_wbin[3][nqcut];
-  TH2F* IMpippim_IMnpim_wK0_n_wbin[3][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sp_wbin[nwbin][nqcut];
+  TH2F* IMnpim_IMnpip_wSid_n_Sm_wbin[nwbin][nqcut];
+  TH2F* IMpippim_IMnpip_wSid_n_Sp_wbin[nwbin][nqcut];
+  TH2F* IMpippim_IMnpip_wK0_n_wbin[nwbin][nqcut];
+  TH2F* IMpippim_IMnpim_wSid_n_Sm_wbin[nwbin][nqcut];
+  TH2F* IMpippim_IMnpim_wK0_n_wbin[nwbin][nqcut];
   for(int iq=0;iq<nqcut;iq++){
-    for(int imerge=0;imerge<3;imerge++){
+    for(int imerge=0;imerge<nwbin;imerge++){
       IMnpim_IMnpip_wSid_n_Sp_wbin[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMnpim_IMnpip_wSid_n_Sp_wbin%d",imerge));
 
       IMnpim_IMnpip_wSid_n_Sm_wbin[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMnpim_IMnpip_wSid_n_Sm_wbin%d",imerge));
@@ -491,6 +497,34 @@ void Decomposition()
       IMpippim_IMnpim_wK0_n_wbin[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpim_wK0_n_wbin%d",imerge));
     }
   }
+
+  //correlation plots excluding overlap region
+  TH2F* IMnpim_IMnpip_wK0_woSid_n_wbin[nwbin][nqcut];
+  TH2F* IMnpim_IMnpip_woK0_wSid_n_woSm_wbin[nwbin][nqcut];//
+  TH2F* IMnpim_IMnpip_woK0_wSid_n_woSp_wbin[nwbin][nqcut];//
+  TH2F* MMnmiss_IMpippim_wK0_woSid_n_wbin[nwbin][nqcut];
+  TH2F* MMnmiss_IMnpip_woK0_wSid_n_woSm_wbin[nwbin][nqcut];
+  TH2F* MMnmiss_IMnpim_woK0_wSid_n_woSp_wbin[nwbin][nqcut];
+  TH2F* q_nmom_wK0_woSid_n_wbin[nwbin][nqcut];
+  TH2F* q_nmom_woK0_wSid_n_woSm_wbin[nwbin][nqcut];
+  TH2F* q_nmom_woK0_wSid_n_woSp_wbin[nwbin][nqcut];
+  TH2F* IMpippim_IMnpip_woK0_wSid_n_woSp_wbin[nwbin][nqcut];//for Sm template
+  TH2F* IMpippim_IMnpip_woK0_wSid_n_woSm_wbin[nwbin][nqcut];//for Sp template
+  TH2F* IMpippim_IMnpim_woK0_wSid_n_woSp_wbin[nwbin][nqcut];
+  TH2F* IMpippim_IMnpim_woK0_wSid_n_woSm_wbin[nwbin][nqcut];
+  TH2F* IMpippim_IMnpip_wK0_woSid_n_wbin[nwbin][nqcut];
+  TH2F* IMpippim_IMnpim_wK0_woSid_n_wbin[nwbin][nqcut];
+  TH2F* q_IMnpipi_wK0_woSid_n[nqcut];
+  TH2F* q_IMnpipi_woK0_wSid_n_woSp[nqcut];
+  TH2F* q_IMnpipi_woK0_wSid_n_woSm[nqcut];
+  for(int iq=0;iq<nqcut;iq++){
+    for(int imerge=0;imerge;nwbin;imerge++){
+      IMnpim_IMnpip_wK0_woSid_n_wbin
+
+
+    }
+  }
+
 
 
   //projection hists
