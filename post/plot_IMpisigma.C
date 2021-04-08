@@ -1373,8 +1373,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   
   
   for(unsigned int iwbin=0;iwbin<nwbin;iwbin++){
-    IMnpim_IMnpip_dE_wK0orwSid_n_wbin[iwbin] = new TH2F(Form("IMnpim_IMnpip_dE_wK0orwSid_n_wbin%d",iwbin),
-                                                        Form("IMnpim_IMnpip_dE_wK0orwSid_n %0.2f-%0.2f",wbinlow[iwbin],wbinhigh[iwbin]),
+    IMnpim_IMnpip_dE_wK0orwSid_n_wbin[iwbin] = new TH2F(Form("IMnpim_IMnpip_wK0orwSid_n_wbin%d",iwbin),
+                                                        Form("IMnpim_IMnpip_wK0orwSid_n %0.2f-%0.2f",wbinlow[iwbin],wbinhigh[iwbin]),
                                                         nbinIMnpip_wbin, IMnpip_wbinlow, IMnpip_wbinhigh, nbinIMnpim_wbin, IMnpim_wbinlow, IMnpim_wbinhigh);
     IMnpim_IMnpip_dE_wK0orwSid_n_wbin[iwbin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
     IMnpim_IMnpip_dE_wK0orwSid_n_wbin[iwbin]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");

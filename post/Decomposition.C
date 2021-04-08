@@ -56,24 +56,6 @@ void Decomposition()
   const int nqcut=4;
   const int qstart=0;
 
-  //correlation plots including overlap region
-  TH2F* IMpippim_IMnpip_wSid_n_Sp[nqcut];
-  TH2F* IMpippim_IMnpip_wSid_n_Sp_bin[nbintemplate][nqcut];
-  TH2F* IMpippim_IMnpim_wSid_n_Sm[nqcut];
-  TH2F* IMpippim_IMnpim_wSid_n_Sm_bin[nbintemplate][nqcut];
-  TH2F* IMpippim_IMnpip_wK0_n[nqcut];
-  TH2F* IMpippim_IMnpip_wK0_n_bin[nbintemplate][nqcut];
-  TH2F* IMpippim_IMnpim_wK0_n[nqcut];
-  TH2F* IMpippim_IMnpim_wK0_n_bin[nbintemplate][nqcut];
-  TH2F* IMpippim_IMnpip_wK0orwSid_n[nqcut];
-  TH2F* IMpippim_IMnpim_wK0orwSid_n[nqcut];
-  TH2F* IMpippim_IMnpip_wK0orwSid_n_bin[nbintemplate][nqcut];
-  TH2F* IMpippim_IMnpim_wK0orwSid_n_bin[nbintemplate][nqcut];
-  TH2F* IMnpim_IMnpip_wK0orwSid_n[nqcut];
-  TH2F* IMnpim_IMnpip_wK0orwSid_n_bin[nbintemplate][nqcut];
-  TH2F* IMnpim_IMnpip_wSid_n_Sp_bin[nbintemplate][nqcut];
-  TH2F* IMnpim_IMnpip_wSid_n_Sm_bin[nbintemplate][nqcut];
-  
   //for the overlap of S+ & S- & K0 counting 
   TH2F* q_IMnpipi_wK0_wSid_n_SpSm[nqcut];
   TH1D* IMnpipi_wK0_wSid_n_SpSm[nqcut];
@@ -101,96 +83,12 @@ void Decomposition()
       if(OverlapCount[ibin][iq]<0.0) OverlapCount[ibin][iq]=0.0;
     }
 
-    for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
-      std::cout << iq << "  " << ibin << std::endl;
-
-      IMpippim_IMnpip_wSid_n_Sp_bin[ibin][iq] = (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpip_wSid_n_Sp_bin%d",ibin));
-      if(RemoveNegative)IMpippim_IMnpip_wSid_n_Sp_bin[ibin][iq]->SetMinimum(0);
-
-      IMpippim_IMnpim_wSid_n_Sm_bin[ibin][iq] = (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpim_wSid_n_Sm_bin%d",ibin));
-      if(RemoveNegative)IMpippim_IMnpim_wSid_n_Sm_bin[ibin][iq]->SetMinimum(0);
-
-      IMpippim_IMnpip_wK0_n_bin[ibin][iq] = (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpip_wK0_n_bin%d",ibin));
-      if(RemoveNegative)IMpippim_IMnpip_wK0_n_bin[ibin][iq]->SetMinimum(0);
-
-      IMpippim_IMnpim_wK0_n_bin[ibin][iq] = (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpim_wK0_n_bin%d",ibin));
-      if(RemoveNegative)IMpippim_IMnpim_wK0_n_bin[ibin][iq]->SetMinimum(0);
-
-      IMpippim_IMnpip_wK0orwSid_n_bin[ibin][iq] = (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpip_wK0orwSid_n_bin%d",ibin));
-      if(RemoveNegative)IMpippim_IMnpip_wK0orwSid_n_bin[ibin][iq]->SetMinimum(0);
-      
-      IMpippim_IMnpim_wK0orwSid_n_bin[ibin][iq] = (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpim_wK0orwSid_n_bin%d",ibin));
-      if(RemoveNegative)IMpippim_IMnpim_wK0orwSid_n_bin[ibin][iq]->SetMinimum(0);
-
-      float binlow=1.0+(float)ibin*1./nbintemplate;
-      float binhigh=1.0+(float)(ibin+1.0)*1./nbintemplate;
-      
-      IMnpim_IMnpip_wK0orwSid_n_bin[ibin][iq] = (TH2F*)fr[iq]->Get(Form("IMnpim_IMnpip_dE_wK0orwSid_n_bin%d",ibin));
-      if(RemoveNegative)IMnpim_IMnpip_wK0orwSid_n_bin[ibin][iq]->SetMinimum(0);
-      
-      IMnpim_IMnpip_wSid_n_Sp_bin[ibin][iq] = (TH2F*)fr[iq]->Get(Form("IMnpim_IMnpip_wSid_n_Sp_bin%d",ibin));
-      if(RemoveNegative)IMnpim_IMnpip_wSid_n_Sp_bin[ibin][iq]->SetMinimum(0);
-
-      IMnpim_IMnpip_wSid_n_Sm_bin[ibin][iq] = (TH2F*)fr[iq]->Get(Form("IMnpim_IMnpip_wSid_n_Sm_bin%d",ibin));
-      if(RemoveNegative)IMnpim_IMnpip_wSid_n_Sm_bin[ibin][iq]->SetMinimum(0);
-    }
-  }
-  
-  
   std::cout << __LINE__ << std::endl;
   int ngroup = 3;
   TH1D* IMnpipi_overlapdeco_K0[ngroup][nqcut];
   TH1D* IMnpipi_overlapdeco_Sp[ngroup][nqcut];
   TH1D* IMnpipi_overlapdeco_Sm[ngroup][nqcut];
 
-  TCanvas *cIMpippim_IMnpip_n_bin[nbintemplate][nqcut];
-  TH1D* IMnpip_n_bin[nbintemplate][nqcut];
-  TH1D* IMpippim_n_bin_1[nbintemplate][nqcut];
-  TGraphErrors *gr_IMpippim_n_bin_1[nbintemplate][nqcut];
-  TCanvas *cIMpippim_IMnpip_n_bin_cut[nbintemplate][nqcut];
-  TH1D* IMnpip_wK0_n_bin[nbintemplate][nqcut];
-  TH1D* IMnpip_wK0_n_bin_select[nbintemplate][nqcut];
-  TH1D* IMnpip_wK0_n_bin_lo[nbintemplate][nqcut];
-  TH1D* IMnpip_wK0_n_bin_hi[nbintemplate][nqcut];
-  TH1D* IMpippim_wSid_n_Sp_bin[nbintemplate][nqcut];
-  TH1D* IMpippim_wSid_n_Sp_bin_select[nbintemplate][nqcut];
-  TH1D* IMpippim_wSid_n_Sp_bin_lo[nbintemplate][nqcut];
-  TH1D* IMpippim_wSid_n_Sp_bin_lo2[nbintemplate][nqcut];//2 sigma to 6 sigma away when there is no higher side
-  TH1D* IMpippim_wSid_n_Sp_bin_hi[nbintemplate][nqcut];
-  //IM(pi+pi-) vs IM(npi-) correlations
-  TCanvas *cIMpippim_IMnpim_n_bin[nbintemplate][nqcut];
-  TH1D* IMnpim_n_bin[nbintemplate][nqcut];
-  TH1D* IMpippim_n_bin_2[nbintemplate][nqcut];
-  TGraphErrors *gr_IMpippim_n_bin_2[nbintemplate][nqcut];
-  TCanvas *cIMpippim_IMnpim_n_bin_cut[nbintemplate][nqcut];
-  TH1D* IMnpim_wK0_n_bin[nbintemplate][nqcut];
-  TH1D* IMnpim_wK0_n_bin_select[nbintemplate][nqcut];
-  TH1D* IMnpim_wK0_n_bin_lo[nbintemplate][nqcut];
-  TH1D* IMnpim_wK0_n_bin_hi[nbintemplate][nqcut];
-  TH1D* IMpippim_wSid_n_Sm_bin[nbintemplate][nqcut];
-  TH1D* IMpippim_wSid_n_Sm_bin_select[nbintemplate][nqcut];
-  TH1D* IMpippim_wSid_n_Sm_bin_lo[nbintemplate][nqcut];
-  TH1D* IMpippim_wSid_n_Sm_bin_lo2[nbintemplate][nqcut];
-  TH1D* IMpippim_wSid_n_Sm_bin_hi[nbintemplate][nqcut];
-  
-  TCanvas *cIMnpim_IMnpip_n_bin[nbintemplate][nqcut];
-  TH1D* IMnpip_n_bin_2[nbintemplate][nqcut];
-  TH1D* IMnpim_n_bin_2[nbintemplate][nqcut];
-  TGraphErrors *gr_IMnpim_n_bin_2[nbintemplate][nqcut];
-  TCanvas *cIMnpim_IMnpip_n_bin_cut[nbintemplate][nqcut];
-  TH1D* IMnpip_wSid_n_Sm_bin[nbintemplate][nqcut];
-  TH1D* IMnpip_wSid_n_Sm_bin_select[nbintemplate][nqcut];
-  TH1D* IMnpip_wSid_n_Sm_bin_lo[nbintemplate][nqcut];//2 sigma
-  TH1D* IMnpip_wSid_n_Sm_bin_lo2[nbintemplate][nqcut];//4 sigma
-  TH1D* IMnpip_wSid_n_Sm_bin_hi[nbintemplate][nqcut];//2 sigma
-  TH1D* IMnpip_wSid_n_Sm_bin_hi2[nbintemplate][nqcut];//4 simga
-  TH1D* IMnpim_wSid_n_Sp_bin[nbintemplate][nqcut];
-  TH1D* IMnpim_wSid_n_Sp_bin_select[nbintemplate][nqcut];
-  TH1D* IMnpim_wSid_n_Sp_bin_lo[nbintemplate][nqcut];//2 sigma
-  TH1D* IMnpim_wSid_n_Sp_bin_lo2[nbintemplate][nqcut];//4 sigma
-  TH1D* IMnpim_wSid_n_Sp_bin_hi[nbintemplate][nqcut];//2 sigma
-  TH1D* IMnpim_wSid_n_Sp_bin_hi2[nbintemplate][nqcut];//4 sigma
-  
   for(int ig=0;ig<ngroup;ig++){
     for(int iq=qstart;iq<nqcut;iq++){
       if(ig!=2)IMnpipi_overlapdeco_K0[ig][iq] = new TH1D(Form("IMnpipi_overlapdeco_K0_g%d_%d",ig,iq),Form("IMnpipi_overlapdeco_K0_g%d_%d",ig,iq),100,1,2);
@@ -198,129 +96,7 @@ void Decomposition()
       if(ig!=0)IMnpipi_overlapdeco_Sm[ig][iq] = new TH1D(Form("IMnpipi_overlapdeco_Sm_g%d_%d",ig,iq),Form("IMnpipi_overlapdeco_Sm_g%d_%d",ig,iq),100,1,2);
     }
   }
-  /*
-  for(unsigned int ibin=39;ibin<nbintemplate;ibin++){
-    for(int iq=qstart;iq<nqcut;iq++){
-      //std::cout << ibin << " " << iq << std::endl;
-      //first canvas to display IM(pi+pi-) vs IM(npi+) and their simple projection just to see the signal and other background 
-      //no complicated cut at this moment
-      //2nd canvas to display the calculation of decomposion of K0, Sigma+,Sigma- 
-      //2D plot in canvas(3) has cut to select K0 or Sigma+
-      //projection plot in canvas(1) select Sigma+ events candidate + (Sigma+ & K0 ) overlap events
-      //projection plot in canvas(4) select K0     events candidate + (Sigma+ & K0 ) overlap events 
-      cIMpippim_IMnpip_n_bin_cut[ibin][iq] 
-      = new TCanvas(Form("cIMpippim_IMnpip_n_bin_cut_%d_%d",ibin,iq),Form("cIMpippim_IMnpip_n_bin_cut%d_%d",ibin,iq),800,800);
-      cIMpippim_IMnpip_n_bin_cut[ibin][iq]->Divide(2,2);
-      cIMpippim_IMnpip_n_bin_cut[ibin][iq]->cd(3);
-      
-      IMpippim_IMnpip_wK0orwSid_n_bin[ibin][iq]->RebinX(4);
-      IMpippim_IMnpip_wK0orwSid_n_bin[ibin][iq]->RebinY(5);
-      IMpippim_IMnpip_wK0orwSid_n_bin[ibin][iq]->GetXaxis()->SetRangeUser(1,1.8);
-      IMpippim_IMnpip_wK0orwSid_n_bin[ibin][iq]->GetYaxis()->SetRangeUser(0.2,0.9);
-      IMpippim_IMnpip_wK0orwSid_n_bin[ibin][iq]->Draw("colz");
-      cIMpippim_IMnpip_n_bin_cut[ibin][iq]->cd(1);
-      IMnpip_wK0_n_bin[ibin][iq] = (TH1D*)IMpippim_IMnpip_wK0_n_bin[ibin][iq]->ProjectionX(Form("IMnpip_wK0_n_bin%d_%d",ibin,iq));
-      IMnpip_wK0_n_bin[ibin][iq]->SetTitle(Form("IMnpip_wK0_n_bin%d_%d",ibin,iq));
-      if(RebinMode)IMnpip_wK0_n_bin[ibin][iq]->RebinX(10);
-      IMnpip_wK0_n_bin[ibin][iq]->GetXaxis()->SetRangeUser(1,1.8);
-      IMnpip_wK0_n_bin[ibin][iq]->Draw("HIST");
-      IMnpip_wK0_n_bin_select[ibin][iq] = (TH1D*)IMnpip_wK0_n_bin[ibin][iq]->Clone(Form("IMnpip_wK0_n_bin%d_%d_select",ibin,iq));
-      IMnpip_wK0_n_bin_select[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
-      IMnpip_wK0_n_bin_select[ibin][iq]->SetLineColor(2);
-      IMnpip_wK0_n_bin_select[ibin][iq]->Draw("HISTsame");
-      cIMpippim_IMnpip_n_bin_cut[ibin][iq]->cd(4);
-      IMpippim_wSid_n_Sp_bin[ibin][iq]
-      = (TH1D*)IMpippim_IMnpip_wSid_n_Sp_bin[ibin][iq]->ProjectionY(Form("IMpippim_wSid_n_Sp_bin%d_%d",ibin,iq));
-      IMpippim_wSid_n_Sp_bin[ibin][iq]->SetTitle(Form("IMpippim_wSid_n_Sp_bin%d_%d",ibin,iq));
-      if(RebinMode)IMpippim_wSid_n_Sp_bin[ibin][iq]->RebinX(30);
-      IMpippim_wSid_n_Sp_bin[ibin][iq]->GetXaxis()->SetRangeUser(0.2,0.9);
-      IMpippim_wSid_n_Sp_bin[ibin][iq]->Draw("HIST");
-      IMpippim_wSid_n_Sp_bin_select[ibin][iq] = (TH1D*)IMpippim_wSid_n_Sp_bin[ibin][iq]->Clone(Form("IMpippim_wSid_n_Sp_bin_%d_%d_select",ibin,iq));
-      IMpippim_wSid_n_Sp_bin_select[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::pipi_MIN_narrow,anacuts::pipi_MAX_narrow);
-      IMpippim_wSid_n_Sp_bin_select[ibin][iq]->SetLineColor(2);
-      IMpippim_wSid_n_Sp_bin_select[ibin][iq]->Draw("HISTsame");
-       
-      //2nd canvas to display the calculation of decomposion of K0, Sigma+,Sigma- 
-      //2D plot in canvas(3) has cut to select K0 or Sigma-
-      //projection plot in canvas(1) select Sigma- events candidate + (Sigma- & K0 ) overlap events
-      //projection plot in canvas(4) select K0     events candidate + (Sigma- & K0 ) overlap events 
-      //std::cout << __LINE__ << std::endl;
-      cIMpippim_IMnpim_n_bin_cut[ibin][iq]
-      = new TCanvas(Form("cIMpippim_IMnpim_n_bin_cut_%d_%d",ibin,iq),Form("cIMpippim_IMnpim_n_bin_cut%d_%d",ibin,iq),800,800);
-      cIMpippim_IMnpim_n_bin_cut[ibin][iq]->Divide(2,2);
-      cIMpippim_IMnpim_n_bin_cut[ibin][iq]->cd(3);
-
-      IMpippim_IMnpim_wK0orwSid_n_bin[ibin][iq]->RebinX(4);
-      IMpippim_IMnpim_wK0orwSid_n_bin[ibin][iq]->RebinY(5);
-      IMpippim_IMnpim_wK0orwSid_n_bin[ibin][iq]->GetXaxis()->SetRangeUser(1,1.8);
-      IMpippim_IMnpim_wK0orwSid_n_bin[ibin][iq]->GetYaxis()->SetRangeUser(0.2,0.9);
-      IMpippim_IMnpim_wK0orwSid_n_bin[ibin][iq]->Draw("colz");
-      cIMpippim_IMnpim_n_bin_cut[ibin][iq]->cd(1);
-      IMnpim_wK0_n_bin[ibin][iq] = (TH1D*)IMpippim_IMnpim_wK0_n_bin[ibin][iq]->ProjectionX(Form("IMnpim_wK0_n_bin%d_%d",ibin,iq));
-      IMnpim_wK0_n_bin[ibin][iq]->SetTitle(Form("IMnpim_wK0_n_bin%d_%d",ibin,iq));
-      if(RebinMode) IMnpim_wK0_n_bin[ibin][iq]->RebinX(10);
-      IMnpim_wK0_n_bin[ibin][iq]->GetXaxis()->SetRangeUser(1,1.8);
-      IMnpim_wK0_n_bin[ibin][iq]->Draw("HIST");
-      IMnpim_wK0_n_bin_select[ibin][iq] = (TH1D*)IMnpim_wK0_n_bin[ibin][iq]->Clone(Form("IMnpim_wK0_n_bin%d_%d_select",ibin,iq));
-      IMnpim_wK0_n_bin_select[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
-      IMnpim_wK0_n_bin_select[ibin][iq]->SetLineColor(2);
-      IMnpim_wK0_n_bin_select[ibin][iq]->Draw("HISTsame");
-      cIMpippim_IMnpim_n_bin_cut[ibin][iq]->cd(4);
-      IMpippim_wSid_n_Sm_bin[ibin][iq]
-      = (TH1D*)IMpippim_IMnpim_wSid_n_Sm_bin[ibin][iq]->ProjectionY(Form("IMpippim_wSid_n_Sm_bin%d_%d",ibin,iq));
-      IMpippim_wSid_n_Sm_bin[ibin][iq]->SetTitle(Form("IMpippim_wSid_n_Sm_bin%d_%d",ibin,iq));
-      if(RebinMode)IMpippim_wSid_n_Sm_bin[ibin][iq]->RebinX(30);
-      IMpippim_wSid_n_Sm_bin[ibin][iq]->Draw("HIST");
-      IMpippim_wSid_n_Sm_bin_select[ibin][iq] = (TH1D*)IMpippim_wSid_n_Sm_bin[ibin][iq]->Clone(Form("IMpippim_wSid_n_Sm_bin_%d_%d_select",ibin,iq));
-      IMpippim_wSid_n_Sm_bin_select[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::pipi_MIN_narrow,anacuts::pipi_MAX_narrow);
-      IMpippim_wSid_n_Sm_bin_select[ibin][iq]->SetLineColor(2);
-      IMpippim_wSid_n_Sm_bin_select[ibin][iq]->Draw("HISTsame");
-
-      //2nd canvas to display the calculation of decomposion of K0, Sigma+,Sigma- 
-      //2D plot in canvas(3) has cut to select Sigma- or Sigma+
-      //projection plot in canvas(1) select Sigma+ events candidate + (Sigma- & Sigma+ ) overlap events
-      //projection plot in canvas(4) select Sigma- events candidate + (Sigma- & Sigma- ) overlap events 
-      cIMnpim_IMnpip_n_bin_cut[ibin][iq]
-      = new TCanvas(Form("cIMnpim_IMnpip_n_bin_cut_%d_%d",ibin,iq),Form("cIMnpim_IMnpip_n_bin_cut%d_%d",ibin,iq),800,800);
-      cIMnpim_IMnpip_n_bin_cut[ibin][iq]->Divide(2,2);
-      cIMnpim_IMnpip_n_bin_cut[ibin][iq]->cd(3);
-
-      IMnpim_IMnpip_wK0orwSid_n_bin[ibin][iq]->RebinX(4);
-      IMnpim_IMnpip_wK0orwSid_n_bin[ibin][iq]->RebinY(4);
-      IMnpim_IMnpip_wK0orwSid_n_bin[ibin][iq]->GetXaxis()->SetRangeUser(1,1.8);
-      IMnpim_IMnpip_wK0orwSid_n_bin[ibin][iq]->GetYaxis()->SetRangeUser(1,1.8);
-      IMnpim_IMnpip_wK0orwSid_n_bin[ibin][iq]->Draw("colz");
-      
-      cIMnpim_IMnpip_n_bin_cut[ibin][iq]->cd(1);
-      IMnpip_wSid_n_Sm_bin[ibin][iq] = (TH1D*)IMnpim_IMnpip_wSid_n_Sm_bin[ibin][iq]->ProjectionX(Form("IMnpip_wSid_n_Sm_bin%d_%d",ibin,iq));
-      IMnpip_wSid_n_Sm_bin[ibin][iq]->SetTitle(Form("IMnpip_wSid_n_Sm_bin%d_%d",ibin,iq));
-      if(RebinMode){
-        IMnpip_wSid_n_Sm_bin[ibin][iq]->RebinX(10);
-      }
-      IMnpip_wSid_n_Sm_bin[ibin][iq]->GetXaxis()->SetRangeUser(1,1.8);
-      IMnpip_wSid_n_Sm_bin[ibin][iq]->Draw("HIST");
-
-      IMnpip_wSid_n_Sm_bin_select[ibin][iq] = (TH1D*)IMnpip_wSid_n_Sm_bin[ibin][iq]->Clone(Form("IMnpip_wSid_n_Sm_bin%d_%d_select",ibin,iq));
-      IMnpip_wSid_n_Sm_bin_select[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmap_MIN,anacuts::Sigmap_MAX);
-      IMnpip_wSid_n_Sm_bin_select[ibin][iq]->SetLineColor(2);
-      IMnpip_wSid_n_Sm_bin_select[ibin][iq]->Draw("HISTsame");
-      //std::cout << __LINE__ << std::endl;
-      cIMnpim_IMnpip_n_bin_cut[ibin][iq]->cd(4);
-      IMnpim_wSid_n_Sp_bin[ibin][iq]
-      = (TH1D*)IMnpim_IMnpip_wSid_n_Sp_bin[ibin][iq]->ProjectionY(Form("IMnpim_wSid_n_Sp_bin%d_%d",ibin,iq));
-      IMnpim_wSid_n_Sp_bin[ibin][iq]->SetTitle(Form("IMnpim_wSid_n_Sp_bin%d_%d",ibin,iq));
-      if(RebinMode)IMnpim_wSid_n_Sp_bin[ibin][iq]->RebinX(10);
-      IMnpim_wSid_n_Sp_bin[ibin][iq]->GetXaxis()->SetRangeUser(1,1.8);
-      IMnpim_wSid_n_Sp_bin[ibin][iq]->Draw("HIST");
-      IMnpim_wSid_n_Sp_bin_select[ibin][iq] = (TH1D*)IMnpim_wSid_n_Sp_bin[ibin][iq]->Clone(Form("IMnpim_wSid_n_Sp_bin%d_%d_select",ibin,iq));
-      IMnpim_wSid_n_Sp_bin_select[ibin][iq]->GetXaxis()->SetRangeUser(anacuts::Sigmam_MIN,anacuts::Sigmam_MAX);
-      IMnpim_wSid_n_Sp_bin_select[ibin][iq]->SetLineColor(2);
-      IMnpim_wSid_n_Sp_bin_select[ibin][iq]->Draw("HISTsame");
-      
-    }
-  }*/
    
-  /*
   std::cout << __LINE__ << std::endl;
   TCanvas *csum_Sp[ngroup][nqcut];
   TCanvas *csum_Sm[ngroup][nqcut];
@@ -342,6 +118,7 @@ void Decomposition()
     }
   }
 
+  /*
   std::cout << __LINE__ << std::endl;
   TCanvas *cratio_SpSm[nqcut];//Sp/Sm  ->group 2
   TCanvas *cratio_SpK0[nqcut];//Sp/K0  ->group 0
@@ -375,11 +152,6 @@ void Decomposition()
   }
   */
   
-  //merging some specific bins
-  TH2D* IMpippim_IMnpip_wK0orwSid_n_merge[10][nqcut];
-  TH2D* IMpippim_IMnpim_wK0orwSid_n_merge[10][nqcut];
-  TH2D* IMnpim_IMnpip_wSid_n_merge[10][nqcut];
-  
   const int nwbin=3;
   //tuned bins 2d histograms
   TH2F* IMnpim_IMnpip_wSid_n_Sp_wbin[nwbin][nqcut];
@@ -388,6 +160,9 @@ void Decomposition()
   TH2F* IMpippim_IMnpip_wK0_n_wbin[nwbin][nqcut];
   TH2F* IMpippim_IMnpim_wSid_n_Sm_wbin[nwbin][nqcut];
   TH2F* IMpippim_IMnpim_wK0_n_wbin[nwbin][nqcut];
+  TH2F* IMnpim_IMnpip_wK0orwSid_n_wbin[nwbin][nqcut];
+  TH2F* IMpippim_IMnpip_wK0orwSid_n_wbin[nwbin][nqcut];
+  TH2F* IMpippim_IMnpim_wK0orwSid_n_wbin[nwbin][nqcut];
   for(int iq=0;iq<nqcut;iq++){
     for(int imerge=0;imerge<nwbin;imerge++){
       IMnpim_IMnpip_wSid_n_Sp_wbin[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMnpim_IMnpip_wSid_n_Sp_wbin%d",imerge));
@@ -484,36 +259,6 @@ void Decomposition()
   TCanvas *cIMpippim_IMnpim_merge[10][nqcut];
   TCanvas *cIMnpim_IMnpip_merge[10][nqcut];
   
-  TF1 *constfitSpwK0[10][nqcut];
-  TF1 *constfitK0wSp[10][nqcut];
-  TF1 *constfitSmwK0[10][nqcut];
-  TF1 *constfitK0wSm[10][nqcut];
-  TF1 *constfitSpwSm[10][nqcut];
-  TF1 *constfitSmwSp[10][nqcut];
-  const double frSpwK0s[2][nqcut]={{1.1,1.1,1.1,1.1},
-                                   {1.1,1.1,1.1,1.1}};
-  const double frSpwK0e[2][nqcut]={{1.32,1.32,1.30,1.32},
-                                   {1.32,1.30,1.32,1.32}};
-  const double frK0wSps[2][nqcut]={{0.28,0.28,0.30,0.28},
-                                   {0.30,0.30,0.30,0.30}};
-  const double frK0wSpe[2][nqcut]={{0.57,0.56,0.57,0.57},
-                                   {0.70,0.70,0.70,0.57}};
-  const double frSmwK0s[2][nqcut]={{1.1,1.12,1.1,1.1},
-                                   {1.17,1.17,1.17,1.17}};
-  const double frSmwK0e[2][nqcut]={{1.32,1.3,1.27,1.27},
-                                   {1.27,1.27,1.27,1.24}};
-  const double frK0wSms[2][nqcut]={{0.28,0.30,0.28,0.28},
-                                   {0.30,0.30,0.30,0.30}};
-  const double frK0wSme[2][nqcut]={{0.57,0.57,0.57,0.57},
-                                   {0.70,0.70,0.70,0.60}};
-  const double frSpwSms[2][nqcut]={{1.14,1.14,1.12,1.14},
-                                   {1.14,1.14,1.12,1.14}};
-  const double frSpwSme[2][nqcut]={{1.28,1.28,1.30,1.28},
-                                   {1.28,1.28,1.30,1.30}};
-  const double frSmwSps[2][nqcut]={{1.14,1.14,1.12,1.14},
-                                   {1.14,1.14,1.12,1.14}};
-  const double frSmwSpe[2][nqcut]={{1.30,1.30,1.30,1.30},
-                                   {1.30,1.30,1.30,1.30}};
   //merge
   //index 0 
   //1.40-1.52
