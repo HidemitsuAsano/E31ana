@@ -164,18 +164,16 @@ void Decomposition()
   TH2F* IMpippim_IMnpip_wK0orwSid_n_wbin[nwbin][nqcut];
   TH2F* IMpippim_IMnpim_wK0orwSid_n_wbin[nwbin][nqcut];
   for(int iq=0;iq<nqcut;iq++){
-    for(int imerge=0;imerge<nwbin;imerge++){
-      IMnpim_IMnpip_wSid_n_Sp_wbin[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMnpim_IMnpip_wSid_n_Sp_wbin%d",imerge));
-
-      IMnpim_IMnpip_wSid_n_Sm_wbin[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMnpim_IMnpip_wSid_n_Sm_wbin%d",imerge));
-
-      IMpippim_IMnpip_wSid_n_Sp_wbin[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpip_wSid_n_Sp_wbin%d",imerge));
-
-      IMpippim_IMnpip_wK0_n_wbin[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpip_wK0_n_wbin%d",imerge));
-
-      IMpippim_IMnpim_wSid_n_Sm_wbin[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpim_wSid_n_Sm_wbin%d",imerge));
-
-      IMpippim_IMnpim_wK0_n_wbin[imerge][iq]= (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpim_wK0_n_wbin%d",imerge));
+    for(int iwbin=0;iwbin<nwbin;iwbin++){
+      IMnpim_IMnpip_wSid_n_Sp_wbin[iwbin][iq]= (TH2F*)fr[iq]->Get(Form("IMnpim_IMnpip_wSid_n_Sp_wbin%d",iwbin));
+      IMnpim_IMnpip_wSid_n_Sm_wbin[iwbin][iq]= (TH2F*)fr[iq]->Get(Form("IMnpim_IMnpip_wSid_n_Sm_wbin%d",iwbin));
+      IMpippim_IMnpip_wSid_n_Sp_wbin[iwbin][iq]= (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpip_wSid_n_Sp_wbin%d",iwbin));
+      IMpippim_IMnpip_wK0_n_wbin[iwbin][iq]= (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpip_wK0_n_wbin%d",iwbin));
+      IMpippim_IMnpim_wSid_n_Sm_wbin[iwbin][iq]= (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpim_wSid_n_Sm_wbin%d",iwbin));
+      IMpippim_IMnpim_wK0_n_wbin[iwbin][iq]= (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpim_wK0_n_wbin%d",iwbin));
+      IMnpim_IMnpip_wK0orwSid_n_wbin[iwbin][iq] = (TH2F*)fr[iq]->Get(Form("IMnpim_IMnpip_wK0orwSid_n_wbin%d",iwbin));
+      IMpippim_IMnpip_wK0orwSid_n_wbin[iwbin][iq] = (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpip_wK0orwSid_n_wbin%d",iwbin));
+      IMpippim_IMnpim_wK0orwSid_n_wbin[iwbin][iq] = (TH2F*)fr[iq]->Get(Form("IMpippim_IMnpim_wK0orwSid_n_wbin%d",iwbin));
     }
   }
 
