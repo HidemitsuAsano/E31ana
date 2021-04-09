@@ -74,7 +74,7 @@ const bool IsMCweighting = false;
 
 //check GEANT4 info. to reject fake neutron events
 //maybe, also forward Sigma events should be rejected ?
-const bool SimRejectFake = false;
+const bool SimRejectFake = true;
 
 //color def.
 //Sp mode Signal :2 (red)
@@ -365,6 +365,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* IMnpim_IMnpip_dE_woK0_woSm_viciext;//select viciniti of the signal
   TH2F* IMnpim_IMnpip_dE_wK0;
   TH2F* IMnpim_IMnpip_dE_wK0_woSid_n;
+  TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_45rot;
   TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_wbin[nwbin];
   TH2F* IMnpim_IMnpip_dE_woK0_woSid_n;
   TH2F* IMnpim_IMnpip_dE_n;//
@@ -1461,6 +1462,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE_wK0_woSid_n = new TH2F("IMnpim_IMnpip_dE_wK0_woSid_n","IMnpim_IMnpip_dE_wK0_woSid_n",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wK0_woSid_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0_woSid_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot = new TH2F("IMnpim_IMnpip_dE_wK0_woSid_n_45rot","IMnpim_IMnpip_dE_wK0_woSid_n_45rot",60, 1.6, 2.2, 100, -0.5,0.5);
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot->SetXTitle("(IM(n#pi^{+})+IM(n#pi^{-}))/#sqrt{2} [GeV/c^{2}]");
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot->SetYTitle("(IM(n#pi^{+})-IM(n#pi^{-}))/#sqrt{2} [GeV/c^{2}]");
   
   for(unsigned int iwbin=0;iwbin<nwbin;iwbin++){
     IMnpim_IMnpip_dE_wK0_woSid_n_wbin[iwbin] = new TH2F(Form("IMnpim_IMnpip_dE_wK0_woSid_n_wbin%d",iwbin),
@@ -5645,6 +5650,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         nmom_IMnpipi_wK0_woSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_n).P(),weight);
         q_IMnpipi_wK0_woSid_n->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
         IMnpim_IMnpip_dE_wK0_woSid_n->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
+        IMnpim_IMnpip_dE_wK0_woSid_n_45rot->Fill(1./sqrt(2.0)*(LVec_pip_n.M()+LVec_pim_n.M()),
+                                                 1./sqrt(2.0)*(LVec_pip_n.M()-LVec_pim_n.M()),
+                                                 weight);
         IMnpim_IMnpip_dE_wK0_woSid_n_wbin[wbinnum]->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         nmom_K0mom_woSid_n->Fill(LVec_pip_pim.P(),(*LVec_n).P(),weight);
         q_nmom_wK0_woSid_n_wbin[wbinnum]->Fill((*LVec_n).P(),qkn.P(),weight);
