@@ -91,8 +91,24 @@ void Fit2DK0()
   cfitcomp->cd(4);
   IMnpim_wK0_woSid_n->Draw("E");
   
-
-
+  //try interpolation
+  TCanvas *cinter = new TCanvas("cinter","cinter",800,800);
+  cinter->Divide(2,2,0,0);
+  cinter->cd(3);
+  TH2F *IMnpim_IMnpip_wK0_woSid_n_inter = (TH2F*)IMnpim_IMnpip_dE_wK0_woSid_n2->Clone("IMnpim_IMnpip_wK0_woSid_n_inter");
+  for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n2->GetNbinsX();ix++){
+    double bincx = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->GetBinCenter(ix);
+    double bincy = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->GetBinCenter(nbiny);
+    double contx = IMnpim_IMnpip_dE_wK0_woSid_n2->Interpolate(bincx,bincy);
+    IMnpim_IMnpip_wK0_woSid_n_inter->SetBinContent(ix,nbiny,contx);
+    std::cout << contx << std::endl;
+  }
+  for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n2->GetNbinsY();iy++){
+    double conty = IMnpim_IMnpip_dE_wK0_woSid_n2->Interpolate(nbinx,iy);
+    IMnpim_IMnpip_wK0_woSid_n_inter->SetBinContent(nbinx,iy,conty);
+  }
+  IMnpim_IMnpip_wK0_woSid_n_inter->Draw("colz");
+ 
 
   //TF1Convolution *f_conv = new TF1Convolution("expo","gaus",1.0,1.8,true);
   //f_conv->SetRange(1.0,1.8);
