@@ -228,25 +228,26 @@ void Decomposition()
   TH1D* q_wK0_woSid[nwbin][nqcut];
   TH1D* nmom_wK0_woSid[nwbin][nqcut];
   TH1D* IMnpipi_wK0_woSid[nqcut];
-  //for Sp (missing n is always selected)
-  TH1D* IMnpim_woK0_Sp[nwbin][nqcut];
-  TH1D* IMnpip_woK0_Sp[nwbin][nqcut];
-  TH1D* MMnmiss_woK0_Sp[nwbin][nqcut];
-  TH1D* IMpippim_woK0_Sp[nwbin][nqcut];
-  TH1D* q_woK0_Sp[nwbin][nqcut];
-  TH1D* nmom_woK0_Sp[nwbin][nqcut];
-  TH1D* IMnpipi_woK0_Sp[nqcut];
-  //for Sm (missing n is always selected)
-  TH1D* IMnpim_woK0_Sp[nwbin][nqcut];
-  TH1D* IMnpip_woK0_Sp[nwbin][nqcut];
-  TH1D* MMnmiss_woK0_Sp[nwbin][nqcut];
-  TH1D* IMpippim_woK0_Sp[nwbin][nqcut];
-  TH1D* q_woK0_Sp[nwbin][nqcut];
-  TH1D* nmom_woK0_Sp[nwbin][nqcut];
-  TH1D* IMnpipi_woK0_Sp[nqcut];
+  //for Sp (missing n is always selected),excluding K0 and Sm
+  TH1D* IMnpim_woK0_woSm[nwbin][nqcut];
+  TH1D* IMnpip_woK0_woSm[nwbin][nqcut];
+  TH1D* MMnmiss_woK0_woSm[nwbin][nqcut];
+  TH1D* IMpippim_woK0_woSm[nwbin][nqcut];
+  TH1D* q_woK0_woSm[nwbin][nqcut];
+  TH1D* nmom_woK0_woSm[nwbin][nqcut];
+  TH1D* IMnpipi_woK0_woSm[nqcut];
+  //for Sm (missing n is always selected),excluding K0 and Sp
+  TH1D* IMnpim_woK0_woSp[nwbin][nqcut];
+  TH1D* IMnpip_woK0_woSp[nwbin][nqcut];
+  TH1D* MMnmiss_woK0_woSp[nwbin][nqcut];
+  TH1D* IMpippim_woK0_woSp[nwbin][nqcut];
+  TH1D* q_woK0_woSp[nwbin][nqcut];
+  TH1D* nmom_woK0_woSp[nwbin][nqcut];
+  TH1D* IMnpipi_woK0_woSp[nqcut];
   
   for(int iq=0;iq<nqcut;iq++){
     for(int iwbin=0;iwbin<nwbin;iwbin++){
+      //for K0
       IMnpim_wK0_woSid[iwbin][iq] = 
       (TH1D*)IMnpim_IMnpip_wK0_woSid_n_wbin[iwbin][iq]->ProjectionY(Form("IMnpim_wK0_woSid%d%d",iwbin,iq));
       IMnpip_wK0_woSid[iwbin][iq] =
@@ -259,8 +260,37 @@ void Decomposition()
       (TH1D*)q_nmom_wK0_woSid_n_wbin[iwbin][iq]->ProjectionY(Form("q_wK0_woSid_n%d%d",iwbin,iq));
       nmom_wK0_woSid[iwbin][iq] =
       (TH1D*)q_nmom_wK0_woSid_n_wbin[iwbin][iq]->ProjectionX(Form("nmom_wK0_woSid_n%d%d",iwbin,iq));
+      //for Sp
+      IMnpim_woK0_woSm[iwbin][iq] = 
+      (TH1D*)IMnpim_IMnpip_woK0_wSid_n_woSm_wbin[iwbin][iq]->ProjectionY(Form("IMnpim_woK0_woSm%d%d",iwbin,iq));
+      IMnpip_woK0_woSm[iwbin][iq] =
+      (TH1D*)IMnpim_IMnpip_woK0_wSid_n_woSm_wbin[iwbin][iq]->ProjectionX(Form("IMnpip_woK0_woSm%d%d",iwbin,iq));
+      MMnmiss_woK0_woSm[iwbin][iq] =
+      (TH1D*)MMnmiss_IMnpim_woK0_wSid_n_woSp_wbin[iwbin][iq]->ProjectionY(Form("MMnmiss_woK0_woSm%d%d",iwbin,iq));
+      IMpippim_woK0_woSm[iwbin][iq] = 
+      (TH1D*)IMpippim_IMnpim_woK0_wSid_n_woSm_wbin[iwbin][iq]->ProjectionY(Form("IMpippim_woK0_woSm%d%d",iwbin,iq));
+      q_woK0_woSm[iwbin][iq] =
+      (TH1D*)q_nmom_woK0_wSid_n_woSm_wbin[iwbin][iq]->ProjectionY(Form("q_woK0_woSm_n%d%d",iwbin,iq));
+      nmom_woK0_woSm[iwbin][iq] =
+      (TH1D*)q_nmom_woK0_wSid_n_woSm_wbin[iwbin][iq]->ProjectionX(Form("nmom_woK0_woSm_n%d%d",iwbin,iq));
+
+      //for Sm
+      IMnpim_woK0_woSp[iwbin][iq] = 
+      (TH1D*)IMnpim_IMnpip_woK0_wSid_n_woSp_wbin[iwbin][iq]->ProjectionY(Form("IMnpim_woK0_woSp%d%d",iwbin,iq));
+      IMnpip_woK0_woSp[iwbin][iq] =
+      (TH1D*)IMnpim_IMnpip_woK0_wSid_n_woSp_wbin[iwbin][iq]->ProjectionX(Form("IMnpip_woK0_woSp%d%d",iwbin,iq));
+      MMnmiss_woK0_woSp[iwbin][iq] =
+      (TH1D*)MMnmiss_IMpippim_woK0_wSid_n_woSp_wbin[iwbin][iq]->ProjectionY(Form("MMnmiss_woK0_woSp%d%d",iwbin,iq));
+      IMpippim_woK0_woSp[iwbin][iq] = 
+      (TH1D*)MMnmiss_IMpippim_woK0_wSid_n_woSp_wbin[iwbin][iq]->ProjectionX(Form("IMpippim_woK0_woSp%d%d",iwbin,iq));
+      q_woK0_woSp[iwbin][iq] =
+      (TH1D*)q_nmom_woK0_wSid_n_woSp_wbin[iwbin][iq]->ProjectionY(Form("q_woK0_woSp_n%d%d",iwbin,iq));
+      nmom_woK0_woSp[iwbin][iq] =
+      (TH1D*)q_nmom_woK0_wSid_n_woSp_wbin[iwbin][iq]->ProjectionX(Form("nmom_woK0_woSp_n%d%d",iwbin,iq));
     }
     IMnpipi_wK0_woSid[iq] = (TH1D*)q_IMnpipi_wK0_woSid_n[iq]->ProjectionX(Form("IMnpipi_wK0_woSid%d",iq));
+    IMnpipi_woK0_woSm[iq] = (TH1D*)q_IMnpipi_woK0_wSid_n_woSm[iq]->ProjectionX(Form("IMnpipi_woK0_woSm%d",iq));
+    IMnpipi_woK0_woSp[iq] = (TH1D*)q_IMnpipi_woK0_wSid_n_woSp[iq]->ProjectionX(Form("IMnpipi_woK0_woSp%d",iq));
   }
 
 
