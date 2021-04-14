@@ -45,10 +45,10 @@ void Fit2DK0()
   cIMnpim_IMnpip_dE_wK0_woSid_n2->cd(3);
   TH2D* IMnpim_IMnpip_dE_wK0_woSid_n2 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n->Clone("IMnpim_IMnpip_dE_wK0_woSid_n2");
   IMnpim_IMnpip_dE_wK0_woSid_n2->Draw("colz");
-  const int nbinx = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->FindBin(1.2);
-  const int nbiny = IMnpim_IMnpip_dE_wK0_woSid_n2->GetYaxis()->FindBin(1.2);
+  const int binSp = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->FindBin(anacuts::Sigmap_center);
+  const int binSm = IMnpim_IMnpip_dE_wK0_woSid_n2->GetYaxis()->FindBin(anacuts::Sigmam_center);
   cIMnpim_IMnpip_dE_wK0_woSid_n2->cd(1);
-  TH1D *IMnpip_wK0_woSid_n2 = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n2->ProjectionX("IMnpip_wK0_woSid_n2",nbinx,300);
+  TH1D *IMnpip_wK0_woSid_n2 = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n2->ProjectionX("IMnpip_wK0_woSid_n2",binSp,300);
   IMnpip_wK0_woSid_n2->Draw("E");
   TF1 *fnpip = new TF1("fnpip","expo",1.13,1.26);
   IMnpip_wK0_woSid_n2->Fit(fnpip,"","",1.13,1.26);
@@ -58,7 +58,7 @@ void Fit2DK0()
   std::cout << "par1: " << parnpip[1] << std::endl;
   
   cIMnpim_IMnpip_dE_wK0_woSid_n2->cd(4);
-  TH1D *IMnpim_wK0_woSid_n2 = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n2->ProjectionY("IMnpim_wK0_woSid_n2",nbiny,300);
+  TH1D *IMnpim_wK0_woSid_n2 = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n2->ProjectionY("IMnpim_wK0_woSid_n2",binSm,300);
   IMnpim_wK0_woSid_n2->Draw("E");
   TF1 *fnpim = new TF1("fnpim","expo",1.12,1.36);
   IMnpim_wK0_woSid_n2->Fit(fnpim,"","",1.12,1.36);
@@ -92,17 +92,39 @@ void Fit2DK0()
   IMnpim_wK0_woSid_n->Draw("E");
   
   //try interpolation
-  TCanvas *cinter = new TCanvas("cinter","cinter",800,800);
-  cinter->Divide(2,2,0,0);
-  cinter->cd(3);
-  const int binxx = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->FindBin(anacuts::Sigmap_center);
-  const int binyy = IMnpim_IMnpip_dE_wK0_woSid_n2->GetYaxis()->FindBin(anacuts::Sigmam_center);
   TH2F *IMnpim_IMnpip_wK0_woSid_n_inter = (TH2F*)IMnpim_IMnpip_dE_wK0_woSid_n2->Clone("IMnpim_IMnpip_wK0_woSid_n_inter");
-  for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n2->GetNbinsX();ix++){
+  
+  const int nbinsX = IMnpim_IMnpip_dE_wK0_woSid_n2->GetNbinsX();
+  TCanvas *cIMnpim_wK0_woSid_n[nbinsX];
+  TH1D* hIMnpim[nbinsX];
+  TGraphErrors* grIMnpim_wK0_woSid_n[nbinsX];
+  TSpline3 *spIMnpim3[nbinsX];
+  TSpline5 *spIMnpim5[nbinsX];
+  
+  for(int ix=8;ix<nbinsX;ix++){
+    hIMnpim[ix] = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n2->ProjectionY(Form("IMnpim_wK0_woSid_n%d",ix),ix,ix);
+    grIMnpim_wK0_woSid_n[ix] = new TGraphErrors(hIMnpim[ix]);
+    double IMnpim_low = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->GetBinLowEdge(ix);
+    double IMnpim_hi = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->GetBinLowEdge(ix+1);
+    grIMnpim_wK0_woSid_n[ix]->RemovePoint(7);
+    grIMnpim_wK0_woSid_n[ix]->SetTitle(Form("IMnpim_wK0_woSid_n %0.2f-%0.2f",IMnpim_low,IMnpim_hi));
+    cIMnpim_wK0_woSid_n[ix] = new TCanvas(Form("cIMnpim%d",ix),Form("cIMnpim%d",ix));
+    grIMnpim_wK0_woSid_n[ix]->Draw("AP");
+    TBox *b = new TBox(1.1791920,0,1.2152680,30);
+    b->SetFillColor(4);
+    b->SetFillStyle(3003);
+    b->Draw();
+    spIMnpim3[ix] = new TSpline3(Form("spIMnpim3%d",ix),grIMnpim_wK0_woSid_n[ix]); 
+    spIMnpim3[ix]->SetLineColor(2);
+    spIMnpim3[ix]->Draw("same");
+    spIMnpim5[ix] = new TSpline5(Form("spIMnpim5%d",ix),grIMnpim_wK0_woSid_n[ix]); 
+    spIMnpim5[ix]->SetLineColor(3);
+    spIMnpim5[ix]->Draw("same");
     double bincx = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->GetBinCenter(ix);
-    double bincy = IMnpim_IMnpip_dE_wK0_woSid_n2->GetYaxis()->GetBinCenter(binyy);
-    double contx = IMnpim_IMnpip_dE_wK0_woSid_n2->Interpolate(bincx,bincy);
-    IMnpim_IMnpip_wK0_woSid_n_inter->SetBinContent(ix,binyy,contx);
+    double bincy = IMnpim_IMnpip_dE_wK0_woSid_n2->GetYaxis()->GetBinCenter(binSm);
+    double contx = spIMnpim3[ix]->Eval(bincx);
+    //double contx = IMnpim_IMnpip_dE_wK0_woSid_n2->Interpolate(bincx,bincy);
+    IMnpim_IMnpip_wK0_woSid_n_inter->SetBinContent(ix,binSm,contx);
     //std::cout << ix  << " " << binyy << std::endl;
     //std::cout << bincx << "  " << bincy << std::endl;
     //std::cout << contx << std::endl;
@@ -112,6 +134,47 @@ void Fit2DK0()
   //  double conty = IMnpim_IMnpip_dE_wK0_woSid_n2->Interpolate(binxx,iy);
   //  IMnpim_IMnpip_wK0_woSid_n_inter->SetBinContent(binxx,iy,conty);
   //}
+  
+
+  const int nbinsY = IMnpim_IMnpip_dE_wK0_woSid_n2->GetNbinsY();
+  TCanvas *cIMnpip_wK0_woSid_n[nbinsY];
+  TH1D* hIMnpip[nbinsY];
+  TGraphErrors* grIMnpip_wK0_woSid_n[nbinsY];
+  TSpline3 *spIMnpip3[nbinsY];
+  TSpline5 *spIMnpip5[nbinsY];
+  
+  for(int iy=9;iy<nbinsX;iy++){
+    hIMnpip[iy] = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n2->ProjectionX(Form("IMnpip_wK0_woSid_n%d",iy),iy,iy);
+    grIMnpip_wK0_woSid_n[iy] = new TGraphErrors(hIMnpip[iy]);
+    double IMnpip_low = IMnpim_IMnpip_dE_wK0_woSid_n2->GetYaxis()->GetBinLowEdge(iy);
+    double IMnpip_hi = IMnpim_IMnpip_dE_wK0_woSid_n2->GetYaxis()->GetBinLowEdge(iy+1);
+    grIMnpip_wK0_woSid_n[iy]->RemovePoint(6);
+    grIMnpip_wK0_woSid_n[iy]->SetTitle(Form("IMnpip_wK0_woSid_n %0.2f-%0.2f",IMnpip_low,IMnpip_hi));
+    cIMnpip_wK0_woSid_n[iy] = new TCanvas(Form("cIMnpip%d",iy),Form("cIMnpip%d",iy));
+    grIMnpip_wK0_woSid_n[iy]->Draw("AP");
+    TBox *b = new TBox(1.1728847,0,1.2053353,30);
+    b->SetFillColor(4);
+    b->SetFillStyle(3003);
+    b->Draw();
+    spIMnpip3[iy] = new TSpline3(Form("spIMnpip3%d",iy),grIMnpip_wK0_woSid_n[iy]); 
+    spIMnpip3[iy]->SetLineColor(2);
+    spIMnpip3[iy]->Draw("same");
+    spIMnpip5[iy] = new TSpline5(Form("spIMnpip5%d",iy),grIMnpip_wK0_woSid_n[iy]); 
+    spIMnpip5[iy]->SetLineColor(3);
+    spIMnpip5[iy]->Draw("same");
+    double bincx = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->GetBinCenter(binSp);
+    double bincy = IMnpim_IMnpip_dE_wK0_woSid_n2->GetYaxis()->GetBinCenter(iy);
+    double conty = spIMnpip3[iy]->Eval(bincx);
+    //double contx = IMnpip_IMnpip_dE_wK0_woSid_n2->Interpolate(bincx,bincy);
+    IMnpim_IMnpip_wK0_woSid_n_inter->SetBinContent(binSp,iy,conty);
+    //std::cout << iy  << " " << binyy << std::endl;
+    //std::cout << bincx << "  " << bincy << std::endl;
+    //std::cout << contx << std::endl;
+    //std::cout << std::endl;
+  }
+  TCanvas *cinter = new TCanvas("cinter","cinter",800,800);
+  cinter->Divide(2,2,0,0);
+  cinter->cd(3);
   IMnpim_IMnpip_wK0_woSid_n_inter->Draw("colz");
  
 
