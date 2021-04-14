@@ -103,10 +103,10 @@ void Fit2DK0()
     double bincy = IMnpim_IMnpip_dE_wK0_woSid_n2->GetYaxis()->GetBinCenter(binyy);
     double contx = IMnpim_IMnpip_dE_wK0_woSid_n2->Interpolate(bincx,bincy);
     IMnpim_IMnpip_wK0_woSid_n_inter->SetBinContent(ix,binyy,contx);
-    std::cout << ix  << " " << binyy << std::endl;
-    std::cout << bincx << "  " << bincy << std::endl;
-    std::cout << contx << std::endl;
-    std::cout << std::endl;
+    //std::cout << ix  << " " << binyy << std::endl;
+    //std::cout << bincx << "  " << bincy << std::endl;
+    //std::cout << contx << std::endl;
+    //std::cout << std::endl;
   }
   //for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n2->GetNbinsY();iy++){
   //  double conty = IMnpim_IMnpip_dE_wK0_woSid_n2->Interpolate(binxx,iy);
