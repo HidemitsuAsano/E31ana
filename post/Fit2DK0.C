@@ -2,7 +2,7 @@
 #include <TF2.h>
 #include <TH2.h>
 #include <TMath.h>
-
+#include "anacuts.h"
 
 Double_t K0fit2d(Double_t *x, Double_t *par)
 {
@@ -25,8 +25,8 @@ void Fit2DK0()
   cIMnpim_IMnpip_dE_wK0_woSid_n->Divide(2,2,0.,0.);
   cIMnpim_IMnpip_dE_wK0_woSid_n->cd(3);
   
-  IMnpim_IMnpip_dE_wK0_woSid_n->RebinX(3);
-  IMnpim_IMnpip_dE_wK0_woSid_n->RebinY(3);
+  IMnpim_IMnpip_dE_wK0_woSid_n->RebinX(4);
+  IMnpim_IMnpip_dE_wK0_woSid_n->RebinY(4);
   //IMnpim_IMnpip_dE_wK0_woSid_n->GetXaxis()->SetRangeUser(1.0,1.8);
   //IMnpim_IMnpip_dE_wK0_woSid_n->GetYaxis()->SetRangeUser(1.0,1.8);
   IMnpim_IMnpip_dE_wK0_woSid_n->SetMinimum(0);
@@ -95,18 +95,23 @@ void Fit2DK0()
   TCanvas *cinter = new TCanvas("cinter","cinter",800,800);
   cinter->Divide(2,2,0,0);
   cinter->cd(3);
+  const int binxx = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->FindBin(anacuts::Sigmap_center);
+  const int binyy = IMnpim_IMnpip_dE_wK0_woSid_n2->GetYaxis()->FindBin(anacuts::Sigmam_center);
   TH2F *IMnpim_IMnpip_wK0_woSid_n_inter = (TH2F*)IMnpim_IMnpip_dE_wK0_woSid_n2->Clone("IMnpim_IMnpip_wK0_woSid_n_inter");
   for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n2->GetNbinsX();ix++){
     double bincx = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->GetBinCenter(ix);
-    double bincy = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->GetBinCenter(nbiny);
+    double bincy = IMnpim_IMnpip_dE_wK0_woSid_n2->GetYaxis()->GetBinCenter(binyy);
     double contx = IMnpim_IMnpip_dE_wK0_woSid_n2->Interpolate(bincx,bincy);
-    IMnpim_IMnpip_wK0_woSid_n_inter->SetBinContent(ix,nbiny,contx);
+    IMnpim_IMnpip_wK0_woSid_n_inter->SetBinContent(ix,binyy,contx);
+    std::cout << ix  << " " << binyy << std::endl;
+    std::cout << bincx << "  " << bincy << std::endl;
     std::cout << contx << std::endl;
+    std::cout << std::endl;
   }
-  for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n2->GetNbinsY();iy++){
-    double conty = IMnpim_IMnpip_dE_wK0_woSid_n2->Interpolate(nbinx,iy);
-    IMnpim_IMnpip_wK0_woSid_n_inter->SetBinContent(nbinx,iy,conty);
-  }
+  //for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n2->GetNbinsY();iy++){
+  //  double conty = IMnpim_IMnpip_dE_wK0_woSid_n2->Interpolate(binxx,iy);
+  //  IMnpim_IMnpip_wK0_woSid_n_inter->SetBinContent(binxx,iy,conty);
+  //}
   IMnpim_IMnpip_wK0_woSid_n_inter->Draw("colz");
  
 
