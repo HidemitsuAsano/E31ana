@@ -123,6 +123,7 @@ void Fit2DK0()
     double bincx = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->GetBinCenter(ix);
     double bincy = IMnpim_IMnpip_dE_wK0_woSid_n2->GetYaxis()->GetBinCenter(binSm);
     double contx = spIMnpim3[ix]->Eval(bincx);
+    if(contx<0.0) contx=0.0;
     //double contx = IMnpim_IMnpip_dE_wK0_woSid_n2->Interpolate(bincx,bincy);
     IMnpim_IMnpip_wK0_woSid_n_inter->SetBinContent(ix,binSm,contx);
     //std::cout << ix  << " " << binyy << std::endl;
@@ -165,6 +166,7 @@ void Fit2DK0()
     double bincx = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->GetBinCenter(binSp);
     double bincy = IMnpim_IMnpip_dE_wK0_woSid_n2->GetYaxis()->GetBinCenter(iy);
     double conty = spIMnpip3[iy]->Eval(bincx);
+    if(conty<0) conty=0.0;
     //double contx = IMnpip_IMnpip_dE_wK0_woSid_n2->Interpolate(bincx,bincy);
     IMnpim_IMnpip_wK0_woSid_n_inter->SetBinContent(binSp,iy,conty);
     //std::cout << iy  << " " << binyy << std::endl;
@@ -176,8 +178,12 @@ void Fit2DK0()
   cinter->Divide(2,2,0,0);
   cinter->cd(3);
   IMnpim_IMnpip_wK0_woSid_n_inter->Draw("colz");
- 
-
+  cinter->cd(1);
+  auto *IMnpip_inter = (TH1D*)IMnpim_IMnpip_wK0_woSid_n_inter->ProjectionX("IMnpip_inter");
+  IMnpip_inter->Draw("HE");
+  cinter->cd(4);
+  auto *IMnpim_inter = (TH1D*)IMnpim_IMnpip_wK0_woSid_n_inter->ProjectionY("IMnpim_inter");
+  IMnpim_inter->Draw("HE");
   //TF1Convolution *f_conv = new TF1Convolution("expo","gaus",1.0,1.8,true);
   //f_conv->SetRange(1.0,1.8);
   //f_conv->SetNofPointsFFT(1000);
