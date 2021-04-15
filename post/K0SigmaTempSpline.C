@@ -610,8 +610,8 @@ void K0SigmaTempSpline()
       cIMnpim_IMnpip_n_sub_bin_cut[ibin][iq]->Divide(2,2);
       cIMnpim_IMnpip_n_sub_bin_cut[ibin][iq]->cd(3);
 
-      IMnpim_IMnpip_wK0orwSid_n_bin_sub[ibin][iq]->RebinX(4);
-      IMnpim_IMnpip_wK0orwSid_n_bin_sub[ibin][iq]->RebinY(4);
+      //IMnpim_IMnpip_wK0orwSid_n_bin_sub[ibin][iq]->RebinX(4);
+      //IMnpim_IMnpip_wK0orwSid_n_bin_sub[ibin][iq]->RebinY(4);
       IMnpim_IMnpip_wK0orwSid_n_bin_sub[ibin][iq]->GetXaxis()->SetRangeUser(1,1.8);
       IMnpim_IMnpip_wK0orwSid_n_bin_sub[ibin][iq]->GetYaxis()->SetRangeUser(1,1.8);
       IMnpim_IMnpip_wK0orwSid_n_bin_sub[ibin][iq]->Draw("colz");
