@@ -67,8 +67,8 @@ void K0SigmaTempSpline()
   gStyle->SetErrorX(0.);  
 
   const unsigned int nbintemplate = 100;
-  const int nqcut=4;
-  const int qstart=0;
+  const int nqcut=3;
+  const int qstart=1;
   TH2F* IMpippim_IMnpip_wSid_n_Sp_sub[nqcut];
   TH2F* IMpippim_IMnpip_wSid_n_Sp_bin_sub[nbintemplate][nqcut];
   TH2F* IMpippim_IMnpim_wSid_n_Sm_sub[nqcut];
@@ -908,7 +908,7 @@ void K0SigmaTempSpline()
   std::cout << __LINE__ << std::endl;
   
   for(int imerge=0;imerge<2;imerge++){
-    for(int iq=0;iq<nqcut;iq++){
+    for(int iq=qstart;iq<nqcut;iq++){
       IMpippim_IMnpip_wK0orwSid_n_merge[imerge][iq]  
         = (TH2D*)IMpippim_IMnpip_wK0orwSid_n_bin_sub[initbin[imerge]][iq]->Clone(Form("IMpippim_IMnpip_wK0orwSid_merge%d_%d",imerge,iq));
       IMpippim_IMnpip_wK0orwSid_n_merge[imerge][iq]->SetTitle(Form("IMpippim_IMnpip_wK0orwSid %0.2f-%0.2f %s",startval[imerge],endval[imerge],cqcut[iq]));

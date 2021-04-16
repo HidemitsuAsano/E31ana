@@ -366,6 +366,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* IMnpim_IMnpip_dE_wK0;
   TH2F* IMnpim_IMnpip_dE_wK0_woSid_n;
   TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_45rot;
+  TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_45rot2;
   TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_wbin[nwbin];
   TH2F* IMnpim_IMnpip_dE_woK0_woSid_n;
   TH2F* IMnpim_IMnpip_dE_n;//
@@ -1477,6 +1478,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot = new TH2F("IMnpim_IMnpip_dE_wK0_woSid_n_45rot","IMnpim_IMnpip_dE_wK0_woSid_n_45rot",60, 1.6, 2.2, 100, -0.5,0.5);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot->SetXTitle("(IM(n#pi^{+})+IM(n#pi^{-}))/#sqrt{2} [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot->SetYTitle("(IM(n#pi^{+})-IM(n#pi^{-}))/#sqrt{2} [GeV/c^{2}]");
+  
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot2 = new TH2F("IMnpim_IMnpip_dE_wK0_woSid_n_45rot2","IMnpim_IMnpip_dE_wK0_woSid_n_45rot2",100, -0.5,0.5,60, 1.6, 2.2);
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot2->SetXTitle("(IM(n#pi^{+})-IM(n#pi^{-}))/#sqrt{2} [GeV/c^{2}]");
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot2->SetYTitle("(IM(n#pi^{+})+IM(n#pi^{-}))/#sqrt{2} [GeV/c^{2}]");
   
   for(unsigned int iwbin=0;iwbin<nwbin;iwbin++){
     IMnpim_IMnpip_dE_wK0_woSid_n_wbin[iwbin] = new TH2F(Form("IMnpim_IMnpip_dE_wK0_woSid_n_wbin%d",iwbin),
@@ -5669,6 +5674,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         IMnpim_IMnpip_dE_wK0_woSid_n->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         IMnpim_IMnpip_dE_wK0_woSid_n_45rot->Fill(1./sqrt(2.0)*(LVec_pip_n.M()+LVec_pim_n.M()),
                                                  1./sqrt(2.0)*(LVec_pip_n.M()-LVec_pim_n.M()),
+                                                 weight);
+        IMnpim_IMnpip_dE_wK0_woSid_n_45rot2->Fill(1./sqrt(2.0)*(LVec_pip_n.M()-LVec_pim_n.M()),
+                                                  1./sqrt(2.0)*(LVec_pip_n.M()+LVec_pim_n.M()),
                                                  weight);
         IMnpim_IMnpip_dE_wK0_woSid_n_wbin[wbinnum]->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
         nmom_K0mom_woSid_n->Fill(LVec_pip_pim.P(),(*LVec_n).P(),weight);
