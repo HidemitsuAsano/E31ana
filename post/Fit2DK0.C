@@ -21,6 +21,7 @@ void Fit2DK0()
 
   auto *IMnpim_IMnpip_dE_wK0_woSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_45rot = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n_45rot");
+  auto *IMnpim_IMnpip_dE_wK0_woSid_n_45rot3 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n_45rot3");
   auto *cIMnpim_IMnpip_dE_wK0_woSid_n = new TCanvas("cIMnpim_IMnpip_dE_wK0_woSid_n","cIMnpim_IMnpip_dE_wK0_woSid_n",800,800);
   cIMnpim_IMnpip_dE_wK0_woSid_n->Divide(2,2,0.,0.);
   cIMnpim_IMnpip_dE_wK0_woSid_n->cd(3);
@@ -203,6 +204,45 @@ void Fit2DK0()
   
   cIMnpim_IMnpip_dE_wK0_woSid_n_45rot->cd(4);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot->ProjectionY()->Draw();
+
+  auto *cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3 = new TCanvas("cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3","cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3",800,800);
+  cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3->Divide(2,2,0,0);
+  cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3->cd(3);
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->SetMinimum(0);
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->Draw("colz");
+  
+  cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3->cd(1);
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->ProjectionX()->Draw();
+  
+  cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3->cd(4);
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->ProjectionY()->Draw();
+   
+  auto *crot3 = new TCanvas("crot3","crot3",800,800);
+  crot3->Divide(2,2);
+  crot3->cd(3);
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->Draw("colz");
+  const int biny17 = IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->GetYaxis()->FindBin(1.7);
+  const int binx00 = IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->GetXaxis()->FindBin(0.0);
+  crot3->cd(4);
+  auto *py_rot3_right = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->ProjectionY("px_rot3_right",binx00,100);
+  auto *py_rot3_left = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->ProjectionY("px_rot3_left",0,binx00-1);
+  py_rot3_right->Draw("E");
+  py_rot3_left->SetLineColor(2);
+  py_rot3_left->Draw("Esame");
+  auto leg = new TLegend(0.6,0.7,0.9,0.9);
+  leg->AddEntry(py_rot3_right,"right");
+  leg->AddEntry(py_rot3_left,"left");
+  leg->Draw();
+  
+  crot3->cd(1);
+  auto *px_rot3 = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->ProjectionX("px_rot3");
+  px_rot3->Draw("HE");
+  crot3->cd(2);
+  auto px_rot3_17 = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->ProjectionX("xx_rot3",0,biny17);
+  px_rot3_17->Draw("HE");
+
+
+  //crot3->BuildLegend();
 
   /*
   auto *cIMnpim_IMnpip_dE_woK0_wSid_n_woSm = new TCanvas("cIMnpim_IMnpip_dE_woK0_wSid_n_woSm","cIMnpim_IMnpip_dE_woK0_wSid_n_woSm",800,400);
