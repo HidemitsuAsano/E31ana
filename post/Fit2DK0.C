@@ -128,7 +128,10 @@ void Fit2DK0()
   //par3 : y,exp slope
 
   f2->SetParameters(1000,0.02,0.1,-10.0);
+  f2->SetParLimits(0,0,10000000000);
+  f2->SetParLimits(3,-1000,0.0);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Fit("f2","","");
+  //f2->SetParLimits(1,0,1000000000000000);
   f2->Draw("cont1 ");
   TH2D *hf2  =  (TH2D*)f2->GetHistogram();
   cfitcomp->cd(1);
