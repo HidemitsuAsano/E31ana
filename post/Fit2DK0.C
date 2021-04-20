@@ -119,31 +119,63 @@ void Fit2DK0()
   cfitcomp->Divide(2,2);
   cfitcomp->cd(3);
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2");
-  //IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Draw("colz");
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Draw("colz");
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetYaxis()->SetRangeUser(1.660,2.1);
   //hfit->Draw("colz");
-  TF2 *f2 = new TF2("f2",K0fit2d,-0.5,0.5,1.68,2.1,4);   
+  TF2 *f2 = new TF2("f2",K0fit2d,-0.5,0.5,1.6,2.2,4);
   //par0 : scaling factor
   //par1 : x,gaus mean
   //par2 : x,gaus sigma
   //par3 : y,exp slope
 
-  f2->SetParameters(1000,0.02,0.1,-10.0);
-  f2->SetParLimits(0,0,10000000000);
-  f2->SetParLimits(3,-1000,0.0);
-  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Fit("f2","","");
-  //f2->SetParLimits(1,0,1000000000000000);
-  f2->Draw("cont1 ");
-  TH2D *hf2  =  (TH2D*)f2->GetHistogram();
+  //f2->SetRange(-0.5,0.5,1.660,2.1,4); 
+  f2->SetRange(-0.5,1.660,0.5,2.1); 
+  f2->SetParameters(22000000.0,0.005,0.14,-9.2);
+  //f2->SetParLimits(0,10,21);
+  f2->SetParLimits(1,0.0,0.1);
+  f2->SetParLimits(2,0.1,0.2);
+  //f2->SetParLimits(3,-5,0);
+  //IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Fit("f2","R","");
+  f2->Draw("cont1 same");
+  TF2 *f2wide = new TF2("f2wide",K0fit2d,-0.5,0.5,1.6,2.2,4);
+  Double_t param[4];
+  f2->GetParameters(param);
+  f2wide->SetParameters(param);
+  f2wide->SetNpx(100);
+  f2wide->SetNpy(60);
+  TH2D *hf2  =  (TH2D*)f2wide->GetHistogram();
+  for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsX();ix++){
+    for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsY();iy++){
+      double cont = IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetBinContent(ix,iy);
+      if(fabs(cont)<0.001) hf2->SetBinContent(ix,iy,0);
+    }
+  }
+
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Print("base");
+  hf2->Print("base");
   cfitcomp->cd(1);
-  hf2->ProjectionX()->Draw("H");
-  //IMnpip_wK0_woSid_n->Draw("E");
-  //TH1D* hfitnpip = (TH1D*)hfit->ProjectionX("hfitnpip");
-  //hfitnpip->SetLineColor(2);
-  //hfitnpip->Draw("HEsame");
+  TH1D* pxrot3 = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->ProjectionX("pxrot3");
+  pxrot3->Draw("HE");
+  hf2->SetFillColor(0);
+  hf2->ProjectionX()->Draw("HISTsame");
+  
+  cfitcomp->cd(4);
+  TH1D* pyrot3 = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->ProjectionY("pyrot3");
+  pyrot3->Draw("HE");
+  hf2->ProjectionY()->Draw("HISTsame");
+  
+  //subtract 
+  TCanvas *cfitcompsub = new TCanvas("cfitcompsub","cfitcompsub",800,800);
+  cfitcompsub->Divide(2,2);
+  cfitcompsub->cd(3);
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Draw("colz");
+  hf2->Draw("box same");
+
+  cfitcompsub->cd(1);
+  pxrot3->Draw("HE");
+  hf2->ProjectionX()->Draw("HISTsame");
 
   cfitcomp->cd(4);
-  hf2->ProjectionY()->Draw("H");
-  //IMnpim_wK0_woSid_n->Draw("E");
-  
-
+  pyrot3->Draw("HE");
+  hf2->ProjectionY()->Draw("HISTsame");
 }
