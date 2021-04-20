@@ -128,13 +128,23 @@ void Fit2DK0()
   //par2 : x,gaus sigma
   //par3 : y,exp slope
 
+  for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsX();ix++){
+    for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsY();iy++){
+      double cont = IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetBinContent(ix,iy);
+      if(fabs(cont)<0.001){ 
+        //IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->SetBinContent(ix,iy,0);
+        //IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->SetBinError(ix,iy,0);
+      }
+    }
+  }
   //f2->SetRange(-0.5,0.5,1.660,2.1,4); 
   f2->SetRange(-0.5,1.660,0.5,2.1); 
   f2->SetParameters(22000000.0,0.005,0.14,-9.2);
-  //f2->SetParLimits(0,10,21);
+  f2->SetParLimits(0,2000000,4000000);
   f2->SetParLimits(1,0.0,0.1);
   f2->SetParLimits(2,0.1,0.2);
-  //f2->SetParLimits(3,-5,0);
+  f2->SetParLimits(3,-10,-9.2);
+  f2->FixParameter(3,-9.2);
   //IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Fit("f2","R","");
   f2->Draw("cont1 same");
   TF2 *f2wide = new TF2("f2wide",K0fit2d,-0.5,0.5,1.6,2.2,4);
@@ -175,7 +185,7 @@ void Fit2DK0()
   pxrot3->Draw("HE");
   hf2->ProjectionX()->Draw("HISTsame");
 
-  cfitcomp->cd(4);
+  cfitcompsub->cd(4);
   pyrot3->Draw("HE");
   hf2->ProjectionY()->Draw("HISTsame");
 }
