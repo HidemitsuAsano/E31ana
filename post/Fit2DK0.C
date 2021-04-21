@@ -23,8 +23,6 @@ void Fit2DK0()
   TFile *fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi_sub.root","READ");
 
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_1 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
-  auto *IMnpim_IMnpip_dE_wK0_woSid_n_2 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
-  IMnpim_IMnpip_dE_wK0_woSid_n_2->SetName("IMnpim_IMnpip_dE_wK0_woSid_n_2");
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_45rot = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n_45rot");
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_45rot3 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n_45rot3");
   auto *cIMnpim_IMnpip_dE_wK0_woSid_n = new TCanvas("cIMnpim_IMnpip_dE_wK0_woSid_n","cIMnpim_IMnpip_dE_wK0_woSid_n",800,800);
@@ -213,10 +211,36 @@ void Fit2DK0()
   pyrot3->Draw("HE");
   hf2wide->ProjectionY()->Draw("HISTsame");
   
+  auto *IMnpim_IMnpip_dE_wK0_woSid_n_2 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
+  IMnpim_IMnpip_dE_wK0_woSid_n_2->SetName("IMnpim_IMnpip_dE_wK0_woSid_n_2");
   TCanvas *cinter = new TCanvas("cinter","cinter",800,800);
   cinter->Divide(2,2);
+  
+  for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n_2->GetNbinsX();ix++){
+    for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n_2->GetNbinsY();iy++){
+      double xcent = IMnpim_IMnpip_dE_wK0_woSid_n_2->GetXaxis()->GetBinCenter(ix);
+      double ycent = IMnpim_IMnpip_dE_wK0_woSid_n_2->GetYaxis()->GetBinCenter(iy);
+      if( (anacuts::Sigmap_MIN_wide < xcent && xcent < anacuts::Sigmap_MAX_wide)
+        ||(anacuts::Sigmam_MIN_wide < ycent && ycent < anacuts::Sigmam_MAX_wide)){
+        double xx = 1./sqrt(2.0)*(xcent-ycent);
+        double yy = 1./sqrt(2.0)*(xcent+ycent);
+        double yy2 = yy-(cosh(1.96*xx)-1.0);
+        double evalK0 = f2wide->Eval(xx,yy2);
+        double scale=0.2;
+        evalK0 *= scale;
+        if(yy2>1.645 && xcent < 1.7 && ycent<1.7)
+        IMnpim_IMnpip_dE_wK0_woSid_n_2->SetBinContent(ix,iy,evalK0);
+      }
+    }
+  }
+  IMnpim_IMnpip_dE_wK0_woSid_n_2->Rebin2D(4,4);
+  cinter->cd(3);
   IMnpim_IMnpip_dE_wK0_woSid_n_2->Draw("colz");
 
-   
+  cinter->cd(1);
+  IMnpim_IMnpip_dE_wK0_woSid_n_2->ProjectionX("pxinter")->Draw("EH");
+
+  cinter->cd(4);
+  IMnpim_IMnpip_dE_wK0_woSid_n_2->ProjectionY("pyinter")->Draw("EH");
 
 }
