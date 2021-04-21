@@ -22,32 +22,34 @@ void Fit2DK0()
 {
   TFile *fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi_sub.root","READ");
 
-  auto *IMnpim_IMnpip_dE_wK0_woSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
+  auto *IMnpim_IMnpip_dE_wK0_woSid_n_1 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
+  auto *IMnpim_IMnpip_dE_wK0_woSid_n_2 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
+  IMnpim_IMnpip_dE_wK0_woSid_n_2->SetName("IMnpim_IMnpip_dE_wK0_woSid_n_2");
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_45rot = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n_45rot");
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_45rot3 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n_45rot3");
   auto *cIMnpim_IMnpip_dE_wK0_woSid_n = new TCanvas("cIMnpim_IMnpip_dE_wK0_woSid_n","cIMnpim_IMnpip_dE_wK0_woSid_n",800,800);
+  
   cIMnpim_IMnpip_dE_wK0_woSid_n->Divide(2,2,0.,0.);
   cIMnpim_IMnpip_dE_wK0_woSid_n->cd(3);
-  
-  IMnpim_IMnpip_dE_wK0_woSid_n->RebinX(4);
-  IMnpim_IMnpip_dE_wK0_woSid_n->RebinY(4);
+  //IMnpim_IMnpip_dE_wK0_woSid_n_1->RebinX(4);
+  //IMnpim_IMnpip_dE_wK0_woSid_n_1->RebinY(4);
   //IMnpim_IMnpip_dE_wK0_woSid_n->GetXaxis()->SetRangeUser(1.0,1.8);
   //IMnpim_IMnpip_dE_wK0_woSid_n->GetYaxis()->SetRangeUser(1.0,1.8);
-  IMnpim_IMnpip_dE_wK0_woSid_n->SetMinimum(0);
-  IMnpim_IMnpip_dE_wK0_woSid_n->Draw("colz");
+  IMnpim_IMnpip_dE_wK0_woSid_n_1->SetMinimum(0);
+  IMnpim_IMnpip_dE_wK0_woSid_n_1->Draw("colz");
   
   cIMnpim_IMnpip_dE_wK0_woSid_n->cd(1);
-  TH1D *IMnpip_wK0_woSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n->ProjectionX("IMnpip_wK0_woSid_n");
+  TH1D *IMnpip_wK0_woSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->ProjectionX("IMnpip_wK0_woSid_n");
   IMnpip_wK0_woSid_n->Draw("HE");
   
   cIMnpim_IMnpip_dE_wK0_woSid_n->cd(4);
-  TH1D *IMnpim_wK0_woSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n->ProjectionY("IMnpim_wK0_woSid_n");
+  TH1D *IMnpim_wK0_woSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->ProjectionY("IMnpim_wK0_woSid_n");
   IMnpim_wK0_woSid_n->Draw("HE");
    
   auto *cIMnpim_IMnpip_dE_wK0_woSid_n2 = new TCanvas("cIMnpim_IMnpip_dE_wK0_woSid_n2","cIMnpim_IMnpip_dE_wK0_woSid_n2",800,800);
   cIMnpim_IMnpip_dE_wK0_woSid_n2->Divide(2,2,0.,0.);
   cIMnpim_IMnpip_dE_wK0_woSid_n2->cd(3);
-  TH2D* IMnpim_IMnpip_dE_wK0_woSid_n2 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n->Clone("IMnpim_IMnpip_dE_wK0_woSid_n2");
+  TH2D* IMnpim_IMnpip_dE_wK0_woSid_n2 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->Clone("IMnpim_IMnpip_dE_wK0_woSid_n2");
   IMnpim_IMnpip_dE_wK0_woSid_n2->Draw("colz");
   const int binSp = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->FindBin(anacuts::Sigmap_center);
   const int binSm = IMnpim_IMnpip_dE_wK0_woSid_n2->GetYaxis()->FindBin(anacuts::Sigmam_center);
@@ -119,6 +121,15 @@ void Fit2DK0()
   cfitcomp->Divide(2,2);
   cfitcomp->cd(3);
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2");
+  for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsX();ix++){
+    for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsY();iy++){
+      double cont = IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetBinContent(ix,iy);
+      if(cont<0.00001){
+        IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->SetBinContent(ix,iy,0);
+        IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->SetBinError(ix,iy,0);
+      }
+    }
+  }
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Draw("colz");
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetYaxis()->SetRangeUser(1.660,2.1);
   //hfit->Draw("colz");
@@ -133,19 +144,18 @@ void Fit2DK0()
       double cont = IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetBinContent(ix,iy);
       if(fabs(cont)<0.001){ 
         //IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->SetBinContent(ix,iy,0);
-        //IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->SetBinError(ix,iy,0);
       }
     }
   }
   //f2->SetRange(-0.5,0.5,1.660,2.1,4); 
-  f2->SetRange(-0.5,1.680,0.5,1.86); 
-  f2->SetParameters(4e9,0.005,0.16,-12.5);
-  f2->SetParLimits(0,3.9e9,4.5e9);
+  f2->SetRange(-0.4,1.666,0.4,1.85); 
+  f2->SetParameters(8.0e9,0.005,0.16,-11.2);
+  //f2->SetParLimits(0,3.9e9,4.5e9);
   //f2->SetParLimits(1,0.0,0.1);
-  f2->FixParameter(1,0.005);
-  f2->SetParLimits(2,0.15,0.2);
+  //f2->FixParameter(1,0.005);
+  //f2->SetParLimits(2,0.15,0.2);
   //f2->SetParLimits(3,-13,-12);
-  f2->FixParameter(3,-12.5);
+  //f2->FixParameter(3,-12.5);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Fit("f2","R","");
   f2->Draw("cont1 same");
   TF2 *f2wide = new TF2("f2wide",K0fit2d,-0.5,0.5,1.6,2.2,4);
@@ -154,6 +164,7 @@ void Fit2DK0()
   f2wide->SetParameters(param);
   f2wide->SetNpx(100);
   f2wide->SetNpy(60);
+  std::cout<<f2wide->GetExpFormula() << std::endl ;
   TH2D *hf2  =  (TH2D*)f2->GetHistogram();
   hf2->SetName("hf2");
   TH2D *hf2wide  =  (TH2D*)f2wide->GetHistogram();
@@ -162,7 +173,7 @@ void Fit2DK0()
   for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsX();ix++){
     for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsY();iy++){
       double cont = IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetBinContent(ix,iy);
-      if(fabs(cont)<0.00000001) hf2wide->SetBinContent(ix,iy,0);
+      if((cont)<0.00000001) hf2wide->SetBinContent(ix,iy,0);
       double xcen=  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetXaxis()->GetBinCenter(ix);
       double ycen=  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetYaxis()->GetBinCenter(iy);
 
@@ -202,9 +213,10 @@ void Fit2DK0()
   pyrot3->Draw("HE");
   hf2wide->ProjectionY()->Draw("HISTsame");
   
-  TCanvas *cfitnosub = new TCanvas("cfitnosub","cfitnosub",800,800);
-  cfitnosub->Divide(2,2);
-  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Draw("colz");
-  hf2wide_nosub->Draw("cont1 same"); 
+  TCanvas *cinter = new TCanvas("cinter","cinter",800,800);
+  cinter->Divide(2,2);
+  IMnpim_IMnpip_dE_wK0_woSid_n_2->Draw("colz");
+
+   
 
 }
