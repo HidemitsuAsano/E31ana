@@ -18,10 +18,18 @@ Double_t K0fit2d(Double_t *x, Double_t *par)
 }
 
 
-void Fit2DK0()
+void Fit2DK0(const int qcut=2)
 {
-  TFile *fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi_sub.root","READ");
-
+  
+  TFile *fr = NULL;
+  if(qcut==1){
+    TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo_sub.root","READ");
+  }else if(qcut==2){
+    TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi_sub.root","READ");
+  }else{
+    std::cout << no file << std::endl;
+    return;
+  }
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_1 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_45rot = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n_45rot");
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_45rot3 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n_45rot3");
@@ -214,7 +222,7 @@ void Fit2DK0()
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_2 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
   IMnpim_IMnpip_dE_wK0_woSid_n_2->SetName("IMnpim_IMnpip_dE_wK0_woSid_n_2");
   TCanvas *cinter = new TCanvas("cinter","cinter",800,800);
-  cinter->Divide(2,2);
+  cinter->Divide(2,2,0,0);
   
   for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n_2->GetNbinsX();ix++){
     for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n_2->GetNbinsY();iy++){
