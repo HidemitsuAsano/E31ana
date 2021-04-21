@@ -138,14 +138,15 @@ void Fit2DK0()
     }
   }
   //f2->SetRange(-0.5,0.5,1.660,2.1,4); 
-  f2->SetRange(-0.5,1.660,0.5,2.1); 
-  f2->SetParameters(22000000.0,0.005,0.14,-9.2);
-  f2->SetParLimits(0,2000000,4000000);
-  f2->SetParLimits(1,0.0,0.1);
-  f2->SetParLimits(2,0.1,0.2);
-  f2->SetParLimits(3,-10,-9.2);
-  f2->FixParameter(3,-9.2);
-  //IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Fit("f2","R","");
+  f2->SetRange(-0.5,1.680,0.5,1.86); 
+  f2->SetParameters(4e9,0.005,0.16,-12.5);
+  f2->SetParLimits(0,3.9e9,4.5e9);
+  //f2->SetParLimits(1,0.0,0.1);
+  f2->FixParameter(1,0.005);
+  f2->SetParLimits(2,0.15,0.2);
+  //f2->SetParLimits(3,-13,-12);
+  f2->FixParameter(3,-12.5);
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Fit("f2","R","");
   f2->Draw("cont1 same");
   TF2 *f2wide = new TF2("f2wide",K0fit2d,-0.5,0.5,1.6,2.2,4);
   Double_t param[4];
@@ -153,11 +154,22 @@ void Fit2DK0()
   f2wide->SetParameters(param);
   f2wide->SetNpx(100);
   f2wide->SetNpy(60);
-  TH2D *hf2  =  (TH2D*)f2wide->GetHistogram();
+  TH2D *hf2  =  (TH2D*)f2->GetHistogram();
+  hf2->SetName("hf2");
+  TH2D *hf2wide  =  (TH2D*)f2wide->GetHistogram();
+  hf2wide->SetName("hf2wide");
+  TH2D *hf2wide_nosub = (TH2D*)hf2wide->Clone("hf2wide_nosub");
   for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsX();ix++){
     for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsY();iy++){
       double cont = IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetBinContent(ix,iy);
-      if(fabs(cont)<0.001) hf2->SetBinContent(ix,iy,0);
+      if(fabs(cont)<0.00000001) hf2wide->SetBinContent(ix,iy,0);
+      double xcen=  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetXaxis()->GetBinCenter(ix);
+      double ycen=  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetYaxis()->GetBinCenter(iy);
+
+      if( (fabs(xcen)<0.02) && (ycen < 1.68)){
+         hf2wide->SetBinContent(ix,iy,0);
+         IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->SetBinContent(ix,iy,0);
+      }
     }
   }
 
@@ -174,18 +186,25 @@ void Fit2DK0()
   pyrot3->Draw("HE");
   hf2->ProjectionY()->Draw("HISTsame");
   
-  //subtract 
+  //subtract and plot wide fit
   TCanvas *cfitcompsub = new TCanvas("cfitcompsub","cfitcompsub",800,800);
   cfitcompsub->Divide(2,2);
   cfitcompsub->cd(3);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Draw("colz");
-  hf2->Draw("box same");
+  hf2wide->Draw("box same");
 
   cfitcompsub->cd(1);
   pxrot3->Draw("HE");
-  hf2->ProjectionX()->Draw("HISTsame");
+  hf2wide->SetFillColor(0);
+  hf2wide->ProjectionX()->Draw("HISTsame");
 
   cfitcompsub->cd(4);
   pyrot3->Draw("HE");
-  hf2->ProjectionY()->Draw("HISTsame");
+  hf2wide->ProjectionY()->Draw("HISTsame");
+  
+  TCanvas *cfitnosub = new TCanvas("cfitnosub","cfitnosub",800,800);
+  cfitnosub->Divide(2,2);
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Draw("colz");
+  hf2wide_nosub->Draw("cont1 same"); 
+
 }
