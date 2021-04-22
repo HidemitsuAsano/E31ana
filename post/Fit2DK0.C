@@ -264,7 +264,7 @@ void Fit2DK0(const int qcut=2)
 
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
   auto *cwK0orwSid_n = new TCanvas("cwK0orwSid_n","cwK0orwSid_n",1600,800);
-  cwK0orwSid_n->Divide(2,2);
+  cwK0orwSid_n->Divide(2,1);
   cwK0orwSid_n->cd(1);
   IMnpim_IMnpip_dE_wK0orwSid_n->Rebin2D(2,2);
   IMnpim_IMnpip_dE_wK0orwSid_n->Draw("colz");
@@ -277,13 +277,15 @@ void Fit2DK0(const int qcut=2)
   IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Draw("colz");
   
 
-  cwK0orwSid_n->cd(3);
+  auto *cwK0orwSid_n_pro = new TCanvas("cwK0orwSid_n_pro","cwK0orwSid_n_pro",1600,800);
+  cwK0orwSid_n_pro->Divide(2,1);
+  cwK0orwSid_n_pro->cd(1);
   TH1D* IMnpip_wK0orwSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n->ProjectionX("IMnpip_wK0orwSid_n");
   IMnpip_wK0orwSid_n->Draw("HE");
   pxinter->SetLineColor(2);
   pxinter->Draw("HEsame");
 
-  cwK0orwSid_n->cd(4);
+  cwK0orwSid_n_pro->cd(2);
   TH1D* IMnpim_wK0orwSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n->ProjectionY("IMnpim_wK0orwSid_n");
   IMnpim_wK0orwSid_n->Draw("HE");
   pyinter->SetLineColor(2);
