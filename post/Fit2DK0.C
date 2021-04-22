@@ -244,8 +244,8 @@ void Fit2DK0(const int qcut=2)
       }
     }
   }
-  IMnpim_IMnpip_dE_wK0_woSid_n_2->Rebin2D(4,4);
-  h2K0inter->Rebin2D(4,4);
+  IMnpim_IMnpip_dE_wK0_woSid_n_2->Rebin2D(2,2);
+  h2K0inter->Rebin2D(2,2);
   cinter->cd(3);
   IMnpim_IMnpip_dE_wK0_woSid_n_2->Draw("colz");
 
@@ -259,4 +259,19 @@ void Fit2DK0(const int qcut=2)
   TH1D* K0interpy = (TH1D*)h2K0inter->ProjectionY("K0interpy");
   K0interpy->SetFillColor(2);
   K0interpy->Draw("HISTsame");
+
+  TH2F* IMnpim_IMnpip_dE_wK0orwSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
+  auto *cwK0orwSid_n = new TCanvas("cwK0orwSid_n","cwK0orwSid_n",1600,800);
+  cwK0orwSid_n->Divide(2,1);
+  cwK0orwSid_n->cd(1);
+  IMnpim_IMnpip_dE_wK0orwSid_n->Rebin2D(2,2);
+  IMnpim_IMnpip_dE_wK0orwSid_n->Draw("colz");
+  
+  cwK0orwSid_n->cd(2);
+  TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_K0sub = (TH2F*)IMnpim_IMnpip_dE_wK0orwSid_n->Clone("IMnpim_IMnpip_dE_wK0orwSid_n_K0sub");
+  IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Add(IMnpim_IMnpip_dE_wK0_woSid_n_2,-1.0);
+  IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->SetMaximum(IMnpim_IMnpip_dE_wK0orwSid_n->GetMaximum());
+  IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->SetMinimum(0);
+  IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Draw("colz");
+
 }
