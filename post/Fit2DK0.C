@@ -23,11 +23,11 @@ void Fit2DK0(const int qcut=2)
   
   TFile *fr = NULL;
   if(qcut==1){
-    TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo_sub.root","READ");
+    fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo_sub.root","READ");
   }else if(qcut==2){
-    TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi_sub.root","READ");
+    fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi_sub.root","READ");
   }else{
-    std::cout << no file << std::endl;
+    std::cout << "no file" << std::endl;
     return;
   }
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_1 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
@@ -223,7 +223,8 @@ void Fit2DK0(const int qcut=2)
   IMnpim_IMnpip_dE_wK0_woSid_n_2->SetName("IMnpim_IMnpip_dE_wK0_woSid_n_2");
   TCanvas *cinter = new TCanvas("cinter","cinter",800,800);
   cinter->Divide(2,2,0,0);
-  
+  TH2D* h2K0inter = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_2->Clone("h2K0inter");
+  h2K0inter->Reset();
   for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n_2->GetNbinsX();ix++){
     for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n_2->GetNbinsY();iy++){
       double xcent = IMnpim_IMnpip_dE_wK0_woSid_n_2->GetXaxis()->GetBinCenter(ix);
@@ -236,19 +237,26 @@ void Fit2DK0(const int qcut=2)
         double evalK0 = f2wide->Eval(xx,yy2);
         double scale=0.2;
         evalK0 *= scale;
-        if(yy2>1.645 && xcent < 1.7 && ycent<1.7)
-        IMnpim_IMnpip_dE_wK0_woSid_n_2->SetBinContent(ix,iy,evalK0);
+        if(yy2>1.645 && xcent < 1.7 && ycent<1.7){
+          IMnpim_IMnpip_dE_wK0_woSid_n_2->SetBinContent(ix,iy,evalK0);
+          h2K0inter->SetBinContent(ix,iy,evalK0);
+        }
       }
     }
   }
   IMnpim_IMnpip_dE_wK0_woSid_n_2->Rebin2D(4,4);
+  h2K0inter->Rebin2D(4,4);
   cinter->cd(3);
   IMnpim_IMnpip_dE_wK0_woSid_n_2->Draw("colz");
 
   cinter->cd(1);
   IMnpim_IMnpip_dE_wK0_woSid_n_2->ProjectionX("pxinter")->Draw("EH");
-
+  TH1D* K0interpx = (TH1D*)h2K0inter->ProjectionX("K0interpx");
+  K0interpx->SetFillColor(2);
+  K0interpx->Draw("HISTsame");
   cinter->cd(4);
   IMnpim_IMnpip_dE_wK0_woSid_n_2->ProjectionY("pyinter")->Draw("EH");
-
+  TH1D* K0interpy = (TH1D*)h2K0inter->ProjectionY("K0interpy");
+  K0interpy->SetFillColor(2);
+  K0interpy->Draw("HISTsame");
 }
