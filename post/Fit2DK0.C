@@ -293,8 +293,14 @@ void Fit2DK0(const int qcut=2)
   
   auto *cwSid_n_K0sub = new TCanvas("cwSid_n_K0sub","cwK0orwSid_n",800,800);
   cwSid_n_K0sub->Divide(2,2);
-  //cwSid_n_K0sub->
+  cwSid_n_K0sub->cd(3);
+  IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Draw("colz");
 
+  cwSid_n_K0sub->cd(1);
+  TH1D* IMnpip_K0sub = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionX("IMnpip_K0sub");
+  IMnpip_K0sub->Draw("HE");
 
-
+  cwSid_n_K0sub->cd(4);
+  TH1D* IMnpim_K0sub = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionY("IMnpim_K0sub");
+  IMnpim_K0sub->Draw("HE");
 }
