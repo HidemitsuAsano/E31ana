@@ -250,19 +250,21 @@ void Fit2DK0(const int qcut=2)
   IMnpim_IMnpip_dE_wK0_woSid_n_2->Draw("colz");
 
   cinter->cd(1);
-  IMnpim_IMnpip_dE_wK0_woSid_n_2->ProjectionX("pxinter")->Draw("EH");
+  TH1D* pxinter= (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_2->ProjectionX("pxinter");
+  pxinter->Draw("EH");
   TH1D* K0interpx = (TH1D*)h2K0inter->ProjectionX("K0interpx");
   K0interpx->SetFillColor(2);
   K0interpx->Draw("HISTsame");
   cinter->cd(4);
-  IMnpim_IMnpip_dE_wK0_woSid_n_2->ProjectionY("pyinter")->Draw("EH");
+  TH1D* pyinter= (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_2->ProjectionY("pyinter");
+  pyinter->Draw("EH");
   TH1D* K0interpy = (TH1D*)h2K0inter->ProjectionY("K0interpy");
   K0interpy->SetFillColor(2);
   K0interpy->Draw("HISTsame");
 
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
   auto *cwK0orwSid_n = new TCanvas("cwK0orwSid_n","cwK0orwSid_n",1600,800);
-  cwK0orwSid_n->Divide(2,1);
+  cwK0orwSid_n->Divide(2,2);
   cwK0orwSid_n->cd(1);
   IMnpim_IMnpip_dE_wK0orwSid_n->Rebin2D(2,2);
   IMnpim_IMnpip_dE_wK0orwSid_n->Draw("colz");
@@ -273,5 +275,24 @@ void Fit2DK0(const int qcut=2)
   IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->SetMaximum(IMnpim_IMnpip_dE_wK0orwSid_n->GetMaximum());
   IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->SetMinimum(0);
   IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Draw("colz");
+  
+
+  cwK0orwSid_n->cd(3);
+  TH1D* IMnpip_wK0orwSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n->ProjectionX("IMnpip_wK0orwSid_n");
+  IMnpip_wK0orwSid_n->Draw("HE");
+  pxinter->SetLineColor(2);
+  pxinter->Draw("HEsame");
+
+  cwK0orwSid_n->cd(4);
+  TH1D* IMnpim_wK0orwSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n->ProjectionY("IMnpim_wK0orwSid_n");
+  IMnpim_wK0orwSid_n->Draw("HE");
+  pyinter->SetLineColor(2);
+  pyinter->Draw("HEsame");
+  
+  auto *cwSid_n_K0sub = new TCanvas("cwSid_n_K0sub","cwK0orwSid_n",800,800);
+  cwSid_n_K0sub->Divide(2,2);
+  //cwSid_n_K0sub->
+
+
 
 }
