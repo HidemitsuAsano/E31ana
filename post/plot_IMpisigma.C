@@ -389,6 +389,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n;
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_bin[nbintemplate];
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_wbin[nwbin];
+  TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_woSp;
+  TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_woSm;
   TH2F* IMnpim_IMnpip_dE_wSid_n_Sp;
   TH2F* IMnpim_IMnpip_dE_wSid_n_Sp_bin[nbintemplate];
   TH2F* IMnpim_IMnpip_dE_wSid_n_Sp_wbin[nwbin];
@@ -1391,6 +1393,18 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     IMnpim_IMnpip_dE_wK0orwSid_n_wbin[iwbin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
     IMnpim_IMnpip_dE_wK0orwSid_n_wbin[iwbin]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   }
+  
+  IMnpim_IMnpip_dE_wK0orwSid_n_woSp = new TH2F("IMnpim_IMnpip_dE_wK0orwSid_n_woSp", "IMnpim_IMnpip_dE_wK0orwSid_n_woSp",
+                                 nbinIMnpip_bin, nbinIMnpip_low, nbinIMnpip_high, nbinIMnpim_bin, nbinIMnpim_low, nbinIMnpim_high);
+                               //nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  IMnpim_IMnpip_dE_wK0orwSid_n_woSp->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpim_IMnpip_dE_wK0orwSid_n_woSp->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  
+  IMnpim_IMnpip_dE_wK0orwSid_n_woSm = new TH2F("IMnpim_IMnpip_dE_wK0orwSid_n_woSm", "IMnpim_IMnpip_dE_wK0orwSid_n_woSm",
+                                 nbinIMnpip_bin, nbinIMnpip_low, nbinIMnpip_high, nbinIMnpim_bin, nbinIMnpim_low, nbinIMnpim_high);
+                              //nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  IMnpim_IMnpip_dE_wK0orwSid_n_woSm->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpim_IMnpip_dE_wK0orwSid_n_woSm->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   
   IMnpim_IMnpip_dE_wSid_n_Sp = new TH2F("IMnpim_IMnpip_dE_wSid_n_Sp", "IMnpim_IMnpip_dE_wSid_n_Sp",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wSid_n_Sp->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
@@ -5599,6 +5613,13 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           IMnpim_IMnpip_dE_wK0orwSid_n_bin[binnum]->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
           IMnpim_IMnpip_dE_wK0orwSid_n_wbin[wbinnum]->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
           q_IMnpipi_wK0orwSid_n->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+          if(!SigmawidePFlag){
+            IMnpim_IMnpip_dE_wK0orwSid_n_woSp->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
+          }
+          if(!SigmawideMFlag){
+            IMnpim_IMnpip_dE_wK0orwSid_n_woSm->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
+          }
+
           if(!SigmaMcutFlag[sigmacuttype]) {
             IMpippim_IMnpip_wK0orwSid_n_woSmdia->Fill(LVec_pip_n.M(),LVec_pip_pim.M(),weight);
             //IMpippim_IMnpip_wK0orwSid_n_woSmdia_bin[binnum]->Fill(LVec_pip_n.M(),LVec_pip_pim.M(),weight);
