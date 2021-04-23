@@ -290,7 +290,9 @@ void Fit2DK0(const int qcut=2)
   IMnpim_wK0orwSid_n->Draw("HE");
   pyinter->SetLineColor(2);
   pyinter->Draw("HEsame");
-  
+   
+
+  //K0 subtracted events
   auto *cwSid_n_K0sub = new TCanvas("cwSid_n_K0sub","cwK0orwSid_n",800,800);
   cwSid_n_K0sub->Divide(2,2);
   cwSid_n_K0sub->cd(3);
