@@ -299,10 +299,80 @@ void Fit2DK0(const int qcut=2)
   IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Draw("colz");
 
   cwSid_n_K0sub->cd(1);
-  TH1D* IMnpip_K0sub = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionX("IMnpip_K0sub");
+  const int SmbinStart = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->FindBin(anacuts::Sigmam_MIN);
+  const int SmbinEnd = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->FindBin(anacuts::Sigmam_MAX);
+  TH1D* IMnpip_K0sub = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionX("IMnpip_K0sub",SmbinStart,SmbinEnd);
   IMnpip_K0sub->Draw("HE");
 
   cwSid_n_K0sub->cd(4);
-  TH1D* IMnpim_K0sub = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionY("IMnpim_K0sub");
+  const int SpbinStart = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetXaxis()->FindBin(anacuts::Sigmap_MIN);
+  const int SpbinEnd = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetXaxis()->FindBin(anacuts::Sigmap_MAX);
+  TH1D* IMnpim_K0sub = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionY("IMnpim_K0sub",SpbinStart,SpbinEnd);
   IMnpim_K0sub->Draw("HE");
+
+  //remove signal each other and apply interpolation in crossing region
+  TH1D* IMnpip_K0sub_woSp = (TH1D*)IMnpip_K0sub->Clone("IMnpip_K0sub_woSp");
+  TH1D* IMnpim_K0sub_woSm = (TH1D*)IMnpim_K0sub->Clone("IMnpim_K0sub_woSm");
+   
+  for(int ibin=0;ibin<IMnpip_K0sub_woSp->GetNbinsX();ibin++){
+    double bincen = IMnpip_K0sub_woSp->GetBinCenter(ibin);
+    if(anacuts::Sigmap_MIN_wide < bincen && bincen < anacuts::Sigmap_MAX_wide){
+       IMnpip_K0sub_woSp->SetBinContent(ibin,0);
+       IMnpip_K0sub_woSp->SetBinError(ibin,0);
+       std::cout << "Sp" << std::endl;
+    }
+  }
+
+  for(int ibin=0;ibin<IMnpim_K0sub_woSm->GetNbinsX();ibin++){
+    double bincen = IMnpim_K0sub_woSm->GetBinCenter(ibin);
+    if(anacuts::Sigmam_MIN_wide < bincen && bincen < anacuts::Sigmam_MAX_wide){
+       IMnpim_K0sub_woSm->SetBinContent(ibin,0);
+       IMnpim_K0sub_woSm->SetBinError(ibin,0);
+       std::cout << "Sm" << std::endl;
+    }
+  }
+
+
+  auto *cwSid_n_K0sub_wo = new TCanvas("cwSid_n_K0sub_wo","cwK0orwSid_n_K0sub_wo",1600,800);
+  cwSid_n_K0sub_wo->Divide(2,1);
+  cwSid_n_K0sub_wo->cd(1);
+  IMnpip_K0sub_woSp->Draw("HE");
+  //IMnpip_K0sub_woSp->Rebin(2);
+  TGraphErrors *gIMnpip_K0sub_woSp = new TGraphErrors(IMnpip_K0sub_woSp);
+  //gIMnpip_K0sub_woSp->Draw("c");
+  gIMnpip_K0sub_woSp->Print("all");
+  //gIMnpip_K0sub_woSp->RemovePoint(6);
+  gIMnpip_K0sub_woSp->RemovePoint(11);
+  gIMnpip_K0sub_woSp->RemovePoint(11);
+  gIMnpip_K0sub_woSp->RemovePoint(11);
+  TSpline3 *sIMnpip_K0sub_woSp = new TSpline3("snpip",gIMnpip_K0sub_woSp);
+  TSpline5 *s5IMnpip_K0sub_woSp = new TSpline5("s5npip",gIMnpip_K0sub_woSp);
+  
+  sIMnpip_K0sub_woSp->SetLineColor(3);
+  sIMnpip_K0sub_woSp->SetLineWidth(3);
+  sIMnpip_K0sub_woSp->Draw("same");
+
+  cwSid_n_K0sub_wo->cd(2);
+  //IMnpim_K0sub_woSm->Rebin(2);
+  IMnpim_K0sub_woSm->Draw("HE");
+  TGraphErrors *gIMnpim_K0sub_woSm = new TGraphErrors(IMnpim_K0sub_woSm);
+  gIMnpim_K0sub_woSm->RemovePoint(13);
+  gIMnpim_K0sub_woSm->RemovePoint(13);
+  gIMnpim_K0sub_woSm->RemovePoint(13);
+  //gIMnpim_K0sub_woSm->Draw("c");
+  //gIMnpip_K0sub_woSp->Print("all");
+  TSpline3 *sIMnpim_K0sub_woSm = new TSpline3("sppim",gIMnpim_K0sub_woSm);
+  TSpline5 *s5IMnpim_K0sub_woSm = new TSpline5("s5ppim",gIMnpim_K0sub_woSm);
+  
+  sIMnpim_K0sub_woSm->SetLineColor(3);
+  sIMnpim_K0sub_woSm->SetLineWidth(3);
+  sIMnpim_K0sub_woSm->Draw("same");
+
+
+  cwSid_n_K0sub->cd(1);
+  //sIMnpip_K0sub_woSp->Scale(0.5);
+  sIMnpip_K0sub_woSp->Draw("same");
+
+  cwSid_n_K0sub->cd(4);
+  sIMnpim_K0sub_woSm->Draw("same");
 }
