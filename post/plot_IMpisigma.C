@@ -1350,7 +1350,17 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   
-  IMnpim_IMnpip_dE_wSid_n = new TH2F("IMnpim_IMnpip_dE_wSid_n", "IMnpim_IMnpip_dE_wSid_n",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  const int nbinIMnpim_bin = 120;
+  const double nbinIMnpim_low = anacuts::Sigmam_center - 30.0*anacuts::Sigmam_sigma;
+  //const double nbinIMnpim_low = anacuts::Sigmam_center - 30.0*anacuts::Sigmam_sigma;
+  const double nbinIMnpim_high = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
+  //const double nbinIMnpim_high = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
+  const int nbinIMnpip_bin = 120;
+  const double nbinIMnpip_low = anacuts::Sigmap_center - 26.0*anacuts::Sigmap_sigma;
+  const double nbinIMnpip_high = anacuts::Sigmap_center + 94.0*anacuts::Sigmap_sigma;
+  IMnpim_IMnpip_dE_wSid_n = new TH2F("IMnpim_IMnpip_dE_wSid_n", "IMnpim_IMnpip_dE_wSid_n",
+      nbinIMnpip_bin, nbinIMnpip_low, nbinIMnpip_high, nbinIMnpim_bin, nbinIMnpim_low, nbinIMnpim_high);
+      //,nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wSid_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wSid_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   
@@ -1364,14 +1374,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     IMnpim_IMnpip_dE_wSid_n_bin[ibin]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   }*/
   
-  const int nbinIMnpim_bin = 120;
-  const double nbinIMnpim_low = anacuts::Sigmam_center - 29.0*anacuts::Sigmam_sigma;
-  //const double nbinIMnpim_low = anacuts::Sigmam_center - 30.0*anacuts::Sigmam_sigma;
-  const double nbinIMnpim_high = anacuts::Sigmam_center + 91.0*anacuts::Sigmam_sigma;
-  //const double nbinIMnpim_high = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
-  const int nbinIMnpip_bin = 120;
-  const double nbinIMnpip_low = anacuts::Sigmap_center - 25.0*anacuts::Sigmap_sigma;
-  const double nbinIMnpip_high = anacuts::Sigmap_center + 95.0*anacuts::Sigmap_sigma;
   IMnpim_IMnpip_dE_wK0orwSid_n = new TH2F("IMnpim_IMnpip_dE_wK0orwSid_n", "IMnpim_IMnpip_dE_wK0orwSid_n",
                                  nbinIMnpip_bin, nbinIMnpip_low, nbinIMnpip_high, nbinIMnpim_bin, nbinIMnpim_low, nbinIMnpim_high);
                               //nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
