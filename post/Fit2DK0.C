@@ -244,8 +244,8 @@ void Fit2DK0(const int qcut=2)
       }
     }
   }
-  IMnpim_IMnpip_dE_wK0_woSid_n_2->Rebin2D(2,2);
-  h2K0inter->Rebin2D(2,2);
+  IMnpim_IMnpip_dE_wK0_woSid_n_2->Rebin2D(4,4);
+  h2K0inter->Rebin2D(4,4);
   cinter->cd(3);
   IMnpim_IMnpip_dE_wK0_woSid_n_2->Draw("colz");
 
@@ -263,11 +263,14 @@ void Fit2DK0(const int qcut=2)
   K0interpy->Draw("HISTsame");
 
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
+  //TH2F* IMnpim_IMnpip_dE_wSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wSid_n");
   auto *cwK0orwSid_n = new TCanvas("cwK0orwSid_n","cwK0orwSid_n",1600,800);
   cwK0orwSid_n->Divide(2,1);
   cwK0orwSid_n->cd(1);
-  IMnpim_IMnpip_dE_wK0orwSid_n->Rebin2D(2,2);
+  IMnpim_IMnpip_dE_wK0orwSid_n->Rebin2D(4,4);
   IMnpim_IMnpip_dE_wK0orwSid_n->Draw("colz");
+  //IMnpim_IMnpip_dE_wSid_n->Rebin2D(4,4);
+  //IMnpim_IMnpip_dE_wSid_n->Draw("colz");
   
   cwK0orwSid_n->cd(2);
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_K0sub = (TH2F*)IMnpim_IMnpip_dE_wK0orwSid_n->Clone("IMnpim_IMnpip_dE_wK0orwSid_n_K0sub");
@@ -300,20 +303,45 @@ void Fit2DK0(const int qcut=2)
 
   cwSid_n_K0sub->cd(1);
   const int SmbinStart = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->FindBin(anacuts::Sigmam_MIN);
+  std::cout << "SmbinStart low Edge " << IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->GetBinLowEdge(SmbinStart) << std::endl;
+  std::cout << "Sigmam_MIN " << anacuts::Sigmam_MIN << std::endl;
+  std::cout << "Smbin width " << IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->GetBinWidth(SmbinStart) << std::endl;
+  std::cout << "Sigmam_sigma " << anacuts::Sigmam_sigma << std::endl;
   const int SmbinEnd = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->FindBin(anacuts::Sigmam_MAX);
+  std::cout << "SmbinEnd low Edge " << IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->GetBinLowEdge(SmbinEnd) << std::endl;
+  std::cout << "SmbinEnd low Edge+1 " << IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->GetBinLowEdge(SmbinEnd+1) << std::endl;
+  std::cout << "Sigmam_MAX " << anacuts::Sigmam_MAX << std::endl;
+  const int Smbin = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->FindBin(anacuts::Sigmam_center);
   TH1D* IMnpip_K0sub = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionX("IMnpip_K0sub",SmbinStart,SmbinEnd);
   IMnpip_K0sub->Draw("HE");
 
   cwSid_n_K0sub->cd(4);
   const int SpbinStart = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetXaxis()->FindBin(anacuts::Sigmap_MIN);
+  std::cout << "SpbinStart low Edge " << IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetXaxis()->GetBinLowEdge(SpbinStart) << std::endl;
+  std::cout << "Sigmap_MIN " << anacuts::Sigmap_MIN << std::endl;
   const int SpbinEnd = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetXaxis()->FindBin(anacuts::Sigmap_MAX);
+  std::cout << "SpbinEnd low Edge " << IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetXaxis()->GetBinLowEdge(SpbinEnd) << std::endl;
+  std::cout << "SpbinEnd low Edge+1 " << IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetXaxis()->GetBinLowEdge(SpbinEnd+1) << std::endl;
+  std::cout << "Sigmap_MAX " << anacuts::Sigmap_MAX << std::endl;
+  const int Spbin = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetXaxis()->FindBin(anacuts::Sigmap_center);
   TH1D* IMnpim_K0sub = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionY("IMnpim_K0sub",SpbinStart,SpbinEnd);
   IMnpim_K0sub->Draw("HE");
 
   //remove signal each other and apply interpolation in crossing region
   TH1D* IMnpip_K0sub_woSp = (TH1D*)IMnpip_K0sub->Clone("IMnpip_K0sub_woSp");
   TH1D* IMnpim_K0sub_woSm = (TH1D*)IMnpim_K0sub->Clone("IMnpim_K0sub_woSm");
-   
+  
+  for(int ibin=SpbinStart;ibin<=SpbinEnd;ibin++){
+    IMnpip_K0sub_woSp->SetBinContent(ibin,0);
+    IMnpip_K0sub_woSp->SetBinError(ibin,0);
+  }
+
+  for(int ibin=SmbinStart;ibin<=SmbinEnd;ibin++){
+    IMnpim_K0sub_woSm->SetBinContent(ibin,0);
+    IMnpim_K0sub_woSm->SetBinError(ibin,0);
+  }
+
+  /*
   for(int ibin=0;ibin<IMnpip_K0sub_woSp->GetNbinsX();ibin++){
     double bincen = IMnpip_K0sub_woSp->GetBinCenter(ibin);
     if(anacuts::Sigmap_MIN_wide < bincen && bincen < anacuts::Sigmap_MAX_wide){
@@ -322,6 +350,7 @@ void Fit2DK0(const int qcut=2)
        std::cout << "Sp" << std::endl;
     }
   }
+  
 
   for(int ibin=0;ibin<IMnpim_K0sub_woSm->GetNbinsX();ibin++){
     double bincen = IMnpim_K0sub_woSm->GetBinCenter(ibin);
@@ -330,7 +359,7 @@ void Fit2DK0(const int qcut=2)
        IMnpim_K0sub_woSm->SetBinError(ibin,0);
        std::cout << "Sm" << std::endl;
     }
-  }
+  }*/
 
 
   auto *cwSid_n_K0sub_wo = new TCanvas("cwSid_n_K0sub_wo","cwK0orwSid_n_K0sub_wo",1600,800);
@@ -341,10 +370,8 @@ void Fit2DK0(const int qcut=2)
   TGraphErrors *gIMnpip_K0sub_woSp = new TGraphErrors(IMnpip_K0sub_woSp);
   //gIMnpip_K0sub_woSp->Draw("c");
   gIMnpip_K0sub_woSp->Print("all");
-  //gIMnpip_K0sub_woSp->RemovePoint(6);
-  gIMnpip_K0sub_woSp->RemovePoint(11);
-  gIMnpip_K0sub_woSp->RemovePoint(11);
-  gIMnpip_K0sub_woSp->RemovePoint(11);
+  gIMnpip_K0sub_woSp->RemovePoint(6);
+ // gIMnpip_K0sub_woSp->RemovePoint(12);
   TSpline3 *sIMnpip_K0sub_woSp = new TSpline3("snpip",gIMnpip_K0sub_woSp);
   TSpline5 *s5IMnpip_K0sub_woSp = new TSpline5("s5npip",gIMnpip_K0sub_woSp);
   
@@ -356,11 +383,10 @@ void Fit2DK0(const int qcut=2)
   //IMnpim_K0sub_woSm->Rebin(2);
   IMnpim_K0sub_woSm->Draw("HE");
   TGraphErrors *gIMnpim_K0sub_woSm = new TGraphErrors(IMnpim_K0sub_woSm);
-  gIMnpim_K0sub_woSm->RemovePoint(13);
-  gIMnpim_K0sub_woSm->RemovePoint(13);
-  gIMnpim_K0sub_woSm->RemovePoint(13);
+  gIMnpip_K0sub_woSp->Print("all");
+  gIMnpim_K0sub_woSm->RemovePoint(7);
+ // gIMnpim_K0sub_woSm->RemovePoint(6);
   //gIMnpim_K0sub_woSm->Draw("c");
-  //gIMnpip_K0sub_woSp->Print("all");
   TSpline3 *sIMnpim_K0sub_woSm = new TSpline3("sppim",gIMnpim_K0sub_woSm);
   TSpline5 *s5IMnpim_K0sub_woSm = new TSpline5("s5ppim",gIMnpim_K0sub_woSm);
   
