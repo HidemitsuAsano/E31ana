@@ -157,13 +157,14 @@ void Fit2DK0(const int qcut=2)
   }
   //f2->SetRange(-0.5,0.5,1.660,2.1,4); 
   //f2->SetRange(-0.4,1.666,0.4,1.85); 
-  f2->SetRange(-0.3,1.685,0.3,1.85); 
+  f2->SetRange(-0.3,1.685,0.3,1.80); 
   f2->SetParameters(8.0e9,0.005,0.16,-15.2);
-  //f2->SetParLimits(0,3.9e9,4.5e9);
+  //f2->SetParLimits(0,0,4.5e18);
   //f2->SetParLimits(1,0.0,0.1);
   //f2->FixParameter(1,0.005);
   //f2->SetParLimits(2,0.15,0.2);
-  //f2->SetParLimits(3,-13,-10);
+  //f2->SetParameter(3,0.5);
+  //f2->SetParLimits(3,1.66,1.70);
   //f2->FixParameter(3,-12.5);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Fit("f2","R","");
   f2->Draw("cont1 same");
