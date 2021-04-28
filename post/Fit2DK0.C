@@ -8,6 +8,7 @@
 //2-dimensional fit
 //x gaus
 //y expo x gaus convoluted fit
+const int nparfit=4;
 Double_t K0fit2d(Double_t *x, Double_t *par)
 {
   Double_t r1 = (x[0]-par[1])/par[2];
@@ -15,7 +16,7 @@ Double_t K0fit2d(Double_t *x, Double_t *par)
   Double_t r2 = (x[1]*par[3]);
   //Double_t r2 = (x[1]-par[3])/par[4];
 
-  return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(r2);
+  return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2);
   //return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-0.5*r2*r2);
 }
 
@@ -39,6 +40,7 @@ void Fit2DK0(const int qcut=2)
   
   cIMnpim_IMnpip_dE_wK0_woSid_n->Divide(2,2,0.,0.);
   cIMnpim_IMnpip_dE_wK0_woSid_n->cd(3);
+  //IMnpim_IMnpip_dE_wK0_woSid_n_1->Rebin2D(4,4);
   //IMnpim_IMnpip_dE_wK0_woSid_n_1->RebinX(4);
   //IMnpim_IMnpip_dE_wK0_woSid_n_1->RebinY(4);
   //IMnpim_IMnpip_dE_wK0_woSid_n->GetXaxis()->SetRangeUser(1.0,1.8);
@@ -140,8 +142,7 @@ void Fit2DK0(const int qcut=2)
   }
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Draw("colz");
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetYaxis()->SetRangeUser(1.660,2.1);
-  //hfit->Draw("colz");
-  TF2 *f2 = new TF2("f2",K0fit2d,-0.5,0.5,1.6,2.2,4);
+  TF2 *f2 = new TF2("f2",K0fit2d,-0.5,0.5,1.6,2.2,nparfit);
   //par0 : scaling factor
   //par1 : x,gaus mean
   //par2 : x,gaus sigma
@@ -157,19 +158,21 @@ void Fit2DK0(const int qcut=2)
   }
   //f2->SetRange(-0.5,0.5,1.660,2.1,4); 
   //f2->SetRange(-0.4,1.666,0.4,1.85); 
-  f2->SetRange(-0.3,1.685,0.3,1.80); 
-  f2->SetParameters(8.0e9,0.005,0.16,-15.2);
-  //f2->SetParLimits(0,0,4.5e18);
-  //f2->SetParLimits(1,0.0,0.1);
+  f2->SetRange(-0.4,1.666,0.4,1.85); 
+  //f2->SetParameters(8.0e9,0.005,0.16,-15.2);
+  f2->SetParameters(2.0e5,0.005,0.16,1.9);
+  f2->SetParLimits(0,0,4.5e10);
+  f2->FixParameter(0,2.0e5);
+  f2->SetParLimits(1,0.0,0.1);
   //f2->FixParameter(1,0.005);
-  //f2->SetParLimits(2,0.15,0.2);
+  f2->SetParLimits(2,0.15,0.2);
   //f2->SetParameter(3,0.5);
-  //f2->SetParLimits(3,1.66,1.70);
-  //f2->FixParameter(3,-12.5);
+  //f2->SetParLimits(3,1.66,3.00);
+  f2->FixParameter(3,1.9);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Fit("f2","R","");
   f2->Draw("cont1 same");
-  TF2 *f2wide = new TF2("f2wide",K0fit2d,-0.5,0.5,1.6,2.2,4);
-  Double_t param[5];
+  TF2 *f2wide = new TF2("f2wide",K0fit2d,-0.5,0.5,1.6,2.2,nparfit);
+  Double_t param[nparfit];
   f2->GetParameters(param);
   f2wide->SetParameters(param);
   f2wide->SetNpx(100);
@@ -223,7 +226,7 @@ void Fit2DK0(const int qcut=2)
   pyrot3->Draw("HE");
   hf2wide->ProjectionY()->Draw("HISTsame");
   
-  auto *IMnpim_IMnpip_dE_wK0_woSid_n_2 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
+  auto *IMnpim_IMnpip_dE_wK0_woSid_n_2 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_2");
   IMnpim_IMnpip_dE_wK0_woSid_n_2->SetName("IMnpim_IMnpip_dE_wK0_woSid_n_2");
   TCanvas *cinter = new TCanvas("cinter","cinter",800,800);
   cinter->Divide(2,2);
@@ -233,17 +236,20 @@ void Fit2DK0(const int qcut=2)
     for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n_2->GetNbinsY();iy++){
       double xcent = IMnpim_IMnpip_dE_wK0_woSid_n_2->GetXaxis()->GetBinCenter(ix);
       double ycent = IMnpim_IMnpip_dE_wK0_woSid_n_2->GetYaxis()->GetBinCenter(iy);
-      if( (anacuts::Sigmap_MIN_wide < xcent && xcent < anacuts::Sigmap_MAX_wide)
-        ||(anacuts::Sigmam_MIN_wide < ycent && ycent < anacuts::Sigmam_MAX_wide)){
-        double xx = 1./sqrt(2.0)*(xcent-ycent);
-        double yy = 1./sqrt(2.0)*(xcent+ycent);
-        double yy2 = yy-(cosh(1.96*xx)-1.0);
-        double evalK0 = f2wide->Eval(xx,yy2);
-        double scale=0.20;
-        evalK0 *= scale;
-        if(yy2>1.645 && xcent < 1.7 && ycent<1.7){
-          IMnpim_IMnpip_dE_wK0_woSid_n_2->SetBinContent(ix,iy,evalK0);
-          h2K0inter->SetBinContent(ix,iy,evalK0);
+      double cont  = IMnpim_IMnpip_dE_wK0_woSid_n_2->GetBinContent(ix,iy);
+      if(cont < 0.0001){
+        if( (anacuts::Sigmap_MIN_wide < xcent && xcent < anacuts::Sigmap_MAX_wide)
+            ||(anacuts::Sigmam_MIN_wide < ycent && ycent < anacuts::Sigmam_MAX_wide)){
+          double xx = 1./sqrt(2.0)*(xcent-ycent);
+          double yy = 1./sqrt(2.0)*(xcent+ycent);
+          double yy2 = yy-(cosh(1.96*xx)-1.0);
+          double evalK0 = f2wide->Eval(xx,yy2);
+          double scale=0.15;
+          evalK0 *= scale;
+          if(yy2>1.645 && xcent < 1.7 && ycent<1.7){
+            IMnpim_IMnpip_dE_wK0_woSid_n_2->SetBinContent(ix,iy,evalK0);
+            h2K0inter->SetBinContent(ix,iy,evalK0);
+          }
         }
       }
     }
@@ -340,7 +346,8 @@ void Fit2DK0(const int qcut=2)
   IMnpim_K0sub_Sm->GetXaxis()->SetRange(Smbin,Smbin);
   IMnpim_K0sub_Sm->SetFillStyle(3002);
   IMnpim_K0sub_Sm->Draw("HEsame");
-
+  std::cout << "overlap events"  << IMnpim_K0sub_Sm->GetBinContent(Smbin) << std::endl;
+  std::cout << "overlap error"  << IMnpim_K0sub_Sm->GetBinError(Smbin) << std::endl;
   //remove signal each other and apply interpolation in crossing region
   TH1D* IMnpip_K0sub_woSp = (TH1D*)IMnpip_K0sub->Clone("IMnpip_K0sub_woSp");
   TH1D* IMnpim_K0sub_woSm = (TH1D*)IMnpim_K0sub->Clone("IMnpim_K0sub_woSm");
@@ -412,7 +419,10 @@ void Fit2DK0(const int qcut=2)
   cwSid_n_K0sub->cd(1);
   //sIMnpip_K0sub_woSp->Scale(0.5);
   sIMnpip_K0sub_woSp->Draw("same");
-
+  std::cout << "Sp estimated:" << sIMnpip_K0sub_woSp->Eval(anacuts::Sigmap_center) << std::endl;
   cwSid_n_K0sub->cd(4);
   sIMnpim_K0sub_woSm->Draw("same");
+  std::cout << "Sm estimated:" << sIMnpim_K0sub_woSm->Eval(anacuts::Sigmam_center) << std::endl;
+
+
 }
