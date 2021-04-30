@@ -29,7 +29,8 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
 {
   double xx = 1.0/sqrt(2.0)*(x[0]-x[1]);
   double yy = 1.0/sqrt(2.0)*(x[0]+x[1]);
-  double yy2 = yy-(cosh(1.96*xx)-1.0);
+  //double yy2 = yy-(cosh(1.96*xx)-1.0);
+  double yy2 = yy-(cosh(1.80*xx)-1.0);
 
 
   Double_t r1 = (xx-par[1])/par[2];
