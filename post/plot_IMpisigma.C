@@ -1503,11 +1503,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot2->SetXTitle("(IM(n#pi^{+})-IM(n#pi^{-}))/#sqrt{2} [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot2->SetYTitle("(IM(n#pi^{+})+IM(n#pi^{-}))/#sqrt{2} [GeV/c^{2}]");
   
-  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3 = new TH2F("IMnpim_IMnpip_dE_wK0_woSid_n_45rot3","IMnpim_IMnpip_dE_wK0_woSid_n_45rot3",100, -0.5,0.5,60, 1.6, 2.2);
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3 = new TH2F("IMnpim_IMnpip_dE_wK0_woSid_n_45rot3","IMnpim_IMnpip_dE_wK0_woSid_n_45rot3",100, -0.5,0.5,140, 0.8, 1.5);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->SetXTitle("(IM(n#pi^{+})-IM(n#pi^{-}))/#sqrt{2} [GeV/c^{2}]");
   //IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->SetYTitle("(IM(n#pi^{+})+IM(n#pi^{-}))/#sqrt{2} [GeV/c^{2}]");
   
-  IMnpim_IMnpip_dE_wK0_n_45rot3 = new TH2F("IMnpim_IMnpip_dE_wK0_n_45rot3","IMnpim_IMnpip_dE_wK0_n_45rot3",100, -0.5,0.5,60, 1.6, 2.2);
+  IMnpim_IMnpip_dE_wK0_n_45rot3 = new TH2F("IMnpim_IMnpip_dE_wK0_n_45rot3","IMnpim_IMnpip_dE_wK0_n_45rot3",100, -0.5,0.5,140, 0.8, 1.5);
   IMnpim_IMnpip_dE_wK0_n_45rot3->SetXTitle("(IM(n#pi^{+})-IM(n#pi^{-}))/#sqrt{2} [GeV/c^{2}]");
   //IMnpim_IMnpip_dE_wK0_n_45rot3->SetYTitle("(IM(n#pi^{+})+IM(n#pi^{-}))/#sqrt{2} [GeV/c^{2}]");
   
@@ -5704,7 +5704,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
       double xx = 1./sqrt(2.0)*(LVec_pip_n.M()-LVec_pim_n.M());
       double yy = 1./sqrt(2.0)*(LVec_pip_n.M()+LVec_pim_n.M());
-      double yy2 = yy-(cosh(1.96*xx)-1.0);
+      //double yy2 = yy-(cosh(1.96*xx)-1.0);
+      double yy2 = yy-(sqrt(6.76*xx*xx+2.725)-1.0);
       IMnpim_IMnpip_dE_wK0_n_45rot3->Fill(xx,yy2,weight);
       
       if(!SigmawidePFlag && !SigmawideMFlag) {
