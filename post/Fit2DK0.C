@@ -21,6 +21,25 @@ Double_t K0fit2d(Double_t *x, Double_t *par)
 }
 
 
+//2D fit for K0nn modeling 
+//x[0]: IM(npi+)
+//x[1]: IM(npi-)
+
+Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
+{
+  double xx = 1.0/sqrt(2.0)*(x[0]-x[1]);
+  double yy = 1.0/sqrt(2.0)*(x[0]+x[1]);
+  double yy2 = yy-(cosh(1.96*xx)-1.0);
+
+
+  Double_t r1 = (xx-par[1])/par[2];
+  Double_t r2 = yy2*par[3];
+
+  return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2);
+}
+
+
+
 void Fit2DK0(const int qcut=2)
 {
   
@@ -271,6 +290,14 @@ void Fit2DK0(const int qcut=2)
   TH1D* K0interpy = (TH1D*)h2K0inter->ProjectionY("K0interpy");
   K0interpy->SetFillColor(2);
   K0interpy->Draw("HISTsame");
+
+  auto *IMnpim_IMnpip_dE_wK0_woSid_n_3 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_3");
+  auto *cK0fit = new TCanvas("cK0fit","cK0fit",800,800);
+  TF2 *f3 = new TF2("f3",K0fit2dNoconvert,1.1,1.6,1.1,1.6,nparfit);
+  IMnpim_IMnpip_dE_wK0_woSid_n_3->Draw("colz");
+  f3->SetParameters(param);
+  f3->Draw("cont1 same");
+
 
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
   //TH2F* IMnpim_IMnpip_dE_wSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wSid_n");
