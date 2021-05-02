@@ -29,9 +29,7 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
 {
   double xx = 1.0/sqrt(2.0)*(x[0]-x[1]);
   double yy = 1.0/sqrt(2.0)*(x[0]+x[1]);
-  //double yy2 = yy-(cosh(1.96*xx)-1.0);
-  double yy2 = yy-(cosh(1.80*xx)-1.0);
-
+  double yy2 = yy-(sqrt(6.76*xx*xx+2.725)-1.0);
 
   Double_t r1 = (xx-par[1])/par[2];
   Double_t r2 = yy2*par[3];
@@ -80,27 +78,6 @@ void Fit2DK0(const int qcut=2)
   TH1D *IMnpim_wK0_woSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->ProjectionY("IMnpim_wK0_woSid_n");
   IMnpim_wK0_woSid_n->Draw("HE");
    
-  auto *cIMnpim_IMnpip_dE_wK0_woSid_n2 = new TCanvas("cIMnpim_IMnpip_dE_wK0_woSid_n2","cIMnpim_IMnpip_dE_wK0_woSid_n2",800,800);
-  cIMnpim_IMnpip_dE_wK0_woSid_n2->Divide(2,2,0.,0.);
-  cIMnpim_IMnpip_dE_wK0_woSid_n2->cd(3);
-  TH2D* IMnpim_IMnpip_dE_wK0_woSid_n2 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->Clone("IMnpim_IMnpip_dE_wK0_woSid_n2");
-  IMnpim_IMnpip_dE_wK0_woSid_n2->Draw("colz");
-  const int binSp = IMnpim_IMnpip_dE_wK0_woSid_n2->GetXaxis()->FindBin(anacuts::Sigmap_center);
-  const int binSm = IMnpim_IMnpip_dE_wK0_woSid_n2->GetYaxis()->FindBin(anacuts::Sigmam_center);
-  cIMnpim_IMnpip_dE_wK0_woSid_n2->cd(1);
-  TH1D *IMnpip_wK0_woSid_n2 = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n2->ProjectionX("IMnpip_wK0_woSid_n2",binSp,300);
-  IMnpip_wK0_woSid_n2->Draw("E");
-  TF1 *fnpip = new TF1("fnpip","expo",1.13,1.26);
-  IMnpip_wK0_woSid_n2->Fit(fnpip,"","",1.13,1.26);
-  //double parnpip[2];
-  //fnpip->GetParameters(parnpip);
-  //std::cout << "par0: " << parnpip[0] << std::endl;
-  //std::cout << "par1: " << parnpip[1] << std::endl;
-  
-  cIMnpim_IMnpip_dE_wK0_woSid_n2->cd(4);
-  TH1D *IMnpim_wK0_woSid_n2 = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n2->ProjectionY("IMnpim_wK0_woSid_n2",binSm,300);
-  IMnpim_wK0_woSid_n2->Draw("E");
-  
 
   auto *cIMnpim_IMnpip_dE_wK0_woSid_n_45rot = new TCanvas("cIMnpim_IMnpip_dE_wK0_woSid_n_45rot","cIMnpim_IMnpip_dE_wK0_woSid_n_45rot",800,800);
   cIMnpim_IMnpip_dE_wK0_woSid_n_45rot->Divide(2,2,0,0);
