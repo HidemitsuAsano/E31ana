@@ -142,28 +142,20 @@ void Fit2DK0(const int qcut=2)
     }
   }
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Draw("colz");
-  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetYaxis()->SetRangeUser(1.660,2.1);
-  TF2 *f2 = new TF2("f2",K0fit2d,-0.5,0.5,1.6,2.2,nparfit);
+  //IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetYaxis()->SetRangeUser(1.0,1.5);
+  TF2 *f2 = new TF2("f2",K0fit2d,-0.5,0.5,1.1,1.5,nparfit);
   //par0 : scaling factor
   //par1 : x,gaus mean
   //par2 : x,gaus sigma
   //par3 : y,exp slope
 
-  for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsX();ix++){
-    for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsY();iy++){
-      double cont = IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetBinContent(ix,iy);
-      if(fabs(cont)<0.001){ 
-        //IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->SetBinContent(ix,iy,0);
-      }
-    }
-  }
   //f2->SetRange(-0.5,0.5,1.660,2.1,4); 
   //f2->SetRange(-0.4,1.666,0.4,1.85); 
-  f2->SetRange(-0.4,1.666,0.4,1.85); 
+  f2->SetRange(-0.4,1.0,0.4,1.4); 
   //f2->SetParameters(8.0e9,0.005,0.16,-15.2);
   f2->SetParameters(2.0e5,0.005,0.16,1.9);
   f2->SetParLimits(0,0,4.5e10);
-  f2->FixParameter(0,2.0e5);
+  //f2->FixParameter(0,2.0e5);
   f2->SetParLimits(1,0.0,0.1);
   //f2->FixParameter(1,0.005);
   f2->SetParLimits(2,0.15,0.2);
@@ -171,27 +163,28 @@ void Fit2DK0(const int qcut=2)
   //f2->SetParLimits(3,1.66,3.00);
   f2->FixParameter(3,1.9);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Fit("f2","R","");
+  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Print("base");
   f2->Draw("cont1 same");
-  TF2 *f2wide = new TF2("f2wide",K0fit2d,-0.5,0.5,1.6,2.2,nparfit);
+  TF2 *f2wide = new TF2("f2wide",K0fit2d,-0.5,0.5,0.9,1.5,nparfit);
   Double_t param[nparfit];
   f2->GetParameters(param);
   f2wide->SetParameters(param);
   f2wide->SetNpx(100);
-  f2wide->SetNpy(60);
+  f2wide->SetNpy(120);
   std::cout<<f2wide->GetExpFormula() << std::endl ;
   TH2D *hf2  =  (TH2D*)f2->GetHistogram();
   hf2->SetName("hf2");
   TH2D *hf2wide  =  (TH2D*)f2wide->GetHistogram();
   hf2wide->SetName("hf2wide");
   TH2D *hf2wide_nosub = (TH2D*)hf2wide->Clone("hf2wide_nosub");
-  for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsX();ix++){
-    for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsY();iy++){
+  for(int ix=0;ix<=IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsX();ix++){
+    for(int iy=0;iy<=IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsY();iy++){
       double cont = IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetBinContent(ix,iy);
       if((cont)<0.00000001) hf2wide->SetBinContent(ix,iy,0);
       double xcen=  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetXaxis()->GetBinCenter(ix);
       double ycen=  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetYaxis()->GetBinCenter(iy);
 
-      if( (fabs(xcen)<0.02) && (ycen < 1.68)){
+      if( (fabs(xcen)<0.02) && (ycen < 1.02)){
          hf2wide->SetBinContent(ix,iy,0);
          IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->SetBinContent(ix,iy,0);
       }
@@ -226,7 +219,15 @@ void Fit2DK0(const int qcut=2)
   cfitcompsub->cd(4);
   pyrot3->Draw("HE");
   hf2wide->ProjectionY()->Draw("HISTsame");
-  
+   
+  TCanvas *ctest = new TCanvas("ctest","ctest",1600,800);
+  ctest->Divide(2,1);
+  ctest->cd(1);
+  hf2wide->Draw("colz");
+  ctest->cd(2);
+  hf2wide_nosub->Draw("colz");
+
+
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_2 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_2");
   IMnpim_IMnpip_dE_wK0_woSid_n_2->SetName("IMnpim_IMnpip_dE_wK0_woSid_n_2");
   TCanvas *cinter = new TCanvas("cinter","cinter",800,800);
