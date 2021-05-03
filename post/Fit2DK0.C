@@ -276,6 +276,8 @@ void Fit2DK0(const int qcut=2)
 
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_3 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_3");
   auto *cK0fit = new TCanvas("cK0fit","cK0fit",800,800);
+  cK0fit->Divide(2,2);
+  cK0fit->cd(3);
   const float xmin = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->GetXmin();
   const float xmax = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->GetXmax();
   const float ymin = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->GetXmin();
@@ -294,15 +296,26 @@ void Fit2DK0(const int qcut=2)
     }
   }
 
-
-  IMnpim_IMnpip_dE_wK0_woSid_n_3->Rebin2D(3,3);
+  //IMnpim_IMnpip_dE_wK0_woSid_n_3->Rebin2D(3,3);
   IMnpim_IMnpip_dE_wK0_woSid_n_3->Draw("colz");
   f3->SetParameters(param);
   
   f3->SetNpx(1000);
   f3->SetNpy(1000);
-  f3->Draw("cont2 same");
+  //f3->FixParameter(3,0.5);
+  IMnpim_IMnpip_dE_wK0_woSid_n_3->Fit("f3");
+  //f3->Draw("cont2 same");
+   
+  TH2D* f3hist = (TH2D*)f3->GetHistogram();
+  f3hist->SetLineColor(2);
+  f3hist->SetFillColor(0);
+  cK0fit->cd(1);
+  IMnpim_IMnpip_dE_wK0_woSid_n_3->ProjectionX()->Draw("HE");
+  f3hist->ProjectionX()->Draw("HEsame");
 
+  cK0fit->cd(4);
+  IMnpim_IMnpip_dE_wK0_woSid_n_3->ProjectionY()->Draw("HE");
+  f3hist->ProjectionY()->Draw("HEsame");
 
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
   //TH2F* IMnpim_IMnpip_dE_wSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wSid_n");
