@@ -34,8 +34,8 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
   Double_t r1 = (xx-par[1])/par[2];
   Double_t r2 = yy2*par[3];
   double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2);    
-  //if(yy2>1.645){
-  if(yy2>1.650){
+  //if(yy2>1.0){
+  if(yy2>1.0){
     return  ret;
    }else{
     return 0;
@@ -281,6 +281,20 @@ void Fit2DK0(const int qcut=2)
   const float ymin = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->GetXmin();
   const float ymax = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->GetXmax();
   TF2 *f3 = new TF2("f3",K0fit2dNoconvert,xmin,xmax,ymin,ymax,nparfit);
+  for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n_3->GetNbinsX();ix++){
+    for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n_3->GetNbinsY();iy++){
+      double cont = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetBinContent(ix,iy);
+      double xcent = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->GetBinCenter(ix);
+      double ycent = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->GetBinCenter(iy);
+
+      if((cont < 0.00001) || (xcent<1.18 && ycent<1.18)) {       
+        IMnpim_IMnpip_dE_wK0_woSid_n_3->SetBinContent(ix,iy,0);
+        IMnpim_IMnpip_dE_wK0_woSid_n_3->SetBinError(ix,iy,0);
+      }
+    }
+  }
+
+
   IMnpim_IMnpip_dE_wK0_woSid_n_3->Rebin2D(3,3);
   IMnpim_IMnpip_dE_wK0_woSid_n_3->Draw("colz");
   f3->SetParameters(param);
