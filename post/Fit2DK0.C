@@ -229,8 +229,7 @@ void Fit2DK0(const int qcut=2)
           double yy = 1./sqrt(2.0)*(xcent+ycent);
           double yy2 = yy-(sqrt(6.76*xx*xx+2.725)-1.0);
           double evalK0 = f2wide->Eval(xx,yy2);
-          double scale=0.28;
-          //double scale=1.0;
+          double scale=0.28;//this scaling factor is arbitrary and determined by eye at this moment
           evalK0 *= scale;
           if(yy2>1.0 && xcent < 1.7 && ycent<1.7){
           //if(xcent < 1.7 && ycent<1.7){
@@ -258,7 +257,8 @@ void Fit2DK0(const int qcut=2)
   TH1D* K0interpy = (TH1D*)h2K0inter->ProjectionY("K0interpy");
   K0interpy->SetFillColor(2);
   K0interpy->Draw("HISTsame");
-
+  
+  //fit to original histogram
   auto *IMnpim_IMnpip_dE_wK0_woSid_n_3 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_3");
   auto *cK0fit = new TCanvas("cK0fit","cK0fit",800,800);
   cK0fit->Divide(2,2);
@@ -284,9 +284,11 @@ void Fit2DK0(const int qcut=2)
   //IMnpim_IMnpip_dE_wK0_woSid_n_3->Rebin2D(3,3);
   IMnpim_IMnpip_dE_wK0_woSid_n_3->Draw("colz");
   f3->SetParameters(param);
-  
-  f3->SetNpx(120);
-  f3->SetNpy(120);
+   
+  const int nbinsX = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetNbinsX();
+  const int nbinsY = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetNbinsY();
+  f3->SetNpx(nbinsX);//=NbinsX  of IMnpim_IMnpip histram
+  f3->SetNpy(nbinsY);//=NbinsY of IMnpim
   //f3->FixParameter(3,0.5);
   f3->SetRange(1.1,1.5,1.1,1.5);
   IMnpim_IMnpip_dE_wK0_woSid_n_3->Fit("f3","R","");
