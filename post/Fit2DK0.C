@@ -18,7 +18,7 @@ Double_t K0fit2d(Double_t *x, Double_t *par)
   const Double_t th = 1.00;
   const Double_t a  = 0.002;
 
-  return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+exp((-x[1]+th)/a));
+  return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-x[1]+th)/a));
   //return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-0.5*r2*r2);
 }
 
@@ -35,9 +35,9 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
 
   Double_t r1 = (xx-par[1])/par[2];
   Double_t r2 = yy2*par[3];
-  const Double_t th = 1.02;
-  const Double_t a  = 0.02;
-  double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0-TMath::Exp((th-yy2)/a));    
+  const Double_t th = 1.00;
+  const Double_t a  = 0.002;
+  double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-yy2+th)/a));    
   return ret;
   /*
   //if(yy2>1.0){
@@ -109,31 +109,6 @@ void Fit2DK0(const int qcut=2)
   cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3->cd(4);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->ProjectionY()->Draw();
    
-  auto *crot3 = new TCanvas("crot3","crot3",800,800);
-  crot3->Divide(2,2);
-  crot3->cd(3);
-  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->Draw("colz");
-  const int biny17 = IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->GetYaxis()->FindBin(1.7);
-  const int binx00 = IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->GetXaxis()->FindBin(0.0);
-  crot3->cd(4);
-  auto *py_rot3_right = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->ProjectionY("px_rot3_right",binx00,100);
-  auto *py_rot3_left = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->ProjectionY("px_rot3_left",0,binx00-1);
-  py_rot3_right->Draw("E");
-  py_rot3_left->SetLineColor(2);
-  py_rot3_left->Draw("Esame");
-  auto leg = new TLegend(0.6,0.7,0.9,0.9);
-  leg->AddEntry(py_rot3_right,"right");
-  leg->AddEntry(py_rot3_left,"left");
-  leg->Draw();
-  
-  crot3->cd(1);
-  auto *px_rot3 = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->ProjectionX("px_rot3");
-  px_rot3->Draw("HE");
-  crot3->cd(2);
-  auto px_rot3_17 = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->ProjectionX("xx_rot3",0,biny17);
-  px_rot3_17->Draw("HE");
-
-
   TCanvas *cfitcomp = new TCanvas("cfitcomp","cfitcomp",800,800);
   cfitcomp->Divide(2,2);
   cfitcomp->cd(3);
@@ -250,9 +225,10 @@ void Fit2DK0(const int qcut=2)
             ||(anacuts::Sigmam_MIN_wide < ycent && ycent < anacuts::Sigmam_MAX_wide)){
           double xx = 1./sqrt(2.0)*(xcent-ycent);
           double yy = 1./sqrt(2.0)*(xcent+ycent);
-          double yy2 = yy-(cosh(1.96*xx)-1.0);
+          double yy2 = yy-(sqrt(6.76*xx*xx+2.725)-1.0);
           double evalK0 = f2wide->Eval(xx,yy2);
-          double scale=0.15;
+          //double scale=0.15;
+          double scale=1.0;
           evalK0 *= scale;
           if(yy2>1.645 && xcent < 1.7 && ycent<1.7){
             IMnpim_IMnpip_dE_wK0_woSid_n_2->SetBinContent(ix,iy,evalK0);
@@ -306,8 +282,8 @@ void Fit2DK0(const int qcut=2)
   IMnpim_IMnpip_dE_wK0_woSid_n_3->Draw("colz");
   f3->SetParameters(param);
   
-  f3->SetNpx(1000);
-  f3->SetNpy(1000);
+  f3->SetNpx(120);
+  f3->SetNpy(120);
   //f3->FixParameter(3,0.5);
   f3->SetRange(1.1,1.5,1.1,1.5);
   IMnpim_IMnpip_dE_wK0_woSid_n_3->Fit("f3","R","");
