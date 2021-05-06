@@ -12,11 +12,13 @@ const int nparfit=4;
 Double_t K0fit2d(Double_t *x, Double_t *par)
 {
   Double_t r1 = (x[0]-par[1])/par[2];
-  //Double_t r1 = x[0]*par[1];
   Double_t r2 = (x[1]*par[3]);
-  //Double_t r2 = (x[1]-par[3])/par[4];
+  
+  //woods-saxon shape K0 threshold in x[1] axis
+  const Double_t th = 1.00;
+  const Double_t a  = 0.002;
 
-  return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2);
+  return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+exp((-x[1]+th)/a));
   //return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-0.5*r2*r2);
 }
 
@@ -33,13 +35,17 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
 
   Double_t r1 = (xx-par[1])/par[2];
   Double_t r2 = yy2*par[3];
-  double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2);    
+  const Double_t th = 1.02;
+  const Double_t a  = 0.02;
+  double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0-TMath::Exp((th-yy2)/a));    
+  return ret;
+  /*
   //if(yy2>1.0){
   if(yy2>1.0){
     return  ret;
    }else{
     return 0;
-  }
+  }*/
 }
 
 
@@ -143,7 +149,7 @@ void Fit2DK0(const int qcut=2)
   }
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Draw("colz");
   //IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetYaxis()->SetRangeUser(1.0,1.5);
-  TF2 *f2 = new TF2("f2",K0fit2d,-0.5,0.5,1.1,1.5,nparfit);
+  TF2 *f2 = new TF2("f2",K0fit2d,-0.5,0.5,0.9,1.5,nparfit);
   //par0 : scaling factor
   //par1 : x,gaus mean
   //par2 : x,gaus sigma
@@ -151,7 +157,7 @@ void Fit2DK0(const int qcut=2)
 
   //f2->SetRange(-0.5,0.5,1.660,2.1,4); 
   //f2->SetRange(-0.4,1.666,0.4,1.85); 
-  f2->SetRange(-0.4,1.0,0.4,1.4); 
+  f2->SetRange(-0.4,0.9,0.4,1.4); 
   //f2->SetParameters(8.0e9,0.005,0.16,-15.2);
   f2->SetParameters(2.0e5,0.005,0.16,1.9);
   f2->SetParLimits(0,0,4.5e10);
@@ -303,7 +309,8 @@ void Fit2DK0(const int qcut=2)
   f3->SetNpx(1000);
   f3->SetNpy(1000);
   //f3->FixParameter(3,0.5);
-  IMnpim_IMnpip_dE_wK0_woSid_n_3->Fit("f3");
+  f3->SetRange(1.1,1.5,1.1,1.5);
+  IMnpim_IMnpip_dE_wK0_woSid_n_3->Fit("f3","R","");
   //f3->Draw("cont2 same");
    
   TH2D* f3hist = (TH2D*)f3->GetHistogram();
