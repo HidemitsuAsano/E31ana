@@ -150,8 +150,8 @@ void Fit2DK0(const int qcut=2)
   Double_t param[nparfit];
   f2->GetParameters(param);
   f2wide->SetParameters(param);
-  f2wide->SetNpx(100);
-  f2wide->SetNpy(120);
+  f2wide->SetNpx(100);//=NbinsX of rot3 histogram
+  f2wide->SetNpy(120);//=NbinsY of rot3 histogram
   std::cout<<f2wide->GetExpFormula() << std::endl ;
   TH2D *hf2  =  (TH2D*)f2->GetHistogram();
   hf2->SetName("hf2");
@@ -164,7 +164,7 @@ void Fit2DK0(const int qcut=2)
       if((cont)<0.00000001) hf2wide->SetBinContent(ix,iy,0);
       double xcen=  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetXaxis()->GetBinCenter(ix);
       double ycen=  IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetYaxis()->GetBinCenter(iy);
-
+      //remove edge area
       if( (fabs(xcen)<0.02) && (ycen < 1.02)){
          hf2wide->SetBinContent(ix,iy,0);
          IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->SetBinContent(ix,iy,0);
@@ -201,11 +201,13 @@ void Fit2DK0(const int qcut=2)
   pyrot3->Draw("HE");
   hf2wide->ProjectionY()->Draw("HISTsame");
    
+
   TCanvas *ctest = new TCanvas("ctest","ctest",1600,800);
   ctest->Divide(2,1);
   ctest->cd(1);
   hf2wide->Draw("colz");
   ctest->cd(2);
+  hf2wide_nosub->SetTitle("hf2wide_nosub");
   hf2wide_nosub->Draw("colz");
 
 
@@ -227,10 +229,11 @@ void Fit2DK0(const int qcut=2)
           double yy = 1./sqrt(2.0)*(xcent+ycent);
           double yy2 = yy-(sqrt(6.76*xx*xx+2.725)-1.0);
           double evalK0 = f2wide->Eval(xx,yy2);
-          //double scale=0.15;
-          double scale=1.0;
+          double scale=0.28;
+          //double scale=1.0;
           evalK0 *= scale;
-          if(yy2>1.645 && xcent < 1.7 && ycent<1.7){
+          if(yy2>1.0 && xcent < 1.7 && ycent<1.7){
+          //if(xcent < 1.7 && ycent<1.7){
             IMnpim_IMnpip_dE_wK0_woSid_n_2->SetBinContent(ix,iy,evalK0);
             h2K0inter->SetBinContent(ix,iy,evalK0);
           }
