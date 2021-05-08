@@ -132,7 +132,7 @@ void Fit2DK0(const int qcut=2)
 
   //f2->SetRange(-0.5,0.5,1.660,2.1,4); 
   //f2->SetRange(-0.4,1.666,0.4,1.85); 
-  f2->SetRange(-0.4,0.9,0.4,1.4); 
+  f2->SetRange(-0.4,0.4,0.9,1.4); 
   //f2->SetParameters(8.0e9,0.005,0.16,-15.2);
   f2->SetParameters(2.0e5,0.005,0.16,1.9);
   f2->SetParLimits(0,0,4.5e10);
@@ -278,7 +278,6 @@ void Fit2DK0(const int qcut=2)
 
   //IMnpim_IMnpip_dE_wK0_woSid_n_3->Rebin2D(3,3);
   IMnpim_IMnpip_dE_wK0_woSid_n_3->Draw("colz");
-  f3->SetParameters(param);
    
   const int nbinsX = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetNbinsX();
   const int nbinsY = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetNbinsY();
@@ -291,12 +290,15 @@ void Fit2DK0(const int qcut=2)
   TF2 *f3 = new TF2("f3",K0fit2dNoconvert,xmin,xmax,ymin,ymax,nparfit);
   f3->SetNpx(nbinsX);//use same nbin to compare the projection
   f3->SetNpy(nbinsY);//use same nbin to compare the projection
+  f3->SetParameters(param);
   //f3->FixParameter(3,0.5);
-  f3->SetRange(1.1,1.5,1.1,1.5);
-  IMnpim_IMnpip_dE_wK0_woSid_n_3->Fit("f3","R","");
+  f3->SetRange(1.1,1.1,1.5,1.5);
+  //IMnpim_IMnpip_dE_wK0_woSid_n_3->Fit("f3","R","");
   //f3->Draw("cont2 same");
    
   TH2D* f3hist = (TH2D*)f3->GetHistogram();
+  IMnpim_IMnpip_dE_wK0_woSid_n_3->Print("base");
+  f3hist->Print("base");
   f3hist->SetLineColor(2);
   f3hist->SetFillColor(0);
   cK0fit->cd(1);
@@ -306,6 +308,48 @@ void Fit2DK0(const int qcut=2)
   cK0fit->cd(4);
   IMnpim_IMnpip_dE_wK0_woSid_n_3->ProjectionY()->Draw("HE");
   f3hist->ProjectionY()->Draw("HEsame");
+   
+  double paramf2[nparfit];
+  f3->GetParameters(paramf2);
+
+  TF2 *f3wide = new TF2("f3wide",K0fit2dNoconvert,xmin,xmax,ymin,ymax,nparfit);
+  f3wide->SetNpx(nbinsX);//use same nbin to compare the projection
+  f3wide->SetNpy(nbinsY);//use same nbin to compare the projection
+  f3wide->SetParameters(paramf2);
+
+  TH2D* f3widehist = (TH2D*)f3wide->GetHistogram();
+  f3widehist->Print("base");
+  
+  const int SpbinMIN = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->FindBin(anacuts::Sigmap_MIN_wide);
+  const int SpbinMAX = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->FindBin(anacuts::Sigmap_MAX_wide);
+  const int SmbinMIN = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->FindBin(anacuts::Sigmam_MIN_wide);
+  const int SmbinMAX = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->FindBin(anacuts::Sigmam_MAX_wide);
+  
+
+
+  for(int ixbin=0;ixbin<=nbinsX;ixbin++){
+    for(int iybin=0;iybin<=nbinsY;iybin++){
+      if(SpbinMIN <= ixbin && ixbin<=SpbinMAX){
+        f3widehist->SetBinContent(ixbin,iybin,0);
+        f3widehist->SetBinError(ixbin,iybin,0);
+      }
+      if(SmbinMIN <= iybin && iybin<=SmbinMAX){
+        f3widehist->SetBinContent(ixbin,iybin,0);
+        f3widehist->SetBinError(ixbin,iybin,0);
+      }
+    }
+  }
+  TCanvas *c3wide = new TCanvas("c3wide","c3wide",800,800);
+  c3wide->Divide(2,2);
+  c3wide->cd(3);
+  IMnpim_IMnpip_dE_wK0_woSid_n_3->Draw("colz");
+  f3widehist->Draw("cont2same");
+
+
+
+
+  //next step
+  //subtract K0 and solve Sp/Sm overlap region
 
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
   //TH2F* IMnpim_IMnpip_dE_wSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wSid_n");
