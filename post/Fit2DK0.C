@@ -263,17 +263,12 @@ void Fit2DK0(const int qcut=2)
   auto *cK0fit = new TCanvas("cK0fit","cK0fit",800,800);
   cK0fit->Divide(2,2);
   cK0fit->cd(3);
-  const float xmin = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->GetXmin();
-  const float xmax = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->GetXmax();
-  const float ymin = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->GetXmin();
-  const float ymax = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->GetXmax();
-  TF2 *f3 = new TF2("f3",K0fit2dNoconvert,xmin,xmax,ymin,ymax,nparfit);
   for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n_3->GetNbinsX();ix++){
     for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n_3->GetNbinsY();iy++){
       double cont = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetBinContent(ix,iy);
       double xcent = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->GetBinCenter(ix);
       double ycent = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->GetBinCenter(iy);
-
+      //remove edge region 
       if((cont < 0.00001) || (xcent<1.18 && ycent<1.18)) {       
         IMnpim_IMnpip_dE_wK0_woSid_n_3->SetBinContent(ix,iy,0);
         IMnpim_IMnpip_dE_wK0_woSid_n_3->SetBinError(ix,iy,0);
@@ -287,8 +282,15 @@ void Fit2DK0(const int qcut=2)
    
   const int nbinsX = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetNbinsX();
   const int nbinsY = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetNbinsY();
-  f3->SetNpx(nbinsX);//=NbinsX  of IMnpim_IMnpip histram
-  f3->SetNpy(nbinsY);//=NbinsY of IMnpim
+  const float xmin = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->GetXmin();
+  const float xmax = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->GetXmax();
+  const float ymin = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->GetXmin();
+  const float ymax = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->GetXmax();
+
+  //fit to the original 2d histo
+  TF2 *f3 = new TF2("f3",K0fit2dNoconvert,xmin,xmax,ymin,ymax,nparfit);
+  f3->SetNpx(nbinsX);//use same nbin to compare the projection
+  f3->SetNpy(nbinsY);//use same nbin to compare the projection
   //f3->FixParameter(3,0.5);
   f3->SetRange(1.1,1.5,1.1,1.5);
   IMnpim_IMnpip_dE_wK0_woSid_n_3->Fit("f3","R","");
