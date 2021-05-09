@@ -366,6 +366,12 @@ void Fit2DK0(const int qcut=2)
   IMnpim_3->Draw("HE");
   TH1D* f3widehist_py = (TH1D*)f3widehist->ProjectionY("f3widehist_py");
   f3widehist_py->Draw("HISTsame");
+  
+  TH2D* IMnpim_IMnpip_dE_wK0_woSid_n_3_inter = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_3->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_3_inter");
+  auto cinter_3 = new TCanvas("cinter_3","cinter_3",800,800);
+  cinter_3->Divide(2,2);
+  
+
 
   //next step
   //subtract K0 and solve Sp/Sm overlap region
