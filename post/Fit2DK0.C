@@ -16,7 +16,7 @@ Double_t K0fit2d(Double_t *x, Double_t *par)
   
   //woods-saxon shape K0 threshold in x[1] axis
   const Double_t th = 1.00;
-  const Double_t a  = 0.002;
+  const Double_t a  = 0.001;
 
   return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-x[1]+th)/a));
   //return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-0.5*r2*r2);
@@ -36,7 +36,7 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
   Double_t r1 = (xx-par[1])/par[2];
   Double_t r2 = yy2*par[3];
   const Double_t th = 1.00;
-  const Double_t a  = 0.002;
+  const Double_t a  = 0.001;
   double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-yy2+th)/a));    
   return ret;
   /*
@@ -291,9 +291,17 @@ void Fit2DK0(const int qcut=2)
   f3->SetNpx(nbinsX);//use same nbin to compare the projection
   f3->SetNpy(nbinsY);//use same nbin to compare the projection
   f3->SetParameters(param);
-  //f3->FixParameter(3,0.5);
+  //f3->SetParameter(0,param[0]/2.0);
+  //f3->FixParameter(0,param[0]/2.0);
+  //f2->FixParamter(0,1.25448e+02);
+  //f3->FixParameter(0,1.05448e+02*0.70);
+  f3->SetParLimits(0,1.05448e+02*0.60,1.05448e+02*0.68);
+  f3->SetParLimits(1,0.0,0.1);
+  f3->SetParLimits(2,0.15,0.2);
+  f3->FixParameter(3,1.9);
+  //f3->SetParLimits(0,param[0]/3.0,param[0]/1.5);
   f3->SetRange(1.1,1.1,1.5,1.5);
-  //IMnpim_IMnpip_dE_wK0_woSid_n_3->Fit("f3","R","");
+  IMnpim_IMnpip_dE_wK0_woSid_n_3->Fit("f3","R","");
   //f3->Draw("cont2 same");
    
   TH2D* f3hist = (TH2D*)f3->GetHistogram();
@@ -302,12 +310,14 @@ void Fit2DK0(const int qcut=2)
   f3hist->SetLineColor(2);
   f3hist->SetFillColor(0);
   cK0fit->cd(1);
-  IMnpim_IMnpip_dE_wK0_woSid_n_3->ProjectionX()->Draw("HE");
-  f3hist->ProjectionX()->Draw("HEsame");
+  TH1D* IMnpip_3 = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3->ProjectionX("IMnpip_3");
+  IMnpip_3->Draw("HE");
+  f3hist->ProjectionX()->Draw("HISTsame");
 
   cK0fit->cd(4);
-  IMnpim_IMnpip_dE_wK0_woSid_n_3->ProjectionY()->Draw("HE");
-  f3hist->ProjectionY()->Draw("HEsame");
+  TH1D* IMnpim_3 = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3->ProjectionY("IMnpim_3");
+  IMnpim_3->Draw("HE");
+  f3hist->ProjectionY()->Draw("HISTsame");
    
   double paramf2[nparfit];
   f3->GetParameters(paramf2);
@@ -325,8 +335,7 @@ void Fit2DK0(const int qcut=2)
   const int SmbinMIN = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->FindBin(anacuts::Sigmam_MIN_wide);
   const int SmbinMAX = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->FindBin(anacuts::Sigmam_MAX_wide);
   
-
-
+  //removing Sp OR Sm
   for(int ixbin=0;ixbin<=nbinsX;ixbin++){
     for(int iybin=0;iybin<=nbinsY;iybin++){
       if(SpbinMIN <= ixbin && ixbin<=SpbinMAX){
@@ -339,14 +348,23 @@ void Fit2DK0(const int qcut=2)
       }
     }
   }
+
   TCanvas *c3wide = new TCanvas("c3wide","c3wide",800,800);
   c3wide->Divide(2,2);
   c3wide->cd(3);
   IMnpim_IMnpip_dE_wK0_woSid_n_3->Draw("colz");
+  f3widehist->SetFillColor(0);
   f3widehist->Draw("cont2same");
 
+  c3wide->cd(1);
+  IMnpip_3->Draw("HE");
+  TH1D* f3widehist_px = (TH1D*)f3widehist->ProjectionX("f3widehist_px");
+  f3widehist_px->Draw("HISTsame");
 
-
+  c3wide->cd(4);
+  IMnpim_3->Draw("HE");
+  TH1D* f3widehist_py = (TH1D*)f3widehist->ProjectionY("f3widehist_py");
+  f3widehist_py->Draw("HISTsame");
 
   //next step
   //subtract K0 and solve Sp/Sm overlap region
