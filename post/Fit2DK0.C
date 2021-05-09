@@ -16,7 +16,7 @@ Double_t K0fit2d(Double_t *x, Double_t *par)
   
   //woods-saxon shape K0 threshold in x[1] axis
   const Double_t th = 1.00;
-  const Double_t a  = 0.001;
+  const Double_t a  = 0.002;
 
   return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-x[1]+th)/a));
   //return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-0.5*r2*r2);
@@ -31,12 +31,13 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
 {
   double xx = 1.0/sqrt(2.0)*(x[0]-x[1]);
   double yy = 1.0/sqrt(2.0)*(x[0]+x[1]);
-  double yy2 = yy-(sqrt(6.76*xx*xx+2.725)-1.0);
+  //double yy2 = yy-(sqrt(6.76*xx*xx+2.725)-1.0);
+  double yy2 = yy-(sqrt(6.76*xx*xx+2.765)-1.0);//slightly tuned from original value by looking final fitting result
 
   Double_t r1 = (xx-par[1])/par[2];
   Double_t r2 = yy2*par[3];
   const Double_t th = 1.00;
-  const Double_t a  = 0.001;
+  const Double_t a  = 0.002;
   double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-yy2+th)/a));    
   return ret;
   /*
