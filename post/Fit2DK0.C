@@ -280,7 +280,7 @@ void Fit2DK0(const int qcut=2)
   //default binning +/- 0.5 sigma=1 sigma.
   //woSid +/-3 sigma cut (no rounding) 
   //
-  IMnpim_IMnpip_dE_wK0_woSid_n_3->Rebin2D(3,3);
+  //IMnpim_IMnpip_dE_wK0_woSid_n_3->Rebin2D(3,3);
   IMnpim_IMnpip_dE_wK0_woSid_n_3->Draw("colz");
    
   const float xmin = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->GetXmin();
@@ -301,13 +301,13 @@ void Fit2DK0(const int qcut=2)
   //f3->FixParameter(0,1.05448e+02*0.70);
   //f3->SetParLimits(0,1.05448e+02*0.52,1.05448e+02*0.55);
   //f3->SetParLimits(0,1.05448e+02*0.4,1.05448e+02*0.6);
-  //f3->SetParLimits(0,1.14645e+03*0.5,1.14645e+03*0.7);
+  f3->SetParLimits(0,1.14645e+03*0.1,1.14645e+03*0.14);
   f3->SetParLimits(1,0.0,0.1);
   f3->SetParLimits(2,0.15,0.2);
-  //f3->FixParameter(3,2.6);
-  f3->FixParameter(3,1.9);
+  f3->FixParameter(3,2.1);
+  //f3->FixParameter(3,1.9);
   //f3->SetParLimits(0,param[0]/3.0,param[0]/1.5);
-  f3->SetRange(1.0,1.0,1.6,1.6);
+  f3->SetRange(1.0,1.0,1.4,1.4);
   IMnpim_IMnpip_dE_wK0_woSid_n_3->Fit("f3","R","");
   //f3->Draw("cont2 same");
    
