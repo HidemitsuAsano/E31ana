@@ -268,8 +268,9 @@ void Fit2DK0(const int qcut=2)
       double cont = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetBinContent(ix,iy);
       double xcent = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->GetBinCenter(ix);
       double ycent = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->GetBinCenter(iy);
-      //remove edge region 
-      if((cont < 0.00001) || (xcent<1.18 && ycent<1.18)) {       
+      //remove edge region and negative bin
+      if((cont < 0.0001) || (xcent<1.18 && ycent<1.18)) {       
+      //if( (xcent<1.18 && ycent<1.18)) {       
         IMnpim_IMnpip_dE_wK0_woSid_n_3->SetBinContent(ix,iy,0);
         IMnpim_IMnpip_dE_wK0_woSid_n_3->SetBinError(ix,iy,0);
       }
@@ -349,8 +350,16 @@ void Fit2DK0(const int qcut=2)
   const int SmbinMAX = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->FindBin(anacuts::Sigmam_MAX_wide);
   
   //removing Sp OR Sm
+  //TODO and also remove negative bin of IMnpim_IMnpip histogram ? 
+  //-->Conclusion: non-sense
   for(int ixbin=0;ixbin<=nbinsX;ixbin++){
     for(int iybin=0;iybin<=nbinsY;iybin++){
+      
+      //double cont =  IMnpim_IMnpip_dE_wK0_woSid_n_3->GetBinContent(ixbin,iybin);
+      //if(cont<0.001){
+      //  f3widehist->SetBinContent(ixbin,iybin,0);
+      //  f3widehist->SetBinError(ixbin,iybin,0);
+      //}
       if(SpbinMIN <= ixbin && ixbin<=SpbinMAX){
         f3widehist->SetBinContent(ixbin,iybin,0);
         f3widehist->SetBinError(ixbin,iybin,0);
@@ -359,6 +368,7 @@ void Fit2DK0(const int qcut=2)
         f3widehist->SetBinContent(ixbin,iybin,0);
         f3widehist->SetBinError(ixbin,iybin,0);
       }
+
     }
   }
   auto *ctemp = new TCanvas("ctemp","ctemp",800,800);
