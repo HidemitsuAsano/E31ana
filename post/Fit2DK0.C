@@ -26,7 +26,6 @@ Double_t K0fit2d(Double_t *x, Double_t *par)
 //2D fit for K0nn modeling 
 //x[0]: IM(npi+)
 //x[1]: IM(npi-)
-
 Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
 {
   double xx = 1.0/sqrt(2.0)*(x[0]-x[1]);
@@ -269,8 +268,9 @@ void Fit2DK0(const int qcut=2)
       double cont = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetBinContent(ix,iy);
       double xcent = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->GetBinCenter(ix);
       double ycent = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->GetBinCenter(iy);
-      //remove edge region 
-      if((cont < 0.00001) || (xcent<1.18 && ycent<1.18)) {       
+      //remove edge region and negative bin
+      if((cont < 0.0001) || (xcent<1.18 && ycent<1.18)) {       
+      //if( (xcent<1.18 && ycent<1.18)) {       
         IMnpim_IMnpip_dE_wK0_woSid_n_3->SetBinContent(ix,iy,0);
         IMnpim_IMnpip_dE_wK0_woSid_n_3->SetBinError(ix,iy,0);
       }
@@ -301,10 +301,11 @@ void Fit2DK0(const int qcut=2)
   //f3->FixParameter(0,1.05448e+02*0.70);
   //f3->SetParLimits(0,1.05448e+02*0.52,1.05448e+02*0.55);
   //f3->SetParLimits(0,1.05448e+02*0.4,1.05448e+02*0.6);
-  f3->SetParLimits(0,1.14645e+03*0.1,1.14645e+03*0.14);
+  //f3->SetParLimits(0,1.14645e+03*0.05,1.14645e+03*0.06);
+  f3->SetParLimits(0,1.14645e+03*0.03,1.14645e+03*0.04);
   f3->SetParLimits(1,0.0,0.1);
   f3->SetParLimits(2,0.15,0.2);
-  f3->FixParameter(3,2.1);
+  f3->FixParameter(3,1.8);
   //f3->FixParameter(3,1.9);
   //f3->SetParLimits(0,param[0]/3.0,param[0]/1.5);
   f3->SetRange(1.0,1.0,1.4,1.4);
@@ -326,15 +327,21 @@ void Fit2DK0(const int qcut=2)
   IMnpim_3->Draw("HE");
   f3hist->ProjectionY()->Draw("HISTsame");
    
-  double paramf2[nparfit];
-  f3->GetParameters(paramf2);
+  double paramf3[nparfit];
+  f3->GetParameters(paramf3);
 
   TF2 *f3wide = new TF2("f3wide",K0fit2dNoconvert,xmin,xmax,ymin,ymax,nparfit);
   f3wide->SetNpx(nbinsX);//use same nbin to compare the projection
   f3wide->SetNpy(nbinsY);//use same nbin to compare the projection
-  f3wide->SetParameters(paramf2);
+  f3wide->SetParameters(paramf3);
+  
+  TF2 *f3wide_nocut = new TF2("f3wide_nocut",K0fit2dNoconvert,xmin,xmax,ymin,ymax,nparfit);
+  f3wide_nocut->SetNpx(nbinsX);//use same nbin to compare the projection
+  f3wide_nocut->SetNpy(nbinsY);//use same nbin to compare the projection
+  f3wide_nocut->SetParameters(paramf3); 
 
   TH2D* f3widehist = (TH2D*)f3wide->GetHistogram();
+  TH2D* f3widehist_nocut = (TH2D*)f3wide->GetHistogram();
   f3widehist->Print("base");
   
   const int SpbinMIN = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->FindBin(anacuts::Sigmap_MIN_wide);
@@ -343,8 +350,16 @@ void Fit2DK0(const int qcut=2)
   const int SmbinMAX = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->FindBin(anacuts::Sigmam_MAX_wide);
   
   //removing Sp OR Sm
+  //TODO and also remove negative bin of IMnpim_IMnpip histogram ? 
+  //-->Conclusion: non-sense
   for(int ixbin=0;ixbin<=nbinsX;ixbin++){
     for(int iybin=0;iybin<=nbinsY;iybin++){
+      
+      //double cont =  IMnpim_IMnpip_dE_wK0_woSid_n_3->GetBinContent(ixbin,iybin);
+      //if(cont<0.001){
+      //  f3widehist->SetBinContent(ixbin,iybin,0);
+      //  f3widehist->SetBinError(ixbin,iybin,0);
+      //}
       if(SpbinMIN <= ixbin && ixbin<=SpbinMAX){
         f3widehist->SetBinContent(ixbin,iybin,0);
         f3widehist->SetBinError(ixbin,iybin,0);
@@ -353,8 +368,24 @@ void Fit2DK0(const int qcut=2)
         f3widehist->SetBinContent(ixbin,iybin,0);
         f3widehist->SetBinError(ixbin,iybin,0);
       }
+
     }
   }
+  auto *ctemp = new TCanvas("ctemp","ctemp",800,800);
+  ctemp->Divide(2,2);
+  ctemp->cd(3);
+  //f3widehist->Draw("colz");
+  TH2D* hf3widehist_nocut = (TH2D*)f3wide_nocut->GetHistogram();
+  hf3widehist_nocut->SetFillColor(0);
+  hf3widehist_nocut->Draw("colz");
+
+  ctemp->cd(1);
+  //TH2D* hf3wide = (TH2D*)f3wide->GetHistogram();
+  hf3widehist_nocut->ProjectionX("hf3wide_px")->Draw("HIST");
+
+  ctemp->cd(4);
+  //hf3wide->ProjectionY("hf3wide_py")->Draw("HIST");
+  hf3widehist_nocut->ProjectionY("hf3wide_py")->Draw("HIST");
 
   TCanvas *c3wide = new TCanvas("c3wide","c3wide",800,800);
   c3wide->Divide(2,2);
@@ -380,7 +411,7 @@ void Fit2DK0(const int qcut=2)
     for(int iybin=0;iybin<=nbinsY;iybin++){
       double xcent = IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->GetXaxis()->GetBinCenter(ixbin);
       double ycent = IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->GetYaxis()->GetBinCenter(iybin);
-      double cont = f3wide->Eval(xcent,ycent);   
+      double cont = f3wide_nocut->Eval(xcent,ycent);   
       double xx = 1.0/sqrt(2.0)*(xcent-ycent);
       double yy = 1.0/sqrt(2.0)*(xcent+ycent);
       double yy2 = yy-(sqrt(6.76*xx*xx+2.765)-1.0);//slightly tuned from original value by looking final fitting result
@@ -400,9 +431,12 @@ void Fit2DK0(const int qcut=2)
   IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Draw("colz");
 
   cinter_3->cd(1);
-  //auto IMnpip_3_inter->Draw("HE");
+  auto *IMnpip_3_inter = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->ProjectionX("IMnpip_3_inter");
+  IMnpip_3_inter->Draw("HE");
 
   cinter_3->cd(4);
+  auto *IMnpim_3_inter = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->ProjectionY("IMnpim_3_inter");
+  IMnpim_3_inter->Draw("HE");
   //auto IMnpim_3_inter->Draw("HE");
 
   //next step
