@@ -90,7 +90,7 @@ void SubtractMix(const int mode=0)
       h1r = (TH1*)keyr[iq]->ReadObj();
       h1m = (TH1*)keym[iq]->ReadObj();
       h1r->Add(h1m,-1.0);
-      if(obj->InheritsFrom("TH2")) {
+      if(h1r->InheritsFrom("TH2")) {
         h1r->SetMinimum(0);
       }
       h1r->Write();
