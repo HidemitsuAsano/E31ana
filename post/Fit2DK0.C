@@ -31,12 +31,13 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
   double xx = 1.0/sqrt(2.0)*(x[0]-x[1]);
   double yy = 1.0/sqrt(2.0)*(x[0]+x[1]);
   //double yy2 = yy-(sqrt(6.76*xx*xx+2.725)-1.0);
-  double yy2 = yy-(sqrt(6.76*xx*xx+2.765)-1.0);//slightly tuned from original value by looking final fitting result
+  double yy2 = yy-(sqrt(6.76*xx*xx*xx+2.765)-1.0);//slightly tuned from original value by looking final fitting result
 
   Double_t r1 = (xx-par[1])/par[2];
   Double_t r2 = yy2*par[3];
   const Double_t th = 1.00;
   const Double_t a  = 0.002;
+  //Double_t r3=
   double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-yy2+th)/a));    
   return ret;
   /*
@@ -280,6 +281,7 @@ void Fit2DK0(const int qcut=2)
   //default binning +/- 0.5 sigma=1 sigma.
   //woSid +/-3 sigma cut (no rounding) 
   //
+  //fit with wider bin (+/- 3sigma) ->fail
   //IMnpim_IMnpip_dE_wK0_woSid_n_3->Rebin2D(3,3);
   IMnpim_IMnpip_dE_wK0_woSid_n_3->Draw("colz");
    
@@ -305,10 +307,10 @@ void Fit2DK0(const int qcut=2)
   f3->SetParLimits(0,1.14645e+03*0.03,1.14645e+03*0.04);
   f3->SetParLimits(1,0.0,0.1);
   f3->SetParLimits(2,0.15,0.2);
-  f3->FixParameter(3,1.8);
+  f3->FixParameter(3,1.9);
   //f3->FixParameter(3,1.9);
   //f3->SetParLimits(0,param[0]/3.0,param[0]/1.5);
-  f3->SetRange(1.0,1.0,1.4,1.4);
+  f3->SetRange(1.1,1.1,1.4,1.4);
   IMnpim_IMnpip_dE_wK0_woSid_n_3->Fit("f3","R","");
   //f3->Draw("cont2 same");
    
@@ -350,8 +352,8 @@ void Fit2DK0(const int qcut=2)
   const int SmbinMAX = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->FindBin(anacuts::Sigmam_MAX_wide);
   
   //removing Sp OR Sm
-  //TODO and also remove negative bin of IMnpim_IMnpip histogram ? 
-  //-->Conclusion: non-sense
+  //idea:  also remove negative bin of IMnpim_IMnpip histogram ? 
+  //-->Conclusion: Non-sense
   for(int ixbin=0;ixbin<=nbinsX;ixbin++){
     for(int iybin=0;iybin<=nbinsY;iybin++){
       
@@ -415,7 +417,7 @@ void Fit2DK0(const int qcut=2)
       double xx = 1.0/sqrt(2.0)*(xcent-ycent);
       double yy = 1.0/sqrt(2.0)*(xcent+ycent);
       double yy2 = yy-(sqrt(6.76*xx*xx+2.765)-1.0);//slightly tuned from original value by looking final fitting result
-      if(yy2<1.0) continue;
+      if(yy2<1.0 ) continue;
       if(SpbinMIN <= ixbin && ixbin<=SpbinMAX){
         //std::cout << xcent << " " << ycent << "  " << cont << std::endl;
         IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->SetBinContent(ixbin,iybin,cont);
@@ -427,7 +429,7 @@ void Fit2DK0(const int qcut=2)
   }
   
   cinter_3->cd(3);
-  IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Rebin2D(4,4);//+/- 2sigma binning
+  //IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Rebin2D(4,4);//+/- 2sigma binning
   IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Draw("colz");
 
   cinter_3->cd(1);
@@ -483,6 +485,7 @@ void Fit2DK0(const int qcut=2)
 
   cwSid_n_K0sub->cd(1);
   const int SmbinStart = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->FindBin(anacuts::Sigmam_MIN);
+  std::cout << "Sigma m mass center " << anacuts::Sigmam_center << std::endl;
   std::cout << "SmbinStart low Edge " << IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->GetBinLowEdge(SmbinStart) << std::endl;
   std::cout << "Sigmam_MIN " << anacuts::Sigmam_MIN << std::endl;
   std::cout << "Smbin width " << IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->GetBinWidth(SmbinStart) << std::endl;
@@ -492,8 +495,8 @@ void Fit2DK0(const int qcut=2)
   std::cout << "SmbinEnd low Edge+1 " << IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->GetBinLowEdge(SmbinEnd+1) << std::endl;
   std::cout << "Sigmam_MAX " << anacuts::Sigmam_MAX << std::endl;
   const int Spbin = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetXaxis()->FindBin(anacuts::Sigmap_center);
-  TH1D* IMnpip_K0sub = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionX("IMnpip_K0sub",SmbinStart,SmbinEnd);
-  TH1D* IMnpip_K0sub_Sp = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionX("IMnpip_K0sub_Sp",SmbinStart,SmbinEnd);
+  TH1D* IMnpip_K0sub = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionX("IMnpip_K0sub",SmbinEnd,SmbinEnd);
+  TH1D* IMnpip_K0sub_Sp = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionX("IMnpip_K0sub_Sp",SmbinEnd,SmbinEnd);
   IMnpip_K0sub->Draw("HE");
   IMnpip_K0sub_Sp->SetFillColor(2);
   IMnpip_K0sub_Sp->GetXaxis()->SetRange(Spbin,Spbin);
@@ -502,6 +505,8 @@ void Fit2DK0(const int qcut=2)
 
   cwSid_n_K0sub->cd(4);
   const int SpbinStart = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetXaxis()->FindBin(anacuts::Sigmap_MIN);
+  std::cout << std::endl;
+  std::cout << "Sigma p mass center " << anacuts::Sigmap_center << std::endl;
   std::cout << "SpbinStart low Edge " << IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetXaxis()->GetBinLowEdge(SpbinStart) << std::endl;
   std::cout << "Sigmap_MIN " << anacuts::Sigmap_MIN << std::endl;
   const int SpbinEnd = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetXaxis()->FindBin(anacuts::Sigmap_MAX);
@@ -509,9 +514,9 @@ void Fit2DK0(const int qcut=2)
   std::cout << "SpbinEnd low Edge+1 " << IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetXaxis()->GetBinLowEdge(SpbinEnd+1) << std::endl;
   std::cout << "Sigmap_MAX " << anacuts::Sigmap_MAX << std::endl;
   const int Smbin = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->FindBin(anacuts::Sigmam_center);
-  TH1D* IMnpim_K0sub = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionY("IMnpim_K0sub",SpbinStart,SpbinEnd);
+  TH1D* IMnpim_K0sub = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionY("IMnpim_K0sub",SpbinEnd,SpbinEnd);
   IMnpim_K0sub->Draw("HE");
-  TH1D* IMnpim_K0sub_Sm = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionY("IMnpim_K0sub_Sm",SpbinStart,SpbinEnd);
+  TH1D* IMnpim_K0sub_Sm = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->ProjectionY("IMnpim_K0sub_Sm",SpbinEnd,SpbinEnd);
   IMnpim_K0sub_Sm->SetFillColor(2);
   IMnpim_K0sub_Sm->GetXaxis()->SetRange(Smbin,Smbin);
   IMnpim_K0sub_Sm->SetFillStyle(3002);
