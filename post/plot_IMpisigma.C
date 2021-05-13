@@ -1356,8 +1356,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   const double nbinIMnpim_high = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
   //const double nbinIMnpim_high = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
   const int nbinIMnpip_bin = 120;
-  const double nbinIMnpip_low = anacuts::Sigmap_center - 30.0*anacuts::Sigmap_sigma;
-  const double nbinIMnpip_high = anacuts::Sigmap_center + 90.0*anacuts::Sigmap_sigma;
+  const double nbinIMnpip_low = anacuts::Sigmap_center - 26.0*anacuts::Sigmap_sigma;
+  const double nbinIMnpip_high = anacuts::Sigmap_center + 94.0*anacuts::Sigmap_sigma;
   
   /*
   const int nbinIMnpim_bin2 = 40;
