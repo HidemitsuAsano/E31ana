@@ -1356,8 +1356,20 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   const double nbinIMnpim_high = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
   //const double nbinIMnpim_high = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
   const int nbinIMnpip_bin = 120;
-  const double nbinIMnpip_low = anacuts::Sigmap_center - 26.0*anacuts::Sigmap_sigma;
-  const double nbinIMnpip_high = anacuts::Sigmap_center + 94.0*anacuts::Sigmap_sigma;
+  const double nbinIMnpip_low = anacuts::Sigmap_center - 30.0*anacuts::Sigmap_sigma;
+  const double nbinIMnpip_high = anacuts::Sigmap_center + 90.0*anacuts::Sigmap_sigma;
+  
+  /*
+  const int nbinIMnpim_bin2 = 40;
+  const double nbinIMnpim_low2 = anacuts::Sigmam_center - 10.0*3.0*anacuts::Sigmam_sigma;
+  //const double nbinIMnpim_low = anacuts::Sigmam_center - 30.0*anacuts::Sigmam_sigma;
+  const double nbinIMnpim_high2 = anacuts::Sigmam_center + 10.0*3.0*anacuts::Sigmam_sigma;
+  //const double nbinIMnpim_high = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
+  const int nbinIMnpip_bin2= 40;
+  const double nbinIMnpip_low2 = anacuts::Sigmap_center - 27.0*anacuts::Sigmap_sigma;
+  const double nbinIMnpip_high2 = anacuts::Sigmap_center + 93.0*anacuts::Sigmap_sigma;
+  */
+
   IMnpim_IMnpip_dE_wSid_n = new TH2F("IMnpim_IMnpip_dE_wSid_n", "IMnpim_IMnpip_dE_wSid_n",
       nbinIMnpip_bin, nbinIMnpip_low, nbinIMnpip_high, nbinIMnpim_bin, nbinIMnpim_low, nbinIMnpim_high);
       //,nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
