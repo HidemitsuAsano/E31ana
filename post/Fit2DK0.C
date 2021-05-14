@@ -38,7 +38,7 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
   const Double_t th = 1.00;
   const Double_t a  = 0.002;
   const Double_t thend = 2.00;
-  const Double_t aend = 0.02;
+  const Double_t aend = 0.2;
   double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-yy2+th)/a))/(1.0+TMath::Exp((yy-thend)/aend));    
   //double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-yy2+th)/a))/(1.0+TMath::Exp((yy-thend)/aend));    
   return ret;
@@ -300,7 +300,7 @@ void Fit2DK0(const int qcut=2)
   f3->SetParameters(param);
   //f3->SetParameter(0,param[0]/2.0);
   //f3->FixParameter(0,param[0]*0.3);
-  f3->SetParLimits(0,param[0]*0.2,param[0]*0.5);
+  f3->SetParLimits(0,param[0]*0.4,param[0]*0.5);
   //f2->FixParamter(0,1.25448e+02);
   //f3->FixParameter(0,1.05448e+02*0.70);
   //f3->SetParLimits(0,1.05448e+02*0.52,1.05448e+02*0.55);
@@ -535,8 +535,8 @@ void Fit2DK0(const int qcut=2)
   IMnpim_K0sub_Sm->GetXaxis()->SetRange(Smbin,Smbin);
   IMnpim_K0sub_Sm->SetFillStyle(3002);
   IMnpim_K0sub_Sm->Draw("HEsame");
-  std::cout << "overlap events"  << IMnpim_K0sub_Sm->GetBinContent(Smbin) << std::endl;
-  std::cout << "overlap error"  << IMnpim_K0sub_Sm->GetBinError(Smbin) << std::endl;
+  std::cout << "overlap events "  << IMnpim_K0sub_Sm->GetBinContent(Smbin) << std::endl;
+  std::cout << "overlap error "  << IMnpim_K0sub_Sm->GetBinError(Smbin) << std::endl;
   //remove signal each other and apply interpolation in crossing region
   TH1D* IMnpip_K0sub_woSp = (TH1D*)IMnpip_K0sub->Clone("IMnpip_K0sub_woSp");
   TH1D* IMnpim_K0sub_woSm = (TH1D*)IMnpim_K0sub->Clone("IMnpim_K0sub_woSm");
