@@ -37,8 +37,8 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
   Double_t r2 = yy2*par[3];
   const Double_t th = 1.00;
   const Double_t a  = 0.002;
-  const Double_t thend = 2.00;
-  const Double_t aend = 0.2;
+  const Double_t thend = 1.95;
+  const Double_t aend = 0.05;
   double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-yy2+th)/a))/(1.0+TMath::Exp((yy-thend)/aend));    
   //double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-yy2+th)/a))/(1.0+TMath::Exp((yy-thend)/aend));    
   return ret;
@@ -300,7 +300,7 @@ void Fit2DK0(const int qcut=2)
   f3->SetParameters(param);
   //f3->SetParameter(0,param[0]/2.0);
   //f3->FixParameter(0,param[0]*0.3);
-  f3->SetParLimits(0,param[0]*0.4,param[0]*0.5);
+  f3->SetParLimits(0,param[0]*0.3,param[0]*0.45);
   //f2->FixParamter(0,1.25448e+02);
   //f3->FixParameter(0,1.05448e+02*0.70);
   //f3->SetParLimits(0,1.05448e+02*0.52,1.05448e+02*0.55);
@@ -360,7 +360,6 @@ void Fit2DK0(const int qcut=2)
   //-->Conclusion: Non-sense
   for(int ixbin=0;ixbin<=nbinsX;ixbin++){
     for(int iybin=0;iybin<=nbinsY;iybin++){
-      
       //double cont =  IMnpim_IMnpip_dE_wK0_woSid_n_3->GetBinContent(ixbin,iybin);
       //if(cont<0.001){
       //  f3widehist->SetBinContent(ixbin,iybin,0);
@@ -374,7 +373,6 @@ void Fit2DK0(const int qcut=2)
         f3widehist->SetBinContent(ixbin,iybin,0);
         f3widehist->SetBinError(ixbin,iybin,0);
       }
-
     }
   }
   auto *ctemp = new TCanvas("ctemp","ctemp",800,800);
