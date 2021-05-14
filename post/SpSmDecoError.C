@@ -24,6 +24,8 @@ void SpSmDecoError(const int qcut=2)
   TH1D* IMnpim_K0sub_woSm_est = (TH1D*)IMnpim_K0sub_woSm->Clone("IMnpim_K0sub_woSm_est");
   TGraph *gIMnpip_all = new TGraph();
   TGraph *gIMnpim_all = new TGraph();
+  TGraph *gIMnpip = new TGraph();
+  TGraph *gIMnpim = new TGraph();
 
   const int Spbin = IMnpip_K0sub_woSp->GetXaxis()->FindBin(anacuts::Sigmap_center);
   const int Smbin = IMnpim_K0sub_woSm->GetXaxis()->FindBin(anacuts::Sigmam_center);
@@ -41,7 +43,7 @@ void SpSmDecoError(const int qcut=2)
       IMnpip_K0sub_woSp_est->SetBinError(ibin,err);
       gIMnpip_all->AddPoint(bincent,gen);
     }
-    TSpline3 sIMnpip = new TSpline3("snpip",gIM
+    TSpline3 sIMnpip = new TSpline3("snpip",gIMnpip);
     const double Splowbincen = IMnpip_K0sub_woSp->GetBinCenter(Spbin-1);
     const double Sphighbincen = IMnpip_K0sub_woSp->GetBinCenter(Spbin+1);
     TF1 *fSp = new TF1("fSp","pol1",Splowbincen,Sphighbincen);
