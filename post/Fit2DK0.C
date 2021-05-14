@@ -630,7 +630,20 @@ void Fit2DK0(const int qcut=2)
   IMnpim_K0sub_woSm->Fit("fSm","","",Smlowbincen,Smhighbincen);
 
   std::cout << "Sp estimated: " << fSp->Eval(anacuts::Sigmap_center) << std::endl;
+  std::cout << "Sp error "      << fSp->GetParError(0) << std::endl;
   std::cout << "Sm estimated: " << fSm->Eval(anacuts::Sigmam_center) << std::endl;
+  std::cout << "Sm error "      << fSm->GetParError(0) << std::endl;
+
+  TFile *fout = NULL;
+  if(qcut==1){
+     fout = TFile::Open("fout_qlo.root","RECREATE");
+  }else if(qcut==2){
+     fout = TFile::Open("fout_qhi.root","RECREATE");
+  }
+  IMnpip_K0sub_woSp->Write();
+  IMnpim_K0sub_woSm->Write();
+  IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Write();
+
 
 
 
