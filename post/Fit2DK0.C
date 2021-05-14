@@ -31,14 +31,15 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
   double xx = 1.0/sqrt(2.0)*(x[0]-x[1]);
   double yy = 1.0/sqrt(2.0)*(x[0]+x[1]);
   //double yy2 = yy-(sqrt(6.76*xx*xx+2.725)-1.0);
-  double yy2 = yy-(sqrt(6.76*xx*xx*xx+2.765)-1.0);//slightly tuned from original value by looking final fitting result
+  double yy2 = yy-(sqrt(6.76*xx*xx+2.765)-1.0);//slightly tuned from original value by looking final fitting result
+ 
 
   Double_t r1 = (xx-par[1])/par[2];
   Double_t r2 = yy2*par[3];
   const Double_t th = 1.00;
   const Double_t a  = 0.002;
-  //Double_t r3=
   double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-yy2+th)/a));    
+  //double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-yy2+th)/a))*(1.0+TMath;    
   return ret;
   /*
   //if(yy2>1.0){
@@ -298,16 +299,18 @@ void Fit2DK0(const int qcut=2)
   f3->SetNpy(nbinsY);//use same nbin to compare the projection
   f3->SetParameters(param);
   //f3->SetParameter(0,param[0]/2.0);
-  //f3->FixParameter(0,param[0]/2.0);
+  f3->FixParameter(0,param[0]/2.0);
   //f2->FixParamter(0,1.25448e+02);
   //f3->FixParameter(0,1.05448e+02*0.70);
   //f3->SetParLimits(0,1.05448e+02*0.52,1.05448e+02*0.55);
   //f3->SetParLimits(0,1.05448e+02*0.4,1.05448e+02*0.6);
   //f3->SetParLimits(0,1.14645e+03*0.05,1.14645e+03*0.06);
-  f3->SetParLimits(0,1.14645e+03*0.03,1.14645e+03*0.04);
-  f3->SetParLimits(1,0.0,0.1);
-  f3->SetParLimits(2,0.15,0.2);
-  f3->FixParameter(3,1.9);
+  //f3->SetParLimits(0,1.14645e+03*0.07,1.14645e+03*0.1);
+  //f3->SetParLimits(1,0.0,0.1);
+  //f3->SetParLimits(2,0.15,0.2);
+  f3->FixParameter(2,param[1]);
+  f3->FixParameter(2,param[2]);
+  f3->FixParameter(3,param[3]);
   //f3->FixParameter(3,1.9);
   //f3->SetParLimits(0,param[0]/3.0,param[0]/1.5);
   f3->SetRange(1.1,1.1,1.4,1.4);
