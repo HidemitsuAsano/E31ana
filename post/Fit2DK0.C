@@ -427,27 +427,32 @@ void Fit2DK0(const int qcut=2)
       if(SpbinMIN <= ixbin && ixbin<=SpbinMAX){
         //std::cout << xcent << " " << ycent << "  " << cont << std::endl;
         IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->SetBinContent(ixbin,iybin,cont);
+        h2K0inter_3->SetBinContent(ixbin,iybin,cont);
       }
       if(SmbinMIN <= iybin && iybin<=SmbinMAX){
         IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->SetBinContent(ixbin,iybin,cont);
+        h2K0inter_3->SetBinContent(ixbin,iybin,cont);
       }
     }
   }
   
   cinter_3->cd(3);
   IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Rebin2D(4,4);//+/- 2sigma binning
+  h2K0inter_3->Rebin2D(4,4);
   IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Draw("colz");
-
+  
+  h2K0inter_3->SetFillColor(2);
   cinter_3->cd(1);
   auto *IMnpip_3_inter = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->ProjectionX("IMnpip_3_inter");
   IMnpip_3_inter->Draw("HE");
-  
+  h2K0inter_3->ProjectionX()->Draw("HEsame");
 
   cinter_3->cd(4);
   auto *IMnpim_3_inter = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->ProjectionY("IMnpim_3_inter");
   IMnpim_3_inter->Draw("HE");
+  h2K0inter_3->ProjectionY()->Draw("HEsame");
   //auto IMnpim_3_inter->Draw("HE");
-  
+   
 
 
   //next step
