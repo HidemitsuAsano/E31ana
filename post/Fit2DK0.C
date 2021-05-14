@@ -17,7 +17,7 @@ Double_t K0fit2d(Double_t *x, Double_t *par)
   //woods-saxon shape K0 threshold in x[1] axis
   const Double_t th = 1.00;
   const Double_t a  = 0.002;
-
+  
   return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-x[1]+th)/a));
   //return par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-0.5*r2*r2);
 }
@@ -32,14 +32,15 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
   double yy = 1.0/sqrt(2.0)*(x[0]+x[1]);
   //double yy2 = yy-(sqrt(6.76*xx*xx+2.725)-1.0);
   double yy2 = yy-(sqrt(6.76*xx*xx+2.765)-1.0);//slightly tuned from original value by looking final fitting result
- 
 
   Double_t r1 = (xx-par[1])/par[2];
   Double_t r2 = yy2*par[3];
   const Double_t th = 1.00;
   const Double_t a  = 0.002;
-  double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-yy2+th)/a));    
-  //double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-yy2+th)/a))*(1.0+TMath;    
+  const Double_t thend = 2.00;
+  const Double_t aend = 0.02;
+  double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-yy2+th)/a))/(1.0+TMath::Exp((yy-thend)/aend));    
+  //double ret = par[0]*TMath::Exp(-0.5*r1*r1)*TMath::Exp(-1.0*r2*r2)/(1.0+TMath::Exp((-yy2+th)/a))/(1.0+TMath::Exp((yy-thend)/aend));    
   return ret;
   /*
   //if(yy2>1.0){
@@ -233,8 +234,7 @@ void Fit2DK0(const int qcut=2)
           double evalK0 = f2wide->Eval(xx,yy2);
           double scale=0.28;//this scaling factor is arbitrary and determined by eye at this moment
           evalK0 *= scale;
-          if(yy2>1.0 && xcent < 1.7 && ycent<1.7){
-          //if(xcent < 1.7 && ycent<1.7){
+          if(yy2>0.98 && xcent < 1.7 && ycent<1.7){
             IMnpim_IMnpip_dE_wK0_woSid_n_2->SetBinContent(ix,iy,evalK0);
             h2K0inter->SetBinContent(ix,iy,evalK0);
           }
@@ -271,8 +271,8 @@ void Fit2DK0(const int qcut=2)
       double xcent = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->GetBinCenter(ix);
       double ycent = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->GetBinCenter(iy);
       //remove edge region and negative bin
-      if((cont < 0.0001) || (xcent<1.18 && ycent<1.18)) {       
-      //if( (xcent<1.18 && ycent<1.18)) {       
+      //if((cont < 0.0001) || (xcent<1.18 && ycent<1.18)) {       
+      if( (xcent<1.18 && ycent<1.18)) {       
         IMnpim_IMnpip_dE_wK0_woSid_n_3->SetBinContent(ix,iy,0);
         IMnpim_IMnpip_dE_wK0_woSid_n_3->SetBinError(ix,iy,0);
       }
@@ -299,7 +299,8 @@ void Fit2DK0(const int qcut=2)
   f3->SetNpy(nbinsY);//use same nbin to compare the projection
   f3->SetParameters(param);
   //f3->SetParameter(0,param[0]/2.0);
-  f3->FixParameter(0,param[0]/2.0);
+  //f3->FixParameter(0,param[0]*0.3);
+  f3->SetParLimits(0,param[0]*0.2,param[0]*0.5);
   //f2->FixParamter(0,1.25448e+02);
   //f3->FixParameter(0,1.05448e+02*0.70);
   //f3->SetParLimits(0,1.05448e+02*0.52,1.05448e+02*0.55);
@@ -308,7 +309,7 @@ void Fit2DK0(const int qcut=2)
   //f3->SetParLimits(0,1.14645e+03*0.07,1.14645e+03*0.1);
   //f3->SetParLimits(1,0.0,0.1);
   //f3->SetParLimits(2,0.15,0.2);
-  f3->FixParameter(2,param[1]);
+  f3->FixParameter(1,param[1]);
   f3->FixParameter(2,param[2]);
   f3->FixParameter(3,param[3]);
   //f3->FixParameter(3,1.9);
@@ -410,6 +411,8 @@ void Fit2DK0(const int qcut=2)
   f3widehist_py->Draw("HISTsame");
   
   TH2D* IMnpim_IMnpip_dE_wK0_woSid_n_3_inter = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_3_inter");
+  TH2D* h2K0inter_3 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Clone("h2K0inter_3");
+  h2K0inter_3->Reset();
   auto cinter_3 = new TCanvas("cinter_3","cinter_3",800,800);
   cinter_3->Divide(2,2);
   for(int ixbin=0;ixbin<=nbinsX;ixbin++){
@@ -420,7 +423,7 @@ void Fit2DK0(const int qcut=2)
       double xx = 1.0/sqrt(2.0)*(xcent-ycent);
       double yy = 1.0/sqrt(2.0)*(xcent+ycent);
       double yy2 = yy-(sqrt(6.76*xx*xx+2.765)-1.0);//slightly tuned from original value by looking final fitting result
-      if(yy2<1.0 ) continue;
+      if(yy2<0.98 ) continue;
       if(SpbinMIN <= ixbin && ixbin<=SpbinMAX){
         //std::cout << xcent << " " << ycent << "  " << cont << std::endl;
         IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->SetBinContent(ixbin,iybin,cont);
@@ -432,17 +435,20 @@ void Fit2DK0(const int qcut=2)
   }
   
   cinter_3->cd(3);
-  //IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Rebin2D(4,4);//+/- 2sigma binning
+  IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Rebin2D(4,4);//+/- 2sigma binning
   IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Draw("colz");
 
   cinter_3->cd(1);
   auto *IMnpip_3_inter = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->ProjectionX("IMnpip_3_inter");
   IMnpip_3_inter->Draw("HE");
+  
 
   cinter_3->cd(4);
   auto *IMnpim_3_inter = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->ProjectionY("IMnpim_3_inter");
   IMnpim_3_inter->Draw("HE");
   //auto IMnpim_3_inter->Draw("HE");
+  
+
 
   //next step
   //subtract K0 and solve Sp/Sm overlap region
