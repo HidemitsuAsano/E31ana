@@ -24,8 +24,6 @@ void SpSmDecoError(const int qcut=2)
   TH1D* IMnpim_K0sub_woSm_est = (TH1D*)IMnpim_K0sub_woSm->Clone("IMnpim_K0sub_woSm_est");
   TGraph *gIMnpip_all = new TGraph();
   TGraph *gIMnpim_all = new TGraph();
-  TGraph *gIMnpip = new TGraph();
-  TGraph *gIMnpim = new TGraph();
 
   const int Spbin = IMnpip_K0sub_woSp->GetXaxis()->FindBin(anacuts::Sigmap_center);
   const int Smbin = IMnpim_K0sub_woSm->GetXaxis()->FindBin(anacuts::Sigmam_center);
@@ -33,6 +31,8 @@ void SpSmDecoError(const int qcut=2)
     if(it%1000==0) std::cout << "itry " << it << std::endl;
     IMnpip_K0sub_woSp_est->Reset();
     IMnpim_K0sub_woSm_est->Reset();
+    TGraph *gIMnpip = new TGraph();
+    TGraph *gIMnpim = new TGraph();
     for(int ibin=0;ibin<IMnpip_K0sub_woSp->GetNbinsX();ibin++){
       double cont = IMnpip_K0sub_woSp->GetBinContent(ibin);
       if(cont<0.0001) continue;
@@ -42,13 +42,15 @@ void SpSmDecoError(const int qcut=2)
       IMnpip_K0sub_woSp_est->SetBinContent(ibin,gen);
       IMnpip_K0sub_woSp_est->SetBinError(ibin,err);
       gIMnpip_all->AddPoint(bincent,gen);
+      gIMnpip->AddPoint(bincent,gen);
     }
-    TSpline3 sIMnpip = new TSpline3("snpip",gIMnpip);
+    TSpline3 *sIMnpip = new TSpline3("snpip",gIMnpip);
     const double Splowbincen = IMnpip_K0sub_woSp->GetBinCenter(Spbin-1);
     const double Sphighbincen = IMnpip_K0sub_woSp->GetBinCenter(Spbin+1);
     TF1 *fSp = new TF1("fSp","pol1",Splowbincen,Sphighbincen);
     IMnpip_K0sub_woSp_est->Fit("fSp","q","",Splowbincen,Sphighbincen);
-    IMnpip_K0sub_woSp_est->Draw("HE");
+    IMnpip_K0sub_woSp_est->Draw("H");
+    sIMnpip->Draw("same");
     for(int ibin=0;ibin<IMnpim_K0sub_woSm->GetNbinsX();ibin++){
       double cont = IMnpim_K0sub_woSm->GetBinContent(ibin);
       if(cont<0.0001) continue;
@@ -58,11 +60,17 @@ void SpSmDecoError(const int qcut=2)
       IMnpim_K0sub_woSm_est->SetBinContent(ibin,gen);
       IMnpim_K0sub_woSm_est->SetBinError(ibin,err);
       gIMnpim_all->AddPoint(bincent,gen);
+      gIMnpim->AddPoint(bincent,gen);
     }
+    TSpline3 *sIMnpim = new TSpline3("snpim",gIMnpim);
     const double Smlowbincen = IMnpim_K0sub_woSm->GetBinCenter(Smbin-1);
     const double Smhighbincen = IMnpim_K0sub_woSm->GetBinCenter(Smbin+1);
     TF1 *fSm = new TF1("fSm","pol1",Smlowbincen,Smhighbincen);
     IMnpim_K0sub_woSm_est->Fit("fSm","q","",Smlowbincen,Smhighbincen);
+    IMnpim_K0sub_woSm_est->Draw("H");
+    sIMnpim->Draw("same");
+
+    break;
   }
   
   TCanvas *c2 = new TCanvas("c2","c2");
