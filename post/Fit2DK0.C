@@ -138,14 +138,16 @@ void Fit2DK0(const int qcut=2)
   f2->SetRange(-0.4,0.4,0.9,1.4); 
   //f2->SetParameters(8.0e9,0.005,0.16,-15.2);
   f2->SetParameters(2.0e5,0.005,0.16,1.9);
-  f2->SetParLimits(0,0,4.5e10);
+  if(qcut==2)f2->SetParLimits(0,0,4.5e12);
+  else if(qcut==1)f2->SetParLimits(0,3.57224e+04*1.8,3.57224e+04*2.0);
   //f2->FixParameter(0,2.0e5);
   f2->SetParLimits(1,0.0,0.1);
   //f2->FixParameter(1,0.005);
   f2->SetParLimits(2,0.15,0.2);
   //f2->SetParameter(3,0.5);
   //f2->SetParLimits(3,1.66,3.00);
-  f2->FixParameter(3,1.9);
+  if(qcut==2)f2->FixParameter(3,1.9);
+  else if(qcut==1)f2->FixParameter(3,3.0);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Fit("f2","R","");
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->Print("base");
   f2->Draw("cont1 same");
@@ -300,7 +302,8 @@ void Fit2DK0(const int qcut=2)
   f3->SetParameters(param);
   //f3->SetParameter(0,param[0]/2.0);
   //f3->FixParameter(0,param[0]*0.3);
-  f3->SetParLimits(0,param[0]*0.3,param[0]*0.45);
+  if(qcut==2)f3->SetParLimits(0,param[0]*0.3,param[0]*0.45);
+  else if(qcut==1)f3->SetParLimits(0,param[0]*0.35,param[0]*1.0);
   //f2->FixParamter(0,1.25448e+02);
   //f3->FixParameter(0,1.05448e+02*0.70);
   //f3->SetParLimits(0,1.05448e+02*0.52,1.05448e+02*0.55);
