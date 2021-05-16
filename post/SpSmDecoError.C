@@ -24,6 +24,17 @@ void SpSmDecoError(const int qcut=2)
   TH1D* IMnpim_K0sub_woSm_est = (TH1D*)IMnpim_K0sub_woSm->Clone("IMnpim_K0sub_woSm_est");
   TGraph *gIMnpip_all = new TGraph();
   TGraph *gIMnpim_all = new TGraph();
+  const int nbinSp = IMnpip_K0sub_woSp_est->GetNbinsX();
+  const double xminSp = IMnpip_K0sub_woSp_est->GetXaxis()->GetXmin();
+  const double xmaxSp = IMnpip_K0sub_woSp_est->GetXaxis()->GetXmax();
+  TH2D* Est_IMnpip_woSp_pol1 = new TH2D("Est_IMnpip_woSp_pol1","Est_IMnpip_woSp_pol1",nbinSp,xminSp,xmaxSp,220,0,220);
+  TH2D* Est_IMnpip_woSp_3rd = new TH2D("Est_IMnpip_woSp_3rd","Est_IMnpip_woSp_3rd",nbinSp,xminSp,xmaxSp,220,0,220);
+  const int nbinSm = IMnpim_K0sub_woSm_est->GetNbinsX();
+  const double xminSm = IMnpim_K0sub_woSm_est->GetXaxis()->GetXmin();
+  const double xmaxSm = IMnpim_K0sub_woSm_est->GetXaxis()->GetXmax();
+  TH2D* Est_IMnpim_woSm_pol1 = new TH2D("Est_IMnpim_woSm_pol1","Est_IMnpim_woSm_pol1",nbinSm,xminSm,xmaxSm,220,0,220);
+  TH2D* Est_IMnpim_woSm_3rd = new TH2D("Est_IMnpim_woSm_3rd","Est_IMnpim_woSm_3rd",nbinSm,xminSm,xmaxSm,220,0,220);
+  
 
   const int Spbin = IMnpip_K0sub_woSp->GetXaxis()->FindBin(anacuts::Sigmap_center);
   const int Smbin = IMnpim_K0sub_woSm->GetXaxis()->FindBin(anacuts::Sigmam_center);
@@ -35,10 +46,10 @@ void SpSmDecoError(const int qcut=2)
     TGraph *gIMnpim = new TGraph();
     for(int ibin=0;ibin<IMnpip_K0sub_woSp->GetNbinsX();ibin++){
       double cont = IMnpip_K0sub_woSp->GetBinContent(ibin);
-      if(cont<0.0001) continue;
       double bincent = IMnpip_K0sub_woSp->GetBinCenter(ibin);
       double err = IMnpip_K0sub_woSp->GetBinError(ibin);
       double gen = gRandom->Gaus(cont,err);
+      if(cont<0.0001) continue;
       IMnpip_K0sub_woSp_est->SetBinContent(ibin,gen);
       IMnpip_K0sub_woSp_est->SetBinError(ibin,err);
       gIMnpip_all->AddPoint(bincent,gen);
@@ -49,14 +60,20 @@ void SpSmDecoError(const int qcut=2)
     const double Sphighbincen = IMnpip_K0sub_woSp->GetBinCenter(Spbin+1);
     TF1 *fSp = new TF1("fSp","pol1",Splowbincen,Sphighbincen);
     IMnpip_K0sub_woSp_est->Fit("fSp","q","",Splowbincen,Sphighbincen);
-    IMnpip_K0sub_woSp_est->Draw("H");
-    sIMnpip->Draw("same");
+    double est_Sp_pol1 = fSp->Eval(anacuts::Sigmap_center);
+    Est_IMnpip_woSp_pol1->Fill(anacuts::Sigmap_center,est_Sp_pol1);
+    double est_Sp_3rd  = sIMnpip->Eval(anacuts::Sigmap_center); 
+    Est_IMnpip_woSp_3rd->Fill(anacuts::Sigmap_center,est_Sp_3rd);
+
+    //IMnpip_K0sub_woSp_est->Draw("H");
+    //sIMnpip->Draw("same");
     for(int ibin=0;ibin<IMnpim_K0sub_woSm->GetNbinsX();ibin++){
       double cont = IMnpim_K0sub_woSm->GetBinContent(ibin);
-      if(cont<0.0001) continue;
-      double bincent = IMnpip_K0sub_woSp->GetBinCenter(ibin);
+      double bincent = IMnpim_K0sub_woSm->GetBinCenter(ibin);
       double err = IMnpim_K0sub_woSm->GetBinError(ibin);
       double gen = gRandom->Gaus(cont,err);
+      //std::cout << bincent << " " << gen << " " << cont <<  std::endl;
+      if(cont<0.0001) continue;
       IMnpim_K0sub_woSm_est->SetBinContent(ibin,gen);
       IMnpim_K0sub_woSm_est->SetBinError(ibin,err);
       gIMnpim_all->AddPoint(bincent,gen);
@@ -67,10 +84,15 @@ void SpSmDecoError(const int qcut=2)
     const double Smhighbincen = IMnpim_K0sub_woSm->GetBinCenter(Smbin+1);
     TF1 *fSm = new TF1("fSm","pol1",Smlowbincen,Smhighbincen);
     IMnpim_K0sub_woSm_est->Fit("fSm","q","",Smlowbincen,Smhighbincen);
-    IMnpim_K0sub_woSm_est->Draw("H");
-    sIMnpim->Draw("same");
-
-    break;
+    double est_Sm_pol1 = fSm->Eval(anacuts::Sigmam_center);
+    Est_IMnpim_woSm_pol1->Fill(anacuts::Sigmam_center,est_Sm_pol1);
+    double est_Sm_3rd  = sIMnpim->Eval(anacuts::Sigmam_center); 
+    Est_IMnpim_woSm_3rd->Fill(anacuts::Sigmam_center,est_Sm_3rd);
+    //IMnpim_K0sub_woSm_est->Draw("H");
+    //sIMnpim->Draw("same");
+    //gIMnpim->Print();
+    //sIMnpim->Print();
+    //break;
   }
   
   TCanvas *c2 = new TCanvas("c2","c2");
@@ -81,4 +103,30 @@ void SpSmDecoError(const int qcut=2)
   c2->cd(2);
   gIMnpim_all->SetMarkerStyle(20);
   gIMnpim_all->Draw("ap");
+  
+  TCanvas *c3 = new TCanvas("c3","c3");
+  Est_IMnpip_woSp_pol1->Draw("colz");
+  double stddev_Sp_pol1 = Est_IMnpip_woSp_pol1->GetStdDev(2);
+  std::cout  << Est_IMnpip_woSp_pol1->GetStdDev(2) << std::endl;
+
+  TCanvas *c4 = new TCanvas("c4","c4");
+  Est_IMnpip_woSp_3rd->Draw("colz");
+  double stddev_Sp_3rd = Est_IMnpip_woSp_3rd->GetStdDev(2);
+  std::cout << Est_IMnpip_woSp_3rd->GetStdDev(2) << std::endl;
+  
+  TCanvas *c5 = new TCanvas("c5","c5");
+  Est_IMnpim_woSm_pol1->Draw("colz");
+  double stddev_Sm_pol1 = Est_IMnpim_woSm_pol1->GetStdDev(2);
+  std::cout << Est_IMnpim_woSm_pol1->GetStdDev(2) << std::endl;
+
+  TCanvas *c6 = new TCanvas("c6","c6");
+  Est_IMnpim_woSm_3rd->Draw("colz");
+  double stddev_Sm_3rd = Est_IMnpim_woSm_3rd->GetStdDev(2);
+  std::cout << Est_IMnpim_woSm_3rd->GetStdDev(2) << std::endl;
+
+  TCanvas *c7 = new TCanvas("c7","c7");
+  IMnpip_K0sub_woSp->Draw("H");
+
+  TCanvas *c8 = new TCanvas("c8","c8");
+  IMnpim_K0sub_woSm->Draw("H");
 }
