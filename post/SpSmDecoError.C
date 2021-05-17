@@ -27,13 +27,13 @@ void SpSmDecoError(const int qcut=2)
   const int nbinSp = IMnpip_K0sub_woSp_est->GetNbinsX();
   const double xminSp = IMnpip_K0sub_woSp_est->GetXaxis()->GetXmin();
   const double xmaxSp = IMnpip_K0sub_woSp_est->GetXaxis()->GetXmax();
-  TH2D* Est_IMnpip_woSp_pol1 = new TH2D("Est_IMnpip_woSp_pol1","Est_IMnpip_woSp_pol1",nbinSp,xminSp,xmaxSp,220,0,220);
-  TH2D* Est_IMnpip_woSp_3rd = new TH2D("Est_IMnpip_woSp_3rd","Est_IMnpip_woSp_3rd",nbinSp,xminSp,xmaxSp,220,0,220);
+  TH2D* Est_IMnpip_woSp_pol1 = new TH2D("Est_IMnpip_woSp_pol1","Est_IMnpip_woSp_pol1",nbinSp,xminSp,xmaxSp,350,0,350);
+  TH2D* Est_IMnpip_woSp_3rd = new TH2D("Est_IMnpip_woSp_3rd","Est_IMnpip_woSp_3rd",nbinSp,xminSp,xmaxSp,350,0,350);
   const int nbinSm = IMnpim_K0sub_woSm_est->GetNbinsX();
   const double xminSm = IMnpim_K0sub_woSm_est->GetXaxis()->GetXmin();
   const double xmaxSm = IMnpim_K0sub_woSm_est->GetXaxis()->GetXmax();
-  TH2D* Est_IMnpim_woSm_pol1 = new TH2D("Est_IMnpim_woSm_pol1","Est_IMnpim_woSm_pol1",nbinSm,xminSm,xmaxSm,220,0,220);
-  TH2D* Est_IMnpim_woSm_3rd = new TH2D("Est_IMnpim_woSm_3rd","Est_IMnpim_woSm_3rd",nbinSm,xminSm,xmaxSm,220,0,220);
+  TH2D* Est_IMnpim_woSm_pol1 = new TH2D("Est_IMnpim_woSm_pol1","Est_IMnpim_woSm_pol1",nbinSm,xminSm,xmaxSm,350,0,350);
+  TH2D* Est_IMnpim_woSm_3rd = new TH2D("Est_IMnpim_woSm_3rd","Est_IMnpim_woSm_3rd",nbinSm,xminSm,xmaxSm,350,0,350);
   
 
   const int Spbin = IMnpip_K0sub_woSp->GetXaxis()->FindBin(anacuts::Sigmap_center);
