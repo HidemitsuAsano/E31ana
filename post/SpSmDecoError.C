@@ -151,8 +151,16 @@ void SpSmDecoError(const int qcut=2)
   gr_IMnpim_inter_3rd->SetPointError(0,0.0,stddev_Sm_3rd);
   
   TCanvas *c9 = new TCanvas("c9","c9");
+  TH1D* IMnpip_include = (TH1D*)f->Get("IMnpip_K0sub"); 
+  IMnpip_include->Draw("HE");
+  TH1D* IMnpip_Sp = (TH1D*)IMnpip_include->Clone("IMnpip_include");
+  IMnpip_Sp->GetXaxis()->SetRange(Spbin,Spbin);
+  IMnpip_Sp->SetFillColor(4);
+  IMnpip_Sp->SetFillStyle(3002);
+  IMnpip_Sp->Draw("HEsame");
+  
   gr_IMnpip_base->SetMarkerStyle(20);
-  gr_IMnpip_base->Draw("AP");
+  //gr_IMnpip_base->Draw("P");
   gr_IMnpip_base->Print();
   gr_IMnpip_base->RemovePoint(6);
   Double_t *exSp;
@@ -175,8 +183,15 @@ void SpSmDecoError(const int qcut=2)
   gr_IMnpip_inter_3rd->Draw("p"); 
 
   TCanvas *c10 = new TCanvas("c10","c10");
+  TH1D* IMnpim_include = (TH1D*)f->Get("IMnpim_K0sub"); 
+  IMnpim_include->Draw("HE");
+  TH1D* IMnpim_Sm = (TH1D*)IMnpim_include->Clone("IMnpim_include");
+  IMnpim_Sm->GetXaxis()->SetRange(Smbin,Smbin);
+  IMnpim_Sm->SetFillColor(4);
+  IMnpim_Sm->SetFillStyle(3002);
+  IMnpim_Sm->Draw("HEsame");
   gr_IMnpim_base->SetMarkerStyle(20);
-  gr_IMnpim_base->Draw("AP");
+  //gr_IMnpim_base->Draw("P");
   gr_IMnpim_base->Print();
   gr_IMnpim_base->RemovePoint(7);
   const int nSm = gr_IMnpim_base->GetN();
@@ -198,6 +213,13 @@ void SpSmDecoError(const int qcut=2)
   gr_IMnpim_inter_3rd->SetLineColor(3);
   gr_IMnpim_inter_3rd->SetLineWidth(3);
   gr_IMnpim_inter_3rd->Draw("p"); 
-
+  
+  std::cout << IMnpip_Sp->GetBinContent(Spbin) << " +/- " << IMnpip_Sp->GetBinError(Spbin) << std::endl;
+  std::cout << IMnpip_Sm->GetBinContent(Smbin) << " +/- " << IMnpip_Sm->GetBinError(Smbin) << std::endl;
+  std::cout << std::endl;
+  std::cout << "mean Sp pol1" << mean_Sp_pol1 << " +/- " << stddev_Sp_pol1 << std::endl;
+  std::cout << "mean Sp 3rd " << mean_Sp_3rd  << " +/- " << stddev_Sp_3rd << std::endl;
+  std::cout << "mean Sm pol1" << mean_Sm_pol1 << " +/- " << stddev_Sm_pol1 << std::endl;
+  std::cout << "mean Sm 3rd " << mean_Sm_3rd  << " +/- " << stddev_Sm_3rd << std::endl;
 
 }
