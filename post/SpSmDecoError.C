@@ -214,12 +214,24 @@ void SpSmDecoError(const int qcut=2)
   gr_IMnpim_inter_3rd->SetLineWidth(3);
   gr_IMnpim_inter_3rd->Draw("p"); 
   
+
+  std::cout << "cross region on IMnpip " << std::endl;
   std::cout << IMnpip_Sp->GetBinContent(Spbin) << " +/- " << IMnpip_Sp->GetBinError(Spbin) << std::endl;
-  std::cout << IMnpip_Sm->GetBinContent(Smbin) << " +/- " << IMnpip_Sm->GetBinError(Smbin) << std::endl;
+  std::cout << "cross region on IMnpim " << std::endl;
+  std::cout << IMnpim_Sm->GetBinContent(Smbin) << " +/- " << IMnpim_Sm->GetBinError(Smbin) << std::endl;
   std::cout << std::endl;
-  std::cout << "mean Sp pol1" << mean_Sp_pol1 << " +/- " << stddev_Sp_pol1 << std::endl;
-  std::cout << "mean Sp 3rd " << mean_Sp_3rd  << " +/- " << stddev_Sp_3rd << std::endl;
-  std::cout << "mean Sm pol1" << mean_Sm_pol1 << " +/- " << stddev_Sm_pol1 << std::endl;
+  double crossCount = IMnpip_Sp->GetBinContent(Spbin);
+  double crossStatE = IMnpip_Sp->GetBinError(Spbin);
+  std::cout << "Estimated Sm pol1 on IMnpip " << mean_Sp_pol1 << " +/- " << stddev_Sp_pol1 << std::endl;
+  std::cout << "Estimated Sp pol1 on IMnpip " << crossCount - mean_Sp_pol1 << " -/+ " << stddev_Sp_pol1 << std::endl;
+  std::cout << "Estimated Sm 3rd  on IMnpip " << mean_Sp_3rd  << " +/- " << stddev_Sp_3rd << std::endl;
+  std::cout << "Estimated Sp 3rd  on IMnpip " << crossCount - mean_Sp_3rd  << " -/+ " << stddev_Sp_3rd << std::endl;
+  std::cout << "Estimated Sp pol1 on IMnpim " << mean_Sm_pol1 << " +/- " << stddev_Sm_pol1 << std::endl;
+  std::cout << "Estimated Sm pol1 on IMnpim " << crossCount - mean_Sm_pol1 << " -/+ " << stddev_Sm_pol1 << std::endl;
+  std::cout << "Estimated Sp 3rd  on IMnpim " << mean_Sm_3rd << " +/- " << stddev_Sm_3rd << std::endl;
+  std::cout << "Estimated Sm 3rd  on IMnpim " << crossCount - mean_Sm_3rd << " -/+ " << stddev_Sm_3rd << std::endl;
   std::cout << "mean Sm 3rd " << mean_Sm_3rd  << " +/- " << stddev_Sm_3rd << std::endl;
+
+  std::cout << "weighted average " << std::endl;
 
 }
