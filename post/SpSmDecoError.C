@@ -230,8 +230,8 @@ void SpSmDecoError(const int qcut=2)
   std::cout << "Estimated Sm pol1 on IMnpim " << crossCount - mean_Sm_pol1 << " -/+ " << stddev_Sm_pol1 << std::endl;
   std::cout << "Estimated Sp 3rd  on IMnpim " << mean_Sm_3rd << " +/- " << stddev_Sm_3rd << std::endl;
   std::cout << "Estimated Sm 3rd  on IMnpim " << crossCount - mean_Sm_3rd << " -/+ " << stddev_Sm_3rd << std::endl;
-  std::cout << "mean Sm 3rd " << mean_Sm_3rd  << " +/- " << stddev_Sm_3rd << std::endl;
 
   std::cout << "weighted average " << std::endl;
+  std::cout << "Sigma+  " << std::endl;
 
 }
