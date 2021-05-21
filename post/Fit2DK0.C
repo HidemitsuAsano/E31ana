@@ -643,6 +643,8 @@ void Fit2DK0(const int qcut=2)
   }else if(qcut==2){
      fout = TFile::Open("fout_qhi.root","RECREATE");
   }
+  IMnpip_K0sub->Write();
+  IMnpim_K0sub->Write();
   IMnpip_K0sub_woSp->Write();
   IMnpim_K0sub_woSm->Write();
   IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Write();
