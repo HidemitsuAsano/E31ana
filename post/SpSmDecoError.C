@@ -233,5 +233,9 @@ void SpSmDecoError(const int qcut=2)
 
   std::cout << "weighted average " << std::endl;
   std::cout << "Sigma+  " << std::endl;
+  std::cout << ((crossCount - mean_Sp_pol1)*stddev_Sp_pol1+(mean_Sm_pol1)*stddev_Sm_pol1)/(stddev_Sp_pol1+stddev_Sm_pol1) << std::endl;
+  std::cout << "error +/-" << std::endl; 
 
+  std::cout << "Sigma-  " << std::endl;
+  std::cout << ((mean_Sp_pol1)*stddev_Sp_pol1+(crossCount-mean_Sm_pol1)*stddev_Sm_pol1)/(stddev_Sp_pol1+stddev_Sm_pol1) << std::endl;
 }
