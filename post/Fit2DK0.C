@@ -615,27 +615,28 @@ void Fit2DK0(const int qcut=2)
   sIMnpim_K0sub_woSm->Draw("same");
   std::cout << "Sm estimated:" << sIMnpim_K0sub_woSm->Eval(anacuts::Sigmam_center) << std::endl;
   
-  
+  /*
   auto *cpol1est = new TCanvas("cpol1est","cpol1est",1600,800);
   cpol1est->Divide(2,1);
   cpol1est->cd(1);
   IMnpip_K0sub_woSp->Draw("HE");
   const double Splowbincen = IMnpip_K0sub_woSp->GetBinCenter(Spbin-1);
   const double Sphighbincen = IMnpip_K0sub_woSp->GetBinCenter(Spbin+1);
-  TF1 *fSp = new TF1("fSp","pol1",Splowbincen,Sphighbincen);
-  IMnpip_K0sub_woSp->Fit("fSp","","",Splowbincen,Sphighbincen);
+  //TF1 *fSp = new TF1("fSp","pol1",Splowbincen,Sphighbincen);
+  //IMnpip_K0sub_woSp->Fit("fSp","","",Splowbincen,Sphighbincen);
 
   cpol1est->cd(2);
   const double Smlowbincen = IMnpim_K0sub_woSm->GetBinCenter(Smbin-1);
   const double Smhighbincen = IMnpim_K0sub_woSm->GetBinCenter(Smbin+1);
-  TF1 *fSm = new TF1("fSm","pol1",Smlowbincen,Smhighbincen);
-  IMnpim_K0sub_woSm->Draw("HE");
-  IMnpim_K0sub_woSm->Fit("fSm","","",Smlowbincen,Smhighbincen);
+  //TF1 *fSm = new TF1("fSm","pol1",Smlowbincen,Smhighbincen);
+  //IMnpim_K0sub_woSm->Draw("HE");
+  //IMnpim_K0sub_woSm->Fit("fSm","","",Smlowbincen,Smhighbincen);
 
   std::cout << "Sp estimated: " << fSp->Eval(anacuts::Sigmap_center) << std::endl;
   std::cout << "Sp error "      << fSp->GetParError(0) << std::endl;
   std::cout << "Sm estimated: " << fSm->Eval(anacuts::Sigmam_center) << std::endl;
   std::cout << "Sm error "      << fSm->GetParError(0) << std::endl;
+  */
 
   TFile *fout = NULL;
   if(qcut==1){
@@ -648,8 +649,8 @@ void Fit2DK0(const int qcut=2)
   IMnpip_K0sub_woSp->Write();
   IMnpim_K0sub_woSm->Write();
   IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Write();
-
-
+  IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Write();
+  
 
 
 }
