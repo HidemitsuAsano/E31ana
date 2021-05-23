@@ -269,7 +269,6 @@ void SpSmDecoError(const int qcut=2)
   gr_SpONnpim_fin_pol1->AddPoint(anacuts::Sigmam_center,SpWeightedAvg_pol1);
   const int n2 = gr_SpONnpim_fin_pol1->GetN();
   gr_SpONnpim_fin_pol1->SetPointError(n2-1,0.0,SpError_pol1);
-  gr_SpONnpim_fin_pol1->Print();
   TCanvas *c11 = new TCanvas("c11","c11");
   gr_SmONnpip_fin_pol1->Draw("AP");
   TCanvas *c12 = new TCanvas("c12","c12");
@@ -285,7 +284,6 @@ void SpSmDecoError(const int qcut=2)
   gr_SpONnpim_fin_3rd->AddPoint(anacuts::Sigmam_center,SpWeightedAvg_3rd);
   const int n4 = gr_SpONnpim_fin_3rd->GetN();
   gr_SpONnpim_fin_3rd->SetPointError(n4-1,0.0,SpError_3rd);
-  gr_SpONnpim_fin_3rd->Print();
   TCanvas *c13 = new TCanvas("c13","c13");
   gr_SmONnpip_fin_3rd->Draw("AP");
   TCanvas *c14 = new TCanvas("c14","c14");
