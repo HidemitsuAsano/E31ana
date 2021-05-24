@@ -222,29 +222,43 @@ void SpSmDecoError(const int qcut=2)
   std::cout << std::endl;
   double crossCount = IMnpip_Sp->GetBinContent(Spbin);
   double crossStatE = IMnpip_Sp->GetBinError(Spbin);
+
+  //ON(npip) pol1
   std::cout << "Estimated Sm pol1 on IMnpip " << mean_SmONnpip_pol1 << " +/- " << dev_SmONnpip_pol1 << std::endl;
+  double mean_SpONnpip_pol1 = crossCount - mean_SmONnpip_pol1;
+  double err_SpONnpip_pol1 = sqrt(dev_SmONnpip_pol1*dev_SmONnpip_pol1+crossStatE*crossStatE);
+  std::cout << "Estimated Sp pol1 on IMnpip " << mean_SpONnpip_pol1 << " -/+ " << err_SpONnpip_pol1 << std::endl;
+  
+  //ON(npim) pol1
   std::cout << "Estimated Sp pol1 on IMnpim " << mean_SpONnpim_pol1 << " +/- " << dev_SpONnpim_pol1 << std::endl;
-  double mean_SpestONnpip_pol1 = crossCount - mean_SpONnpim_pol1;
-  std::cout << "Estimated Sm pol1 on IMnpim " << mean_SpestONnpip_pol1 << " -/+ " << dev_SpONnpim_pol1 << std::endl;
-  double mean_SmestONnpim_pol1 = crossCount - mean_SmONnpip_pol1;
-  std::cout << "Estimated Sp pol1 on IMnpip " << mean_SmestONnpim_pol1 << " -/+ " << dev_SmONnpip_pol1 << std::endl;
+  double mean_SmONnpim_pol1 = crossCount - mean_SpONnpim_pol1;
+  double err_SmONnpim_pol1 = sqrt(dev_SpONnpim_pol1*dev_SpONnpim_pol1+crossStatE*crossStatE);
+  std::cout << "Estimated Sm pol1 on IMnpim " << mean_SmONnpim_pol1 << " -/+ " << err_SmONnpim_pol1 << std::endl;
   std::cout << std::endl;
+
+  //ON(npip) 3rd
   std::cout << "Estimated Sm 3rd  on IMnpip " << mean_SmONnpip_3rd  << " +/- " << dev_SmONnpip_3rd << std::endl;
-  std::cout << "Estimated Sp 3rd  on IMnpip " << crossCount - mean_SmONnpip_3rd  << " -/+ " << dev_SmONnpip_3rd << std::endl;
+  double mean_SpONnpip_3rd = crossCount - mean_SmONnpip_3rd;
+  double err_SpONnpip_3rd = sqrt(dev_SmONnpip_3rd*dev_SmONnpip_3rd+crossStatE*crossStatE);
+  std::cout << "Estimated Sp 3rd on IMnpip " << mean_SpONnpip_3rd << " -/+ " << err_SpONnpip_3rd << std::endl;
+  
+  //ON(npim) 3rd
   std::cout << "Estimated Sp 3rd  on IMnpim " << mean_SpONnpim_3rd << " +/- " << dev_SpONnpim_3rd << std::endl;
-  std::cout << "Estimated Sm 3rd  on IMnpim " << crossCount - mean_SpONnpim_3rd << " -/+ " << dev_SpONnpim_3rd << std::endl;
+  double mean_SmONnpim_3rd = crossCount - mean_SpONnpim_3rd;
+  double err_SmONnpim_3rd = sqrt(dev_SpONnpim_3rd*dev_SpONnpim_3rd+crossStatE*crossStatE);
+  std::cout << "Estimated Sm 3rd  on IMnpim " << mean_SmONnpim_3rd << " -/+ " << err_SmONnpim_3rd << std::endl;
   std::cout << std::endl;
 
   std::cout << "weighted average (pol1)" << std::endl;
   std::cout << "Sigma+  " << std::endl;
-  double SpWeightedAvg_pol1 = ((crossCount - mean_SmONnpip_pol1)*dev_SmONnpip_pol1+(mean_SpONnpim_pol1)*dev_SpONnpim_pol1)/(dev_SmONnpip_pol1+dev_SpONnpim_pol1);
+  double SpWeightedAvg_pol1 = (mean_SpONnpip_pol1*err_SpONnpip_pol1+mean_SpONnpim_pol1*dev_SpONnpim_pol1)/(err_SpONnpip_pol1+dev_SpONnpim_pol1);
   std::cout << SpWeightedAvg_pol1 << std::endl;
   
-  double SpError_pol1 = fabs(((SpweightedAvg-(crossCount - mean_SmONnpip_pol1))*dev_SmONnpip_pol1-(mean_SpONnpim_pol1)*dev_SpONnpim_pol1)/(dev_SmONnpip_pol1+dev_SpONnpim_pol1));
+  double SpError_pol1 = fabs(((SpWeightedAvg_pol1-(crossCount - mean_SmONnpip_pol1))*dev_SmONnpip_pol1-(mean_SpONnpim_pol1)*dev_SpONnpim_pol1)/(dev_SmONnpip_pol1+dev_SpONnpim_pol1));
   std::cout << "sys. error +/-" << SpError_pol1  <<  std::endl; 
 
   std::cout << "Sigma-  " << std::endl;
-  double SmWeightedAvg_pol1 = ((mean_SmONnpip_pol1)*dev_SmONnpip_pol1+(crossCount-mean_SpONnpim_pol1)*dev_SpONnpim_pol1)/(dev_SmONnpip_pol1+dev_SpONnpim_pol1);
+  double SmWeightedAvg_pol1 = (mean_SmONnpip_pol1*dev_SmONnpip_pol1+mean_SmONnpim_pol1*err_SmONnpim_pol1)/(dev_SmONnpip_pol1+err_SmONnpim_pol1);
   std::cout << SmWeightedAvg_pol1 << std::endl;
   double SmError_pol1 = ((mean_SmONnpip_pol1)*dev_SmONnpip_pol1-(crossCount-mean_SpONnpim_pol1)*dev_SpONnpim_pol1)/(dev_SmONnpip_pol1+dev_SpONnpim_pol1) ;
   std::cout << "sys. error -/+" << SmError_pol1  << std::endl; 
@@ -252,13 +266,13 @@ void SpSmDecoError(const int qcut=2)
   std::cout << std::endl;
   std::cout << "weighted average (3rd order spline fit)" << std::endl;
   std::cout << "Sigma+  " << std::endl;
-  double SpWeightedAvg_3rd = ((crossCount - mean_SmONnpip_3rd)*dev_SmONnpip_3rd+(mean_SpONnpim_3rd)*dev_SpONnpim_3rd)/(dev_SmONnpip_3rd+dev_SpONnpim_3rd);
+  double SpWeightedAvg_3rd = (mean_SpONnpim_3rd*dev_SpONnpim_3rd+mean_SpONnpip_3rd*err_SpONnpip_3rd)/(dev_SpONnpim_3rd+err_SpONnpip_3rd);
   std::cout << SpWeightedAvg_3rd << std::endl;
   double SpError_3rd = fabs(((crossCount - mean_SmONnpip_3rd)*dev_SmONnpip_3rd-(mean_SpONnpim_3rd)*dev_SpONnpim_3rd)/(dev_SmONnpip_3rd+dev_SpONnpim_3rd));
   std::cout << "sys. error +/-" << SpError_3rd <<  std::endl; 
 
   std::cout << "Sigma-  " << std::endl;
-  double SmWeightedAvg_3rd = ((mean_SmONnpip_3rd)*dev_SmONnpip_3rd+(crossCount-mean_SpONnpim_3rd)*dev_SpONnpim_3rd)/(dev_SmONnpip_3rd+dev_SpONnpim_3rd);
+  double SmWeightedAvg_3rd = (mean_SmONnpip_3rd*dev_SmONnpip_3rd+mean_SmONnpim_3rd*err_SmONnpim_3rd)/(dev_SmONnpip_3rd+err_SmONnpim_3rd);
   std::cout << SmWeightedAvg_3rd << std::endl;
   double SmError_3rd = ((mean_SmONnpip_3rd)*dev_SmONnpip_3rd-(crossCount-mean_SpONnpim_3rd)*dev_SpONnpim_3rd)/(dev_SmONnpip_3rd+dev_SpONnpim_3rd) ;
   std::cout << "sys. error -/+" << SmError_3rd << std::endl; 
