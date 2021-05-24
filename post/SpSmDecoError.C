@@ -254,15 +254,23 @@ void SpSmDecoError(const int qcut=2)
   double SpWeightedAvg_pol1 = (mean_SpONnpip_pol1*err_SpONnpip_pol1+mean_SpONnpim_pol1*dev_SpONnpim_pol1)/(err_SpONnpip_pol1+dev_SpONnpim_pol1);
   std::cout << SpWeightedAvg_pol1 << std::endl;
   
-  double SpError_pol1 = fabs(((SpWeightedAvg_pol1-(crossCount - mean_SmONnpip_pol1))*dev_SmONnpip_pol1-(mean_SpONnpim_pol1)*dev_SpONnpim_pol1)/(dev_SmONnpip_pol1+dev_SpONnpim_pol1));
-  std::cout << "sys. error +/-" << SpError_pol1  <<  std::endl; 
 
   std::cout << "Sigma-  " << std::endl;
+  //double SmWeightedAvg_pol1 = (mean_SmONnpip_pol1*dev_SmONnpip_pol1+mean_SmONnpim_pol1*err_SmONnpim_pol1)/(dev_SmONnpip_pol1+err_SmONnpim_pol1);
   double SmWeightedAvg_pol1 = (mean_SmONnpip_pol1*dev_SmONnpip_pol1+mean_SmONnpim_pol1*err_SmONnpim_pol1)/(dev_SmONnpip_pol1+err_SmONnpim_pol1);
   std::cout << SmWeightedAvg_pol1 << std::endl;
+  
+  std::cout << std::endl;
+  std::cout << "barance pol1 result" << std::endl;
+  double Sp_ba_pol1 = crossCount*SpWeightedAvg_pol1/(SpWeightedAvg_pol1+SmWeightedAvg_pol1);
+  double SpError_pol1 = fabs(((Sp_ba_pol1-(crossCount - mean_SmONnpip_pol1))*dev_SmONnpip_pol1-(mean_SpONnpim_pol1)*dev_SpONnpim_pol1)/(dev_SmONnpip_pol1+dev_SpONnpim_pol1));
+  std::cout << "sys. error +/-" << SpError_pol1  <<  std::endl; 
+  double Sm_ba_pol1 = crossCount*SmWeightedAvg_pol1/(SpWeightedAvg_pol1+SmWeightedAvg_pol1);
   double SmError_pol1 = ((mean_SmONnpip_pol1)*dev_SmONnpip_pol1-(crossCount-mean_SpONnpim_pol1)*dev_SpONnpim_pol1)/(dev_SmONnpip_pol1+dev_SpONnpim_pol1) ;
   std::cout << "sys. error -/+" << SmError_pol1  << std::endl; 
-   
+  std::cout << "Sigma+ " << Sp_ba_pol1 << std::endl;
+  std::cout << "Sigma- " << Sm_ba_pol1 << std::endl;
+
   std::cout << std::endl;
   std::cout << "weighted average (3rd order spline fit)" << std::endl;
   std::cout << "Sigma+  " << std::endl;
@@ -276,6 +284,14 @@ void SpSmDecoError(const int qcut=2)
   std::cout << SmWeightedAvg_3rd << std::endl;
   double SmError_3rd = ((mean_SmONnpip_3rd)*dev_SmONnpip_3rd-(crossCount-mean_SpONnpim_3rd)*dev_SpONnpim_3rd)/(dev_SmONnpip_3rd+dev_SpONnpim_3rd) ;
   std::cout << "sys. error -/+" << SmError_3rd << std::endl; 
+  
+  std::cout << std::endl;
+  std::cout << "barance 3rd result" << std::endl;
+  double Sp_ba_3rd = crossCount*SpWeightedAvg_3rd/(SpWeightedAvg_3rd+SmWeightedAvg_3rd);
+  double Sm_ba_3rd = crossCount*SmWeightedAvg_3rd/(SpWeightedAvg_3rd+SmWeightedAvg_3rd);
+  std::cout << "Sigma+ " << Sp_ba_3rd << std::endl;
+  std::cout << "Sigma- " << Sm_ba_3rd << std::endl;
+
 
   TGraphErrors *gr_SmONnpip_fin_pol1 = new TGraphErrors(IMnpip_K0sub_woSp);
   TGraphErrors *gr_SpONnpim_fin_pol1 = new TGraphErrors(IMnpim_K0sub_woSm);
@@ -284,10 +300,10 @@ void SpSmDecoError(const int qcut=2)
   TGraphErrors *gr_SmONnpip_fin_pol1_cross = new TGraphErrors();
   TGraphErrors *gr_SpONnpim_fin_pol1_cross = new TGraphErrors();
   
-  gr_SmONnpip_fin_pol1->AddPoint(anacuts::Sigmap_center,SmWeightedAvg_pol1);
+  gr_SmONnpip_fin_pol1->AddPoint(anacuts::Sigmap_center,Sm_ba_pol1);
   const int n1 = gr_SmONnpip_fin_pol1->GetN();
   gr_SmONnpip_fin_pol1->SetPointError(n1-1,0.0,SmError_pol1);
-  gr_SpONnpim_fin_pol1->AddPoint(anacuts::Sigmam_center,SpWeightedAvg_pol1);
+  gr_SpONnpim_fin_pol1->AddPoint(anacuts::Sigmam_center,Sp_ba_pol1);
   const int n2 = gr_SpONnpim_fin_pol1->GetN();
   gr_SpONnpim_fin_pol1->SetPointError(n2-1,0.0,SpError_pol1);
   TCanvas *c11 = new TCanvas("c11","c11");
@@ -298,7 +314,7 @@ void SpSmDecoError(const int qcut=2)
   gr_SpONnpim_fin_pol1->Draw("AP");
   
   c11->cd();
-  gr_SmONnpip_fin_pol1_cross->AddPoint(anacuts::Sigmap_center,SmWeightedAvg_pol1);
+  gr_SmONnpip_fin_pol1_cross->AddPoint(anacuts::Sigmap_center,Sm_ba_pol1);
   gr_SmONnpip_fin_pol1_cross->SetPointError(0,0.0,SmError_pol1);
   gr_SmONnpip_fin_pol1_cross->SetMarkerStyle(20);
   gr_SmONnpip_fin_pol1_cross->SetMarkerColor(2);
@@ -307,7 +323,7 @@ void SpSmDecoError(const int qcut=2)
   gr_SmONnpip_fin_pol1_cross->Draw("P");
    
   c12->cd();
-  gr_SpONnpim_fin_pol1_cross->AddPoint(anacuts::Sigmam_center,SpWeightedAvg_pol1);
+  gr_SpONnpim_fin_pol1_cross->AddPoint(anacuts::Sigmam_center,Sp_ba_pol1);
   gr_SpONnpim_fin_pol1_cross->SetPointError(0,0.0,SpError_pol1);
   gr_SpONnpim_fin_pol1_cross->SetMarkerStyle(20);
   gr_SpONnpim_fin_pol1_cross->SetMarkerColor(2);
@@ -319,10 +335,10 @@ void SpSmDecoError(const int qcut=2)
   TGraphErrors *gr_SpONnpim_fin_3rd = new TGraphErrors(IMnpim_K0sub_woSm);
   gr_SmONnpip_fin_3rd->RemovePoint(6);
   gr_SpONnpim_fin_3rd->RemovePoint(7);
-  gr_SmONnpip_fin_3rd->AddPoint(anacuts::Sigmap_center,SmWeightedAvg_3rd);
+  gr_SmONnpip_fin_3rd->AddPoint(anacuts::Sigmap_center,Sm_ba_3rd);
   const int n3 = gr_SmONnpip_fin_3rd->GetN();
   gr_SmONnpip_fin_3rd->SetPointError(n3-1,0.0,SmError_3rd);
-  gr_SpONnpim_fin_3rd->AddPoint(anacuts::Sigmam_center,SpWeightedAvg_3rd);
+  gr_SpONnpim_fin_3rd->AddPoint(anacuts::Sigmam_center,Sp_ba_3rd);
   const int n4 = gr_SpONnpim_fin_3rd->GetN();
   gr_SpONnpim_fin_3rd->SetPointError(n4-1,0.0,SpError_3rd);
   TCanvas *c13 = new TCanvas("c13","c13");
@@ -335,7 +351,7 @@ void SpSmDecoError(const int qcut=2)
   TGraphErrors *gr_SmONnpip_fin_3rd_cross = new TGraphErrors();
   TGraphErrors *gr_SpONnpim_fin_3rd_cross = new TGraphErrors();
   c13->cd();
-  gr_SmONnpip_fin_3rd_cross->AddPoint(anacuts::Sigmap_center,SmWeightedAvg_3rd);
+  gr_SmONnpip_fin_3rd_cross->AddPoint(anacuts::Sigmap_center,Sm_ba_3rd);
   gr_SmONnpip_fin_3rd_cross->SetPointError(0,0.0,SmError_3rd);
   gr_SmONnpip_fin_3rd_cross->SetMarkerStyle(20);
   gr_SmONnpip_fin_3rd_cross->SetMarkerColor(2);
@@ -344,7 +360,7 @@ void SpSmDecoError(const int qcut=2)
   gr_SmONnpip_fin_3rd_cross->Draw("P");
    
   c14->cd();
-  gr_SpONnpim_fin_3rd_cross->AddPoint(anacuts::Sigmam_center,SpWeightedAvg_3rd);
+  gr_SpONnpim_fin_3rd_cross->AddPoint(anacuts::Sigmam_center,Sp_ba_3rd);
   gr_SpONnpim_fin_3rd_cross->SetPointError(0,0.0,SpError_3rd);
   gr_SpONnpim_fin_3rd_cross->SetMarkerStyle(20);
   gr_SpONnpim_fin_3rd_cross->SetMarkerColor(2);
