@@ -408,6 +408,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* IMnpim_IMnpip_dE_woK0_wSid_n_woSp_wbin[nwbin];//
   //TH2F* IMnpim_IMnpip_dE_woK0_wSid_n_bin[nbintemplate];//
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n;//
+  TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sp;//
+  TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[nwbin];//resolution based binning
+  TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sm;//
+  TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[nwbin];//resolution based binning
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_SpSm;//
   TH2F* IMnpim_IMnpip_dE_woSid;//
   //TH2F* IMnpim_IMnpip_dE_woSid_won;//
@@ -2034,10 +2038,23 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE_wK0_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
 
-  IMnpim_IMnpip_dE_wK0_wSid_n = new TH2F(Form("IMnpim_IMnpip_dE_wK0_wSid_n"),Form("IMnpim_IMnpip_dE_wK0_wSid_n"),nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  IMnpim_IMnpip_dE_wK0_wSid_n = new TH2F("IMnpim_IMnpip_dE_wK0_wSid_n","IMnpim_IMnpip_dE_wK0_wSid_n",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wK0_wSid_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0_wSid_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sp = new TH2F("IMnpim_IMnpip_dE_wK0_wSid_n_Sp","IMnpim_IMnpip_dE_wK0_wSid_n_Sp",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sp->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sp->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  
+  for(int iwbin=0;iwbin<nwbin
+
+
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sm = new TH2F("IMnpim_IMnpip_dE_wK0_wSid_n_Sm","IMnpim_IMnpip_dE_wK0_wSid_n_Sm",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sm->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sm->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+
+  
+
   IMnpim_IMnpip_dE_wK0_wSid_n_SpSm = new TH2F(Form("IMnpim_IMnpip_dE_wK0_wSid_n_SpSm"),Form("IMnpim_IMnpip_dE_wK0_wSid_n_SpSm"),nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wK0_wSid_n_SpSm->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0_wSid_n_SpSm->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
