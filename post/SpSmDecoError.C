@@ -296,6 +296,8 @@ void SpSmDecoError(const int qcut=2)
 
   TGraphErrors *gr_SmONnpip_fin_pol1 = new TGraphErrors(IMnpip_K0sub_woSp);
   TGraphErrors *gr_SpONnpim_fin_pol1 = new TGraphErrors(IMnpim_K0sub_woSm);
+  gr_SmONnpip_fin_pol1->SetName("gr_SmONnpip_fin_pol1");
+  gr_SpONnpim_fin_pol1->SetName("gr_SpONnpim_fin_pol1");
   gr_SmONnpip_fin_pol1->RemovePoint(6);
   gr_SpONnpim_fin_pol1->RemovePoint(7);
   TGraphErrors *gr_SmONnpip_fin_pol1_cross = new TGraphErrors();
@@ -334,6 +336,8 @@ void SpSmDecoError(const int qcut=2)
 
   TGraphErrors *gr_SmONnpip_fin_3rd = new TGraphErrors(IMnpip_K0sub_woSp);
   TGraphErrors *gr_SpONnpim_fin_3rd = new TGraphErrors(IMnpim_K0sub_woSm);
+  gr_SmONnpip_fin_3rd->SetName("gr_SmONnpip_fin_3rd");
+  gr_SpONnpim_fin_3rd->SetName("gr_SpONnpim_fin_3rd");
   gr_SmONnpip_fin_3rd->RemovePoint(6);
   gr_SpONnpim_fin_3rd->RemovePoint(7);
   gr_SmONnpip_fin_3rd->AddPoint(anacuts::Sigmap_center,Sm_ba_3rd);
@@ -377,6 +381,20 @@ void SpSmDecoError(const int qcut=2)
   c15->cd(2);
   IMnpim_include->Draw("HE");
   gr_SpONnpim_fin_pol1_cross->Draw("P");
+  
+  TFile *f_out = NULL;
+  if(qcut==1){
+    f_out = new TFile("deco_qlo.root","RECREATE");
+  }else  if(qcut==2){
+    f_out = new TFile("deco_qhi.root","RECREATE");
+  }
+  TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_3_inter = (TH2F*)f->Get("IMnpim_IMnpip_dE_wK0_woSid_n_3_inter");
 
+  f_out->cd();
+  gr_SpONnpim_fin_pol1->Write();
+  gr_SmONnpip_fin_pol1->Write();
+  gr_SpONnpim_fin_3rd->Write();
+  gr_SmONnpip_fin_3rd->Write();
+  IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Write();
 
 }
