@@ -2046,13 +2046,26 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE_wK0_wSid_n_Sp->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0_wSid_n_Sp->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   
-  for(int iwbin=0;iwbin<nwbin
+  for(unsigned int iwbin=0;iwbin<nwbin;iwbin++){
+    IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin] = new TH2F(Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin%d",iwbin),
+                                                     Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sp %0.2f-%0.2f",wbinlow[iwbin],wbinhigh[iwbin]),
+                                                        nbinIMnpim_wbin,IMnpim_wbinlow,IMnpim_wbinhigh,nbinIMnpip_wbin,IMnpip_wbinlow,IMnpip_wbinhigh);
+    IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+    IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  }
 
 
   IMnpim_IMnpip_dE_wK0_wSid_n_Sm = new TH2F("IMnpim_IMnpip_dE_wK0_wSid_n_Sm","IMnpim_IMnpip_dE_wK0_wSid_n_Sm",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wK0_wSid_n_Sm->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0_wSid_n_Sm->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
 
+  for(unsigned int iwbin=0;iwbin<nwbin;iwbin++){
+    IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin] = new TH2F(Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin%d",iwbin),
+                                                     Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sm %0.2f-%0.2f",wbinlow[iwbin],wbinhigh[iwbin]),
+                                                        nbinIMnpim_wbin,IMnpim_wbinlow,IMnpim_wbinhigh,nbinIMnpip_wbin,IMnpip_wbinlow,IMnpip_wbinhigh);
+    IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+    IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  }
   
 
   IMnpim_IMnpip_dE_wK0_wSid_n_SpSm = new TH2F(Form("IMnpim_IMnpip_dE_wK0_wSid_n_SpSm"),Form("IMnpim_IMnpip_dE_wK0_wSid_n_SpSm"),nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
@@ -5713,6 +5726,18 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         Momnpim_Momnpip_dE_wK0_wSid_n->Fill(LVec_pip_n.P(),LVec_pim_n.P(),weight);
         Momnpim_Mompippim_dE_wK0_wSid_n->Fill(LVec_pip_pim.P(),LVec_pim_n.P(),weight);
         Momnpip_Mompippim_dE_wK0_wSid_n->Fill(LVec_pip_pim.P(),LVec_pip_n.P(),weight);
+          
+        if(SigmaPFlag){
+          IMnpim_IMnpip_dE_wK0_wSid_n_Sp->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
+          IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[wbinnum]->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
+        }
+        
+        if(SigmaMFlag){
+          IMnpim_IMnpip_dE_wK0_wSid_n_Sm->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
+          IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[wbinnum]->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
+        }
+
+
         if(SimSpmode || SimSmmode || SimK0nnmode){
           double diffIMnpim_recomc = LVec_pim_n.M()- LVec_pim_n_mc.M();
           double diffIMnpip_recomc = LVec_pip_n.M()- LVec_pip_n_mc.M();
