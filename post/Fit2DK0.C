@@ -54,7 +54,8 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
 
 void Fit2DK0(const int qcut=2)
 {
-  
+  gStyle->SetOptStat(0);
+  gStyle->SetOptFit(0);
   TFile *fr = NULL;
   if(qcut==1){
     fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo_sub.root","READ");

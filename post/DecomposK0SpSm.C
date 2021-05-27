@@ -32,7 +32,7 @@ bool Sidefar=false;
 bool FitNoWeight=true;
 
 
-void DecompositionK0SpSm()
+void DecomposK0SpSm()
 {
   TFile *fr[4]={NULL};
   
@@ -44,7 +44,12 @@ void DecompositionK0SpSm()
   fr[1]->Print();
   fr[2]->Print();
   fr[3]->Print();
-  
+  TFile *fdeco[2]={NULL};
+  fdeco[0] = TFile::Open("deco_qlo.root","READ");
+  fdeco[1] = TFile::Open("deco_qhi.root","READ");
+  fdeco[0]->Print();
+  fdeco[1]->Print();
+
   gROOT->SetBatch(1);
   gStyle->SetPalette(1);
   gStyle->SetOptStat(0);
@@ -61,16 +66,13 @@ void DecompositionK0SpSm()
   TH1D* IMnpipi_wK0_wSid_n_SpSm[nqcut];
   TCanvas *cq_IMnpipi_wK0_wSid_n_SpSm[nqcut];
   double OverlapCount[nbintemplate][nqcut]; 
+  TH2D* q_IMnpipi_wSid_n_Sp[nqcut];
+  TH2D* q_IMnpipi_wSid_n_Sm[nqcut];
+  TH2D* q_IMnpipi_wK0_n[nqcut];
+  const unsigned int nwbin = 3;
+  TH2D* IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[nwbin][nqcut];
+  TH2D* IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[nwbin][nqcut];
 
-  TCanvas *cIMpippim_IMnpip_n_all[nqcut];
-  TH1D* IMnpip_wK0_n[nqcut];
-  //TH1D* IMpippim_wSid_n_Sp[nqcut];
-  //TCanvas *cIMpippim_IMnpim_n_all[nqcut];
-  TH1D* IMnpim_wK0_n[nqcut];
-  TH1D* IMpippim_wSid_n_Sm[nqcut];
-  TCanvas *cIMnpim_IMnpip_n_all[nqcut];
-  TH1D* IMnpip_wSid_n_Sm[nqcut];
-  TH1D* IMnpim_wSid_n_Sp[nqcut];
   const char cqcut[][10]= {"all","qlo","qhi","theta"};
   std::cout << __LINE__ << std::endl;
   for(int iq=qstart;iq<nqcut;iq++){
@@ -82,8 +84,45 @@ void DecompositionK0SpSm()
       OverlapCount[ibin][iq] = IMnpipi_wK0_wSid_n_SpSm[iq]->GetBinContent(ibin+1);
       if(OverlapCount[ibin][iq]<0.0) OverlapCount[ibin][iq]=0.0;
     }
+    for(int iwbin=0;iwbin<nwbin;iwbin++){
+      IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iq] = (TH2D*)fr[iq]->Get(Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin%d",iwbin));
+      IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin][iq] = (TH2D*)fr[iq]->Get(Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin%d",iwbin));
+    }
+  }
+ 
+  //only qlo(=0) and qhi(1) results;
+  TH2D* IMnpim_IMnpip_K0inter[2];
+  TGraphErrors *gr_SpONnpim_fin_pol1[2];
+  TGraphErrors *gr_SmONnpip_fin_pol1[2];
+  TGraphErrors *gr_SpONnpim_fin_3rd[2];
+  TGraphErrors *gr_SmONnpip_fin_3rd[2];
+
+  for(int iq=0;iq<2;iq++){
+    IMnpim_IMnpip_K0inter[iq] = (TH2D*)fdeco[iq]->Get("IMnpim_IMnpip_dE_wK0_woSid_n_3_inter");
+    gr_SpONnpim_fin_pol1[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SpONnpim_fin_pol1");
+    gr_SmONnpip_fin_pol1[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SmONnpip_fin_pol1");
+    gr_SpONnpim_fin_3rd[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SpONnpim_fin_3rd");
+    gr_SmONnpip_fin_3rd[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SmONnpip_fin_3rd");
   }
 
+  
+  for(int iq=0;iq<2;iq++){
+    for(int iwbin=1;iwbin<nwbin;iwbin++){
+      for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iq+1]->GetNBinsX();ix++){
+        for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iq+1]->GetNBinsY();iy++){
+          IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iq+1] 
+        }
+      }
+    }
+  }
+
+
+
+
+
+}
+/*
+{
   std::cout << __LINE__ << std::endl;
   int ngroup = 3;
   TH1D* IMnpipi_overlapdeco_K0[ngroup][nqcut];
@@ -119,7 +158,6 @@ void DecompositionK0SpSm()
     }
   }
 
-  /*
   std::cout << __LINE__ << std::endl;
   TCanvas *cratio_SpSm[nqcut];//Sp/Sm  ->group 2
   TCanvas *cratio_SpK0[nqcut];//Sp/K0  ->group 0
@@ -151,9 +189,7 @@ void DecompositionK0SpSm()
     IMnpipi_SmoverK0_ratio[iq]->SetTitle(Form("IMnpipi_Sm/K0_ratio_%s",cqcut[iq]));
     IMnpipi_SmoverK0_ratio[iq]->Draw("HIST");
   }
-  */
   
-  const int nwbin=3;
   //tuned bins 2d histograms
   TH2F* IMnpim_IMnpip_wSid_n_Sp_wbin[nwbin][nqcut];
   TH2F* IMnpim_IMnpip_wSid_n_Sm_wbin[nwbin][nqcut];
@@ -245,58 +281,6 @@ void DecompositionK0SpSm()
   TH1D* nmom_woK0_woSp[nwbin][nqcut];
   TH1D* IMnpipi_woK0_woSp[nqcut];
   
-  for(int iq=0;iq<nqcut;iq++){
-    for(int iwbin=0;iwbin<nwbin;iwbin++){
-      //for K0
-      IMnpim_wK0_woSid[iwbin][iq] = 
-      (TH1D*)IMnpim_IMnpip_wK0_woSid_n_wbin[iwbin][iq]->ProjectionY(Form("IMnpim_wK0_woSid%d%d",iwbin,iq));
-      IMnpip_wK0_woSid[iwbin][iq] =
-      (TH1D*)IMnpim_IMnpip_wK0_woSid_n_wbin[iwbin][iq]->ProjectionX(Form("IMnpip_wK0_woSid%d%d",iwbin,iq));
-      MMnmiss_wK0_woSid[iwbin][iq] =
-      (TH1D*)MMnmiss_IMpippim_wK0_woSid_n_wbin[iwbin][iq]->ProjectionY(Form("MMnmiss_wK0_woSid%d%d",iwbin,iq));
-      IMpippim_wK0_woSid[iwbin][iq] = 
-      (TH1D*)MMnmiss_IMpippim_wK0_woSid_n_wbin[iwbin][iq]->ProjectionX(Form("IMpippim_wK0_woSid%d%d",iwbin,iq));
-      q_wK0_woSid[iwbin][iq] =
-      (TH1D*)q_nmom_wK0_woSid_n_wbin[iwbin][iq]->ProjectionY(Form("q_wK0_woSid_n%d%d",iwbin,iq));
-      nmom_wK0_woSid[iwbin][iq] =
-      (TH1D*)q_nmom_wK0_woSid_n_wbin[iwbin][iq]->ProjectionX(Form("nmom_wK0_woSid_n%d%d",iwbin,iq));
-      //for Sp
-      IMnpim_woK0_woSm[iwbin][iq] = 
-      (TH1D*)IMnpim_IMnpip_woK0_wSid_n_woSm_wbin[iwbin][iq]->ProjectionY(Form("IMnpim_woK0_woSm%d%d",iwbin,iq));
-      IMnpip_woK0_woSm[iwbin][iq] =
-      (TH1D*)IMnpim_IMnpip_woK0_wSid_n_woSm_wbin[iwbin][iq]->ProjectionX(Form("IMnpip_woK0_woSm%d%d",iwbin,iq));
-      MMnmiss_woK0_woSm[iwbin][iq] =
-      (TH1D*)MMnmiss_IMnpim_woK0_wSid_n_woSp_wbin[iwbin][iq]->ProjectionY(Form("MMnmiss_woK0_woSm%d%d",iwbin,iq));
-      IMpippim_woK0_woSm[iwbin][iq] = 
-      (TH1D*)IMpippim_IMnpim_woK0_wSid_n_woSm_wbin[iwbin][iq]->ProjectionY(Form("IMpippim_woK0_woSm%d%d",iwbin,iq));
-      q_woK0_woSm[iwbin][iq] =
-      (TH1D*)q_nmom_woK0_wSid_n_woSm_wbin[iwbin][iq]->ProjectionY(Form("q_woK0_woSm_n%d%d",iwbin,iq));
-      nmom_woK0_woSm[iwbin][iq] =
-      (TH1D*)q_nmom_woK0_wSid_n_woSm_wbin[iwbin][iq]->ProjectionX(Form("nmom_woK0_woSm_n%d%d",iwbin,iq));
-
-      //for Sm
-      IMnpim_woK0_woSp[iwbin][iq] = 
-      (TH1D*)IMnpim_IMnpip_woK0_wSid_n_woSp_wbin[iwbin][iq]->ProjectionY(Form("IMnpim_woK0_woSp%d%d",iwbin,iq));
-      IMnpip_woK0_woSp[iwbin][iq] =
-      (TH1D*)IMnpim_IMnpip_woK0_wSid_n_woSp_wbin[iwbin][iq]->ProjectionX(Form("IMnpip_woK0_woSp%d%d",iwbin,iq));
-      MMnmiss_woK0_woSp[iwbin][iq] =
-      (TH1D*)MMnmiss_IMpippim_woK0_wSid_n_woSp_wbin[iwbin][iq]->ProjectionY(Form("MMnmiss_woK0_woSp%d%d",iwbin,iq));
-      IMpippim_woK0_woSp[iwbin][iq] = 
-      (TH1D*)MMnmiss_IMpippim_woK0_wSid_n_woSp_wbin[iwbin][iq]->ProjectionX(Form("IMpippim_woK0_woSp%d%d",iwbin,iq));
-      q_woK0_woSp[iwbin][iq] =
-      (TH1D*)q_nmom_woK0_wSid_n_woSp_wbin[iwbin][iq]->ProjectionY(Form("q_woK0_woSp_n%d%d",iwbin,iq));
-      nmom_woK0_woSp[iwbin][iq] =
-      (TH1D*)q_nmom_woK0_wSid_n_woSp_wbin[iwbin][iq]->ProjectionX(Form("nmom_woK0_woSp_n%d%d",iwbin,iq));
-    }
-    IMnpipi_wK0_woSid[iq] = (TH1D*)q_IMnpipi_wK0_woSid_n[iq]->ProjectionX(Form("IMnpipi_wK0_woSid%d",iq));
-    IMnpipi_woK0_woSm[iq] = (TH1D*)q_IMnpipi_woK0_wSid_n_woSm[iq]->ProjectionX(Form("IMnpipi_woK0_woSm%d",iq));
-    IMnpipi_woK0_woSp[iq] = (TH1D*)q_IMnpipi_woK0_wSid_n_woSp[iq]->ProjectionX(Form("IMnpipi_woK0_woSp%d",iq));
-  }
-
-
-
-
-  }
 
 
 
@@ -465,7 +449,6 @@ void DecompositionK0SpSm()
     }
   }
   
-  /*
   TCanvas *cIMnpipi_Sp_ratio_wK0[nqcut];
   TCanvas *cIMnpipi_K0_ratio_wSp[nqcut];
   TCanvas *cIMnpipi_Sm_ratio_wK0[nqcut];
@@ -491,7 +474,7 @@ void DecompositionK0SpSm()
 
     cIMnpipi_Sm_ratio_wSp[iq] = new TCanvas(Form("cIMnpipi_Sm_ratio_wSp_%d",iq),Form("cIMnpipi_Sm_ratio_wSp_%d",iq));
     IMnpipi_Sm_ratio_wSp[iq]->Draw("HIST");
-  }*/
+  }
 
 
   TCanvas *c = NULL;
@@ -535,3 +518,4 @@ void DecompositionK0SpSm()
   
 
 }
+*/
