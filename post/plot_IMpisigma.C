@@ -642,6 +642,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* q_IMnpipi_woK0_wSid_n_acc;//fine bins, no cuts for separationg S+/S-
   TH2F* q_IMnpipi_woK0_wSid_n_acc_reco;//fine bins, no cuts for separationg S+/S-, reconstructed value
   TH2F* q_IMnpipi_wSid_n_Sp;
+  TH2F* q_IMnpipi_wSid_n_Sp_Stop;
   TH2F* q_IMnpipi_wSid_n_SpSm;//Sigma+ like & Sigma- like mode
   TH2F* q_IMnpipi_wSid_n_Sp_woSm;
   TH2F* q_IMnpipi_wK0_n;
@@ -673,6 +674,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   //TH2F* q_IMnpipi_wSid_n_Sp_sidewide[nzone];//
   //TH2F* q_IMnpipi_woK0_wSid_n_Sp_sidewide[nzone];//
   TH2F* q_IMnpipi_wSid_n_Sm;
+  TH2F* q_IMnpipi_wSid_n_Sm_Stop;
   TH2F* q_IMnpipi_wSid_n_Sm_woSp;
   TH2F* q_IMnpipi_wK0_wSid_n_Sm;
   TH2F* q_IMnpipi_woK0_wSid_n_Sm;
@@ -2538,6 +2540,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   q_IMnpipi_wSid_n = new TH2F("q_IMnpipi_wSid_n","q_IMnpipi_wSid_n",nbinIMnpipi,1,2,nbinq,0,1.5);
   q_IMnpipi_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_wSid_n->SetYTitle("Mom. Transfer [GeV/c]");
+
   
   for(int ithcut=0;ithcut<nthetacut;ithcut++){
     int cuttheta = 5*(ithcut+1);
@@ -2636,6 +2639,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   q_IMnpipi_wSid_n_Sp = new TH2F("q_IMnpipi_wSid_n_Sp","q_IMnpipi_wSid_n_Sp", nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_wSid_n_Sp->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_wSid_n_Sp->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMnpipi_wSid_n_Sp_Stop = new TH2F("q_IMnpipi_wSid_n_Sp_Stop","q_IMnpipi_wSid_n_Sp_Stop Mom(#Sigma^{+}) < 20 MeV")", nbinIMnpipi,1,2, nbinq,0,1.5);
+  q_IMnpipi_wSid_n_Sp_Stop->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMnpipi_wSid_n_Sp_Stop->SetYTitle("Mom. Transfer [GeV/c]");
   
   q_IMnpipi_wSid_n_SpSm = new TH2F("q_IMnpipi_wSid_n_SpSm","q_IMnpipi_wSid_n_SpSm", nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_wSid_n_SpSm->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -2776,6 +2783,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   q_IMnpipi_wSid_n_Sm = new TH2F("q_IMnpipi_wSid_n_Sm","q_IMnpipi_wSid_n_Sm", nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_wSid_n_Sm->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_wSid_n_Sm->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMnpipi_wSid_n_Sm_Stop = new TH2F("q_IMnpipi_wSid_n_Sm_Stop","q_IMnpipi_wSid_n_Sm_Stop Mom(#Sigma^{-}) < 20 MeV", nbinIMnpipi,1,2, nbinq,0,1.5);
+  q_IMnpipi_wSid_n_Sm_Stop->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  q_IMnpipi_wSid_n_Sm_Stop->SetYTitle("Mom. Transfer [GeV/c]");
   
   q_IMnpipi_wSid_n_Sm_woSp = new TH2F("q_IMnpipi_wSid_n_Sm_woSp","q_IMnpipi_wSid_n_Sm_woSp", nbinIMnpipi,1,2, nbinq,0,1.5);
   q_IMnpipi_wSid_n_Sm_woSp->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -5352,6 +5363,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       if(SigmaPFlag) {
         nmom_IMnpip_dE_n_Sp->Fill(LVec_pip_n.M(),(*LVec_n).P(),weight);
         q_IMnpipi_wSid_n_Sp->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+        if(LVec_pip_n.P()<0.02){
+          q_IMnpipi_wSid_n_Sp_Stop->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+        }
         q_IMpiSigma_wSid_n_Sp_genacc->Fill(LVec_piSigma_react.M()/1000.,qkn_react.P()/1000.);
         q_IMnpipi_wSid_n_Sp_acc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
         q_IMnpipi_wSid_n_Sp_acc_reco->Fill(LVec_pip_pim_n.M(),qkn.P());
@@ -5380,6 +5394,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       if(SigmaMFlag) {
         nmom_IMnpim_dE_n_Sm->Fill(LVec_pim_n.M(),(*LVec_n).P(),weight);
         q_IMnpipi_wSid_n_Sm->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+        if(LVec_pim_n.P()<0.02){
+          q_IMnpipi_wSid_n_Sm_Stop->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+        }
         q_IMpiSigma_wSid_n_Sm_genacc->Fill(LVec_piSigma_react.M()/1000.,qkn_react.P()/1000.);
         q_IMnpipi_wSid_n_Sm_acc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
         q_IMnpipi_wSid_n_Sm_acc_reco->Fill(LVec_pip_pim_n.M(),qkn.P());
