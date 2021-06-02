@@ -8236,7 +8236,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   //cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px->cd();
   //TH1D* q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px = q_IMnpipi_woK0_wSid_n_SpSm_side_cs->ProjectionX();
   //q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px->Draw("E");
-  
+  /*
   //resolution evaluation
   if(SimSpmode) {
     TCanvas *cdiff_IMnpipi_woK0_wSid_n_Sp = new TCanvas("cdiff_IMnpipi_woK0_wSid_n_Sp","diff_IMnpipi_woK0_wSid_n_Sp");
@@ -8479,7 +8479,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     grsigma_q->SetMarkerStyle(20);
     grsigma_q->Draw("APE");
   }//if SimSmmode
-
+  */
   
   //centering title of all histograms
   f->cd();
