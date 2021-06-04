@@ -52,7 +52,7 @@ void Decomposition()
   TH1::SetDefaultSumw2();
   gStyle->SetErrorX(0.);  
 
-  const unsigned int nbintemplate = 100;
+  const unsigned int nbintemplate = 80;
   const int nqcut=4;
   const int qstart=0;
 
