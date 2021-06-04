@@ -76,6 +76,8 @@ const bool IsMCweighting = false;
 //maybe, also forward Sigma events should be rejected ?
 const bool SimRejectFake = true;
 
+const bool RejectStoppedSigma = true;
+
 //color def.
 //Sp mode Signal :2 (red)
 //Sm mode Signal :3 (green)
@@ -496,7 +498,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* nmom_IMnpim_dE_woK0_n;
   TH2F* nmom_IMnpim_dE_woK0_woSid_won;
   TH2F* nmom_IMnpim_dE_wK0_woSid_won;
+  TH2F* nmom_Momnpip;
+  TH2F* nmom_Momnpip_n_Sp;
   TH2F* nmom_Momnpip_woK0_n_Sp;
+  TH2F* nmom_Momnpim;
+  TH2F* nmom_Momnpim_n_Sm;
   TH2F* nmom_Momnpim_woK0_n_Sm;
   TH2F* MMnmiss_IMpippim_dE;
   TH2F* MMnmiss_IMpippim_dE_pat2;
@@ -2374,6 +2380,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   nmom_IMnpim_dE_n_Sm = new TH2F("nmom_IMnpim_dE_n_Sm","nmom_IMnpim_dE_n_Sm",nbinIMnpi,1.,2.,nbinnmom,0.,1.0);
   nmom_IMnpim_dE_n_Sm->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   nmom_IMnpim_dE_n_Sm->SetYTitle("nmom. [GeV/c]");
+  
+  nmom_Momnpim = new TH2F("nmom_Momnpim","nmom_Momnpim",100,0.,1.,nbinnmom,0.,1.0);
+  nmom_Momnpim->SetXTitle("Mom.(n#pi^{-}) [GeV/c]");
+  nmom_Momnpim->SetYTitle("nmom. [GeV/c]");
+  
+  nmom_Momnpim_n_Sm = new TH2F("nmom_Momnpim_n_Sm","nmom_Momnpim_n_Sm",100,0.,1.,nbinnmom,0.,1.0);
+  nmom_Momnpim_n_Sm->SetXTitle("Mom.(n#pi^{-}) [GeV/c]");
+  nmom_Momnpim_n_Sm->SetYTitle("nmom. [GeV/c]");
 
   nmom_Momnpim_woK0_n_Sm = new TH2F("nmom_Momnpim_woK0_n_Sm","nmom_Momnpim_woK0_n_Sm",100,0.,1.,nbinnmom,0.,1.0);
   nmom_Momnpim_woK0_n_Sm->SetXTitle("Mom.(n#pi^{-}) [GeV/c]");
@@ -2402,7 +2416,15 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   nmom_IMnpip_dE_wK0_woSid_won = new TH2F("nmom_IMnpip_dE_wK0_woSid_won","nmom_IMnpip_dE_wK0_woSid_won",nbinIMnpi,1.,2.,nbinnmom,0.,1.0);
   nmom_IMnpip_dE_wK0_woSid_won->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   nmom_IMnpip_dE_wK0_woSid_won->SetYTitle("nmom. [GeV/c]");
+  
+  nmom_Momnpip = new TH2F("nmom_Momnpip","nmom_Momnpip",100,0.,1.,nbinnmom,0.,1.0);
+  nmom_Momnpip->SetXTitle("Mom.(n#pi^{+}) [GeV/c]");
+  nmom_Momnpip->SetYTitle("nmom. [GeV/c]");
 
+  nmom_Momnpip_n_Sp = new TH2F("nmom_Momnpip_n_Sp","nmom_Momnpip_n_Sp",100,0.,1.,nbinnmom,0.,1.0);
+  nmom_Momnpip_n_Sp->SetXTitle("Mom.(n#pi^{+}) [GeV/c]");
+  nmom_Momnpip_n_Sp->SetYTitle("nmom. [GeV/c]");
+  
   nmom_Momnpip_woK0_n_Sp = new TH2F("nmom_Momnpip_woK0_n_Sp","nmom_Momnpip_woK0_n_Sp",100,0.,1.,nbinnmom,0.,1.0);
   nmom_Momnpip_woK0_n_Sp->SetXTitle("Mom.(n#pi^{+}) [GeV/c]");
   nmom_Momnpip_woK0_n_Sp->SetYTitle("nmom. [GeV/c]");
@@ -5078,6 +5100,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       nmom_IMpippim->Fill(LVec_pip_pim.M(),(*LVec_n).P(),weight);
       nmom_MK0bar2->Fill(LVec_K0bar.M2(),(*LVec_n).P(),weight);
       MMnmiss_IMpippim_dE->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
+      nmom_Momnpip->Fill(LVec_pip_n.P(),(*LVec_n).P());
+      nmom_Momnpim->Fill(LVec_pim_n.P(),(*LVec_n).P());
       if(mcpattern==2){
         MMnmiss_IMpippim_dE_pat2->Fill(LVec_pip_pim.M(),nmiss_mass,weight);
       }
@@ -5385,6 +5409,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       if(SigmaPFlag) {
         nmom_IMnpip_dE_n_Sp->Fill(LVec_pip_n.M(),(*LVec_n).P(),weight);
         q_IMnpipi_wSid_n_Sp->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+        nmom_Momnpip_n_Sp->Fill(LVec_pip_n.P(),(*LVec_n).P(),weight);
         if(LVec_pip_n.P()<0.03){
           q_IMnpipi_wSid_n_Sp_Stop->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
         }else{
@@ -5418,6 +5443,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       if(SigmaMFlag) {
         nmom_IMnpim_dE_n_Sm->Fill(LVec_pim_n.M(),(*LVec_n).P(),weight);
         q_IMnpipi_wSid_n_Sm->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+        nmom_Momnpim_n_Sm->Fill(LVec_pim_n.P(),(*LVec_n).P());
         if(LVec_pim_n.P()<0.03){
           q_IMnpipi_wSid_n_Sm_Stop->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
         }else{
