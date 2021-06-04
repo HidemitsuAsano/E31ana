@@ -1,4 +1,4 @@
-void Resolution(const char* filename="")
+void Resolution(const char* filename="../simpost/simIMpisigma_nSppim_pippimn_v132_out_iso_qlo_rej.root")
 {
   
   std::cout << "infile " << filename <<std::endl;
@@ -6,7 +6,9 @@ void Resolution(const char* filename="")
 
   bool SimSpmode = (std::string(filename).find("Sp")!= std::string::npos);
   bool SimSmmode = (std::string(filename).find("Sm")!= std::string::npos);
-
+  
+  if(SimSpmode) std::cout << "Sim Sigma+ mode" << std::endl;
+  if(SimSmmode) std::cout << "Sim Sigma- mode" << std::endl;
 
   TFile *f = new TFile(filename);
   
@@ -80,7 +82,7 @@ void Resolution(const char* filename="")
     grsigma->Draw("APE");
 
 
-    TCanvas *cdiff_q_wSid_n_Sp = new TCanvas("cdiff_q_wSid_n_Sp","diff_q_wSid_n_Sp");
+    TCanvas *cdiff_q_wSid_n_Sp = new TCanvas("cdiff_q_wSid_n_Sp","diff_q_wSid_n_Sp",800,800);
     cdiff_q_wSid_n_Sp->cd();
     diff_q_wSid_n_Sp->GetYaxis()->SetRangeUser(-0.1,0.1);
     diff_q_wSid_n_Sp->Draw("colz");
@@ -114,7 +116,7 @@ void Resolution(const char* filename="")
         sigma_q_err[i]=0.;
       }
     }
-    TCanvas *cfitmean_q = new TCanvas("cfitmean_q","fitmean_q");
+    TCanvas *cfitmean_q = new TCanvas("cfitmean_q","fitmean_q",800,800);
     cfitmean_q->cd();
     TGraphErrors *grcent_q = new TGraphErrors(nbinq,recoq,cent_q,0,cent_q_err);
     grcent_q->SetTitle("gaussian mean");
@@ -126,7 +128,7 @@ void Resolution(const char* filename="")
     grcent_q->SetMarkerStyle(20);
     grcent_q->GetYaxis()->SetTitleOffset(1.5);
     grcent_q->Draw("APE");
-    TCanvas *cfitsigma_q = new TCanvas("cfitsigma_q","fitsigma_q");
+    TCanvas *cfitsigma_q = new TCanvas("cfitsigma_q","fitsigma_q",800,800);
     cfitsigma_q->cd();
     TGraphErrors *grsigma_q = new TGraphErrors(nbinq,recoq,sigma_q,0,sigma_q_err);
     grsigma_q->SetTitle("Mom. resolution");
@@ -141,7 +143,7 @@ void Resolution(const char* filename="")
   }//if Spmode
 
   if(SimSmmode) {
-    TCanvas *cdiff_IMnpipi_wSid_n_Sm = new TCanvas("cdiff_IMnpipi_wSid_n_Sm","diff_IMnpipi_wSid_n_Sm");
+    TCanvas *cdiff_IMnpipi_wSid_n_Sm = new TCanvas("cdiff_IMnpipi_wSid_n_Sm","diff_IMnpipi_wSid_n_Sm",800,800);
     cdiff_IMnpipi_wSid_n_Sm->cd();
     TH2D* diff_IMnpipi_wSid_n_Sm = (TH2D*)f->Get("diff_IMnpipi_wSid_n_Sm");
     diff_IMnpipi_wSid_n_Sm->GetYaxis()->SetRangeUser(-0.1,0.1);
@@ -176,7 +178,7 @@ void Resolution(const char* filename="")
         sigma_err[i]=0;
       }
     }
-    TCanvas *cfitmean = new TCanvas("cfitmean","fitmean");
+    TCanvas *cfitmean = new TCanvas("cfitmean","fitmean",800,800);
     cfitmean->cd();
     TGraphErrors *grcent = new TGraphErrors(nbinIMnpipi,recomass,cent,0,cent_err);
     grcent->SetTitle("gaussian mean");
@@ -189,7 +191,7 @@ void Resolution(const char* filename="")
     grcent->GetYaxis()->SetTitleOffset(1.5);
     grcent->Draw("APE");
 
-    TCanvas *cfitsigma = new TCanvas("cfitsigma","fitsigma");
+    TCanvas *cfitsigma = new TCanvas("cfitsigma","fitsigma",800,800);
     cfitsigma->cd();
     TGraphErrors *grsigma = new TGraphErrors(nbinIMnpipi,recomass,sigma,0,sigma_err);
     grsigma->SetTitle("mass resolution");
@@ -202,7 +204,7 @@ void Resolution(const char* filename="")
     grsigma->SetMarkerStyle(20);
     grsigma->Draw("APE");
 
-    TCanvas *cdiff_q_wSid_n_Sm = new TCanvas("cdiff_q_wSid_n_Sm","diff_q_wSid_n_Sm");
+    TCanvas *cdiff_q_wSid_n_Sm = new TCanvas("cdiff_q_wSid_n_Sm","diff_q_wSid_n_Sm",800,800);
     cdiff_q_wSid_n_Sm->cd();
     diff_q_wSid_n_Sm->GetYaxis()->SetRangeUser(-0.1,0.1);
     diff_q_wSid_n_Sm->Draw("colz");
@@ -210,7 +212,7 @@ void Resolution(const char* filename="")
     pfxSm_q->SetLineColor(2);
     pfxSm_q->SetMarkerStyle(33);
     pfxSm_q->Draw("same");
-    TCanvas *cgaus_q = new TCanvas("cgaus_q","cgaus_q");
+    TCanvas *cgaus_q = new TCanvas("cgaus_q","cgaus_q",800,800);
     double recoq[nbinIMnpipi];
     double cent_q[nbinIMnpipi];
     double cent_q_err[nbinIMnpipi];
@@ -236,7 +238,7 @@ void Resolution(const char* filename="")
         sigma_q_err[i]=0.;
       }
     }
-    TCanvas *cfitmean_q = new TCanvas("cfitmean_q","fitmean_q");
+    TCanvas *cfitmean_q = new TCanvas("cfitmean_q","fitmean_q",800,800);
     cfitmean_q->cd();
     TGraphErrors *grcent_q = new TGraphErrors(nbinq,recoq,cent_q,0,cent_q_err);
     grcent_q->SetTitle("gaussian mean");
@@ -248,7 +250,7 @@ void Resolution(const char* filename="")
     grcent_q->SetMarkerStyle(20);
     grcent_q->GetYaxis()->SetTitleOffset(1.5);
     grcent_q->Draw("APE");
-    TCanvas *cfitsigma_q = new TCanvas("cfitsigma_q","fitsigma_q");
+    TCanvas *cfitsigma_q = new TCanvas("cfitsigma_q","fitsigma_q",800,800);
     cfitsigma_q->cd();
     TGraphErrors *grsigma_q = new TGraphErrors(nbinq,recoq,sigma_q,0,sigma_q_err);
     grsigma_q->SetTitle("Mom. resolution");
@@ -261,10 +263,6 @@ void Resolution(const char* filename="")
     grsigma_q->SetMarkerStyle(20);
     grsigma_q->Draw("APE");
   }//if SimSmmode
-
-
-
-
 
 
 }
