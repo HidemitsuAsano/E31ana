@@ -1,4 +1,4 @@
-void Resolution(const char* filename="../simpost/simIMpisigma_nSppim_pippimn_v132_out_iso_qlo_rej.root")
+void Resolution(const char* filename="../simpost/simIMpisigma_nSppim_pippimn_v132_out_iso_rej.root")
 {
   
   std::cout << "infile " << filename <<std::endl;
@@ -12,7 +12,7 @@ void Resolution(const char* filename="../simpost/simIMpisigma_nSppim_pippimn_v13
 
   TFile *f = new TFile(filename);
   
-  const int nbinIMnpipi = 100;//1-2 GeV/c^2
+  const int nbinIMnpipi = 80;//1.2-2 GeV/c^2
   const int nbinq = 100;// 25;//0-1.5 GeV/c
   if(SimSpmode) {
     TCanvas *cq_IMnpipi_wSid_n_Sp = new TCanvas("cq_IMnpipi_wSid_n_Sp","cq_IMnpipi_wSid_n_Sp",800,800);
@@ -84,24 +84,25 @@ void Resolution(const char* filename="../simpost/simIMpisigma_nSppim_pippimn_v13
 
     TCanvas *cdiff_q_wSid_n_Sp = new TCanvas("cdiff_q_wSid_n_Sp","diff_q_wSid_n_Sp",800,800);
     cdiff_q_wSid_n_Sp->cd();
+    TH2D* diff_q_wSid_n_Sp = (TH2D*)f->Get("diff_q_wSid_n_Sp");
     diff_q_wSid_n_Sp->GetYaxis()->SetRangeUser(-0.1,0.1);
     diff_q_wSid_n_Sp->Draw("colz");
     TProfile *pfxSp_q = (TProfile*)diff_q_wSid_n_Sp->ProfileX("pfxSp_q",1,-1,"s");
     pfxSp_q->SetLineColor(2);
     pfxSp_q->SetMarkerStyle(33);
     pfxSp_q->Draw("same");
-    TCanvas *cgaus_q = new TCanvas("cgaus_q","cgaus_q");
-    double recoq[nbinIMnpipi];
-    double cent_q[nbinIMnpipi];
-    double cent_q_err[nbinIMnpipi];
-    double sigma_q[nbinIMnpipi];
-    double sigma_q_err[nbinIMnpipi];
+    TCanvas *cgaus_q = new TCanvas("cgaus_q","cgaus_q",800,800);
+    double recoq[nbinq];
+    double cent_q[nbinq];
+    double cent_q_err[nbinq];
+    double sigma_q[nbinq];
+    double sigma_q_err[nbinq];
     //cgaus->Divide(10,10);
-    TH1D *px_q[nbinIMnpipi];
+    TH1D *px_q[nbinq];
     for(int i=0; i<nbinq; i++) {
       px_q[i] = (TH1D*)diff_q_wSid_n_Sp->ProjectionY(Form("px_q%d",i),i+1,i+2,"");
       recoq[i] = diff_q_wSid_n_Sp->GetXaxis()->GetBinCenter(i+1);
-      cgaus_q->cd(i+1);
+      cgaus_q->cd();
       if(px_q[i]->GetEntries()>200) {
         //px[i]->Draw("HE");
         px_q[i]->Fit("gaus","q");
@@ -206,6 +207,7 @@ void Resolution(const char* filename="../simpost/simIMpisigma_nSppim_pippimn_v13
 
     TCanvas *cdiff_q_wSid_n_Sm = new TCanvas("cdiff_q_wSid_n_Sm","diff_q_wSid_n_Sm",800,800);
     cdiff_q_wSid_n_Sm->cd();
+    TH2D* diff_q_wSid_n_Sm = (TH2D*)f->Get("diff_q_wSid_n_Sm");
     diff_q_wSid_n_Sm->GetYaxis()->SetRangeUser(-0.1,0.1);
     diff_q_wSid_n_Sm->Draw("colz");
     TProfile *pfxSm_q = (TProfile*)diff_q_wSid_n_Sm->ProfileX("pfxSm_q",1,-1,"s");
@@ -213,17 +215,17 @@ void Resolution(const char* filename="../simpost/simIMpisigma_nSppim_pippimn_v13
     pfxSm_q->SetMarkerStyle(33);
     pfxSm_q->Draw("same");
     TCanvas *cgaus_q = new TCanvas("cgaus_q","cgaus_q",800,800);
-    double recoq[nbinIMnpipi];
-    double cent_q[nbinIMnpipi];
-    double cent_q_err[nbinIMnpipi];
-    double sigma_q[nbinIMnpipi];
-    double sigma_q_err[nbinIMnpipi];
+    double recoq[nbinq];
+    double cent_q[nbinq];
+    double cent_q_err[nbinq];
+    double sigma_q[nbinq];
+    double sigma_q_err[nbinq];
     //cgaus->Divide(10,10);
-    TH1D *px_q[nbinIMnpipi];
+    TH1D *px_q[nbinq];
     for(int i=0; i<nbinq; i++) {
       px_q[i] = (TH1D*)diff_q_wSid_n_Sm->ProjectionY(Form("px_q%d",i),i+1,i+2,"");
       recoq[i] = diff_q_wSid_n_Sm->GetXaxis()->GetBinCenter(i+1);
-      cgaus_q->cd(i+1);
+      cgaus_q->cd();
       if(px_q[i]->GetEntries()>200) {
         //px[i]->Draw("HE");
         px_q[i]->Fit("gaus","q");
