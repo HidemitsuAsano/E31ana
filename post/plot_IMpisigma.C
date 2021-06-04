@@ -8236,7 +8236,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   //cq_IMnpipi_woK0_wSid_n_SpSm_side_cs_px->cd();
   //TH1D* q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px = q_IMnpipi_woK0_wSid_n_SpSm_side_cs->ProjectionX();
   //q_IMnpipi_woK0_wSid_n_SpSm_side_cs_px->Draw("E");
-  /*
   
   //centering title of all histograms
   f->cd();
