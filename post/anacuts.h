@@ -48,6 +48,8 @@ namespace anacuts {
   const double Sigmam_MIN_wide = Sigmam_center-Sigma_wideNSigmacut*Sigmam_sigma;
   const double Sigmam_MAX_wide = Sigmam_center+Sigma_wideNSigmacut*Sigmam_sigma;  
   
+  const double SigmaPMomCut = 0.04;
+
   //side band selection
   //const double Sigmap_sidelow_MIN = Sigmap_center-6.0*Sigmap_sigma;   
   //const double Sigmap_sidelow_MAX = Sigmap_center-3.0*Sigmap_sigma;   
