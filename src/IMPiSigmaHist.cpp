@@ -196,8 +196,8 @@ void InitIMPiSigmaHist()
   Tools::newTH2F( Form("MMnmiss_IMnpipi_n"),100,1,2,140,0.4,1.8);
   Tools::newTH2F( Form("MMnmiss_IMnpipi_wSid_n"),100,1,2,140,0.4,1.8);
   Tools::newTH2F( Form("MMnmiss_IMnpipi_woK0_wSid_n"),100,1,2,140,0.4,1.8);
-  Tools::newTH2F( Form("nmom_IMnpipi_woK0_wSid_n"),100,1,2,100,0,1.0);
-  Tools::newTH2F( Form("q_IMnpipi_woK0_wSid_n"),100,1,2,300,0,1.5);
+  Tools::newTH2F( Form("nmom_IMnpipi_woK0_wSid_n"),80,1.2,2,100,0,1.0);
+  Tools::newTH2F( Form("q_IMnpipi_woK0_wSid_n"),80,1.2,2,300,0,1.5);
   Tools::newTH1F( Form("DCA_pip"), 3000, 0, 30 );
   Tools::newTH1F( Form("DCA_pim"), 3000, 0, 30 );
   Tools::newTH1F( Form("DCA_pip_SigmaP"), 3000, 0, 30 );

@@ -935,7 +935,7 @@ void Util::AnaReactionData( ReactionData *reactionData){
     TLorentzVector TL_Sigma = reactionData->GetParticle(1);
     TLorentzVector TL_piSigma = TL_Sigma + reactionData->GetParticle(2);
     double mass = TL_piSigma.M()/1000.;
-    Tools::H2(Form("React_q_IMPiSigma"),mass,q,500,1,2,300,0,1.5);
+    Tools::H2(Form("React_q_IMPiSigma"),mass,q,400,1.2,2,300,0,1.5);
   }
   if(reactionID == gen::reactionID_pLpim){
     TLorentzVector TL_pmiss = reactionData->GetParticle(0);
@@ -943,7 +943,7 @@ void Util::AnaReactionData( ReactionData *reactionData){
     TLorentzVector TL_Lambda = reactionData->GetParticle(1);
     TLorentzVector TL_LambdaPim = TL_Lambda + reactionData->GetParticle(2);
     double mass = TL_LambdaPim.M()/1000.;
-    Tools::H2(Form("React_q_IMLPim"),mass,q,500,1,2,300,0,1.5);
+    Tools::H2(Form("React_q_IMLPim"),mass,q,400,1.2,2,300,0,1.5);
   }
   if(reactionID == gen::reactionID_npipiL){
     TLorentzVector TL_n = reactionData->GetParticle(0);
@@ -953,7 +953,7 @@ void Util::AnaReactionData( ReactionData *reactionData){
     double q = (TL_beam.Vect()-TL_Lmiss.Vect()).Mag()/1000.;
     TLorentzVector TL_npipi = TL_n+TL_pip+TL_pim;
     double mass = TL_npipi.M()/1000.;
-    Tools::H2(Form("React_q_IMnpipi"),mass,q,500,1,2,300,0,1.5);
+    Tools::H2(Form("React_q_IMnpipi"),mass,q,400,1.2,2,300,0,1.5);
   }
   if(reactionID == gen::reactionID_nK0n){
     TLorentzVector TL_K0 = reactionData->GetParticle(0);
@@ -962,7 +962,7 @@ void Util::AnaReactionData( ReactionData *reactionData){
     double q = (TL_beam.Vect()-TL_nmiss.Vect()).Mag()/1000.;
     TLorentzVector TL_K0n = TL_K0+TL_n;
     double mass = TL_K0n.M()/1000.;
-    Tools::H2(Form("React_q_IMnpipi"),mass,q,500,1,2,300,0,1.5);
+    Tools::H2(Form("React_q_IMnpipi"),mass,q,400,1.2,2,300,0,1.5);
   }
 }
 
