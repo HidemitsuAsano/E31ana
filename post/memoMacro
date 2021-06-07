@@ -8,6 +8,7 @@ output file: fout_qlo.root and fout_qhi.root
 2. Estimate Sigma+/Sigma- decoposition error 
 (maybe replaced in the future)
 SpSmDecoError.C
-output file:
+output file:deco_qlo.root and deco_qhi.root
 
+3. Decompose K0/Sigma+/Sigma- in each IMnpi+pi- bin
 DecomposK0SpSm.C
