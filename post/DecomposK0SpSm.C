@@ -50,7 +50,7 @@ void DecomposK0SpSm()
   fdeco[0]->Print();
   fdeco[1]->Print();
 
-  gROOT->SetBatch(1);
+  //gROOT->SetBatch(1);
   gStyle->SetPalette(1);
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
@@ -90,13 +90,14 @@ void DecomposK0SpSm()
     }
   }
  
-  //only qlo(=0) and qhi(1) results;
+  //only qlo(=0) and qhi(1) decomposition results;
   TH2D* IMnpim_IMnpip_K0inter[2];
   TGraphErrors *gr_SpONnpim_fin_pol1[2];
   TGraphErrors *gr_SmONnpip_fin_pol1[2];
   TGraphErrors *gr_SpONnpim_fin_3rd[2];
   TGraphErrors *gr_SmONnpip_fin_3rd[2];
 
+  //only qlo(=0) and qhi(1) decomposition results;
   for(int iq=0;iq<2;iq++){
     IMnpim_IMnpip_K0inter[iq] = (TH2D*)fdeco[iq]->Get("IMnpim_IMnpip_dE_wK0_woSid_n_3_inter");
     gr_SpONnpim_fin_pol1[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SpONnpim_fin_pol1");
@@ -104,13 +105,21 @@ void DecomposK0SpSm()
     gr_SpONnpim_fin_3rd[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SpONnpim_fin_3rd");
     gr_SmONnpip_fin_3rd[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SmONnpip_fin_3rd");
   }
-
   
+  TCanvas *cK0inter = new TCanvas("cK0inter","cK0inter",1600,800);
+  cK0inter->Divide(2,1);
+  cK0inter->cd(1);
+  IMnpim_IMnpip_K0inter[0]->Draw("colz");
+  cK0inter->cd(2);
+  IMnpim_IMnpip_K0inter[1]->Draw("colz");
+
+  //only qlo(=0) and qhi(1) decomposition results;
   for(int iq=0;iq<2;iq++){
+    //no overlap in iwbin=0;
     for(int iwbin=1;iwbin<nwbin;iwbin++){
-      for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iq+1]->GetNBinsX();ix++){
-        for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iq+1]->GetNBinsY();iy++){
-          IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iq+1] 
+      for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iq+1]->GetNbinsX();ix++){
+        for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iq+1]->GetNbinsY();iy++){
+          double cont = IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iq+1]->GetBinContent(ix,iy);
         }
       }
     }
