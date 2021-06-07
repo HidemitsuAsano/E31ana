@@ -4370,6 +4370,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     if( (qkn.P()>=anacuts::qvalcut) && (qvalcutflag==1) ) continue;
     if( (qkn.P()<anacuts::qvalcut) && (qvalcutflag==2) ) continue;
     if( (*LVec_n).P()<anacuts::nmomcut) continue;
+    if(RejectStoppedSigma){
+      if(LVec_pip_n.P()<anacuts::SigmaPMomCut) continue;
+    }
     //double chi2 = kfSpmode_chi2<kfSmmode_chi2 ? kfSpmode_chi2:kfSmmode_chi2;
     double pvalue = -9999;
     if(UseKinFit) pvalue = kfSmmode_pvalue<kfSpmode_pvalue ? kfSpmode_pvalue:kfSmmode_pvalue;
