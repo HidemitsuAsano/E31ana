@@ -112,6 +112,8 @@ void DecomposK0SpSm()
   IMnpim_IMnpip_K0inter[0]->Draw("colz");
   cK0inter->cd(2);
   IMnpim_IMnpip_K0inter[1]->Draw("colz");
+  
+
 
   //only qlo(=0) and qhi(1) decomposition results;
   for(int iq=0;iq<2;iq++){
