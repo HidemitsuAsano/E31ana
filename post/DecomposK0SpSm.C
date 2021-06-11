@@ -113,6 +113,12 @@ void DecomposK0SpSm()
   cK0inter->cd(2);
   IMnpim_IMnpip_K0inter[1]->Draw("colz");
   
+  const int SpbinMIN = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->FindBin(anacuts::Sigmap_MIN_wide);
+  const int SpbinMAX = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->FindBin(anacuts::Sigmap_MAX_wide);
+  const int SmbinMIN = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->FindBin(anacuts::Sigmam_MIN_wide);
+  const int SmbinMAX = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->FindBin(anacuts::Sigmam_MAX_wide);
+  
+
 
 
   //only qlo(=0) and qhi(1) decomposition results;
