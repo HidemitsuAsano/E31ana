@@ -440,6 +440,8 @@ void Fit2DK0(const int qcut=2)
   }
   
   cinter_3->cd(3);
+  //result of before rebin
+  TH2D* h2K0inter_3fine = (TH2D*)h2K0inter_3->Clone("h2K0inter_3fine");
   IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Rebin2D(4,4);//+/- 2sigma binning
   h2K0inter_3->Rebin2D(4,4);
   IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Draw("colz");
@@ -651,7 +653,7 @@ void Fit2DK0(const int qcut=2)
   IMnpim_K0sub_woSm->Write();
   IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Write();
   IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Write();
-  
+  h2K0inter_3fine->Write(); 
 
 
 }

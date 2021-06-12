@@ -388,7 +388,8 @@ void SpSmDecoError(const int qcut=2)
   }else  if(qcut==2){
     f_out = new TFile("deco_qhi.root","RECREATE");
   }
-  TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_3_inter = (TH2F*)f->Get("IMnpim_IMnpip_dE_wK0_woSid_n_3_inter");
+  TH2D* IMnpim_IMnpip_dE_wK0_woSid_n_3_inter = (TH2D*)f->Get("IMnpim_IMnpip_dE_wK0_woSid_n_3_inter");
+  TH2D* h2K0inter_3fine = (TH2D*)f->Get("h2K0inter_3fine");
 
   f_out->cd();
   gr_SpONnpim_fin_pol1->Write();
@@ -396,5 +397,6 @@ void SpSmDecoError(const int qcut=2)
   gr_SpONnpim_fin_3rd->Write();
   gr_SmONnpip_fin_3rd->Write();
   IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Write();
+  h2K0inter_3fine->Write();
 
 }
