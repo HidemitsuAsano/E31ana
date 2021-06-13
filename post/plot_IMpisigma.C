@@ -2109,7 +2109,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   
   for(int ibin=0;ibin<nbinIMnpipi;ibin++){
       IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin] = new TH2F(
-          Form("IMnpim_IMnpip_dE_wSid_n_SpSm_bin",ibin),
+          Form("IMnpim_IMnpip_dE_wSid_n_SpSm_bin%d",ibin),
           Form("IMnpim_IMnpip_dE_wSid_n_SpSm_bin %0.2f-%0.2f",binlow[ibin],binhigh[ibin]),
         nbinIMnpim_bin,IMnpim_binlow,IMnpim_binhigh,nbinIMnpip_bin,IMnpip_binlow,IMnpip_binhigh);
       IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
