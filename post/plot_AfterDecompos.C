@@ -32,7 +32,7 @@ bool Sidefar=false;
 bool FitNoWeight=true;
 
 
-void plot_qIMnpipi_AfterDecompos()
+void plot_AfterDecompos()
 {
   TFile *fr[4]={NULL};
   
@@ -57,27 +57,80 @@ void plot_qIMnpipi_AfterDecompos()
   TH1::SetDefaultSumw2();
   gStyle->SetErrorX(0.);  
 
-  const unsigned int nbintemplate = 100;
+  const unsigned int nbinIMnpipi = 80;
   const int nqcut=4;
-  const int qstart=0;
+  const int qstart=1;
 
   //for the overlap of S+ & S- & K0 counting 
   TH2F* q_IMnpipi_wK0_wSid_n_SpSm[nqcut];
   TH1D* IMnpipi_wK0_wSid_n_SpSm[nqcut];
   TCanvas *cq_IMnpipi_wK0_wSid_n_SpSm[nqcut];
-  double OverlapCount[nbintemplate][nqcut]; 
+  TCanvas *cIMnpipi_Sp[nqcut];
+  TCanvas *cIMnpipi_Sm[nqcut];
+  TCanvas *cIMnpipi_K0[nqcut];
+  double OverlapCount[nbinIMnpipi][nqcut]; 
   const unsigned int nwbin = 3;
+  TH2D* IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin[nbinIMnpipi][nqcut];
+  TH2D* IMnpim_IMnpip_dE_wK0_wSid_n_Sm_bin[nbinIMnpipi][nqcut];
   TH2D* IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[nwbin][nqcut];
   TH2D* IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[nwbin][nqcut];
+  TH2D* q_IMnpipi_wSid_n_Sp[nqcut];
+  TH1D* IMnpipi_wSid_n_Sp[nqcut];
+  TH2D* q_IMnpipi_wK0_wSid_n_Sp[nqcut];
+  TH1D* IMnpipi_wK0_wSid_n_Sp[nqcut];
+  TH2D* q_IMnpipi_wSid_n_Sm[nqcut];
+  TH1D* IMnpipi_wSid_n_Sm[nqcut];
+  TH2D* q_IMnpipi_wK0_wSid_n_Sm[nqcut];
+  TH1D* IMnpipi_wK0_wSid_n_Sm[nqcut];
+  TH2D* q_IMnpipi_wSid_n_SpSm[nqcut];
+  TH1D* IMnpipi_wSid_n_SpSm[nqcut];
+  TH2D* q_IMnpipi_wK0_n[nqcut];
+  TH1D* IMnpipi_wK0_n[nqcut];
+
 
   const char cqcut[][10]= {"all","qlo","qhi","theta"};
   std::cout << __LINE__ << std::endl;
   for(int iq=qstart;iq<nqcut;iq++){
+    //get
     q_IMnpipi_wK0_wSid_n_SpSm[iq] = (TH2F*)fr[iq]->Get("q_IMnpipi_wK0_wSid_n_SpSm");
+    q_IMnpipi_wSid_n_Sp[iq] = (TH2D*)fr[iq]->Get("q_IMnpipi_wSid_n_Sp");
+    q_IMnpipi_wK0_wSid_n_Sp[iq] = (TH2D*)fr[iq]->Get("q_IMnpipi_wK0_wSid_n_Sp");
+    q_IMnpipi_wSid_n_Sm[iq] = (TH2D*)fr[iq]->Get("q_IMnpipi_wSid_n_Sm");
+    q_IMnpipi_wK0_wSid_n_Sm[iq] = (TH2D*)fr[iq]->Get("q_IMnpipi_wK0_wSid_n_Sm");
+    q_IMnpipi_wSid_n_SpSm[iq] = (TH2D*)fr[iq]->Get("q_IMnpipi_wSid_n_SpSm");
+    q_IMnpipi_wK0_n[iq] = (TH2D*)fr[iq]->Get("q_IMnpipi_wK0_n");
+    
+    //Draw
+    cIMnpipi_Sp[iq] = new TCanvas(Form("IMnpipi_Sp_%s",cqcut[iq]),Form("IMnpipi_Sp_%s",cqcut[iq]),800,800);
+    IMnpipi_wSid_n_Sp[iq] = (TH1D*)q_IMnpipi_wSid_n_Sp[iq]->ProjectionX(Form("IMnpipi_wSid_n_Sp_%d",iq));
+    IMnpipi_wSid_n_Sp[iq]->Draw("HE");
+    IMnpipi_wK0_wSid_n_Sp[iq] = (TH1D*)q_IMnpipi_wK0_wSid_n_Sp[iq]->ProjectionX(Form("IMnpipi_wK0_wSid_n_Sp_%d",iq));
+    IMnpipi_wK0_wSid_n_Sp[iq]->SetLineColor(2);
+    IMnpipi_wK0_wSid_n_Sp[iq]->Draw("HEsame");
+    IMnpipi_wSid_n_SpSm[iq] = (TH1D*)q_IMnpipi_wSid_n_SpSm[iq]->ProjectionX(Form("IMnpipi_wSid_n_SpSm_%d",iq));
+    IMnpipi_wSid_n_SpSm[iq]->SetLineColor(3);
+    IMnpipi_wSid_n_SpSm[iq]->Draw("HEsame");
+
+    cIMnpipi_Sm[iq] = new TCanvas(Form("IMnpipi_Sm_%s",cqcut[iq]),Form("IMnpipi_Sm_%s",cqcut[iq]),800,800);
+    IMnpipi_wSid_n_Sm[iq] = (TH1D*)q_IMnpipi_wSid_n_Sm[iq]->ProjectionX(Form("IMnpipi_wSid_n_Sm_%d",iq));
+    IMnpipi_wSid_n_Sm[iq]->Draw("HE");
+    IMnpipi_wK0_wSid_n_Sm[iq] = (TH1D*)q_IMnpipi_wK0_wSid_n_Sm[iq]->ProjectionX(Form("IMnpipi_wK0_wSid_n_Sm_%d",iq));
+    IMnpipi_wK0_wSid_n_Sm[iq]->SetLineColor(2);
+    IMnpipi_wK0_wSid_n_Sm[iq]->Draw("HEsame");
+    IMnpipi_wSid_n_SpSm[iq]->Draw("HEsame");
+    
+    cIMnpipi_K0[iq] = new TCanvas(Form("IMnpipi_K0_%s",cqcut[iq]),Form("IMnpipi_K0_%s",cqcut[iq]),800,800);
+    IMnpipi_wK0_n[iq] = (TH1D*)q_IMnpipi_wK0_n[iq]->ProjectionX(Form("IMnpipi_wK0_n_%d",iq));
+    IMnpipi_wK0_n[iq]->Draw("HE");
+    IMnpipi_wK0_wSid_n_Sp[iq]->Draw("HEsame");
+    IMnpipi_wK0_wSid_n_Sm[iq]->Draw("HEsame");
+    
     cq_IMnpipi_wK0_wSid_n_SpSm[iq] = new TCanvas(Form("q_IMnpipi_wK0_wSid_n_SpSm_%s",cqcut[iq]),Form("q_IMnpipi_wK0_wSid_n_SpSm_%s",cqcut[iq]));
     IMnpipi_wK0_wSid_n_SpSm[iq] = (TH1D*)q_IMnpipi_wK0_wSid_n_SpSm[iq]->ProjectionX(Form("IMnpipi_wK0_wSid_n_SpSm_%d",iq));
     IMnpipi_wK0_wSid_n_SpSm[iq]->Draw("HISTE");
-    for(unsigned int ibin=0;ibin<nbintemplate;ibin++){
+    for(unsigned int ibin=0;ibin<nbinIMnpipi;ibin++){
+      IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin[ibin][iq] = (TH2D*)fr[iq]->Get(Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin%d",ibin));
+      IMnpim_IMnpip_dE_wK0_wSid_n_Sm_bin[ibin][iq] = (TH2D*)fr[iq]->Get(Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sm_bin%d",ibin));
       OverlapCount[ibin][iq] = IMnpipi_wK0_wSid_n_SpSm[iq]->GetBinContent(ibin+1);
       if(OverlapCount[ibin][iq]<0.0) OverlapCount[ibin][iq]=0.0;
     }
@@ -86,7 +139,7 @@ void plot_qIMnpipi_AfterDecompos()
       IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin][iq] = (TH2D*)fr[iq]->Get(Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin%d",iwbin));
     }
   }
- 
+
   //only qlo(=0) and qhi(1) decomposition results;
   TH2D* IMnpim_IMnpip_K0inter[2];
   TGraphErrors *gr_SpONnpim_fin_pol1[2];
@@ -103,6 +156,7 @@ void plot_qIMnpipi_AfterDecompos()
     gr_SmONnpip_fin_3rd[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SmONnpip_fin_3rd");
   }
   
+  //have data only in Sigma+/- region
   TCanvas *cK0inter = new TCanvas("cK0inter","cK0inter",1600,800);
   cK0inter->Divide(2,1);
   cK0inter->cd(1);
@@ -110,15 +164,7 @@ void plot_qIMnpipi_AfterDecompos()
   cK0inter->cd(2);
   IMnpim_IMnpip_K0inter[1]->Draw("colz");
   
-  const int SpbinMIN = IMnpim_IMnpip_K0inter[0]->GetXaxis()->FindBin(anacuts::Sigmap_MIN_wide);
-  const int SpbinMAX = IMnpim_IMnpip_K0inter[0]->GetXaxis()->FindBin(anacuts::Sigmap_MAX_wide);
-  const int SmbinMIN = IMnpim_IMnpip_K0inter[0]->GetYaxis()->FindBin(anacuts::Sigmam_MIN_wide);
-  const int SmbinMAX = IMnpim_IMnpip_K0inter[0]->GetYaxis()->FindBin(anacuts::Sigmam_MAX_wide);
   
-  TH2D* q_IMnpipi_wSid_n_Sp[nqcut];
-  TH2D* q_IMnpipi_wSid_n_Sm[nqcut];
-  TH2D* q_IMnpipi_wK0_n[nqcut];
-
 
 
   //only qlo(=0) and qhi(1) decomposition results;
