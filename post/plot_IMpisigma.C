@@ -4994,7 +4994,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       isState = true;
     }
 
-    int binnum = (LVec_pip_pim_n.M()-IMnpipilow)*nbinIMnpipi ;
+    int binnum = (LVec_pip_pim_n.M()-IMnpipilow)*100;
     int wbinnum=0;
     if(1.40<=LVec_pip_pim_n.M() && LVec_pip_pim_n.M()<1.52) wbinnum=1;
     else if(1.52<= LVec_pip_pim_n.M()) wbinnum=2;
