@@ -1379,27 +1379,27 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   
   const int nbinIMnpim_bin = 120;
-  const double nbinIMnpim_low = anacuts::Sigmam_center - 30.0*anacuts::Sigmam_sigma;
-  //const double nbinIMnpim_low = anacuts::Sigmam_center - 30.0*anacuts::Sigmam_sigma;
-  const double nbinIMnpim_high = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
-  //const double nbinIMnpim_high = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
+  const double IMnpim_binlow = anacuts::Sigmam_center - 30.0*anacuts::Sigmam_sigma;
+  //const double IMnpim_binlow = anacuts::Sigmam_center - 30.0*anacuts::Sigmam_sigma;
+  const double IMnpim_binhigh = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
+  //const double IMnpim_binhigh = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
   const int nbinIMnpip_bin = 120;
-  const double nbinIMnpip_low = anacuts::Sigmap_center - 26.0*anacuts::Sigmap_sigma;
-  const double nbinIMnpip_high = anacuts::Sigmap_center + 94.0*anacuts::Sigmap_sigma;
+  const double IMnpip_binlow = anacuts::Sigmap_center - 26.0*anacuts::Sigmap_sigma;
+  const double IMnpip_binhigh = anacuts::Sigmap_center + 94.0*anacuts::Sigmap_sigma;
   
   /*
   const int nbinIMnpim_bin2 = 40;
-  const double nbinIMnpim_low2 = anacuts::Sigmam_center - 10.0*3.0*anacuts::Sigmam_sigma;
-  //const double nbinIMnpim_low = anacuts::Sigmam_center - 30.0*anacuts::Sigmam_sigma;
-  const double nbinIMnpim_high2 = anacuts::Sigmam_center + 10.0*3.0*anacuts::Sigmam_sigma;
-  //const double nbinIMnpim_high = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
+  const double IMnpim_binlow2 = anacuts::Sigmam_center - 10.0*3.0*anacuts::Sigmam_sigma;
+  //const double IMnpim_binlow = anacuts::Sigmam_center - 30.0*anacuts::Sigmam_sigma;
+  const double IMnpim_binhigh2 = anacuts::Sigmam_center + 10.0*3.0*anacuts::Sigmam_sigma;
+  //const double IMnpim_binhigh = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
   const int nbinIMnpip_bin2= 40;
-  const double nbinIMnpip_low2 = anacuts::Sigmap_center - 27.0*anacuts::Sigmap_sigma;
-  const double nbinIMnpip_high2 = anacuts::Sigmap_center + 93.0*anacuts::Sigmap_sigma;
+  const double IMnpip_binlow2 = anacuts::Sigmap_center - 27.0*anacuts::Sigmap_sigma;
+  const double IMnpip_binhigh2 = anacuts::Sigmap_center + 93.0*anacuts::Sigmap_sigma;
   */
 
   IMnpim_IMnpip_dE_wSid_n = new TH2F("IMnpim_IMnpip_dE_wSid_n", "IMnpim_IMnpip_dE_wSid_n",
-      nbinIMnpip_bin, nbinIMnpip_low, nbinIMnpip_high, nbinIMnpim_bin, nbinIMnpim_low, nbinIMnpim_high);
+      nbinIMnpip_bin, IMnpip_binlow, IMnpip_binhigh, nbinIMnpim_bin, IMnpim_binlow, IMnpim_binhigh);
       //,nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wSid_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wSid_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
@@ -1413,7 +1413,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   }*/
   
   IMnpim_IMnpip_dE_wK0orwSid_n = new TH2F("IMnpim_IMnpip_dE_wK0orwSid_n", "IMnpim_IMnpip_dE_wK0orwSid_n",
-                                 nbinIMnpip_bin, nbinIMnpip_low, nbinIMnpip_high, nbinIMnpim_bin, nbinIMnpim_low, nbinIMnpim_high);
+                                 nbinIMnpip_bin, IMnpip_binlow, IMnpip_binhigh, nbinIMnpim_bin, IMnpim_binlow, IMnpim_binhigh);
                               //nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wK0orwSid_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0orwSid_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
@@ -1437,13 +1437,13 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   }
   
   IMnpim_IMnpip_dE_wK0orwSid_n_woSp = new TH2F("IMnpim_IMnpip_dE_wK0orwSid_n_woSp", "IMnpim_IMnpip_dE_wK0orwSid_n_woSp",
-                                 nbinIMnpip_bin, nbinIMnpip_low, nbinIMnpip_high, nbinIMnpim_bin, nbinIMnpim_low, nbinIMnpim_high);
+                                 nbinIMnpip_bin, IMnpip_binlow, IMnpip_binhigh, nbinIMnpim_bin, IMnpim_binlow, IMnpim_binhigh);
                                //nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wK0orwSid_n_woSp->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0orwSid_n_woSp->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   
   IMnpim_IMnpip_dE_wK0orwSid_n_woSm = new TH2F("IMnpim_IMnpip_dE_wK0orwSid_n_woSm", "IMnpim_IMnpip_dE_wK0orwSid_n_woSm",
-                                 nbinIMnpip_bin, nbinIMnpip_low, nbinIMnpip_high, nbinIMnpim_bin, nbinIMnpim_low, nbinIMnpim_high);
+                                 nbinIMnpip_bin, IMnpip_binlow, IMnpip_binhigh, nbinIMnpim_bin, IMnpim_binlow, IMnpim_binhigh);
                               //nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wK0orwSid_n_woSm->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0orwSid_n_woSm->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
@@ -1524,7 +1524,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
    
 
   IMnpim_IMnpip_dE_wK0_woSid_n = new TH2F("IMnpim_IMnpip_dE_wK0_woSid_n","IMnpim_IMnpip_dE_wK0_woSid_n",
-      nbinIMnpip_bin, nbinIMnpip_low, nbinIMnpip_high, nbinIMnpim_bin, nbinIMnpim_low, nbinIMnpim_high);
+      nbinIMnpip_bin, IMnpip_binlow, IMnpip_binhigh, nbinIMnpim_bin, IMnpim_binlow, IMnpim_binhigh);
      //nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wK0_woSid_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0_woSid_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
@@ -1994,7 +1994,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   
   IMnpim_IMnpip_dE_woK0_wSid_n_woSm = new TH2F("IMnpim_IMnpip_dE_woK0_wSid_n_woSm","IMnpim_IMnpip_dE_woK0_wSid_n_woSm",
                                      //,nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
-                                    nbinIMnpip_bin, nbinIMnpip_low, nbinIMnpip_high, nbinIMnpim_bin, nbinIMnpim_low, nbinIMnpim_high);
+                                    nbinIMnpip_bin, IMnpip_binlow, IMnpip_binhigh, nbinIMnpim_bin, IMnpim_binlow, IMnpim_binhigh);
   IMnpim_IMnpip_dE_woK0_wSid_n_woSm->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_woK0_wSid_n_woSm->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
    
@@ -2008,7 +2008,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   }
 
   IMnpim_IMnpip_dE_woK0_wSid_n_woSp = new TH2F("IMnpim_IMnpip_dE_woK0_wSid_n_woSp","IMnpim_IMnpip_dE_woK0_wSid_n_woSp",
-                                    nbinIMnpip_bin, nbinIMnpip_low, nbinIMnpip_high, nbinIMnpim_bin, nbinIMnpim_low, nbinIMnpim_high);
+                                    nbinIMnpip_bin, IMnpip_binlow, IMnpip_binhigh, nbinIMnpim_bin, IMnpim_binlow, IMnpim_binhigh);
                                    //nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_woK0_wSid_n_woSp->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_woK0_wSid_n_woSp->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
@@ -2049,7 +2049,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE_woK0_woSid_won->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
 
   IMnpim_IMnpip_dE_wK0_n = new TH2F("IMnpim_IMnpip_dE_wK0_n","IMnpim_IMnpip_dE_wK0_n",
-                                   nbinIMnpip_bin, nbinIMnpip_low, nbinIMnpip_high, nbinIMnpim_bin, nbinIMnpim_low, nbinIMnpim_high);
+                                   nbinIMnpip_bin, IMnpip_binlow, IMnpip_binhigh, nbinIMnpim_bin, IMnpim_binlow, IMnpim_binhigh);
   // nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
   IMnpim_IMnpip_dE_wK0_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
@@ -2065,7 +2065,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   for(unsigned int ibin=0;ibin<nbinIMnpipi;ibin++){
     IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin[ibin] = new TH2F(Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin%d",ibin),
                                                      Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sp %0.2f-%0.2f",binlow[ibin],binhigh[ibin]),
-                                                        nbinIMnpim_wbin,IMnpim_wbinlow,IMnpim_wbinhigh,nbinIMnpip_wbin,IMnpip_wbinlow,IMnpip_wbinhigh);
+                                                        nbinIMnpim_bin,IMnpim_binlow,IMnpim_binhigh,nbinIMnpip_bin,IMnpip_binlow,IMnpip_binhigh);
     IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin[ibin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
     IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin[ibin]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   }
@@ -2088,7 +2088,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   for(unsigned int ibin=0;ibin<nbinIMnpipi;ibin++){
     IMnpim_IMnpip_dE_wK0_wSid_n_Sm_bin[ibin] = new TH2F(Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sm_bin%d",ibin),
                                                      Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sm %0.2f-%0.2f",binlow[ibin],binhigh[ibin]),
-                                                        nbinIMnpim_wbin,IMnpim_wbinlow,IMnpim_wbinhigh,nbinIMnpip_wbin,IMnpip_wbinlow,IMnpip_wbinhigh);
+                                                        nbinIMnpim_bin,IMnpim_binlow,IMnpim_binhigh,nbinIMnpip_bin,IMnpip_binlow,IMnpip_binhigh);
     IMnpim_IMnpip_dE_wK0_wSid_n_Sm_bin[ibin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
     IMnpim_IMnpip_dE_wK0_wSid_n_Sm_bin[ibin]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   }
@@ -2111,7 +2111,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin] = new TH2F(
           Form("IMnpim_IMnpip_dE_wSid_n_SpSm_bin",ibin),
           Form("IMnpim_IMnpip_dE_wSid_n_SpSm_bin %0.2f-%0.2f",binlow[ibin],binhigh[ibin]),
-        nbinIMnpim_wbin,IMnpim_wbinlow,IMnpim_wbinhigh,nbinIMnpip_wbin,IMnpip_wbinlow,IMnpip_wbinhigh);
+        nbinIMnpim_bin,IMnpim_binlow,IMnpim_binhigh,nbinIMnpip_bin,IMnpip_binlow,IMnpip_binhigh);
       IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
       IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   }
