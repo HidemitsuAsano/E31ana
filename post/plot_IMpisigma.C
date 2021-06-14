@@ -76,7 +76,7 @@ const bool IsMCweighting = false;
 //maybe, also forward Sigma events should be rejected ?
 const bool SimRejectFake = true;
 
-const bool RejectStoppedSigma = true;
+const bool RejectStoppedSigma = false;
 
 //color def.
 //Sp mode Signal :2 (red)
@@ -8413,6 +8413,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     outname.Replace(std::string(outname).size()-5,5,"_rej.root");
   }
   
+  if(RejectStoppedSigma && (SimSpmode || SimSmmode || SimK0nnmode)){
+    outname.Replace(std::string(outname).size()-5,5,"_nostop.root");
+  }
     
   TFile *fout = new TFile(outname.Data(),"RECREATE");
   fout->Print();
