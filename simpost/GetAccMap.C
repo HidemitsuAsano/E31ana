@@ -13,20 +13,20 @@ void GetAccMap()
   TFile *fSmgen=NULL;
   TFile *fK0gen=NULL;
 
-  fSp[0] = TFile::Open("simIMpisigma_nSppim_pippimn_v135_out_iso_rej.root");
-  fSp[1] = TFile::Open("simIMpisigma_nSppim_pippimn_v135_out_iso_qlo_rej.root");
-  fSp[2] = TFile::Open("simIMpisigma_nSppim_pippimn_v135_out_iso_qhi_rej.root");
-  fSp[3] = TFile::Open("simIMpisigma_nSppim_pippimn_v135_out_iso_theta15_rej.root");
+  fSp[0] = TFile::Open("simIMpisigma_nSppim_pippimn_v135_out_iso_rej_nostop.root");
+  fSp[1] = TFile::Open("simIMpisigma_nSppim_pippimn_v135_out_iso_qlo_rej_nostop.root");
+  fSp[2] = TFile::Open("simIMpisigma_nSppim_pippimn_v135_out_iso_qhi_rej_nostop.root");
+  fSp[3] = TFile::Open("simIMpisigma_nSppim_pippimn_v135_out_iso_theta15_rej_nostop.root");
 
-  fSm[0] = TFile::Open("simIMpisigma_nSmpip_pippimn_v135_out_iso_rej.root");
-  fSm[1] = TFile::Open("simIMpisigma_nSmpip_pippimn_v135_out_iso_qlo_rej.root");
-  fSm[2] = TFile::Open("simIMpisigma_nSmpip_pippimn_v135_out_iso_qhi_rej.root");
-  fSm[3] = TFile::Open("simIMpisigma_nSmpip_pippimn_v135_out_iso_theta15_rej.root");
+  fSm[0] = TFile::Open("simIMpisigma_nSmpip_pippimn_v135_out_iso_rej_nostop.root");
+  fSm[1] = TFile::Open("simIMpisigma_nSmpip_pippimn_v135_out_iso_qlo_rej_nostop.root");
+  fSm[2] = TFile::Open("simIMpisigma_nSmpip_pippimn_v135_out_iso_qhi_rej_nostop.root");
+  fSm[3] = TFile::Open("simIMpisigma_nSmpip_pippimn_v135_out_iso_theta15_rej_nostop.root");
 
-  fK0[0] = TFile::Open("simIMpisigma_K0nn_pippimn_v12_out_iso_rej.root");
-  fK0[1] = TFile::Open("simIMpisigma_K0nn_pippimn_v12_out_iso_qlo_rej.root");
-  fK0[2] = TFile::Open("simIMpisigma_K0nn_pippimn_v12_out_iso_qhi_rej.root");
-  fK0[3] = TFile::Open("simIMpisigma_K0nn_pippimn_v12_out_iso_theta15_rej.root");
+  fK0[0] = TFile::Open("simIMpisigma_K0nn_pippimn_v12_out_iso_rej_nostop.root");
+  fK0[1] = TFile::Open("simIMpisigma_K0nn_pippimn_v12_out_iso_qlo_rej_nostop.root");
+  fK0[2] = TFile::Open("simIMpisigma_K0nn_pippimn_v12_out_iso_qhi_rej_nostop.root");
+  fK0[3] = TFile::Open("simIMpisigma_K0nn_pippimn_v12_out_iso_theta15_rej_nostop.root");
   
   fSpgen = TFile::Open("simIMpisigma_nSppim_v135.root");
   fSmgen = TFile::Open("simIMpisigma_nSmpip_v135.root");
