@@ -71,6 +71,7 @@ void plot_AfterDecompos()
   TCanvas *cIMnpipi_Sm[nqcut];
   TCanvas *cq_IMnpipi_wSid_n_Sm[nqcut];
   TCanvas *cq_IMnpipi_wK0_wSid_n_Sm[nqcut];
+  TCanvas *cq_IMnpipi_wSid_n_SpSm[nqcut];
   TCanvas *cIMnpipi_K0[nqcut];
   TCanvas *cq_IMnpipi_K0_n[nqcut];
   double OverlapCount[nbinIMnpipi][nqcut]; 
