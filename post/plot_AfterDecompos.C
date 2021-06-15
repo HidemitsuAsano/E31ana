@@ -66,8 +66,11 @@ void plot_AfterDecompos()
   TH1D* IMnpipi_wK0_wSid_n_SpSm[nqcut];
   TCanvas *cq_IMnpipi_wK0_wSid_n_SpSm[nqcut];
   TCanvas *cIMnpipi_Sp[nqcut];
+  TCanvas *cq_IMnpipi_wSid_n_Sp[nqcut];
   TCanvas *cIMnpipi_Sm[nqcut];
+  TCanvas *cq_IMnpipi_wSid_n_Sm[nqcut];
   TCanvas *cIMnpipi_K0[nqcut];
+  TCanvas *cq_IMnpipi_K0_n[nqcut];
   double OverlapCount[nbinIMnpipi][nqcut]; 
   const unsigned int nwbin = 3;
   TH2D* IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin[nbinIMnpipi][nqcut];
@@ -111,6 +114,10 @@ void plot_AfterDecompos()
     IMnpipi_wSid_n_SpSm[iq] = (TH1D*)q_IMnpipi_wSid_n_SpSm[iq]->ProjectionX(Form("IMnpipi_wSid_n_SpSm_%d",iq));
     IMnpipi_wSid_n_SpSm[iq]->SetLineColor(3);
     IMnpipi_wSid_n_SpSm[iq]->Draw("HEsame");
+    
+    cq_IMnpipi_wSid_n_Sp[iq] = new TCanvas(Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]),Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]));
+    q_IMnpipi_wSid_n_Sp[iq]->Draw("colz");
+
 
     cIMnpipi_Sm[iq] = new TCanvas(Form("IMnpipi_Sm_%s",cqcut[iq]),Form("IMnpipi_Sm_%s",cqcut[iq]),800,800);
     IMnpipi_wSid_n_Sm[iq] = (TH1D*)q_IMnpipi_wSid_n_Sm[iq]->ProjectionX(Form("IMnpipi_wSid_n_Sm_%d",iq));
