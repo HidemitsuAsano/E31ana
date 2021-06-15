@@ -67,8 +67,10 @@ void plot_AfterDecompos()
   TCanvas *cq_IMnpipi_wK0_wSid_n_SpSm[nqcut];
   TCanvas *cIMnpipi_Sp[nqcut];
   TCanvas *cq_IMnpipi_wSid_n_Sp[nqcut];
+  TCanvas *cq_IMnpipi_wK0_wSid_n_Sp[nqcut];
   TCanvas *cIMnpipi_Sm[nqcut];
   TCanvas *cq_IMnpipi_wSid_n_Sm[nqcut];
+  TCanvas *cq_IMnpipi_wK0_wSid_n_Sm[nqcut];
   TCanvas *cIMnpipi_K0[nqcut];
   TCanvas *cq_IMnpipi_K0_n[nqcut];
   double OverlapCount[nbinIMnpipi][nqcut]; 
@@ -105,6 +107,11 @@ void plot_AfterDecompos()
     q_IMnpipi_wK0_n[iq] = (TH2D*)fr[iq]->Get("q_IMnpipi_wK0_n");
     
     //Draw
+    cq_IMnpipi_wSid_n_Sp[iq] = new TCanvas(Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]),Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]));
+    q_IMnpipi_wSid_n_Sp[iq]->Draw("colz");
+    cq_IMnpipi_wK0_wSid_n_Sp[iq] = new TCanvas(Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]),Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]));
+    q_IMnpipi_wSid_n_Sp[iq]->Draw("colz");
+    
     cIMnpipi_Sp[iq] = new TCanvas(Form("IMnpipi_Sp_%s",cqcut[iq]),Form("IMnpipi_Sp_%s",cqcut[iq]),800,800);
     IMnpipi_wSid_n_Sp[iq] = (TH1D*)q_IMnpipi_wSid_n_Sp[iq]->ProjectionX(Form("IMnpipi_wSid_n_Sp_%d",iq));
     IMnpipi_wSid_n_Sp[iq]->Draw("HE");
@@ -115,8 +122,6 @@ void plot_AfterDecompos()
     IMnpipi_wSid_n_SpSm[iq]->SetLineColor(3);
     IMnpipi_wSid_n_SpSm[iq]->Draw("HEsame");
     
-    cq_IMnpipi_wSid_n_Sp[iq] = new TCanvas(Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]),Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]));
-    q_IMnpipi_wSid_n_Sp[iq]->Draw("colz");
 
 
     cIMnpipi_Sm[iq] = new TCanvas(Form("IMnpipi_Sm_%s",cqcut[iq]),Form("IMnpipi_Sm_%s",cqcut[iq]),800,800);
@@ -126,6 +131,9 @@ void plot_AfterDecompos()
     IMnpipi_wK0_wSid_n_Sm[iq]->SetLineColor(2);
     IMnpipi_wK0_wSid_n_Sm[iq]->Draw("HEsame");
     IMnpipi_wSid_n_SpSm[iq]->Draw("HEsame");
+    
+    cq_IMnpipi_wSid_n_Sp[iq] = new TCanvas(Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]),Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]));
+    q_IMnpipi_wSid_n_Sp[iq]->Draw("colz");
     
     cIMnpipi_K0[iq] = new TCanvas(Form("IMnpipi_K0_%s",cqcut[iq]),Form("IMnpipi_K0_%s",cqcut[iq]),800,800);
     IMnpipi_wK0_n[iq] = (TH1D*)q_IMnpipi_wK0_n[iq]->ProjectionX(Form("IMnpipi_wK0_n_%d",iq));
