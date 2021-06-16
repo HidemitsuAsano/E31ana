@@ -241,19 +241,21 @@ void plot_AfterDecompos()
         }
       }//if nK0orSp
       double Sp_ratio = nK0orSp*nSp/(nSp+nK0); 
-      for(int iqbin=0;iqbin<q_IMnpipi_K0orSp_ToSp->GetNbinsY();iqbin++){
-        double nevt = q_IMnpipi_K0orSp_ToSp->GetBinContent(ibin+1,iqbin);
+      for(int iqbin=0;iqbin<q_IMnpipi_K0orSp_ToSp[iq]->GetNbinsY();iqbin++){
+        double nevt = q_IMnpipi_K0orSp_ToSp[iq]->GetBinContent(ibin+1,iqbin);
         double ToSp = nevt*nSp/(nSp+nK0);
         double ToK0 = nevt*nSp/(nSp+nK0);
-        q_IMnpipi_K0orSp_ToSp->SetBinContent(ibin+1,iqbin,ToSp);
-        q_IMnpipi_K0orSp_ToSp->SetBinError(ibin+1,iqbin,ToSp);
-        q_IMnpipi_K0orSp_ToK0->SetBinContent(ibin+1,iqbin,ToK0);
-        q_IMnpipi_K0orSp_ToK0->SetBinError(ibin+1,iqbin,ToK0);
+        q_IMnpipi_K0orSp_ToSp[iq]->SetBinContent(ibin+1,iqbin,ToSp);
+        q_IMnpipi_K0orSp_ToSp[iq]->SetBinError(ibin+1,iqbin,ToSp);
+        q_IMnpipi_K0orSp_ToK0[iq]->SetBinContent(ibin+1,iqbin,ToK0);
+        q_IMnpipi_K0orSp_ToK0[iq]->SetBinError(ibin+1,iqbin,ToK0);
       }
-      IMnpipi_K0orSp_ToSp[iq]->SetBinContent(ibin+1,nK0orSp);
-      IMnpipi_K0orSp_ToSp[iq]->SetBinError(ibin+1,0);
-      IMnpipi_K0orSp_ToK0[iq]->SetBinContent(ibin+1,nSp - nK0orSp);
-      IMnpipi_K0orSp_ToK0[iq]->SetBinError(ibin+1,0);
+      //IMnpipi_K0orSp_ToSp[iq]->SetBinContent(ibin+1,nK0orSp);
+      //IMnpipi_K0orSp_ToSp[iq]->SetBinError(ibin+1,0);
+      //IMnpipi_K0orSp_ToK0[iq]->SetBinContent(ibin+1,nSp - nK0orSp);
+      //IMnpipi_K0orSp_ToK0[iq]->SetBinError(ibin+1,0);
+      IMnpipi_K0orSp_ToSp[iq] = (TH1D*)q_IMnpipi_K0orSp_ToSp[iq]->ProjectionX(Form("IMnpipi_K0orSp_ToSp%d",iq));
+      IMnpipi_K0orSp_ToK0[iq] = (TH1D*)q_IMnpipi_K0orSp_ToK0[iq]->ProjectionX(Form("IMnpipi_K0orSp_ToK0%d",iq));
     }//for ibin
   }
 
