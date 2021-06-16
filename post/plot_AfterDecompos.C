@@ -215,6 +215,10 @@ void plot_AfterDecompos()
   TH2D* q_IMnpipi_K0orSp_ToK0[2];
   TH1D* IMnpipi_K0orSp_ToSp[2];
   TH1D* IMnpipi_K0orSp_ToK0[2];
+
+  //CAUTION!!!!!
+  //ibin: 0 origin, 0ibin = 1.40-1.41 GeV/c^2 bin
+  //IMnpipi hist: 1 origin, 0 means underflow
   for(int iq=0;iq<2;iq++){
     q_IMnpipi_K0orSp_ToSp[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("q_IMnpipi_K0orSp_ToSp%d",iq));
     q_IMnpipi_K0orSp_ToK0[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("q_IMnpipi_K0orSp_ToK0%d",iq));
@@ -238,8 +242,13 @@ void plot_AfterDecompos()
       }//if nK0orSp
       double Sp_ratio = nK0orSp*nSp/(nSp+nK0); 
       for(int iqbin=0;iqbin<q_IMnpipi_K0orSp_ToSp->GetNbinsY();iqbin++){
-        double nevt = q_IMnpipi_K0orSp_ToSp->GetBinContent(ibin,iqbin);
-
+        double nevt = q_IMnpipi_K0orSp_ToSp->GetBinContent(ibin+1,iqbin);
+        double ToSp = nevt*nSp/(nSp+nK0);
+        double ToK0 = nevt*nSp/(nSp+nK0);
+        q_IMnpipi_K0orSp_ToSp->SetBinContent(ibin+1,iqbin,ToSp);
+        q_IMnpipi_K0orSp_ToSp->SetBinError(ibin+1,iqbin,ToSp);
+        q_IMnpipi_K0orSp_ToK0->SetBinContent(ibin+1,iqbin,ToK0);
+        q_IMnpipi_K0orSp_ToK0->SetBinError(ibin+1,iqbin,ToK0);
       }
       IMnpipi_K0orSp_ToSp[iq]->SetBinContent(ibin+1,nK0orSp);
       IMnpipi_K0orSp_ToSp[iq]->SetBinError(ibin+1,0);
