@@ -2058,7 +2058,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE_wK0_wSid_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0_wSid_n->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   
-  IMnpim_IMnpip_dE_wK0_wSid_n_Sp = new TH2F("IMnpim_IMnpip_dE_wK0_wSid_n_Sp","IMnpim_IMnpip_dE_wK0_wSid_n_Sp",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sp = new TH2F("IMnpim_IMnpip_dE_wK0_wSid_n_Sp","IMnpim_IMnpip_dE_wK0_wSid_n_Sp",
+      nbinIMnpip_bin,IMnpip_binlow,IMnpip_binhigh,nbinIMnpim_bin,IMnpim_binlow,IMnpim_binhigh);
   IMnpim_IMnpip_dE_wK0_wSid_n_Sp->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0_wSid_n_Sp->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
  
@@ -2080,7 +2081,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   }
 
 
-  IMnpim_IMnpip_dE_wK0_wSid_n_Sm = new TH2F("IMnpim_IMnpip_dE_wK0_wSid_n_Sm","IMnpim_IMnpip_dE_wK0_wSid_n_Sm",nbinIMnpi, 1, 2.0, nbinIMnpi, 1, 2.0);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sm = new TH2F("IMnpim_IMnpip_dE_wK0_wSid_n_Sm","IMnpim_IMnpip_dE_wK0_wSid_n_Sm",
+      nbinIMnpip_bin,IMnpip_binlow,IMnpip_binhigh,nbinIMnpim_bin,IMnpim_binlow,IMnpim_binhigh);
   IMnpim_IMnpip_dE_wK0_wSid_n_Sm->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   IMnpim_IMnpip_dE_wK0_wSid_n_Sm->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   
