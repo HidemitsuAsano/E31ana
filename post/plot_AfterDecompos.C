@@ -303,7 +303,7 @@ void plot_AfterDecompos()
       }//if nK0orSm
       for(int iqbin=0;iqbin<q_IMnpipi_K0orSm_ToSm[iq]->GetNbinsY();iqbin++){
         double nevt = q_IMnpipi_K0orSm_ToSm[iq]->GetBinContent(ibin+1,iqbin);
-        if(nevt>0.0){
+        //if(nevt>0.0){
           double ToSm = nevt*nSm/(nSm+nK0);
           double ToK0 = nevt*nK0/(nSm+nK0);
           if(isnan(ToSm)){
@@ -314,8 +314,9 @@ void plot_AfterDecompos()
             q_IMnpipi_K0orSm_ToK0[iq]->SetBinContent(ibin+1,iqbin,ToK0);
             q_IMnpipi_K0orSm_ToK0[iq]->SetBinError(ibin+1,iqbin,0);
           }
-        }
-        if(nevt<=0.0 || nK0orSm <=0.0){ 
+        //}
+        //if(nevt<=0.0 || nK0orSm <=0.0){ 
+        if( nK0orSm <=0.0){ 
           q_IMnpipi_K0orSm_ToSm[iq]->SetBinContent(ibin+1,iqbin,0);
           q_IMnpipi_K0orSm_ToSm[iq]->SetBinError(ibin+1,iqbin,0);
           q_IMnpipi_K0orSm_ToK0[iq]->SetBinContent(ibin+1,iqbin,0);
