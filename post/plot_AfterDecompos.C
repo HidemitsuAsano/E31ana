@@ -215,23 +215,57 @@ void plot_AfterDecompos()
   TH2D* q_IMnpipi_K0orSp_ToK0[2];
   TH1D* IMnpipi_K0orSp_ToSp[2];
   TH1D* IMnpipi_K0orSp_ToK0[2];
+   
+  //check overlap btw wide-binning IMnpip or IMnpim
+  TCanvas *cIMnpim_Spmode_wbinoverlap[2];
+  TCanvas *cIMnpip_Smmode_wbinoverlap[2];
+  TH1D* IMnpim_Sp_wbin[nwbin][2];
+  TH1D* IMnpip_Sm_wbin[nwbin][2];
+  
+  for(int iq=0;iq<2;iq++){
+    cIMnpim_Spmode_wbinoverlap[iq] = new TCanvas(Form("cIMnpim_Spmode_wbinoverlap%d",iq),Form("cIMnpim_Spmode_wbinoverlap%d",iq));
+    for(int iwbin=0;iwbin<nwbin;iwbin++){
+      IMnpim_Sp_wbin[iwbin][iq] 
+        = (TH1D*)IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iq+1]->ProjectionY(Form("IMnpim_Sp_wbin%d%d",iwbin,iq));
+      IMnpim_Sp_wbin[iwbin][iq]->SetLineColor(iwbin);
+    }
+    IMnpim_Sp_wbin[1][iq]->SetTitle(Form("IMnpim K0orSp mode %d",iq));
+    IMnpim_Sp_wbin[1][iq]->Draw("HE");
+    IMnpim_Sp_wbin[2][iq]->Draw("HEsame");
+    
+    cIMnpip_Smmode_wbinoverlap[iq] = new TCanvas(Form("cIMnpip_Smmode_wbinoverlap%d",iq),Form("cIMnpip_Smmode_wbinoverlap%d",iq));
+    for(int iwbin=0;iwbin<nwbin;iwbin++){
+      IMnpip_Sm_wbin[iwbin][iq] 
+        = (TH1D*)IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin][iq+1]->ProjectionX(Form("IMnpip_Sm_wbin%d%d",iwbin,iq));
+      IMnpip_Sm_wbin[iwbin][iq]->SetLineColor(iwbin);
+    }
+    IMnpip_Sm_wbin[1][iq]->SetTitle(Form("IMnpip K0orSm mode %d",iq));
+    IMnpip_Sm_wbin[1][iq]->Draw("HE");
+    IMnpip_Sm_wbin[2][iq]->Draw("HEsame");
+  }
 
-  //CAUTION!!!!!
-  //ibin: 0 origin, 0ibin = 1.40-1.41 GeV/c^2 bin
-  //IMnpipi hist: 1 origin, 0 means underflow
+  return;
+  
+  const int spbinlow[2][2]={{7,11},
+                            {7,11}};
+  const int spbinhi[2][2]={{12,23},
+                           {12,30}};
+
   for(int iq=0;iq<2;iq++){
     q_IMnpipi_K0orSp_ToSp[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("q_IMnpipi_K0orSp_ToSp%d",iq));
     q_IMnpipi_K0orSp_ToK0[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("q_IMnpipi_K0orSp_ToK0%d",iq));
     //IMnpipi_K0orSp_ToSp[iq] = (TH1D*)IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("IMnpipi_K0orSp_ToSp%d",iq));
     //IMnpipi_K0orSp_ToK0[iq] = (TH1D*)IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("IMnpipi_K0orSp_ToK0%d",iq));
-    for(int ibin=0;ibin<nbinIMnpipi;ibin++){
-      double nK0orSp = IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin[ibin][iq+1]->Integral();
+    //for(int ibin=0;ibin<nbinIMnpipi;ibin++){
+    for(int ibin=0;ibin<2;ibin++){
+      //double nK0orSp = IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin[ibin][iq+1]->Integral();
+      double nK0orSp = IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[ibin][iq+1]->Integral();
       double nSp = 0.0;
       double nK0 = 0.0;
       if(nK0orSp>0){
-        for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin[ibin][iq+1]->GetNbinsX();ix++){
-          for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin[ibin][iq+1]->GetNbinsY();iy++){
-            double cont = IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin[ibin][iq+1]->GetBinContent(ix,iy);
+        for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[ibin][iq+1]->GetNbinsX();ix++){
+          for(int iy=spbinlow[ibin][iq];iy<IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[ibin][iq+1]->GetNbinsY();iy++){
+            double cont = IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[ibin][iq+1]->GetBinContent(ix,iy);
             double nK0_bin = IMnpim_IMnpip_K0inter[iq]->GetBinContent(ix,iy);     
             double nSp_bin = cont-nK0_bin;
             if(nSp_bin<0.) nSp_bin=0.0;
@@ -280,6 +314,10 @@ void plot_AfterDecompos()
   TH2D* q_IMnpipi_K0orSm_ToK0[2];
   TH1D* IMnpipi_K0orSm_ToSm[2];
   TH1D* IMnpipi_K0orSm_ToK0[2];
+  const int smbinlow[2][2]={{7,11},
+                            {7,11}};
+  const int smbinhi[2][2]={{12,28},
+                           {12,30}};
   for(int iq=0;iq<2;iq++){
     q_IMnpipi_K0orSm_ToSm[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sm[iq+1]->Clone(Form("q_IMnpipi_K0orSm_ToSm%d",iq));
     q_IMnpipi_K0orSm_ToK0[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sm[iq+1]->Clone(Form("q_IMnpipi_K0orSm_ToK0%d",iq));
