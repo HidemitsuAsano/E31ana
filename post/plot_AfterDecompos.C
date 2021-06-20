@@ -244,8 +244,9 @@ void plot_AfterDecompos()
     IMnpip_Sm_wbin[2][iq]->Draw("HEsame");
   }
 
-  return;
   
+  const float wbinlow[nwbin] = {1.0,1.40,1.52};
+  const float wbinhigh[nwbin] = {1.40,1.52,2.00};
   const int spbinlow[2][2]={{7,11},
                             {7,11}};
   const int spbinhi[2][2]={{12,23},
@@ -254,19 +255,18 @@ void plot_AfterDecompos()
   for(int iq=0;iq<2;iq++){
     q_IMnpipi_K0orSp_ToSp[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("q_IMnpipi_K0orSp_ToSp%d",iq));
     q_IMnpipi_K0orSp_ToK0[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("q_IMnpipi_K0orSp_ToK0%d",iq));
-    //IMnpipi_K0orSp_ToSp[iq] = (TH1D*)IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("IMnpipi_K0orSp_ToSp%d",iq));
-    //IMnpipi_K0orSp_ToK0[iq] = (TH1D*)IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("IMnpipi_K0orSp_ToK0%d",iq));
-    //for(int ibin=0;ibin<nbinIMnpipi;ibin++){
-    for(int ibin=0;ibin<2;ibin++){
-      //double nK0orSp = IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin[ibin][iq+1]->Integral();
-      double nK0orSp = IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[ibin][iq+1]->Integral();
+    q_IMnpipi_K0orSp_ToSp[iq]->Reset();
+    q_IMnpipi_K0orSp_ToK0[iq]->Reset();
+    for(int iwbin=1;iwbin<3;iwbin++){//wbin=0 : no overlap region,so start from 1
+      double nK0orSp = IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iq+1]->Integral();
       double nSp = 0.0;
       double nK0 = 0.0;
       if(nK0orSp>0){
-        for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[ibin][iq+1]->GetNbinsX();ix++){
-          for(int iy=spbinlow[ibin][iq];iy<IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[ibin][iq+1]->GetNbinsY();iy++){
-            double cont = IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[ibin][iq+1]->GetBinContent(ix,iy);
+        for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iq+1]->GetNbinsX();ix++){
+          for(int iy=spbinlow[iwbin-1][iq];iy<=spbinhi[iwbin-1][iq];iy++){
+            double cont = IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iq+1]->GetBinContent(ix,iy);
             double nK0_bin = IMnpim_IMnpip_K0inter[iq]->GetBinContent(ix,iy);     
+            if(cont<0.00001) nK0_bin = 0.0;
             double nSp_bin = cont-nK0_bin;
             if(nSp_bin<0.) nSp_bin=0.0;
             nSp += nSp_bin;
@@ -274,40 +274,42 @@ void plot_AfterDecompos()
           }
         }
       }//if nK0orSp
-      for(int iqbin=0;iqbin<q_IMnpipi_K0orSp_ToSp[iq]->GetNbinsY();iqbin++){
-        double nevt = q_IMnpipi_K0orSp_ToSp[iq]->GetBinContent(ibin+1,iqbin);
-        if(nevt>0.0){
-          double ToSp = nevt*nSp/(nSp+nK0);
-          double ToK0 = nevt*nK0/(nSp+nK0);
-          if(isnan(ToSp)){
-            std::cout << "iq: "   << iq << std::endl;
-            std::cout << "ibin:"  << ibin << std::endl;
-            std::cout << "iqbin:"  << iqbin << std::endl;
-            std::cout << "nevt: " << nevt << std::endl;
-            std::cout << "nK0orSp " << nK0orSp << std::endl;
-            std::cout << "ToK0: " << nK0 << std::endl;
-          }else{
-            q_IMnpipi_K0orSp_ToSp[iq]->SetBinContent(ibin+1,iqbin,ToSp);
+      int wbinl = q_IMnpipi_K0orSp_ToSp[iq]->GetXaxis()->FindBin(wbinlow[iwbin]);
+      int wbinh = q_IMnpipi_K0orSp_ToSp[iq]->GetXaxis()->FindBin(wbinhigh[iwbin]);
+      double NevtWide=0.0;
+      for(int ibin=wbinl;ibin<=wbinh;ibin++){
+        for(int iqbin=0;iqbin<q_IMnpipi_K0orSp_ToSp[iq]->GetNbinsY();iqbin++){
+          double nevt = q_IMnpipi_K0orSp_ToSp[iq]->GetBinContent(ibin,iqbin);
+          if(nevt>0.0){
+            double ToSp = nevt*nSp/(nSp+nK0);
+            double ToK0 = nevt*nK0/(nSp+nK0);
+            if(isnan(ToSp)){
+              std::cout << "iq: "   << iq << std::endl;
+              std::cout << "ibin:"  << ibin << std::endl;
+              std::cout << "iqbin:"  << iqbin << std::endl;
+              std::cout << "nevt: " << nevt << std::endl;
+              std::cout << "nK0orSp " << nK0orSp << std::endl;
+              std::cout << "ToK0: " << nK0 << std::endl;
+            }else{
+              q_IMnpipi_K0orSp_ToSp[iq]->SetBinContent(ibin+1,iqbin,ToSp);
+              q_IMnpipi_K0orSp_ToSp[iq]->SetBinError(ibin+1,iqbin,0);
+              q_IMnpipi_K0orSp_ToK0[iq]->SetBinContent(ibin+1,iqbin,ToK0);
+              q_IMnpipi_K0orSp_ToK0[iq]->SetBinError(ibin+1,iqbin,0);
+            }
+          }
+          if(nevt<=0.0 || nK0orSp <=0.0){ 
+            q_IMnpipi_K0orSp_ToSp[iq]->SetBinContent(ibin+1,iqbin,0);
             q_IMnpipi_K0orSp_ToSp[iq]->SetBinError(ibin+1,iqbin,0);
-            q_IMnpipi_K0orSp_ToK0[iq]->SetBinContent(ibin+1,iqbin,ToK0);
+            q_IMnpipi_K0orSp_ToK0[iq]->SetBinContent(ibin+1,iqbin,0);
             q_IMnpipi_K0orSp_ToK0[iq]->SetBinError(ibin+1,iqbin,0);
           }
-        }//if nevt>0.0
-        if(nevt<=0.0 || nK0orSp <=0.0){ 
-          q_IMnpipi_K0orSp_ToSp[iq]->SetBinContent(ibin+1,iqbin,0);
-          q_IMnpipi_K0orSp_ToSp[iq]->SetBinError(ibin+1,iqbin,0);
-          q_IMnpipi_K0orSp_ToK0[iq]->SetBinContent(ibin+1,iqbin,0);
-          q_IMnpipi_K0orSp_ToK0[iq]->SetBinError(ibin+1,iqbin,0);
         }
-      }
-      //IMnpipi_K0orSp_ToSp[iq]->SetBinContent(ibin+1,nK0orSp);
-      //IMnpipi_K0orSp_ToSp[iq]->SetBinError(ibin+1,0);
-      //IMnpipi_K0orSp_ToK0[iq]->SetBinContent(ibin+1,nSp - nK0orSp);
-      //IMnpipi_K0orSp_ToK0[iq]->SetBinError(ibin+1,0);
-      IMnpipi_K0orSp_ToSp[iq] = (TH1D*)q_IMnpipi_K0orSp_ToSp[iq]->ProjectionX(Form("IMnpipi_K0orSp_ToSp%d",iq));
-      IMnpipi_K0orSp_ToK0[iq] = (TH1D*)q_IMnpipi_K0orSp_ToK0[iq]->ProjectionX(Form("IMnpipi_K0orSp_ToK0%d",iq));
-    }//for ibin
-  }
+      }//ibin
+    }//iwbin
+    IMnpipi_K0orSp_ToSp[iq] = (TH1D*)q_IMnpipi_K0orSp_ToSp[iq]->ProjectionX(Form("IMnpipi_K0orSp_ToSp%d",iq));
+    IMnpipi_K0orSp_ToK0[iq] = (TH1D*)q_IMnpipi_K0orSp_ToK0[iq]->ProjectionX(Form("IMnpipi_K0orSp_ToK0%d",iq));
+  }//iq
+  
 
 
   TH2D* q_IMnpipi_K0orSm_ToSm[2];
@@ -321,17 +323,18 @@ void plot_AfterDecompos()
   for(int iq=0;iq<2;iq++){
     q_IMnpipi_K0orSm_ToSm[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sm[iq+1]->Clone(Form("q_IMnpipi_K0orSm_ToSm%d",iq));
     q_IMnpipi_K0orSm_ToK0[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sm[iq+1]->Clone(Form("q_IMnpipi_K0orSm_ToK0%d",iq));
-    //IMnpipi_K0orSm_ToSm[iq] = (TH1D*)IMnpipi_wK0_wSid_n_Sm[iq+1]->Clone(Form("IMnpipi_K0orSm_ToSm%d",iq));
-    //IMnpipi_K0orSm_ToK0[iq] = (TH1D*)IMnpipi_wK0_wSid_n_Sm[iq+1]->Clone(Form("IMnpipi_K0orSm_ToK0%d",iq));
-    for(int ibin=0;ibin<nbinIMnpipi;ibin++){
-      double nK0orSm = IMnpim_IMnpip_dE_wK0_wSid_n_Sm_bin[ibin][iq+1]->Integral();
+    q_IMnpipi_K0orSm_ToSm[iq]->Reset();
+    q_IMnpipi_K0orSm_ToK0[iq]->Reset();
+    for(int iwbin=1;iwbin<3;iwbin++){//wbin=0 : no overlap region, so start from 1
+      double nK0orSm = IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin][iq+1]->Integral();
       double nSm = 0.0;
       double nK0 = 0.0;
       if(nK0orSm>0){
-        for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_wSid_n_Sm_bin[ibin][iq+1]->GetNbinsX();ix++){
-          for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_wSid_n_Sm_bin[ibin][iq+1]->GetNbinsY();iy++){
-            double cont = IMnpim_IMnpip_dE_wK0_wSid_n_Sm_bin[ibin][iq+1]->GetBinContent(ix,iy);
+        for(int ix=smbinlow[iwbin-1][iq];ix<=smbinhi[iwbin-1][iq];ix++){
+          for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin][iq+1]->GetNbinsY();iy++){
+            double cont = IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin][iq+1]->GetBinContent(ix,iy);
             double nK0_bin = IMnpim_IMnpip_K0inter[iq]->GetBinContent(ix,iy);     
+            if(cont<0.00001) nK0_bin = 0.0;
             double nSm_bin = cont-nK0_bin;
             if(nSm_bin<0.) nSm_bin=0.0;
             nSm += nSm_bin;
@@ -339,31 +342,35 @@ void plot_AfterDecompos()
           }
         }
       }//if nK0orSm
-      for(int iqbin=0;iqbin<q_IMnpipi_K0orSm_ToSm[iq]->GetNbinsY();iqbin++){
-        double nevt = q_IMnpipi_K0orSm_ToSm[iq]->GetBinContent(ibin+1,iqbin);
-        //if(nevt>0.0){
-          double ToSm = nevt*nSm/(nSm+nK0);
-          double ToK0 = nevt*nK0/(nSm+nK0);
-          if(isnan(ToSm)){
+      int wbinl = q_IMnpipi_K0orSp_ToSp[iq]->GetXaxis()->FindBin(wbinlow[iwbin]);
+      int wbinh = q_IMnpipi_K0orSp_ToSp[iq]->GetXaxis()->FindBin(wbinhigh[iwbin]);
+      double NevtWide=0.0;
+      for(int ibin=wbinl;ibin<=wbinh;ibin++){
+        for(int iqbin=0;iqbin<q_IMnpipi_K0orSm_ToSm[iq]->GetNbinsY();iqbin++){
+          double nevt = q_IMnpipi_K0orSm_ToSm[iq]->GetBinContent(ibin+1,iqbin);
+          if(nevt>0.0){
+            double ToSm = nevt*nSm/(nSm+nK0);
+            double ToK0 = nevt*nK0/(nSm+nK0);
+            if(isnan(ToSm)){
            
-          }else{
-            q_IMnpipi_K0orSm_ToSm[iq]->SetBinContent(ibin+1,iqbin,ToSm);
+            }else{
+              q_IMnpipi_K0orSm_ToSm[iq]->SetBinContent(ibin+1,iqbin,ToSm);
+              q_IMnpipi_K0orSm_ToSm[iq]->SetBinError(ibin+1,iqbin,0);
+              q_IMnpipi_K0orSm_ToK0[iq]->SetBinContent(ibin+1,iqbin,ToK0);
+              q_IMnpipi_K0orSm_ToK0[iq]->SetBinError(ibin+1,iqbin,0);
+            }
+          }
+          if(nevt<=0.0 || nK0orSm <=0.0){ 
+            q_IMnpipi_K0orSm_ToSm[iq]->SetBinContent(ibin+1,iqbin,0);
             q_IMnpipi_K0orSm_ToSm[iq]->SetBinError(ibin+1,iqbin,0);
-            q_IMnpipi_K0orSm_ToK0[iq]->SetBinContent(ibin+1,iqbin,ToK0);
+            q_IMnpipi_K0orSm_ToK0[iq]->SetBinContent(ibin+1,iqbin,0);
             q_IMnpipi_K0orSm_ToK0[iq]->SetBinError(ibin+1,iqbin,0);
           }
-        //}
-        //if(nevt<=0.0 || nK0orSm <=0.0){ 
-        if( nK0orSm <=0.0){ 
-          q_IMnpipi_K0orSm_ToSm[iq]->SetBinContent(ibin+1,iqbin,0);
-          q_IMnpipi_K0orSm_ToSm[iq]->SetBinError(ibin+1,iqbin,0);
-          q_IMnpipi_K0orSm_ToK0[iq]->SetBinContent(ibin+1,iqbin,0);
-          q_IMnpipi_K0orSm_ToK0[iq]->SetBinError(ibin+1,iqbin,0);
         }
       }//for iqbin
-      IMnpipi_K0orSm_ToSm[iq] = (TH1D*)q_IMnpipi_K0orSm_ToSm[iq]->ProjectionX(Form("IMnpipi_K0orSm_ToSm%d",iq));
-      IMnpipi_K0orSm_ToK0[iq] = (TH1D*)q_IMnpipi_K0orSm_ToK0[iq]->ProjectionX(Form("IMnpipi_K0orSm_ToK0%d",iq));
     }
+    IMnpipi_K0orSm_ToSm[iq] = (TH1D*)q_IMnpipi_K0orSm_ToSm[iq]->ProjectionX(Form("IMnpipi_K0orSm_ToSm%d",iq));
+    IMnpipi_K0orSm_ToK0[iq] = (TH1D*)q_IMnpipi_K0orSm_ToK0[iq]->ProjectionX(Form("IMnpipi_K0orSm_ToK0%d",iq));
   }
   
   TCanvas *cIMnpipi_wK0_Sp_afterDeco[2];
