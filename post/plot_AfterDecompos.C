@@ -540,7 +540,130 @@ void plot_AfterDecompos()
     //all sum
     IMnpipi_Sm_noK0_noSp[iq]->Draw("HE");
   }
+   
+  TFile *facc = TFile::Open("../simpost/accmap.root");
+  TH2D *q_IMnpipi_Sp_accp= (TH2D*)facc->Get("q_IMnpipi_Sp_accp_0");
+  TH2D *q_IMnpipi_Sm_accp= (TH2D*)facc->Get("q_IMnpipi_Sm_accp_0");
+  TH2D *q_IMnpipi_K0_accp= (TH2D*)facc->Get("q_IMnpipi_K0_accp_0");
+  TH2D *q_IMnpipi_Sp_accperr= (TH2D*)facc->Get("q_IMnpipi_Sp_accerr_0");
+  TH2D *q_IMnpipi_Sm_accperr= (TH2D*)facc->Get("q_IMnpipi_Sm_accerr_0");
+  TH2D *q_IMnpipi_K0_accperr= (TH2D*)facc->Get("q_IMnpipi_K0_accerr_0");
+  
+  TCanvas *cSpacc = new TCanvas("cSpacc","cSpacc",1600,800);
+  cSpacc->Divide(2,1);
+  cSpacc->cd(1);
+  q_IMnpipi_Sp_accp->Draw("colz");
+  cSpacc->cd(2);
+  q_IMnpipi_Sp_accperr->Draw("colz");
+
+  TCanvas *cSmacc = new TCanvas("cSmacc","cSmacc",1600,800);
+  cSmacc->Divide(2,1);
+  cSmacc->cd(1);
+  q_IMnpipi_Sm_accp->Draw("colz");
+  cSmacc->cd(2);
+  q_IMnpipi_Sm_accperr->Draw("colz");
+
+
+  TH2D* q_IMnpipi_Sp_cs[2];
+  TH2D* q_IMnpipi_Sm_cs[2];
+  TH2D* q_IMnpipi_Sp_cserr[2];
+  TH2D* q_IMnpipi_Sm_cserr[2];
+  const int qcut650 =q_IMnpipi_Sp_sum[0]->GetYaxis()->FindBin(0.65);
+  for(int iq=0;iq<2;iq++){
+    q_IMnpipi_Sp_cs[iq] = (TH2D*)q_IMnpipi_Sp_sum[iq]->Clone(Form("q_IMnpipi_Sp_cs%d",iq));
+    q_IMnpipi_Sm_cs[iq] = (TH2D*)q_IMnpipi_Sm_sum[iq]->Clone(Form("q_IMnpipi_Sm_cs%d",iq));
+    for(int ix=0;ix<q_IMnpipi_Sp_cs[iq]->GetNbinsX();ix++){
+      for(int iy=0;iy<q_IMnpipi_Sp_cs[iq]->GetNbinsY();iy++){
+        double contSp =q_IMnpipi_Sp_cs[iq]->GetBinContent(ix,iy);
+        double contSperr =q_IMnpipi_Sp_cs[iq]->GetBinError(ix,iy);
+        double accSp =q_IMnpipi_Sp_accp->GetBinContent(ix,iy);
+        double accerrSp =q_IMnpipi_Sp_accperr->GetBinContent(ix,iy);
+        double csSp = 0.0; 
+        double csSperr = 0.0; 
+        if(accSp>0.0){
+          csSp = contSp/accSp ;
+          csSperr = contSperr/accSp;
+        }
+        double contSm =q_IMnpipi_Sm_cs[iq]->GetBinContent(ix,iy);
+        double contSmerr =q_IMnpipi_Sm_cs[iq]->GetBinError(ix,iy);
+        double accSm =q_IMnpipi_Sm_accp->GetBinContent(ix,iy);
+        double accerrSm =q_IMnpipi_Sm_accperr->GetBinContent(ix,iy);
+        double csSm = 0.0; 
+        double csSmerr = 0.0; 
+        if(accSm>0.0){
+          csSm = contSm/accSm;
+          csSmerr = contSmerr/accSm;
+        }
+        if(accerrSp<0.25){
+          q_IMnpipi_Sp_cs[iq]->SetBinContent(ix,iy,csSp);
+          q_IMnpipi_Sp_cs[iq]->SetBinError(ix,iy,csSperr);
+        }else{
+          q_IMnpipi_Sp_cs[iq]->SetBinContent(ix,iy,0.);
+          q_IMnpipi_Sp_cs[iq]->SetBinError(ix,iy,0.);
+        }
+        if(iy>qcut650){
+          q_IMnpipi_Sp_cs[iq]->SetBinContent(ix,iy,0.);
+          q_IMnpipi_Sp_cs[iq]->SetBinError(ix,iy,0.);
+        }
+        if(accerrSm<0.25){
+          q_IMnpipi_Sm_cs[iq]->SetBinContent(ix,iy,csSm);
+          q_IMnpipi_Sm_cs[iq]->SetBinError(ix,iy,csSmerr);
+        }else{
+          q_IMnpipi_Sm_cs[iq]->SetBinContent(ix,iy,0.);
+          q_IMnpipi_Sm_cs[iq]->SetBinError(ix,iy,0.);
+        }
+        if(iy>qcut650){
+          q_IMnpipi_Sm_cs[iq]->SetBinContent(ix,iy,0.);
+          q_IMnpipi_Sm_cs[iq]->SetBinError(ix,iy,0.);
+        }
+      }
+    }
+  }
+
+  TCanvas *ccsSp[2];
+  TCanvas *ccsSm[2];
+  for(int iq=0;iq<2;iq++){
+    ccsSp[iq] = new TCanvas(Form("ccsSp%d",iq),Form("ccsSp%d",iq),1600,800);
+    ccsSp[iq]->Divide(2,1);
+    ccsSp[iq]->cd(1);
+    q_IMnpipi_Sp_cs[iq]->Draw("colz");
+    ccsSp[iq]->cd(2);
+    q_IMnpipi_Sp_cs[iq]->ProjectionX()->Draw("HE");
+    ccsSm[iq] = new TCanvas(Form("ccsSm%d",iq),Form("ccsSm%d",iq),1600,800);
+    ccsSm[iq]->Divide(2,1);
+    ccsSm[iq]->cd(1);
+    q_IMnpipi_Sm_cs[iq]->Draw("colz");
+    ccsSm[iq]->cd(2);
+    q_IMnpipi_Sm_cs[iq]->ProjectionX()->Draw("HE");
+  }
+  
+  TCanvas *csum = new TCanvas("csum","csum",1600,800);
+  csum->Divide(2,1);
+  TH2D* q_IMnpipi_SpSmSum[2];
+  for(int iq=0;iq<2;iq++){
+    q_IMnpipi_SpSmSum[iq] = (TH2D*)q_IMnpipi_Sp_cs[iq]->Clone(Form("q_IMnpipi_SpSmSum%d",iq));
+    q_IMnpipi_SpSmSum[iq]->Add(q_IMnpipi_Sm_cs[iq],1.0);
+  }
+  csum->cd(1);
+  q_IMnpipi_SpSmSum[1]->SetTitle("q_IMnpipi_SpSmSum");
+  q_IMnpipi_SpSmSum[1]->Draw("colz");
+  csum->cd(2);
+  q_IMnpipi_SpSmSum[1]->ProjectionX()->Draw("HE");
  
+  TCanvas *csub = new TCanvas("csub","csub",1600,800);
+  csub->Divide(2,1);
+  TH2D* q_IMnpipi_SpSmSub[2];
+  for(int iq=0;iq<2;iq++){
+    q_IMnpipi_SpSmSub[iq] = (TH2D*)q_IMnpipi_Sp_cs[iq]->Clone(Form("q_IMnpipi_SpSmSub%d",iq));
+    q_IMnpipi_SpSmSub[iq]->Add(q_IMnpipi_Sm_cs[iq],-1.0);
+  }
+  csub->cd(1);
+  q_IMnpipi_SpSmSub[1]->SetTitle("q_IMnpipi_SpSmSub");
+  q_IMnpipi_SpSmSub[1]->Draw("colz");
+  csub->cd(2);
+  q_IMnpipi_SpSmSub[1]->ProjectionX()->Draw("HE");
+  
+
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
   int size = SCol->GetSize();
