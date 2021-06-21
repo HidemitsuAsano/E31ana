@@ -134,6 +134,26 @@ void GetAccMap()
       }
     }
   }
+  
+  for(int ix=0;ix<q_IMnpipi_Sp_accerr[0]->GetNbinsX();ix++){
+    for(int iy=0;iy<q_IMnpipi_Sp_accerr[0]->GetNbinsY();iy++){
+      double err = q_IMnpipi_Sp_accerr[0]->GetBinContent(ix,iy);
+      if(err>0.25){
+        q_IMnpipi_Sp_acc[0]->SetBinContent(ix,iy,0);
+        q_IMnpipi_Sp_acc[0]->SetBinError(ix,iy,0);
+      }
+    }
+  }
+  
+  for(int ix=0;ix<q_IMnpipi_Sm_accerr[0]->GetNbinsX();ix++){
+    for(int iy=0;iy<q_IMnpipi_Sm_accerr[0]->GetNbinsY();iy++){
+      double err = q_IMnpipi_Sm_accerr[0]->GetBinContent(ix,iy);
+      if(err>0.25){
+        q_IMnpipi_Sm_acc[0]->SetBinContent(ix,iy,0);
+        q_IMnpipi_Sm_acc[0]->SetBinError(ix,iy,0);
+      }
+    }
+  }
 
   TCanvas *cSp[nqcut];
   TCanvas *cSm[nqcut];
@@ -179,7 +199,14 @@ void GetAccMap()
     q_IMnpipi_K0_accerr[iq]->Draw("colz");
   }
  
-
-
-
+  TFile *fout = new TFile("accmap.root","RECREATE");
+  for(int iq=0;iq<nqcut;iq++){
+    q_IMnpipi_Sp_acc[iq]->Write();
+    q_IMnpipi_Sp_accerr[iq]->Write();
+    q_IMnpipi_Sm_acc[iq]->Write();
+    q_IMnpipi_Sm_accerr[iq]->Write();
+    q_IMnpipi_K0_acc[iq]->Write();
+    q_IMnpipi_K0_accerr[iq]->Write();
+  }
+  fout->Close();
 }
