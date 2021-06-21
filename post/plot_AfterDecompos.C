@@ -78,6 +78,7 @@ void plot_AfterDecompos()
   const unsigned int nwbin = 3;
   TH2D* IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin[nbinIMnpipi][nqcut];
   TH2D* IMnpim_IMnpip_dE_wK0_wSid_n_Sm_bin[nbinIMnpipi][nqcut];
+  TH2D* IMnpim_IMnpip_dE_wSid_n_SpSm[nqcut];
   TH2D* IMnpim_IMnpip_dE_wSid_n_SpSm_bin[nbinIMnpipi][nqcut];
   TH2D* IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[nwbin][nqcut];
   TH2D* IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[nwbin][nqcut];
@@ -171,7 +172,9 @@ void plot_AfterDecompos()
     cq_IMnpipi_wK0_wSid_n_SpSm[iq] = new TCanvas(Form("q_IMnpipi_wK0_wSid_n_SpSm_%s",cqcut[iq]),Form("q_IMnpipi_wK0_wSid_n_SpSm_%s",cqcut[iq]));
     IMnpipi_wK0_wSid_n_SpSm[iq] = (TH1D*)q_IMnpipi_wK0_wSid_n_SpSm[iq]->ProjectionX(Form("IMnpipi_wK0_wSid_n_SpSm_%d",iq));
     IMnpipi_wK0_wSid_n_SpSm[iq]->Draw("HISTE");
+     
 
+    IMnpim_IMnpip_dE_wSid_n_SpSm[iq] = (TH2D*)fr[iq]->Get("IMnpim_IMnpip_dE_wSid_n_SpSm");
     //Sigma+ & Sigma- & K0 overlap
     for(unsigned int ibin=0;ibin<nbinIMnpipi;ibin++){
       IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin[ibin][iq] = (TH2D*)fr[iq]->Get(Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sp_bin%d",ibin));
@@ -416,48 +419,49 @@ void plot_AfterDecompos()
   for(int iq=0;iq<2;iq++){
     q_IMnpipi_SporSm_ToSp[iq] = (TH2D*)q_IMnpipi_wSid_n_SpSm[iq+1]->Clone(Form("q_IMnpipi_SporSm_ToSp%d",iq));
     q_IMnpipi_SporSm_ToSm[iq] = (TH2D*)q_IMnpipi_wSid_n_SpSm[iq+1]->Clone(Form("q_IMnpipi_SporSm_ToSm%d",iq));
-    for(int ibin=0;ibin<nbinIMnpipi;ibin++){
-      double nSporSm = IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin][iq+1]->Integral();
-      double nSp = 0.;
-      double nSm = 0.;
-      if(nSporSm>0.0){
-        for(int ix=0;ix<IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin][iq+1]->GetNbinsX();ix++){
-          for(int iy=0;iy<IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin][iq+1]->GetNbinsY();iy++){
-            double cont = IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin][iq+1]->GetBinContent(ix,iy);
-            if(cont>0.0){
-              double bincent_npip = IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin][iq+1]->GetXaxis()->GetBinCenter(ix);
-              double bincent_npim = IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin][iq+1]->GetYaxis()->GetBinCenter(iy);
-              double nSp_bin = gr_SpONnpim_fin_pol1[iq]->Eval(bincent_npim);
-              double nSm_bin = gr_SmONnpip_fin_pol1[iq]->Eval(bincent_npip);
-              //std::cout << "ibin:" << ibin << std::endl;
-              //std::cout << "cont:" << cont << std::endl;
-              //std::cout << "nSp " << nSp << std::endl;
-              //std::cout << "nSp_bin" << nSp_bin << std::endl;
-              //std::cout << "nSm_bin" << nSm_bin << std::endl;
-              nSp += nSp_bin;
-              nSm += nSm_bin;
-              //std::cout<< "nSm_net_bin" << nSm_net_bin << std::endl;
-              //std::cout<< "nSporSm" << nSporSm << std::endl;
-            }//cont>0
-          }//iy
-        }//ix
-      }//if nSporSm
+    double nSporSm = IMnpim_IMnpip_dE_wSid_n_SpSm[iq+1]->Integral();
+    double nSp = 0.;
+    double nSm = 0.;
+    if(nSporSm>0.0){
+      for(int ix=0;ix<IMnpim_IMnpip_dE_wSid_n_SpSm[iq+1]->GetNbinsX();ix++){
+        for(int iy=0;iy<IMnpim_IMnpip_dE_wSid_n_SpSm[iq+1]->GetNbinsY();iy++){
+          double cont = IMnpim_IMnpip_dE_wSid_n_SpSm[iq+1]->GetBinContent(ix,iy);
+          if(cont>0.0){
+            double bincent_npip = IMnpim_IMnpip_dE_wSid_n_SpSm[iq+1]->GetXaxis()->GetBinCenter(ix);
+            double bincent_npim = IMnpim_IMnpip_dE_wSid_n_SpSm[iq+1]->GetYaxis()->GetBinCenter(iy);
+            double nSp_bin = gr_SpONnpim_fin_pol1[iq]->Eval(bincent_npim);
+            double nSm_bin = gr_SmONnpip_fin_pol1[iq]->Eval(bincent_npip);
+            //std::cout << "ibin:" << ibin << std::endl;
+            //std::cout << "cont:" << cont << std::endl;
+            //std::cout << "nSp " << nSp << std::endl;
+            //std::cout << "nSp_bin" << nSp_bin << std::endl;
+            //std::cout << "nSm_bin" << nSm_bin << std::endl;
+            nSp += nSp_bin;
+            nSm += nSm_bin;
+            //std::cout<< "nSm_net_bin" << nSm_net_bin << std::endl;
+            //std::cout<< "nSporSm" << nSporSm << std::endl;
+          }//cont>0
+        }//iy
+      }//ix
+    }//if nSporSm
+    
+    for(int ibin=0;ibin<q_IMnpipi_SporSm_ToSp[iq]->GetNbinsX();ibin++){
       for(int iqbin=0;iqbin<q_IMnpipi_SporSm_ToSp[iq]->GetNbinsY();iqbin++){
-        double evt = q_IMnpipi_SporSm_ToSp[iq]->GetBinContent(ibin+1,iqbin);
-        if(evt>0.0 && (nSp+nSm)>0.0){
+        double evt = q_IMnpipi_SporSm_ToSp[iq]->GetBinContent(ibin,iqbin);
+        if((nSp+nSm)>0.0){
           double evtToSp = evt*nSp/(nSp+nSm);
           double evtToSm = evt*nSm/(nSp+nSm);
-          q_IMnpipi_SporSm_ToSp[iq]->SetBinContent(ibin+1,iqbin,evtToSp);
-          q_IMnpipi_SporSm_ToSp[iq]->SetBinError(ibin+1,0);
-          q_IMnpipi_SporSm_ToSm[iq]->SetBinContent(ibin+1,iqbin,evtToSm);
-          q_IMnpipi_SporSm_ToSm[iq]->SetBinError(ibin+1,0);
+          q_IMnpipi_SporSm_ToSp[iq]->SetBinContent(ibin,iqbin,evtToSp);
+          q_IMnpipi_SporSm_ToSp[iq]->SetBinError(ibin,iqbin,0);
+          q_IMnpipi_SporSm_ToSm[iq]->SetBinContent(ibin,iqbin,evtToSm);
+          q_IMnpipi_SporSm_ToSm[iq]->SetBinError(ibin,iqbin,0);
           if(nSp+nSm<0.00001){
             std::cout << "nSp + nSm " << nSp+nSm << std::endl;
             std::cout << "evt " << evt << std::endl;
           }
         }
       }
-    }//for ibin
+    }
     IMnpipi_SporSm_ToSp[iq] = (TH1D*)q_IMnpipi_SporSm_ToSp[iq]->ProjectionX(Form("IMnpipi_SporSm_ToSp%d",iq));
     IMnpipi_SporSm_ToSm[iq] = (TH1D*)q_IMnpipi_SporSm_ToSm[iq]->ProjectionX(Form("IMnpipi_SporSm_ToSm%d",iq));
   }
