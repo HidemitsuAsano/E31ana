@@ -2075,7 +2075,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   for(unsigned int iwbin=0;iwbin<nwbin;iwbin++){
     IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin] = new TH2F(Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin%d",iwbin),
                                                      Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sp %0.2f-%0.2f",wbinlow[iwbin],wbinhigh[iwbin]),
-                                                        nbinIMnpip_wbin,IMnpip_wbinlow,IMnpip_wbinhigh,nbinIMnpim_wbin,IMnpim_wbinlow,IMnpim_wbinhigh);
+                                                        nbinIMnpip_bin,IMnpip_binlow,IMnpip_binhigh,nbinIMnpim_bin,IMnpim_binlow,IMnpim_binhigh);
     IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
     IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   }
@@ -2099,7 +2099,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   for(unsigned int iwbin=0;iwbin<nwbin;iwbin++){
     IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin] = new TH2F(Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin%d",iwbin),
                                                      Form("IMnpim_IMnpip_dE_wK0_wSid_n_Sm %0.2f-%0.2f",wbinlow[iwbin],wbinhigh[iwbin]),
-                                                        nbinIMnpip_wbin,IMnpip_wbinlow,IMnpip_wbinhigh,nbinIMnpim_wbin,IMnpim_wbinlow,IMnpim_wbinhigh);
+                                                        nbinIMnpip_bin,IMnpip_binlow,IMnpip_binhigh,nbinIMnpim_bin,IMnpim_binlow,IMnpim_binhigh);
     IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
     IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   }
@@ -2110,12 +2110,12 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMnpim_IMnpip_dE_wSid_n_SpSm->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   
   for(int ibin=0;ibin<nbinIMnpipi;ibin++){
-      IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin] = new TH2F(
-          Form("IMnpim_IMnpip_dE_wSid_n_SpSm_bin%d",ibin),
-          Form("IMnpim_IMnpip_dE_wSid_n_SpSm_bin %0.2f-%0.2f",binlow[ibin],binhigh[ibin]),
+    IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin] = new TH2F(
+        Form("IMnpim_IMnpip_dE_wSid_n_SpSm_bin%d",ibin),
+        Form("IMnpim_IMnpip_dE_wSid_n_SpSm_bin %0.2f-%0.2f",binlow[ibin],binhigh[ibin]),
         nbinIMnpip_bin,IMnpip_binlow,IMnpip_binhigh,nbinIMnpim_bin,IMnpim_binlow,IMnpim_binhigh);
-      IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
-      IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+    IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+    IMnpim_IMnpip_dE_wSid_n_SpSm_bin[ibin]->SetYTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   }
 
 
