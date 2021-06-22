@@ -59,7 +59,7 @@ const unsigned int sidebandtype=0;
 //0 no isolation
 //1 round cut
 //2 revert round cut
-const unsigned int IsolationFlag=1;
+const unsigned int IsolationFlag=0;
 
 const bool CDCChargeVetoFlag=true;
 
@@ -76,7 +76,7 @@ const bool IsMCweighting = false;
 //maybe, also forward Sigma events should be rejected ?
 const bool SimRejectFake = true;
 
-const bool RejectStoppedSigma = false;
+const bool RejectStoppedSigma = true;
 
 //color def.
 //Sp mode Signal :2 (red)

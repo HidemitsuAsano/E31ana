@@ -49,8 +49,6 @@
 
 //-- set run# --//
 
-const int MaxTreeSize = 1000000000;
-
 const unsigned int Verbosity = 0;
 const bool DoCDCRetiming = false;
 const bool DoKinFit = true;

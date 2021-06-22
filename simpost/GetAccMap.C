@@ -1,3 +1,6 @@
+const bool RemoveNotEnough = false;
+const double UncertCut = 0.25;
+
 void GetAccMap()
 {
    
@@ -101,7 +104,7 @@ void GetAccMap()
     q_IMnpipi_Sm_acc[iq]->Print("base");
     q_IMnpipi_gen_Sm[iq]->Print("base");
     q_IMnpipi_Sm_acc[iq]->Divide(q_IMnpipi_Sm_acc[iq],q_IMnpipi_gen_Sm[iq],1.0,1.0,"b");
-    //q_IMnpipi_K0_acc[iq]->Divide(q_IMnpipi_K0_acc[iq],q_IMnpipi_gen_K0[iq],1.0,1.0,"b");
+    q_IMnpipi_K0_acc[iq]->Divide(q_IMnpipi_K0_acc[iq],q_IMnpipi_gen_K0[iq],1.0,1.0,"b");
   }
 
   TH2F* q_IMnpipi_Sp_accerr[nqcut];
@@ -138,7 +141,7 @@ void GetAccMap()
   for(int ix=0;ix<q_IMnpipi_Sp_accerr[0]->GetNbinsX();ix++){
     for(int iy=0;iy<q_IMnpipi_Sp_accerr[0]->GetNbinsY();iy++){
       double err = q_IMnpipi_Sp_accerr[0]->GetBinContent(ix,iy);
-      if(err>0.25){
+      if( RemoveNotEnough && (err>UncertCut)){
         q_IMnpipi_Sp_acc[0]->SetBinContent(ix,iy,0);
         q_IMnpipi_Sp_acc[0]->SetBinError(ix,iy,0);
       }
@@ -148,7 +151,7 @@ void GetAccMap()
   for(int ix=0;ix<q_IMnpipi_Sm_accerr[0]->GetNbinsX();ix++){
     for(int iy=0;iy<q_IMnpipi_Sm_accerr[0]->GetNbinsY();iy++){
       double err = q_IMnpipi_Sm_accerr[0]->GetBinContent(ix,iy);
-      if(err>0.25){
+      if(RemoveNotEnough && err>UncertCut){
         q_IMnpipi_Sm_acc[0]->SetBinContent(ix,iy,0);
         q_IMnpipi_Sm_acc[0]->SetBinError(ix,iy,0);
       }
@@ -192,7 +195,7 @@ void GetAccMap()
     cK0[iq]->cd(2);
     q_IMnpipi_wK0_n_K0_reco[iq]->Draw("colz");
     cK0[iq]->cd(3);
-    q_IMnpipi_K0_acc[iq]->SetMaximum(0.010);
+    q_IMnpipi_K0_acc[iq]->SetMaximum(0.1);
     q_IMnpipi_K0_acc[iq]->Draw("colz");
     cK0[iq]->cd(4);
     q_IMnpipi_K0_accerr[iq]->SetMaximum(0.5);
