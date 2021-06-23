@@ -59,7 +59,7 @@ const unsigned int sidebandtype=0;
 //0 no isolation
 //1 round cut
 //2 revert round cut
-const unsigned int IsolationFlag=0;
+const unsigned int IsolationFlag=1;
 
 const bool CDCChargeVetoFlag=true;
 
