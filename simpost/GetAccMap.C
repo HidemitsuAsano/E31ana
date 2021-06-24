@@ -26,14 +26,14 @@ void GetAccMap()
   fSm[2] = TFile::Open("simIMpisigma_nSmpip_pippimn_v135_out_iso_qhi_rej_nostop.root");
   fSm[3] = TFile::Open("simIMpisigma_nSmpip_pippimn_v135_out_iso_theta15_rej_nostop.root");
 
-  fK0[0] = TFile::Open("simIMpisigma_K0nn_pippimn_v12_out_iso_rej_nostop.root");
-  fK0[1] = TFile::Open("simIMpisigma_K0nn_pippimn_v12_out_iso_qlo_rej_nostop.root");
-  fK0[2] = TFile::Open("simIMpisigma_K0nn_pippimn_v12_out_iso_qhi_rej_nostop.root");
-  fK0[3] = TFile::Open("simIMpisigma_K0nn_pippimn_v12_out_iso_theta15_rej_nostop.root");
+  fK0[0] = TFile::Open("simIMpisigma_K0nn_pippimn_v16_out_iso_rej_nostop.root");
+  fK0[1] = TFile::Open("simIMpisigma_K0nn_pippimn_v16_out_iso_qlo_rej_nostop.root");
+  fK0[2] = TFile::Open("simIMpisigma_K0nn_pippimn_v16_out_iso_qhi_rej_nostop.root");
+  fK0[3] = TFile::Open("simIMpisigma_K0nn_pippimn_v16_out_iso_theta15_rej_nostop.root");
   
   fSpgen = TFile::Open("simIMpisigma_nSppim_v135.root");
   fSmgen = TFile::Open("simIMpisigma_nSmpip_v135.root");
-  fK0gen = TFile::Open("simIMpisigma_K0nn_v12.root");
+  fK0gen = TFile::Open("simIMpisigma_K0nn_v16.root");
   
   const int nqcut=1;
   TH2F* q_IMnpipi_gen_Sp[nqcut];
@@ -162,7 +162,7 @@ void GetAccMap()
   TCanvas *cSm[nqcut];
   TCanvas *cK0[nqcut];
   for(int iq=0;iq<1;iq++){
-    cSp[iq] = new TCanvas(Form("cSp%d",iq),Form("cSp%d",iq),1000,1000);
+    cSp[iq] = new TCanvas(Form("cSp%d",iq),Form("cSp%d",iq),1200,1000);
     cSp[iq]->Divide(2,2);
     cSp[iq]->cd(1);
     q_IMnpipi_gen_Sp[iq]->Draw("colz");
@@ -195,7 +195,7 @@ void GetAccMap()
     cK0[iq]->cd(2);
     q_IMnpipi_wK0_n_K0_reco[iq]->Draw("colz");
     cK0[iq]->cd(3);
-    q_IMnpipi_K0_acc[iq]->SetMaximum(0.1);
+    q_IMnpipi_K0_acc[iq]->SetMaximum(0.005);
     q_IMnpipi_K0_acc[iq]->Draw("colz");
     cK0[iq]->cd(4);
     q_IMnpipi_K0_accerr[iq]->SetMaximum(0.5);
