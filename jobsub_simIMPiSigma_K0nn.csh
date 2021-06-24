@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
-set Version="15"
-set DSTVersion="5"
+set Version="16"
+set DSTVersion="6"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simK0nn${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 set CDSDIRSUB="${CDSDIR}simDSTK0nn${DSTVersion}"
@@ -39,7 +39,7 @@ ln -s $OUTDIRSUB/simIMpisigma_K0nn_all.root simpost/simIMpisigma_K0nn_v${Version
 ln -s $OUTDIRSUB/simIMpisigma_K0nn_pippimn_all.root simpost/simIMpisigma_K0nn_pippimn_v${Version}.root
 
 @ i = 0
-while ($i < 400)   
+while ($i < 3200)   
 
   set EXEC___="./bin/simIMPiSigma"
   set jobnum=`printf  "%03d"  $i`
