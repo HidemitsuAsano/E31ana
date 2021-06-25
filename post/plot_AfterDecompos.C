@@ -629,10 +629,11 @@ void plot_AfterDecompos()
           q_IMnpipi_Sp_cs[iq]->SetBinContent(ix,iy,0.);
           q_IMnpipi_Sp_cs[iq]->SetBinError(ix,iy,0.);
         }
+        /*
         if(iy>qcut650){
           q_IMnpipi_Sp_cs[iq]->SetBinContent(ix,iy,0.);
           q_IMnpipi_Sp_cs[iq]->SetBinError(ix,iy,0.);
-        }
+        }*/
         if(accerrSm<0.25){
           q_IMnpipi_Sm_cs[iq]->SetBinContent(ix,iy,csSm);
           q_IMnpipi_Sm_cs[iq]->SetBinError(ix,iy,csSmerr);
@@ -640,10 +641,11 @@ void plot_AfterDecompos()
           q_IMnpipi_Sm_cs[iq]->SetBinContent(ix,iy,0.);
           q_IMnpipi_Sm_cs[iq]->SetBinError(ix,iy,0.);
         }
+        /*
         if(iy>qcut650){
           q_IMnpipi_Sm_cs[iq]->SetBinContent(ix,iy,0.);
           q_IMnpipi_Sm_cs[iq]->SetBinError(ix,iy,0.);
-        }
+        }*/
         
         if(accerrK0<0.25){
           q_IMnpipi_K0_cs[iq]->SetBinContent(ix,iy,csK0);
@@ -652,10 +654,11 @@ void plot_AfterDecompos()
           q_IMnpipi_K0_cs[iq]->SetBinContent(ix,iy,0.);
           q_IMnpipi_K0_cs[iq]->SetBinError(ix,iy,0.);
         }
+        /*
         if(iy>qcut650){
           q_IMnpipi_K0_cs[iq]->SetBinContent(ix,iy,0.);
           q_IMnpipi_K0_cs[iq]->SetBinError(ix,iy,0.);
-        }
+        }*/
       }
     }
   }
@@ -723,6 +726,9 @@ void plot_AfterDecompos()
     IMnpipi_Sp_cs[iq]->SetLineColor(3);
     IMnpipi_Sm_cs[iq]->SetLineColor(4);
     IMnpipi_K0_cs[iq]->SetLineColor(2);
+    IMnpipi_K0_cs[iq]->RebinX(2);
+    IMnpipi_Sp_cs[iq]->RebinX(2);
+    IMnpipi_Sm_cs[iq]->RebinX(2);
     IMnpipi_K0_cs[iq]->Draw("HE");
     IMnpipi_Sp_cs[iq]->Draw("HEsame");
     IMnpipi_Sm_cs[iq]->Draw("HEsame");
