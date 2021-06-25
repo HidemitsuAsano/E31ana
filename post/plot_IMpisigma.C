@@ -76,7 +76,7 @@ const bool IsMCweighting = false;
 //maybe, also forward Sigma events should be rejected ?
 const bool SimRejectFake = true;
 
-const bool RejectStoppedSigma = true;
+const bool RejectStoppedSigma = false;
 
 //color def.
 //Sp mode Signal :2 (red)
@@ -4133,6 +4133,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   diff_q_woK0_wSid_n_Sm->SetXTitle("Mom. Transfer [GeV/c]");
   diff_q_woK0_wSid_n_Sm->SetYTitle("reco. - gen. [GeV/c^]");
 
+  TH2D* Vtx_ZX = new TH2D("Vtx_ZX","Vtx_ZX",1000,-25,25,500,-12.5,12.5);
+  TH2D* Vtx_XY = new TH2D("Vtx_XY","Vtx_XY",500,-12.5,12.5,500,-12.5,12.5);
 
   std::cout << __LINE__ << std::endl;
 
@@ -4615,7 +4617,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       SigmaCrossMsideWideFlagRight[izone] = false;
     }
 
-
+    if( (LVec_pip_n.P()<anacuts::SigmaPMomCut) ){
+      Vtx_ZX->Fill((*vtx_pip_cdc).Z(),(*vtx_pip_cdc).X());
+      Vtx_XY->Fill((*vtx_pip_cdc).X(),(*vtx_pip_cdc).Y());
+    }
     double dca_pip_beam = (*vtx_pip_beam-*vtx_pip_cdc).Mag();
     double dca_pim_beam = (*vtx_pim_beam-*vtx_pim_cdc).Mag();
     double dca_pip_pim =(*CA_pip-*CA_pim).Mag();
@@ -6198,8 +6203,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
         IMpippim_IMnpim_woK0_wSid_n->Fill(LVec_pim_n.M(),LVec_pip_pim.M(),weight);
         nmom_cosn_woK0_wSid_n->Fill(cos_ncdslab,(*LVec_n).P(),weight);
         nmom_cosnmiss_woK0_wSid_n->Fill(cos_nmissCM,(*LVec_n).P(),weight);
-        DCA_pip_beam->Fill( dca_pip_beam,weight);
-        DCA_pim_beam->Fill( dca_pim_beam,weight );
+        if( (LVec_pip_n.P()<anacuts::SigmaPMomCut) ){
+          DCA_pip_beam->Fill( dca_pip_beam,weight);
+        }
+        DCA_pim_beam->Fill( dca_pim_beam,weight);
         DCA_pip_pim->Fill(dca_pip_pim,weight);
         pipmom_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_pip).P(),weight);
         pimmom_IMnpipi_woK0_wSid_n->Fill(LVec_pip_pim_n.M(),(*LVec_pim).P(),weight);
