@@ -359,7 +359,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   
 
   const unsigned int nwbin = 3;
-  const int nbinIMnpipi = 80;//1.2-2 GeV/c^2
+  const int nbinIMnpipi = 160;//1.2-2 GeV/c^2
   const float IMnpipilow = 1.2;
   const float IMnpipihi = 2.0;
   const int nbinq = 100;// 25;//0-1.5 GeV/c
@@ -3522,10 +3522,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   IMpippim_IMnpip_wK0_n->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
  
   for(unsigned int ibin=0;ibin<nbinIMnpipi;ibin++){
-    float binlow=1.0+(float)ibin*1./nbinIMnpipi;
-    float binhigh=1.0+(float)(ibin+1.0)*1./nbinIMnpipi;
     IMpippim_IMnpip_wK0_n_bin[ibin] = new TH2F(Form("IMpippim_IMnpip_wK0_n_bin%d",ibin),
-        Form("IMpippim_IMnpip_wK0_n %0.2f-%0.2f",binlow,binhigh),
+        Form("IMpippim_IMnpip_wK0_n %0.2f-%0.2f",binlow[ibin],binhigh[ibin]),
         nbinIMnpip_wbin,IMnpip_wbinlow,IMnpip_wbinhigh,nbinIMpippim_wbin,IMpippim_wbinlow,IMpippim_wbinhigh);
     IMpippim_IMnpip_wK0_n_bin[ibin]->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
     IMpippim_IMnpip_wK0_n_bin[ibin]->SetYTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
