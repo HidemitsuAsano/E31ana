@@ -162,7 +162,7 @@ void GetAccMap()
   TCanvas *cSm[nqcut];
   TCanvas *cK0[nqcut];
   for(int iq=0;iq<1;iq++){
-    cSp[iq] = new TCanvas(Form("cSp%d",iq),Form("cSp%d",iq),1200,1000);
+    cSp[iq] = new TCanvas(Form("cSp%d",iq),Form("cSp%d",iq),1300,1000);
     cSp[iq]->Divide(2,2);
     cSp[iq]->cd(1);
     q_IMnpipi_gen_Sp[iq]->Draw("colz");
@@ -175,7 +175,7 @@ void GetAccMap()
     q_IMnpipi_Sp_accerr[iq]->SetMaximum(0.5);
     q_IMnpipi_Sp_accerr[iq]->Draw("colz");
     
-    cSm[iq] = new TCanvas(Form("cSm%d",iq),Form("cSm%d",iq),1000,1000);
+    cSm[iq] = new TCanvas(Form("cSm%d",iq),Form("cSm%d",iq),1300,1000);
     cSm[iq]->Divide(2,2);
     cSm[iq]->cd(1);
     q_IMnpipi_gen_Sm[iq]->Draw("colz");
@@ -188,7 +188,7 @@ void GetAccMap()
     q_IMnpipi_Sm_accerr[iq]->SetMaximum(0.5);
     q_IMnpipi_Sm_accerr[iq]->Draw("colz");
     
-    cK0[iq] = new TCanvas(Form("cK0%d",iq),Form("cK0%d",iq),1000,1000);
+    cK0[iq] = new TCanvas(Form("cK0%d",iq),Form("cK0%d",iq),1300,1000);
     cK0[iq]->Divide(2,2);
     cK0[iq]->cd(1);
     q_IMnpipi_gen_K0[iq]->Draw("colz");
