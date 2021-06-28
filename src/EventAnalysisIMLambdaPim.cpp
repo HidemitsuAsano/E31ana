@@ -51,10 +51,9 @@
 
 const unsigned int Verbosity = 0;
 const bool DoCDCRetiming = false;
-const bool DoKinFit = true;
+const bool DoKinFit = false;
 const bool IsVtxDoubleCheck = false;
 const bool UseDecayVtx = true;
-const unsigned int IsolationCutFlag = 1;
 //-----------------------------------------//
 //--- covariance matrices for KinFitter ---//
 //-----------------------------------------//
@@ -133,8 +132,10 @@ private:
   TVector3 vtx_reaction; // 
   TVector3 vtx_pim1_beam; // 
   TVector3 vtx_pim2_beam; // 
+  TVector3 vtx_p_beam; // 
   TVector3 vtx_pim1_cdc;//
   TVector3 vtx_pim2_cdc;//
+  TVector3 vtx_p_cdc;//
   TVector3 CA_pim1;//Closest Approach Point of CDS pim1-pim2 tracks
   TVector3 CA_pim2;//Closest Approach Point of CDS pim1-pim2 tracks
   int run_num;   // run number
@@ -210,9 +211,6 @@ void EventAnalysis::Initialize( ConfMan *conf )
   if(UseDecayVtx) std::cout << " Yes" << std::endl;
   else         std::cout << " No"  << std::endl;
   
-  std::cout << "Isolation cut range ? " ;
-  std::cout << IsolationCutFlag << "  segments" << std::endl;
-
 
   std::cout << " CDH TDC cuts " << cdscuts_lpim::tdc_cdh_max << std::endl;
   std::cout << " CDH multiplicity cut: " << cdscuts_lpim::cdhmulti << std::endl;
@@ -289,6 +287,12 @@ void EventAnalysis::Initialize( ConfMan *conf )
   ppimpimTree->Branch( "mom_pim2", &mom_pim2 );
   ppimpimTree->Branch( "mom_p", &mom_p );
   ppimpimTree->Branch( "vtx_reaction", &vtx_reaction );
+  ppimpimTree->Branch( "vtx_pim1_beam", &vtx_pim1_beam );
+  ppimpimTree->Branch( "vtx_pim2_beam", &vtx_pim2_beam );
+  ppimpimTree->Branch( "vtx_p_beam", &vtx_p_beam );
+  ppimpimTree->Branch( "vtx_pim1_cdc", &vtx_pim1_cdc );
+  ppimpimTree->Branch( "vtx_pim2_cdc", &vtx_pim2_cdc );
+  ppimpimTree->Branch( "vtx_p_cdc", &vtx_p_cdc );
   //ppimpimTree->Branch( "run_num", &run_num );
   //ppimpimTree->Branch( "event_num", &event_num );
   //ppimpimTree->Branch( "block_num", &block_num );
@@ -485,9 +489,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
   Tools::Fill1D( Form("EventCheck"), 1 );
   
-  //temporary fix of the cdhz position
-  //Util::CorrectCDHz(cdsMan);
-
   //CDH-hits cut
   if( Util::GetCDHMul(cdsMan,nGoodTrack)!=cdscuts_lpim::cdhmulti){
     Clear( nAbort_nCDH );
@@ -496,7 +497,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   Tools::Fill1D( Form("EventCheck"), 2 );
 
   //** # of good CDS tracks cut **//
-  if( nGoodTrack!=cdscuts_lpim::cds_ngoodtrack ) { //require pi+,pi-
+  if( nGoodTrack!=cdscuts_lpim::cds_ngoodtrack ) { //require pi+,pi-,proton
     Clear( nAbort_nGoodTrack );
     return true;
   }
@@ -1018,8 +1019,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
        vtx_reaction = vtx_react; // vertex(reaction)
        vtx_pim1_beam = vtx_beam_wpim1;
        vtx_pim2_beam = vtx_beam_wpim2;
+       vtx_p_beam = vtx_beam_wp;
        vtx_pim1_cdc = vtx_pim1;
        vtx_pim2_cdc = vtx_pim2;
+       vtx_p_cdc = vtx_p;
        CA_pim1 = CA_pim1_pim1p;
        CA_pim2 = CA_pim2_pim2p;
        run_num   = confMan->GetRunNumber(); // run number
@@ -1183,8 +1186,10 @@ void EventAnalysis::Clear( int &nAbort)
   vtx_reaction.SetXYZ(-9999.,-9999.,-9999.);
   vtx_pim1_beam.SetXYZ(-9999.,-9999.,-9999.);
   vtx_pim2_beam.SetXYZ(-9999.,-9999.,-9999.);
+  vtx_p_beam.SetXYZ(-9999.,-9999.,-9999.);
   vtx_pim1_cdc.SetXYZ(-9999.,-9999.,-9999.);
   vtx_pim2_cdc.SetXYZ(-9999.,-9999.,-9999.);
+  vtx_p_cdc.SetXYZ(-9999.,-9999.,-9999.);
   CA_pim1.SetXYZ(-9999.,-9999.,-9999.);
   CA_pim2.SetXYZ(-9999.,-9999.,-9999.);
 
