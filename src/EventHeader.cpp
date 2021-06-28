@@ -23,6 +23,7 @@ int EventHeader::trigmode(ConfMan *conf)
   if(IsTrig(Trig_KCDH1,conf)&&IsTrig(Trig_Charged,conf)) return Mode_KCDH1C;
   if(IsTrig(Trig_KCDH1,conf)&&IsTrig(Trig_Neutral,conf)) return Mode_KCDH1N;
   if(IsTrig(Trig_KCDH2,conf)&&IsTrig(Trig_1stMix,conf))  return Mode_KCDH2;
+  if(IsTrig(Trig_KCDH3,conf)&&IsTrig(Trig_1stMix,conf))  return Mode_KCDH3;
   if(IsTrig(Trig_PivBVC,conf)&&IsTrig(Trig_Neutral,conf)) return Mode_PiN;
   if(IsTrig(Trig_PivBVC,conf)&&IsTrig(Trig_Charged,conf)) return Mode_PiC;
   if(IsTrig(Trig_PiCDH1,conf)&&IsTrig(Trig_Neutral,conf)) return Mode_PiCDH1N;
@@ -67,6 +68,9 @@ bool EventHeader::trigmode2(const int &mode,ConfMan *conf)
   if(mode==Mode_KCDH2)  
     return IsTrig(Trig_KCDH2,conf)&&IsTrig(Trig_1stMix,conf)&&!tmp;
 
+  if(mode==Mode_KCDH3)  
+    return IsTrig(Trig_KCDH3,conf)&&IsTrig(Trig_1stMix,conf)&&!tmp;
+
   if(mode==Mode_PiN)   
     return IsTrig(Trig_PivBVC,conf)&&IsTrig(Trig_Neutral,conf);
   if(mode==Mode_PiC) 
@@ -88,6 +92,7 @@ bool EventHeader::trigmode(const int &mode,ConfMan *conf)
   if(mode==Mode_Kf)    return IsTrig(Trig_Kf,conf)&&IsTrig(Trig_1stMix,conf);
   if(mode==Mode_KCDH1f)return IsTrig(Trig_KCDH1f,conf)&&IsTrig(Trig_1stMix,conf);
   if(mode==Mode_KCDH2) return IsTrig(Trig_KCDH2,conf)&&IsTrig(Trig_1stMix,conf);
+  if(mode==Mode_KCDH2) return IsTrig(Trig_KCDH3,conf)&&IsTrig(Trig_1stMix,conf);
   if(mode==Mode_KCDH1N)return IsTrig(Trig_KCDH1,conf)&&IsTrig(Trig_Neutral,conf);
   if(mode==Mode_KCDH1C)return IsTrig(Trig_KCDH1,conf)&&IsTrig(Trig_Charged,conf);
   if(mode==Mode_KvBVCN)return IsTrig(Trig_KvBVC,conf)&&IsTrig(Trig_Neutral,conf);
@@ -113,6 +118,8 @@ int EventHeader::trigncdh(ConfMan *conf)
     return 1;
   if(IsTrig(Trig_KCDH2,conf))//&&IsTrig(Trig_PiCDH2,conf))
     return 2;
+  if(IsTrig(Trig_KCDH3,conf))//&&IsTrig(Trig_PiCDH2,conf))
+    return 3;
   else return 0;
 }
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
