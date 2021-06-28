@@ -9,6 +9,7 @@ void InitBasicHist(const bool MCFlag)
   Tools::newTH1F( Form("nTrack_If2GoodTracks"), 11, -0.5, 10.5 );
   Tools::newTH1F( Form("nGoodTrack"), 11, -0.5, 10.5 );
   Tools::newTH1F( Form("Scaler"), 41, -0.5, 40.5 );
+  Tools::newTH1F( Form("Trigger"), 10,-0.5,9.5);
 
   // CDC and CDH information from CDC-trackig file **//
   Tools::newTH1F( Form("mul_CDH"),Form("CDH multiplicity"), 11, -0.5, 10.5 );
