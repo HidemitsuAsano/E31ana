@@ -27,7 +27,7 @@ const double pvalcut = 0.005;
 //const double pvalcut = 1.0e-5;
 const bool gridon=true;
 const bool staton=false;
-const bool UseKinFitVal = true;
+const bool UseKinFitVal = false;
 
 //mode 0: Sigma+ ,1: Sigma- 
 void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
@@ -120,6 +120,8 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   tree->SetBranchAddress( "vtx_pim2_beam",&vtx_pim2_beam);
   tree->SetBranchAddress( "vtx_pim1_cdc",&vtx_pim1_cdc);
   tree->SetBranchAddress( "vtx_pim2_cdc",&vtx_pim2_cdc);
+  tree->SetBranchAddress( "vtx_p_beam", &vtx_p_beam);
+  tree->SetBranchAddress( "vtx_p_cdc", &vtx_p_cdc);
 
   //tree->SetBranchAddress( "vtx_pip_cdc",&vtx_pip_cdc);
   //tree->SetBranchAddress( "vtx_pim_cdc",&vtx_pim_cdc);
