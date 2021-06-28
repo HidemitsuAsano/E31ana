@@ -281,6 +281,7 @@ enum gTriggerMode { Mode_Beam     = 1, // <-- correct ??
 		    Mode_KvBVCC   = 10,
 		    Mode_PiCDH1N  = 11,
 		    Mode_PiCDH1C  = 12,
+        Mode_KCDH3    = 13,
 		    Mode_Cosmic   = 15,
 		    Mode_Reject   = 16,
 		    Mode_Unknown  = 17,
