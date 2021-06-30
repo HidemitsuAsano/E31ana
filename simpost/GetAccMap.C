@@ -16,24 +16,24 @@ void GetAccMap()
   TFile *fSmgen=NULL;
   TFile *fK0gen=NULL;
 
-  fSp[0] = TFile::Open("simIMpisigma_nSppim_pippimn_v135_out_iso_rej_nostop.root");
-  fSp[1] = TFile::Open("simIMpisigma_nSppim_pippimn_v135_out_iso_qlo_rej_nostop.root");
-  fSp[2] = TFile::Open("simIMpisigma_nSppim_pippimn_v135_out_iso_qhi_rej_nostop.root");
-  fSp[3] = TFile::Open("simIMpisigma_nSppim_pippimn_v135_out_iso_theta15_rej_nostop.root");
+  fSp[0] = TFile::Open("simIMpisigma_nSppim_pippimn_v136_out_iso_rej_nostop.root");
+  fSp[1] = TFile::Open("simIMpisigma_nSppim_pippimn_v136_out_iso_qlo_rej_nostop.root");
+  fSp[2] = TFile::Open("simIMpisigma_nSppim_pippimn_v136_out_iso_qhi_rej_nostop.root");
+  fSp[3] = TFile::Open("simIMpisigma_nSppim_pippimn_v136_out_iso_theta15_rej_nostop.root");
 
-  fSm[0] = TFile::Open("simIMpisigma_nSmpip_pippimn_v135_out_iso_rej_nostop.root");
-  fSm[1] = TFile::Open("simIMpisigma_nSmpip_pippimn_v135_out_iso_qlo_rej_nostop.root");
-  fSm[2] = TFile::Open("simIMpisigma_nSmpip_pippimn_v135_out_iso_qhi_rej_nostop.root");
-  fSm[3] = TFile::Open("simIMpisigma_nSmpip_pippimn_v135_out_iso_theta15_rej_nostop.root");
+  fSm[0] = TFile::Open("simIMpisigma_nSmpip_pippimn_v136_out_iso_rej_nostop.root");
+  fSm[1] = TFile::Open("simIMpisigma_nSmpip_pippimn_v136_out_iso_qlo_rej_nostop.root");
+  fSm[2] = TFile::Open("simIMpisigma_nSmpip_pippimn_v136_out_iso_qhi_rej_nostop.root");
+  fSm[3] = TFile::Open("simIMpisigma_nSmpip_pippimn_v136_out_iso_theta15_rej_nostop.root");
 
-  fK0[0] = TFile::Open("simIMpisigma_K0nn_pippimn_v16_out_iso_rej_nostop.root");
-  fK0[1] = TFile::Open("simIMpisigma_K0nn_pippimn_v16_out_iso_qlo_rej_nostop.root");
-  fK0[2] = TFile::Open("simIMpisigma_K0nn_pippimn_v16_out_iso_qhi_rej_nostop.root");
-  fK0[3] = TFile::Open("simIMpisigma_K0nn_pippimn_v16_out_iso_theta15_rej_nostop.root");
+  fK0[0] = TFile::Open("simIMpisigma_K0nn_pippimn_v17_out_iso_rej_nostop.root");
+  fK0[1] = TFile::Open("simIMpisigma_K0nn_pippimn_v17_out_iso_qlo_rej_nostop.root");
+  fK0[2] = TFile::Open("simIMpisigma_K0nn_pippimn_v17_out_iso_qhi_rej_nostop.root");
+  fK0[3] = TFile::Open("simIMpisigma_K0nn_pippimn_v17_out_iso_theta15_rej_nostop.root");
   
-  fSpgen = TFile::Open("simIMpisigma_nSppim_v135.root");
-  fSmgen = TFile::Open("simIMpisigma_nSmpip_v135.root");
-  fK0gen = TFile::Open("simIMpisigma_K0nn_v16.root");
+  fSpgen = TFile::Open("simIMpisigma_nSppim_v136.root");
+  fSmgen = TFile::Open("simIMpisigma_nSmpip_v136.root");
+  fK0gen = TFile::Open("simIMpisigma_K0nn_v17.root");
   
   const int nqcut=1;
   TH2F* q_IMnpipi_gen_Sp[nqcut];
@@ -62,14 +62,14 @@ void GetAccMap()
     q_IMnpipi_gen_K0[iq]->GetYaxis()->CenterTitle();
   }
   //for some reason, Rebin iq = 0-4 histograms
-  q_IMnpipi_gen_Sp[0]->RebinX(5);
+  q_IMnpipi_gen_Sp[0]->RebinX(15);
   q_IMnpipi_gen_Sp[0]->RebinY(3);
   //q_IMnpipi_gen_Sp[0]->GetXaxis()->SetRangeUser(1.2,2.0);
   
-  q_IMnpipi_gen_Sm[0]->RebinX(5);
+  q_IMnpipi_gen_Sm[0]->RebinX(15);
   q_IMnpipi_gen_Sm[0]->RebinY(3);
   //q_IMnpipi_gen_Sm[0]->GetXaxis()->SetRangeUser(1.2,2.0);
-  q_IMnpipi_gen_K0[0]->RebinX(5);
+  q_IMnpipi_gen_K0[0]->RebinX(15);
   q_IMnpipi_gen_K0[0]->RebinY(3);
   //q_IMnpipi_gen_K0[0]->GetXaxis()->SetRangeUser(1.2,2.0);
    
@@ -84,6 +84,9 @@ void GetAccMap()
     q_IMnpipi_wK0_n_K0_reco[iq] = (TH2F*)fK0[iq]->Get("q_IMnpipi_wK0_n");
     q_IMnpipi_wK0_n_K0_reco[iq]->GetYaxis()->SetRangeUser(0,1.5);
     q_IMnpipi_wK0_n_K0_reco[iq]->SetTitle("reco. evt. K0");
+    q_IMnpipi_wSid_n_Sp_reco[iq]->RebinX(3);
+    q_IMnpipi_wSid_n_Sm_reco[iq]->RebinX(3);
+    q_IMnpipi_wK0_n_K0_reco[iq]->RebinX(3);
   }
   
 
@@ -98,6 +101,7 @@ void GetAccMap()
     q_IMnpipi_Sm_acc[iq]->SetTitle(Form("q_IMnpipi Sm acc. ",iq));
     q_IMnpipi_K0_acc[iq]->SetTitle(Form("q_IMnpipi K0 acc. ",iq));
     
+
     q_IMnpipi_Sp_acc[iq]->Print("base");
     q_IMnpipi_gen_Sp[iq]->Print("base");
     q_IMnpipi_Sp_acc[iq]->Divide(q_IMnpipi_Sp_acc[iq],q_IMnpipi_gen_Sp[iq],1.0,1.0,"b");
@@ -114,6 +118,9 @@ void GetAccMap()
     q_IMnpipi_Sp_accerr[iq] = (TH2F*)q_IMnpipi_Sp_acc[0]->Clone(Form("q_IMnpipi_Sp_accerr_%d",iq));
     q_IMnpipi_Sm_accerr[iq] = (TH2F*)q_IMnpipi_Sm_acc[0]->Clone(Form("q_IMnpipi_Sm_accerr_%d",iq));
     q_IMnpipi_K0_accerr[iq] = (TH2F*)q_IMnpipi_K0_acc[0]->Clone(Form("q_IMnpipi_K0_accerr_%d",iq));
+    q_IMnpipi_Sp_accerr[iq]->Reset();
+    q_IMnpipi_Sm_accerr[iq]->Reset();
+    q_IMnpipi_K0_accerr[iq]->Reset();
     q_IMnpipi_Sp_accerr[iq]->SetTitle(Form("q_IMnpipi_Sp precision",iq));
     q_IMnpipi_Sm_accerr[iq]->SetTitle(Form("q_IMnpipi_Sm precision",iq));
     q_IMnpipi_K0_accerr[iq]->SetTitle(Form("q_IMnpipi_K0 precision",iq));
