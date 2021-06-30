@@ -554,15 +554,17 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   
   //trigger check
   //
-  //unbiased kaon trigger 
+  //unbiased kaon trigger,prescaled
   if( header->IsTrig(Trig_Kf)) Tools::Fill1D(Form("Trigger"),0);
-
+  if( header->IsTrig(Trig_KCDH2f)) Tools::Fill1D(Form("Trigger"),2);   
   //K x CDH3 trigger
   if( header->IsTrig(Trig_KCDH3)) {
     Tools::Fill1D(Form("Trigger"),1);
   }else{
-    //return true;
+    return true;
   }
+
+
 
   const int nGoodTrack = trackMan->nGoodTrack();
   const int nallTrack = trackMan->nTrack();

@@ -220,15 +220,6 @@ void EventAnalysis::Initialize( ConfMan *conf )
   std::cout << "##################################" << std::endl;
   std::cout << "CDS Neutron ID: beta_MAX " << anacuts::beta_MAX << std::endl;
   std::cout << "CDS Neutron ID: dE_MIN " << anacuts::dE_MIN << std::endl;
-  std::cout << "K0 rejection window "
-            <<  anacuts::pipi_MIN << " - " << anacuts::pipi_MAX << std::endl;
-  std::cout << "missing neutron window "
-            << anacuts::neutron_MIN << " - " << anacuts::neutron_MAX << std::endl;
-  std::cout << "Sigma Plus window "
-            << anacuts::Sigmap_MIN << " - " << anacuts::Sigmap_MAX << std::endl;
-  std::cout << "Sigma Minus window "
-            << anacuts::Sigmam_MIN << " - " << anacuts::Sigmam_MAX << std::endl;
-  std::cout << "##################################" << std::endl;
 
   INIT = true;
   //  spillinit = spillfini = -1;
@@ -480,11 +471,24 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   cdsMan->Convert( tko, confMan );
   blMan->Convert( tko, confMan );
   trackMan->Calc( cdsMan, confMan, true);
+  
+  //trigger check
+  //
+  //unbiased kaon trigger,prescaled
+  if( header->IsTrig(Trig_Kf)) Tools::Fill1D(Form("Trigger"),0);
+  if( header->IsTrig(Trig_KCDH2f)) Tools::Fill1D(Form("Trigger"),2);   
+  //K x CDH3 trigger
+  if( header->IsTrig(Trig_KCDH3)) {
+    Tools::Fill1D(Form("Trigger"),1);
+  }else{
+    return true;
+  }
 
   const int nGoodTrack = trackMan->nGoodTrack();
   const int nallTrack = trackMan->nTrack();
   AllGoodTrack += nGoodTrack;
   nTrack += nallTrack;
+  Tools::Fill1D( Form("nTrack"),nallTrack);
   Tools::Fill1D( Form("nGoodTrack"), nGoodTrack );
 
   Tools::Fill1D( Form("EventCheck"), 1 );
