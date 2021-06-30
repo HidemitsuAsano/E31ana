@@ -14,7 +14,8 @@ void SubtractMix(const int mode=0)
    
   //real data
   if(mode==0){
-    const int version = 202;
+    const int version = 206;
+    /*
     fnamer[0] = Form("evanaIMpisigma_npippim_v%d_out_iso.root",version);
     fnamem[0] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso.root",version);
     fnamer[1] = Form("evanaIMpisigma_npippim_v%d_out_iso_qlo.root",version);
@@ -23,6 +24,15 @@ void SubtractMix(const int mode=0)
     fnamem[2] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso_qhi.root",version);
     fnamer[3] = Form("evanaIMpisigma_npippim_v%d_out_iso_theta15.root",version);
     fnamem[3] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso_theta15.root",version);
+    */
+    fnamer[0] = Form("evanaIMpisigma_npippim_v%d_out_iso_nostop.root",version);
+    fnamem[0] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso_nostop.root",version);
+    fnamer[1] = Form("evanaIMpisigma_npippim_v%d_out_iso_qlo_nostop.root",version);
+    fnamem[1] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso_qlo_nostop.root",version);
+    fnamer[2] = Form("evanaIMpisigma_npippim_v%d_out_iso_qhi_nostop.root",version);
+    fnamem[2] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso_qhi_nostop.root",version);
+    fnamer[3] = Form("evanaIMpisigma_npippim_v%d_out_iso_theta15_nostop.root",version);
+    fnamem[3] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso_theta15_nostop.root",version);
   }else if(mode==1){
     const int version = 132;
     fnamer[0] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_out_iso.root",version);

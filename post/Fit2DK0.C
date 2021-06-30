@@ -58,9 +58,11 @@ void Fit2DK0(const int qcut=2)
   gStyle->SetOptFit(0);
   TFile *fr = NULL;
   if(qcut==1){
-    fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo_sub.root","READ");
+    //fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo_sub.root","READ");
+    fr = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qlo_sub.root","READ");
   }else if(qcut==2){
-    fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi_sub.root","READ");
+    //fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi_sub.root","READ");
+    fr = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qhi_sub.root","READ");
   }else{
     std::cout << "no file" << std::endl;
     return;
