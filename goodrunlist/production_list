@@ -1,5 +1,5 @@
-103 #Prescale-7
-104 #Prescale-7
+103 #Prescale-7 ->reject before AC tuning
+104 #Prescale-7 ->reject before AC tuning
 105 #Prescale-7
 125 #Prescale-7
 126 #Prescale-2
@@ -41,7 +41,7 @@
 230
 231
 232
-233
+233 ->prescale of K beam scale: 10 
 234
 245
 236
