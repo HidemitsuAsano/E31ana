@@ -36,10 +36,10 @@ void plot_AfterDecompos()
 {
   TFile *fr[4]={NULL};
   
-  fr[0] = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_sub.root");
-  fr[1] = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo_sub.root");
-  fr[2] = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi_sub.root");
-  fr[3] = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_theta15_sub.root");
+  fr[0] = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_sub.root");
+  fr[1] = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qlo_sub.root");
+  fr[2] = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qhi_sub.root");
+  fr[3] = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_theta15_sub.root");
   fr[0]->Print();
   fr[1]->Print();
   fr[2]->Print();
@@ -102,13 +102,20 @@ void plot_AfterDecompos()
   for(int iq=qstart;iq<nqcut;iq++){
     //get
     q_IMnpipi_wK0_wSid_n_SpSm[iq] = (TH2F*)fr[iq]->Get("q_IMnpipi_wK0_wSid_n_SpSm");
+    q_IMnpipi_wK0_wSid_n_SpSm[iq]->RebinX(3);
     q_IMnpipi_wSid_n_Sp[iq] = (TH2D*)fr[iq]->Get("q_IMnpipi_wSid_n_Sp");
+    q_IMnpipi_wSid_n_Sp[iq]->RebinX(3);
     q_IMnpipi_wK0_wSid_n_Sp[iq] = (TH2D*)fr[iq]->Get("q_IMnpipi_wK0_wSid_n_Sp");
+    q_IMnpipi_wK0_wSid_n_Sp[iq]->RebinX(3);
     q_IMnpipi_wSid_n_Sm[iq] = (TH2D*)fr[iq]->Get("q_IMnpipi_wSid_n_Sm");
+    q_IMnpipi_wSid_n_Sm[iq]->RebinX(3);
     q_IMnpipi_wK0_wSid_n_Sm[iq] = (TH2D*)fr[iq]->Get("q_IMnpipi_wK0_wSid_n_Sm");
+    q_IMnpipi_wK0_wSid_n_Sm[iq]->RebinX(3);
     q_IMnpipi_wSid_n_SpSm[iq] = (TH2D*)fr[iq]->Get("q_IMnpipi_wSid_n_SpSm");
+    q_IMnpipi_wSid_n_SpSm[iq]->RebinX(3);
     q_IMnpipi_wK0_n[iq] = (TH2D*)fr[iq]->Get("q_IMnpipi_wK0_n");
-    
+    q_IMnpipi_wK0_n[iq]->RebinX(3);
+
     //Draw
     cq_IMnpipi_wSid_n_Sp[iq] = new TCanvas(Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]),Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]));
     q_IMnpipi_wSid_n_Sp[iq]->Draw("colz");
@@ -629,11 +636,11 @@ void plot_AfterDecompos()
           q_IMnpipi_Sp_cs[iq]->SetBinContent(ix,iy,0.);
           q_IMnpipi_Sp_cs[iq]->SetBinError(ix,iy,0.);
         }
-        /*
-        if(iy>qcut650){
-          q_IMnpipi_Sp_cs[iq]->SetBinContent(ix,iy,0.);
-          q_IMnpipi_Sp_cs[iq]->SetBinError(ix,iy,0.);
-        }*/
+        
+        //if(iy>qcut650){
+        //  q_IMnpipi_Sp_cs[iq]->SetBinContent(ix,iy,0.);
+        //  q_IMnpipi_Sp_cs[iq]->SetBinError(ix,iy,0.);
+        //}
         if(accerrSm<0.25){
           q_IMnpipi_Sm_cs[iq]->SetBinContent(ix,iy,csSm);
           q_IMnpipi_Sm_cs[iq]->SetBinError(ix,iy,csSmerr);
@@ -641,11 +648,11 @@ void plot_AfterDecompos()
           q_IMnpipi_Sm_cs[iq]->SetBinContent(ix,iy,0.);
           q_IMnpipi_Sm_cs[iq]->SetBinError(ix,iy,0.);
         }
-        /*
-        if(iy>qcut650){
-          q_IMnpipi_Sm_cs[iq]->SetBinContent(ix,iy,0.);
-          q_IMnpipi_Sm_cs[iq]->SetBinError(ix,iy,0.);
-        }*/
+        
+        //if(iy>qcut650){
+        //  q_IMnpipi_Sm_cs[iq]->SetBinContent(ix,iy,0.);
+        //  q_IMnpipi_Sm_cs[iq]->SetBinError(ix,iy,0.);
+        //}
         
         if(accerrK0<0.25){
           q_IMnpipi_K0_cs[iq]->SetBinContent(ix,iy,csK0);
@@ -654,11 +661,11 @@ void plot_AfterDecompos()
           q_IMnpipi_K0_cs[iq]->SetBinContent(ix,iy,0.);
           q_IMnpipi_K0_cs[iq]->SetBinError(ix,iy,0.);
         }
-        /*
-        if(iy>qcut650){
-          q_IMnpipi_K0_cs[iq]->SetBinContent(ix,iy,0.);
-          q_IMnpipi_K0_cs[iq]->SetBinError(ix,iy,0.);
-        }*/
+        
+        //if(iy>qcut650){
+        //  q_IMnpipi_K0_cs[iq]->SetBinContent(ix,iy,0.);
+        //  q_IMnpipi_K0_cs[iq]->SetBinError(ix,iy,0.);
+        //}
       }
     }
   }
@@ -726,9 +733,9 @@ void plot_AfterDecompos()
     IMnpipi_Sp_cs[iq]->SetLineColor(3);
     IMnpipi_Sm_cs[iq]->SetLineColor(4);
     IMnpipi_K0_cs[iq]->SetLineColor(2);
-    IMnpipi_K0_cs[iq]->RebinX(2);
-    IMnpipi_Sp_cs[iq]->RebinX(2);
-    IMnpipi_Sm_cs[iq]->RebinX(2);
+    //IMnpipi_K0_cs[iq]->RebinX(2);
+    //IMnpipi_Sp_cs[iq]->RebinX(2);
+    //IMnpipi_Sm_cs[iq]->RebinX(2);
     IMnpipi_K0_cs[iq]->Draw("HE");
     IMnpipi_Sp_cs[iq]->Draw("HEsame");
     IMnpipi_Sm_cs[iq]->Draw("HEsame");
@@ -754,7 +761,6 @@ void plot_AfterDecompos()
     if(i==0) c->Print(pdfname+"(",Form("pdf Title:%s",c->GetTitle()));
     else if(i==size-1)c->Print(pdfname+")",Form("pdf Title:%s",c->GetTitle())); 
     else c->Print(pdfname,Form("pdf Title:%s",c->GetTitle())); 
-    
     //make separated pdf files
     //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
   }
