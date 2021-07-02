@@ -797,7 +797,9 @@ int main( int argc, char** argv )
       IsrecoPassed=false;
     }
     
+    //
     //beam line analysis and event selection
+    //
 
     //** T0 = 1hit selection **//
     int t0seg=-1;
@@ -806,7 +808,7 @@ int main( int argc, char** argv )
       if(IsrecoPassed) nAbort_nT0++;
       Tools::Fill1D( Form("EventCheck"), 15 );
       //continue;
-      IsrecoPassed=false;
+      //IsrecoPassed=false;
     }
 
     //** BPC track selection **//
@@ -821,14 +823,14 @@ int main( int argc, char** argv )
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nbpc" << std::endl;
       if(IsrecoPassed)nAbort_nbpc++;
       //continue;
-      IsrecoPassed=false;
+      //IsrecoPassed=false;
     }
     LocalTrack *bpctrack = bltrackMan->trackBPC(bpcid);    
     if(IsrecoPassed && bpctrack->chi2all()>10 ){
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_bpctrack" << std::endl;
       nAbort_bpctrack++;
       //continue;
-      IsrecoPassed=false;
+      //IsrecoPassed=false;
     }
 
     // vertex calculation //
@@ -859,7 +861,7 @@ int main( int argc, char** argv )
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nblc2" << std::endl;
       nAbort_nblc2++;
       //continue;
-      IsrecoPassed=false;
+      //IsrecoPassed=false;
     }
 
     //### BLC2-BPC position matching
@@ -907,7 +909,7 @@ int main( int argc, char** argv )
         if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_fblc2bpc" << std::endl;
         if(IsrecoPassed) nAbort_fblc2bpc++;
         //continue;
-        IsrecoPassed=false;
+        //IsrecoPassed=false;
       }
     }
 
@@ -982,7 +984,7 @@ int main( int argc, char** argv )
     if( !flagbmom ){
       if(IsrecoPassed)nAbort_flagbmom++;
       //continue;
-      IsrecoPassed=false;
+      //IsrecoPassed=false;
     }
     Tools::Fill1D( Form("momentum_beam"), LVec_beambf.P() );
     //generated info taking into account momentum bite
