@@ -71,6 +71,7 @@ const double ADC_CDH_MIN = 1;  // MeV
 TLorentzVector mom_beam;   // 4-momentum(beam)
 TLorentzVector mom_beam_Sp;   // 4-momentum(beam)
 TLorentzVector mom_beam_Sm;   // 4-momentum(beam)
+TLorentzVector mom_beam_K0;   // 4-momentum(beam)
 TLorentzVector mom_target; // 4-momentum(target)
 TLorentzVector mom_pip;    // 4-momentum(pi+)
 TLorentzVector mom_pim;    // 4-momentum(pi-)
@@ -78,9 +79,10 @@ TLorentzVector mom_n;      // 4-momentum(neutron)
 TLorentzVector mom_n_beam;      // 4-momentum(neutron)
 TLorentzVector mom_n_Sp;      // 4-momentum(neutron)
 TLorentzVector mom_n_Sm;      // 4-momentum(neutron)
-double NeutralBetaCDH; // veracity of neutral particle on CDH
-double NeutralBetaCDH_beam; // veracity of neutral particle on CDH
-double NeutralBetaCDH_vtx[2]; // veracity of neutral particle on CDH
+TLorentzVector mom_n_K0;      // 4-momentum(neutron)
+double NeutralBetaCDH; // verocity of neutral particle on CDH
+double NeutralBetaCDH_beam; // verocity of neutral particle on CDH
+double NeutralBetaCDH_vtx[3]; // verocity of neutral particle on CDH
 double tofpim;
 double tofpip;
 double tofn;
@@ -89,6 +91,7 @@ int neutralseg;   // energy deposit on CDH
 int nhitOutCDC;
 int ForwardCharge;
 TVector3 vtx_reaction; //  vertex(reaction)   
+TVector3 vtx_displaced; //  vertex(reaction)   
 TVector3 vtx_pip_beam; //  
 TVector3 vtx_pim_beam; //   
 TVector3 vtx_pip_cdc;
@@ -282,6 +285,7 @@ int main( int argc, char** argv )
   npippimTree->Branch( "mom_beam",   &mom_beam );//
   npippimTree->Branch( "mom_beam_Sp",  &mom_beam_Sp );//
   npippimTree->Branch( "mom_beam_Sm",  &mom_beam_Sm );
+  npippimTree->Branch( "mom_beam_K0",  &mom_beam_K0 );
   npippimTree->Branch( "mom_target", &mom_target );
   npippimTree->Branch( "mom_pip", &mom_pip );
   npippimTree->Branch( "mom_pim", &mom_pim );
@@ -289,9 +293,10 @@ int main( int argc, char** argv )
   npippimTree->Branch( "mom_n_beam", &mom_n_beam );
   npippimTree->Branch( "mom_n_Sp", &mom_n_Sp );
   npippimTree->Branch( "mom_n_Sm", &mom_n_Sm );
+  npippimTree->Branch( "mom_n_K0", &mom_n_K0 );
   npippimTree->Branch( "NeutralBetaCDH", &NeutralBetaCDH );
   npippimTree->Branch( "NeutralBetaCDH_beam", &NeutralBetaCDH_beam );
-  npippimTree->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx);
+  npippimTree->Branch( "NeutralBetaCDH_vtx[3]", NeutralBetaCDH_vtx);
   npippimTree->Branch( "tofpim",&tofpim);
   npippimTree->Branch( "tofpip",&tofpip);
   npippimTree->Branch( "tofn",&tofn);
@@ -300,6 +305,7 @@ int main( int argc, char** argv )
   npippimTree->Branch( "nhitOutCDC", &nhitOutCDC );
   npippimTree->Branch( "ForwardCharge", &ForwardCharge );
   npippimTree->Branch( "vtx_reaction", &vtx_reaction );
+  npippimTree->Branch( "vtx_displaced", &vtx_displaced );
   npippimTree->Branch( "vtx_pip_beam", &vtx_pip_beam );
   npippimTree->Branch( "vtx_pim_beam", &vtx_pim_beam );
   npippimTree->Branch( "vtx_pip_cdc", &vtx_pip_cdc );
@@ -328,7 +334,7 @@ int main( int argc, char** argv )
   npippimTree->Branch( "react_nmiss",&react_nmiss);
   npippimTree->Branch( "react_Sigma",&react_Sigma);
   npippimTree->Branch( "react_pi",&react_pi);
-  npippimTree->Branch( "mc_vtx", &mc_vtx );
+  npippimTree->Branch( "mc_vtx", &mc_vtx );//true reaction vertex
   npippimTree->Branch( "kfSpmode_mom_beam",   &kfMomBeamSpmode );
   npippimTree->Branch( "kfSpmode_mom_pip", &kfMom_pip_Spmode );
   npippimTree->Branch( "kfSpmode_mom_pim", &kfMom_pim_Spmode );
@@ -916,7 +922,7 @@ int main( int argc, char** argv )
     //** beam momentum calculation **//
     TLorentzVector LVec_beambf;  // 4-Momentum(beam) in LAB
     TLorentzVector LVec_beam;    // 4-Momentum(beam) in LAB with dE correcion
-    TLorentzVector LVec_beam_vtx[2];    // 4-Momentum(beam) in LAB with dE correcion
+    TLorentzVector LVec_beam_vtx[3];    // 4-Momentum(beam) in LAB with dE correcion
     TLorentzVector LVec_target;  // 4-Momentum(He3-target) in LAB
     TLorentzVector LVec_targetP; // 4-Momentum(p-target) in LAB
     TLorentzVector LVec_beambfCM;  // 4-Momentum(beam) in CM
@@ -968,6 +974,7 @@ int main( int argc, char** argv )
     LVec_beam = LVec_beambf;
     LVec_beam_vtx[0] = LVec_beambf;
     LVec_beam_vtx[1] = LVec_beambf;
+    LVec_beam_vtx[2] = LVec_beambf;
     //Lorentz boost Vector
     const TVector3 boost = (LVec_target+LVec_beam).BoostVector();
     LVec_beambfCM = LVec_beam;
@@ -1204,12 +1211,12 @@ int main( int argc, char** argv )
         TVector3 vtx_dis;//displaced vertex
         
         
-        TVector3 vtx_beam_wpip;//vertex(beam-pip) on beam
-        TVector3 vtx_pip;//vertex(beam-pip) on particle
+        TVector3 vtx_beam_wpip;//closest approach (beam-pip) on beam
+        TVector3 vtx_pip;//closest approach(beam-pip) on cdc track
         TVector3 vtx_beam;
         track_pip->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpip, vtx_pip ); 
-        TVector3 vtx_beam_wpim;//vertex(beam-pim) on beam
-        TVector3 vtx_pim;//vertex(beam-pim) on particle
+        TVector3 vtx_beam_wpim;//closest approach (beam-pim) on beam
+        TVector3 vtx_pim;//closest approach(beam-pim) on cdc track
         track_pim->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpim, vtx_pim ); 
       
         double dcapipvtx =  (vtx_pip-vtx_beam_wpip).Mag();
@@ -1229,16 +1236,10 @@ int main( int argc, char** argv )
         if(dcapipvtx <= dcapimvtx){
           //follows sakuma/sada's way , avg. of scattered particle ana beam particle [20180829]
           vtx_react = 0.5*(vtx_pip+vtx_beam_wpip);
-          //if(cdscuts::useclosestpi) vtx_dis  = vtx_pip;
-          //else              vtx_dis  = vtx_pim;
-          //vtx_dis  = vtx_pim;
           vtx_dis  = CA_pim_pippim;
           vtx_beam = vtx_beam_wpip;
         }else{
           vtx_react = 0.5*(vtx_pim+vtx_beam_wpim);
-          //if(cdscuts::useclosestpi) vtx_dis = vtx_pim;
-          //else             vtx_dis = vtx_pip;
-          //vtx_dis = vtx_pip;
           vtx_dis = CA_pip_pippim;
           vtx_beam = vtx_beam_wpim;
         }
@@ -1252,8 +1253,8 @@ int main( int argc, char** argv )
         ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), vtx_react,
             LVec_beambf.Vect().Mag(), kpMass, momout, beamtof );
         // LVec_beam.SetVectM( momout*LVec_beambf.Vect().Unit(), kpMass ); // not need energy-loss correction [20180329]
-        double beamtof_vtx[2];
-        double momout_vtx[2];
+        double beamtof_vtx[3];
+        double momout_vtx[3];
         //Sp mode assumption
         ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), 0.5*(vtx_pim+vtx_beam_wpim),
             LVec_beambf.Vect().Mag(), kpMass, momout_vtx[0], beamtof_vtx[0] );
@@ -1262,7 +1263,10 @@ int main( int argc, char** argv )
         ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), 0.5*(vtx_pip+vtx_beam_wpip),
             LVec_beambf.Vect().Mag(), kpMass, momout_vtx[1], beamtof_vtx[1] );
         LVec_beam_vtx[1].SetVectM( momout_vtx[1]*LVec_beambf.Vect().Unit(), kpMass );
-
+        //K0 mode assumption
+        ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), 0.5*(vtx_beam_wpip+vtx_beam_wpim),
+            LVec_beambf.Vect().Mag(), kpMass, momout_vtx[2], beamtof_vtx[2] );
+        LVec_beam_vtx[2].SetVectM( momout_vtx[2]*LVec_beambf.Vect().Unit(), kpMass );
         
         double ntof = ncdhhit->ctmean()-ctmT0-beamtof;
         tofpim -= beamtof;
@@ -1274,23 +1278,28 @@ int main( int argc, char** argv )
         //std::cout << "ctmt0   " << ctmT0 << std::endl;
         //std::cout <<"beamtof  " <<  beamtof << std::endl;
         //double ntof = ncdhhit->ctmean();
-        const double ntof_vtx[2] = {ncdhhit->ctmean()-ctmT0-beamtof_vtx[0], ncdhhit->ctmean()-ctmT0-beamtof_vtx[1]};
+        const double ntof_vtx[3] = {
+          ncdhhit->ctmean()-ctmT0-beamtof_vtx[0],
+          ncdhhit->ctmean()-ctmT0-beamtof_vtx[1],
+          ncdhhit->ctmean()-ctmT0-beamtof_vtx[2]
+        };
         double nlen = (Pos_CDH-vtx_dis).Mag();
         double nlen_beam = (Pos_CDH-vtx_beam).Mag();
-        double nlen_vtx[2];
+        double nlen_vtx[3];
         Tools::Fill2D(Form("ntof_nlen"),ntof,nlen);
         //nlen_vtx[0] = (Pos_CDH-vtx_pip).Mag();
         //nlen_vtx[1] = (Pos_CDH-vtx_pim).Mag();
         nlen_vtx[0] = (Pos_CDH-CA_pip_pippim).Mag();
         nlen_vtx[1] = (Pos_CDH-CA_pim_pippim).Mag();
+        nlen_vtx[2] = (Pos_CDH-vtx_react).Mag();
         NeutralBetaCDH = nlen/ntof/(Const*100.);
         NeutralBetaCDH_beam = nlen_beam/ntof/(Const*100.);
-        for(int ivtx=0;ivtx<2;ivtx++){
+        for(int ivtx=0;ivtx<3;ivtx++){
           NeutralBetaCDH_vtx[ivtx] = nlen_vtx[ivtx]/ntof_vtx[ivtx]/(Const*100.);
         }
         double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0.;
         double tmp_mom_beam = NeutralBetaCDH_beam<1. ? nMass*NeutralBetaCDH_beam/sqrt(1.-NeutralBetaCDH_beam*NeutralBetaCDH_beam) : 0.;
-        double tmp_mom_vtx[2];
+        double tmp_mom_vtx[3];
         for(int ivtx=0;ivtx<2;ivtx++){
           tmp_mom_vtx[ivtx] = NeutralBetaCDH_vtx[ivtx]<1. ? nMass*NeutralBetaCDH_vtx[ivtx]/sqrt(1.-NeutralBetaCDH_vtx[ivtx]*NeutralBetaCDH_vtx[ivtx]) : 0;
         }
@@ -1306,9 +1315,9 @@ int main( int argc, char** argv )
         TLorentzVector LVec_pip; // 4-Momentum(pi+)
         TLorentzVector LVec_n;   // 4-Momentum(n)
         TLorentzVector LVec_n_beam;   // 4-Momentum(n)
-        TLorentzVector LVec_n_vtx[2];   // 4-Momentum(n)
+        TLorentzVector LVec_n_vtx[3];   // 4-Momentum(n)
         TLorentzVector LVec_nmiss; // 4-Momentum(n_miss)
-        TLorentzVector LVec_nmiss_vtx[2]; // 4-Momentum(n_miss)
+        TLorentzVector LVec_nmiss_vtx[3]; // 4-Momentum(n_miss)
 
         if( !track_pip->GetMomentum( vtx_pip, P_pip, true, true ) ){
           std::cout<<" !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
@@ -1321,34 +1330,35 @@ int main( int argc, char** argv )
 	
         if(Verbosity_) std::cout << tmp_mom<<" ("<<P_n.CosTheta()<<" , "<<P_n.Phi()*360./TwoPi<<")"<<std::endl;
 
-        TVector3 P_n_vtx[2];
+        TVector3 P_n_vtx[3];
         //P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-vtx_pip).Unit());
         //P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-vtx_pim).Unit());
         P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-CA_pip_pippim).Unit());
         P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-CA_pim_pippim).Unit());
+        P_n_vtx[2] = tmp_mom_vtx[2]*((Pos_CDH-vtx_react).Unit());
         
         LVec_pim.SetVectM( P_pim, piMass );
         LVec_pip.SetVectM( P_pip, piMass );
-        LVec_n.SetVectM(   P_n,   nMass );//CDS n
-        LVec_n_beam.SetVectM(   P_n_beam,   nMass );//CDS n
-        for(int ivtx=0;ivtx<2;ivtx++){
+        LVec_n.SetVectM( P_n, nMass );//CDS n
+        LVec_n_beam.SetVectM( P_n_beam, nMass );//CDS n
+        for(int ivtx=0;ivtx<3;ivtx++){
           LVec_n_vtx[ivtx].SetVectM(  P_n_vtx[ivtx],   nMass );//CDS n
         }
 	
         const double mm_mass   = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).M();
-        double mm_mass_vtx[2];
-        for(int ivtx=0;ivtx<2;ivtx++){
+        double mm_mass_vtx[3];
+        for(int ivtx=0;ivtx<3;ivtx++){
           mm_mass_vtx[ivtx]= (LVec_target+LVec_beam_vtx[ivtx]-LVec_pim-LVec_pip-LVec_n_vtx[ivtx]).M();       
         }
         
         const TVector3 P_missn = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).Vect();
-        TVector3 P_missn_vtx[2];
-        for(int ivtx=0;ivtx<2;ivtx++){
+        TVector3 P_missn_vtx[3];
+        for(int ivtx=0;ivtx<3;ivtx++){
           P_missn_vtx[ivtx] = (LVec_target+LVec_beam_vtx[ivtx]-LVec_pim-LVec_pip-LVec_n_vtx[ivtx]).Vect();  
         }
         
         LVec_nmiss.SetVectM( P_missn, nMass );
-        for(int ivtx=0;ivtx<2;ivtx++){
+        for(int ivtx=0;ivtx<3;ivtx++){
           LVec_nmiss_vtx[ivtx].SetVectM( P_missn_vtx[ivtx], nMass );
         }
         
@@ -1928,8 +1938,10 @@ int main( int argc, char** argv )
             ForwardCharge = (int)forwardcharge;
             mom_n_Sp = LVec_n_vtx[0];            // 4-momentum(neutron)
             mom_n_Sm = LVec_n_vtx[1];            // 4-momentum(neutron)
+            mom_n_K0 = LVec_n_vtx[2];            // 4-momentum(neutron)
             mom_beam_Sp = LVec_beam_vtx[0];
             mom_beam_Sm = LVec_beam_vtx[1];
+            mom_beam_K0 = LVec_beam_vtx[2];
             mom_target = LVec_target; // 4-momentum(target)
             mom_pip = LVec_pip;        // 4-momentum(pi+)
             mom_pim = LVec_pim;        // 4-momentum(pi-)
@@ -1937,6 +1949,7 @@ int main( int argc, char** argv )
             mom_n_beam = LVec_n_beam;            // 4-momentum(neutron)
             // beta is already filled
             vtx_reaction = vtx_react; // vertex(reaction)
+            vtx_displaced = vtx_dis;
             vtx_pip_beam = vtx_beam_wpip;
             vtx_pim_beam = vtx_beam_wpim;
             vtx_pip_cdc = vtx_pip;
@@ -2071,6 +2084,7 @@ void InitTreeVal()
   NeutralBetaCDH=-9999.; // veracity of neutral particle on CDH
   NeutralBetaCDH_vtx[0]=-9999.; // veracity of neutral particle on CDH
   NeutralBetaCDH_vtx[1]=-9999.; // veracity of neutral particle on CDH
+  NeutralBetaCDH_vtx[2]=-9999.; // veracity of neutral particle on CDH
   tofpim=-9999.;
   tofpip=-9999.;
   tofn=-9999.;
@@ -2079,6 +2093,7 @@ void InitTreeVal()
   nhitOutCDC = -1;
   ForwardCharge = -1;
   vtx_reaction.SetXYZ(-9999., -9999., -9999.); //  vertex(reaction)   
+  vtx_displaced.SetXYZ(-9999., -9999., -9999.); //  vertex(reaction)   
   vtx_pip_beam.SetXYZ(-9999., -9999., -9999.); //  
   vtx_pim_beam.SetXYZ(-9999., -9999., -9999.); //   
   vtx_pip_cdc.SetXYZ(-9999., -9999., -9999.);
