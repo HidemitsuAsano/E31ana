@@ -440,6 +440,7 @@ int main( int argc, char** argv )
     //clean up 
     InitTreeVal();
     bool IsrecoPassed=true;
+    bool IsBLAnaPassed=true;
     if(Verbosity_){
       std::cout<<"> Event Number "<<iev<<std::endl;
     }else if( /*iev<100 ||*/ iev%1000==0 ){
@@ -795,7 +796,6 @@ int main( int argc, char** argv )
       //Util::AnaMcData(mcData,detData2,cdsMan,reacData,ncanvtxr,ncanvtxz,ncdsgen);
     }
 
-    //if( nGoodTrack!=cdscuts::cds_ngoodtrack ){ // dedicated for pi+ pi- event
     if( nGoodTrack!=cdscuts::cds_ngoodtrack && nallTrack!=cdscuts::cds_ngoodtrack ){ // dedicated for pi+ pi- event
       if(IsrecoPassed)nAbort_nGoodTrack++;
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nGoodTrack" << std::endl;
@@ -811,10 +811,11 @@ int main( int argc, char** argv )
     int t0seg=-1;
     const double ctmT0 = Util::AnalyzeT0(blMan,confMan,t0seg);
     if(ctmT0<-9000){
-      if(IsrecoPassed) nAbort_nT0++;
+      if(IsBLAnaPassed) nAbort_nT0++;
       Tools::Fill1D( Form("EventCheck"), 15 );
       //continue;
-      //IsrecoPassed=false;
+      IsrecoPassed=false;
+      IsBLAnaPassed=false;
     }
 
     //** BPC track selection **//
@@ -827,16 +828,18 @@ int main( int argc, char** argv )
     Tools::Fill1D( Form("ntrack_BPC"), nbpc );
     if( nbpc!=1 ){
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nbpc" << std::endl;
-      if(IsrecoPassed)nAbort_nbpc++;
+      if(IsBLAnaPassed)nAbort_nbpc++;
       //continue;
-      //IsrecoPassed=false;
+      IsrecoPassed=false;
+      IsBLAnaPassed=false;
     }
     LocalTrack *bpctrack = bltrackMan->trackBPC(bpcid);    
     if(IsrecoPassed && bpctrack->chi2all()>10 ){
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_bpctrack" << std::endl;
-      nAbort_bpctrack++;
+      if(IsBLAnaPassed)nAbort_bpctrack++;
       //continue;
-      //IsrecoPassed=false;
+      IsrecoPassed=false;
+      IsBLAnaPassed=false;
     }
 
     // vertex calculation //
@@ -865,15 +868,17 @@ int main( int argc, char** argv )
     Tools::Fill1D( Form("ntrack_BLC2"), nblc2 );
     if(IsrecoPassed && !(nblc2==1 && blc2id!=-1) ){
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nblc2" << std::endl;
-      nAbort_nblc2++;
+      if(IsBLAnaPassed)nAbort_nblc2++;
       //continue;
-      //IsrecoPassed=false;
+      IsrecoPassed=false;
+      IsBLAnaPassed=false;
     }
 
     //### BLC2-BPC position matching
     //TODO : not tuned yet
-    bool fblc2bpc = false;
-    if(IsrecoPassed){
+    bool fblc2bpc = true;
+    
+    if(IsrecoPassed && IsBLAnaPassed){
       for( int iblc2trk=0; iblc2trk<bltrackMan->ntrackBLC2(); iblc2trk++ ){
         if( iblc2trk!=blc2id ) continue;
         LocalTrack *blc2 = bltrackMan->trackBLC2(iblc2trk);
@@ -910,12 +915,13 @@ int main( int argc, char** argv )
         Tools::Fill2D( Form("dydx_BLC2BPC"), xblc2bpc[1]-xblc2bpc[0], yblc2bpc[1]-yblc2bpc[0] );
         Tools::Fill2D( Form("dydzdxdz_BLC2BPC"), dxdz[1]-dxdz[0], dydz[1]-dydz[0] );
       }//iblc2trk
-
+ 
       if( !fblc2bpc ){
         if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_fblc2bpc" << std::endl;
-        if(IsrecoPassed) nAbort_fblc2bpc++;
+        if(IsBLAnaPassed) nAbort_fblc2bpc++;
         //continue;
-        //IsrecoPassed=false;
+        IsrecoPassed=false;
+        IsBLAnaPassed=false;
       }
     }
 
@@ -956,7 +962,8 @@ int main( int argc, char** argv )
 
     double x1, y1, x2, y2;
     const double z1 = 0, z2 = 20;//TODO: what is this 20 ?
-    if(IsrecoPassed){
+    //if(IsrecoPassed){
+    if(IsBLAnaPassed){
       bpctrack->XYPosatZ(z1, x1, y1);
       bpctrack->XYPosatZ(z2, x2, y2);
     }
@@ -1197,58 +1204,57 @@ int main( int argc, char** argv )
          
 
       // neutral particle in CDH //
-      //if( !nCDCforVeto && !flag_isolation){ //&& (nCDCInner3Lay<7))
-        if(NeutralCDHseg.size()!=1) {
-          std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
-        } else {
-          Tools::Fill1D(Form("CDHNeutralSeg"),NeutralCDHseg.at(0));
-        }
+      if(NeutralCDHseg.size()!=1) {
+        std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
+      } else {
+        Tools::Fill1D(Form("CDHNeutralSeg"),NeutralCDHseg.at(0));
+      }
 
-        CDSTrack *track_pip = cdstrackMan->Track( pip_ID[0] ); // only 1 track
-        CDSTrack *track_pim = cdstrackMan->Track( pim_ID[0] ); // only 1 track
-	       
-        TVector3 vtx_react;//reaction vertex
-        TVector3 vtx_dis;//displaced vertex
-        
-        
-        TVector3 vtx_beam_wpip;//closest approach (beam-pip) on beam
-        TVector3 vtx_pip;//closest approach(beam-pip) on cdc track
-        TVector3 vtx_beam;
-        track_pip->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpip, vtx_pip ); 
-        TVector3 vtx_beam_wpim;//closest approach (beam-pim) on beam
-        TVector3 vtx_pim;//closest approach(beam-pim) on cdc track
-        track_pim->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpim, vtx_pim ); 
-      
-        double dcapipvtx =  (vtx_pip-vtx_beam_wpip).Mag();
-        double dcapimvtx =  (vtx_pim-vtx_beam_wpim).Mag();
-        const TVector3 vtx_pip_mean = 0.5*(vtx_pip+vtx_beam_wpip);
-        const TVector3 vtx_pim_mean = 0.5*(vtx_pim+vtx_beam_wpim);
-        Tools::Fill1D( Form("DCA_pip"), dcapipvtx );
-        Tools::Fill1D( Form("DCA_pim"), dcapimvtx );
-        
-        TVector3 CA_pip_pippim,CA_pim_pippim;
-        bool vtx_flag=TrackTools::Calc2HelixVertex(track_pip, track_pim, CA_pip_pippim, CA_pim_pippim);
-        double dcapippim=-9999.;
-        if(vtx_flag) dcapippim = (CA_pim_pippim-CA_pip_pippim).Mag();
-        Tools::Fill1D( Form("DCA_pippim"), dcapippim);
-        
-        //reaction vertex is determined from beam and nearest vtx 
-        if(dcapipvtx <= dcapimvtx){
-          //follows sakuma/sada's way , avg. of scattered particle ana beam particle [20180829]
-          vtx_react = 0.5*(vtx_pip+vtx_beam_wpip);
-          vtx_dis  = CA_pim_pippim;
-          vtx_beam = vtx_beam_wpip;
-        }else{
-          vtx_react = 0.5*(vtx_pim+vtx_beam_wpim);
-          vtx_dis = CA_pip_pippim;
-          vtx_beam = vtx_beam_wpim;
-        }
+      CDSTrack *track_pip = cdstrackMan->Track( pip_ID[0] ); // only 1 track
+      CDSTrack *track_pim = cdstrackMan->Track( pim_ID[0] ); // only 1 track
 
-        // beam kaon tof 
-        TVector3 Pos_T0;
-        confMan->GetGeomMapManager()->GetPos( CID_T0, 0, Pos_T0 );
-        double beamtof=0;
-        double momout=0;
+      TVector3 vtx_react;//reaction vertex
+      TVector3 vtx_dis;//displaced vertex
+
+        
+      TVector3 vtx_beam_wpip;//closest approach (beam-pip) on beam
+      TVector3 vtx_pip;//closest approach(beam-pip) on cdc track
+      TVector3 vtx_beam;
+      track_pip->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpip, vtx_pip ); 
+      TVector3 vtx_beam_wpim;//closest approach (beam-pim) on beam
+      TVector3 vtx_pim;//closest approach(beam-pim) on cdc track
+      track_pim->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpim, vtx_pim ); 
+
+      double dcapipvtx =  (vtx_pip-vtx_beam_wpip).Mag();
+      double dcapimvtx =  (vtx_pim-vtx_beam_wpim).Mag();
+      const TVector3 vtx_pip_mean = 0.5*(vtx_pip+vtx_beam_wpip);
+      const TVector3 vtx_pim_mean = 0.5*(vtx_pim+vtx_beam_wpim);
+      Tools::Fill1D( Form("DCA_pip"), dcapipvtx );
+      Tools::Fill1D( Form("DCA_pim"), dcapimvtx );
+
+      TVector3 CA_pip_pippim,CA_pim_pippim;
+      bool vtx_flag=TrackTools::Calc2HelixVertex(track_pip, track_pim, CA_pip_pippim, CA_pim_pippim);
+      double dcapippim=-9999.;
+      if(vtx_flag) dcapippim = (CA_pim_pippim-CA_pip_pippim).Mag();
+      Tools::Fill1D( Form("DCA_pippim"), dcapippim);
+
+      //reaction vertex is determined from beam and nearest vtx 
+      if(dcapipvtx <= dcapimvtx){
+        //follows sakuma/sada's way , avg. of scattered particle ana beam particle [20180829]
+        vtx_react = 0.5*(vtx_pip+vtx_beam_wpip);
+        vtx_dis  = CA_pim_pippim;
+        vtx_beam = vtx_beam_wpip;
+      }else{
+        vtx_react = 0.5*(vtx_pim+vtx_beam_wpim);
+        vtx_dis = CA_pip_pippim;
+        vtx_beam = vtx_beam_wpim;
+      }
+
+      // beam kaon tof 
+      TVector3 Pos_T0;
+      confMan->GetGeomMapManager()->GetPos( CID_T0, 0, Pos_T0 );
+      double beamtof=0;
+      double momout=0;
         double z_pos = Pos_T0.Z();;
         ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), vtx_react,
             LVec_beambf.Vect().Mag(), kpMass, momout, beamtof );
@@ -1988,7 +1994,7 @@ int main( int argc, char** argv )
       nAbort_pippim++;
     }
 
-    
+    Tools::H1("BLAnaPassed",IsBLAnaPassed,2,-0.5,1.5);
     nAbort_end++;
     delete detData2;
     

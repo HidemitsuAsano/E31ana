@@ -76,7 +76,7 @@ const bool IsMCweighting = false;
 //maybe, also forward Sigma events should be rejected ?
 const bool SimRejectFake = true;
 
-const bool RejectStoppedSigma = true;
+const bool RejectStoppedSigma = false;
 
 //color def.
 //Sp mode Signal :2 (red)
@@ -202,6 +202,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   tree->SetBranchAddress( "nhitOutCDC", &nhitOutCDC ); //charge veto by Outer 3 layer of 3cdc
   tree->SetBranchAddress( "ForwardCharge", &ForwardCharge);
   tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
+  tree->SetBranchAddress( "vtx_displaced", &vtx_displaced );
   tree->SetBranchAddress( "vtx_pip_beam",&vtx_pip_beam);
   tree->SetBranchAddress( "vtx_pim_beam",&vtx_pim_beam);
   tree->SetBranchAddress( "vtx_pip_cdc",&vtx_pip_cdc);
@@ -852,6 +853,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* nmom_IMpippim_wSid_n;
   TH2F* nmom_IMpippim_woK0_woSid_won;
   TH2F* nmom_IMpippim_wK0_woSid_won;
+  TH2F* diffnmom_diffdca_n;
   TH2F* mnmom_IMpippim_n;//missing neutron mom.
   TH2F* mnmom_IMpippim_wSid_n;//missing neutron mom.
   TH2F* q_IMpippim_n;

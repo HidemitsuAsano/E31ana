@@ -33,6 +33,7 @@
   int mcncdsgen;
   int mcpattern;
   TVector3 *vtx_reaction = NULL; // vertex(reaction) 
+  TVector3 *vtx_displaced = NULL; // vertex(displaced) 
   TVector3 *vtx_pip_beam = NULL; //C.A.P of pip-beam beam side
   TVector3 *vtx_pim_beam = NULL; //C.A.P of pim-beam beam side
   TVector3 *vtx_pip_cdc = NULL;//C.A.P of pip-beam pip side
