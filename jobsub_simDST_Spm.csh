@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="28"
+set Version="29"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim${Version}/"
 set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 
@@ -22,7 +22,7 @@ cp $SRCDIR/UserSimDatG4.cpp $OUTDIRSUB/
 
 #ln -s $OUTDIRSUB/simIMpisigma_all.root simpost/simIMpisigma_all_v${Version}.root
 
-@ i = 1600
+@ i = 0
 while ($i < 3200)   
 
   set EXEC___="./bin/sim"
