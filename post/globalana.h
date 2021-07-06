@@ -3,6 +3,7 @@
   TLorentzVector *LVec_beam=NULL;   // 4-momentum(beam)
   TLorentzVector *LVec_beam_Sp=NULL;   // 4-momentum(beam),Sp mode assumption
   TLorentzVector *LVec_beam_Sm=NULL;   // 4-momentum(beam),Sm mode assumption
+  TLorentzVector *LVec_beam_K0=NULL;   // 4-momentum(beam),K0 mode assumption
   TLorentzVector *LVec_target=NULL; // 4-momentum(target)
   TLorentzVector *LVec_pip=NULL;    // 4-momentum(pi+)
   TLorentzVector *LVec_pim=NULL;    // 4-momentum(pi-)
@@ -10,6 +11,7 @@
   TLorentzVector *LVec_n_beam=NULL;      // 4-momentum(neutron)
   TLorentzVector *LVec_n_Sp=NULL;      // 4-momentum(neutron),Sp mode assumption
   TLorentzVector *LVec_n_Sm=NULL;      // 4-momentum(neutron),Sm mode assumption
+  TLorentzVector *LVec_n_K0=NULL;      // 4-momentum(neutron),K0 mode assumption
   TLorentzVector *mcmom_beam=NULL;   // generated 4-momentum(beam)
   TLorentzVector *mcmom_pip=NULL;    // generated 4-momentum(pi+)
   TLorentzVector *mcmom_pim=NULL;    // generated 4-momentum(pi-)
@@ -43,6 +45,8 @@
   TVector3 *CDH_Pos = NULL;
   TVector3 *CDH_Pos_pim = NULL;
   TVector3 *CDH_Pos_pip = NULL;
+  TVector3 *mc_vtx = NULL;
+  TVector3 *mc_disvtx = NULL;
   //int run_num;   // run number
   //int event_num; // event number
   //int block_num; // block number
