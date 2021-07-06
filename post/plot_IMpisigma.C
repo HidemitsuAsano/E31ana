@@ -184,6 +184,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   tree->SetBranchAddress( "mom_beam",   &LVec_beam );
   tree->SetBranchAddress( "mom_beam_Sp",   &LVec_beam_Sp );
   tree->SetBranchAddress( "mom_beam_Sm",   &LVec_beam_Sm );
+  tree->SetBranchAddress( "mom_beam_K0",   &LVec_beam_Sm );
   tree->SetBranchAddress( "mom_target", &LVec_target );
   tree->SetBranchAddress( "mom_pip", &LVec_pip );
   tree->SetBranchAddress( "mom_pim", &LVec_pim );
@@ -191,9 +192,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   tree->SetBranchAddress( "mom_n_beam", &LVec_n_beam );//from v192
   tree->SetBranchAddress( "mom_n_Sp", &LVec_n_Sp );
   tree->SetBranchAddress( "mom_n_Sm", &LVec_n_Sm );
+  tree->SetBranchAddress( "mom_n_K0", &LVec_n_K0 );
   tree->SetBranchAddress( "NeutralBetaCDH", &NeutralBetaCDH );
   tree->SetBranchAddress( "NeutralBetaCDH_beam", &NeutralBetaCDH_beam );//from v192
-  tree->SetBranchAddress( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
+  tree->SetBranchAddress( "NeutralBetaCDH_vtx[3]", NeutralBetaCDH_vtx );
   tree->SetBranchAddress( "tofpim",&tofpim);
   tree->SetBranchAddress( "tofpip",&tofpip);
   tree->SetBranchAddress( "tofn",&tofn);
@@ -228,6 +230,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     tree->SetBranchAddress( "react_nmiss", &react_nmiss);
     tree->SetBranchAddress( "react_Sigma", &react_Sigma);
     tree->SetBranchAddress( "react_pi", &react_pi);
+    tree->SetBranchAddress( "mc_vtx",&mc_vtx);
+    tree->SetBranchAddress( "mc_disvtx",&mc_disvtx);
   }
   if(UseKinFit) {
     tree->SetBranchAddress( "kfSpmode_mom_beam",   &kfSpmode_mom_beam );
@@ -854,6 +858,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* nmom_IMpippim_woK0_woSid_won;
   TH2F* nmom_IMpippim_wK0_woSid_won;
   TH2F* diffnmom_diffdca_n;
+  TH2F* diffnmom_diffdcaphi_n;
+  TH2F* diffnmom_diffdcaz_n;
+  TH2F* mcvtxphi_mcvtxz_n_mc;
+  TH2F* mcdisvtxphi_mcdisvtxz_n_mc;
   TH2F* mnmom_IMpippim_n;//missing neutron mom.
   TH2F* mnmom_IMpippim_wSid_n;//missing neutron mom.
   TH2F* q_IMpippim_n;
@@ -1281,7 +1289,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   diff2D_nmom_IMnpip_recomc_wK0_wSid_n_fake1->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
   diff2D_nmom_IMnpip_recomc_wK0_wSid_n_fake1->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
   
-  diff2D_nmom_IMnpim_recomc_wSid_n = new TH2F("diff2D_nmom_IMnpim_recomc_wSid_n","diff2D_nmom_IMnpim_recomc_wSid_n",200,-1.0,1.0,150,-1.5,1.5);
+  diff2D_nmom_IMnpim_recomc_wSid_n = new TH2F("diff2D_nmom_IMnpim_recomc_wSid_n","diff2D_nmom_IMnpim_recomc_wSid_n",200,-1.0,1.0,400,-0.4,0.4);
   diff2D_nmom_IMnpim_recomc_wSid_n->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
   diff2D_nmom_IMnpim_recomc_wSid_n->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
   
@@ -1290,7 +1298,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   diff2D_nmom_IMnpim_recomc_wSid_n_fake1->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
   diff2D_nmom_IMnpim_recomc_wSid_n_fake1->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
 
-  diff2D_nmom_IMnpip_recomc_wSid_n = new TH2F("diff2D_nmom_IMnpip_recomc_wSid_n","diff2D_nmom_IMnpip_recomc_wSid_n",200,-1.0,1.0,150,-1.5,1.5);
+  diff2D_nmom_IMnpip_recomc_wSid_n = new TH2F("diff2D_nmom_IMnpip_recomc_wSid_n","diff2D_nmom_IMnpip_recomc_wSid_n",200,-1.0,1.0,400,-0.4,0.4);
   diff2D_nmom_IMnpip_recomc_wSid_n->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
   diff2D_nmom_IMnpip_recomc_wSid_n->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
 
@@ -3340,6 +3348,22 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   nmom_IMpippim_wK0_woSid_won = new TH2F("nmom_IMpippim_wK0_woSid_won","nmom_IMpippim_wK0_woSid_won", nbinpippim,0.,0.9,nbinnmom,0,1.0);
   nmom_IMpippim_wK0_woSid_won->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
   nmom_IMpippim_wK0_woSid_won->SetYTitle("nmom  [GeV/c]");
+  
+  diffnmom_diffdca_n = new TH2F("diffnmom_diffdca_n","diffnmom_diffdca_n",1000,-2,2,1000,-0.2,0.2);
+  diffnmom_diffdca_n->SetXTitle("reco - true n_{CDS} DCA. [cm]");
+  diffnmom_diffdca_n->SetYTitle("reco - true n_{CDS} mom. [GeV/c]");
+
+  diffnmom_diffdcar_n = new TH2F("diffnmom_diffdcaphi_n","diffnmom_diffdcaphi_n",1000,-2,2,1000,-0.2,0.2);
+  diffnmom_diffdcar_n->SetXTitle("reco - true n_{CDS} DCAr. [cm]");
+  diffnmom_diffdcar_n->SetYTitle("reco - true n_{CDS} mom. [GeV/c]");
+  
+  diffnmom_diffdcaz_n = new TH2F("diffnmom_diffdcaz_n","diffnmom_diffdcaz_n",1000,-4,4,1000,-0.2,0.2);
+  diffnmom_diffdcaz_n->SetXTitle("reco - true n_{CDS} DCAz. [cm]");
+  diffnmom_diffdcaz_n->SetYTitle("reco - true n_{CDS} mom. [GeV/c]");
+  
+  
+  mcvtxr_mcvtxz_n_mc = new TH2D("mcvtxr_mcvtxz_n_mc","mcvtxphi_mcvtxz_n_mc",
+
 
   mnmom_IMpippim_n = new TH2F(Form("mnmom_IMpippim_n"),Form("mnmom_IMpippim_n"), nbinpippim,0.,0.9,100,0,2.0);
   mnmom_IMpippim_n->SetXTitle("IM(#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -5671,6 +5695,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           double diffnpim_mcreact = LVec_pim_n_mc.P() - LVec_Sigma_react.P()/1000.0;
           double diffMassnpip_mcreact = LVec_pip_n_mc.M() - LVec_Sigma_react.M()/1000.0;
           double diffMassnpim_mcreact = LVec_pim_n_mc.M() - LVec_Sigma_react.M()/1000.0;
+          double dcareco = (*vtx_displaced-*vtx_reaction).Mag();
+          double dcaphireco = (*vtx_displaced-*vtx_reaction).Perp();
+          double dcazreco = (*vtx_displaced-*vtx_reaction).z();
+          double dcatrue = (*mc_disvtx-*mc_vtx).Mag();
+          double dcaphitrue = (*mc_disvtx-*mc_vtx).Perp();
+          double dcaztrue = (*mc_disvtx-*mc_vtx).z();
+          
+          
           diff2D_MMnmiss_IMnpim_recomc_wSid_n->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
           diff2D_MMnmiss_IMnpip_recomc_wSid_n->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
           diff2D_nmom_IMnpim_recomc_wSid_n->Fill(diffIMnpim_recomc,diffnmom_recomc);
@@ -5678,6 +5710,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           diffMomnpim_Momnpip_recomc_wSid_n->Fill(diffnpip_recomc.P(),diffnpim_recomc.P());
           diffMMom_recomc_wSid_n->Fill(diffMMom_recomc.P());
           vtxr_generation_ncan_wSid_n_mc->Fill(mcncdsgen,mcncanvtxr);
+          diffnmom_diffdca_n->Fill(dcareco-dcatrue,diffnmom_recomc);
+          diffnmom_diffdcaphi_n->Fill(dcarreco-dcartrue,diffnmom_recomc);
+          diffnmom_diffdcaz_n->Fill(dcazreco-dcaztrue,diffnmom_recomc);
           if(!IsFakebyVTX){
             vtxr_diffmom_npip_ncan_wSid_n_mc->Fill(diffnpip_mcreact,mcncanvtxr);
             vtxr_diffmom_npim_ncan_wSid_n_mc->Fill(diffnpim_mcreact,mcncanvtxr);
