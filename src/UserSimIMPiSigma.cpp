@@ -127,6 +127,7 @@ TLorentzVector react_pi;//pi- or pi +
 
 
 TVector3 mc_vtx;
+TVector3 mc_disvtx;
 TLorentzVector kfMomBeamSpmode;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
 TLorentzVector kfMom_pip_Spmode;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
 TLorentzVector kfMom_pim_Spmode;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
@@ -335,6 +336,7 @@ int main( int argc, char** argv )
   npippimTree->Branch( "react_Sigma",&react_Sigma);
   npippimTree->Branch( "react_pi",&react_pi);
   npippimTree->Branch( "mc_vtx", &mc_vtx );//true reaction vertex
+  npippimTree->Branch( "mc_disvtx", &mc_disvtx );//true reaction vertex
   npippimTree->Branch( "kfSpmode_mom_beam",   &kfMomBeamSpmode );
   npippimTree->Branch( "kfSpmode_mom_pip", &kfMom_pip_Spmode );
   npippimTree->Branch( "kfSpmode_mom_pim", &kfMom_pim_Spmode );
@@ -1971,6 +1973,9 @@ int main( int argc, char** argv )
             TVector3 mcvertex = mcData->track(kin::kmbeam)->vertex();
             TVector3 mcvertexc(mcvertex.x()/10.,mcvertex.y()/10.,mcvertex.z()/10.); 
             mc_vtx = mcvertexc;
+            TVector3 mcdisvertex = mcData->track(kin::pip_g2)->vertex();
+            TVector3 mcdisvertexc(mcdisvertex.x()/10.,mcdisvertex.y()/10.,mcdisvertex.z()/10.);
+            mc_disvtx = mcdisvertexc;
             run_num   = confMan->GetRunNumber(); // run number
             event_num = iev;     // event number
             block_num = 0;      // block number (temp)
@@ -2130,6 +2135,7 @@ void InitTreeVal()
   react_pi.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
   
   mc_vtx.SetXYZ(-9999., -9999., -9999.);
+  mc_disvtx.SetXYZ(-9999., -9999., -9999.);
   kfMomBeamSpmode.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);   // 4-momentum(beam) after kinematical refit for pi- Sigma+
   kfMom_pip_Spmode.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
   kfMom_pim_Spmode.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
