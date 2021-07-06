@@ -858,10 +858,27 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH2F* nmom_IMpippim_woK0_woSid_won;
   TH2F* nmom_IMpippim_wK0_woSid_won;
   TH2F* diffnmom_diffdca_n;
-  TH2F* diffnmom_diffdcaphi_n;
+  TH2F* diffnmom_diffdcar_n;
   TH2F* diffnmom_diffdcaz_n;
-  TH2F* mcvtxphi_mcvtxz_n_mc;
-  TH2F* mcdisvtxphi_mcdisvtxz_n_mc;
+  TH2F* vtxr_vtxz_n;
+  TH2F* disvtxr_disvtxz_n;
+  TH2F* mcvtxr_mcvtxz_n_mc;
+  TH2F* mcdisvtxr_mcdisvtxz_n_mc;
+  TH2F* diffnmom_diffdisvtx_CApip_n;
+  TH2F* diffnmom_diffdisvtx_CApip_r_n;
+  TH2F* diffnmom_diffdisvtx_CApip_z_n;
+  TH2F* diffnmom_diffdisvtx_CApim_n;
+  TH2F* diffnmom_diffdisvtx_CApim_r_n;
+  TH2F* diffnmom_diffdisvtx_CApim_z_n;
+  TH2F* diffnmom_diffdisvtx_cdcbeam_pip_n;
+  TH2F* diffnmom_diffdisvtx_cdcbeam_pip_r_n;
+  TH2F* diffnmom_diffdisvtx_cdcbeam_pip_z_n;
+  TH2F* diffnmom_diffdisvtx_cdcbeam_pim_n;
+  TH2F* diffnmom_diffdisvtx_cdcbeam_pim_r_n;
+  TH2F* diffnmom_diffdisvtx_cdcbeam_pim_z_n;
+
+
+
   TH2F* mnmom_IMpippim_n;//missing neutron mom.
   TH2F* mnmom_IMpippim_wSid_n;//missing neutron mom.
   TH2F* q_IMpippim_n;
@@ -3353,7 +3370,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   diffnmom_diffdca_n->SetXTitle("reco - true n_{CDS} DCA. [cm]");
   diffnmom_diffdca_n->SetYTitle("reco - true n_{CDS} mom. [GeV/c]");
 
-  diffnmom_diffdcar_n = new TH2F("diffnmom_diffdcaphi_n","diffnmom_diffdcaphi_n",1000,-2,2,1000,-0.2,0.2);
+  diffnmom_diffdcar_n = new TH2F("diffnmom_diffdcar_n","diffnmom_diffdcar_n",1000,-2,2,1000,-0.2,0.2);
   diffnmom_diffdcar_n->SetXTitle("reco - true n_{CDS} DCAr. [cm]");
   diffnmom_diffdcar_n->SetYTitle("reco - true n_{CDS} mom. [GeV/c]");
   
@@ -3361,8 +3378,69 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   diffnmom_diffdcaz_n->SetXTitle("reco - true n_{CDS} DCAz. [cm]");
   diffnmom_diffdcaz_n->SetYTitle("reco - true n_{CDS} mom. [GeV/c]");
   
+  vtxr_vtxz_n = new TH2F("vtxr_vtxz_n","vtxr_vtxz_n",1000,-12.5,12.5,300,0,30);
+  vtxr_vtxz_n->SetYTitle("reco. vtx X [cm]  ");
+  vtxr_vtxz_n->SetXTitle("reco. vtx Z [cm]  ");
+
+  disvtxr_disvtxz_n = new TH2F("disvtxr_disvtxz_n","disvtxr_disvtxz_n",1000,-12.5,12.5,300,0,30);
+  disvtxr_disvtxz_n->SetYTitle("reco. vtx X [cm]  ");
+  disvtxr_disvtxz_n->SetXTitle("reco. vtx Z [cm]  ");
   
-  mcvtxr_mcvtxz_n_mc = new TH2D("mcvtxr_mcvtxz_n_mc","mcvtxphi_mcvtxz_n_mc",
+  mcvtxr_mcvtxz_n_mc = new TH2F("mcvtxr_mcvtxz_n_mc","mcvtxr_mcvtxz_n_mc",1000,-12.5,12.5,300,0,30);
+  mcvtxr_mcvtxz_n_mc->SetYTitle("mc vtx X [cm]  ");
+  mcvtxr_mcvtxz_n_mc->SetXTitle("mc vtx Z [cm]  ");
+  
+  mcdisvtxr_mcdisvtxz_n_mc = new TH2F("mcdisvtxr_mcdisvtxz_n_mc","mcdisvtxr_mcdisvtxz_n_mc",1000,-12.5,12.5,300,0,30);
+  mcdisvtxr_mcdisvtxz_n_mc->SetYTitle("mc vtx X [cm]  ");
+  mcdisvtxr_mcdisvtxz_n_mc->SetXTitle("mc vtx Z [cm]  ");
+
+  diffnmom_diffdisvtx_CApip_n = new TH2F("diffnmom_diffdisvtx_CApip_n","diffnmom_diffdisvtx_CApip_n",100,0,4,100,-0.2,0.2);
+  diffnmom_diffdisvtx_CApip_n->SetXTitle("diff vtx [cm] ");
+  diffnmom_diffdisvtx_CApip_n->SetYTitle("reco. - true nmom [GeV/c]");
+
+  diffnmom_diffdisvtx_CApip_r_n = new TH2F("diffnmom_diffdisvtx_CApip_r_n","diffnmom_diffdisvtx_CApip_r_n",100,0,4,100,-0.2,0.2);
+  diffnmom_diffdisvtx_CApip_r_n->SetXTitle("diff vtx_r [cm] ");
+  diffnmom_diffdisvtx_CApip_r_n->SetYTitle("reco. - true nmom [GeV/c]");
+
+  diffnmom_diffdisvtx_CApip_z_n = new TH2F("diffnmom_diffdisvtx_CApip_z_n","diffnmom_diffdisvtx_CApip_z_n",100,-4,4,100,-0.2,0.2);
+  diffnmom_diffdisvtx_CApip_z_n->SetXTitle("diff vtx_z [cm] ");
+  diffnmom_diffdisvtx_CApip_z_n->SetYTitle("reco. - true nmom [GeV/c]");
+
+  diffnmom_diffdisvtx_CApim_n = new TH2F("diffnmom_diffdisvtx_CApim_n","diffnmom_diffdisvtx_CApim_n",100,0,4,100,-0.2,0.2);
+  diffnmom_diffdisvtx_CApim_n->SetXTitle("diff vtx [cm] ");
+  diffnmom_diffdisvtx_CApim_n->SetYTitle("reco. - true nmom [GeV/c]");
+
+  diffnmom_diffdisvtx_CApim_r_n = new TH2F("diffnmom_diffdisvtx_CApim_r_n","diffnmom_diffdisvtx_CApim_r_n",100,0,4,100,-0.2,0.2);
+  diffnmom_diffdisvtx_CApim_r_n->SetXTitle("diff vtx_r [cm] ");
+  diffnmom_diffdisvtx_CApim_r_n->SetYTitle("reco. - true nmom [GeV/c]");
+
+  diffnmom_diffdisvtx_CApim_z_n = new TH2F("diffnmom_diffdisvtx_CApim_z_n","diffnmom_diffdisvtx_CApim_z_n",100,-4,4,100,-0.2,0.2);
+  diffnmom_diffdisvtx_CApim_z_n->SetXTitle("diff vtx_z [cm] ");
+  diffnmom_diffdisvtx_CApim_z_n->SetYTitle("reco. - true nmom [GeV/c]");
+    
+  diffnmom_diffdisvtx_cdcbeam_pip_n = new TH2F("diffnmom_diffdisvtx_cdcbeam_pip_n","diffnmom_diffdisvtx_cdcbeam_pip_n",100,0,4,100,-0.2,0.2);
+  diffnmom_diffdisvtx_cdcbeam_pip_n->SetXTitle("diff vtx [cm] ");
+  diffnmom_diffdisvtx_cdcbeam_pip_n->SetYTitle("reco. - true nmom [GeV/c]");
+
+  diffnmom_diffdisvtx_cdcbeam_pip_r_n = new TH2F("diffnmom_diffdisvtx_cdcbeam_pip_r_n","diffnmom_diffdisvtx_cdcbeam_pip_r_n",100,0,4,100,-0.2,0.2);
+  diffnmom_diffdisvtx_cdcbeam_pip_r_n->SetXTitle("diff vtx_r [cm] ");
+  diffnmom_diffdisvtx_cdcbeam_pip_r_n->SetYTitle("reco. - true nmom [GeV/c]");
+
+  diffnmom_diffdisvtx_cdcbeam_pip_z_n = new TH2F("diffnmom_diffdisvtx_cdcbeam_pip_z_n","diffnmom_diffdisvtx_cdcbeam_pip_z_n",100,-4,4,100,-0.2,0.2);
+  diffnmom_diffdisvtx_cdcbeam_pip_z_n->SetXTitle("diff vtx_z [cm] ");
+  diffnmom_diffdisvtx_cdcbeam_pip_z_n->SetYTitle("reco. - true nmom [GeV/c]");
+  
+  diffnmom_diffdisvtx_cdcbeam_pim_n = new TH2F("diffnmom_diffdisvtx_cdcbeam_pim_n","diffnmom_diffdisvtx_cdcbeam_pim_n",100,0,4,100,-0.2,0.2);
+  diffnmom_diffdisvtx_cdcbeam_pim_n->SetXTitle("diff vtx [cm] ");
+  diffnmom_diffdisvtx_cdcbeam_pim_n->SetYTitle("reco. - true nmom [GeV/c]");
+
+  diffnmom_diffdisvtx_cdcbeam_pim_r_n = new TH2F("diffnmom_diffdisvtx_cdcbeam_pim_r_n","diffnmom_diffdisvtx_cdcbeam_pim_r_n",100,0,4,100,-0.2,0.2);
+  diffnmom_diffdisvtx_cdcbeam_pim_r_n->SetXTitle("diff vtx_r [cm] ");
+  diffnmom_diffdisvtx_cdcbeam_pim_r_n->SetYTitle("reco. - true nmom [GeV/c]");
+
+  diffnmom_diffdisvtx_cdcbeam_pim_z_n = new TH2F("diffnmom_diffdisvtx_cdcbeam_pim_z_n","diffnmom_diffdisvtx_cdcbeam_pim_z_n",100,-4,4,100,-0.2,0.2);
+  diffnmom_diffdisvtx_cdcbeam_pim_z_n->SetXTitle("diff vtx_z [cm] ");
+  diffnmom_diffdisvtx_cdcbeam_pim_z_n->SetYTitle("reco. - true nmom [GeV/c]");
 
 
   mnmom_IMpippim_n = new TH2F(Form("mnmom_IMpippim_n"),Form("mnmom_IMpippim_n"), nbinpippim,0.,0.9,100,0,2.0);
@@ -5696,13 +5774,29 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           double diffMassnpip_mcreact = LVec_pip_n_mc.M() - LVec_Sigma_react.M()/1000.0;
           double diffMassnpim_mcreact = LVec_pim_n_mc.M() - LVec_Sigma_react.M()/1000.0;
           double dcareco = (*vtx_displaced-*vtx_reaction).Mag();
-          double dcaphireco = (*vtx_displaced-*vtx_reaction).Perp();
+          double dcarreco = (*vtx_displaced-*vtx_reaction).Perp();
           double dcazreco = (*vtx_displaced-*vtx_reaction).z();
           double dcatrue = (*mc_disvtx-*mc_vtx).Mag();
-          double dcaphitrue = (*mc_disvtx-*mc_vtx).Perp();
+          double dcartrue = (*mc_disvtx-*mc_vtx).Perp();
           double dcaztrue = (*mc_disvtx-*mc_vtx).z();
+          double diffdisvtx_CApip = (*CA_pip-*mc_disvtx).Mag();
+          double diffdisvtx_CApip_r = (*CA_pip-*mc_disvtx).Perp();
+          double diffdisvtx_CApip_z = (*CA_pip-*mc_disvtx).z();
+          double diffdisvtx_CApim = (*CA_pim-*mc_disvtx).Mag();
+          double diffdisvtx_CApim_r = (*CA_pim-*mc_disvtx).Perp();
+          double diffdisvtx_CApim_z = (*CA_pim-*mc_disvtx).z();
+          double diffdisvtx_cdcbeam_pip = (*vtx_pip_cdc-*mc_disvtx).Mag();
+          double diffdisvtx_cdcbeam_pip_r = (*vtx_pip_cdc-*mc_disvtx).Perp();
+          double diffdisvtx_cdcbeam_pip_z = (*vtx_pip_cdc-*mc_disvtx).z();
+          double diffdisvtx_cdcbeam_pim = (*vtx_pim_cdc-*mc_disvtx).Mag();
+          double diffdisvtx_cdcbeam_pim_r = (*vtx_pim_cdc-*mc_disvtx).Perp();
+          double diffdisvtx_cdcbeam_pim_z = (*vtx_pim_cdc-*mc_disvtx).z();
           
-          
+          vtxr_vtxz_n->Fill((*vtx_reaction).z(),(*vtx_reaction).Perp());
+          disvtxr_disvtxz_n->Fill((*vtx_displaced).z(),(*vtx_displaced).Perp());
+          //disvtxr_disvtxz_n->Fill((*vtx_pip_cdc).z(),(*vtx_pip_cdc).Perp());
+          mcvtxr_mcvtxz_n_mc->Fill((*mc_vtx).z(),(*mc_vtx).Perp() );
+          mcdisvtxr_mcdisvtxz_n_mc->Fill((*mc_disvtx).z(),(*mc_disvtx).Perp() );
           diff2D_MMnmiss_IMnpim_recomc_wSid_n->Fill(diffIMnpim_recomc,diffMMnmiss_recomc);
           diff2D_MMnmiss_IMnpip_recomc_wSid_n->Fill(diffIMnpip_recomc,diffMMnmiss_recomc);
           diff2D_nmom_IMnpim_recomc_wSid_n->Fill(diffIMnpim_recomc,diffnmom_recomc);
@@ -5711,8 +5805,24 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
           diffMMom_recomc_wSid_n->Fill(diffMMom_recomc.P());
           vtxr_generation_ncan_wSid_n_mc->Fill(mcncdsgen,mcncanvtxr);
           diffnmom_diffdca_n->Fill(dcareco-dcatrue,diffnmom_recomc);
-          diffnmom_diffdcaphi_n->Fill(dcarreco-dcartrue,diffnmom_recomc);
+          diffnmom_diffdcar_n->Fill(dcarreco-dcartrue,diffnmom_recomc);
           diffnmom_diffdcaz_n->Fill(dcazreco-dcaztrue,diffnmom_recomc);
+          
+          diffnmom_diffdisvtx_CApip_n->Fill(diffdisvtx_CApip,diffnmom_recomc);
+          diffnmom_diffdisvtx_CApip_r_n->Fill(diffdisvtx_CApip_r,diffnmom_recomc);
+          diffnmom_diffdisvtx_CApip_z_n->Fill(diffdisvtx_CApip_z,diffnmom_recomc);
+          diffnmom_diffdisvtx_CApim_n->Fill(diffdisvtx_CApim,diffnmom_recomc);
+          diffnmom_diffdisvtx_CApim_r_n->Fill(diffdisvtx_CApim_r,diffnmom_recomc);
+          diffnmom_diffdisvtx_CApim_z_n->Fill(diffdisvtx_CApim_z,diffnmom_recomc);
+
+          diffnmom_diffdisvtx_cdcbeam_pip_n->Fill(diffdisvtx_cdcbeam_pip,diffnmom_recomc);
+          diffnmom_diffdisvtx_cdcbeam_pip_r_n->Fill(diffdisvtx_cdcbeam_pip_r,diffnmom_recomc);
+          diffnmom_diffdisvtx_cdcbeam_pip_z_n->Fill(diffdisvtx_cdcbeam_pip_z,diffnmom_recomc);
+          diffnmom_diffdisvtx_cdcbeam_pim_n->Fill(diffdisvtx_cdcbeam_pim,diffnmom_recomc);
+          diffnmom_diffdisvtx_cdcbeam_pim_r_n->Fill(diffdisvtx_cdcbeam_pim_r,diffnmom_recomc);
+          diffnmom_diffdisvtx_cdcbeam_pim_z_n->Fill(diffdisvtx_cdcbeam_pim_z,diffnmom_recomc);
+          
+          
           if(!IsFakebyVTX){
             vtxr_diffmom_npip_ncan_wSid_n_mc->Fill(diffnpip_mcreact,mcncanvtxr);
             vtxr_diffmom_npim_ncan_wSid_n_mc->Fill(diffnpim_mcreact,mcncanvtxr);
