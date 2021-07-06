@@ -1308,7 +1308,7 @@ int main( int argc, char** argv )
         double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0.;
         double tmp_mom_beam = NeutralBetaCDH_beam<1. ? nMass*NeutralBetaCDH_beam/sqrt(1.-NeutralBetaCDH_beam*NeutralBetaCDH_beam) : 0.;
         double tmp_mom_vtx[3];
-        for(int ivtx=0;ivtx<2;ivtx++){
+        for(int ivtx=0;ivtx<3;ivtx++){
           tmp_mom_vtx[ivtx] = NeutralBetaCDH_vtx[ivtx]<1. ? nMass*NeutralBetaCDH_vtx[ivtx]/sqrt(1.-NeutralBetaCDH_vtx[ivtx]*NeutralBetaCDH_vtx[ivtx]) : 0;
         }
         if(Verbosity_){
@@ -1970,10 +1970,10 @@ int main( int argc, char** argv )
             TLorentzVector mcmom_ncdspi = TL_gene[genID[kin::ncds]]+TL_gene[kin::pip_g2];
             //std::cout << __LINE__ << mcmom_ncdspi.M() << std::endl;
             mc_nparticle = nparticle;
-            TVector3 mcvertex = mcData->track(kin::kmbeam)->vertex();
+            TVector3 mcvertex = mcData->track(ID[kin::kmbeam])->vertex();
             TVector3 mcvertexc(mcvertex.x()/10.,mcvertex.y()/10.,mcvertex.z()/10.); 
             mc_vtx = mcvertexc;
-            TVector3 mcdisvertex = mcData->track(kin::pip_g2)->vertex();
+            TVector3 mcdisvertex = mcData->track(ID[kin::pip_g2])->vertex();
             TVector3 mcdisvertexc(mcdisvertex.x()/10.,mcdisvertex.y()/10.,mcdisvertex.z()/10.);
             mc_disvtx = mcdisvertexc;
             run_num   = confMan->GetRunNumber(); // run number
