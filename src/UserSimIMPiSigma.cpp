@@ -1244,11 +1244,13 @@ int main( int argc, char** argv )
       if(dcapipvtx <= dcapimvtx){
         //follows sakuma/sada's way , avg. of scattered particle ana beam particle [20180829]
         vtx_react = 0.5*(vtx_pip+vtx_beam_wpip);
-        vtx_dis  = CA_pim_pippim;
+        //vtx_dis  = CA_pim_pippim;
+        vtx_dis  = vtx_pim;//determined by CDC-beam
         vtx_beam = vtx_beam_wpip;
       }else{
         vtx_react = 0.5*(vtx_pim+vtx_beam_wpim);
-        vtx_dis = CA_pip_pippim;
+        //vtx_dis = CA_pip_pippim;//
+        vtx_dis = vtx_pip;//determined by CDC-beam
         vtx_beam = vtx_beam_wpim;
       }
 
@@ -1295,10 +1297,10 @@ int main( int argc, char** argv )
         double nlen_beam = (Pos_CDH-vtx_beam).Mag();
         double nlen_vtx[3];
         Tools::Fill2D(Form("ntof_nlen"),ntof,nlen);
-        //nlen_vtx[0] = (Pos_CDH-vtx_pip).Mag();
-        //nlen_vtx[1] = (Pos_CDH-vtx_pim).Mag();
-        nlen_vtx[0] = (Pos_CDH-CA_pip_pippim).Mag();
-        nlen_vtx[1] = (Pos_CDH-CA_pim_pippim).Mag();
+        nlen_vtx[0] = (Pos_CDH-vtx_pip).Mag();
+        nlen_vtx[1] = (Pos_CDH-vtx_pim).Mag();
+        //nlen_vtx[0] = (Pos_CDH-CA_pip_pippim).Mag();
+        //nlen_vtx[1] = (Pos_CDH-CA_pim_pippim).Mag();
         nlen_vtx[2] = (Pos_CDH-vtx_react).Mag();
         NeutralBetaCDH = nlen/ntof/(Const*100.);
         NeutralBetaCDH_beam = nlen_beam/ntof/(Const*100.);
@@ -1339,10 +1341,10 @@ int main( int argc, char** argv )
         if(Verbosity_) std::cout << tmp_mom<<" ("<<P_n.CosTheta()<<" , "<<P_n.Phi()*360./TwoPi<<")"<<std::endl;
 
         TVector3 P_n_vtx[3];
-        //P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-vtx_pip).Unit());
-        //P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-vtx_pim).Unit());
-        P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-CA_pip_pippim).Unit());
-        P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-CA_pim_pippim).Unit());
+        P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-vtx_pip).Unit());
+        P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-vtx_pim).Unit());
+        //P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-CA_pip_pippim).Unit());
+        //P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-CA_pim_pippim).Unit());
         P_n_vtx[2] = tmp_mom_vtx[2]*((Pos_CDH-vtx_react).Unit());
         
         LVec_pim.SetVectM( P_pim, piMass );
