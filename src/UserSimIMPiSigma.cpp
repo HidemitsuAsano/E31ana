@@ -1246,11 +1246,13 @@ int main( int argc, char** argv )
         vtx_react = 0.5*(vtx_pip+vtx_beam_wpip);
         //vtx_dis  = CA_pim_pippim;
         vtx_dis  = vtx_pim;//determined by CDC-beam
+        vtx_dis.SetZ(CA_pim_pippim.Z());
         vtx_beam = vtx_beam_wpip;
       }else{
         vtx_react = 0.5*(vtx_pim+vtx_beam_wpim);
         //vtx_dis = CA_pip_pippim;//
         vtx_dis = vtx_pip;//determined by CDC-beam
+        vtx_dis.SetZ(CA_pip_pippim.Z());
         vtx_beam = vtx_beam_wpim;
       }
 
@@ -1297,8 +1299,12 @@ int main( int argc, char** argv )
         double nlen_beam = (Pos_CDH-vtx_beam).Mag();
         double nlen_vtx[3];
         Tools::Fill2D(Form("ntof_nlen"),ntof,nlen);
-        nlen_vtx[0] = (Pos_CDH-vtx_pip).Mag();
-        nlen_vtx[1] = (Pos_CDH-vtx_pim).Mag();
+        TVector3 disvtx_AssumSp = vtx_pip;
+        //disvtx_AssumSp.SetZ(CA_pip_pippim.Z());
+        nlen_vtx[0] = (Pos_CDH-disvtx_AssumSp).Mag();
+        TVector3 disvtx_AssumSm = vtx_pim;
+        //disvtx_AssumSm.SetZ(CA_pim_pippim.Z());
+        nlen_vtx[1] = (Pos_CDH-disvtx_AssumSm).Mag();
         //nlen_vtx[0] = (Pos_CDH-CA_pip_pippim).Mag();
         //nlen_vtx[1] = (Pos_CDH-CA_pim_pippim).Mag();
         nlen_vtx[2] = (Pos_CDH-vtx_react).Mag();

@@ -9,7 +9,7 @@ void Evalvertex()
   TFile *_file1 = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v141_out_iso_rej.root");
   TH2F* diffnmom_diffdisvtx_CApim_n_new = (TH2F*)_file1->Get("diffnmom_diffdisvtx_CApim_n");
   TH1D* diffnmomnew = (TH1D*)diffnmom_diffdisvtx_CApim_n_new->ProjectionY("diffnmomnew");
-
+   
   TCanvas *c1 = new TCanvas("c1","c1");
   diffnmomnew->Draw("HE");
   diffnmomold->SetLineColor(2);
@@ -22,6 +22,13 @@ void Evalvertex()
   TH1D* diffdisvtx_CApim = (TH1D*)diffnmom_diffdisvtx_CApim_n->ProjectionX("diffdisvtx_CApim");
   TH1D* diffdisvtx_cdcbeam_pim = (TH1D*)diffnmom_diffdisvtx_cdcbeam_pim_n->ProjectionX("diffdisvtx_cdcbeam_pim");
   
+  TCanvas *c0 = new TCanvas("c0","c0");
+  diffnmom_diffdisvtx_CApim_n->Draw("colz");
+
+  TCanvas *c00 = new TCanvas("c00","c00");
+  diffnmom_diffdisvtx_cdcbeam_pim_n->Draw("colz");
+
+
   TCanvas *c2 = new TCanvas("c2","c2");
   diffdisvtx_cdcbeam_pim->SetLineColor(1);
   diffdisvtx_cdcbeam_pim->Draw("HE");
@@ -49,7 +56,9 @@ void Evalvertex()
   TCanvas *c4 = new TCanvas("c4","c4");
   diffdisvtx_cdcbeam_pim_z->SetLineColor(1);
   diffdisvtx_cdcbeam_pim_z->Draw("HE");
+  std::cout << diffdisvtx_cdcbeam_pim_z->Integral() << std::endl;
   diffdisvtx_CApim_z->SetLineColor(2);
   diffdisvtx_CApim_z->Draw("HEsame");
+  std::cout << diffdisvtx_CApim_z->Integral() << std::endl;
 
 }

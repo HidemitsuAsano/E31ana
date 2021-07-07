@@ -942,13 +942,15 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       vtx_react = 0.5*(vtx_pip+vtx_beam_wpip);
       //if(cdscuts::useclosestpi) vtx_dis  = vtx_pip;
       //else              vtx_dis  = vtx_pim;
-      vtx_dis = CA_pim_pippim;
+      //vtx_dis = CA_pim_pippim;
+      vtx_dis = vtx_pim;
       vtx_beam = vtx_beam_wpip;
     } else {
       vtx_react = 0.5*(vtx_pim+vtx_beam_wpim);
       //if(cdscuts::useclosestpi) vtx_dis = vtx_pim;
       //else             vtx_dis = vtx_pip;
-      vtx_dis = CA_pip_pippim;
+      //vtx_dis = CA_pip_pippim;
+      vtx_dis = vtx_pip;
       vtx_beam = vtx_beam_wpim;
     }
 
@@ -1009,8 +1011,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     double nlen_beam = (Pos_CDH-vtx_beam).Mag();
 
     double nlen_vtx[3];
-    nlen_vtx[0] = (Pos_CDH-CA_pip_pippim).Mag();
-    nlen_vtx[1] = (Pos_CDH-CA_pim_pippim).Mag();
+    //nlen_vtx[0] = (Pos_CDH-CA_pip_pippim).Mag();
+    //nlen_vtx[1] = (Pos_CDH-CA_pim_pippim).Mag();
+    nlen_vtx[0] = (Pos_CDH-vtx_pip).Mag();
+    nlen_vtx[1] = (Pos_CDH-vtx_pim).Mag();
     nlen_vtx[2] = (Pos_CDH-vtx_react).Mag();
     if(Verbosity>10) std::cout << "L." << __LINE__ << " flight length " << nlen << std::endl;
     NeutralBetaCDH = nlen/ntof/(Const*100.);
@@ -1059,10 +1063,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     }
     TVector3 P_n_beam = tmp_mom_beam*((Pos_CDH-vtx_beam).Unit());
     TVector3 P_n_vtx[3];
-    //P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-vtx_pip).Unit());
-    //P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-vtx_pim).Unit());
-    P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-CA_pip_pippim).Unit());
-    P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-CA_pim_pippim).Unit());
+    P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-vtx_pip).Unit());
+    P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-vtx_pim).Unit());
+    //P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-CA_pip_pippim).Unit());
+    //P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-CA_pim_pippim).Unit());
     P_n_vtx[2] = tmp_mom_vtx[2]*((Pos_CDH-vtx_react).Unit());
 
     LVec_pim.SetVectM( P_pim, piMass );
