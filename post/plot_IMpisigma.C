@@ -4481,6 +4481,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     LVec_pip_pim_n_CM.Boost(-boost);
     //double cos_X = LVec_pip_pim_n_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pip_pim_n_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
 
+    //update the momentum 
 
     if( (qkn.P()>=anacuts::qvalcut) && (qvalcutflag==1) ) continue;
     if( (qkn.P()<anacuts::qvalcut) && (qvalcutflag==2) ) continue;
@@ -5061,7 +5062,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     if( (LVec_pip_pim.M()<anacuts::pipi_MIN || anacuts::pipi_MAX<LVec_pip_pim.M())) K0rejectFlag=true;
     //if( (LVec_pip_pim.M()<anacuts::pipi_MIN_narrow || anacuts::pipi_MAX_narrow<LVec_pip_pim.M())) K0rejectFlag=true;
     if( (anacuts::pipi_MIN_narrow < LVec_pip_pim.M())  && (LVec_pip_pim.M() < anacuts::pipi_MAX_narrow)) K0Flag=true;
-
+     
     bool IsBGregion = false;
     if(BGFlag_woSid_won==0){
       if(!SigmawidePFlag && !SigmawideMFlag && !MissNwideFlag){
@@ -5076,6 +5077,38 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       }
       if( anacuts::neutron_MAX_wide <=nmiss_mass) IsBGregion = false;
     }
+
+
+    //momentum update
+    if(K0Flag){
+      *LVec_n = *LVec_n_K0;
+      LVec_pip_n = *LVec_n_K0+*LVec_pip;
+      LVec_pim_n = *LVec_n_K0+*LVec_pim;
+      LVec_pip_pim_n = *LVec_n_K0+*LVec_pip+*LVec_pim;
+      LVec_npipimiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n_K0;
+      qkn = *LVec_beam-LVec_npipimiss;
+      nmiss_mass = LVec_npipimiss.M();
+      nmiss_mom = LVec_npipimiss.P();
+    }else if(SigmaPFlag){
+      *LVec_n = *LVec_n_Sp;
+      LVec_pip_n = *LVec_n_Sp+*LVec_pip;
+      LVec_pim_n = *LVec_n_Sp+*LVec_pim;
+      LVec_pip_pim_n = *LVec_n_Sp+*LVec_pip+*LVec_pim;
+      LVec_npipimiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n_Sp;
+      qkn = *LVec_beam-LVec_npipimiss;
+      nmiss_mass = LVec_npipimiss.M();
+      nmiss_mom = LVec_npipimiss.P();
+    }else if(SigmaMFlag){
+      *LVec_n = *LVec_n_Sm;
+      LVec_pip_n = *LVec_n_Sm+*LVec_pip;
+      LVec_pim_n = *LVec_n_Sm+*LVec_pim;
+      LVec_pip_pim_n = *LVec_n_Sm+*LVec_pip+*LVec_pim;
+      LVec_npipimiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n_Sm;
+      qkn = *LVec_beam-LVec_npipimiss;
+      nmiss_mass = LVec_npipimiss.M();
+      nmiss_mom = LVec_npipimiss.P();
+    }
+
 
     //std::cout << __LINE__ << std::endl;
     double weight = 1.0;
