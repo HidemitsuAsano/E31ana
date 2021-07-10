@@ -37,6 +37,7 @@ void CalcLuminosity()
   //gdaqeff->SetMarkerStyle(20);
   //gdaqeff->SetMarkerSize(2);
   hnK->SetMarkerStyle(20);
+  hnK->SetXTitle("RUN#");
   hnK->Draw("E");
   std::cout << hnK->Integral() << std::endl;
 
