@@ -56,7 +56,7 @@ const bool DoCDCRetiming = false;
 const bool DoKinFit = true;
 const bool IsVtxDoubleCheck = false;
 const bool UseDecayVtx = true;
-const unsigned int IsolationCutFlag = 1;
+const unsigned int IsolationCutFlag = 0;
 //-----------------------------------------//
 //--- covariance matrices for KinFitter ---//
 //-----------------------------------------//
@@ -135,10 +135,14 @@ private:
   TVector3 vtx_reaction; // 
   TVector3 vtx_pim1_beam; // 
   TVector3 vtx_pim2_beam; // 
+  TVector3 vtx_p_beam; // 
   TVector3 vtx_pim1_cdc;//
   TVector3 vtx_pim2_cdc;//
+  TVector3 vtx_p_cdc;
   TVector3 CA_pim1;//Closest Approach Point of CDS pim1-pim2 tracks
   TVector3 CA_pim2;//Closest Approach Point of CDS pim1-pim2 tracks
+  TVector3 CA_p_pim1;//Closest Approach Point of CDS proton-pim1 tracks
+  TVector3 CA_p_pim2;//Closest Approach Point of CDS proton-pim2 tracks
   int run_num;   // run number
   int event_num; // event number
   int block_num; // block number
