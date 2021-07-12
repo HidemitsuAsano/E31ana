@@ -507,9 +507,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   // CDC_Event_Number: event number tagged in this code
   // - - - - - - - - - - - - - - - - - - - - - - - - - - //
 
-#if 0
-  std::cout << " *** Enter EventAnalysis::UAna " << std::endl;
-#endif
 
   //** fill event count **//
   Event_Number++;
@@ -534,12 +531,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   if( Event_Number%5000==1 ) {
     t1=clock();
     std::cout << "Run " << confMan->GetRunNumber()
-              << " Event# : " << Event_Number
-              << " CDC_Event# : " << CDC_Event_Number
-              << " BlockEvent# : " << Block_Event_Number
-              << " AllTrack# : " << nTrack
-              << " GoodTrack# : " << AllGoodTrack
-              << " Time (s): " << (t1-t0)/CLOCKS_PER_SEC << std::endl;
+      << " Event# : " << Event_Number
+      << " CDC_Event# : " << CDC_Event_Number
+      << " BlockEvent# : " << Block_Event_Number
+      << " AllTrack# : " << nTrack
+      << " GoodTrack# : " << AllGoodTrack
+      << " Time (s): " << (t1-t0)/CLOCKS_PER_SEC << std::endl;
   }
 
 
@@ -625,47 +622,45 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   //return -9999 if nhit T0 =>2 
   ctmT0 = Util::AnalyzeT0(blMan,confMan,t0seg);
   if(ctmT0<-9000){
-    Tools::Fill1D( Form("EventCheck"),15);
     Clear( nAbort_nT0 );
     return true;
   }
+  Tools::Fill1D( Form("EventCheck"),15);
   
   //PID beam
   const int beamPID = Util::BeamPID(header, ctmT0, blMan);
   if(beamPID!=Beam_Kaon){
-    Tools::Fill1D( Form("EventCheck"), 4 );
     Clear( nAbort_pid_beam );
     return true;
   }
+  Tools::Fill1D( Form("EventCheck"), 4 );
 
   const int blstatus = Util::EveSelectBeamline(bltrackMan,trackMan,confMan,blc1GoodTrackID,blc2GoodTrackID,bpcGoodTrackID);
   
   if(blstatus == -16){
-    Tools::Fill1D( Form("EventCheck"), 16 );
     Clear( nAbort_singleBLtrack );
     return true;
   }
+  Tools::Fill1D( Form("EventCheck"), 16 );
 
   if(blstatus == -17){
     Clear( nAbort_nbpc );
-    Tools::Fill1D( Form("EventCheck"), 17 );
     return true;
   }
+  Tools::Fill1D( Form("EventCheck"), 17 );
   
   if(blstatus == -18){
     Clear( nAbort_bpctrack );
-    Tools::Fill1D( Form("EventCheck"), 18 );
     return true;
   }
+  Tools::Fill1D( Form("EventCheck"), 18 );
   
   if(blstatus == -19){
     Clear( nAbort_fblc2bpc );
-    Tools::Fill1D( Form("EventCheck"), 19 );
     return true;
   }
+  Tools::Fill1D( Form("EventCheck"), 19 );
   
-  Tools::Fill1D( Form("EventCheck"), 5 );
-
 
   //BLC1-D5-BLC2 analysis and chi2 selection
   const double beammom = Util::AnaBeamSpec(confMan,bltrackMan,blc1GoodTrackID,blc2GoodTrackID);
@@ -675,20 +670,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   }
   Tools::Fill1D( Form("EventCheck"), 6 );
   
-  //CDH-hits cut
-  if( Util::GetCDHMul(cdsMan,nGoodTrack)!=cdscuts::cdhmulti){
-    Clear( nAbort_nCDH );
-    return true;
-  }
-  Tools::Fill1D( Form("EventCheck"), 2 );
-
-  // # of good CDS tracks cut //
-  if( nGoodTrack!=cdscuts::cds_ngoodtrack  ) { //require pi+,pi-
-  //if( nGoodTrack!=cdscuts::cds_ngoodtrack && nallTrack!=cdscuts::cds_ngoodtrack ) { //require pi+,pi-
-    Clear( nAbort_nGoodTrack );
-    return true;
-  }
-  Tools::Fill1D( Form("EventCheck"), 3 );
 
   //** beam momentum calculation **//
   TVector3 Pp_target(0,0,0);
@@ -716,6 +697,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   ls.SetXYZ( x2-x1, y2-y1, z2-z1);
   ls = ls.Unit();
   const TVector3 Pp_beam = beammom*ls;
+  
+  Tools::H2(Form("2DVtx_nofid"),x1,y1,500,-12.5,12.5,500,-12.5,12.5);
+  if(GeomTools::GetID(lp)==CID_Fiducial){
+    Tools::H2(Form("2DVtx_fid"),x1,y1,500,-12.5,12.5,500,-12.5,12.5);
+  }
 
   LVec_beambf.SetVectM( Pp_beam, kpMass );
   LVec_beam = LVec_beambf;
@@ -729,7 +715,23 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   //boost to CM frame
   LVec_beambfCM.Boost( -1.*boost );
   LVec_targetCM.Boost( -1.*boost );
+ 
 
+
+  //CDH-hits cut
+  if( Util::GetCDHMul(cdsMan,nGoodTrack)!=cdscuts::cdhmulti){
+    Clear( nAbort_nCDH );
+    return true;
+  }
+  Tools::Fill1D( Form("EventCheck"), 2 );
+
+  // # of good CDS tracks cut //
+  if( nGoodTrack!=cdscuts::cds_ngoodtrack  ) { //require pi+,pi-
+  //if( nGoodTrack!=cdscuts::cds_ngoodtrack && nallTrack!=cdscuts::cds_ngoodtrack ) { //require pi+,pi-
+    Clear( nAbort_nGoodTrack );
+    return true;
+  }
+  Tools::Fill1D( Form("EventCheck"), 3 );
 
   //** + + + + + + + + + + + + **//
   //**  PID in CDS             **//
