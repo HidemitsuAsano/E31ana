@@ -136,8 +136,12 @@ private:
   TVector3 vtx_pim1_cdc;//
   TVector3 vtx_pim2_cdc;//
   TVector3 vtx_p_cdc;//
-  TVector3 CA_pim1;//Closest Approach Point of CDS pim1-pim2 tracks
-  TVector3 CA_pim2;//Closest Approach Point of CDS pim1-pim2 tracks
+  TVector3 CA_pim1_pim1p;
+  TVector3 CA_p_pim1p;
+  TVector3 CA_pim2_pim2p;
+  TVector3 CA_p_pim2p;
+  TVector3 CA_pim1_pim1pim2;
+  TVector3 CA_pim2_pim1pim2;
   int run_num;   // run number
   int event_num; // event number
   int block_num; // block number

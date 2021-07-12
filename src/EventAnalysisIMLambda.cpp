@@ -295,6 +295,12 @@ void EventAnalysis::Initialize( ConfMan *conf )
   ppimpimTree->Branch( "mom_pim2", &mom_pim2 );
   ppimpimTree->Branch( "mom_p", &mom_p );
   ppimpimTree->Branch( "vtx_reaction", &vtx_reaction );
+  ppimpimTree->Branch( "vtx_pim1_beam", &vtx_pim1_beam );
+  ppimpimTree->Branch( "vtx_pim2_beam", &vtx_pim2_beam );
+  ppimpimTree->Branch( "vtx_p_beam", &vtx_p_beam );
+  ppimpimTree->Branch( "vtx_pim1_cdc", &vtx_pim1_cdc );
+  ppimpimTree->Branch( "vtx_pim2_cdc", &vtx_pim2_cdc );
+  ppimpimTree->Branch( "vtx_p_cdc", &vtx_p_cdc );
   //ppimpimTree->Branch( "run_num", &run_num );
   //ppimpimTree->Branch( "event_num", &event_num );
   //ppimpimTree->Branch( "block_num", &block_num );
