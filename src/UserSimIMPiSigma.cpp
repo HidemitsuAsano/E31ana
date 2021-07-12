@@ -789,7 +789,7 @@ int main( int argc, char** argv )
     double ncanvtxz=999.0;
     int ncdsgen=10;
 
-    if( Util::GetCDHMul(cdsMan,nGoodTrack,true)!=cdscuts::cdhmulti ){
+    if( Util::GetCDHMul(cdsMan,nGoodTrack,true,true)!=cdscuts::cdhmulti ){
       if(IsrecoPassed)nAbort_nCDH++;
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nCDH" << std::endl;
       //continue;

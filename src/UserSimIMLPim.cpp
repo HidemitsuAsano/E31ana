@@ -580,7 +580,7 @@ int main( int argc, char** argv )
     Tools::Fill1D( Form("nGoodTrack"), nGoodTrack );
     
     
-    if( Util::GetCDHMul(cdsMan,nGoodTrack,true)!=cdscuts_lpim::cdhmulti ){
+    if( Util::GetCDHMul(cdsMan,nGoodTrack,true,true)!=cdscuts_lpim::cdhmulti ){
       if(IsrecoPassed)nAbort_nCDH++;
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nCDH" << std::endl;
       //continue;

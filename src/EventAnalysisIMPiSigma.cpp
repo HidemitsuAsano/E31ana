@@ -568,7 +568,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   }
   if( header->IsTrig(Trig_KCDH2f)) Tools::Fill1D(Form("Trigger"),2);   
   //K x CDH3 trigger
-  if( header->IsTrig(Trig_KCDH3)) Tools::Fill1D(Form("Trigger"),1);
+  bool IsTrigKCDH3 = header->IsTrig(Trig_KCDH3);
+  if(IsTrigKCDH3) Tools::Fill1D(Form("Trigger"),1);
 
 
 
@@ -698,9 +699,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   ls = ls.Unit();
   const TVector3 Pp_beam = beammom*ls;
   
-  Tools::H2(Form("2DVtx_nofid"),x1,y1,500,-12.5,12.5,500,-12.5,12.5);
+  Tools::H2(Form("bpcVtx_nofid"),x1,y1,500,-12.5,12.5,500,-12.5,12.5);
   if(GeomTools::GetID(lp)==CID_Fiducial){
-    Tools::H2(Form("2DVtx_fid"),x1,y1,500,-12.5,12.5,500,-12.5,12.5);
+    Tools::H2(Form("bpcVtx_fid"),x1,y1,500,-12.5,12.5,500,-12.5,12.5);
   }
 
   LVec_beambf.SetVectM( Pp_beam, kpMass );
@@ -719,7 +720,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
 
   //CDH-hits cut
-  if( Util::GetCDHMul(cdsMan,nGoodTrack)!=cdscuts::cdhmulti){
+  if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false)!=cdscuts::cdhmulti){
     Clear( nAbort_nCDH );
     return true;
   }

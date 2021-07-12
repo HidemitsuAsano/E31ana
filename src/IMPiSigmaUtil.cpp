@@ -11,7 +11,7 @@
 
 
 //analyzes # of CDH hits within the TDC range and returns the CDH muliplicity
-int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack, const bool MCFlag)
+int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack,const bool CDH3trgfired,  const bool MCFlag)
 {
   //** # of CDH-hits cut **//
   int nCDH = 0;
@@ -48,6 +48,9 @@ int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack, const bool MCFlag)
   }
   Tools::Fill1D( Form("mul_CDH"), nCDH );
   Tools::H2( Form("lasttime_mul_CDH"), nCDH,lasthittime,11, -0.5, 10.5,1000,0,100);
+  if(CDH3trgfired){
+    Tools::H2( Form("lasttime_mul_CDH_CDH3trg"), nCDH,lasthittime,11, -0.5, 10.5,1000,0,100);
+  }
   if(nCDH==3){
     Tools::H1( Form("firstlasttimediff"), lasthittime-firsthittime,1000,0,100);
   }

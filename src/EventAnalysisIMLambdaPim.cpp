@@ -478,10 +478,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   if( header->IsTrig(Trig_Kf)) Tools::Fill1D(Form("Trigger"),0);
   if( header->IsTrig(Trig_KCDH2f)) Tools::Fill1D(Form("Trigger"),2);   
   //K x CDH3 trigger
-  if( header->IsTrig(Trig_KCDH3)) {
+  bool IsTrigKCDH3 = header->IsTrig(Trig_KCDH3);
+  if(IsTrigKCDH3) {
     Tools::Fill1D(Form("Trigger"),1);
   }else{
-    return true;
+    //return true;
   }
 
   const int nGoodTrack = trackMan->nGoodTrack();
@@ -494,7 +495,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   Tools::Fill1D( Form("EventCheck"), 1 );
   
   //CDH-hits cut
-  if( Util::GetCDHMul(cdsMan,nGoodTrack)!=cdscuts_lpim::cdhmulti){
+  if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false)!=cdscuts_lpim::cdhmulti){
     Clear( nAbort_nCDH );
     return true;
   }
