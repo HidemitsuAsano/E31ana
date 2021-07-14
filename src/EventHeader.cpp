@@ -13,11 +13,11 @@ EventHeader::EventHeader() : TObject()
 // + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + //
 int EventHeader::trigmode(ConfMan *conf)
 {
-  if(IsTrig(Trig_Cosmic))  return Mode_Cosmic;
-  if(IsTrig(Trig_Reject))  return Mode_Reject;
-  if(IsTrig(Trig_Beam,conf)) return Mode_Beam;
-  if(IsTrig(Trig_Kf,conf)) return Mode_Kf;
-  if(IsTrig(Trig_KCDH1f,conf)) return Mode_KCDH1f;
+  if(IsTrig(Trig_Cosmic))  return Mode_Cosmic;//15
+  if(IsTrig(Trig_Reject))  return Mode_Reject;//16
+  if(IsTrig(Trig_Beam,conf)) return Mode_Beam;//1
+  if(IsTrig(Trig_Kf,conf)) return Mode_Kf;//2
+  if(IsTrig(Trig_KCDH1f,conf)) return Mode_KCDH1f;//3
   if(IsTrig(Trig_KvBVC,conf)&&IsTrig(Trig_Charged,conf)) return Mode_KvBVCC;
   if(IsTrig(Trig_KvBVC,conf)&&IsTrig(Trig_Neutral,conf)) return Mode_KvBVCN;
   if(IsTrig(Trig_KCDH1,conf)&&IsTrig(Trig_Charged,conf)) return Mode_KCDH1C;

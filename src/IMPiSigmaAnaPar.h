@@ -7,51 +7,59 @@
 namespace blcuts {
 
   //Kaon selection from TOF T0-BHD
-  const double beam_tof_k_min=27.8588;
-  const double beam_tof_k_max=29.5663;
+  //const double beam_tof_k_min=27.8588;
+  //const double beam_tof_k_max=29.5663;
+  const double beam_tof_k_min=27.0;
+  const double beam_tof_k_max=31.0;
   const double beam_tof_pi_min=25.0;//rough
   const double beam_tof_pi_max=27.0;//rough
 
   //FDC1 cuts
-  const double fdc1_time_window_min=-30;
-  const double fdc1_time_window_max=100;
-  const double fdc1_time_min=-10;
-  const double fdc1_time_max= 10;
-  const double fdc1_chi2_max= 10;
+  const double fdc1_time_window_min=-30.;
+  const double fdc1_time_window_max=100.;
+  const double fdc1_time_min=-10.;
+  const double fdc1_time_max= 10.;
+  const double fdc1_chi2_max= 10.;
 
   //BLC1 cuts
-  const double blc1_time_window_min=-30;
-  const double blc1_time_window_max=100;
-  const double blc1_time_min=-10;
-  const double blc1_time_max= 10;
-  const double blc1_chi2_max= 10;
+  const double blc1_time_window_min=-30.;
+  const double blc1_time_window_max=100.;
+  const double blc1_time_min=-10.;
+  const double blc1_time_max= 10.;
+  const double blc1_chi2_max= 10.;
 
   //BLC2 cuts
-  const double blc2_time_window_min=-30;
-  const double blc2_time_window_max=100;
-  const double blc2_time_min=-10;
-  const double blc2_time_max= 10;
-  const double blc2_chi2_max= 10;
+  const double blc2_time_window_min=-30.;
+  const double blc2_time_window_max=100.;
+  const double blc2_time_min=-10.;
+  const double blc2_time_max= 10.;
+  const double blc2_chi2_max= 10.;
 
   //BPC cuts
-  const double bpc_time_window_min=-30;
-  const double bpc_time_window_max=100;
-  const double bpc_time_min=-10;
-  const double bpc_time_max= 10;
-  const double bpc_chi2_max= 10;
+  const double bpc_time_window_min=-30.;
+  const double bpc_time_window_max=100.;
+  const double bpc_time_min=-10.;
+  const double bpc_time_max= 10.;
+  const double bpc_chi2_max= 10.;
+  //const double bpc_chi2_max= 30;
 
   //D5 cuts
-  const double d5_chi2_max=30;
+  const double d5_chi2_max=20.;
 
   //BLC2-BPC matching cuts
-  const double blc2bpc_x_min=-1.1015;//Run78  rough
-  const double blc2bpc_x_max=1.21206;//Run78  rough
-  const double blc2bpc_y_min=-1.1015;//Run78  rough
-  const double blc2bpc_y_max=1.21206;//Run78  rough
-  const double blc2bpc_dx_min=-0.0253846;//Run78 rough
-  const double blc2bpc_dx_max=0.0242834;//Run78 rough
-  const double blc2bpc_dy_min=-0.0246937;//Run78 rough
-  const double blc2bpc_dy_max=0.02502;//Run78 rough
+  //const double blc2bpc_x_min=-1.1015;//Run78  rough
+  //const double blc2bpc_x_max=1.21206;//Run78  rough
+  //const double blc2bpc_y_min=-1.1015;//Run78  rough
+  //const double blc2bpc_y_max=1.21206;//Run78  rough
+  const double blc2bpc_x_max=1.03980;//Run78  rough
+  const double blc2bpc_x_min=-0.95279;//Run78  rough
+  const double blc2bpc_y_max=1.029626;//Run78  rough
+  const double blc2bpc_y_min=-1.041574;//Run78  rough
+
+  const double blc2bpc_dx_min=-0.024224;//Run78 rough
+  const double blc2bpc_dx_max=0.0231836;//Run78 rough
+  const double blc2bpc_dy_min=-0.023854;//Run78 rough
+  const double blc2bpc_dy_max=0.02391;//Run78 rough
 }
 
 namespace cdscuts {

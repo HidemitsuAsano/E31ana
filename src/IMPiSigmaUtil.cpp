@@ -738,8 +738,10 @@ int Util::EveSelectBeamline(BeamLineTrackMan *bltrackman,
     confman->GetBLDCWireMapManager()->GetGParam( CID_BLC2a, Pos_BLC2, rot );
     const double zPos_BPC = Pos_BPC.Z();
     const double zPos_BLC2 = Pos_BLC2.Z();
-    const double zPos_BPC_BLC2 = (Pos_BPC.Z()+Pos_BLC2.Z())/2;
-
+    const double zPos_BPC_BLC2 = -63.15; //(Pos_BPC.Z()+Pos_BLC2.Z())/2;
+    
+    //std::cout << "zPos_BPC " << zPos_BPC << std::endl;
+    //std::cout << "zPos_BLC2 " << zPos_BLC2 << std::endl;
     bpctrack->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[0], yblc2bpc[0] );
     bpctrack->XYPosatZ( zPos_BPC, xpos[0], ypos[0] );
     blc2->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[1], yblc2bpc[1]);

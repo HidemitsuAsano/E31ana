@@ -836,7 +836,8 @@ int main( int argc, char** argv )
       IsBLAnaPassed=false;
     }
     LocalTrack *bpctrack = bltrackMan->trackBPC(bpcid);    
-    if(IsrecoPassed && bpctrack->chi2all()>10 ){
+    Tools::Fill1D( Form("trackchi2_BPC"),bpctrack->chi2all());
+    if(IsrecoPassed && bpctrack->chi2all()>blcuts::bpc_chi2_max){
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_bpctrack" << std::endl;
       if(IsBLAnaPassed)nAbort_bpctrack++;
       //continue;
