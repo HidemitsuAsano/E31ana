@@ -46,17 +46,17 @@ void InitBasicHist(const bool MCFlag)
   Tools::newTH1F( Form("T0time"),   1000, -50, 50 );
   Tools::newTH1F( Form("tof_T0BHD"), 2000, 20, 40 );
   Tools::newTH1F( Form("tracktime_BPC"),  1200, -200, 400 );
-  Tools::newTH1F( Form("trackchi2_BPC"),  200, 0, 20 );
+  Tools::newTH1F( Form("trackchi2_BPC"),  500, 0, 50 );
   Tools::newTH1F( Form("ntrack_BPC"),  6, -0.5, 5.5 );
   Tools::newTH1F( Form("tracktime_BLC1"), 1200, -200, 400 );
   Tools::newTH1F( Form("tracktime_BLC2"), 1200, -200, 400 );
-  Tools::newTH1F( Form("trackchi2_BLC1"), 200, 0, 20 );
-  Tools::newTH1F( Form("trackchi2_BLC2"), 200, 0, 20 );
+  Tools::newTH1F( Form("trackchi2_BLC1"), 500, 0, 50 );
+  Tools::newTH1F( Form("trackchi2_BLC2"), 500, 0, 50 );
   Tools::newTH1F( Form("ntrack_BLC1"), 6, -0.5, 5.5 );
   Tools::newTH1F( Form("ntrack_BLC2"), 6, -0.5, 5.5 );
-  Tools::newTH2F( Form("dydx_BLC2BPC"),     130, -1.3, 1.3, 130, -1.3, 1.3 );
+  Tools::newTH2F( Form("dydx_BLC2BPC"),     500, -5, 5, 500, -5, 5 );
   Tools::newTH2F( Form("dydzdxdz_BLC2BPC"), 175, -0.035, 0.035, 175, -0.035, 0.035 );
-  Tools::newTH1F( Form("trackchi2_beam"), 400, 0, 40 );
+  Tools::newTH1F( Form("trackchi2_beam"), 500, 0, 50 );
   Tools::newTH1F( Form("momentum_beam"), 180, 0.92, 1.10 );
   Tools::newTH1F( Form("PID_beam"),5,-1.5,3.5);
   //** CDS **//

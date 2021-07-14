@@ -1,6 +1,6 @@
 void CalcLuminosity()
 {
-  TFile *_file0 = TFile::Open("evanaIMpisigma_v202.root");
+  TFile *_file0 = TFile::Open("evanaIMpisigma_v222.root");
   TH1D* Scaler = (TH1D*)_file0->Get("Scaler");
   TCanvas *c1 = new TCanvas("c1","c1");
   Scaler->Draw("HIST");
@@ -23,7 +23,7 @@ void CalcLuminosity()
 
   TH1D* hnK = new TH1D("hnK","hnK",1000,0,1000);
   for(int irun=0;irun<iline;irun++){
-    TFile *_file = TFile::Open(Form("/gpfs/group/had/knucl/e15/asano/Run78/IMpisigmav206/evanaIMpisigma_0%03d.root",runnum[irun]),"READ");
+    TFile *_file = TFile::Open(Form("/gpfs/group/had/knucl/e15/asano/Run78/IMpisigmav222/evanaIMpisigma_0%03d.root",runnum[irun]),"READ");
     TH1D* hscaler = (TH1D*)_file->Get("Scaler");
     double nK = hscaler->GetBinContent(ScCH_K);
     if(runnum[irun]>=233) nK*=10;
