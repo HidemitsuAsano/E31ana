@@ -11,6 +11,7 @@ void InitBasicHist(const bool MCFlag)
   Tools::newTH1F( Form("Scaler"), 41, -0.5, 40.5 );
   Tools::newTH1F( Form("Trigger"), 10,-0.5,9.5);
   Tools::newTH1F( Form("Trigmode"), 20,-0.5,19.5);
+  Tools::newTH1F( Form("Trigmode_Kf"), 20,-0.5,19.5);
 
   // CDC and CDH information from CDC-trackig file **//
   Tools::newTH1F( Form("mul_CDH"),Form("CDH multiplicity"), 11, -0.5, 10.5 );
@@ -39,6 +40,7 @@ void InitBasicHist(const bool MCFlag)
     Tools::newTH2F( Form("CDH%d_mom_TOF_pi",iseg+1),       100, -2, 2, 200, -1.0, 1.0 );
     Tools::newTH2F( Form("CDH%d_mom_TOF_p",iseg+1),       100, -2, 2, 200, -1.0, 1.0 );
   }
+  Tools::newTH2F( Form("CDH_diffpos_z_p_z"), 1000,-50,50,1000,-50,50);
   
   //** beam line **//
   Tools::newTH1F( Form("mul_BHD"), 12, -0.5, 11.5 );

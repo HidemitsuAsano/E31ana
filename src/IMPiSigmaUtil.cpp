@@ -17,6 +17,7 @@ int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack,const bool CDH3trgfired,
   int nCDH = 0;
   double firsthittime=0;
   double lasthittime=0;
+  std::vector <double> vtime;
   for( int i=0; i<cdsman->nCDH(); i++ ){
     Tools::Fill2D(Form("CDHtime"),cdsman->CDH(i)->seg(),cdsman->CDH(i)->ctmean());
     Tools::Fill2D(Form("CDHdE"),cdsman->CDH(i)->seg(),cdsman->CDH(i)->emean());
@@ -30,29 +31,31 @@ int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack,const bool CDH3trgfired,
         int seg = cdsman->CDH(i)->seg();
         double emean = cdsman->CDH(i)->emean();
         Tools::Fill2D(Form("CDHdE_wt"),seg,emean);
+        vtime.push_back(cdsman->CDH(i)->ctmean());
         nCDH++;
-        if(lasthittime< cdsman->CDH(i)->ctmean()) lasthittime = cdsman->CDH(i)->ctmean();
-        if(i==0) firsthittime = cdsman->CDH(i)->ctmean();
-        else if(i>0 && firsthittime > cdsman->CDH(i)->ctmean()) firsthittime = cdsman->CDH(i)->ctmean();
       }
     }else{
       if((cdsman->CDH(i)->CheckRange()) && (cdsman->CDH(i)->ctmean()<cdscuts::tdc_cdh_max)){
         Tools::Fill2D(Form("CDHdE_wt"),cdsman->CDH(i)->seg(),cdsman->CDH(i)->emean());
         //std::cout << cdsman->CDH(i)->seg() << " " <<  cdsman->CDH(i)->ctmean() << std::endl;
+        vtime.push_back(cdsman->CDH(i)->ctmean());
         nCDH++;
-        if(lasthittime< cdsman->CDH(i)->ctmean()) lasthittime = cdsman->CDH(i)->ctmean();
-        if(i==0) firsthittime = cdsman->CDH(i)->ctmean();
-        else if(i>0 && firsthittime > cdsman->CDH(i)->ctmean()) firsthittime = cdsman->CDH(i)->ctmean();
       }
     }
   }
   Tools::Fill1D( Form("mul_CDH"), nCDH );
-  Tools::H2( Form("lasttime_mul_CDH"), nCDH,lasthittime,11, -0.5, 10.5,1000,0,100);
-  if(CDH3trgfired){
-    Tools::H2( Form("lasttime_mul_CDH_CDH3trg"), nCDH,lasthittime,11, -0.5, 10.5,1000,0,100);
-  }
-  if(nCDH==3){
-    Tools::H1( Form("firstlasttimediff"), lasthittime-firsthittime,1000,0,100);
+  if(vtime.size()>=3){
+    std::sort(vtime.begin(),vtime.end());
+    Tools::H2( Form("lasttime_mul_CDH"), nCDH,vtime.at(2),11, -0.5, 10.5,1000,0,100);
+    if(CDH3trgfired){
+      Tools::H2( Form("lasttime_mul_CDH_CDH3trg"), nCDH,vtime.at(2),11, -0.5, 10.5,1000,0,100);
+    }
+    if(nCDH==3){
+      Tools::H1( Form("firstlasttimediff"), vtime.back()-vtime.front(),1000,0,100);
+      if(CDH3trgfired){
+        Tools::H1( Form("firstlasttimediff_CDH3trg"), vtime.back()-vtime.front(),1000,0,100);
+      }
+    }
   }
   return nCDH;
 }
@@ -848,7 +851,7 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
   
     Tools::Fill2D( Form("CDH_mom_diffpos_p_phi"), (track_pos.Phi()-hit_pos.Phi())/TwoPi*360., track->Momentum() );
     Tools::Fill2D( Form("CDH_mom_diffpos_p_z"), diff.Z(), track->Momentum() );
-    Tools::H2( Form("CDH_diffpos_z_p_z"), track_pos.Z(),diff.Z(),1000,-50,50,1000,-50,50);
+    Tools::Fill2D( Form("CDH_diffpos_z_p_z"), track_pos.Z(),diff.Z());
   }
   /*
   for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){

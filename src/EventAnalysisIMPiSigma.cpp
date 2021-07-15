@@ -565,6 +565,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   Tools::Fill1D(Form("Trigmode"),header->trigmode());
   if(header->trigmode(Mode_Kf)){
     Tools::Fill1D(Form("Trigger"),0);
+    Tools::Fill1D(Form("Trigmode_Kf"),header->trigmode());
   }else{ 
     //std::cout << "abort" << std::endl;
     Clear(nAbort_Kf);
