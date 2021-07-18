@@ -1,7 +1,6 @@
 void CalcSurvivalBeam()
 {
 
-  //TFile *_file0 = TFile::Open("evanaIMpisigma_v209.root");
   TFile *_file0 = TFile::Open("evanaIMpisigma_v222.root");
    
   TH1F *EventCheck = (TH1F*)_file0->Get("EventCheck");
