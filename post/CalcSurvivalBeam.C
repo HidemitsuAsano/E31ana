@@ -1,7 +1,7 @@
 void CalcSurvivalBeam()
 {
 
-  TFile *_file0 = TFile::Open("evanaIMpisigma_v222.root");
+  TFile *_file0 = TFile::Open("evanaIMpisigma_v225.root");
    
   TH1F *EventCheck = (TH1F*)_file0->Get("EventCheck");
   TCanvas *c1 = new TCanvas("c1","c1");
@@ -60,7 +60,7 @@ void CalcSurvivalBeam()
   int nline=0;
   while(getline(ifs,str)){
     runnum[nline] = atoi(str.c_str());
-    std::cout << runnum[nline] << std::endl;
+   // std::cout << runnum[nline] << std::endl;
     nline++;
   }
 
@@ -88,7 +88,7 @@ void CalcSurvivalBeam()
   hBeamSurvivalR->SetYTitle("Survival Rate");
   hBeamSurvivalR->GetXaxis()->CenterTitle();
   hBeamSurvivalR->GetYaxis()->CenterTitle();
-  hBeamSurvivalR->GetYaxis()->SetRangeUser(0,1);
+  hBeamSurvivalR->GetYaxis()->SetRangeUser(0,0.5);
   hBeamSurvivalR->Draw("E");
 
   TFile *file = new TFile("beamSurvival.root","RECREATE");
