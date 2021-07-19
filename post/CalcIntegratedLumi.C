@@ -6,7 +6,7 @@ void CalcIntegratedLumi()
   const double D2density = 4.830e+23*1.25;// #deuteron /10 cm target length * 12.5
   const double D2density_err = 4.58e+21*1.25;
   const double CDH3trgeff = 0.996122;
-  const double CDH3trgeff_err = 0.001235; 
+  const double CDH3trgeff_err = 3.0*0.001235; 
   
   //
   const double scalerKaon = 5.80154e+10;//total num.
@@ -50,7 +50,9 @@ void CalcIntegratedLumi()
   }
   hInteLumi->Draw("E");
   double errorInte=0.0;
+  gStyle->SetOptStat("i");
   Double_t A = hInteLumi->IntegralAndError(1,hInteLumi->GetNbinsX(),errorInte, "");
+  hInteLumi->SetTitle("Run by Run Integrated Luminosity");
   std::cout << "Integral " << A << std::endl;
   std::cout << "Integral err " << errorInte << std::endl;  
 
