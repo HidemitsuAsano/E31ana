@@ -17,7 +17,7 @@ void CalcLuminosity()
   int iline=0;
   while(getline(ifs,str)){
     runnum[iline] = atoi(str.c_str());
-    std::cout << runnum[iline] << std::endl;
+   // std::cout << runnum[iline] << std::endl;
     iline++;
   }
 

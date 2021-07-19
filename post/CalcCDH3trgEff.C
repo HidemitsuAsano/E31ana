@@ -17,8 +17,10 @@ void CalcCDH3trgEff()
   int bin50ns = lasttime->FindBin(50);
   double deno = lasttime->Integral(bin20ns,bin50ns-1);
   double nume = lasttime_fire->Integral(bin20ns,bin50ns-1);
+  std::cout << "counts in 20 - 50 nsec" << std::endl;
   std::cout << "fired: " << deno << std::endl;
   std::cout << "req: " << nume << std::endl;
+  std::cout << "eff. " << nume/deno << std::endl;
   double up = TEfficiency::Wilson(deno,nume,0.90,1);
   double down = TEfficiency::Wilson(deno,nume,0.90,0);
   std::cout << "DAQ trg. eff: (90% confidence interval)  " << down << " - " << up << std::endl;
