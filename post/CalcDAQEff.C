@@ -1,6 +1,6 @@
 void CalcDAQEff()
 {
-  TFile *_file0 = TFile::Open("evanaIMpisigma_v202.root");
+  TFile *_file0 = TFile::Open("evanaIMpisigma_v225.root");
   TH1D* Scaler = (TH1D*)_file0->Get("Scaler");
   TCanvas *c1 = new TCanvas("c1","c1");
   Scaler->Draw("HIST");
@@ -54,5 +54,9 @@ void CalcDAQEff()
   heff->SetMarkerStyle(20);
   heff->Draw("E");
   //gdaqeff->Draw("AP");
+  
+  TFile *file = new TFile("daqeff.root","RECREATE");
+  heff->Write();
+  file->Close();
 
 }
