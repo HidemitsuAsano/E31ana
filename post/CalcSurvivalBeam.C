@@ -49,8 +49,9 @@ void CalcSurvivalBeam()
   double Nfid = bpcVtx_fid->Integral();
   
   std::cout << "bpc Vtx cut" << Nfid/Nnofid << std::endl;
-
+  
   std::cout << "Total survival  "<< D5AnaOK*Nfid/Nnofid/kaonEvent << std::endl;
+  std::cout << "Err " << sqrt(D5AnaOK*(kaonEvent-D5AnaOK))/kaonEvent/sqrt(kaonEvent)*Nfid/Nnofid << std::endl;
 
   ifstream ifs("../goodrunlist/goodrun_list");
   std::string str;

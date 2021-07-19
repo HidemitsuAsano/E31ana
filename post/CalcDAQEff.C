@@ -11,7 +11,7 @@ void CalcDAQEff()
   std::cout << "DAQ acc. " << firstTrig<< std::endl;
   std::cout << "DAQ req. " << firstCompVeto << std::endl;
   std::cout << "DAQ eff. " << (float) (firstCompVeto)/firstTrig << std::endl;
-
+  std::cout << "err    . " << sqrt(firstCompVeto*(firstTrig-firstCompVeto)/firstTrig)/firstTrig << std::endl;
 
   
   ifstream ifs("../goodrunlist/goodrun_list");
