@@ -15,6 +15,7 @@
 TLorentzVector *LVec_beam2=NULL;   // 4-momentum(beam)
 TLorentzVector *LVec_beam_Sp2=NULL;   // 4-momentum(beam),Sp mode assumption
 TLorentzVector *LVec_beam_Sm2=NULL;   // 4-momentum(beam),Sm mode assumption
+TLorentzVector *LVec_beam_K02=NULL;   // 4-momentum(beam),K0 mode assumption
 TLorentzVector *LVec_target2=NULL; // 4-momentum(target)
 TLorentzVector *LVec_pip2=NULL;    // 4-momentum(pi+)
 TLorentzVector *LVec_pim2=NULL;    // 4-momentum(pi-)
@@ -22,6 +23,7 @@ TLorentzVector *LVec_n2=NULL;      // 4-momentum(neutron)
 TLorentzVector *LVec_n_beam2=NULL;      // 4-momentum(neutron)
 TLorentzVector *LVec_n_Sp2=NULL;      // 4-momentum(neutron),Sp mode assumption
 TLorentzVector *LVec_n_Sm2=NULL;      // 4-momentum(neutron),Sm mode assumption
+TLorentzVector *LVec_n_K02=NULL;      // 4-momentum(neutron),Sm mode assumption
 TLorentzVector *mcmom_beam2=NULL;   // generated 4-momentum(beam)
 TLorentzVector *mcmom_pip2=NULL;    // generated 4-momentum(pi+)
 TLorentzVector *mcmom_pim2=NULL;    // generated 4-momentum(pi-)
@@ -30,9 +32,11 @@ TLorentzVector *mcmom_nmiss2=NULL;      // generated 4-momentum(neutron)
 TLorentzVector *react_nmiss2=NULL;      // generated 4-momentum(neutron)
 TLorentzVector *react_Sigma2=NULL;      // generated 4-momentum(neutron)
 TLorentzVector *react_pi2=NULL;      // generated 4-momentum(neutron)
+TLorentzVector *mc_vtx2=NULL;      // generated 4-momentum(neutron)
+TLorentzVector *mc_disvtx2=NULL;      // generated 4-momentum(neutron)
 double NeutralBetaCDH2; // velocity of neutral particle on CDH
 double NeutralBetaCDH_beam2; // velocity of neutral particle on CDH
-double NeutralBetaCDH_vtx2[2]; // velocity of neutral particle on CDH,0: Spmode 1:Smmode
+double NeutralBetaCDH_vtx2[3]; // velocity of neutral particle on CDH,0: Spmode 1:Smmode
 double tofpim2;
 double tofpip2;
 double tofn2;
@@ -45,6 +49,7 @@ double mcncanvtxz2;
 int mcncdsgen2;
 int mcpattern2;
 TVector3 *vtx_reaction2 = NULL; // vertex(reaction) 
+TVector3 *vtx_displaced2 = NULL; // vertex(reaction) 
 TVector3 *vtx_pip_beam2 = NULL; //C.A.P of pip-beam beam side
 TVector3 *vtx_pim_beam2 = NULL; //C.A.P of pim-beam beam side
 TVector3 *vtx_pip_cdc2 = NULL;//C.A.P of pip-beam pip side
@@ -56,7 +61,7 @@ TVector3 *CDH_Pos_pim2 = NULL;
 TVector3 *CDH_Pos_pip2 = NULL;
 
 
-void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
+void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v226.root")
 {
   if(gROOT->GetVersionInt() < 60000){
     std::cout << "Use ROOT6 " << std::endl;
@@ -77,6 +82,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
   tree->SetBranchAddress( "mom_beam",   &LVec_beam );
   tree->SetBranchAddress( "mom_beam_Sp",   &LVec_beam_Sp );
   tree->SetBranchAddress( "mom_beam_Sm",   &LVec_beam_Sm );
+  tree->SetBranchAddress( "mom_beam_K0",   &LVec_beam_K0 );
   tree->SetBranchAddress( "mom_target", &LVec_target );
   tree->SetBranchAddress( "mom_pip", &LVec_pip );
   tree->SetBranchAddress( "mom_pim", &LVec_pim );
@@ -84,9 +90,10 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
   tree->SetBranchAddress( "mom_n_beam", &LVec_n_beam );//from v192
   tree->SetBranchAddress( "mom_n_Sp", &LVec_n_Sp );
   tree->SetBranchAddress( "mom_n_Sm", &LVec_n_Sm );
+  tree->SetBranchAddress( "mom_n_K0", &LVec_n_K0 );
   tree->SetBranchAddress( "NeutralBetaCDH", &NeutralBetaCDH );
   tree->SetBranchAddress( "NeutralBetaCDH_beam", &NeutralBetaCDH_beam );//from v192
-  tree->SetBranchAddress( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx );
+  tree->SetBranchAddress( "NeutralBetaCDH_vtx[3]", NeutralBetaCDH_vtx );
   tree->SetBranchAddress( "tofpim",&tofpim);
   tree->SetBranchAddress( "tofpip",&tofpip);
   tree->SetBranchAddress( "tofn",&tofn);
@@ -95,6 +102,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
   tree->SetBranchAddress( "nhitOutCDC", &nhitOutCDC ); //charge veto by Outer 3 layer of 3cdc
   tree->SetBranchAddress( "ForwardCharge", &ForwardCharge);
   tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
+  tree->SetBranchAddress( "vtx_displaced", &vtx_displaced );
   tree->SetBranchAddress( "vtx_pip_beam",&vtx_pip_beam);
   tree->SetBranchAddress( "vtx_pim_beam",&vtx_pim_beam);
   tree->SetBranchAddress( "vtx_pip_cdc",&vtx_pip_cdc);
@@ -120,6 +128,8 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
     tree->SetBranchAddress( "react_nmiss", &react_nmiss);
     tree->SetBranchAddress( "react_Sigma", &react_Sigma);
     tree->SetBranchAddress( "react_pi", &react_pi);
+    tree->SetBranchAddress( "mc_vtx", &mc_vtx);
+    tree->SetBranchAddress( "mc_disvtx", &mc_disvtx);
   }
   
   TString outname = std::string(filename);
@@ -135,6 +145,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
   treeMIX->Branch( "mom_beam",   &LVec_beam2 );//
   treeMIX->Branch( "mom_beam_Sp",  &LVec_beam_Sp2 );//
   treeMIX->Branch( "mom_beam_Sm",  &LVec_beam_Sm2 );
+  treeMIX->Branch( "mom_beam_K0",  &LVec_beam_K02 );
   treeMIX->Branch( "mom_target", &LVec_target2 );
   treeMIX->Branch( "mom_pip", &LVec_pip2 );
   treeMIX->Branch( "mom_pim", &LVec_pim2 );
@@ -142,9 +153,10 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
   treeMIX->Branch( "mom_n_beam", &LVec_n_beam2 );
   treeMIX->Branch( "mom_n_Sp", &LVec_n_Sp2 );
   treeMIX->Branch( "mom_n_Sm", &LVec_n_Sm2 );
+  treeMIX->Branch( "mom_n_K0", &LVec_n_K02 );
   treeMIX->Branch( "NeutralBetaCDH", &NeutralBetaCDH2 );
   treeMIX->Branch( "NeutralBetaCDH_beam", &NeutralBetaCDH_beam2 );
-  treeMIX->Branch( "NeutralBetaCDH_vtx[2]", NeutralBetaCDH_vtx2);
+  treeMIX->Branch( "NeutralBetaCDH_vtx[3]", NeutralBetaCDH_vtx2);
   treeMIX->Branch( "tofpim",&tofpim2);
   treeMIX->Branch( "tofpip",&tofpip2);
   treeMIX->Branch( "tofn",&tofn2);
@@ -153,6 +165,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
   treeMIX->Branch( "nhitOutCDC", &nhitOutCDC2 ); //charge veto by Outer 3 layer of 3cdc
   treeMIX->Branch( "ForwardCharge", &ForwardCharge2);
   treeMIX->Branch( "vtx_reaction", &vtx_reaction2 );
+  treeMIX->Branch( "vtx_displaced", &vtx_displaced2 );
   treeMIX->Branch( "vtx_pip_beam", &vtx_pip_beam2 );
   treeMIX->Branch( "vtx_pim_beam", &vtx_pim_beam2 );
   treeMIX->Branch( "vtx_pip_cdc", &vtx_pip_cdc2 );
@@ -175,6 +188,8 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
     treeMIX->Branch( "react_nmiss",&react_nmiss2);
     treeMIX->Branch( "react_Sigma",&react_Sigma2);
     treeMIX->Branch( "react_pi",&react_pi2);
+    treeMIX->Branch( "mc_vtx",&mc_vtx2);
+    treeMIX->Branch( "mc_disvtx",&mc_disvtx2);
   }
 
   Int_t nevent = tree->GetEntries();
@@ -182,6 +197,9 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
   std::cout << "dE cut:" << anacuts::dE_MIN << std::endl;
   //mixed variables
   std::vector <TLorentzVector> vec_LVec_n;
+  std::vector <TLorentzVector> vec_LVec_n_Sp;
+  std::vector <TLorentzVector> vec_LVec_n_Sm;
+  std::vector <TLorentzVector> vec_LVec_n_K0;
   std::vector <double> vec_dE;
   std::vector <double> vec_NeutralBetaCDH;
   std::vector <TVector3> vec_CDH_Pos;
@@ -257,6 +275,9 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
     //if(!MissNwideFlag ){
       if(NBetaOK && NdEOK){
         vec_LVec_n.push_back(*LVec_n);
+        vec_LVec_n_Sp.push_back(*LVec_n_Sp);
+        vec_LVec_n_Sm.push_back(*LVec_n_Sm);
+        vec_LVec_n_K0.push_back(*LVec_n_K0);
         vec_NeutralBetaCDH.push_back(NeutralBetaCDH);
         vec_tofn.push_back(tofn);
         vec_dE.push_back(dE);
@@ -267,6 +288,9 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
   }
 
   decltype(vec_LVec_n)::iterator last_n = vec_LVec_n.end();
+  decltype(vec_LVec_n_Sp)::iterator last_n_Sp = vec_LVec_n_Sp.end();
+  decltype(vec_LVec_n_Sm)::iterator last_n_Sm = vec_LVec_n_Sm.end();
+  decltype(vec_LVec_n_K0)::iterator last_n_K0 = vec_LVec_n_K0.end();
   decltype(vec_NeutralBetaCDH)::iterator last_Beta =vec_NeutralBetaCDH.end();
   decltype(vec_tofn)::iterator last_tofn = vec_tofn.end();
   decltype(vec_dE)::iterator last_dE = vec_dE.end();
@@ -280,6 +304,9 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
     if(i%50000==0) std::cout << "Event# " << i << std::endl;
     //decrement iterators 
     last_n--;
+    last_n_Sp--;
+    last_n_Sm--;
+    last_n_K0--;
     last_Beta--;
     last_tofn--;
     last_dE--;
@@ -292,21 +319,22 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
     //std::cout << *last_neutralseg << std::endl;
     //std::cout << (*last_CDH_Pos).Phi() << std::endl;
 
-
     *LVec_beam2 =  *LVec_beam;
     *LVec_beam_Sp2 = *LVec_beam_Sp;
     *LVec_beam_Sm2 = *LVec_beam_Sm;
+    *LVec_beam_K02 = *LVec_beam_K0;
     *LVec_target2 = *LVec_target;
     *LVec_pip2 = *LVec_pip;
     *LVec_pim2 = *LVec_pim;
     *LVec_n2 = *last_n;//mixing param.
+    *LVec_n_Sp2 = *last_n_Sp;//mixing param.
+    *LVec_n_Sm2 = *last_n_Sm;//mixing param.
+    *LVec_n_K02 = *last_n_K0;//mixing param.
     if((*LVec_n2).P() < 0.0001){
       std::cout << "Something is wrong " << std::endl;
       std::cout << (*LVec_n2).P() << std::endl;
     }
     *LVec_n_beam2 = *LVec_n_beam;
-    *LVec_n_Sp2 = *LVec_n_Sp;
-    *LVec_n_Sm2 = *LVec_n_Sm;
     NeutralBetaCDH2 = NeutralBetaCDH;
     //NeutralBetaCDH2 = *last_Beta;//mixing param.
     tofpim2 = tofpim;  
@@ -319,6 +347,12 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
     //neutralseg2 = *last_neutralseg; //mixing param.
     nhitOutCDC2 = nhitOutCDC;
     ForwardCharge2 = ForwardCharge;
+    *vtx_reaction2 = *vtx_reaction;
+    *vtx_displaced2 = *vtx_displaced;
+    *vtx_pip_beam2 = *vtx_pip_beam;
+    *vtx_pim_beam2 = *vtx_pim_beam;
+    *vtx_pip_cdc2 = *vtx_pip_cdc;
+    *vtx_pim_cdc2 = *vtx_pim_cdc;
     *CA_pip2 = *CA_pip;
     *CA_pim2 = *CA_pim;
     //*CDH_Pos2 = *CDH_Pos;
@@ -338,12 +372,17 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v206.root")
       *react_nmiss2 = *react_nmiss;
       *react_Sigma2 = *react_Sigma;
       *react_pi2 = *react_pi;
+      *vtx_reaction2 = *vtx_reaction;
+      *vtx_displaced2 = *vtx_displaced;
     }
     
     //re-use mixing param.
     if(i!=0 &&  (i%(nsize-1)==0)){
      std::cout << "L." << __LINE__ <<  "  "  << i << std::endl;
      last_n+=(nsize-1);
+     last_n_Sp+=(nsize-1);
+     last_n_Sm+=(nsize-1);
+     last_n_K0+=(nsize-1);
      last_Beta+=(nsize-1);
      last_tofn+=(nsize-1);
      last_dE+=(nsize-1);
