@@ -110,6 +110,7 @@ private:
   int nFill_pippim;
   int nFill_npippim;
   //** counters for event abort **//
+  int nAbort_KCDH3trg;
   int nAbort_Kf;
   int nAbort_nGoodTrack;
   int nAbort_CDSPID;
@@ -422,6 +423,7 @@ void EventAnalysis::ResetCounters()
   nFill_pippim = 0;
   nFill_npippim  = 0;
   
+  nAbort_KCDH3trg = 0;
   nAbort_Kf = 0;
   nAbort_nGoodTrack = 0;
   nAbort_CDSPID = 0;
@@ -508,9 +510,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   // - - - - - - - - - - - - - - - - - - - - - - - - - - //
 
 
-  //** fill event count **//
+  // fill event count //
   Event_Number++;
-  /*
+
   // control of start and stop events //
   {
     int status = confMan->CheckEvNum( Event_Number, Block_Event_Number );
@@ -544,7 +546,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   if( CDC_Event_Number>=cdcTree->GetEntries() ) return false;
   cdcTree->GetEntry( CDC_Event_Number );
   if( header_CDC->ev()!=Event_Number ) return true;
-  */
+
   CDC_Event_Number++;
   header->SetRunNumber(0);
   header->SetEventNumber(Event_Number);
@@ -559,7 +561,14 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   trackMan->Calc( cdsMan, confMan, true);
   
   //trigger check
+  //
   //unbiased kaon trigger,prescaled
+  //
+  //if( header->IsTrig(Trig_Kf)){
+  //  Tools::Fill1D(Form("Trigger"),0);
+  //  Clear(nAbort_Kf);
+  //  return true;
+  //}
   //std::cout << header->trigmode() << std::endl;
   //if(header->IsTrig(Trig_Kf)){
   Tools::Fill1D(Form("Trigmode"),header->trigmode());
@@ -567,21 +576,49 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     Tools::Fill1D(Form("Trigger"),0);
     Tools::Fill1D(Form("Trigmode_Kf"),header->trigmode());
   }else{ 
-    //std::cout << "abort" << std::endl;
-    Clear(nAbort_Kf);
-    return true;
+  //std::cout << "abort" << std::endl;
+  //  Clear(nAbort_Kf);
+  //  return true;
   }
   Tools::Fill1D( Form("EventCheck"), 1 );
   if( header->IsTrig(Trig_KCDH2f)) Tools::Fill1D(Form("Trigger"),2);   
   //K x CDH3 trigger
   bool IsTrigKCDH3 = header->IsTrig(Trig_KCDH3);
-  if(IsTrigKCDH3) Tools::Fill1D(Form("Trigger"),1);
+  if(IsTrigKCDH3){
+    Tools::Fill1D(Form("Trigger"),1);
+  }else{
+    Clear(nAbort_KCDH3trg);
+    return true;
+  }
 
 
+  const int nGoodTrack = trackMan->nGoodTrack();
+  const int nallTrack = trackMan->nTrack();
+  AllGoodTrack += nGoodTrack;
+  nTrack += nallTrack;
+  Tools::Fill1D( Form("nTrack"),nallTrack);
+  Tools::Fill1D( Form("nGoodTrack"), nGoodTrack);
+  if(nGoodTrack==2){
+    Tools::Fill1D( Form("nTrack_If2GoodTracks"),nallTrack);
+  }
+  Tools::Fill1D( Form("EventCheck"), 1 );
 
-  /*
+  //CDH emean recalibrator
+  static bool isState=false;
+  if(!isState){ 
+    std::cout << "***********************************************" << std::endl;   
+    std::cout << "L." << __LINE__ << " CDH emean is recalibrated " << std::endl;
+    std::cout << "correction factor " << cdscuts::CDHemeanCal << std::endl;
+    std::cout << "***********************************************" << std::endl;   
+    isState=true;
+  }
+  for( int i=0; i<cdsMan->nCDH(); i++ ){
+    double emean = cdsMan->CDH(i)->emean();
+    cdsMan->CDH(i)->SetEMean(emean*cdscuts::CDHemeanCal);
+  }
+  
   //CDH-hits cut
-  if( Util::GetCDHMul(cdsMan,nGoodTrack)!=cdscuts::cdhmulti){
+  if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false)!=cdscuts::cdhmulti){
     Clear( nAbort_nCDH );
     return true;
   }
@@ -594,33 +631,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     return true;
   }
   Tools::Fill1D( Form("EventCheck"), 3 );
-  */
+  
 
   //beam line analysis and event selection
   
   //** BLDC tracking **//
   bltrackMan->DoTracking(blMan,confMan,true,true);
-  
-  /*
-  //test
-  int numT0=0;
-  int segT0=0;
-  double euT0=0;
-  double edT0=0;
-  for( int i=0; i<blMan->nT0(); i++ ) {
-    HodoscopeLikeHit *hit=blMan->T0(i);
-    if( hit->CheckRange() )
-    {
-      numT0++;
-      segT0=hit->seg();
-      euT0=hit->eu();
-      edT0=hit->ed();
-    }
-  }
-  Tools::H1("nT0_test",numT0,5,0,5);
-  //test end
-  */
-
   //Get T0
   int t0seg=-1;
   //return -9999 if nhit T0 =>2 
@@ -720,45 +736,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   LVec_beambfCM.Boost( -1.*boost );
   LVec_targetCM.Boost( -1.*boost );
  
-
-  const int nGoodTrack = trackMan->nGoodTrack();
-  const int nallTrack = trackMan->nTrack();
-  AllGoodTrack += nGoodTrack;
-  nTrack += nallTrack;
-  Tools::Fill1D( Form("nTrack"),nallTrack);
-  Tools::Fill1D( Form("nGoodTrack"), nGoodTrack);
-  if(nGoodTrack==2){
-    Tools::Fill1D( Form("nTrack_If2GoodTracks"),nallTrack);
-  }
-
-  //CDH emean recalibrator
-  static bool isState=false;
-  if(!isState){ 
-    std::cout << "***********************************************" << std::endl;   
-    std::cout << "L." << __LINE__ << " CDH emean is recalibrated " << std::endl;
-    std::cout << "correction factor " << cdscuts::CDHemeanCal << std::endl;
-    std::cout << "***********************************************" << std::endl;   
-    isState=true;
-  }
-  for( int i=0; i<cdsMan->nCDH(); i++ ){
-    double emean = cdsMan->CDH(i)->emean();
-    cdsMan->CDH(i)->SetEMean(emean*cdscuts::CDHemeanCal);
-  }
-
-  //CDH-hits cut
-  if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false)!=cdscuts::cdhmulti){
-    Clear( nAbort_nCDH );
-    return true;
-  }
-  Tools::Fill1D( Form("EventCheck"), 2 );
-
-  // # of good CDS tracks cut //
-  if( nGoodTrack!=cdscuts::cds_ngoodtrack  ) { //require pi+,pi-
-  //if( nGoodTrack!=cdscuts::cds_ngoodtrack && nallTrack!=cdscuts::cds_ngoodtrack ) { //require pi+,pi-
-    Clear( nAbort_nGoodTrack );
-    return true;
-  }
-  Tools::Fill1D( Form("EventCheck"), 3 );
 
   //** + + + + + + + + + + + + **//
   //**  PID in CDS             **//
@@ -1576,15 +1553,15 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
         if(Verbosity>10)std::cout<<"%%% npippim event: Event_Number, Block_Event_Number, CDC_Event_Number = "
                                    <<Event_Number<<" , "<<Block_Event_Number<<" , "<<CDC_Event_Number<<std::endl;
-        if(header->IsTrig(Trig_KCDH3,confMan)){
+        if(header->IsTrig(Trig_KCDH3)){
           Tools::H1(Form("Trig_npippim"),1,10,0,10);
           rtFile3->cd();
           npippimTree->Fill();
           nFill_npippim++;
           //** fill tree **//
-        }else if(header->IsTrig(Trig_KCDH2f,confMan)){
+        }else if(header->IsTrig(Trig_KCDH2f)){
           Tools::H1(Form("Trig_npippim"),2,10,0,10);
-        }else if(header->IsTrig(Trig_Kf,confMan)){
+        }else if(header->IsTrig(Trig_Kf)){
           Tools::H1(Form("Trig_npippim"),3,10,0,10);
         }else{
           Tools::H1(Form("Trig_npippim"),4,10,0,10);
@@ -1622,7 +1599,7 @@ void EventAnalysis::Finalize()
   }
 
   std::cout<<"====== Abort counter ========="<<std::endl;
-  std::cout<<" nAbort_Kf            = "<<nAbort_Kf<<std::endl;
+  std::cout<<" nAbort_KCDH3trg      = "<<nAbort_KCDH3trg<<std::endl;
   std::cout<<" nAbort_nGoodTrack    = "<<nAbort_nGoodTrack<<std::endl;
   std::cout<<" nAbort_CDSPID        = "<<nAbort_CDSPID<<std::endl;
   std::cout<<" nAbort_nCDH          = "<<nAbort_nCDH<<std::endl;
