@@ -25,7 +25,6 @@ int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack,const bool CDH3trgfired,
     if(ntrack == cdscuts::cds_ngoodtrack){
       Tools::Fill2D(Form("dE_CDHtime_2track"), cdsman->CDH(i)->ctmean(), cdsman->CDH(i)->emean());
     }
-    //if( cdsman->CDH(i)->CheckRange() ) nCDH++; //** only requirement of TDC **//
     if(MCFlag){
       if((cdsman->CDH(i)->CheckRange()) && (cdsman->CDH(i)->ctmean()<(cdscuts::tdc_cdh_max+cdscuts::tdc_simoffset))){
         int seg = cdsman->CDH(i)->seg();
