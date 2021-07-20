@@ -22,7 +22,7 @@
   TLorentzVector *react_pi=NULL;      // generated 4-momentum(neutron)
   double NeutralBetaCDH; // velocity of neutral particle on CDH
   double NeutralBetaCDH_beam; // velocity of neutral particle on CDH
-  double NeutralBetaCDH_vtx[2]; // velocity of neutral particle on CDH,0: Spmode 1:Smmode
+  double NeutralBetaCDH_vtx[3]; // velocity of neutral particle on CDH,0: Spmode 1:Smmode
   double tofpim;
   double tofpip;
   double tofn;

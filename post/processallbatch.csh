@@ -1,15 +1,15 @@
 #!/bin/tcsh -f
 
 root -b -q 'plot_IMpisigma.C+'
-bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v206.root")' 
-bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v206.root",1)' 
-bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v206.root",2)' 
-bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v206.root",3)' 
+bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v226.root")' 
+bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v226.root",1)' 
+bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v226.root",2)' 
+bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v226.root",3)' 
 #exit
-bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v206_MIX_cut4.root")' 
-bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v206_MIX_cut4.root",1)' 
-bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v206_MIX_cut4.root",2)' 
-bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v206_MIX_cut4.root",3)' 
+bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v226_MIX_cut4.root")' 
+bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v226_MIX_cut4.root",1)' 
+bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v226_MIX_cut4.root",2)' 
+bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("evanaIMpisigma_npippim_v226_MIX_cut4.root",3)' 
 
 bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_nSppim_pippimn_v136.root")'
 bsub -q s root -l -b -q 'plot_IMpisigma.C+ ("../simpost/simIMpisigma_nSppim_pippimn_v136.root",1)'
