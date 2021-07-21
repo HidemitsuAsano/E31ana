@@ -52,6 +52,9 @@ evkpn: $(patsubst %,$(TMPDIR)/%,$(EVENT)) $(TMPDIR)/EventAnalysiskpn.o IMPiSigma
 evclean:
 	rm -rf $(BINDIR)/evpisigma $(TMPDIR)/IMPiSigma* $(TMPDIR)/EventAnalysisIMPiSigma.*
 
+evlpimclean:
+	rm -rf $(BINDIR)/evlpim $(TMPDIR)/IMPiSigma* $(TMPDIR)/EventAnalysisLambdaPim.*
+
 xt: $(TMPDIR)/UserXT.o $(ALLSO)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/$@ $(TMPDIR)/UserXT.o $(LIBLINK) $(RTLIBDIR)/$(ALLSO)
 

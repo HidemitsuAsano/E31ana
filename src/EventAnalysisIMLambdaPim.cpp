@@ -1,6 +1,6 @@
 //H. Asano
 //This code is originated from: EventAnalysis_pipipnn_sakuma.cpp
-//and modified to analyze k-d->Lambda pi- proton(missing) -> proton pi- pi- proton (missing)
+//and modified to analyze k-d->Lambda pi- proton(missing) -> proton pi- pi- proton(missing)
 //----------------------------------------------------------------//
 //----------------------------------------------------------------//
 //  input : raw data, conf-file, & CDC-tracking-file
@@ -117,7 +117,7 @@ private:
   int nAbort_fblc2bpc;
   int nAbort_flagbmom;
   int nAbort_ftarget;
-  int nAbort_pipi;
+  int nAbort_pipip;
   int nAbort_end;
 
   // npippim final-sample tree Branch //
@@ -136,8 +136,8 @@ private:
   TVector3 vtx_pim1_cdc;//
   TVector3 vtx_pim2_cdc;//
   TVector3 vtx_p_cdc;//
-  TVector3 CA_pim1_pim1p;
-  TVector3 CA_p_pim1p;
+  TVector3 CA_pim1_pim1p;//closest approach of pim1-p pim1 side
+  TVector3 CA_p_pim1p;//closest approach of pim1-p p side
   TVector3 CA_pim2_pim2p;
   TVector3 CA_p_pim2p;
   TVector3 CA_pim1_pim1pim2;
@@ -352,7 +352,7 @@ void EventAnalysis::ResetCounters()
   nAbort_flagbmom = 0;
   nAbort_ftarget = 0;
   nAbort_end = 0;
-  nAbort_pipi = 0;
+  nAbort_pipip = 0;
 
   return;
 }
@@ -698,34 +698,34 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     Tools::Fill1D( Form("DCA_pim1"), dcapim1vtx );
     Tools::Fill1D( Form("DCA_pim2"), dcapim2vtx );
 
-    TVector3 CA_pim1_pim1p,CA_pim2_pim2p,CA_p_pim1p,CA_p_pim2p;
-    bool vtx_flag1=TrackTools::Calc2HelixVertex(track_pim1, track_p, CA_pim1_pim1p, CA_p_pim1p);
-    double dcapim1p=-9999.;
-    if(vtx_flag1) dcapim1p = (CA_pim1_pim1p-CA_p_pim1p).Mag();
-    Tools::Fill1D( Form("DCA_pim1p"), dcapim1p);
-   
+    TVector3 ca_pim1_pim1p,ca_pim2_pim2p,ca_p_pim1p,ca_p_pim2p,ca_pim1_pim1pim2,ca_pim2_pim1pim2;
     
-    bool vtx_flag2=TrackTools::Calc2HelixVertex(track_pim2, track_p, CA_pim2_pim2p, CA_p_pim2p);
-    double dcapim2p=-9999.;
-    if(vtx_flag2) dcapim2p = (CA_pim2_pim2p-CA_p_pim2p).Mag();
+    bool vtx_flag1=TrackTools::Calc2HelixVertex(track_pim1, track_p, ca_pim1_pim1p, ca_p_pim1p);
+    double dcapim1p=9999.;
+    if(vtx_flag1) dcapim1p = (ca_pim1_pim1p-ca_p_pim1p).Mag();
+    Tools::Fill1D( Form("DCA_pim1p"), dcapim1p);
+    
+    bool vtx_flag2=TrackTools::Calc2HelixVertex(track_pim2, track_p, ca_pim2_pim2p, ca_p_pim2p);
+    double dcapim2p=9999.;
+    if(vtx_flag2) dcapim2p = (ca_pim2_pim2p-ca_p_pim2p).Mag();
     Tools::Fill1D( Form("DCA_pim2p"), dcapim2p);
 
-    //reaction vertex is determined from beam and nearest vtx
+    bool vtx_flag3=TrackTools::Calc2HelixVertex(track_pim1, track_pim2, ca_pim1_pim1pim2, ca_pim2_pim1pim2);
+    double dcapim1pim2=9999.;
+    if(vtx_flag3) dcapim1pim2 = (ca_pim1_pim1pim2-ca_pim2_pim1pim2).Mag();
+    Tools::Fill1D( Form("DCA_pim1pim2"), dcapim1pim2);
+
+    //reaction vertex is determined from beam and nearest vtx of pi-
     TVector3 vtx_beam;
     //determine by pim-proton DCA
-    //proton 
     if(dcapim1p < dcapim2p) {
       vtx_react = 0.5*(vtx_pim2+vtx_beam_wpim2);
-      //if(cdscuts_lpim::useclosestpi) vtx_dis  = vtx_pip;
-      //else              vtx_dis  = vtx_pim;
-      vtx_dis = CA_p_pim1p;
+      vtx_dis = ca_p_pim1p;
       vtx_beam = vtx_beam_wpim1;
     } else {
       vtx_react = 0.5*(vtx_pim1+vtx_beam_wpim1);
-      //if(cdscuts_lpim::useclosestpi) vtx_dis = vtx_pim;
-      //else             vtx_dis = vtx_pip;
-      vtx_dis = CA_p_pim2p;
-      vtx_beam = vtx_beam_wpim1;
+      vtx_dis = ca_p_pim2p;
+      vtx_beam = vtx_beam_wpim2;
     }
 
 
@@ -1032,8 +1032,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
        vtx_pim1_cdc = vtx_pim1;
        vtx_pim2_cdc = vtx_pim2;
        vtx_p_cdc = vtx_p;
-       CA_pim1 = CA_pim1_pim1p;
-       CA_pim2 = CA_pim2_pim2p;
+       CA_pim1_pim1p = ca_pim1_pim1p;
+       CA_p_pim1p = ca_p_pim1p;
+       CA_pim2_pim2p = ca_pim2_pim2p;
+       CA_p_pim2p = ca_p_pim2p;
+       CA_pim1_pim1pim2 = ca_pim1_pim1pim2;
+       CA_pim2_pim1pim2 = ca_pim2_pim1pim2;
        run_num   = confMan->GetRunNumber(); // run number
        event_num = Event_Number;            // event number
        block_num = Block_Event_Number;      // block number
@@ -1046,9 +1050,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
        //** fill tree **//
 
     } // if( GeomTools::GetID(vtx_react)==CID_Fiducial )
-  }//pi-,pi-X event
+  }//pi-,pi- p event
   else {
-    Clear( nAbort_pipi );
+    Clear( nAbort_pipip );
     return true;
   }
 
@@ -1088,7 +1092,7 @@ void EventAnalysis::Finalize()
   std::cout<<" nAbort_fblc2bpc      = "<<nAbort_fblc2bpc<<std::endl;
   std::cout<<" nAbort_flagbmom      = "<<nAbort_flagbmom<<std::endl;
   std::cout<<" nAbort_ftarget       = "<<nAbort_ftarget<<std::endl;
-  std::cout<<" nAbort_nAbort_pipi   = "<<nAbort_pipi<<std::endl;
+  std::cout<<" nAbort_nAbort_pipip   = "<<nAbort_pipip<<std::endl;
   std::cout<<" nAbort_end           = "<<nAbort_end<<std::endl;
   std::cout<<"========= Abort counter ========="<<std::endl;
   std::cout<<"*** # of pi- pi- p events = "<<nFill_ppimpim<<" ***"<<std::endl;
@@ -1199,9 +1203,12 @@ void EventAnalysis::Clear( int &nAbort)
   vtx_pim1_cdc.SetXYZ(-9999.,-9999.,-9999.);
   vtx_pim2_cdc.SetXYZ(-9999.,-9999.,-9999.);
   vtx_p_cdc.SetXYZ(-9999.,-9999.,-9999.);
-  CA_pim1.SetXYZ(-9999.,-9999.,-9999.);
-  CA_pim2.SetXYZ(-9999.,-9999.,-9999.);
-
+  CA_pim1_pim1p.SetXYZ(-9999.,-9999.,-9999.);
+  CA_p_pim1p.SetXYZ(-9999.,-9999.,-9999.);
+  CA_pim2_pim2p.SetXYZ(-9999.,-9999.,-9999.);
+  CA_p_pim2p.SetXYZ(-9999.,-9999.,-9999.);
+  CA_pim1_pim1pim2.SetXYZ(-9999.,-9999.,-9999.);
+  CA_pim2_pim1pim2.SetXYZ(-9999.,-9999.,-9999.);
 
   return;
 }
