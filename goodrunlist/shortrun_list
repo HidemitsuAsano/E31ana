@@ -13,16 +13,16 @@
 271 ->beam end Ok
 356 ->spill length tuning ok
 380 ->MPS,ok
-394 ->BLC1b trouble, reject
+394 ->BLC1b trouble, ok
 427 ->MPC,ok
-479 ->BLC1a trouble, reject
+479 ->BLC1a trouble, ok
 518 ->ESS, reject
 624 ->beam stop, ok
 636 ->NC trouble OK
-642 ->ESS1 discharge, reject
+642 ->ESS1 discharge, Ok
 643 ->NC trouble OK 
-674 ->ESS discharge, reject
+674 ->ESS discharge, Ok
 733 ->MPS, Ok
-736 ->ESS discharge
+736 ->ESS discharge,OK
 784 ->MPS, Ok
 812 ->beam stop, OK
