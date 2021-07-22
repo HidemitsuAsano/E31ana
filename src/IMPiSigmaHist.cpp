@@ -235,6 +235,7 @@ void InitIMLambdaPimHist() {
   Tools::newTH1F( Form("DCA_pim2"),3000,0,30);
   Tools::newTH1F( Form("DCA_pim1p"),3000,0,30);
   Tools::newTH1F( Form("DCA_pim2p"),3000,0,30);
+  Tools::newTH1F( Form("DCA_pim1pim2"),3000,0,30);
   Tools::newTH2F( Form("q_IMppipi_p"),100,1,2,300,0,1.5);
   Tools::newTH2F( Form("q_IMppipi_wL_p"),100,1,2,300,0,1.5);
 }

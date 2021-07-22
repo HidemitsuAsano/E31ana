@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="6"
+set Version="7"
 set DATADIR="/group/had/knucl/e15/data/Run78/"
 set OUTDIR="/group/had/knucl/e15/asano/Run78/"
 set KWSKDIR="/group/had/knucl/e15/shinngo/Run78/evtracking/"
@@ -35,7 +35,7 @@ ln -s $OUTDIRSUB/evanaIMLambdaPim_all.root post/evanaIMLambdaPim_v${Version}.roo
 ln -s $OUTDIRSUB/evanaIMLambdaPim_all_ppimpim.root post/evanaIMLambdaPim_ppimpim_v${Version}.root
 
 @ i = 100
-while ($i < 812)   
+while ($i < 813)   
 
   set EXEC___="./bin/evlpim"
   set CONF___="conf/Run78/analyzer_kwsk.conf"

@@ -288,6 +288,12 @@ void EventAnalysis::Initialize( ConfMan *conf )
   ppimpimTree->Branch( "vtx_pim1_cdc", &vtx_pim1_cdc );
   ppimpimTree->Branch( "vtx_pim2_cdc", &vtx_pim2_cdc );
   ppimpimTree->Branch( "vtx_p_cdc", &vtx_p_cdc );
+  ppimpimTree->Branch( "CA_pim1_pim1p",&CA_pim1_pim1p);
+  ppimpimTree->Branch( "CA_p_pim1p",&CA_p_pim1p);
+  ppimpimTree->Branch( "CA_pim2_pim2p",&CA_pim2_pim2p);
+  ppimpimTree->Branch( "CA_p_pim2p",&CA_p_pim2p);
+  ppimpimTree->Branch( "CA_pim1_pim1pim2",&CA_pim1_pim1pim2);
+  ppimpimTree->Branch( "CA_pim2_pim1pim2",&CA_pim2_pim1pim2);
   //ppimpimTree->Branch( "run_num", &run_num );
   //ppimpimTree->Branch( "event_num", &event_num );
   //ppimpimTree->Branch( "block_num", &block_num );
