@@ -15,7 +15,6 @@
 #include <TVector3.h>
 #include <TLorentzVector.h>
 #include <TLegend.h>
-#include <TPDF.h>
 #include <TPaveText.h>
 #include <TLatex.h>
 #include <TEfficiency.h>
@@ -67,40 +66,40 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH1::SetDefaultSumw2();
   //--- color style ---//
   //= = = = pipipnn final-sample tree = = = =//
-  TLorentzVector *LVec_beam=NULL;   // 4-momentum(beam)
-  TLorentzVector *LVec_target=NULL; // 4-momentum(target)
-  TLorentzVector *LVec_pim1=NULL;    // 4-momentum(pi+)
-  TLorentzVector *LVec_pim2=NULL;    // 4-momentum(pi-)
-  TLorentzVector *LVec_p=NULL;      // 4-momentum(proton)
-  TLorentzVector *mcmom_beam=NULL;   // generated 4-momentum(beam)
-  TLorentzVector *mcmom_pim1=NULL;    // generated 4-momentum(pi+)
-  TLorentzVector *mcmom_pim2=NULL;    // generated 4-momentum(pi-)
-  TLorentzVector *mcmom_p=NULL;      // generated 4-momentum(neutron)
-  TLorentzVector *mcmom_pmiss=NULL;      // generated 4-momentum(neutron)
-  TLorentzVector *react_pmiss=NULL;
-  TLorentzVector *react_Lambda=NULL;
-  TLorentzVector *react_pim=NULL;
-  TVector3 *vtx_reaction = NULL; // vertex(reaction) 
-  TVector3 *vtx_displaced = NULL; // vertex(reaction) 
-  TVector3 *vtx_pim1_beam = NULL; //C.A.P of pip-beam beam side
-  TVector3 *vtx_pim2_beam = NULL; //C.A.P of pim-beam beam side
-  TVector3 *vtx_p_beam = NULL; //C.A.P of pim-beam beam side
-  TVector3 *vtx_pim1_cdc = NULL;//C.A.P of pip-beam pip side
-  TVector3 *vtx_pim2_cdc = NULL;//C.A.P of pim-beam pim side
-  TVector3 *vtx_p_cdc = NULL;//C.A.P of pim-beam pim side
-  TVector3 *CA_pim1_pim1p = NULL;//C.A.P of pip-pim pip side
-  TVector3 *CA_p_pim1p = NULL;//C.A.P of pip-pim pim side
-  TVector3 *CA_pim2_pim2p = NULL;//C.A.P of pip-pim pip side
-  TVector3 *CA_p_pim2p = NULL;//C.A.P of pip-pim pim side
-  TVector3 *CA_pim1_pim1pim2 = NULL;//C.A.P of pip-pim pim side
-  TVector3 *CA_pim2_pim1pim2 = NULL;//C.A.P of pip-pim pim side
+  TLorentzVector *LVec_beam=nullptr;   // 4-momentum(beam)
+  TLorentzVector *LVec_target=nullptr; // 4-momentum(target)
+  TLorentzVector *LVec_pim1=nullptr;    // 4-momentum(pi+)
+  TLorentzVector *LVec_pim2=nullptr;    // 4-momentum(pi-)
+  TLorentzVector *LVec_p=nullptr;      // 4-momentum(proton)
+  TLorentzVector *mcmom_beam=nullptr;   // generated 4-momentum(beam)
+  TLorentzVector *mcmom_pim1=nullptr;    // generated 4-momentum(pi+)
+  TLorentzVector *mcmom_pim2=nullptr;    // generated 4-momentum(pi-)
+  TLorentzVector *mcmom_p=nullptr;      // generated 4-momentum(neutron)
+  TLorentzVector *mcmom_pmiss=nullptr;      // generated 4-momentum(neutron)
+  TLorentzVector *react_pmiss=nullptr;
+  TLorentzVector *react_Lambda=nullptr;
+  TLorentzVector *react_pim=nullptr;
+  TVector3 *vtx_reaction = nullptr; // vertex(reaction) 
+  TVector3 *vtx_displaced = nullptr; // vertex(reaction) 
+  TVector3 *vtx_pim1_beam = nullptr; //C.A.P of pip-beam beam side
+  TVector3 *vtx_pim2_beam = nullptr; //C.A.P of pim-beam beam side
+  TVector3 *vtx_p_beam = nullptr; //C.A.P of pim-beam beam side
+  TVector3 *vtx_pim1_cdc = nullptr;//C.A.P of pip-beam pip side
+  TVector3 *vtx_pim2_cdc = nullptr;//C.A.P of pim-beam pim side
+  TVector3 *vtx_p_cdc = nullptr;//C.A.P of pim-beam pim side
+  TVector3 *CA_pim1_pim1p = nullptr;//C.A.P of pip-pim pip side
+  TVector3 *CA_p_pim1p = nullptr;//C.A.P of pip-pim pim side
+  TVector3 *CA_pim2_pim2p = nullptr;//C.A.P of pip-pim pip side
+  TVector3 *CA_p_pim2p = nullptr;//C.A.P of pip-pim pim side
+  TVector3 *CA_pim1_pim1pim2 = nullptr;//C.A.P of pip-pim pim side
+  TVector3 *CA_pim2_pim1pim2 = nullptr;//C.A.P of pip-pim pim side
   //int run_num;   // run number
   //int event_num; // event number
   //int block_num; // block number
-  TLorentzVector *kf_mom_beam=NULL;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
-  TLorentzVector *kf_mom_pim1=NULL;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
-  TLorentzVector *kf_mom_pim2=NULL;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
-  TLorentzVector *kf_mom_proton=NULL;      // 4-momentum(neutron) after kinematical refit for pi- Sigma+
+  TLorentzVector *kf_mom_beam=nullptr;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
+  TLorentzVector *kf_mom_pim1=nullptr;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
+  TLorentzVector *kf_mom_pim2=nullptr;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
+  TLorentzVector *kf_mom_proton=nullptr;      // 4-momentum(neutron) after kinematical refit for pi- Sigma+
   double kf_chi2;   // chi2 of kinematical refit
   double kf_NDF;    // NDF of kinematical refit
   double kf_status; // status of kinematical refit -> details can be found in this code
@@ -169,6 +168,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   
   
   // w/o kinematic fit 
+  f->cd();
   TH2F* MMom_MMass;
   TH2F* MMom_MMass_p;
   TH2F* MMom_MMass_p_wL;
@@ -179,6 +179,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* MMass_IMppim1;
   TH2F* MMass_IMppim2;
   TH2F* MMass_IMppim_wL;
+  TH2F* MMass_IMppim_p_wL;
   TH2F* q_IMppipi_p;
   TH2F* q_IMppipi_p_wL;
   TH1F* DCA_pim1_beam = new TH1F("DCA_pim1_beam","DCA_pim1_beam",300,0,30);
@@ -239,6 +240,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   MMass_IMppim_wL->SetXTitle("IM(p#pi^{-} [GeV/c^{2}]");
   MMass_IMppim_wL->SetYTitle("Missing Mass [GeV/c^{2}]");
 
+  MMass_IMppim_p_wL = new TH2F("MMass_IMppim_p_wL","MMass_IMppim_p_wL",nbinIMppi,1.,2.0,nbinpmiss, pmisslow, pmisshigh);
+  MMass_IMppim_p_wL->SetXTitle("IM(p#pi^{-} [GeV/c^{2}]");
+  MMass_IMppim_p_wL->SetYTitle("Missing Mass [GeV/c^{2}]");
+  
   q_IMppipi_p = new TH2F("q_IMppipi_p","q_IMppipi_p",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
   q_IMppipi_p->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   q_IMppipi_p->SetYTitle("Mom. Transfer [GeV/c]");
@@ -332,6 +337,11 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       }
     }
     if(MissPFlag && LambdaFlag){
+      if((anacuts::Lambda_MIN<LVec_pim1_p.M() && LVec_pim1_p.M()<anacuts::Lambda_MAX)){
+        MMass_IMppim_p_wL->Fill(LVec_pim1_p.M(),pmiss_mass);
+      }else if((anacuts::Lambda_MIN<LVec_pim2_p.M() && LVec_pim2_p.M()<anacuts::Lambda_MAX)){
+        MMass_IMppim_p_wL->Fill(LVec_pim2_p.M(),pmiss_mass);
+      }
       MMom_MMass_p_wL->Fill(pmiss_mass,pmiss_mom);
       IMppim1_IMppim2_p_wL->Fill(LVec_pim2_p.M(),LVec_pim1_p.M());
       q_IMppipi_p_wL->Fill(LVec_pim1_pim2_p.M(),qkn.P());
@@ -353,38 +363,48 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   fkp->SetLineColorAlpha(kPink, 0.35);
   fkp->Draw("same");
   */
-
+  TCanvas *ctest = new TCanvas("ctest","ctest");
+  q_IMppipi_p_wL->Draw("colz");
+  
   f->cd();
   TIter nexthist(gDirectory->GetList());
-  TH1F *h1 = NULL;
-  TH1D *h1d = NULL;
-  TH2F *h2 = NULL;
-  TObject *obj = NULL;
-  while( (obj = (TObject*)nexthist())!=NULL  ){
+  TH1F *h1 = nullptr;
+  TH1D *h1d = nullptr;
+  TH2F *h2 = nullptr;
+  TObject *obj = nullptr;
+  TString outname = std::string(filename);
+  outname.Replace(std::string(filename).size()-5,5,"_out.root");
+  if(qvalcutflag==1) outname.Replace(std::string(outname).size()-5,5,"_qlo.root");
+  if(qvalcutflag==2) outname.Replace(std::string(outname).size()-5,5,"_qhi.root");
+  if(qvalcutflag==3) outname.Replace(std::string(outname).size()-5,5,"_theta15.root");
+  TFile *fout = new TFile(outname.Data(),"RECREATE");
+  while( (obj = (TObject*)nexthist())!=nullptr  ){
     if(obj->InheritsFrom("TH1F")){
       h1 = (TH1F*) obj;
       h1->GetXaxis()->CenterTitle();
-      h1->GetXaxis()->SetTitleSize(0.05);
-      h1->GetXaxis()->SetTitleOffset(0.80);
+      //h1->GetXaxis()->SetTitleSize(0.05);
+      //h1->GetXaxis()->SetTitleOffset(0.80);
     }
     if(obj->InheritsFrom("TH1D")){
       h1d = (TH1D*) obj;
       h1d->GetXaxis()->CenterTitle();
-      h1d->GetXaxis()->SetTitleSize(0.05);
-      h1d->GetXaxis()->SetTitleOffset(0.80);
+      //h1d->GetXaxis()->SetTitleSize(0.05);
+      //h1d->GetXaxis()->SetTitleOffset(0.80);
     }
     if(obj->InheritsFrom("TH2")){
       h2 = (TH2F*) obj;
       h2->GetXaxis()->CenterTitle();
       h2->GetYaxis()->CenterTitle();
-      h2->GetXaxis()->SetTitleSize(0.05);
-      h2->GetXaxis()->SetTitleOffset(0.80);
-      h2->GetYaxis()->SetTitleSize(0.05);
-      h2->GetYaxis()->SetTitleOffset(0.85);
+      //h2->GetXaxis()->SetTitleSize(0.05);
+      //h2->GetXaxis()->SetTitleOffset(0.80);
+      //h2->GetYaxis()->SetTitleSize(0.05);
+      //h2->GetYaxis()->SetTitleOffset(0.85);
     }
+    obj->Write();
   }
-
-  TCanvas *c = NULL;
+  fout->Close();
+  
+  TCanvas *c = nullptr;
   //TPDF *pdf = new TPDF(pdfname);
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
   int size = SCol->GetSize();
@@ -412,9 +432,12 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     else c->Print(pdfname,Form("Title:%s",c->GetTitle())); 
   }
  // pdf->Close();
+  
+  //f->cd();
+  /*
   std::cout << "closing pdf " << std::endl;
   TString outname = std::string(filename);
-  outname.Replace(std::string(filename).size()-4,5,"out.root");
+  outname.Replace(std::string(filename).size()-5,5,"_out.root");
   if(qvalcutflag==1) outname.Replace(std::string(outname).size()-5,5,"_qlo.root");
   if(qvalcutflag==2) outname.Replace(std::string(outname).size()-5,5,"_qhi.root");
   if(qvalcutflag==3) outname.Replace(std::string(outname).size()-5,5,"_theta15.root");
@@ -423,9 +446,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   fout->cd();
   TIter nexthist2(gDirectory->GetList());
   while( (obj = (TObject*)nexthist2())!=nullptr) {
+    obj->Print();
     obj->Write();
   }
   fout->cd();
   fout->Close();
-  
+  */
 }
