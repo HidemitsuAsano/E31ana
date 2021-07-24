@@ -181,7 +181,12 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* MMass_IMppim_wL;
   TH2F* q_IMppipi_p;
   TH2F* q_IMppipi_p_wL;
-
+  TH1F* DCA_pim1_beam = new TH1F("DCA_pim1_beam","DCA_pim1_beam",300,0,30);
+  DCA_pim1_beam->SetXTitle("DCA #pi^{-}1 [cm]");
+  TH1F* DCA_pim2_beam = new TH1F("DCA_pim2_beam","DCA_pim2_beam",300,0,30);
+  DCA_pim2_beam->SetXTitle("DCA #pi^{-}2 [cm]");
+  TH1F* DCA_pim1_pim2 = new TH1F("DCA_pim1_pim2","DCA_pim1_pim2",300,0,30);
+  DCA_pim1_pim2->SetXTitle("DCA #pi^{-}1#pi^{-}2");
 
   // w/ kinematic fit
   //TH2F* MMom_MMass_fid_kin;
@@ -312,8 +317,8 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     
     MMom_MMass->Fill(pmiss_mass,pmiss_mom);
     IMppim1_IMppim2->Fill(LVec_pim2_p.M(),LVec_pim1_p.M());
-    MMass_IMpim1->Fill(LVec_pim1_p.M(),pmiss_mass);
-    MMass_IMpim2->Fill(LVec_pim2_p.M(),pmiss_mass);
+    MMass_IMppim1->Fill(LVec_pim1_p.M(),pmiss_mass);
+    MMass_IMppim2->Fill(LVec_pim2_p.M(),pmiss_mass);
     if(MissPFlag){
       MMom_MMass_p->Fill(pmiss_mass,pmiss_mom);
       IMppim1_IMppim2_p->Fill(LVec_pim2_p.M(),LVec_pim1_p.M());
@@ -321,9 +326,9 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     }
     if(LambdaFlag){
       if((anacuts::Lambda_MIN<LVec_pim1_p.M() && LVec_pim1_p.M()<anacuts::Lambda_MAX)){
-        MMass_IMpim_wL->Fill(LVec_pim1_p.M(),pmiss_mass);
+        MMass_IMppim_wL->Fill(LVec_pim1_p.M(),pmiss_mass);
       }else if((anacuts::Lambda_MIN<LVec_pim2_p.M() && LVec_pim2_p.M()<anacuts::Lambda_MAX)){
-        MMass_IMpim_wL->Fill(LVec_pim2_p.M(),pmiss_mass);
+        MMass_IMppim_wL->Fill(LVec_pim2_p.M(),pmiss_mass);
       }
     }
     if(MissPFlag && LambdaFlag){
@@ -392,23 +397,9 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     c->Draw();
     c->cd();
     TPaveText *pt;
-    if(Spmode || Smmode){
-      pt = new TPaveText(.80,0.90,0.98,0.99,"NDC");    
-    }else{
-      pt = new TPaveText(.80,0.90,0.98,0.99,"NDC");    
-      //pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
-    }
-    if(Spmode){
-      pt->SetFillColor(kAzure-4);
-      pt->AddText("MC #Sigma+ mode");
-    }
-    else if(Smmode){
-      pt->SetFillColor(kAzure-4);
-      pt->AddText("MC #Sigma- mode"); 
-    }else{
-      pt->AddText("Real Data");
-      pt->SetFillColor(kCyan-9);
-    }
+    pt = new TPaveText(.80,0.90,0.98,0.99,"NDC");    
+    pt->AddText("Real Data");
+    pt->SetFillColor(kCyan-9);
     pt->SetBorderSize(1);
     pt->Draw();
 
@@ -430,6 +421,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TFile *fout = new TFile(outname.Data(),"RECREATE");
   fout->Print();
   fout->cd();
+  TIter nexthist2(gDirectory->GetList());
   while( (obj = (TObject*)nexthist2())!=nullptr) {
     obj->Write();
   }
