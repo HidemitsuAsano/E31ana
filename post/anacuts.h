@@ -85,5 +85,12 @@ namespace anacuts {
   const double Isonpim_zcutwide = 28.0;//cm
   
   const double CDHwidthphi = 0.12;//radian
+
+  
+  const double Lambda_MIN = 1.1075;//not tuned
+  const double Lambda_MAX = 1.1225;//not tuned
+  const double Proton_MIN = 0.83;//not tuned
+  const double Proton_MAX = 1.04;//not tuned
+
 }
 

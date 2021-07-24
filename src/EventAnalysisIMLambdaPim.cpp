@@ -130,6 +130,7 @@ private:
   TLorentzVector mom_pim2;    // 4-momentum(pi-)
   TLorentzVector mom_p;      // 4-momentum(proton)
   TVector3 vtx_reaction; // 
+  TVector3 vtx_displaced; // 
   TVector3 vtx_pim1_beam; // 
   TVector3 vtx_pim2_beam; // 
   TVector3 vtx_p_beam; // 
@@ -282,6 +283,7 @@ void EventAnalysis::Initialize( ConfMan *conf )
   ppimpimTree->Branch( "mom_pim2", &mom_pim2 );
   ppimpimTree->Branch( "mom_p", &mom_p );
   ppimpimTree->Branch( "vtx_reaction", &vtx_reaction );
+  ppimpimTree->Branch( "vtx_displaced", &vtx_displaced );
   ppimpimTree->Branch( "vtx_pim1_beam", &vtx_pim1_beam );
   ppimpimTree->Branch( "vtx_pim2_beam", &vtx_pim2_beam );
   ppimpimTree->Branch( "vtx_p_beam", &vtx_p_beam );
@@ -1032,6 +1034,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
        mom_pim2 = LVec_pim2;        // 4-momentum(pi-)
        mom_p = LVec_p;            // 4-momentum(neutron)
        vtx_reaction = vtx_react; // vertex(reaction)
+       vtx_displaced = vtx_dis; // vertex(reaction)
        vtx_pim1_beam = vtx_beam_wpim1;
        vtx_pim2_beam = vtx_beam_wpim2;
        vtx_p_beam = vtx_beam_wp;
@@ -1203,6 +1206,7 @@ void EventAnalysis::Clear( int &nAbort)
 
   //CDS
   vtx_reaction.SetXYZ(-9999.,-9999.,-9999.);
+  vtx_displaced.SetXYZ(-9999.,-9999.,-9999.);
   vtx_pim1_beam.SetXYZ(-9999.,-9999.,-9999.);
   vtx_pim2_beam.SetXYZ(-9999.,-9999.,-9999.);
   vtx_p_beam.SetXYZ(-9999.,-9999.,-9999.);

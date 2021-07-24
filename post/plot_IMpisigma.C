@@ -1075,7 +1075,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   //dE_MMass_fid_beta_woK0_wSid->SetXTitle("Missing mass [GeV/c^{2}]");
   //dE_MMass_fid_beta_woK0_wSid->SetYTitle("dE [MeVee]");
 
-  MMom_MMass = new TH2F(Form("MMom_MMass"),Form("MMom_MMass"), nbinnmiss, nmisslow, nmisshigh, 200, 0, 2.0);
+  MMom_MMass = new TH2F("MMom_MMass","MMom_MMass", nbinnmiss, nmisslow, nmisshigh, 200, 0, 2.0);
   MMom_MMass->SetXTitle("Missing Mass [GeV/c^{2}]");
   MMom_MMass->SetYTitle("Missing Mom. [GeV/c]");
 
