@@ -229,19 +229,19 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   IMppim1_IMppim2_p_wL->SetYTitle("IM(p#pi^{-}1) [GeV/c^{2}]");
 
   MMass_IMppim1 = new TH2F("MMass_IMppim1","MMass_IMppim1",nbinIMppi,1.,2.0,nbinpmiss, pmisslow, pmisshigh);
-  MMass_IMppim1->SetXTitle("IM(p#pi^{-} [GeV/c^{2}]");
+  MMass_IMppim1->SetXTitle("IM(p#pi^{-}) [GeV/c^{2}]");
   MMass_IMppim1->SetYTitle("Missing Mass [GeV/c^{2}]");
   
   MMass_IMppim2 = new TH2F("MMass_IMppim2","MMass_IMppim2",nbinIMppi,1.,2.0,nbinpmiss, pmisslow, pmisshigh);
-  MMass_IMppim2->SetXTitle("IM(p#pi^{-} [GeV/c^{2}]");
+  MMass_IMppim2->SetXTitle("IM(p#pi^{-}) [GeV/c^{2}]");
   MMass_IMppim2->SetYTitle("Missing Mass [GeV/c^{2}]");
   
   MMass_IMppim_wL = new TH2F("MMass_IMppim_wL","MMass_IMppim_wL",nbinIMppi,1.,2.0,nbinpmiss, pmisslow, pmisshigh);
-  MMass_IMppim_wL->SetXTitle("IM(p#pi^{-} [GeV/c^{2}]");
+  MMass_IMppim_wL->SetXTitle("IM(p#pi^{-}) [GeV/c^{2}]");
   MMass_IMppim_wL->SetYTitle("Missing Mass [GeV/c^{2}]");
 
   MMass_IMppim_p_wL = new TH2F("MMass_IMppim_p_wL","MMass_IMppim_p_wL",nbinIMppi,1.,2.0,nbinpmiss, pmisslow, pmisshigh);
-  MMass_IMppim_p_wL->SetXTitle("IM(p#pi^{-} [GeV/c^{2}]");
+  MMass_IMppim_p_wL->SetXTitle("IM(p#pi^{-}) [GeV/c^{2}]");
   MMass_IMppim_p_wL->SetYTitle("Missing Mass [GeV/c^{2}]");
   
   q_IMppipi_p = new TH2F("q_IMppipi_p","q_IMppipi_p",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
