@@ -170,6 +170,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   // w/o kinematic fit 
   f->cd();
   TH2F* MMom_MMass;
+  TH2F* q_MMass;
   TH2F* MMom_MMass_p;
   TH2F* MMom_MMass_p_wL;
   TH2F* MMom_PMom_p;
@@ -207,6 +208,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   MMom_MMass = new TH2F("MMom_MMass","MMom_MMass", nbinpmiss, pmisslow, pmisshigh, 200, 0, 2.0);
   MMom_MMass->SetXTitle("Missing Mass [GeV/c^{2}]");
   MMom_MMass->SetYTitle("Missing Mom. [GeV/c]");
+  
+  q_MMass = new TH2F("q_MMass","q_MMass", nbinpmiss, pmisslow, pmisshigh, 200, 0, 2.0);
+  q_MMass->SetXTitle("Missing Mass [GeV/c^{2}]");
+  q_MMass->SetYTitle("Mom. Traksfer. [GeV/c]");
 
   MMom_MMass_p = new TH2F("MMom_MMass_p","MMom_MMass_p", nbinpmiss, pmisslow, pmisshigh, 200, 0, 2.0);
   MMom_MMass_p->SetXTitle("Missing Mass [GeV/c^{2}]");
@@ -252,6 +257,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   q_IMppipi_p_wL->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   q_IMppipi_p_wL->SetYTitle("Mom. Transfer [GeV/c]");
 
+    TH1D* pim1cos = new TH1D("pim1cos","pim1cos",100,-1,1);
+    TH1D* pim2cos = new TH1D("pim2cos","pim2cos",100,-1,1);
+    TH1D* pcos = new TH1D("pcos","pcos",100,-1,1);
+    TH1D* pmisscos = new TH1D("pmisscos","pmisscos",100,-1,1);
   Int_t nevent = tree->GetEntries();
   std::cerr<<"# of events = "<<nevent<<std::endl;
   
@@ -275,12 +284,12 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
 
     // calc cos(theta) of missing p //
     TVector3 boost = (*LVec_target+*LVec_beam).BoostVector();
+    TLorentzVector qkn = *LVec_beam-LVec_p_miss;
     TLorentzVector LVec_p_miss_CM = LVec_p_miss;
     TLorentzVector LVec_beam_CM = *LVec_beam;
     LVec_p_miss_CM.Boost(-boost);
     LVec_beam_CM.Boost(-boost);
     double cos_p = LVec_p_miss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_p_miss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
-    TLorentzVector qkn = *LVec_beam-LVec_p_miss;
     
     // calc pi-pi- //
     TLorentzVector LVec_pim1_pim2 = *LVec_pim1+*LVec_pim2;
@@ -299,12 +308,19 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     TLorentzVector LVec_pim1_pim2_p_CM = LVec_pim1_pim2_p;
     LVec_pim1_pim2_p_CM.Boost(-boost);
     double cos_X = LVec_pim1_pim2_p_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pim1_pim2_p_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
-
+    
     if( (qkn.P()>=anacuts::qvalcut) && (qvalcutflag==1) ) continue;
     if( (qkn.P()<anacuts::qvalcut) && (qvalcutflag==2) ) continue;
     
     //double chi2 = kfSpmode_chi2<kfSmmode_chi2 ? kfSpmode_chi2:kfSmmode_chi2;
     //double pvalue = kfSmmode_pvalue<kfSpmode_pvalue ? kfSpmode_pvalue:kfSmmode_pvalue;
+
+    pim1cos->Fill((*LVec_pim1).CosTheta());
+    pim2cos->Fill((*LVec_pim2).CosTheta());
+    pcos->Fill((*LVec_p).CosTheta());
+    pmisscos->Fill(LVec_p_miss.CosTheta());
+
+
 
     bool MissPFlag=false;
     bool LambdaFlag=false;
@@ -321,6 +337,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     if(anacuts::Proton_MIN<pmiss_mass && pmiss_mass<anacuts::Proton_MAX ) MissPFlag=true;
     
     MMom_MMass->Fill(pmiss_mass,pmiss_mom);
+    q_MMass->Fill(pmiss_mass,qkn.P());
     IMppim1_IMppim2->Fill(LVec_pim2_p.M(),LVec_pim1_p.M());
     MMass_IMppim1->Fill(LVec_pim1_p.M(),pmiss_mass);
     MMass_IMppim2->Fill(LVec_pim2_p.M(),pmiss_mass);
