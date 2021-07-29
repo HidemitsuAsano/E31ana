@@ -1306,7 +1306,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   diff2D_nmom_IMnpip_recomc_wK0_wSid_n_fake1->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
   diff2D_nmom_IMnpip_recomc_wK0_wSid_n_fake1->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
   
-  diff2D_nmom_IMnpim_recomc_wSid_n = new TH2F("diff2D_nmom_IMnpim_recomc_wSid_n","diff2D_nmom_IMnpim_recomc_wSid_n",200,-0.2,0.2,400,-0.4,0.4);
+  diff2D_nmom_IMnpim_recomc_wSid_n = new TH2F("diff2D_nmom_IMnpim_recomc_wSid_n","diff2D_nmom_IMnpim_recomc_wSid_n",2000,-0.2,0.2,400,-0.4,0.4);
   diff2D_nmom_IMnpim_recomc_wSid_n->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
   diff2D_nmom_IMnpim_recomc_wSid_n->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
   
@@ -1314,7 +1314,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   diff2D_nmom_IMnpim_recomc_wSid_n_fake1->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
   diff2D_nmom_IMnpim_recomc_wSid_n_fake1->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
 
-  diff2D_nmom_IMnpip_recomc_wSid_n = new TH2F("diff2D_nmom_IMnpip_recomc_wSid_n","diff2D_nmom_IMnpip_recomc_wSid_n",200,-0.2,0.2,400,-0.4,0.4);
+  diff2D_nmom_IMnpip_recomc_wSid_n = new TH2F("diff2D_nmom_IMnpip_recomc_wSid_n","diff2D_nmom_IMnpip_recomc_wSid_n",2000,-0.2,0.2,400,-0.4,0.4);
   diff2D_nmom_IMnpip_recomc_wSid_n->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
   diff2D_nmom_IMnpip_recomc_wSid_n->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
 
@@ -3366,15 +3366,15 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   nmom_IMpippim_wK0_woSid_won->SetYTitle("nmom  [GeV/c]");
   
   diffnmom_diffdca_n = new TH2F("diffnmom_diffdca_n","diffnmom_diffdca_n",1000,-2,2,1000,-0.2,0.2);
-  diffnmom_diffdca_n->SetXTitle("reco - true n_{CDS} DCA. [cm]");
+  diffnmom_diffdca_n->SetXTitle("reco - true n_{CDS} vertex. [cm]");
   diffnmom_diffdca_n->SetYTitle("reco - true n_{CDS} mom. [GeV/c]");
 
   diffnmom_diffdcar_n = new TH2F("diffnmom_diffdcar_n","diffnmom_diffdcar_n",1000,-2,2,1000,-0.2,0.2);
-  diffnmom_diffdcar_n->SetXTitle("reco - true n_{CDS} DCAr. [cm]");
+  diffnmom_diffdcar_n->SetXTitle("reco - true n_{CDS} vertex in r. [cm]");
   diffnmom_diffdcar_n->SetYTitle("reco - true n_{CDS} mom. [GeV/c]");
   
   diffnmom_diffdcaz_n = new TH2F("diffnmom_diffdcaz_n","diffnmom_diffdcaz_n",1000,-4,4,1000,-0.2,0.2);
-  diffnmom_diffdcaz_n->SetXTitle("reco - true n_{CDS} DCAz. [cm]");
+  diffnmom_diffdcaz_n->SetXTitle("reco - true n_{CDS} vertex in z. [cm]");
   diffnmom_diffdcaz_n->SetYTitle("reco - true n_{CDS} mom. [GeV/c]");
   
   vtxr_vtxz_n = new TH2F("vtxr_vtxz_n","vtxr_vtxz_n",1000,-12.5,12.5,300,0,30);

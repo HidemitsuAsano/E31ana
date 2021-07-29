@@ -91,6 +91,7 @@ void CalcSurvivalBeam()
   hBeamSurvivalR->GetYaxis()->CenterTitle();
   hBeamSurvivalR->GetYaxis()->SetRangeUser(0,0.5);
   hBeamSurvivalR->Draw("E");
+ 
 
   TFile *file = new TFile("beamSurvival.root","RECREATE");
   hBeamSurvivalR->Write();

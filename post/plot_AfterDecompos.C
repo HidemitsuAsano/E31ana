@@ -36,10 +36,10 @@ void plot_AfterDecompos()
 {
   TFile *fr[4]={NULL};
   
-  fr[0] = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_sub.root");
-  fr[1] = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qlo_sub.root");
-  fr[2] = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qhi_sub.root");
-  fr[3] = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_theta15_sub.root");
+  fr[0] = TFile::Open("evanaIMpisigma_npippim_v226_out_iso_nostop_sub.root");
+  fr[1] = TFile::Open("evanaIMpisigma_npippim_v226_out_iso_qlo_nostop_sub.root");
+  fr[2] = TFile::Open("evanaIMpisigma_npippim_v226_out_iso_qhi_nostop_sub.root");
+  fr[3] = TFile::Open("evanaIMpisigma_npippim_v226_out_iso_theta15_nostop_sub.root");
   fr[0]->Print();
   fr[1]->Print();
   fr[2]->Print();
@@ -694,19 +694,32 @@ void plot_AfterDecompos()
     q_IMnpipi_K0_cs[iq]->ProjectionX()->Draw("HE");
   }
   
-  TCanvas *csum = new TCanvas("csum","csum",1600,800);
-  csum->Divide(2,1);
+  
+  TCanvas *csum[2];
   TH2D* q_IMnpipi_SpSmSum[2];
   for(int iq=0;iq<2;iq++){
+    csum[iq]  = new TCanvas(Form("csum%d",iq),Form("csum%d",iq),1600,800);
+    csum[iq]->Divide(2,1);
     q_IMnpipi_SpSmSum[iq] = (TH2D*)q_IMnpipi_Sp_cs[iq]->Clone(Form("q_IMnpipi_SpSmSum%d",iq));
     q_IMnpipi_SpSmSum[iq]->Add(q_IMnpipi_Sm_cs[iq],1.0);
+    csum[iq]->cd(1);
+    q_IMnpipi_SpSmSum[iq]->SetTitle(Form("q_IMnpipi_SpSmSum_%d",iq));
+    q_IMnpipi_SpSmSum[iq]->SetMinimum(0);
+    q_IMnpipi_SpSmSum[iq]->Draw("colz");
+    csum[iq]->cd(2);
+    q_IMnpipi_SpSmSum[iq]->SetTitle("#Sigma^{+} #Sigma^{-} charge Sum");
+    q_IMnpipi_SpSmSum[iq]->ProjectionX()->Draw("HE");
   }
-  csum->cd(1);
-  q_IMnpipi_SpSmSum[1]->SetTitle("q_IMnpipi_SpSmSum");
-  q_IMnpipi_SpSmSum[1]->Draw("colz");
-  csum->cd(2);
-  q_IMnpipi_SpSmSum[1]->ProjectionX()->Draw("HE");
- 
+
+  TCanvas *csum2D = new TCanvas("csum2D","csum2D");
+  csum2D->cd();
+  q_IMnpipi_SpSmSum[0]->Draw("col");
+  q_IMnpipi_SpSmSum[1]->Draw("colsame");
+
+
+
+
+
   TCanvas *csub = new TCanvas("csub","csub",1600,800);
   csub->Divide(2,1);
   TH2D* q_IMnpipi_SpSmSub[2];
@@ -736,8 +749,9 @@ void plot_AfterDecompos()
     //IMnpipi_K0_cs[iq]->RebinX(2);
     //IMnpipi_Sp_cs[iq]->RebinX(2);
     //IMnpipi_Sm_cs[iq]->RebinX(2);
-    IMnpipi_K0_cs[iq]->Draw("HE");
-    IMnpipi_Sp_cs[iq]->Draw("HEsame");
+    //IMnpipi_K0_cs[iq]->Draw("HE");
+    //IMnpipi_Sp_cs[iq]->Draw("HEsame");
+    IMnpipi_Sp_cs[iq]->Draw("HE");
     IMnpipi_Sm_cs[iq]->Draw("HEsame");
   }
 

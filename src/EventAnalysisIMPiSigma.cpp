@@ -481,12 +481,24 @@ void EventAnalysis::USca( int nsca, unsigned int *sca )
     return;
   }
 
+  static bool FirstScalerRead=true;
   for( int i=0; i<scaMan->nsca(); i++ ) {
     TString name = scaMan->sca(i)->name();
+    //test 
+    int val =scaMan->sca(i)->val()-scaend[i];
+    if(FirstScalerRead) {
+      val -= scainit[i];
+      std::cout << i << " init  " << scainit[i] << std::endl;
+    }
+    TH1F* h1 = (TH1F*)gFile->Get(Form("SCA%d",i));
+    h1->Fill(Event_Number,val);
+    
     if( scaend[i]>9.9e+07 && scaend[i]>scaMan->sca(i)->val() ) SCAOVERFLOW[i] = true;
     scaend[i] = scaMan->sca(i)->val();
     if( SCAOVERFLOW[i] ) scaend[i] += 1.0e+08;
+  
   }
+  FirstScalerRead =false;
 
   t1 = clock();
   TH1F* h1 = (TH1F*)gFile->Get( "Time" );
@@ -1655,6 +1667,9 @@ void EventAnalysis::InitializeHistogram()
   // 19. BLC2-BPC track is not matched
   InitBasicHist();
   InitIMPiSigmaHist();
+   for( int i=0; i<40; i++ ){
+     Tools::newTH1F(Form("SCA%d",i), 2000000, -0.5, 1999999.5);
+   }
 
 
   return;
