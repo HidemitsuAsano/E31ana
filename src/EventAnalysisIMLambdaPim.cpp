@@ -781,7 +781,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
     LVec_pim1.SetVectM( P_pim1, piMass );
     LVec_pim2.SetVectM( P_pim2, piMass );
-    LVec_p.SetVectM(   P_p,   pMass );//CDS n
+    LVec_p.SetVectM(   P_p,   pMass );//
       
     //const double pimphi = P_pim.Phi();
     //const double pipphi = P_pip.Phi();

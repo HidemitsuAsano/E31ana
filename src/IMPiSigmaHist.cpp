@@ -59,6 +59,7 @@ void InitBasicHist(const bool MCFlag)
   Tools::newTH2F( Form("dydx_BLC2BPC"),     500, -5, 5, 500, -5, 5 );
   Tools::newTH2F( Form("dydzdxdz_BLC2BPC"), 175, -0.035, 0.035, 175, -0.035, 0.035 );
   Tools::newTH1F( Form("trackchi2_beam"), 500, 0, 50 );
+  Tools::newTH2F( Form("D5chi2_mom"),180,0.92,1.10, 500, 0, 50 );
   Tools::newTH1F( Form("momentum_beam"), 180, 0.92, 1.10 );
   Tools::newTH1F( Form("PID_beam"),5,-1.5,3.5);
   //** CDS **//

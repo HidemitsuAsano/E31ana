@@ -343,6 +343,7 @@ double Util::AnaBeamSpec(ConfMan *confman, BeamLineTrackMan *bltrackman,const in
   delete beamsp;
 
   Tools::Fill1D( Form("trackchi2_beam"), bchi );
+  Tools::Fill2D( Form("D5chi2_mom"),beammom,bchi);
   if( bchi>blcuts::d5_chi2_max ) {
     return -9999.;
   }
