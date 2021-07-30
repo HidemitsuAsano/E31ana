@@ -48,7 +48,7 @@ void CalcDAQEff()
     double req =0.0;
     double acc =0.0;
     for(int ie=0;ie<SCA3->GetNbinsX();ie++){
-      double cosmic = SCA16->GetBinContent(16);
+      double cosmic = SCA16->GetBinContent(ie);
       if(cosmic<1){
         req +=SCA3->GetBinContent(ie);
         acc +=SCA4->GetBinContent(ie);
