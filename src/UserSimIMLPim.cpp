@@ -72,10 +72,11 @@ TLorentzVector mom_target; // 4-momentum(target)
 TLorentzVector mom_pim1;    // 4-momentum(pi-)
 TLorentzVector mom_pim2;    // 4-momentum(pi-)
 TLorentzVector mom_p;      // 4-momentum(proton)
-TLorentzVector react_pmiss;
-TLorentzVector react_Lambda;
-TLorentzVector react_pim;
+TLorentzVector react_pmiss; //mc info.
+TLorentzVector react_Lambda;//mc info.
+TLorentzVector react_pim; //mc info.
 TVector3 vtx_reaction; //  vertex(reaction)   
+TVector3 vtx_displaced;
 TVector3 vtx_pim1_beam; //  
 TVector3 vtx_pim2_beam; //   
 TVector3 vtx_p_beam; //   
@@ -97,6 +98,7 @@ TLorentzVector mcmom_pim1;    // generated 4-momentum(pi+)
 TLorentzVector mcmom_pim2;    // generated 4-momentum(pi-)
 TLorentzVector mcmom_p;      // generated 4-momentum(neutron)
 TVector3 mc_vtx;
+TVector3 mc_disvtx;
 TLorentzVector kfMomBeamSpmode;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
 TLorentzVector kfMom_pip_Spmode;    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
 TLorentzVector kfMom_pim_Spmode;    // 4-momentum(pi-) after kinematical refit for pi- Sigma+
@@ -231,6 +233,7 @@ int main( int argc, char** argv )
   ppimpimTree->Branch( "mom_pim2", &mom_pim2 );
   ppimpimTree->Branch( "mom_p", &mom_p );
   ppimpimTree->Branch( "vtx_reaction", &vtx_reaction );
+  ppimpimTree->Branch( "vtx_displaced", &vtx_displaced );
   ppimpimTree->Branch( "vtx_pim1_beam", &vtx_pim1_beam );
   ppimpimTree->Branch( "vtx_pim2_beam", &vtx_pim2_beam );
   ppimpimTree->Branch( "vtx_p_beam", &vtx_p_beam );
@@ -255,6 +258,7 @@ int main( int argc, char** argv )
   ppimpimTree->Branch( "react_Lambda",&react_Lambda);
   ppimpimTree->Branch( "react_pim",&react_pim);
   ppimpimTree->Branch( "mc_vtx", &mc_vtx );
+  ppimpimTree->Branch( "mc_disvtx", &mc_disvtx );
   //ppimpimTree->Branch( "kfSpmode_mom_beam",   &kfMomBeamSpmode );
   //ppimpimTree->Branch( "kfSpmode_mom_pip", &kfMom_pip_Spmode );
   //ppimpimTree->Branch( "kfSpmode_mom_pim", &kfMom_pim_Spmode );
