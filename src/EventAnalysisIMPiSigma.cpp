@@ -491,12 +491,11 @@ void EventAnalysis::USca( int nsca, unsigned int *sca )
       std::cout << i << " init  " << scainit[i] << std::endl;
     }
     TH1F* h1 = (TH1F*)gFile->Get(Form("SCA%d",i));
-    h1->Fill(Event_Number,val);
+    h1->SetBinContent(Event_Number,val);
     
     if( scaend[i]>9.9e+07 && scaend[i]>scaMan->sca(i)->val() ) SCAOVERFLOW[i] = true;
     scaend[i] = scaMan->sca(i)->val();
     if( SCAOVERFLOW[i] ) scaend[i] += 1.0e+08;
-  
   }
   FirstScalerRead =false;
 
