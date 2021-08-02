@@ -969,7 +969,30 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     double dcapippim=-9999.;
     if(vtx_flag) dcapippim = (CA_pim_pippim-CA_pip_pippim).Mag();
     Tools::Fill1D( Form("DCA_pippim"), dcapippim);
+    TVector3 CA_pippimcenter = (CA_pip_pippim+CA_pim_pippim)/2.0; 
 
+    TVector3 P_pim; // Momentum(pi-)
+    TVector3 P_pip; // Momentum(pi+)
+    
+    //energy loss correction and momentum correction using vertex info
+    if( !track_pip->GetMomentum( vtx_pip, P_pip, true, true ) ) {
+      std::cerr<<"L." << __LINE__ << " !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
+    }
+
+    if( !track_pim->GetMomentum( vtx_pim, P_pim, true, true ) ) {
+      std::cerr<<"L." << __LINE__ << " !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
+    }
+
+    TVector3 P_pippim = P_pip+P_pim;
+     
+    TVector3 vtx_dis_K0;//K0 displaced vertex w K0 assumption
+    double dl=0;
+    double dist=0;
+    TVector3 nest;//nest: always 0 if dl=0;
+    //K0 straight track and beam track 
+    //nest is always 0 here
+    MathTools::LineToLine(CA_pippimcenter,P_pippim,bpctrack->GetPosatZ(0), bpctrack->GetMomDir(),dl,dist,vtx_dis_K0,nest);
+      
 
     //reaction vertex is determined from beam and nearest vtx
     TVector3 vtx_beam;
@@ -1051,7 +1074,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     //nlen_vtx[1] = (Pos_CDH-CA_pim_pippim).Mag();
     nlen_vtx[0] = (Pos_CDH-vtx_pip).Mag();
     nlen_vtx[1] = (Pos_CDH-vtx_pim).Mag();
-    nlen_vtx[2] = (Pos_CDH-vtx_react).Mag();
+    nlen_vtx[2] = (Pos_CDH-vtx_dis_K0).Mag();
     if(Verbosity>10) std::cout << "L." << __LINE__ << " flight length " << nlen << std::endl;
     NeutralBetaCDH = nlen/ntof/(Const*100.);
     NeutralBetaCDH_beam = nlen_beam/ntof/(Const*100.);
@@ -1069,9 +1092,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       std::cerr<<" NeutralBetaCDH = "<<NeutralBetaCDH<<" mom_n = "<<tmp_mom<<std::endl; //" "<<1/sqrt(1+nMass*nMass)<<std::endl;
     }
 
-    //** reconstructoin of missing neutorn **//
-    TVector3 P_pim; // Momentum(pi-)
-    TVector3 P_pip; // Momentum(pi+)
 
     TLorentzVector LVec_pim; // 4-Momentum(pi-)
     TLorentzVector LVec_pip; // 4-Momentum(pi+)
@@ -1080,15 +1100,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     TLorentzVector LVec_n_vtx[3];   // 4-Momentum(n) (CDS) //decay vertex 0: pip (Spmode), 1:pim (Smmode), 2:reaction vertex (K0 mode)
     TLorentzVector LVec_nmiss; // 4-Momentum(n_miss)
     TLorentzVector LVec_nmiss_vtx[3]; // 4-Momentum(n_miss)
-
-    //energy loss correction and momentum correction using vertex info
-    if( !track_pip->GetMomentum( vtx_pip, P_pip, true, true ) ) {
-      std::cerr<<"L." << __LINE__ << " !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
-    }
-
-    if( !track_pim->GetMomentum( vtx_pim, P_pim, true, true ) ) {
-      std::cerr<<"L." << __LINE__ << " !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
-    }
 
     //Momentum (n CDS)
     TVector3 P_n;
@@ -1103,7 +1114,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-vtx_pim).Unit());
     //P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-CA_pip_pippim).Unit());
     //P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-CA_pim_pippim).Unit());
-    P_n_vtx[2] = tmp_mom_vtx[2]*((Pos_CDH-vtx_react).Unit());
+    P_n_vtx[2] = tmp_mom_vtx[2]*((Pos_CDH-vtx_dis_K0).Unit());
 
     LVec_pim.SetVectM( P_pim, piMass );
     LVec_pip.SetVectM( P_pip, piMass );
