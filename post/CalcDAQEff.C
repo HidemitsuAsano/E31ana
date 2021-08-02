@@ -9,15 +9,13 @@ void CalcDAQEff()
   const int ScCH_Cosmic = 17;
   double firstTrig = Scaler->GetBinContent(ScCH_firstTrig);
   double firstCompVeto = Scaler->GetBinContent(ScCH_firstCompVeto);
-  std::cout << "DAQ acc. " << firstTrig<< std::endl;
-  std::cout << "DAQ req. " << firstCompVeto << std::endl;
-  std::cout << "DAQ eff. " << (float) (firstCompVeto)/firstTrig << std::endl;
-  std::cout << "err    . " << sqrt(firstCompVeto*(firstTrig-firstCompVeto)/firstTrig)/firstTrig << std::endl;
-
+  std::cout << "DAQ acc. " << firstTrig<< std::endl;                                                            
+  std::cout << "DAQ req. " << firstCompVeto << std::endl;                                                       
+  std::cout << "DAQ eff. " << (float) (firstCompVeto)/firstTrig << std::endl;                                   
+  std::cout << "err    . " << sqrt(firstCompVeto*(firstTrig-firstCompVeto)/firstTrig)/firstTrig << std::endl;   
   
   ifstream ifs("../goodrunlist/goodrun_list");
   std::string str;
-  
   int runnum[1024];
  
   int iline=0;
@@ -32,8 +30,12 @@ void CalcDAQEff()
   hacc->Sumw2();
   TH1D* hreq = new TH1D("hreq","hreq",1000,0,1000);
   hreq->Sumw2();
+  double reqall = 0.0;
+  double accall = 0.0;
   for(int irun=0;irun<iline;irun++){
-    TFile *_file = TFile::Open(Form("/gpfs/group/had/knucl/e15/asano/Run78/IMpisigmav227/evanaIMpisigma_0%03d.root",runnum[irun]),"READ");
+    std::cout << irun << std::endl;
+    //TFile *_file = TFile::Open(Form("/gpfs/group/had/knucl/e15/asano/Run78/IMpisigmav227/evanaIMpisigma_0%03d.root",runnum[irun]),"READ");
+    TFile *_file = TFile::Open(Form("~/v207tmp/evanaIMpisigma_0%03d.root",runnum[irun]),"READ");
     TH1D* hscaler = (TH1D*)_file->Get("Scaler");
     double firstTrig = hscaler->GetBinContent(ScCH_firstTrig);
     double firstCompVeto = hscaler->GetBinContent(ScCH_firstCompVeto);
@@ -47,18 +49,29 @@ void CalcDAQEff()
     TH1D* SCA16 = (TH1D*)_file->Get("SCA16");
     double req =0.0;
     double acc =0.0;
-    for(int ie=0;ie<SCA3->GetNbinsX();ie++){
+    for(int ie=1;ie<SCA3->GetNbinsX();ie++){
       double cosmic = SCA16->GetBinContent(ie);
-      if(cosmic<1){
-        req +=SCA3->GetBinContent(ie);
-        acc +=SCA4->GetBinContent(ie);
+      double s3c = SCA3->GetBinContent(ie);
+      double s4c = SCA4->GetBinContent(ie);
+      if( (cosmic<1) && (s3c>0) && (s4c>0) ){
+        req += s3c;
+        acc += s4c;
+        reqall += s3c;
+        accall += s4c;
+      }
+      if(irun==0 && (ie==(SCA3->GetNbinsX()-1)) ){
+        std::cout << "ie " << ie << std::endl;
+        std::cout << "reqall " << reqall << std::endl;
+        std::cout << "accall " << accall << std::endl;
+        std::cout << "inte   " << SCA3->Integral() << std::endl;
       }
     }
-    hreq->SetBinContent(runnum[irun],req);
-    hreq->SetBinError(runnum[irun],sqrt(req));
-    hacc->SetBinContent(runnum[irun],acc);
-    hacc->SetBinError(runnum[irun],sqrt(acc));
-   
+    if(req>acc){
+      hreq->SetBinContent(runnum[irun],req);
+      hreq->SetBinError(runnum[irun],sqrt(req));
+      hacc->SetBinContent(runnum[irun],acc);
+      hacc->SetBinError(runnum[irun],sqrt(acc));
+    }
     _file->Close();
   }
   TH1D* heff = (TH1D*)hacc->Clone("heff");
@@ -71,6 +84,10 @@ void CalcDAQEff()
   heff->SetMarkerStyle(20);
   heff->Draw("E");
   //gdaqeff->Draw("AP");
+  std::cout << "DAQ acc. " << reqall << std::endl;
+  std::cout << "DAQ req. " << accall << std::endl;
+  std::cout << "DAQ eff. " << (float) accall/reqall << std::endl;
+  std::cout << "err    . " << sqrt(accall*(reqall-accall)/reqall)/reqall << std::endl;
   
   TFile *file = new TFile("daqeff.root","RECREATE");
   heff->Write();
