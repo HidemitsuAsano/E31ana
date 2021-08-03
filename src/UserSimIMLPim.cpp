@@ -875,7 +875,6 @@ int main( int argc, char** argv )
       TrackTools::Calc2HelixVertex(track_pim2, track_p, CroA_pim2_pim2p, CroA_p_pim2p);
 
 
-
       //reaction vertex is determined from beam and nearest vtx 
       if(dcapim1vtx <= dcapim2vtx){
         //follows sakuma/sada's way , avg. of scattered particle ana beam particle [20180829]
@@ -883,14 +882,16 @@ int main( int argc, char** argv )
           //if(cdscuts_lpimuseclosestpi) vtx_dis  = vtx_pip;
           //else              vtx_dis  = vtx_pim;
           //vtx_dis  = vtx_pim;
-          vtx_dis  = CA_pim2_pim1pim2;
+          //vtx_dis  = CA_pim2_pim1pim2;
+          vtx_dis  = vtx_p;
           vtx_beam = vtx_beam_wpim1;
         }else{
           vtx_react = 0.5*(vtx_pim2+vtx_beam_wpim2);
           //if(cdscuts_lpimuseclosestpi) vtx_dis = vtx_pim;
           //else             vtx_dis = vtx_pip;
           //vtx_dis = vtx_pip;
-          vtx_dis = CA_pim1_pim1pim2;
+          //vtx_dis = CA_pim1_pim1pim2;
+          vtx_dis = vtx_p;
           vtx_beam = vtx_beam_wpim2;
         }
 
@@ -1306,10 +1307,14 @@ int main( int argc, char** argv )
           mom_pim1 = LVec_pim1;        // 4-momentum(pi-)
           mom_pim2 = LVec_pim2;        // 4-momentum(pi-)
           mom_p = LVec_p;            // 4-momentum(neutron)
-          TVector3 mcvertex = mcData->track(kinpLpim::kmbeam)->vertex();
+          TVector3 mcvertex = mcData->track(ID[kinpLpim::kmbeam])->vertex();
           TVector3 mcvertexc(mcvertex.x()/10.,mcvertex.y()/10.,mcvertex.z()/10.); 
           mc_vtx = mcvertexc;
+          TVector3 mcdisvertex = mcData->track(ID[kinpLpim::pcds])->vertex();
+          TVector3 mcdisvertexc(mcdisvertex.x()/10.,mcdisvertex.y()/10.,mcdisvertex.z()/10.); 
+          mc_disvtx = mcdisvertexc;
           vtx_reaction = vtx_react; // vertex(reaction)
+          vtx_displaced = vtx_dis; // vertex(reaction)
           vtx_pim1_beam = vtx_beam_wpim1;
           vtx_pim2_beam = vtx_beam_wpim2;
           vtx_p_beam = vtx_beam_wp;
