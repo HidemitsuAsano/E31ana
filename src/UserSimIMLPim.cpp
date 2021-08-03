@@ -663,7 +663,7 @@ int main( int argc, char** argv )
     }
 
     //### BLC2-BPC position matching
-    //TODO : not tuned yet
+    //TODO : take into account beam loss by these cut
     bool fblc2bpc = false;
     for( int iblc2trk=0; iblc2trk<bltrackMan->ntrackBLC2(); iblc2trk++ ){
       if( iblc2trk!=blc2id ) continue;
