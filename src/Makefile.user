@@ -123,3 +123,5 @@ simIMLPim:$(TMPDIR)/UserSimIMLPim.o IMPiSigmaAnaPar.h\
 
 simclean:
 	rm -rf $(BINDIR)/simIMPiSigma $(TMPDIR)/IMPiSigma* $(TMPDIR)/UserSimIMPiSigma.*
+simlpimclean:
+	rm -rf $(BINDIR)/simIMLPim  $(TMPDIR)/IMPiSigma* $(TMPDIR)/UserSimIMLPim.*
