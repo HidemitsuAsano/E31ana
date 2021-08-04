@@ -601,7 +601,8 @@ int main( int argc, char** argv )
     //beam line analysis and event selection
 
     //** T0 = 1hit selection **//
-    const double ctmT0 = Util::AnalyzeT0(blMan,confMan);
+    int t0seg=-1;
+    const double ctmT0 = Util::AnalyzeT0(blMan,confMan,t0seg);
     if(ctmT0<-9000){
       if(IsrecoPassed) nAbort_nT0++;
       Tools::Fill1D( Form("EventCheck"), 15 );
@@ -793,10 +794,13 @@ int main( int argc, char** argv )
     //** + + + + + + + + + + + + **//
     
     std::vector <int> vCDHseg;
+    TVector3 pim_cdhprojected;
+    TVector3 pip_cdhprojected;
     const int nIDedTrack = Util::CDSChargedAna(
         DoCDCRetiming,
         bpctrack, cdsMan, cdstrackMan, confMan, blMan,
-        LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,true);
+        LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,
+        pim_cdhprojected,pip_cdhprojected,true);
     if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
     if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );
     if(nIDedTrack==-9){
