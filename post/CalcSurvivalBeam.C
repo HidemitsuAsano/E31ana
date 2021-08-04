@@ -67,10 +67,10 @@ void CalcSurvivalBeam()
 
   TH1D* hD5AnaOK = new TH1D("hD5AnaOK","hD5AnaOK",1000,0,1000);
   hD5AnaOK->Sumw2();
-  TH1D* hbeam = new TH1D("hbeam","hbeam",1000,0,1000);
+  TH1D* hbeam = new TH1D("hbeam","Beam Survival Rate",1000,0,1000);
   hbeam->Sumw2();
   for(int irun=0;irun<nline;irun++){
-    TFile *_file = TFile::Open(Form("/gpfs/group/had/knucl/e15/asano/Run78/IMpisigmav222/evanaIMpisigma_0%03d.root",runnum[irun]),"READ");
+    TFile *_file = TFile::Open(Form("/gpfs/group/had/knucl/e15/asano/Run78/IMpisigmav225/evanaIMpisigma_0%03d.root",runnum[irun]),"READ");
     TH1D* hEventCheck = (TH1D*)_file->Get("EventCheck");
     double nKaonEvt = hEventCheck->GetBinContent(2);
     double nD5AnaOK = hEventCheck->GetBinContent(7);
@@ -83,6 +83,7 @@ void CalcSurvivalBeam()
 
   hBeamSurvivalR->Divide(hD5AnaOK,hbeam,1.,1.,"B");
   TCanvas *c3 = new TCanvas("c3","c3");
+  gStyle->SetOptStat(0);
   hBeamSurvivalR->Scale(Nfid/Nnofid);
   hBeamSurvivalR->SetMarkerStyle(20);
   hBeamSurvivalR->SetXTitle("RUN #");

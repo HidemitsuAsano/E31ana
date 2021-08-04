@@ -34,8 +34,8 @@ void CalcDAQEff()
   double accall = 0.0;
   for(int irun=0;irun<iline;irun++){
     std::cout << irun << std::endl;
-    //TFile *_file = TFile::Open(Form("/gpfs/group/had/knucl/e15/asano/Run78/IMpisigmav227/evanaIMpisigma_0%03d.root",runnum[irun]),"READ");
-    TFile *_file = TFile::Open(Form("~/v207tmp/evanaIMpisigma_0%03d.root",runnum[irun]),"READ");
+    TFile *_file = TFile::Open(Form("/gpfs/group/had/knucl/e15/asano/Run78/IMpisigmav227/evanaIMpisigma_0%03d.root",runnum[irun]),"READ");
+    //TFile *_file = TFile::Open(Form("~/v207tmp/evanaIMpisigma_0%03d.root",runnum[irun]),"READ");
     TH1D* hscaler = (TH1D*)_file->Get("Scaler");
     double firstTrig = hscaler->GetBinContent(ScCH_firstTrig);
     double firstCompVeto = hscaler->GetBinContent(ScCH_firstCompVeto);
@@ -59,12 +59,14 @@ void CalcDAQEff()
         reqall += s3c;
         accall += s4c;
       }
-      if(irun==0 && (ie==(SCA3->GetNbinsX()-1)) ){
-        std::cout << "ie " << ie << std::endl;
-        std::cout << "reqall " << reqall << std::endl;
-        std::cout << "accall " << accall << std::endl;
-        std::cout << "inte   " << SCA3->Integral() << std::endl;
-      }
+
+      //test
+      //if(irun==0 && (ie==(SCA3->GetNbinsX()-1)) ){
+      //  std::cout << "ie " << ie << std::endl;
+      //  std::cout << "reqall " << reqall << std::endl;
+      //  std::cout << "accall " << accall << std::endl;
+      //  std::cout << "inte   " << SCA3->Integral() << std::endl;
+      //}
     }
     if(req>acc){
       hreq->SetBinContent(runnum[irun],req);
@@ -74,9 +76,15 @@ void CalcDAQEff()
     }
     _file->Close();
   }
+  gStyle->SetOptStat(0);
+  gPad->SetTopMargin(0.20);
+  gStyle->SetTitleY(0.96);
   TH1D* heff = (TH1D*)hacc->Clone("heff");
   heff->Sumw2();
   heff->Divide(hacc,hreq,1.,1.,"B");
+  heff->SetTitle("#splitline{DAQ efficiency}{without Cosmic trigger}");
+  heff->SetXTitle("run#");
+  heff->GetXaxis()->CenterTitle();
 
   TCanvas *c2 = new TCanvas("c2","c2",1000,800);
   //gdaqeff->SetMarkerStyle(20);
