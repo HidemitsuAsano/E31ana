@@ -968,7 +968,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     double dcapippim=-9999.;
     if(vtx_flag) dcapippim = (CA_pim_pippim-CA_pip_pippim).Mag();
     Tools::Fill1D( Form("DCA_pippim"), dcapippim);
-    TVector3 CA_pippimcenter = (CA_pip_pippim+CA_pim_pippim)/2.0; 
+    TVector3 CA_pippimcenter = 0.5*(CA_pip_pippim+CA_pim_pippim); 
 
     TVector3 P_pim; // Momentum(pi-)
     TVector3 P_pip; // Momentum(pi+)

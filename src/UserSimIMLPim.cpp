@@ -646,7 +646,6 @@ int main( int argc, char** argv )
     
 
     bool flagbmom = false;
-    TVector3 vtx_react;
 
     //** BLC2 track **//
     int nblc2 = 0;
@@ -665,43 +664,45 @@ int main( int argc, char** argv )
 
     //### BLC2-BPC position matching
     //TODO : take into account beam loss by these cut
-    bool fblc2bpc = false;
-    for( int iblc2trk=0; iblc2trk<bltrackMan->ntrackBLC2(); iblc2trk++ ){
-      if( iblc2trk!=blc2id ) continue;
-      LocalTrack *blc2 = bltrackMan->trackBLC2(iblc2trk);
-      double xblc2bpc[2], yblc2bpc[2];
-      double xmom[2], ymom[2];
+    bool fblc2bpc = true;//always true because this is simulation
+    if(IsrecoPassed){
+      for( int iblc2trk=0; iblc2trk<bltrackMan->ntrackBLC2(); iblc2trk++ ){
+        if( iblc2trk!=blc2id ) continue;
+        LocalTrack *blc2 = bltrackMan->trackBLC2(iblc2trk);
+        double xblc2bpc[2], yblc2bpc[2];
+        double xmom[2], ymom[2];
 
-      TVector3 Pos_BPC, Pos_BLC2, tmp;
-      confMan->GetBLDCWireMapManager()->GetGParam( CID_BPC, Pos_BPC, tmp );
-      confMan->GetBLDCWireMapManager()->GetGParam( CID_BLC2a, Pos_BLC2, tmp );
-      const double zPos_BPC = Pos_BPC.Z();
-      const double zPos_BLC2 = Pos_BLC2.Z();
-      const double zPos_BPC_BLC2 = (Pos_BPC.Z()+Pos_BLC2.Z())/2;
+        TVector3 Pos_BPC, Pos_BLC2, tmp;
+        confMan->GetBLDCWireMapManager()->GetGParam( CID_BPC, Pos_BPC, tmp );
+        confMan->GetBLDCWireMapManager()->GetGParam( CID_BLC2a, Pos_BLC2, tmp );
+        const double zPos_BPC = Pos_BPC.Z();
+        const double zPos_BLC2 = Pos_BLC2.Z();
+        const double zPos_BPC_BLC2 = (Pos_BPC.Z()+Pos_BLC2.Z())/2;
 
-      bpctrack->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[0], yblc2bpc[0] );
-      bpctrack->XYPosatZ( zPos_BPC, xmom[0], ymom[0] );
-      blc2->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[1], yblc2bpc[1]);
-      blc2->XYPosatZ( zPos_BLC2, xmom[1], ymom[1]);
-      double dxdz[2], dydz[2];
-      dxdz[0] = (xmom[0]-xblc2bpc[0]) / (zPos_BPC-zPos_BPC_BLC2);
-      dxdz[1] = (xmom[1]-xblc2bpc[1]) / (zPos_BLC2-zPos_BPC_BLC2);
-      dydz[0] = (ymom[0]-yblc2bpc[0]) / (zPos_BPC-zPos_BPC_BLC2);
-      dydz[1] = (ymom[1]-yblc2bpc[1]) / (zPos_BLC2-zPos_BPC_BLC2);
+        bpctrack->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[0], yblc2bpc[0] );
+        bpctrack->XYPosatZ( zPos_BPC, xmom[0], ymom[0] );
+        blc2->XYPosatZ( zPos_BPC_BLC2, xblc2bpc[1], yblc2bpc[1]);
+        blc2->XYPosatZ( zPos_BLC2, xmom[1], ymom[1]);
+        double dxdz[2], dydz[2];
+        dxdz[0] = (xmom[0]-xblc2bpc[0]) / (zPos_BPC-zPos_BPC_BLC2);
+        dxdz[1] = (xmom[1]-xblc2bpc[1]) / (zPos_BLC2-zPos_BPC_BLC2);
+        dydz[0] = (ymom[0]-yblc2bpc[0]) / (zPos_BPC-zPos_BPC_BLC2);
+        dydz[1] = (ymom[1]-yblc2bpc[1]) / (zPos_BLC2-zPos_BPC_BLC2);
 
-      if( (xblc2bpc[1]-xblc2bpc[0])<PARA_blc2bpc_dx_MIN ||
-	       (xblc2bpc[1]-xblc2bpc[0])>PARA_blc2bpc_dx_MAX ) fblc2bpc = false;
-      else if( (yblc2bpc[1]-yblc2bpc[0])<PARA_blc2bpc_dy_MIN ||
-	       (yblc2bpc[1]-yblc2bpc[0])>PARA_blc2bpc_dy_MAX ) fblc2bpc = false;
-      else if( (dxdz[1]-dxdz[0])<PARA_blc2bpc_dxdz_MIN ||
-	       (dxdz[1]-dxdz[0])>PARA_blc2bpc_dxdz_MAX ) fblc2bpc = false;
-      else if( (dydz[1]-dydz[0])<PARA_blc2bpc_dydz_MIN ||
-	       (dydz[1]-dydz[0])>PARA_blc2bpc_dydz_MAX ) fblc2bpc = false;
-      else fblc2bpc = true;
+        if( (xblc2bpc[1]-xblc2bpc[0])<PARA_blc2bpc_dx_MIN ||
+            (xblc2bpc[1]-xblc2bpc[0])>PARA_blc2bpc_dx_MAX ) fblc2bpc = false;
+        else if( (yblc2bpc[1]-yblc2bpc[0])<PARA_blc2bpc_dy_MIN ||
+            (yblc2bpc[1]-yblc2bpc[0])>PARA_blc2bpc_dy_MAX ) fblc2bpc = false;
+        else if( (dxdz[1]-dxdz[0])<PARA_blc2bpc_dxdz_MIN ||
+            (dxdz[1]-dxdz[0])>PARA_blc2bpc_dxdz_MAX ) fblc2bpc = false;
+        else if( (dydz[1]-dydz[0])<PARA_blc2bpc_dydz_MIN ||
+            (dydz[1]-dydz[0])>PARA_blc2bpc_dydz_MAX ) fblc2bpc = false;
+        else fblc2bpc = true;
 
-      Tools::Fill2D( Form("dydx_BLC2BPC"), xblc2bpc[1]-xblc2bpc[0], yblc2bpc[1]-yblc2bpc[0] );
-      Tools::Fill2D( Form("dydzdxdz_BLC2BPC"), dxdz[1]-dxdz[0], dydz[1]-dydz[0] );
-    }//iblc2trk
+        Tools::Fill2D( Form("dydx_BLC2BPC"), xblc2bpc[1]-xblc2bpc[0], yblc2bpc[1]-yblc2bpc[0] );
+        Tools::Fill2D( Form("dydzdxdz_BLC2BPC"), dxdz[1]-dxdz[0], dydz[1]-dydz[0] );
+      }//iblc2trk
+    }
 
     if( !fblc2bpc ){
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_fblc2bpc" << std::endl;
@@ -743,8 +744,10 @@ int main( int argc, char** argv )
 
     double x1, y1, x2, y2;
     const double z1 = 0, z2 = 20;//TODO: what is this 20 ?
-    bpctrack->XYPosatZ(z1, x1, y1);
-    bpctrack->XYPosatZ(z2, x2, y2);
+    if(IsrecoPassed){
+      bpctrack->XYPosatZ(z1, x1, y1);
+      bpctrack->XYPosatZ(z2, x2, y2);
+    }
     TVector3 ls;
     ls.SetXYZ(x2-x1, y2-y1, z2-z1);
     ls = ls.Unit();
@@ -796,20 +799,23 @@ int main( int argc, char** argv )
     std::vector <int> vCDHseg;
     TVector3 pim_cdhprojected;
     TVector3 pip_cdhprojected;
-    const int nIDedTrack = Util::CDSChargedAna(
-        DoCDCRetiming,
-        bpctrack, cdsMan, cdstrackMan, confMan, blMan,
-        LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,
-        pim_cdhprojected,pip_cdhprojected,true);
-    if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
-    if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );
-    if(nIDedTrack==-9){
-      nTrack_CDHshare++;
-      Tools::Fill1D( Form("EventCheck"), 9 );
+    int nIDedTrack =0;
+    if(IsrecoPassed){
+       nIDedTrack = Util::CDSChargedAna(
+          DoCDCRetiming,
+          bpctrack, cdsMan, cdstrackMan, confMan, blMan,
+          LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,
+          pim_cdhprojected,pip_cdhprojected,true);
+      if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
+      if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );
+      if(nIDedTrack==-9){
+        nTrack_CDHshare++;
+        Tools::Fill1D( Form("EventCheck"), 9 );
+      }
+      if(nIDedTrack==-10) Tools::Fill1D( Form("EventCheck"), 10 );
+      if(nIDedTrack==-11) Tools::Fill1D( Form("EventCheck"), 11 );
+      if(nIDedTrack==-12) Tools::Fill1D( Form("EventCheck"), 12 );
     }
-    if(nIDedTrack==-10) Tools::Fill1D( Form("EventCheck"), 10 );
-    if(nIDedTrack==-11) Tools::Fill1D( Form("EventCheck"), 11 );
-    if(nIDedTrack==-12) Tools::Fill1D( Form("EventCheck"), 12 );
     if(nIDedTrack<0){
       if(IsrecoPassed)nAbort_CDSPID++;
       //continue;
@@ -833,7 +839,9 @@ int main( int argc, char** argv )
         flagbmom && 
         (pim_ID.size()==2) && 
         (p_ID.size()==1) && 
+       // (p_ID.size()>=1) && 
         (cdstrackMan->nGoodTrack()==cdscuts_lpim::cds_ngoodtrack)){
+       // (cdstrackMan->nGoodTrack()>=3)){
         // && !forwardcharge )
       
       nFill_pimpim++;
@@ -935,7 +943,7 @@ int main( int argc, char** argv )
         const double mm_mass   = (LVec_target+LVec_beam-LVec_pim1-LVec_pim2-LVec_p).M();
         const TVector3 P_missp = (LVec_target+LVec_beam-LVec_pim1-LVec_pim2-LVec_p).Vect();
         LVec_pmiss.SetVectM( P_missp, pMass );
-        TVector3 boost = (LVec_target+LVec_beam).BoostVector();
+        //TVector3 boost = (LVec_target+LVec_beam).BoostVector();
         TLorentzVector LVec_pmiss_CM = LVec_pmiss;
         TLorentzVector LVec_beam_CM = LVec_beam;
         LVec_pmiss_CM.Boost(-boost);
@@ -972,6 +980,9 @@ int main( int argc, char** argv )
           Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_pim2_mean.Z(),vtx_pim2_mean.Y());
           Tools::Fill2D(Form("Vtx_XY_fid"),vtx_pim2_mean.X(),vtx_pim2_mean.Y());
           Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missp.Mag() );
+          Tools::Fill2D( Form("MMom_PMom_fid"), P_p.Mag(), P_missp.Mag() );
+          Tools::Fill2D( Form("IMppim1_IMppim2"), (LVec_p+LVec_pim1).M(), (LVec_p+LVec_pim2).M() );
+          Tools::Fill2D( Form("q_IMppipi"), (LVec_p+LVec_pim1+LVec_pim2).M(), (LVec_beam.Vect()-LVec_pmiss.Vect()).Mag());
          
           //missing mass neutron ID
           if( anacuts_lpim::proton_MIN<mm_mass && mm_mass<anacuts_lpim::proton_MAX ) MissPFlag=true;

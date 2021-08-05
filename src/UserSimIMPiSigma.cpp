@@ -1241,6 +1241,7 @@ int main( int argc, char** argv )
       if(vtx_flag) dcapippim = (CA_pim_pippim-CA_pip_pippim).Mag();
       Tools::Fill1D( Form("DCA_pippim"), dcapippim);
 
+      TVector3 CA_pippimcenter = 0.5*(CA_pip_pippim+CA_pim_pippim); 
       //reaction vertex is determined from beam and nearest vtx 
       if(dcapipvtx <= dcapimvtx){
         //follows sakuma/sada's way , avg. of scattered particle ana beam particle [20180829]
@@ -1257,161 +1258,175 @@ int main( int argc, char** argv )
         vtx_beam = vtx_beam_wpim;
       }
 
+      //** reconstructoin of missing neutorn **//
+      TVector3 P_pim; // Momentum(pi-)
+      TVector3 P_pip; // Momentum(pi+)
+      
+      if( !track_pip->GetMomentum( vtx_pip, P_pip, true, true ) ){
+        std::cout<<" !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
+      }
+      if( !track_pim->GetMomentum( vtx_pim, P_pim, true, true ) ){
+        std::cout<<" !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
+      }
+
+
+      TVector3 P_pippim = P_pip+P_pim;
+      TVector3 vtx_dis_K0;//K0 displaced vertex w K0 assumption
+      double dl=0;
+      double dist=0;
+      TVector3 nest;//nest: always 0 if dl=0;
+      //K0 straight track and beam track 
+      //nest is always 0 here
+      MathTools::LineToLine(CA_pippimcenter,P_pippim,bpctrack->GetPosatZ(0), bpctrack->GetMomDir(),dl,dist,vtx_dis_K0,nest);
+      
+      
       // beam kaon tof 
       TVector3 Pos_T0;
       confMan->GetGeomMapManager()->GetPos( CID_T0, 0, Pos_T0 );
       double beamtof=0;
       double momout=0;
-        double z_pos = Pos_T0.Z();;
-        ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), vtx_react,
-            LVec_beambf.Vect().Mag(), kpMass, momout, beamtof );
-        // LVec_beam.SetVectM( momout*LVec_beambf.Vect().Unit(), kpMass ); // not need energy-loss correction [20180329]
-        double beamtof_vtx[3];
-        double momout_vtx[3];
-        //Sp mode assumption
-        ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), 0.5*(vtx_pim+vtx_beam_wpim),
-            LVec_beambf.Vect().Mag(), kpMass, momout_vtx[0], beamtof_vtx[0] );
-        LVec_beam_vtx[0].SetVectM( momout_vtx[0]*LVec_beambf.Vect().Unit(), kpMass );
-        //Sm mode assumption
-        ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), 0.5*(vtx_pip+vtx_beam_wpip),
-            LVec_beambf.Vect().Mag(), kpMass, momout_vtx[1], beamtof_vtx[1] );
-        LVec_beam_vtx[1].SetVectM( momout_vtx[1]*LVec_beambf.Vect().Unit(), kpMass );
-        //K0 mode assumption
-        ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), 0.5*(vtx_beam_wpip+vtx_beam_wpim),
-            LVec_beambf.Vect().Mag(), kpMass, momout_vtx[2], beamtof_vtx[2] );
-        LVec_beam_vtx[2].SetVectM( momout_vtx[2]*LVec_beambf.Vect().Unit(), kpMass );
-        
-        double ntof = ncdhhit->ctmean()-ctmT0-beamtof;
-        tofpim -= beamtof;
-        tofpip -= beamtof;
-        tofn = ntof;
+      double z_pos = Pos_T0.Z();;
+      ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), vtx_react,
+          LVec_beambf.Vect().Mag(), kpMass, momout, beamtof );
+      // LVec_beam.SetVectM( momout*LVec_beambf.Vect().Unit(), kpMass ); // not need energy-loss correction [20180329]
+      double beamtof_vtx[3];
+      double momout_vtx[3];
+      //Sp mode assumption
+      ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), 0.5*(vtx_pim+vtx_beam_wpim),
+          LVec_beambf.Vect().Mag(), kpMass, momout_vtx[0], beamtof_vtx[0] );
+      LVec_beam_vtx[0].SetVectM( momout_vtx[0]*LVec_beambf.Vect().Unit(), kpMass );
+      //Sm mode assumption
+      ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), 0.5*(vtx_pip+vtx_beam_wpip),
+          LVec_beambf.Vect().Mag(), kpMass, momout_vtx[1], beamtof_vtx[1] );
+      LVec_beam_vtx[1].SetVectM( momout_vtx[1]*LVec_beambf.Vect().Unit(), kpMass );
+      //K0 mode assumption
+      ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), 0.5*(vtx_beam_wpip+vtx_beam_wpim),
+          LVec_beambf.Vect().Mag(), kpMass, momout_vtx[2], beamtof_vtx[2] );
+      LVec_beam_vtx[2].SetVectM( momout_vtx[2]*LVec_beambf.Vect().Unit(), kpMass );
 
-        Tools::Fill1D(Form("CDH%d_T0%d_TOF_Neutral",ncdhhit->seg() ,t0seg),ntof);
-        //std::cout <<"cdh time "<<  ncdhhit->ctmean() << std::endl;
-        //std::cout << "ctmt0   " << ctmT0 << std::endl;
-        //std::cout <<"beamtof  " <<  beamtof << std::endl;
-        //double ntof = ncdhhit->ctmean();
-        const double ntof_vtx[3] = {
-          ncdhhit->ctmean()-ctmT0-beamtof_vtx[0],
-          ncdhhit->ctmean()-ctmT0-beamtof_vtx[1],
-          ncdhhit->ctmean()-ctmT0-beamtof_vtx[2]
-        };
-        double nlen = (Pos_CDH-vtx_dis).Mag();
-        double nlen_beam = (Pos_CDH-vtx_beam).Mag();
-        double nlen_vtx[3];
-        Tools::Fill2D(Form("ntof_nlen"),ntof,nlen);
-        TVector3 disvtx_AssumSp = vtx_pip;
-        //disvtx_AssumSp.SetZ(CA_pip_pippim.Z());
-        nlen_vtx[0] = (Pos_CDH-disvtx_AssumSp).Mag();
-        TVector3 disvtx_AssumSm = vtx_pim;
-        //disvtx_AssumSm.SetZ(CA_pim_pippim.Z());
-        nlen_vtx[1] = (Pos_CDH-disvtx_AssumSm).Mag();
-        //nlen_vtx[0] = (Pos_CDH-CA_pip_pippim).Mag();
-        //nlen_vtx[1] = (Pos_CDH-CA_pim_pippim).Mag();
-        nlen_vtx[2] = (Pos_CDH-vtx_react).Mag();
-        NeutralBetaCDH = nlen/ntof/(Const*100.);
-        NeutralBetaCDH_beam = nlen_beam/ntof/(Const*100.);
-        for(int ivtx=0;ivtx<3;ivtx++){
-          NeutralBetaCDH_vtx[ivtx] = nlen_vtx[ivtx]/ntof_vtx[ivtx]/(Const*100.);
-        }
-        double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0.;
-        double tmp_mom_beam = NeutralBetaCDH_beam<1. ? nMass*NeutralBetaCDH_beam/sqrt(1.-NeutralBetaCDH_beam*NeutralBetaCDH_beam) : 0.;
-        double tmp_mom_vtx[3];
-        for(int ivtx=0;ivtx<3;ivtx++){
-          tmp_mom_vtx[ivtx] = NeutralBetaCDH_vtx[ivtx]<1. ? nMass*NeutralBetaCDH_vtx[ivtx]/sqrt(1.-NeutralBetaCDH_vtx[ivtx]*NeutralBetaCDH_vtx[ivtx]) : 0;
-        }
-        if(Verbosity_){
-          std::cout<<"$$$ beta = "<<NeutralBetaCDH<<" mom_n = "<<tmp_mom<<std::endl; //" "<<1/sqrt(1+nMass*nMass)<<std::endl;
-	      }
+      double ntof = ncdhhit->ctmean()-ctmT0-beamtof;
+      tofpim -= beamtof;
+      tofpip -= beamtof;
+      tofn = ntof;
 
-        //** reconstructoin of missing neutorn **//
-        TVector3 P_pim; // Momentum(pi-)
-        TVector3 P_pip; // Momentum(pi+)
-	
-        TLorentzVector LVec_pim; // 4-Momentum(pi-)
-        TLorentzVector LVec_pip; // 4-Momentum(pi+)
-        TLorentzVector LVec_n;   // 4-Momentum(n)
-        TLorentzVector LVec_n_beam;   // 4-Momentum(n)
-        TLorentzVector LVec_n_vtx[3];   // 4-Momentum(n)
-        TLorentzVector LVec_nmiss; // 4-Momentum(n_miss)
-        TLorentzVector LVec_nmiss_vtx[3]; // 4-Momentum(n_miss)
+      Tools::Fill1D(Form("CDH%d_T0%d_TOF_Neutral",ncdhhit->seg() ,t0seg),ntof);
+      //std::cout <<"cdh time "<<  ncdhhit->ctmean() << std::endl;
+      //std::cout << "ctmt0   " << ctmT0 << std::endl;
+      //std::cout <<"beamtof  " <<  beamtof << std::endl;
+      //double ntof = ncdhhit->ctmean();
+      const double ntof_vtx[3] = {
+        ncdhhit->ctmean()-ctmT0-beamtof_vtx[0],
+        ncdhhit->ctmean()-ctmT0-beamtof_vtx[1],
+        ncdhhit->ctmean()-ctmT0-beamtof_vtx[2]
+      };
+      double nlen = (Pos_CDH-vtx_dis).Mag();
+      double nlen_beam = (Pos_CDH-vtx_beam).Mag();
+      double nlen_vtx[3];
+      Tools::Fill2D(Form("ntof_nlen"),ntof,nlen);
+      TVector3 disvtx_AssumSp = vtx_pip;
+      //disvtx_AssumSp.SetZ(CA_pip_pippim.Z());
+      nlen_vtx[0] = (Pos_CDH-disvtx_AssumSp).Mag();
+      TVector3 disvtx_AssumSm = vtx_pim;
+      //disvtx_AssumSm.SetZ(CA_pim_pippim.Z());
+      nlen_vtx[1] = (Pos_CDH-disvtx_AssumSm).Mag();
+      //nlen_vtx[0] = (Pos_CDH-CA_pip_pippim).Mag();
+      //nlen_vtx[1] = (Pos_CDH-CA_pim_pippim).Mag();
+      nlen_vtx[2] = (Pos_CDH-vtx_dis_K0).Mag();
+      NeutralBetaCDH = nlen/ntof/(Const*100.);
+      NeutralBetaCDH_beam = nlen_beam/ntof/(Const*100.);
+      for(int ivtx=0;ivtx<3;ivtx++){
+        NeutralBetaCDH_vtx[ivtx] = nlen_vtx[ivtx]/ntof_vtx[ivtx]/(Const*100.);
+      }
+      double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0.;
+      double tmp_mom_beam = NeutralBetaCDH_beam<1. ? nMass*NeutralBetaCDH_beam/sqrt(1.-NeutralBetaCDH_beam*NeutralBetaCDH_beam) : 0.;
+      double tmp_mom_vtx[3];
+      for(int ivtx=0;ivtx<3;ivtx++){
+        tmp_mom_vtx[ivtx] = NeutralBetaCDH_vtx[ivtx]<1. ? nMass*NeutralBetaCDH_vtx[ivtx]/sqrt(1.-NeutralBetaCDH_vtx[ivtx]*NeutralBetaCDH_vtx[ivtx]) : 0;
+      }
+      if(Verbosity_){
+        std::cout<<"$$$ beta = "<<NeutralBetaCDH<<" mom_n = "<<tmp_mom<<std::endl; //" "<<1/sqrt(1+nMass*nMass)<<std::endl;
+      }
 
-        if( !track_pip->GetMomentum( vtx_pip, P_pip, true, true ) ){
-          std::cout<<" !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
-        }
-        if( !track_pim->GetMomentum( vtx_pim, P_pim, true, true ) ){
-          std::cout<<" !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
-        }
-        TVector3 P_n = tmp_mom*((Pos_CDH-vtx_dis).Unit());
-        TVector3 P_n_beam = tmp_mom_beam*((Pos_CDH-vtx_beam).Unit());
+      TVector3 P_n = tmp_mom*((Pos_CDH-vtx_dis).Unit());
+      TVector3 P_n_beam = tmp_mom_beam*((Pos_CDH-vtx_beam).Unit());
 	
-        if(Verbosity_) std::cout << tmp_mom<<" ("<<P_n.CosTheta()<<" , "<<P_n.Phi()*360./TwoPi<<")"<<std::endl;
+      if(Verbosity_) std::cout << tmp_mom<<" ("<<P_n.CosTheta()<<" , "<<P_n.Phi()*360./TwoPi<<")"<<std::endl;
+      TLorentzVector LVec_pim; // 4-Momentum(pi-)
+      TLorentzVector LVec_pip; // 4-Momentum(pi+)
+      TLorentzVector LVec_n;   // 4-Momentum(n)
+      TLorentzVector LVec_n_beam;   // 4-Momentum(n)
+      TLorentzVector LVec_n_vtx[3];   // 4-Momentum(n)
+      TLorentzVector LVec_nmiss; // 4-Momentum(n_miss)
+      TLorentzVector LVec_nmiss_vtx[3]; // 4-Momentum(n_miss)
 
-        TVector3 P_n_vtx[3];
-        P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-vtx_pip).Unit());
-        P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-vtx_pim).Unit());
-        //P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-CA_pip_pippim).Unit());
-        //P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-CA_pim_pippim).Unit());
-        P_n_vtx[2] = tmp_mom_vtx[2]*((Pos_CDH-vtx_react).Unit());
-        
-        LVec_pim.SetVectM( P_pim, piMass );
-        LVec_pip.SetVectM( P_pip, piMass );
-        LVec_n.SetVectM( P_n, nMass );//CDS n
-        LVec_n_beam.SetVectM( P_n_beam, nMass );//CDS n
-        for(int ivtx=0;ivtx<3;ivtx++){
-          LVec_n_vtx[ivtx].SetVectM(  P_n_vtx[ivtx],   nMass );//CDS n
-        }
-	
-        const double mm_mass   = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).M();
-        double mm_mass_vtx[3];
-        for(int ivtx=0;ivtx<3;ivtx++){
-          mm_mass_vtx[ivtx]= (LVec_target+LVec_beam_vtx[ivtx]-LVec_pim-LVec_pip-LVec_n_vtx[ivtx]).M();       
-        }
-        
-        const TVector3 P_missn = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).Vect();
-        TVector3 P_missn_vtx[3];
-        for(int ivtx=0;ivtx<3;ivtx++){
-          P_missn_vtx[ivtx] = (LVec_target+LVec_beam_vtx[ivtx]-LVec_pim-LVec_pip-LVec_n_vtx[ivtx]).Vect();  
-        }
-        
-        LVec_nmiss.SetVectM( P_missn, nMass );
-        for(int ivtx=0;ivtx<3;ivtx++){
-          LVec_nmiss_vtx[ivtx].SetVectM( P_missn_vtx[ivtx], nMass );
-        }
-        
-        if(Verbosity_)std::cout<<"  missing mass = "<<mm_mass<<std::endl;
-	
-        TVector3 boost = (LVec_target+LVec_beam).BoostVector();
-        TLorentzVector LVec_nmiss_CM = LVec_nmiss;
-        TLorentzVector LVec_beam_CM = LVec_beam;
-        LVec_nmiss_CM.Boost(-boost);
-        LVec_beam_CM.Boost(-boost);
-        double cos_n = LVec_nmiss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_nmiss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
-        if(Verbosity_)std::cout<<"  missing mom = "<<LVec_nmiss.P()<<" | cos_CM = "<<cos_n<<std::endl;
-	
-	
-        //** + + + + + + + + + + + + + **//
-        //**  fill histograms & tree   **//
-        //** + + + + + + + + + + + + + **//
-        kf_flag = -1;
-        bool K0rejectFlag=false;
-        bool MissNFlag=false;
-        bool SigmaPFlag=false;
-        bool SigmaMFlag=false;
-        bool NBetaOK=false;
-        bool NdEOK=false;
 
-        Tools::Fill2D( Form("dE_betainv"), 1./NeutralBetaCDH, ncdhhit->emean() );
-        Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
-        
-        Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_pip_mean.Z(),vtx_pip_mean.X());
-        Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_pip_mean.Z(),vtx_pip_mean.Y());
-        Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_pip_mean.X(),vtx_pip_mean.Y());
-        Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_pim_mean.Z(),vtx_pim_mean.X());
-        Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_pim_mean.Z(),vtx_pim_mean.Y());
-        Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_pim_mean.X(),vtx_pim_mean.Y());
-        //Fiducial cuts OK
-        if( (!IsVtxDoubleCheck && (GeomTools::GetID(vtx_react)==CID_Fiducial)) || 
+
+
+      TVector3 P_n_vtx[3];
+      P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-vtx_pip).Unit());
+      P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-vtx_pim).Unit());
+      //P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-CA_pip_pippim).Unit());
+      //P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-CA_pim_pippim).Unit());
+      P_n_vtx[2] = tmp_mom_vtx[2]*((Pos_CDH-vtx_dis_K0).Unit());
+
+      LVec_pim.SetVectM( P_pim, piMass );
+      LVec_pip.SetVectM( P_pip, piMass );
+      LVec_n.SetVectM( P_n, nMass );//CDS n
+      LVec_n_beam.SetVectM( P_n_beam, nMass );//CDS n
+      for(int ivtx=0;ivtx<3;ivtx++){
+        LVec_n_vtx[ivtx].SetVectM(  P_n_vtx[ivtx],   nMass );//CDS n
+      }
+
+      const double mm_mass   = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).M();
+      double mm_mass_vtx[3];
+      for(int ivtx=0;ivtx<3;ivtx++){
+        mm_mass_vtx[ivtx]= (LVec_target+LVec_beam_vtx[ivtx]-LVec_pim-LVec_pip-LVec_n_vtx[ivtx]).M();       
+      }
+
+      const TVector3 P_missn = (LVec_target+LVec_beam-LVec_pim-LVec_pip-LVec_n).Vect();
+      TVector3 P_missn_vtx[3];
+      for(int ivtx=0;ivtx<3;ivtx++){
+        P_missn_vtx[ivtx] = (LVec_target+LVec_beam_vtx[ivtx]-LVec_pim-LVec_pip-LVec_n_vtx[ivtx]).Vect();  
+      }
+
+      LVec_nmiss.SetVectM( P_missn, nMass );
+      for(int ivtx=0;ivtx<3;ivtx++){
+        LVec_nmiss_vtx[ivtx].SetVectM( P_missn_vtx[ivtx], nMass );
+      }
+
+      if(Verbosity_)std::cout<<"  missing mass = "<<mm_mass<<std::endl;
+
+      TVector3 boost = (LVec_target+LVec_beam).BoostVector();
+      TLorentzVector LVec_nmiss_CM = LVec_nmiss;
+      TLorentzVector LVec_beam_CM = LVec_beam;
+      LVec_nmiss_CM.Boost(-boost);
+      LVec_beam_CM.Boost(-boost);
+      double cos_n = LVec_nmiss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_nmiss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
+      if(Verbosity_)std::cout<<"  missing mom = "<<LVec_nmiss.P()<<" | cos_CM = "<<cos_n<<std::endl;
+
+
+      //** + + + + + + + + + + + + + **//
+      //**  fill histograms & tree   **//
+      //** + + + + + + + + + + + + + **//
+      kf_flag = -1;
+      bool K0rejectFlag=false;
+      bool MissNFlag=false;
+      bool SigmaPFlag=false;
+      bool SigmaMFlag=false;
+      bool NBetaOK=false;
+      bool NdEOK=false;
+
+      Tools::Fill2D( Form("dE_betainv"), 1./NeutralBetaCDH, ncdhhit->emean() );
+      Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missn.Mag() );
+
+      Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_pip_mean.Z(),vtx_pip_mean.X());
+      Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_pip_mean.Z(),vtx_pip_mean.Y());
+      Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_pip_mean.X(),vtx_pip_mean.Y());
+      Tools::Fill2D(Form("Vtx_ZX_nofid"),vtx_pim_mean.Z(),vtx_pim_mean.X());
+      Tools::Fill2D(Form("Vtx_ZY_nofid"),vtx_pim_mean.Z(),vtx_pim_mean.Y());
+      Tools::Fill2D(Form("Vtx_XY_nofid"),vtx_pim_mean.X(),vtx_pim_mean.Y());
+      //Fiducial cuts OK
+      if( (!IsVtxDoubleCheck && (GeomTools::GetID(vtx_react)==CID_Fiducial)) || 
             ( IsVtxDoubleCheck && 
             (GeomTools::GetID(vtx_pim_mean)==CID_Fiducial) &&
             (GeomTools::GetID(vtx_pip_mean)==CID_Fiducial)))  {
