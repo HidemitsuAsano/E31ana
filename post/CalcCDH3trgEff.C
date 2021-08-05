@@ -7,6 +7,7 @@ void CalcCDH3trgEff()
   TH1D* lasttime = (TH1D*)lasttime_mul_CDH->ProjectionY("lasttime");
   lasttime->SetXTitle("CDH 3rd hit time [ns]");
   lasttime->GetXaxis()->CenterTitle();
+  lasttime->SetTitle("");
   lasttime->Draw("HIST");
   TH1D* lasttime_fire = (TH1D*)lasttime_mul_CDH_CDH3trg->ProjectionY("lasttime_fire");
   lasttime_fire->SetLineColor(2);
@@ -24,6 +25,12 @@ void CalcCDH3trgEff()
   double up = TEfficiency::Wilson(deno,nume,0.90,1);
   double down = TEfficiency::Wilson(deno,nume,0.90,0);
   std::cout << "DAQ trg. eff: (90% confidence interval)  " << down << " - " << up << std::endl;
-
+  
+  c1->SaveAs("CDH3trgEff.pdf","PDF");
+  TFile *file = new TFile("trgeff.root","RECREATE");
+  lasttime->Write();
+  lasttime_fire->Write();
+  file->Close();
+  
 
 }

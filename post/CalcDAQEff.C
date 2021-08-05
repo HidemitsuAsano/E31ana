@@ -85,6 +85,15 @@ void CalcDAQEff()
   heff->SetTitle("#splitline{DAQ efficiency}{without Cosmic trigger}");
   heff->SetXTitle("run#");
   heff->GetXaxis()->CenterTitle();
+  
+  //correction
+  for(int ix=0;ix<heff->GetNbinsX();ix++){
+    double val = heff->GetBinContent(ix);
+    if(0<val && val <0.70){
+      heff->SetBinContent(ix,0.772601);
+    }
+  }
+
 
   TCanvas *c2 = new TCanvas("c2","c2",1000,800);
   //gdaqeff->SetMarkerStyle(20);

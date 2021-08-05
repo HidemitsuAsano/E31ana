@@ -13,20 +13,22 @@ void CalcIntegratedLumi()
   const double scalerKaon_err = sqrt(5.80154e+10);//total num.
   const double Survival = 0.302809;//run average
   const double Survival_err = 0.0002;//run average
-  const double DAQeff = 0.798693;//run average
-  const double DAQerr_err = 7.49476e-06;
+  const double DAQeff = 0.772601;//run average
+  const double DAQerr_err = 9.1763e-06;
   const double microbarnInv = 1e-30;
   const double InteLumi = scalerKaon*Survival*D2density*DAQeff*microbarnInv;
 
-
-  std::cout << "Integrated Lumi" << InteLumi << std::endl;
+  
+  std::cout << "IF run dep. is ignored "  << std::endl;
+  std::cout << "Integrated Lumi " << InteLumi << std::endl;
 
   std::cout << "Err " << sqrt(pow(D2density_err*CDH3trgeff*scalerKaon*Survival*DAQeff,2.0)
                              +pow(D2density*CDH3trgeff_err*scalerKaon*Survival*DAQeff,2.0)   
                              +pow(D2density*CDH3trgeff*scalerKaon_err*Survival*DAQeff,2.0)   
                              +pow(D2density*CDH3trgeff*scalerKaon*Survival_err*DAQeff,2.0) 
       )*microbarnInv << std::endl;
-
+  std::cout << std::endl;
+  
   TFile *fdaq = TFile::Open("daqeff.root");
   TFile *fscalerK = TFile::Open("lumi.root");
   TFile *fbeam = TFile::Open("beamSurvival.root");
