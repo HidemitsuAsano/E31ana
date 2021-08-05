@@ -230,13 +230,16 @@ void InitIMLambdaPimHist() {
   Tools::newTH2F( Form("MMom_MMass_fid"),140, 0.4, 1.8, 100, 0, 1.5);
   Tools::newTH2F( Form("MMom_MMass_fid_p"),140, 0.4, 1.8, 100, 0, 1.5);
   Tools::newTH2F( Form("MMom_MMass_fid_wL"),140, 0.4, 1.8, 100, 0, 1.5);
+  Tools::newTH2F( Form("MMom_PMom_fid"),100, 0, 1.5, 100, 0, 1.5);
   Tools::newTH2F( Form("MMom_PMom_fid_p"),100, 0, 1.5, 100, 0, 1.5);
+  Tools::newTH2F( Form("IMppim1_IMppim2"),600, 1, 2.5, 600, 1, 2.5);
   Tools::newTH2F( Form("IMppim1_IMppim2_p"),600, 1, 2.5, 600, 1, 2.5);
   Tools::newTH1F( Form("DCA_pim1"),3000,0,30);
   Tools::newTH1F( Form("DCA_pim2"),3000,0,30);
   Tools::newTH1F( Form("DCA_pim1p"),3000,0,30);
   Tools::newTH1F( Form("DCA_pim2p"),3000,0,30);
   Tools::newTH1F( Form("DCA_pim1pim2"),3000,0,30);
+  Tools::newTH2F( Form("q_IMppipi"),100,1,2,300,0,1.5);
   Tools::newTH2F( Form("q_IMppipi_p"),100,1,2,300,0,1.5);
   Tools::newTH2F( Form("q_IMppipi_wL_p"),100,1,2,300,0,1.5);
 }
