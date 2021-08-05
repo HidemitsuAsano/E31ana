@@ -1,8 +1,8 @@
 void plot_VertexInfo(){
   
   //v140 : pim-pip vtx
-  //v141 : pim-beam vtx
-  TFile *_file0 = TFile::Open("simIMpisigma_nSmpip_pippimn_v140_out_iso_rej.root");
+  //v142 : pim-beam vtx
+  //TFile *_file0 = TFile::Open("simIMpisigma_nSmpip_pippimn_v140_out_iso_rej.root");
   TFile *_file1 = TFile::Open("simIMpisigma_nSmpip_pippimn_v142_out_iso_rej_nostop.root");
 
 
@@ -10,8 +10,10 @@ void plot_VertexInfo(){
   c1->Divide(2,2);
   c1->cd(3);
   TH2F* diffnmom_diffdca_n = _file1->Get("diffnmom_diffdca_n");
-  TH2F* diffnmom_diffdca_n_v140 = _file0->Get("diffnmom_diffdca_n");
+  //TH2F* diffnmom_diffdca_n_v140 = _file0->Get("diffnmom_diffdca_n");
+  diffnmom_diffdca_n->Rebin2D(5,5);
   diffnmom_diffdca_n->Draw("colz");
+  diffnmom_diffdca_n->ProfileX()->Draw("same");
   c1->cd(1);
   diffnmom_diffdca_n->ProjectionX()->Draw("HE");
   c1->cd(4);
@@ -21,8 +23,10 @@ void plot_VertexInfo(){
   c2->Divide(2,2);
   c2->cd(3);
   TH2F* diffnmom_diffdcar_n = _file1->Get("diffnmom_diffdcar_n");
-  TH2F* diffnmom_diffdcar_n_v140 = _file0->Get("diffnmom_diffdcar_n");
+  //TH2F* diffnmom_diffdcar_n_v140 = _file0->Get("diffnmom_diffdcar_n");
+  diffnmom_diffdcar_n->Rebin2D(5,5);
   diffnmom_diffdcar_n->Draw("colz");
+  diffnmom_diffdcar_n->ProfileX()->Draw("same");
   c2->cd(1);
   diffnmom_diffdcar_n->ProjectionX()->Draw("HE");
   c2->cd(4);
@@ -32,7 +36,9 @@ void plot_VertexInfo(){
   c3->Divide(2,2);
   c3->cd(3);
   TH2F* diffnmom_diffdcaz_n = _file1->Get("diffnmom_diffdcaz_n");
+  diffnmom_diffdcaz_n->Rebin2D(5,5);
   diffnmom_diffdcaz_n->Draw("colz");
+  diffnmom_diffdcaz_n->ProfileX()->Draw("same");
   c3->cd(1);
   diffnmom_diffdcaz_n->ProjectionX()->Draw("HE");
   c3->cd(4);
