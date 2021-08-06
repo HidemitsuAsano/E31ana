@@ -984,13 +984,13 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
     TVector3 P_pippim = P_pip+P_pim;
      
-    TVector3 vtx_dis_K0;//K0 displaced vertex w K0 assumption
+    TVector3 vtx_K0;//K0 displaced vertex w K0 assumption
     double dl=0;
     double dist=0;
     TVector3 nest;//nest: always 0 if dl=0;
     //K0 straight track and beam track 
     //nest is always 0 here
-    MathTools::LineToLine(CA_pippimcenter,P_pippim,bpctrack->GetPosatZ(0), bpctrack->GetMomDir(),dl,dist,vtx_dis_K0,nest);
+    MathTools::LineToLine(CA_pippimcenter,P_pippim.Unit(),bpctrack->GetPosatZ(0), bpctrack->GetMomDir(),dl,dist,vtx_K0,nest);
       
 
     //reaction vertex is determined from beam and nearest vtx
@@ -1073,7 +1073,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     //nlen_vtx[1] = (Pos_CDH-CA_pim_pippim).Mag();
     nlen_vtx[0] = (Pos_CDH-vtx_pip).Mag();
     nlen_vtx[1] = (Pos_CDH-vtx_pim).Mag();
-    nlen_vtx[2] = (Pos_CDH-vtx_dis_K0).Mag();
+    nlen_vtx[2] = (Pos_CDH-vtx_K0).Mag();
     if(Verbosity>10) std::cout << "L." << __LINE__ << " flight length " << nlen << std::endl;
     NeutralBetaCDH = nlen/ntof/(Const*100.);
     NeutralBetaCDH_beam = nlen_beam/ntof/(Const*100.);
@@ -1113,7 +1113,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-vtx_pim).Unit());
     //P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-CA_pip_pippim).Unit());
     //P_n_vtx[1] = tmp_mom_vtx[1]*((Pos_CDH-CA_pim_pippim).Unit());
-    P_n_vtx[2] = tmp_mom_vtx[2]*((Pos_CDH-vtx_dis_K0).Unit());
+    P_n_vtx[2] = tmp_mom_vtx[2]*((Pos_CDH-vtx_K0).Unit());
 
     LVec_pim.SetVectM( P_pim, piMass );
     LVec_pip.SetVectM( P_pip, piMass );

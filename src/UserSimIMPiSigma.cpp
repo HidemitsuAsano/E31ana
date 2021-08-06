@@ -1277,7 +1277,8 @@ int main( int argc, char** argv )
       TVector3 nest;//nest: always 0 if dl=0;
       //K0 straight track and beam track 
       //nest is always 0 here
-      MathTools::LineToLine(CA_pippimcenter,P_pippim,bpctrack->GetPosatZ(0), bpctrack->GetMomDir(),dl,dist,vtx_dis_K0,nest);
+      //TVector3 vtx_K0 = 0.5*(vtx_pip+vtx_pim);
+      MathTools::LineToLine(CA_pippimcenter,P_pippim.Unit(),bpctrack->GetPosatZ(0), bpctrack->GetMomDir(),dl,dist,vtx_dis_K0,nest);
       
       
       // beam kaon tof 
