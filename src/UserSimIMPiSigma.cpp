@@ -549,10 +549,12 @@ int main( int argc, char** argv )
     //see http://home.fnal.gov/~mrenna/lutp0613man2/node44.html
     //
     //Here, K+ is used as beam particle because every particle is emitted from the target volume in GEANT simulation
-    //                             K+    pi-  S+  nmiss  ncds    pi+  //
+    //                                   K+    pi-  S+  nmiss  ncds    pi+  //
     const int PDG_Spmode[kin::npart] = {321, -211, 3222, 2112, 2112,  211}; // pi-Sigma+ mode
-    //                             K+    pi+  S-  nmiss  ncds    pi- 
+    //                                   K+    pi+  S-  nmiss  ncds    pi- 
     const int PDG_Smmode[kin::npart] = {321,  211, 3112, 2112, 2112, -211}; // pi+Sigma- mode
+    //                                   K+  ncds  K0bar nmiss pi-  pi+
+    const int PDG_K0mode[kin::npart] = {321, 2112, -311,2112,-211, 211}; // K0nn mode
     int PDG[kin::npart] = {0, 0, 0, 0, 0, 0};
     for( int i=0; i<kin::npart; i++ ){
       if( reactionID==gen::reactionID_Spmode ){
@@ -562,6 +564,9 @@ int main( int argc, char** argv )
       else if( reactionID==gen::reactionID_Smmode ){
         PDG[i] = PDG_Smmode[i];
         if(Verbosity_)std::cout << "L." << __LINE__ << " This is Sigma- mode sim. " << std::endl;
+      }
+      else if( reactionID==gen::reactionID_nK0n ){
+        PDG[i] = PDG_K0mode[i];
       }
     }
 
@@ -615,9 +620,15 @@ int main( int argc, char** argv )
           }
           
           //assign parent IDs for netron and pi+/- from Sigma+/- 
-          if( ip==kin::Sp || ip==kin::Sm){ //Sp and Sm are same.
-            parentID[kin::ncds] = track;
-            parentID[kin::pip_g2] = track;//pip_g2 and pim_g2 are same.
+          if( ip==kin::Sp || ip==kin::Sm || ip==kin::K0bar){ //Sp and Sm are same.
+            if( reactionID == gen::reactionID_Spmode ||
+                reactionID == gen::reactionID_Smmode){
+              parentID[kin::ncds] = track;
+              parentID[kin::pip_g2] = track;//pip_g2 and pim_g2 are same.
+            }else if(reactionID == gen::reactionID_nK0n){
+              parentID[kin::K0pim] = track;
+              parentID[kin::K0pip] = track;//pip_g2 and pim_g2 are same.
+            }
             if(Verbosity_){
               std::cout << "parentID n  from Sigma:" << parentID[kin::ncds] << std::endl;
               std::cout << "parentID pi from Sigma:" << parentID[kin::pip_g2] << std::endl;
@@ -1242,6 +1253,7 @@ int main( int argc, char** argv )
       Tools::Fill1D( Form("DCA_pippim"), dcapippim);
 
       TVector3 CA_pippimcenter = 0.5*(CA_pip_pippim+CA_pim_pippim); 
+      if(!vtx_flag) CA_pippimcenter = 0.5*(vtx_pip+vtx_pim);
       //reaction vertex is determined from beam and nearest vtx 
       if(dcapipvtx <= dcapimvtx){
         //follows sakuma/sada's way , avg. of scattered particle ana beam particle [20180829]
@@ -1359,8 +1371,6 @@ int main( int argc, char** argv )
       TLorentzVector LVec_n_vtx[3];   // 4-Momentum(n)
       TLorentzVector LVec_nmiss; // 4-Momentum(n_miss)
       TLorentzVector LVec_nmiss_vtx[3]; // 4-Momentum(n_miss)
-
-
 
 
       TVector3 P_n_vtx[3];
@@ -1653,14 +1663,21 @@ int main( int argc, char** argv )
               //IsncdsfromSigma = false;
             }
             mcmom_beam = TL_gene[kin::kmbeam];
-            mcmom_ncds  = TL_gene[genID[kin::ncds]];
-            mcmom_nmiss  = TL_gene[genID[kin::nmiss]];
             if( reactionID==gen::reactionID_Spmode ){
+              mcmom_ncds  = TL_gene[genID[kin::ncds]];
+              mcmom_nmiss  = TL_gene[genID[kin::nmiss]];
               mcmom_pip  = TL_gene[kin::pip_g2];
               mcmom_pim  = TL_gene[kin::pim_g1];
             } else if ( reactionID==gen::reactionID_Smmode ){
+              mcmom_ncds  = TL_gene[genID[kin::ncds]];
+              mcmom_nmiss  = TL_gene[genID[kin::nmiss]];
               mcmom_pip  = TL_gene[kin::pip_g1];
               mcmom_pim  = TL_gene[kin::pim_g2];
+            } else if( reactionID==gen::reactionID_nK0n ){
+              mcmom_ncds = TL_gene[genID[kin::K0ncds]];
+              mcmom_nmiss = TL_gene[genID[kin::K0nmiss]];
+              mcmom_pip = TL_gene[kin::K0pip];
+              mcmom_pim = TL_gene[kin::K0pim];
             }
             //std::cout << std::endl;
             //std::cout << "react n_miss mom: " << react_nmiss.P()/1000.0 << std::endl;
@@ -1998,7 +2015,7 @@ int main( int argc, char** argv )
             TVector3 mcvertex = mcData->track(ID[kin::kmbeam])->vertex();
             TVector3 mcvertexc(mcvertex.x()/10.,mcvertex.y()/10.,mcvertex.z()/10.); 
             mc_vtx = mcvertexc;
-            TVector3 mcdisvertex = mcData->track(ID[kin::pip_g2])->vertex();
+            TVector3 mcdisvertex=mcData->track(ID[kin::pip_g2])->vertex();
             TVector3 mcdisvertexc(mcdisvertex.x()/10.,mcdisvertex.y()/10.,mcdisvertex.z()/10.);
             mc_disvtx = mcdisvertexc;
             run_num   = confMan->GetRunNumber(); // run number

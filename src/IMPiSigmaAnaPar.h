@@ -138,6 +138,12 @@ namespace kin {
   const int pip_g1=1;//pi- 1st generation
   const int Sm=2;
   const int pim_g2=5;//pi- 2nd generation
+   
+  const int K0ncds=1;
+  const int K0bar=2;
+  const int K0nmiss=3;
+  const int K0pim=4;
+  const int K0pip=5;
 
   const int maxitr=50;
   const double maxdchi2=5e-5;
