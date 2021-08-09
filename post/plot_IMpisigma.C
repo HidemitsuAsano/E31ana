@@ -76,7 +76,7 @@ const bool IsMCweighting = false;
 //maybe, also forward Sigma events should be rejected ?
 const bool SimRejectFake = true;
 
-const bool RejectStoppedSigma = true;
+const bool RejectStoppedSigma = false;
 
 //color def.
 //Sp mode Signal :2 (red)
