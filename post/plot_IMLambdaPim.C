@@ -140,13 +140,16 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   //tree->SetBranchAddress( "run_num", &run_num );
   //tree->SetBranchAddress( "event_num", &event_num );
   //tree->SetBranchAddress( "block_num", &block_num );
-  //if(Spmode ){
-  //  tree->SetBranchAddress( "mcmom_beam",  &mcmom_beam );
-  //  tree->SetBranchAddress( "mcmom_pip", &mcmom_pip);
-  //  tree->SetBranchAddress( "mcmom_pim", &mcmom_pim);
-  //  tree->SetBranchAddress( "mcmom_ncds", &mcmom_ncds);
-  //  tree->SetBranchAddress( "mcmom_nmiss", &mcmom_nmiss);
-  //}
+  if(SimMode ){
+    tree->SetBranchAddress( "mcmom_beam",  &mcmom_beam );
+    tree->SetBranchAddress( "mcmom_pim1", &mcmom_pim1);
+    tree->SetBranchAddress( "mcmom_pim2", &mcmom_pim2);
+    tree->SetBranchAddress( "mcmom_p", &mcmom_p);
+    tree->SetBranchAddress( "mcmom_pmiss", &mcmom_pmiss);
+    tree->SetBranchAddress( "react_pmiss",&react_pmiss);
+    tree->SetBranchAddress( "react_Lambda",&react_Lambda);
+    tree->SetBranchAddress( "react_pim",&react_pim);
+  }
 
   //tree->SetBranchAddress( "kfSpmode_mom_beam",   &kfSpmode_mom_beam );
   //tree->SetBranchAddress( "kfSpmode_mom_pip", &kfSpmode_mom_pip );
@@ -189,6 +192,9 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   DCA_pim2_beam->SetXTitle("DCA #pi^{-}2 [cm]");
   TH1F* DCA_pim1_pim2 = new TH1F("DCA_pim1_pim2","DCA_pim1_pim2",300,0,30);
   DCA_pim1_pim2->SetXTitle("DCA #pi^{-}1#pi^{-}2");
+  TH1F* BeamMom = new TH1F("BeamMom","Beam Mom." ,100,0.9,1.1);
+  BeamMom->SetXTitle("Beam Mom. [GeV/c]");
+  
 
   // w/ kinematic fit
   //TH2F* MMom_MMass_fid_kin;
@@ -257,10 +263,12 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   q_IMppipi_p_wL->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   q_IMppipi_p_wL->SetYTitle("Mom. Transfer [GeV/c]");
 
-    TH1D* pim1cos = new TH1D("pim1cos","pim1cos",100,-1,1);
-    TH1D* pim2cos = new TH1D("pim2cos","pim2cos",100,-1,1);
-    TH1D* pcos = new TH1D("pcos","pcos",100,-1,1);
-    TH1D* pmisscos = new TH1D("pmisscos","pmisscos",100,-1,1);
+  TH1D* pim1cos = new TH1D("pim1cos","pim1cos",100,-1,1);
+  TH1D* pim2cos = new TH1D("pim2cos","pim2cos",100,-1,1);
+  TH1D* pcos = new TH1D("pcos","pcos",100,-1,1);
+  TH1D* pmisscos = new TH1D("pmisscos","pmisscos",100,-1,1);
+  TH2F* react_q_IMLambdaPim = new TH2F("react_q_IMLambdaPim","react_q_IMLambdaPim",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
+  TH2F* q_diffpmom_mc = new TH2F("q_diffpmom_mc","q_diffpmom_mc",1100,-1,10,nbinq,0,1.5);
   Int_t nevent = tree->GetEntries();
   std::cerr<<"# of events = "<<nevent<<std::endl;
   
@@ -290,7 +298,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     LVec_p_miss_CM.Boost(-boost);
     LVec_beam_CM.Boost(-boost);
     double cos_p = LVec_p_miss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_p_miss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
-    
+    TLorentzVector qkn_CM = LVec_beam_CM-LVec_p_miss_CM;
     // calc pi-pi- //
     TLorentzVector LVec_pim1_pim2 = *LVec_pim1+*LVec_pim2;
      
@@ -320,7 +328,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     pcos->Fill((*LVec_p).CosTheta());
     pmisscos->Fill(LVec_p_miss.CosTheta());
 
-
+    BeamMom->Fill((*LVec_beam).P());
 
     bool MissPFlag=false;
     bool LambdaFlag=false;
@@ -345,6 +353,18 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       MMom_MMass_p->Fill(pmiss_mass,pmiss_mom);
       IMppim1_IMppim2_p->Fill(LVec_pim2_p.M(),LVec_pim1_p.M());
       q_IMppipi_p->Fill(LVec_pim1_pim2_p.M(),qkn.P());
+      if(SimMode){
+        TLorentzVector TL_beam;
+        TVector3 beammom(0,0,1000.);
+        TL_beam.SetVectM(beammom, 493.);
+
+        TLorentzVector qkn = (TL_beam - *react_pmiss);
+        TLorentzVector TL_LambdaPim = *react_Lambda + *react_pim;
+        react_q_IMLambdaPim->Fill(TL_LambdaPim.M()/1000.,qkn.P()/1000.);
+        
+        TLorentzVector TL_p_diff = *LVec_p -*mcmom_pmiss;
+        q_diffpmom_mc->Fill(TL_p_diff.P(),qkn.P()/1000.);
+      }
     }
     if(LambdaFlag){
       if((anacuts::Lambda_MIN<LVec_pim1_p.M() && LVec_pim1_p.M()<anacuts::Lambda_MAX)){
