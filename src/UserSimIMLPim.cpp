@@ -97,6 +97,7 @@ TLorentzVector mcmom_beam;   // generated 4-momentum(beam)
 TLorentzVector mcmom_pim1;    // generated 4-momentum(pi+)
 TLorentzVector mcmom_pim2;    // generated 4-momentum(pi-)
 TLorentzVector mcmom_p;      // generated 4-momentum(neutron)
+TLorentzVector mcmom_pmiss;      // generated 4-momentum(neutron)
 TVector3 mc_vtx;
 TVector3 mc_disvtx;
 TLorentzVector kfMomBeamSpmode;   // 4-momentum(beam) after kinematical refit for pi- Sigma+
@@ -254,6 +255,7 @@ int main( int argc, char** argv )
   ppimpimTree->Branch( "mcmom_pim1", &mcmom_pim1 );
   ppimpimTree->Branch( "mcmom_pim2", &mcmom_pim2 );
   ppimpimTree->Branch( "mcmom_p", &mcmom_p );
+  ppimpimTree->Branch( "mcmom_pmiss", &mcmom_pmiss );
   ppimpimTree->Branch( "react_pmiss",&react_pmiss);
   ppimpimTree->Branch( "react_Lambda",&react_Lambda);
   ppimpimTree->Branch( "react_pim",&react_pim);
@@ -408,9 +410,9 @@ int main( int argc, char** argv )
     //reaction data
     Util::AnaReactionData(reacData);
 
-    react_pmiss = reacData->GetParticle(0);
-    react_Lambda = reacData->GetParticle(1);
-    react_pim = reacData->GetParticle(2);
+    react_Lambda = reacData->GetParticle(0);
+    react_pim = reacData->GetParticle(1);
+    react_pmiss = reacData->GetParticle(2);
 
     const int reactionID = reacData->ReactionID();
     //These partcile IDs are defined in pythia6
@@ -1032,7 +1034,6 @@ int main( int argc, char** argv )
               TL_meas[kinpLpim::Sm] = (LVec_n_vtx[1]+LVec_pim);
               TL_meas[kinpLpim::pim_g2] = LVec_pim;
             }
-
             double val1 = (TL_meas[kinpLpim::ncds]-TL_gene[kinpLpim::nmiss]).P(); // n_measured - n_initial
             double val2 = (TL_meas[kinpLpim::ncds]-TL_gene[kinpLpim::ncds]).P(); // n_measured - n_Sigma
             int genID[kinpLpim::npart] = {0,1,2,3,4,5};
@@ -1046,18 +1047,15 @@ int main( int argc, char** argv )
               nAbort_anothern++;
               IsGoodEvent = false;
             }
-            if(Verbosity_)std::cout<< "L." << __LINE__ << " val = "<<val1<<" "<<val2<<" -> "<< genID[kinpLpim::nmiss] <<" "<< genID[kinpLpim::ncds] << std::endl;
-            mcmom_beam = TL_gene[kinpLpim::kmbeam];
-            mcmom_ncds = TL_gene[genID[kinpLpim::ncds]];
-            mcmom_nmiss = TL_gene[genID[kinpLpim::nmiss]];
-            if( reactionID==gen::reactionID_Spmode ){
-              mcmom_pip  = TL_gene[kinpLpim::pip_g2];
-              mcmom_pim  = TL_gene[kinpLpim::pim_g1];
-            } else if ( reactionID==gen::reactionID_Smmode ){
-              mcmom_pip  = TL_gene[kinpLpim::pip_g1];
-              mcmom_pim  = TL_gene[kinpLpim::pim_g2];
-            }
-
+            */
+            //if(Verbosity_)std::cout<< "L." << __LINE__ << " val = "<<val1<<" "<<val2<<" -> "<< genID[kinpLpim::nmiss] <<" "<< genID[kinpLpim::ncds] << std::endl;
+            const int genID[kinpLpim::npart] = {0,1,2,3,4,5};
+            mcmom_beam = TL_gene[genID[kinpLpim::kmbeam]];
+            mcmom_p = TL_gene[genID[kinpLpim::pcds]];
+            mcmom_pmiss = TL_gene[genID[kinpLpim::pmiss]];
+            mcmom_pim1  = TL_gene[genID[kinpLpim::pim_g1]];
+            mcmom_pim2  = TL_gene[genID[kinpLpim::pim_g2]];
+            /*
             //--- set TLorentzVector ---//
             // beam_K(K+), pi-/+, Sigma+/-, p, n, n from S, pi+/- from S 
             //  = 1) TLorentzVector LVec_beam, LVec_pim, (LVec_n+LVec_pip), LVec_nmiss, LVec_n, LVec_pip = for pi- Sigma+
@@ -1313,7 +1311,6 @@ int main( int argc, char** argv )
             }//if flagG4Decay MissNFlag && K0rejectFlag 
 
             kf_flag = reactionID; //correct_flag;
-
           */
           //--- fill tree ---//
           mc_nparticle = nparticle;
@@ -1467,6 +1464,7 @@ void InitTreeVal()
   mcmom_pim1.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);    // generated 4-momentum(pi+)
   mcmom_pim2.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);    // generated 4-momentum(pi-)
   mcmom_p.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // generated 4-momentum(neutron)
+  mcmom_pmiss.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // generated 4-momentum(neutron)
   react_pmiss.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
   react_Lambda.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
   react_pim.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
