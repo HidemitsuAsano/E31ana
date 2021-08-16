@@ -71,6 +71,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TLorentzVector *LVec_pim1=nullptr;    // 4-momentum(pi+)
   TLorentzVector *LVec_pim2=nullptr;    // 4-momentum(pi-)
   TLorentzVector *LVec_p=nullptr;      // 4-momentum(proton)
+  TLorentzVector *LVec_p2=nullptr;      // 4-momentum(proton)
   TLorentzVector *mcmom_beam=nullptr;   // generated 4-momentum(beam)
   TLorentzVector *mcmom_pim1=nullptr;    // generated 4-momentum(pi+)
   TLorentzVector *mcmom_pim2=nullptr;    // generated 4-momentum(pi-)
@@ -121,6 +122,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   tree->SetBranchAddress( "mom_pim1", &LVec_pim1 );
   tree->SetBranchAddress( "mom_pim2", &LVec_pim2 );
   tree->SetBranchAddress( "mom_p", &LVec_p );
+  tree->SetBranchAddress( "mom_p2", &LVec_p2 );
   tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
   tree->SetBranchAddress( "vtx_displaced", &vtx_displaced );
   tree->SetBranchAddress( "vtx_pim1_beam",&vtx_pim1_beam);
@@ -173,19 +175,28 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   // w/o kinematic fit 
   f->cd();
   TH2F* MMom_MMass;
+  TH2F* MMom_MMass_2;
   TH2F* q_MMass;
   TH2F* MMom_MMass_p;
+  TH2F* MMom_MMass_p2;
   TH2F* MMom_MMass_p_wL;
   TH2F* MMom_PMom_p;
   TH2F* IMppim1_IMppim2;
+  TH2F* IMp2pim1_IMp2pim2;
   TH2F* IMppim1_IMppim2_p;
+  TH2F* IMp2pim1_IMp2pim2_p2;
   TH2F* IMppim1_IMppim2_p_wL;
+  TH2F* IMp2pim1_IMp2pim2_p2_wL;
   TH2F* MMass_IMppim1;
   TH2F* MMass_IMppim2;
   TH2F* MMass_IMppim_wL;
   TH2F* MMass_IMppim_p_wL;
+  TH2F* MMass_IMp2pim_p2_wL;
   TH2F* q_IMppipi_p;
+  TH2F* q_IMp2pipi_p2;
   TH2F* q_IMppipi_p_wL;
+  TH2F* q_IMp2pipi_p2_wL;
+  TH2F* q_IMppipi_p_wL_sum;
   TH1F* DCA_pim1_beam = new TH1F("DCA_pim1_beam","DCA_pim1_beam",300,0,30);
   DCA_pim1_beam->SetXTitle("DCA #pi^{-}1 [cm]");
   TH1F* DCA_pim2_beam = new TH1F("DCA_pim2_beam","DCA_pim2_beam",300,0,30);
@@ -215,6 +226,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   MMom_MMass->SetXTitle("Missing Mass [GeV/c^{2}]");
   MMom_MMass->SetYTitle("Missing Mom. [GeV/c]");
   
+  MMom_MMass_2 = new TH2F("MMom_MMass_2","MMom_MMass_2", nbinpmiss, pmisslow, pmisshigh, 200, 0, 2.0);
+  MMom_MMass_2->SetXTitle("Missing Mass [GeV/c^{2}]");
+  MMom_MMass_2->SetYTitle("Missing Mom. [GeV/c]");
+  
   q_MMass = new TH2F("q_MMass","q_MMass", nbinpmiss, pmisslow, pmisshigh, 200, 0, 2.0);
   q_MMass->SetXTitle("Missing Mass [GeV/c^{2}]");
   q_MMass->SetYTitle("Mom. Traksfer. [GeV/c]");
@@ -222,6 +237,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   MMom_MMass_p = new TH2F("MMom_MMass_p","MMom_MMass_p", nbinpmiss, pmisslow, pmisshigh, 200, 0, 2.0);
   MMom_MMass_p->SetXTitle("Missing Mass [GeV/c^{2}]");
   MMom_MMass_p->SetYTitle("Missing Mom. [GeV/c]");
+  
+  MMom_MMass_p2 = new TH2F("MMom_MMass_p2","MMom_MMass_p2", nbinpmiss, pmisslow, pmisshigh, 200, 0, 2.0);
+  MMom_MMass_p2->SetXTitle("Missing Mass [GeV/c^{2}]");
+  MMom_MMass_p2->SetYTitle("Missing Mom. [GeV/c]");
    
   MMom_MMass_p_wL = new TH2F("MMom_MMass_p_wL","MMom_MMass_p_wL", nbinpmiss, pmisslow, pmisshigh, 200, 0, 2.0);
   MMom_MMass_p_wL->SetXTitle("Missing Mass [GeV/c^{2}]");
@@ -230,14 +249,26 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   IMppim1_IMppim2 = new TH2F("IMppim1_IMppim2","IMppim1_IMppim2",nbinIMppi,1.,2.0,nbinIMppi,1.,2.0);
   IMppim1_IMppim2->SetXTitle("IM(p#pi^{-}2) [GeV/c^{2}]");
   IMppim1_IMppim2->SetYTitle("IM(p#pi^{-}1) [GeV/c^{2}]");
+  
+  IMp2pim1_IMp2pim2 = new TH2F("IMp2pim1_IMp2pim2","IMp2pim1_IMp2pim2",nbinIMppi,1.,2.0,nbinIMppi,1.,2.0);
+  IMp2pim1_IMp2pim2->SetXTitle("IM(p_2#pi^{-}2) [GeV/c^{2}]");
+  IMp2pim1_IMp2pim2->SetYTitle("IM(p_2#pi^{-}1) [GeV/c^{2}]");
 
   IMppim1_IMppim2_p = new TH2F("IMppim1_IMppim2_p","IMppim1_IMppim2_p",nbinIMppi,1.,2.0,nbinIMppi,1.,2.0);
   IMppim1_IMppim2_p->SetXTitle("IM(p#pi^{-}2) [GeV/c^{2}]");
   IMppim1_IMppim2_p->SetYTitle("IM(p#pi^{-}1) [GeV/c^{2}]");
+  
+  IMp2pim1_IMp2pim2_p2 = new TH2F("IMp2pim1_IMp2pim2_p2","IMp2pim1_IMp2pim2_p2",nbinIMppi,1.,2.0,nbinIMppi,1.,2.0);
+  IMp2pim1_IMp2pim2_p2->SetXTitle("IM(p#pi^{-}2) [GeV/c^{2}]");
+  IMp2pim1_IMp2pim2_p2->SetYTitle("IM(p#pi^{-}1) [GeV/c^{2}]");
 
   IMppim1_IMppim2_p_wL = new TH2F("IMppim1_IMppim2_p_wL","IMppim1_IMppim2_p_wL",nbinIMppi,1.,2.0,nbinIMppi,1.,2.0);
   IMppim1_IMppim2_p_wL->SetXTitle("IM(p#pi^{-}2) [GeV/c^{2}]");
   IMppim1_IMppim2_p_wL->SetYTitle("IM(p#pi^{-}1) [GeV/c^{2}]");
+  
+  IMp2pim1_IMp2pim2_p2_wL = new TH2F("IMp2pim1_IMp2pim2_p2_wL","IMp2pim1_IMp2pim2_p2_wL",nbinIMppi,1.,2.0,nbinIMppi,1.,2.0);
+  IMp2pim1_IMp2pim2_p2_wL->SetXTitle("IM(p#pi^{-}2) [GeV/c^{2}]");
+  IMp2pim1_IMp2pim2_p2_wL->SetYTitle("IM(p#pi^{-}1) [GeV/c^{2}]");
 
   MMass_IMppim1 = new TH2F("MMass_IMppim1","MMass_IMppim1",nbinIMppi,1.,2.0,nbinpmiss, pmisslow, pmisshigh);
   MMass_IMppim1->SetXTitle("IM(p#pi^{-}) [GeV/c^{2}]");
@@ -255,20 +286,38 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   MMass_IMppim_p_wL->SetXTitle("IM(p#pi^{-}) [GeV/c^{2}]");
   MMass_IMppim_p_wL->SetYTitle("Missing Mass [GeV/c^{2}]");
   
+  MMass_IMp2pim_p2_wL = new TH2F("MMass_IMp2pim_p2_wL","MMass_IMp2pim_p2_wL",nbinIMppi,1.,2.0,nbinpmiss, pmisslow, pmisshigh);
+  MMass_IMp2pim_p2_wL->SetXTitle("IM(p#pi^{-}) [GeV/c^{2}]");
+  MMass_IMp2pim_p2_wL->SetYTitle("Missing Mass [GeV/c^{2}]");
+  
   q_IMppipi_p = new TH2F("q_IMppipi_p","q_IMppipi_p",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
   q_IMppipi_p->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   q_IMppipi_p->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMp2pipi_p2 = new TH2F("q_IMp2pipi_p2","q_IMp2pipi_p2",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
+  q_IMp2pipi_p2->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
+  q_IMp2pipi_p2->SetYTitle("Mom. Transfer [GeV/c]");
 
   q_IMppipi_p_wL = new TH2F("q_IMppipi_p_wL","q_IMppipi_p_wL",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
   q_IMppipi_p_wL->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   q_IMppipi_p_wL->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMp2pipi_p2_wL = new TH2F("q_IMp2pipi_p2_wL","q_IMp2pipi_p2_wL",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
+  q_IMp2pipi_p2_wL->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
+  q_IMp2pipi_p2_wL->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMppipi_p_wL_sum = new TH2F("q_IMppipi_p_wL_sum","q_IMppipi_p_wL_sum",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
+  q_IMppipi_p_wL_sum->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
+  q_IMppipi_p_wL_sum->SetYTitle("Mom. Transfer [GeV/c]");
 
   TH1D* pim1cos = new TH1D("pim1cos","pim1cos",100,-1,1);
   TH1D* pim2cos = new TH1D("pim2cos","pim2cos",100,-1,1);
   TH1D* pcos = new TH1D("pcos","pcos",100,-1,1);
   TH1D* pmisscos = new TH1D("pmisscos","pmisscos",100,-1,1);
-  TH2F* react_q_IMLambdaPim = new TH2F("react_q_IMLambdaPim","react_q_IMLambdaPim",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
+  TH2F* react_q_IMLambdaPim_1 = new TH2F("react_q_IMLambdaPim_1","react_q_IMLambdaPim_1",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
+  TH2F* react_q_IMLambdaPim_2 = new TH2F("react_q_IMLambdaPim_2","react_q_IMLambdaPim_2",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
   TH2F* q_diffpmom_mc = new TH2F("q_diffpmom_mc","q_diffpmom_mc",1100,-1,10,nbinq,0,1.5);
+  TH1I* hp2flag = new TH1I("hp2flag","hp2flag",2,0,2);
   Int_t nevent = tree->GetEntries();
   std::cerr<<"# of events = "<<nevent<<std::endl;
   
@@ -289,10 +338,17 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     TLorentzVector LVec_p_miss = *LVec_target+*LVec_beam-*LVec_pim1-*LVec_pim2-*LVec_p;
     double pmiss_mass = LVec_p_miss.M();
     double pmiss_mom = LVec_p_miss.P();
+    bool p2flag=false;
+    if((*LVec_p2).P()>0.05) p2flag = true;
+    hp2flag->Fill(p2flag);
+    TLorentzVector LVec_p2_miss = *LVec_target+*LVec_beam-*LVec_pim1-*LVec_pim2-*LVec_p2;
+    double p2miss_mass = LVec_p2_miss.M();
+    double p2miss_mom = LVec_p2_miss.P();
 
     // calc cos(theta) of missing p //
     TVector3 boost = (*LVec_target+*LVec_beam).BoostVector();
     TLorentzVector qkn = *LVec_beam-LVec_p_miss;
+    TLorentzVector qkn2 = *LVec_beam-LVec_p2_miss;
     TLorentzVector LVec_p_miss_CM = LVec_p_miss;
     TLorentzVector LVec_beam_CM = *LVec_beam;
     LVec_p_miss_CM.Boost(-boost);
@@ -306,13 +362,18 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     // calc pi+p //
     TLorentzVector LVec_pim1_p = *LVec_pim1+*LVec_p;
     TLorentzVector LVec_pim2_p = *LVec_pim2+*LVec_p;
+    TLorentzVector LVec_pim1_p2 = *LVec_pim1+*LVec_p2;
+    TLorentzVector LVec_pim2_p2 = *LVec_pim2+*LVec_p2;
 
     // calc missing Lambda //
     TLorentzVector LVec_pim1_p_miss = *LVec_target+*LVec_beam-*LVec_pim1-*LVec_p;
     TLorentzVector LVec_pim2_p_miss = *LVec_target+*LVec_beam-*LVec_pim2-*LVec_p;
+    TLorentzVector LVec_pim1_p2_miss = *LVec_target+*LVec_beam-*LVec_pim1-*LVec_p2;
+    TLorentzVector LVec_pim2_p2_miss = *LVec_target+*LVec_beam-*LVec_pim2-*LVec_p2;
     
     // calc pi+pi-n //
     TLorentzVector LVec_pim1_pim2_p = *LVec_pim1+*LVec_pim2+*LVec_p;
+    TLorentzVector LVec_pim1_pim2_p2 = *LVec_pim1+*LVec_pim2+*LVec_p2;
     TLorentzVector LVec_pim1_pim2_p_CM = LVec_pim1_pim2_p;
     LVec_pim1_pim2_p_CM.Boost(-boost);
     double cos_X = LVec_pim1_pim2_p_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pim1_pim2_p_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
@@ -331,7 +392,9 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     BeamMom->Fill((*LVec_beam).P());
 
     bool MissPFlag=false;
+    bool MissP2Flag=false;
     bool LambdaFlag=false;
+    bool Lambda2Flag=false;
     //-- neutron-ID, K0 and missing neutron selection --//
 
     double dca_pim1_beam = (*vtx_pim1_beam-*vtx_pim2_cdc).Mag();
@@ -341,14 +404,24 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     //Lambda production in CDS
     if( (anacuts::Lambda_MIN<LVec_pim1_p.M() && LVec_pim1_p.M()<anacuts::Lambda_MAX)) LambdaFlag=true;
     if( (anacuts::Lambda_MIN<LVec_pim2_p.M() && LVec_pim2_p.M()<anacuts::Lambda_MAX)) LambdaFlag=true;
+    if(p2flag && (anacuts::Lambda_MIN<LVec_pim1_p2.M() && LVec_pim1_p2.M()<anacuts::Lambda_MAX)) Lambda2Flag=true;
+    if(p2flag && (anacuts::Lambda_MIN<LVec_pim2_p2.M() && LVec_pim2_p2.M()<anacuts::Lambda_MAX)) Lambda2Flag=true;
         
     if(anacuts::Proton_MIN<pmiss_mass && pmiss_mass<anacuts::Proton_MAX ) MissPFlag=true;
-    
+    if(p2flag && anacuts::Proton_MIN<p2miss_mass && p2miss_mass<anacuts::Proton_MAX ) MissP2Flag=true;
+
+    if(p2flag){
+      IMp2pim1_IMp2pim2->Fill(LVec_pim2_p2.M(),LVec_pim1_p2.M());
+    }
+
+   
     MMom_MMass->Fill(pmiss_mass,pmiss_mom);
+    if(p2flag)MMom_MMass_2->Fill(p2miss_mass,p2miss_mom);
     q_MMass->Fill(pmiss_mass,qkn.P());
     IMppim1_IMppim2->Fill(LVec_pim2_p.M(),LVec_pim1_p.M());
     MMass_IMppim1->Fill(LVec_pim1_p.M(),pmiss_mass);
     MMass_IMppim2->Fill(LVec_pim2_p.M(),pmiss_mass);
+    
     if(MissPFlag){
       MMom_MMass_p->Fill(pmiss_mass,pmiss_mom);
       IMppim1_IMppim2_p->Fill(LVec_pim2_p.M(),LVec_pim1_p.M());
@@ -360,12 +433,22 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
 
         TLorentzVector qkn = (TL_beam - *react_pmiss);
         TLorentzVector TL_LambdaPim = *react_Lambda + *react_pim;
-        react_q_IMLambdaPim->Fill(TL_LambdaPim.M()/1000.,qkn.P()/1000.);
+        if(!p2flag)react_q_IMLambdaPim_1->Fill(TL_LambdaPim.M()/1000.,qkn.P()/1000.);
         
         TLorentzVector TL_p_diff = *LVec_p -*mcmom_pmiss;
         q_diffpmom_mc->Fill(TL_p_diff.P(),qkn.P()/1000.);
       }
     }
+
+    if(MissP2Flag){
+      MMom_MMass_p2->Fill(p2miss_mass,p2miss_mom);
+      IMp2pim1_IMp2pim2_p2->Fill(LVec_pim2_p.M(),LVec_pim1_p.M());
+      q_IMp2pipi_p2->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
+    }
+
+  
+
+
     if(LambdaFlag){
       if((anacuts::Lambda_MIN<LVec_pim1_p.M() && LVec_pim1_p.M()<anacuts::Lambda_MAX)){
         MMass_IMppim_wL->Fill(LVec_pim1_p.M(),pmiss_mass);
@@ -373,6 +456,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
         MMass_IMppim_wL->Fill(LVec_pim2_p.M(),pmiss_mass);
       }
     }
+
     if(MissPFlag && LambdaFlag){
       if((anacuts::Lambda_MIN<LVec_pim1_p.M() && LVec_pim1_p.M()<anacuts::Lambda_MAX)){
         MMass_IMppim_p_wL->Fill(LVec_pim1_p.M(),pmiss_mass);
@@ -386,6 +470,23 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       DCA_pim2_beam->Fill( dca_pim2_beam );
       DCA_pim1_pim2->Fill( dca_pim1_pim2 );
     }
+    if(MissP2Flag && Lambda2Flag){
+      if((anacuts::Lambda_MIN<LVec_pim1_p2.M() && LVec_pim1_p2.M()<anacuts::Lambda_MAX)){
+        MMass_IMp2pim_p2_wL->Fill(LVec_pim1_p2.M(),p2miss_mass);
+      }else if((anacuts::Lambda_MIN<LVec_pim2_p2.M() && LVec_pim2_p2.M()<anacuts::Lambda_MAX)){
+        MMass_IMp2pim_p2_wL->Fill(LVec_pim2_p2.M(),p2miss_mass);
+      }
+      //MMom_MMass_p_wL->Fill(pmiss_mass,pmiss_mom);
+      IMp2pim1_IMp2pim2_p2_wL->Fill(LVec_pim2_p2.M(),LVec_pim1_p2.M());
+      q_IMp2pipi_p2_wL->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
+    }
+
+    if(MissPFlag && LambdaFlag){
+      q_IMppipi_p_wL_sum->Fill(LVec_pim1_pim2_p.M(),qkn.P());
+    }else if(MissP2Flag && Lambda2Flag){
+      q_IMppipi_p_wL_sum->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
+    }
+
     
 	}//for ievt
    
@@ -400,8 +501,8 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   fkp->SetLineColorAlpha(kPink, 0.35);
   fkp->Draw("same");
   */
-  TCanvas *ctest = new TCanvas("ctest","ctest");
-  q_IMppipi_p_wL->Draw("colz");
+  //TCanvas *ctest = new TCanvas("ctest","ctest");
+  //q_IMppipi_p_wL->Draw("colz");
   
   f->cd();
   TIter nexthist(gDirectory->GetList());
