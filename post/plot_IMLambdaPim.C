@@ -31,7 +31,7 @@ const bool UseKinFitVal = false;
 //mode 0: Sigma+ ,1: Sigma- 
 void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
 {
-
+  gROOT->SetBatch(true);
   //gROOT->SetStyle("Plain");
   if(staton)gStyle->SetOptStat(111111);
   else gStyle->SetOptStat(0);
@@ -323,7 +323,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH1D* pim1cos = new TH1D("pim1cos","pim1cos",100,-1,1);
   TH1D* pim2cos = new TH1D("pim2cos","pim2cos",100,-1,1);
   TH1D* pcos = new TH1D("pcos","pcos",100,-1,1);
-  TH1D* ppmisscos = new TH1D("ppmisscos","ppmisscos",100,-1,1);
+  TH1D* p2cos = new TH1D("p2cos","p2cos",100,-1,1);
+  TH1D* ppmisscostheta = new TH1D("ppmisscostheta","ppmisscostheta",100,-1,1);
+  TH1D* pp2cosphi = new TH1D("pp2cosphi","pp2cosphi",100,-1,1);
+  TH1D* pp2costheta = new TH1D("pp2costheta","pp2costheta",100,-1,1);
   TH1D* pmisscos = new TH1D("pmisscos","pmisscos",100,-1,1);
   TH2F* react_q_IMLambdaPim_1 = new TH2F("react_q_IMLambdaPim_1","react_q_IMLambdaPim_1",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
   TH2F* react_q_IMLambdaPim_2 = new TH2F("react_q_IMLambdaPim_2","react_q_IMLambdaPim_2",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
@@ -399,8 +402,12 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     pim2cos->Fill((*LVec_pim2).CosTheta());
     pcos->Fill((*LVec_p).CosTheta());
     pmisscos->Fill(LVec_p_miss.CosTheta());
-    if(p2flag) ppmisscos->Fill(cos((*LVec_p2).Phi()-(*LVec_p).Phi()));
-
+    ppmisscostheta->Fill(cos(LVec_p_miss.Theta()-(*LVec_p).Theta()));
+    if(p2flag){
+      p2cos->Fill((*LVec_p2).CosTheta());
+      pp2cosphi->Fill(cos((*LVec_p2).Phi()-(*LVec_p).Phi()));
+      pp2costheta->Fill(cos((*LVec_p2).Theta()-(*LVec_p).Theta()));
+    }
     BeamMom->Fill((*LVec_beam).P());
 
     bool MissPFlag=false;
