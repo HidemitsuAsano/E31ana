@@ -844,10 +844,8 @@ int main( int argc, char** argv )
     if( IsrecoPassed &&
         flagbmom &&
         (pim_ID.size()==2) &&
-        // (p_ID.size()==1) &&
-
         (
-          ((p_ID.size()==1) && (cdstrackMan->nGoodTrack()==3))
+          ((p_ID.size()==1) && (3<=cdstrackMan->nGoodTrack() && cdstrackMan->nGoodTrack()<=4))
           ||((p_ID.size()==2) && (cdstrackMan->nGoodTrack()==4))
         )
       ) {
