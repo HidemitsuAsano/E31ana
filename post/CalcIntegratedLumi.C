@@ -57,5 +57,13 @@ void CalcIntegratedLumi()
   hInteLumi->SetTitle("Run by Run Integrated Luminosity");
   std::cout << "Integral " << A << std::endl;
   std::cout << "Integral err " << errorInte << std::endl;  
+  
+  TParameter<double> IntegLumi("IntegLumi",A);
+  TParameter<double> IntegErr("Err",errorInte);
+
+  TFile *fout = new TFile("InteLumi.root","RECREATE");
+  IntegLumi.Write();
+  IntegErr.Write();
+  hInteLumi->Write();
 
 }
