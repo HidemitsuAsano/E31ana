@@ -42,9 +42,9 @@ void GetAccMapLpim()
   q_IMppipi_p_wL_acc->Divide(q_IMppipi_p_wL_acc,q_IMLPim_gen,1.0,1.0,"b");
 
   TH2F* q_IMppipi_p_wL_accerr;
-  q_IMnpipi_K0_accerr[iq] = (TH2F*)q_IMnpipi_K0_acc[0]->Clone(Form("q_IMnpipi_K0_accerr_%d",iq));
-  q_IMnpipi_K0_accerr[iq]->Reset();
-  q_IMnpipi_K0_accerr[iq]->SetTitle(Form("q_IMnpipi_K0 precision",iq));
+  q_IMppipi_p_wL_accerr = (TH2F*)q_IMppipi_p_wL_acc->Clone(Form("q_IMppipi_p_wL_accerr"));
+  q_IMppipi_K0_accerr[iq]->Reset();
+  q_IMppipi_K0_accerr[iq]->SetTitle(Form("q_IMnpipi_K0 precision",iq));
   for(int ix=0;ix<q_IMnpipi_Sp_acc[0]->GetNbinsX();ix++){
     for(int iy=0;iy<q_IMnpipi_Sp_acc[0]->GetNbinsY();iy++){
       double contSp = q_IMnpipi_Sp_acc[iq]->GetBinContent(ix,iy);
