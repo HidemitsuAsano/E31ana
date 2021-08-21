@@ -788,7 +788,7 @@ int main( int argc, char** argv )
     double q = (LVec_beam_unit.Vect()-react_pmiss.Vect()).Mag()/1000.;
     TLorentzVector TL_piLambda = react_Lambda + react_pim;
     double mass = TL_piLambda.M()/1000.;
-    Tools::H2("q_IMLPim_gen",mass,q,500,1,2,300,0,1.5);
+    Tools::H2("q_IMLPim_gen",mass,q,800,1.2,2,300,0,1.5);
 
     //always OK, because this is simulation
     if( !flagbmom ) {
