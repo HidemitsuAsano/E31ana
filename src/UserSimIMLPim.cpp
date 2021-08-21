@@ -1010,6 +1010,9 @@ int main( int argc, char** argv )
             (GeomTools::GetID(vtx_pim1_mean)==CID_Fiducial) &&
             (GeomTools::GetID(vtx_pim2_mean)==CID_Fiducial)))  {
 
+        Tools::Fill2D(Form("Vtx_ZX_primfid"),vtx_react.Z(),vtx_react.X());
+        Tools::Fill2D(Form("Vtx_ZY_primfid"),vtx_react.Z(),vtx_react.Y());
+        Tools::Fill2D(Form("Vtx_XY_primfid"),vtx_react.X(),vtx_react.Y());
         Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_pim1_mean.Z(),vtx_pim1_mean.X());
         Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_pim1_mean.Z(),vtx_pim1_mean.Y());
         Tools::Fill2D(Form("Vtx_XY_fid"),vtx_pim1_mean.X(),vtx_pim1_mean.Y());
