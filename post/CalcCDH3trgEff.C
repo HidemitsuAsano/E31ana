@@ -26,11 +26,19 @@ void CalcCDH3trgEff()
   double down = TEfficiency::Wilson(deno,nume,0.90,0);
   std::cout << "DAQ trg. eff: (90% confidence interval)  " << down << " - " << up << std::endl;
   
+  TParameter<double> down90("down90",down);
+  TParameter<double> up90("up90",up);
+  TParameter<double> effcenter("effcenter",nume/deno);
+
   c1->SaveAs("CDH3trgEff.pdf","PDF");
   TFile *file = new TFile("trgeff.root","RECREATE");
+  down90.Write();
+  up90.Write();
+  effcenter.Write();
   lasttime->Write();
   lasttime_fire->Write();
   file->Close();
-  
+   
+
 
 }
