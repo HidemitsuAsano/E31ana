@@ -215,9 +215,9 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   //TH2F* MMom_PMom_kin[];
   //TH2F* q_IMppipi_kin[2];
   
-  const int nbinIMppipi = 160;//1.2-2 GeV/c^2
+  const int nbinIMppipi = 60;//1.2-2 GeV/c^2
   const double IMppipilow = 1.2;//1.2-2 GeV/c^2
-  const double IMppipihigh = 2.0;//1.2-2 GeV/c^2
+  const double IMppipihigh = 2.1;//1.2-2 GeV/c^2
   const int nbinq = 100;//0-1.5 GeV/c
   const int nbinIMppi = 500; //1-2 GeV/c^2
   const int nbinpmiss = 150; //0-1.5 GeV/c
