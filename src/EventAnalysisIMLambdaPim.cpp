@@ -129,6 +129,7 @@ private:
   TLorentzVector mom_pim1;    // 4-momentum(pi-)
   TLorentzVector mom_pim2;    // 4-momentum(pi-)
   TLorentzVector mom_p;      // 4-momentum(proton)
+  TLorentzVector mom_p2;      // 4-momentum(proton)
   TVector3 vtx_reaction; // 
   TVector3 vtx_displaced; // 
   TVector3 vtx_pim1_beam; // 
@@ -282,6 +283,7 @@ void EventAnalysis::Initialize( ConfMan *conf )
   ppimpimTree->Branch( "mom_pim1", &mom_pim1 );
   ppimpimTree->Branch( "mom_pim2", &mom_pim2 );
   ppimpimTree->Branch( "mom_p", &mom_p );
+  ppimpimTree->Branch( "mom_p2", &mom_p2 );
   ppimpimTree->Branch( "vtx_reaction", &vtx_reaction );
   ppimpimTree->Branch( "vtx_displaced", &vtx_displaced );
   ppimpimTree->Branch( "vtx_pim1_beam", &vtx_pim1_beam );
@@ -507,14 +509,16 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   Tools::Fill1D( Form("EventCheck"), 1 );
   
   //CDH-hits cut
-  if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false)!=cdscuts_lpim::cdhmulti){
+  //if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false)!=cdscuts_lpim::cdhmulti){
+  if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false)<cdscuts_lpim::cdhmulti ) {
     Clear( nAbort_nCDH );
     return true;
   }
   Tools::Fill1D( Form("EventCheck"), 2 );
 
   //** # of good CDS tracks cut **//
-  if( nGoodTrack!=cdscuts_lpim::cds_ngoodtrack ) { //require pi+,pi-,proton
+  //if( nGoodTrack!=cdscuts_lpim::cds_ngoodtrack ) { //require pi+,pi-,proton
+  if( nGoodTrack<cdscuts_lpim::cds_ngoodtrack ) { // dedicated for pi+ pi- event
     Clear( nAbort_nGoodTrack );
     return true;
   }
@@ -658,10 +662,14 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   bool isforwardcharge = Util::IsForwardCharge(blMan);
   //  pi+ pi- X event
   //  with CDH multiplicity selection
-  bool ppimpimFlag = false;
-  if( pim_ID.size()==2 && p_ID.size()==1) ppimpimFlag = true;
-  if( ppimpimFlag &&
-      (trackMan->nGoodTrack()==cdscuts_lpim::cds_ngoodtrack)){ // && !Util::IsForwardCharge(blMan))
+  //bool ppimpimFlag = false;
+  //if( pim_ID.size()==2 && p_ID.size()==1) ppimpimFlag = true;
+  if((pim_ID.size()==2) &&
+      (
+       ((p_ID.size()==1) && (3<=trackMan->nGoodTrack() && trackMan->nGoodTrack()<=4))
+       ||((p_ID.size()==2) && (trackMan->nGoodTrack()==4))
+      )
+    ) {
     //=== pi+ pi- X candidates ===//
     rtFile2->cd();
     evTree->Fill();
@@ -673,7 +681,11 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     CDSTrack *track_pim1 = trackMan->Track( pim_ID.at(0) ); //
     CDSTrack *track_pim2 = trackMan->Track( pim_ID.at(1) ); //
     CDSTrack *track_p    = trackMan->Track( p_ID.at(0) ); //must be only 1 track due to the nCDH cut
-    
+    CDSTrack *track_p2;
+    if(p_ID.size()==2) {
+      track_p2 = trackMan->Track( p_ID[1] ); // only 1 track
+    }
+
     if(Verbosity){
       std::cout << "pim1 chi2  " << track_pim1->Chi() << std::endl;
       std::cout << "pim1 mom  " << track_pim1->Momentum() << std::endl;
@@ -699,6 +711,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     TVector3 vtx_p;//vertex(beam-proton) on cdc track
     track_p->GetVertex(bpctrack->GetPosatZ(0),bpctrack->GetMomDir(),vtx_beam_wp,vtx_p);
 
+    TVector3 vtx_beam_wp2;//vertex(beam-proton) on beam 
+    TVector3 vtx_p2;//vertex(beam-proton) on cdc track
+    if(p_ID.size()==2) {
+      track_p2->GetVertex(bpctrack->GetPosatZ(0),bpctrack->GetMomDir(),vtx_beam_wp2,vtx_p2);
+    }
+
     const double dcapim1vtx =  (vtx_pim1-vtx_beam_wpim1).Mag();
     const double dcapim2vtx =  (vtx_pim2-vtx_beam_wpim2).Mag();
     const TVector3 vtxpim1_mean = 0.5*(vtx_pim1+vtx_beam_wpim1);
@@ -723,6 +741,15 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     if(vtx_flag3) dcapim1pim2 = (ca_pim1_pim1pim2-ca_pim2_pim1pim2).Mag();
     Tools::Fill1D( Form("DCA_pim1pim2"), dcapim1pim2);
 
+    TVector3 CroA_pim1_pim1p2,CroA_p2_pim1p2;
+    if(p_ID.size()==2){
+      TrackTools::Calc2HelixVertex(track_pim1, track_p2, CroA_pim1_pim1p2, CroA_p2_pim1p2);
+    }
+
+    TVector3 CroA_pim2_pim2p2,CroA_p2_pim2p2;
+    if(p_ID.size()==2){
+      TrackTools::Calc2HelixVertex(track_pim2, track_p2, CroA_pim2_pim2p2, CroA_p2_pim2p2);
+    }
     //reaction vertex is determined from beam and nearest vtx of pi-
     TVector3 vtx_beam;
     //determine by pim-proton DCA
@@ -759,10 +786,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     TVector3 P_pim1; // Momentum(pi-)
     TVector3 P_pim2; // Momentum(pi-)
     TVector3 P_p; // Momentum(proton)
+    TVector3 P_p2; // Momentum(proton)
 
     TLorentzVector LVec_pim1; // 4-Momentum(pi-)
     TLorentzVector LVec_pim2; // 4-Momentum(pi-)
     TLorentzVector LVec_p;   // 4-Momentum(p) (CDS)
+    TLorentzVector LVec_p2;   // 4-Momentum(p) (CDS)
     TLorentzVector LVec_pmiss; // 4-Momentum(n_miss)
       
     //energy loss correction and momentum correction using vertex info
@@ -778,10 +807,16 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       std::cerr<<"L." << __LINE__ << " !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
     }
 
+    if(p_ID.size()==2) {
+      if( !track_p2->GetMomentum( vtx_p2, P_p2, true, true ) ) {
+        std::cerr<<"L." << __LINE__ << " !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
+      }
+    }
 
     LVec_pim1.SetVectM( P_pim1, piMass );
     LVec_pim2.SetVectM( P_pim2, piMass );
     LVec_p.SetVectM(   P_p,   pMass );//
+    LVec_p2.SetVectM( P_p2, pMass);
       
     //const double pimphi = P_pim.Phi();
     //const double pipphi = P_pip.Phi();
@@ -1033,6 +1068,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
        mom_pim1 = LVec_pim1;        // 4-momentum(pi+)
        mom_pim2 = LVec_pim2;        // 4-momentum(pi-)
        mom_p = LVec_p;            // 4-momentum(neutron)
+       mom_p2 = LVec_p2;            // 4-momentum(neutron)
        vtx_reaction = vtx_react; // vertex(reaction)
        vtx_displaced = vtx_dis; // vertex(reaction)
        vtx_pim1_beam = vtx_beam_wpim1;
