@@ -1,0 +1,107 @@
+#include <anacuts.h>
+
+void dispIMLpimHists()
+{
+
+
+  //TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v10_out.root","READ");
+  TFile *file = TFile::Open("../simpost/simIMLpim_ppimpim_v10_out.root","READ");
+  
+  TCanvas *cpcos = new TCanvas("cpcos","cpcos",800,800);
+  TH1D* pcos =  (TH1D*)file->Get("pcos");
+  TH1D* pmisscos = (TH1D*)file->Get("pmisscos");
+  TH1D* p2cos = (TH1D*)file->Get("p2cos");
+  pcos->Draw("HE");
+  pmisscos->SetLineColor(2);
+  pmisscos->Draw("HEsame");
+  p2cos->SetLineColor(3);
+  p2cos->Draw("HEsame");
+
+  
+  TCanvas *chp2flag = new TCanvas("chp2flag","chp2flag");
+  TH1I *hp2flag = (TH1I*)file->Get("hp2flag");
+  hp2flag->Draw("HE");
+
+  
+  TCanvas *cIMppim1_IMppim2 = new TCanvas("cIMppim1_IMppim2","cIMppim1_IMppim2",800,800);
+  TH2F* IMppim1_IMppim2 = (TH2F*)file->Get("IMppim1_IMppim2");
+  IMppim1_IMppim2->Draw("colz");
+
+  TCanvas *cIMppim1_IMp2pim1 = new TCanvas("cIMppim1_IMp2pim1","cIMppim1_IMp2pim1",800,800);
+  TH2F* IMppim1_IMp2pim1 = (TH2F*)file->Get("IMppim1_IMp2pim1");
+  IMppim1_IMp2pim1->Draw("colz");
+
+  TCanvas *cIMppim2_IMp2pim2 = new TCanvas("cIMppim2_IMp2pim2","cIMppim2_IMp2pim2",800,800);
+  TH2F* IMppim2_IMp2pim2 = (TH2F*)file->Get("IMppim2_IMp2pim2");
+  IMppim2_IMp2pim2->Draw("colz");
+
+  TCanvas *cIMp2pim1_IMp2pim2 = new TCanvas("cIMp2pim1_IMp2pim2","cIMp2pim1_IMp2pim2",800,800);
+  TH2F* IMp2pim1_IMp2pim2 = (TH2F*)file->Get("IMp2pim1_IMp2pim2");
+  IMp2pim1_IMp2pim2->Draw("colz");
+
+
+  TCanvas *cMiss = new TCanvas("cMiss","cMiss",800,800);
+  TH2F* MMom_MMass = (TH2F*)file->Get("MMom_MMass");
+  TH2F* MMom_MMass_2 = (TH2F*)file->Get("MMom_MMass_2");
+ 
+  TH1D* MMass = (TH1D*)MMom_MMass->ProjectionX("MMass");
+  TH1D* MMass_2 = (TH1D*)MMom_MMass_2->ProjectionX("MMass_2");
+
+  MMass->Draw("HE");
+  MMass_2->SetLineColor(2);
+  MMass_2->Draw("HEsame");
+  double mmax = MMass->GetMaximum();
+  TLine *plow = new TLine(anacuts::Proton_MIN,0,anacuts::Proton_MIN,mmax);
+  plow->SetLineColor(4);
+  plow->SetLineWidth(2.0);
+  plow->SetLineStyle(10);
+  plow->Draw();
+  TLine *phigh = new TLine(anacuts::Proton_MAX,0,anacuts::Proton_MAX,mmax);
+  phigh->SetLineColor(4);
+  phigh->SetLineWidth(2.0);
+  phigh->SetLineStyle(10);
+  phigh->Draw();
+
+  TCanvas *cMiss_sum = new TCanvas("cMiss_sum","cMiss_sum",800,800);
+  TH1D* MMass_sum = (TH1D*)MMass->Clone("MMass_sum");
+  MMass_sum->Add(MMass_2);
+  MMass_sum->Draw("HE");
+
+  TH2F* MMom_MMass_p = (TH2F*)file->Get("MMom_MMass_p");
+  TH2F* MMom_MMass_p2 = (TH2F*)file->Get("MMom_MMass_p2");
+ 
+  TH1D* MMass_p = (TH1D*)MMom_MMass_p->ProjectionX("MMass_p");
+  TH1D* MMass_p2 = (TH1D*)MMom_MMass_p2->ProjectionX("MMass_p2");
+
+  TH1D* MMass_p_sum = (TH1D*)MMass_p->Clone("MMass_p_sum");
+  MMass_p_sum->Add(MMass_p2);
+  MMass_p_sum->SetLineColor(2);
+  MMass_p_sum->SetFillColor(46);
+  MMass_p_sum->Draw("HEsame");
+  
+
+  TCanvas *cLambda  = new TCanvas("cLambda","cLambda",800,800);
+  TH1D* IMppim1 = (TH1D*)IMppim1_IMppim2->ProjectionY("IMppim1");
+  TH1D* IMppim2 = (TH1D*)IMppim1_IMppim2->ProjectionX("IMppim2");
+  TH1D* IMp2pim1 = (TH1D*)IMp2pim1_IMp2pim2->ProjectionY("IMp2pim1");
+  TH1D* IMp2pim2 = (TH1D*)IMp2pim1_IMp2pim2->ProjectionX("IMp2pim2");
+  IMppim1->Draw("HE");
+  IMppim2->SetLineColor(2);
+  IMppim2->Draw("HEsame");
+  IMp2pim1->SetLineColor(3);
+  IMp2pim1->Draw("HEsame");
+  IMp2pim2->SetLineColor(4);
+  IMp2pim2->Draw("HEsame");
+  double imax = IMppim1->GetMaximum();
+  TLine *llow = new TLine(anacuts::Lambda_MIN,0,anacuts::Lambda_MIN,imax);
+  llow->SetLineColor(5);
+  llow->SetLineWidth(2.0);
+  llow->SetLineStyle(10);
+  llow->Draw();
+  TLine *lhigh = new TLine(anacuts::Lambda_MAX,0,anacuts::Lambda_MAX,imax);
+  lhigh->SetLineColor(5);
+  lhigh->SetLineWidth(2.0);
+  lhigh->SetLineStyle(10);
+  lhigh->Draw();
+}
+
