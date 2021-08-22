@@ -253,16 +253,16 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   IMppim1_IMppim2->SetYTitle("IM(p#pi^{-}1) [GeV/c^{2}]");
   
   IMppim1_IMp2pim1 = new TH2F("IMppim1_IMp2pim1","IMppim1_IMp2pim1",nbinIMppi,1.,2.0,nbinIMppi,1.,2.0);
-  IMppim1_IMp2pim1->SetXTitle("IM(p2#pi^{-}1) [GeV/c^{2}]");
+  IMppim1_IMp2pim1->SetXTitle("IM(p_{2}#pi^{-}1) [GeV/c^{2}]");
   IMppim1_IMp2pim1->SetYTitle("IM(p#pi^{-}1) [GeV/c^{2}]");
   
   IMppim2_IMp2pim2 = new TH2F("IMppim2_IMp2pim2","IMppim2_IMp2pim2",nbinIMppi,1.,2.0,nbinIMppi,1.,2.0);
-  IMppim2_IMp2pim2->SetXTitle("IM(p2#pi^{-}2) [GeV/c^{2}]");
+  IMppim2_IMp2pim2->SetXTitle("IM(p_{2}#pi^{-}2) [GeV/c^{2}]");
   IMppim2_IMp2pim2->SetYTitle("IM(p#pi^{-}2) [GeV/c^{2}]");
   
   IMp2pim1_IMp2pim2 = new TH2F("IMp2pim1_IMp2pim2","IMp2pim1_IMp2pim2",nbinIMppi,1.,2.0,nbinIMppi,1.,2.0);
-  IMp2pim1_IMp2pim2->SetXTitle("IM(p_2#pi^{-}2) [GeV/c^{2}]");
-  IMp2pim1_IMp2pim2->SetYTitle("IM(p_2#pi^{-}1) [GeV/c^{2}]");
+  IMp2pim1_IMp2pim2->SetXTitle("IM(p_{2}#pi^{-}2) [GeV/c^{2}]");
+  IMp2pim1_IMp2pim2->SetYTitle("IM(p_{2}#pi^{-}1) [GeV/c^{2}]");
 
   IMppim1_IMppim2_p = new TH2F("IMppim1_IMppim2_p","IMppim1_IMppim2_p",nbinIMppi,1.,2.0,nbinIMppi,1.,2.0);
   IMppim1_IMppim2_p->SetXTitle("IM(p#pi^{-}2) [GeV/c^{2}]");
@@ -277,8 +277,8 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   IMppim1_IMppim2_p_wL->SetYTitle("IM(p#pi^{-}1) [GeV/c^{2}]");
   
   IMp2pim1_IMp2pim2_p2_wL = new TH2F("IMp2pim1_IMp2pim2_p2_wL","IMp2pim1_IMp2pim2_p2_wL",nbinIMppi,1.,2.0,nbinIMppi,1.,2.0);
-  IMp2pim1_IMp2pim2_p2_wL->SetXTitle("IM(p#pi^{-}2) [GeV/c^{2}]");
-  IMp2pim1_IMp2pim2_p2_wL->SetYTitle("IM(p#pi^{-}1) [GeV/c^{2}]");
+  IMp2pim1_IMp2pim2_p2_wL->SetXTitle("IM(p_{2}#pi^{-}2) [GeV/c^{2}]");
+  IMp2pim1_IMp2pim2_p2_wL->SetYTitle("IM(p_{2}#pi^{-}1) [GeV/c^{2}]");
 
   MMass_IMppim1 = new TH2F("MMass_IMppim1","MMass_IMppim1",nbinIMppi,1.,2.0,nbinpmiss, pmisslow, pmisshigh);
   MMass_IMppim1->SetXTitle("IM(p#pi^{-}) [GeV/c^{2}]");
@@ -328,10 +328,13 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH1D* pp2cosphi = new TH1D("pp2cosphi","pp2cosphi",100,-1,1);
   TH1D* pp2costheta = new TH1D("pp2costheta","pp2costheta",100,-1,1);
   TH1D* pmisscos = new TH1D("pmisscos","pmisscos",100,-1,1);
+  TH1D* p2misscos = new TH1D("p2misscos","p2misscos",100,-1,1);
   TH2F* react_q_IMLambdaPim_1 = new TH2F("react_q_IMLambdaPim_1","react_q_IMLambdaPim_1",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
   TH2F* react_q_IMLambdaPim_2 = new TH2F("react_q_IMLambdaPim_2","react_q_IMLambdaPim_2",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
   TH2F* q_diffpmom_mc = new TH2F("q_diffpmom_mc","q_diffpmom_mc",1100,-1,10,nbinq,0,1.5);
   TH1I* hp2flag = new TH1I("hp2flag","hp2flag",2,0,2);
+  
+  
   Int_t nevent = tree->GetEntries();
   std::cerr<<"# of events = "<<nevent<<std::endl;
   
@@ -405,6 +408,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     ppmisscostheta->Fill(cos(LVec_p_miss.Theta()-(*LVec_p).Theta()));
     if(p2flag){
       p2cos->Fill((*LVec_p2).CosTheta());
+      p2misscos->Fill(LVec_p2_miss.CosTheta());
       pp2cosphi->Fill(cos((*LVec_p2).Phi()-(*LVec_p).Phi()));
       pp2costheta->Fill(cos((*LVec_p2).Theta()-(*LVec_p).Theta()));
     }
