@@ -6,6 +6,7 @@ void dispIMLpimHists()
 
   //TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v10_out.root","READ");
   TFile *file = TFile::Open("../simpost/simIMLpim_ppimpim_v10_out.root","READ");
+  bool SimMode = (std::string(file->GetName()).find("sim")!= std::string::npos);
   
   TCanvas *cpcos = new TCanvas("cpcos","cpcos",800,800);
   TH1D* pcos =  (TH1D*)file->Get("pcos");
@@ -103,5 +104,48 @@ void dispIMLpimHists()
   lhigh->SetLineWidth(2.0);
   lhigh->SetLineStyle(10);
   lhigh->Draw();
+
+  TCanvas *cq_IMppipi_p_wL = new TCanvas("cq_IMppipi_p_wL","cq_IMppipi_p_wL",800,800);
+  TH2F* q_IMppipi_p_wL = (TH2F*)file->Get("q_IMppipi_p_wL");
+  q_IMppipi_p_wL->Draw("colz");
+
+  TCanvas *cq_IMp2pipi_p2_wL = new TCanvas("cq_IMp2pipi_p2_wL","cq_IMp2pipi_p2_wL",800,800);
+  TH2F* q_IMp2pipi_p2_wL = (TH2F*)file->Get("q_IMp2pipi_p2_wL");
+  q_IMp2pipi_p2_wL->Draw("colz");
+
+
+  TCanvas *cq_IMppipi_p_wL_sum  = new TCanvas("cq_IMppipi_p_wL_sum","cq_IMppipi_p_wL_sum");
+  TH2F* q_IMppipi_p_wL_sum = (TH2F*)file->Get("q_IMppipi_p_wL_sum");
+  q_IMppipi_p_wL_sum->Draw("colz");
+
+
+  TCanvas *c = NULL;
+  TSeqCollection *SCol = gROOT->GetListOfCanvases();
+  int size = SCol->GetSize();
+  TIter next(SCol);
+  TString pdfname;
+  pdfname= "Lpim_data.pdf";
+  if(SimMode) pdfname= "Lpim_sim.pdf";
+  
+  for(int i=0;i<size;i++){
+    //pdf->NewPage();
+    c= (TCanvas*)next();
+    c->Draw();
+    c->cd();
+    //inside the canvas
+    //TPaveText *pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
+    c->Modified();
+    c->Update();
+    std::cout << c->GetName() << std::endl;
+    //make 1 pdf file
+    if(i==0) c->Print(pdfname+"(",Form("pdf Title:%s",c->GetTitle()));
+    else if(i==size-1)c->Print(pdfname+")",Form("pdf Title:%s",c->GetTitle())); 
+    else c->Print(pdfname,Form("pdf Title:%s",c->GetTitle())); 
+    
+    //make separated pdf files
+    //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
+  }
+
+
 }
 
