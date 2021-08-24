@@ -180,7 +180,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* MMom_MMass_p;
   TH2F* MMom_MMass_p2;
   TH2F* MMom_MMass_p_wL;
-  TH2F* MMom_PMom_p;
+  TH2F* q_PMom;
+  TH2F* q_PMom_2;
+  TH2F* MMom_PMom;
+  TH2F* MMom_PMom_2;
   TH2F* IMppim1_IMppim2;
   TH2F* IMppim1_IMp2pim1;
   TH2F* IMppim2_IMp2pim2;
@@ -234,7 +237,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   
   q_MMass = new TH2F("q_MMass","q_MMass", nbinpmiss, pmisslow, pmisshigh, 200, 0, 2.0);
   q_MMass->SetXTitle("Missing Mass [GeV/c^{2}]");
-  q_MMass->SetYTitle("Mom. Traksfer. [GeV/c]");
+  q_MMass->SetYTitle("Mom. Transfer. [GeV/c]");
 
   MMom_MMass_p = new TH2F("MMom_MMass_p","MMom_MMass_p", nbinpmiss, pmisslow, pmisshigh, 200, 0, 2.0);
   MMom_MMass_p->SetXTitle("Missing Mass [GeV/c^{2}]");
@@ -248,6 +251,22 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   MMom_MMass_p_wL->SetXTitle("Missing Mass [GeV/c^{2}]");
   MMom_MMass_p_wL->SetYTitle("Missing Mom. [GeV/c]");
    
+  q_PMom = new TH2F("q_PMom","q_PMom",200,0,2,200,0,2.0);
+  q_PMom->SetXTitle("P Mom. [GeV/c]");
+  q_PMom->SetYTitle("Mom. Transfer. [GeV/c]");
+  
+  q_PMom_2 = new TH2F("q_PMom_2","q_PMom_2",200,0,2,200,0,2.0);
+  q_PMom_2->SetXTitle("P_{2} Mom. [GeV/c]");
+  q_PMom_2->SetYTitle("Mom. Transfer. [GeV/c]");
+
+  MMom_PMom = new TH2F("MMom_PMom","MMom_PMom",200,0,2,200,0,2.0);
+  MMom_PMom->SetXTitle("P Mom. [GeV/c]");
+  MMom_PMom->SetYTitle("Missing Mom. [GeV/c]");
+
+  MMom_PMom_2 = new TH2F("MMom_PMom_2","MMom_PMom_2",200,0,2,200,0,2.0);
+  MMom_PMom_2->SetXTitle("P Mom. [GeV/c]");
+  MMom_PMom_2->SetYTitle("Missing Mom. [GeV/c]");
+
   IMppim1_IMppim2 = new TH2F("IMppim1_IMppim2","IMppim1_IMppim2",nbinIMppi,1.,2.0,nbinIMppi,1.,2.0);
   IMppim1_IMppim2->SetXTitle("IM(p#pi^{-}2) [GeV/c^{2}]");
   IMppim1_IMppim2->SetYTitle("IM(p#pi^{-}1) [GeV/c^{2}]");
@@ -439,7 +458,13 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
 
    
     MMom_MMass->Fill(pmiss_mass,pmiss_mom);
-    if(p2flag)MMom_MMass_2->Fill(p2miss_mass,p2miss_mom);
+    q_PMom->Fill((*LVec_p).P(),qkn.P());
+    MMom_PMom->Fill((*LVec_p).P(),pmiss_mom);
+    if(p2flag){
+      q_PMom_2->Fill((*LVec_p2).P(),qkn2.P());
+      MMom_MMass_2->Fill(p2miss_mass,p2miss_mom);
+      MMom_PMom_2->Fill((*LVec_p2).P(),p2miss_mom);
+    }
     q_MMass->Fill(pmiss_mass,qkn.P());
     IMppim1_IMppim2->Fill(LVec_pim2_p.M(),LVec_pim1_p.M());
     if(p2flag){
