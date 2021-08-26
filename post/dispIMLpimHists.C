@@ -4,8 +4,8 @@ void dispIMLpimHists()
 {
 
 
-  //TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v10_out.root","READ");
-  TFile *file = TFile::Open("../simpost/simIMLpim_ppimpim_v10_out.root","READ");
+  TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v10_out.root","READ");
+  //TFile *file = TFile::Open("../simpost/simIMLpim_ppimpim_v10_out.root","READ");
   bool SimMode = (std::string(file->GetName()).find("sim")!= std::string::npos);
   
   TCanvas *cpcos = new TCanvas("cpcos","cpcos",800,800);
@@ -40,11 +40,29 @@ void dispIMLpimHists()
   TH2F* IMp2pim1_IMp2pim2 = (TH2F*)file->Get("IMp2pim1_IMp2pim2");
   IMp2pim1_IMp2pim2->Draw("colz");
 
+  TCanvas *cMMom_PMom = new TCanvas("cMMom_PMom","cMMom_PMom",800,800);
+  TH2F* MMom_PMom = (TH2F*)file->Get("MMom_PMom");
+  MMom_PMom->Draw("colz");
+
+  TCanvas *cMMom_PMom_2 = new TCanvas("cMMom_PMom_2","cMMom_PMom_2",800,800);
+  TH2F* MMom_PMom_2 = (TH2F*)file->Get("MMom_PMom_2");
+  MMom_PMom_2->Draw("colz");
+
+  TCanvas *cq_PMom = new TCanvas("cq_PMom","cq_PMom",800,800);
+  TH2F* q_PMom = (TH2F*)file->Get("q_PMom");
+  q_PMom->Draw("colz");
+
+  TCanvas *cq_PMom_2 = new TCanvas("cq_PMom_2","cq_PMom_2",800,800);
+  TH2F* q_PMom_2 = (TH2F*)file->Get("q_PMom_2");
+  q_PMom_2->Draw("colz");
+
 
   TCanvas *cMiss = new TCanvas("cMiss","cMiss",800,800);
   TH2F* MMom_MMass = (TH2F*)file->Get("MMom_MMass");
   TH2F* MMom_MMass_2 = (TH2F*)file->Get("MMom_MMass_2");
- 
+   
+
+
   TH1D* MMass = (TH1D*)MMom_MMass->ProjectionX("MMass");
   TH1D* MMass_2 = (TH1D*)MMom_MMass_2->ProjectionX("MMass_2");
 
@@ -117,7 +135,7 @@ void dispIMLpimHists()
   TCanvas *cq_IMppipi_p_wL_sum  = new TCanvas("cq_IMppipi_p_wL_sum","cq_IMppipi_p_wL_sum");
   TH2F* q_IMppipi_p_wL_sum = (TH2F*)file->Get("q_IMppipi_p_wL_sum");
   q_IMppipi_p_wL_sum->Draw("colz");
-
+  
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
