@@ -7,12 +7,13 @@ void MakeGenProbFunc()
   //TFile *file = new TFile("simIMpisigma_nSmpip_DoraAir_v45_v46_acc.root","READ");
   //TFile *file = new TFile("simIMLpim_DoraAir_v2.root","READ");
   //TFile *file = new TFile("simIMpisigma_npipiL_DoraAir_v10.root","READ");
-  TFile *file = new TFile("simIMpisigma_K0nn_v10.root","READ");
+  //TFile *file = new TFile("simIMpisigma_K0nn_v10.root","READ");
+  TFile *file = new TFile("simIMLpim_v8.root","READ");
   std::cout << "file name:" << file->GetName() << std::endl;
 
   //TH2F* React_q_IMPiSigma = (TH2F*)file->Get("React_q_IMPiSigma_Sp");
   //TH2F* React_q_IMPiSigma = (TH2F*)file->Get("React_q_IMPiSigma");
-  TH2F* React_q_IMPiSigma = (TH2F*)file->Get("React_q_IMnpipi");
+  TH2F* React_q_IMPiSigma = (TH2F*)file->Get("React_q_IMLPim");
   double ntotal = React_q_IMPiSigma->Integral();
   std::cout << "total " << ntotal << std::endl;
   TCanvas *creact = new TCanvas("creact","creact");
@@ -25,7 +26,8 @@ void MakeGenProbFunc()
   dt->SetTitle("Gen. Prob. Func. ; true IM(n#pi^{+}#pi^{-}) [GeV/c^{2}] ; true Mom. Transfer [GeV/c]; Prob.");
   double x,y,z;
   
-  TH2D* h2prob = new TH2D("h2prob","h2prob",500,1,2,300,0,1.5);
+ // TH2D* h2prob = new TH2D("h2prob","h2prob",500,1,2,300,0,1.5);
+  TH2D* h2prob = new TH2D("h2prob","h2prob",800,1.2,2,300,0,1.5);
   h2prob->SetTitle("Gen. Prob. Func. ; true IM(n#pi^{+}#pi^{-}) [GeV/c^{2}] ; true Mom. Transfer [GeV/c]; Prob.");
   
   int i=0;
@@ -57,9 +59,10 @@ void MakeGenProbFunc()
 
   //TH2F* pro = (TH2F*)dt->Project("xy");
   //pro->Draw("colz");
-  //TFile *fout = new TFile("probLpim.root","RECREATE");
+  TFile *fout = new TFile("probLpim.root","RECREATE");
   //TFile *fout = new TFile("probnpipiL.root","RECREATE");
-  TFile *fout = new TFile("probK0nn.root","RECREATE");
+  //TFile *fout = new TFile("probK0nn.root","RECREATE");
+  //TFile *fout = new TFile("probK0nn.root","RECREATE");
   //dt->Write();
   h2prob->Write();
 
