@@ -1,4 +1,4 @@
-const bool RemoveNotEnough = false;
+const bool RemoveNotEnough = true;
 const double UncertCut = 0.25;
 
 void GetAccMap()
@@ -16,24 +16,24 @@ void GetAccMap()
   TFile *fSmgen=NULL;
   TFile *fK0gen=NULL;
 
-  fSp[0] = TFile::Open("simIMpisigma_nSppim_pippimn_v142_out_iso_rej_nostop.root");
-  fSp[1] = TFile::Open("simIMpisigma_nSppim_pippimn_v142_out_iso_qlo_rej_nostop.root");
-  fSp[2] = TFile::Open("simIMpisigma_nSppim_pippimn_v142_out_iso_qhi_rej_nostop.root");
-  fSp[3] = TFile::Open("simIMpisigma_nSppim_pippimn_v142_out_iso_theta15_rej_nostop.root");
+  fSp[0] = TFile::Open("simIMpisigma_nSppim_pippimn_v145_out_iso_rej_nostop.root");
+  fSp[1] = TFile::Open("simIMpisigma_nSppim_pippimn_v145_out_iso_qlo_rej_nostop.root");
+  fSp[2] = TFile::Open("simIMpisigma_nSppim_pippimn_v145_out_iso_qhi_rej_nostop.root");
+  fSp[3] = TFile::Open("simIMpisigma_nSppim_pippimn_v145_out_iso_theta15_rej_nostop.root");
 
-  fSm[0] = TFile::Open("simIMpisigma_nSmpip_pippimn_v142_out_iso_rej_nostop.root");
-  fSm[1] = TFile::Open("simIMpisigma_nSmpip_pippimn_v142_out_iso_qlo_rej_nostop.root");
-  fSm[2] = TFile::Open("simIMpisigma_nSmpip_pippimn_v142_out_iso_qhi_rej_nostop.root");
-  fSm[3] = TFile::Open("simIMpisigma_nSmpip_pippimn_v142_out_iso_theta15_rej_nostop.root");
+  fSm[0] = TFile::Open("simIMpisigma_nSmpip_pippimn_v145_out_iso_rej_nostop.root");
+  fSm[1] = TFile::Open("simIMpisigma_nSmpip_pippimn_v145_out_iso_qlo_rej_nostop.root");
+  fSm[2] = TFile::Open("simIMpisigma_nSmpip_pippimn_v145_out_iso_qhi_rej_nostop.root");
+  fSm[3] = TFile::Open("simIMpisigma_nSmpip_pippimn_v145_out_iso_theta15_rej_nostop.root");
 
-  fK0[0] = TFile::Open("simIMpisigma_K0nn_pippimn_v17_out_iso_rej_nostop.root");
-  fK0[1] = TFile::Open("simIMpisigma_K0nn_pippimn_v17_out_iso_qlo_rej_nostop.root");
-  fK0[2] = TFile::Open("simIMpisigma_K0nn_pippimn_v17_out_iso_qhi_rej_nostop.root");
-  fK0[3] = TFile::Open("simIMpisigma_K0nn_pippimn_v17_out_iso_theta15_rej_nostop.root");
+  fK0[0] = TFile::Open("simIMpisigma_K0nn_pippimn_v21_out_iso_rej_nostop.root");
+  fK0[1] = TFile::Open("simIMpisigma_K0nn_pippimn_v21_out_iso_qlo_rej_nostop.root");
+  fK0[2] = TFile::Open("simIMpisigma_K0nn_pippimn_v21_out_iso_qhi_rej_nostop.root");
+  fK0[3] = TFile::Open("simIMpisigma_K0nn_pippimn_v21_out_iso_theta15_rej_nostop.root");
   
-  fSpgen = TFile::Open("simIMpisigma_nSppim_v142.root");
-  fSmgen = TFile::Open("simIMpisigma_nSmpip_v142.root");
-  fK0gen = TFile::Open("simIMpisigma_K0nn_v17.root");
+  fSpgen = TFile::Open("simIMpisigma_nSppim_v145.root");
+  fSmgen = TFile::Open("simIMpisigma_nSmpip_v145.root");
+  fK0gen = TFile::Open("simIMpisigma_K0nn_v21.root");
   
   const int nqcut=1;
   TH2F* q_IMnpipi_gen_Sp[nqcut];
@@ -101,13 +101,15 @@ void GetAccMap()
     q_IMnpipi_Sm_acc[iq]->SetTitle(Form("q_IMnpipi Sm acc. ",iq));
     q_IMnpipi_K0_acc[iq]->SetTitle(Form("q_IMnpipi K0 acc. ",iq));
     
-
+    
     q_IMnpipi_Sp_acc[iq]->Print("base");
     q_IMnpipi_gen_Sp[iq]->Print("base");
     q_IMnpipi_Sp_acc[iq]->Divide(q_IMnpipi_Sp_acc[iq],q_IMnpipi_gen_Sp[iq],1.0,1.0,"b");
     q_IMnpipi_Sm_acc[iq]->Print("base");
     q_IMnpipi_gen_Sm[iq]->Print("base");
     q_IMnpipi_Sm_acc[iq]->Divide(q_IMnpipi_Sm_acc[iq],q_IMnpipi_gen_Sm[iq],1.0,1.0,"b");
+    q_IMnpipi_K0_acc[iq]->Print("base");
+    q_IMnpipi_gen_K0[iq]->Print("base");
     q_IMnpipi_K0_acc[iq]->Divide(q_IMnpipi_K0_acc[iq],q_IMnpipi_gen_K0[iq],1.0,1.0,"b");
   }
 
@@ -161,6 +163,16 @@ void GetAccMap()
       if(RemoveNotEnough && err>UncertCut){
         q_IMnpipi_Sm_acc[0]->SetBinContent(ix,iy,0);
         q_IMnpipi_Sm_acc[0]->SetBinError(ix,iy,0);
+      }
+    }
+  }
+  
+  for(int ix=0;ix<q_IMnpipi_K0_accerr[0]->GetNbinsX();ix++){
+    for(int iy=0;iy<q_IMnpipi_K0_accerr[0]->GetNbinsY();iy++){
+      double err = q_IMnpipi_K0_accerr[0]->GetBinContent(ix,iy);
+      if(RemoveNotEnough && err>UncertCut){
+        q_IMnpipi_K0_acc[0]->SetBinContent(ix,iy,0);
+        q_IMnpipi_K0_acc[0]->SetBinError(ix,iy,0);
       }
     }
   }
