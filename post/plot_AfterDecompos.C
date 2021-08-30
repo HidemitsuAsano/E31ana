@@ -36,10 +36,10 @@ void plot_AfterDecompos()
 {
   TFile *fr[4]={NULL};
   
-  fr[0] = TFile::Open("evanaIMpisigma_npippim_v226_out_iso_nostop_sub.root");
-  fr[1] = TFile::Open("evanaIMpisigma_npippim_v226_out_iso_qlo_nostop_sub.root");
-  fr[2] = TFile::Open("evanaIMpisigma_npippim_v226_out_iso_qhi_nostop_sub.root");
-  fr[3] = TFile::Open("evanaIMpisigma_npippim_v226_out_iso_theta15_nostop_sub.root");
+  fr[0] = TFile::Open("evanaIMpisigma_npippim_v229_out_iso_nostop_sub.root");
+  fr[1] = TFile::Open("evanaIMpisigma_npippim_v229_out_iso_qlo_nostop_sub.root");
+  fr[2] = TFile::Open("evanaIMpisigma_npippim_v229_out_iso_qhi_nostop_sub.root");
+  fr[3] = TFile::Open("evanaIMpisigma_npippim_v229_out_iso_theta15_nostop_sub.root");
   fr[0]->Print();
   fr[1]->Print();
   fr[2]->Print();
@@ -50,6 +50,15 @@ void plot_AfterDecompos()
   fdeco[0]->Print();
   fdeco[1]->Print();
 
+  TFile *flumi = TFile::Open("InteLumi.root");
+  TParameter<double>*IntegLumi = flumi->Get("IntegLumi");
+  TParameter<double>*Err = flumi->Get("Err");
+  double lumi = IntegLumi->GetVal();
+  double lumierr = Err->GetVal();
+  const double trigScale = 2.0;
+  std::cout << "Lumi:  " << lumi << std::endl;
+  std::cout << "Err:   " << lumierr << std::endl;
+  
   //gROOT->SetBatch(1);
   gStyle->SetPalette(1);
   gStyle->SetOptStat(0);
@@ -393,8 +402,6 @@ void plot_AfterDecompos()
     IMnpipi_K0orSm_ToSm[iq] = (TH1D*)q_IMnpipi_K0orSm_ToSm[iq]->ProjectionX(Form("IMnpipi_K0orSm_ToSm%d",iq));
     IMnpipi_K0orSm_ToK0[iq] = (TH1D*)q_IMnpipi_K0orSm_ToK0[iq]->ProjectionX(Form("IMnpipi_K0orSm_ToK0%d",iq));
   }
-
-
 
 
   

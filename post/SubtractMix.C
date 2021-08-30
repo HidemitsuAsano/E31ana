@@ -14,7 +14,7 @@ void SubtractMix(const int mode=0)
    
   //real data
   if(mode==0){
-    const int version = 226;
+    const int version = 229;
     /*
     fnamer[0] = Form("evanaIMpisigma_npippim_v%d_out_iso.root",version);
     fnamem[0] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso.root",version);
