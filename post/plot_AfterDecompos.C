@@ -772,6 +772,8 @@ void plot_AfterDecompos()
     //IMnpipi_K0_cs[iq]->Draw("HE");
     //IMnpipi_Sp_cs[iq]->Draw("HEsame");
     IMnpipi_Sp_cs[iq]->Draw("HE");
+    IMnpipi_Sp_cs[iq]->SetYTitle("d#sigma/dM [#mu b (MeV/c^{2})]");
+    IMnpipi_Sp_cs[iq]->GetYaxis()->CenterTitle();
     IMnpipi_Sm_cs[iq]->Draw("HEsame");
   }
 
