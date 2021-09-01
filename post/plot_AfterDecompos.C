@@ -24,6 +24,7 @@ const double UncertCut = 0.25;
 #include <TLatex.h>
 #include <TGraphErrors.h>
 #include <TGraphAsymmErrors.h>
+#include <TParameter.h>
 
 #include "../src/GlobalVariables.h"
 
@@ -35,7 +36,7 @@ bool FitNoWeight=true;
 
 void plot_AfterDecompos()
 {
-  TFile *fr[4]={NULL};
+  TFile *fr[4]={nullptr};
   
   fr[0] = TFile::Open("evanaIMpisigma_npippim_v229_out_iso_nostop_sub.root");
   fr[1] = TFile::Open("evanaIMpisigma_npippim_v229_out_iso_qlo_nostop_sub.root");
@@ -45,15 +46,15 @@ void plot_AfterDecompos()
   fr[1]->Print();
   fr[2]->Print();
   fr[3]->Print();
-  TFile *fdeco[2]={NULL};
+  TFile *fdeco[2]={nullptr};
   fdeco[0] = TFile::Open("deco_qlo.root","READ");
   fdeco[1] = TFile::Open("deco_qhi.root","READ");
   fdeco[0]->Print();
   fdeco[1]->Print();
 
   TFile *flumi = TFile::Open("InteLumi.root");
-  TParameter<double>*IntegLumi = flumi->Get("IntegLumi");
-  TParameter<double>*Err = flumi->Get("Err");
+  TParameter<double>*IntegLumi = (TParameter<double>*)flumi->Get("IntegLumi");
+  TParameter<double>*Err = (TParameter<double>*)flumi->Get("Err");
   double lumi = IntegLumi->GetVal();
   double lumierr = Err->GetVal();
   const double trigScale = 2.0;
@@ -132,9 +133,12 @@ void plot_AfterDecompos()
     cq_IMnpipi_wK0_wSid_n_Sp[iq] = new TCanvas(Form("cq_IMnpipi_wK0_wSid_n_Sp_%s",cqcut[iq]),Form("cq_IMnpipi_wK0_wSid_n_Sp_%s",cqcut[iq]));
     q_IMnpipi_wK0_wSid_n_Sp[iq]->Draw("colz");
     
-    cIMnpipi_Sp[iq] = new TCanvas(Form("IMnpipi_Sp_%s",cqcut[iq]),Form("IMnpipi_Sp_%s",cqcut[iq]),800,800);
+    cIMnpipi_Sp[iq] = new TCanvas(Form("IMnpipi_Sp_%s",cqcut[iq]),Form("IMnpipi_Sp_%s",cqcut[iq]),1000,800);
     IMnpipi_wSid_n_Sp[iq] = (TH1D*)q_IMnpipi_wSid_n_Sp[iq]->ProjectionX(Form("IMnpipi_wSid_n_Sp_%d",iq));
+    IMnpipi_wSid_n_Sp[iq]->SetYTitle("Counts/15 MeV");
+    IMnpipi_wSid_n_Sp[iq]->GetYaxis()->CenterTitle();
     IMnpipi_wSid_n_Sp[iq]->Draw("HE");
+
     IMnpipi_wK0_wSid_n_Sp[iq] = (TH1D*)q_IMnpipi_wK0_wSid_n_Sp[iq]->ProjectionX(Form("IMnpipi_wK0_wSid_n_Sp_%d",iq));
     IMnpipi_wK0_wSid_n_Sp[iq]->SetLineColor(2);
     IMnpipi_wK0_wSid_n_Sp[iq]->Draw("HEsame");
@@ -143,34 +147,38 @@ void plot_AfterDecompos()
     IMnpipi_wSid_n_SpSm[iq]->Draw("HEsame");
     
     TLegend *lSpoverlap = new TLegend(0.6,0.7,0.9,0.9);
-    lSpoverlap->AddEntry(IMnpipi_wSid_n_Sp[iq],"#Sigma+ like mode","l");
-    lSpoverlap->AddEntry(IMnpipi_wK0_wSid_n_Sp[iq],"K0 overlap","l");
-    lSpoverlap->AddEntry(IMnpipi_wSid_n_SpSm[iq],"#Sigma- overlap","l");
+    lSpoverlap->AddEntry(IMnpipi_wSid_n_Sp[iq],"#Sigma^{+} like events (total)","l");
+    lSpoverlap->AddEntry(IMnpipi_wK0_wSid_n_Sp[iq],"w/ #bar{K}^{0} overlap","l");
+    lSpoverlap->AddEntry(IMnpipi_wSid_n_SpSm[iq],"w/ #Sigma^{-} overlap","l");
     lSpoverlap->Draw();
 
     cq_IMnpipi_wSid_n_Sm[iq] = new TCanvas(Form("cq_IMnpipi_wSid_n_Sm_%s",cqcut[iq]),Form("cq_IMnpipi_wSid_n_Sm_%s",cqcut[iq]));
     q_IMnpipi_wSid_n_Sm[iq]->Draw("colz");
     cq_IMnpipi_wK0_wSid_n_Sm[iq] = new TCanvas(Form("cq_IMnpipi_wK0_wSid_n_Sm_%s",cqcut[iq]),Form("cq_IMnpipi_wK0_wSid_n_Sm_%s",cqcut[iq]));
     q_IMnpipi_wK0_wSid_n_Sm[iq]->Draw("colz");
-    cIMnpipi_Sm[iq] = new TCanvas(Form("IMnpipi_Sm_%s",cqcut[iq]),Form("IMnpipi_Sm_%s",cqcut[iq]),800,800);
+    cIMnpipi_Sm[iq] = new TCanvas(Form("IMnpipi_Sm_%s",cqcut[iq]),Form("IMnpipi_Sm_%s",cqcut[iq]),1000,800);
     IMnpipi_wSid_n_Sm[iq] = (TH1D*)q_IMnpipi_wSid_n_Sm[iq]->ProjectionX(Form("IMnpipi_wSid_n_Sm_%d",iq));
+    IMnpipi_wSid_n_Sm[iq]->SetYTitle("Counts/15 MeV");
+    IMnpipi_wSid_n_Sm[iq]->GetYaxis()->CenterTitle();
     IMnpipi_wSid_n_Sm[iq]->Draw("HE");
     IMnpipi_wK0_wSid_n_Sm[iq] = (TH1D*)q_IMnpipi_wK0_wSid_n_Sm[iq]->ProjectionX(Form("IMnpipi_wK0_wSid_n_Sm_%d",iq));
     IMnpipi_wK0_wSid_n_Sm[iq]->SetLineColor(2);
     IMnpipi_wK0_wSid_n_Sm[iq]->Draw("HEsame");
     IMnpipi_wSid_n_SpSm[iq]->Draw("HEsame");
     TLegend *lSmoverlap = new TLegend(0.6,0.7,0.9,0.9);
-    lSmoverlap->AddEntry(IMnpipi_wSid_n_Sm[iq],"#Sigma- like mode","l");
-    lSmoverlap->AddEntry(IMnpipi_wK0_wSid_n_Sm[iq],"K0 overlap","l");
-    lSmoverlap->AddEntry(IMnpipi_wSid_n_SpSm[iq],"#Sigma+ overlap","l");
+    lSmoverlap->AddEntry(IMnpipi_wSid_n_Sm[iq],"#Sigma^{-} like events (total)","l");
+    lSmoverlap->AddEntry(IMnpipi_wK0_wSid_n_Sm[iq],"w/ #bar{K}^{0} overlap","l");
+    lSmoverlap->AddEntry(IMnpipi_wSid_n_SpSm[iq],"w/ #Sigma^{+} overlap","l");
     lSmoverlap->Draw();
     
     cq_IMnpipi_wSid_n_SpSm[iq] = new TCanvas(Form("cq_IMnpipi_wSid_n_SpSm_%s",cqcut[iq]),Form("cq_IMnpipi_wSid_n_SpSm_%s",cqcut[iq]));
     q_IMnpipi_wSid_n_SpSm[iq]->Draw("colz");
 
 
-    cIMnpipi_K0[iq] = new TCanvas(Form("IMnpipi_K0_%s",cqcut[iq]),Form("IMnpipi_K0_%s",cqcut[iq]),800,800);
+    cIMnpipi_K0[iq] = new TCanvas(Form("IMnpipi_K0_%s",cqcut[iq]),Form("IMnpipi_K0_%s",cqcut[iq]),1000,800);
     IMnpipi_wK0_n[iq] = (TH1D*)q_IMnpipi_wK0_n[iq]->ProjectionX(Form("IMnpipi_wK0_n_%d",iq));
+    IMnpipi_wK0_n[iq]->SetYTitle("Counts/15 MeV");
+    IMnpipi_wK0_n[iq]->GetYaxis()->CenterTitle();
     IMnpipi_wK0_n[iq]->Draw("HE");
     IMnpipi_wK0_wSid_n_Sp2[iq] = (TH1D*)IMnpipi_wK0_wSid_n_Sp[iq]->Clone(Form("IMnpipi_wK0_wSid_n_Sp2_%d",iq));
     IMnpipi_wK0_wSid_n_Sm2[iq] = (TH1D*)IMnpipi_wK0_wSid_n_Sm[iq]->Clone(Form("IMnpipi_wK0_wSid_n_Sm2_%d",iq));
@@ -180,14 +188,16 @@ void plot_AfterDecompos()
     IMnpipi_wK0_wSid_n_Sm2[iq]->Draw("HEsame");
     
     TLegend *lK0overlap = new TLegend(0.6,0.7,0.9,0.9);
-    lK0overlap->AddEntry(IMnpipi_wK0_n[iq],"K0 like mode","l");
-    lK0overlap->AddEntry(IMnpipi_wK0_wSid_n_Sp2[iq],"#Sigma+ overlap","l");
-    lK0overlap->AddEntry(IMnpipi_wK0_wSid_n_Sm2[iq],"#Sigma- overlap","l");
+    lK0overlap->AddEntry(IMnpipi_wK0_n[iq],"#bar{K}^{0} like events (total)","l");
+    lK0overlap->AddEntry(IMnpipi_wK0_wSid_n_Sp2[iq],"w/ #Sigma^{+} overlap","l");
+    lK0overlap->AddEntry(IMnpipi_wK0_wSid_n_Sm2[iq],"w/ #Sigma^{-} overlap","l");
     lK0overlap->Draw();
 
 
     cq_IMnpipi_wK0_wSid_n_SpSm[iq] = new TCanvas(Form("q_IMnpipi_wK0_wSid_n_SpSm_%s",cqcut[iq]),Form("q_IMnpipi_wK0_wSid_n_SpSm_%s",cqcut[iq]));
     IMnpipi_wK0_wSid_n_SpSm[iq] = (TH1D*)q_IMnpipi_wK0_wSid_n_SpSm[iq]->ProjectionX(Form("IMnpipi_wK0_wSid_n_SpSm_%d",iq));
+    IMnpipi_wK0_wSid_n_SpSm[iq]->SetYTitle("Counts/15 MeV");
+    IMnpipi_wK0_wSid_n_SpSm[iq]->GetYaxis()->CenterTitle();
     IMnpipi_wK0_wSid_n_SpSm[iq]->Draw("HISTE");
      
 
@@ -250,6 +260,8 @@ void plot_AfterDecompos()
       IMnpim_Sp_wbin[iwbin][iq]->SetLineColor(iwbin);
     }
     IMnpim_Sp_wbin[1][iq]->SetTitle(Form("IMnpim K0orSp mode %d",iq));
+    IMnpim_Sp_wbin[1][iq]->SetYTitle("Counts/ 15 MeV");
+    IMnpim_Sp_wbin[1][iq]->GetYaxis()->CenterTitle();
     IMnpim_Sp_wbin[1][iq]->Draw("HE");
     IMnpim_Sp_wbin[2][iq]->Draw("HEsame");
     
@@ -260,6 +272,8 @@ void plot_AfterDecompos()
       IMnpip_Sm_wbin[iwbin][iq]->SetLineColor(iwbin);
     }
     IMnpip_Sm_wbin[1][iq]->SetTitle(Form("IMnpip K0orSm mode %d",iq));
+    IMnpip_Sm_wbin[1][iq]->SetYTitle("Counts/ 15 MeV");
+    IMnpip_Sm_wbin[1][iq]->GetYaxis()->CenterTitle();
     IMnpip_Sm_wbin[1][iq]->Draw("HE");
     IMnpip_Sm_wbin[2][iq]->Draw("HEsame");
   }
@@ -408,7 +422,7 @@ void plot_AfterDecompos()
   
   TCanvas *cIMnpipi_wK0_Sp_afterDeco[2];
   for(int iq=0;iq<2;iq++){
-    cIMnpipi_wK0_Sp_afterDeco[iq] = new TCanvas(Form("cIMnpipi_wK0_Sp_Deco_%s",cqcut[iq+1]),Form("cIMnpipi_wK0_Sp_Deco_%s",cqcut[iq+1]),800,800);
+    cIMnpipi_wK0_Sp_afterDeco[iq] = new TCanvas(Form("cIMnpipi_wK0_Sp_Deco_%s",cqcut[iq+1]),Form("cIMnpipi_wK0_Sp_Deco_%s",cqcut[iq+1]),1000,800);
     IMnpipi_wK0_wSid_n_Sp[iq+1]->Draw("HE");
     IMnpipi_K0orSp_ToSp[iq]->SetLineColor(3);
     IMnpipi_K0orSp_ToSp[iq]->Draw("HEsame");
@@ -418,7 +432,7 @@ void plot_AfterDecompos()
 
   TCanvas *cIMnpipi_wK0_Sm_afterDeco[2];
   for(int iq=0;iq<2;iq++){
-    cIMnpipi_wK0_Sm_afterDeco[iq] = new TCanvas(Form("cIMnpipi_wK0_Sm_Deco_%s",cqcut[iq+1]),Form("cIMnpipi_wK0_Sm_Deco_%s",cqcut[iq+1]),800,800);
+    cIMnpipi_wK0_Sm_afterDeco[iq] = new TCanvas(Form("cIMnpipi_wK0_Sm_Deco_%s",cqcut[iq+1]),Form("cIMnpipi_wK0_Sm_Deco_%s",cqcut[iq+1]),1000,800);
     IMnpipi_wK0_wSid_n_Sm[iq+1]->Draw("HE");
     IMnpipi_K0orSm_ToSm[iq]->SetLineColor(3);
     IMnpipi_K0orSm_ToSm[iq]->Draw("HEsame");
@@ -521,7 +535,9 @@ void plot_AfterDecompos()
 
   TCanvas *cIMnpipi_SpSm_afterDeco[2];
   for(int iq=0;iq<2;iq++){
-    cIMnpipi_SpSm_afterDeco[iq] = new TCanvas(Form("cIMnpipi_SpSm_Deco_%s",cqcut[iq+1]),Form("cIMnpipi_SpSm_Deco_%s",cqcut[iq+1]),800,800);
+    cIMnpipi_SpSm_afterDeco[iq] = new TCanvas(Form("cIMnpipi_SpSm_Deco_%s",cqcut[iq+1]),Form("cIMnpipi_SpSm_Deco_%s",cqcut[iq+1]),1000,800);
+    IMnpipi_wSid_n_SpSm[iq+1]->SetYTitle("Counts/ 15 MeV");
+    IMnpipi_wSid_n_SpSm[iq+1]->GetYaxis()->CenterTitle();
     IMnpipi_wSid_n_SpSm[iq+1]->Draw("HE");
     IMnpipi_SporSm_ToSp[iq]->SetLineColor(4);
     IMnpipi_SporSm_ToSp[iq]->Draw("HEsame");
@@ -532,8 +548,10 @@ void plot_AfterDecompos()
   TCanvas *cIMnpipi_Summary_Sp[2];
   TH1D* IMnpipi_Sp_noK0_noSm[2];
   for(int iq=0;iq<2;iq++){
-    cIMnpipi_Summary_Sp[iq] = new TCanvas(Form("cIMnpipi_Summary_Sp_%s",cqcut[iq+1]),Form("cIMnpipi_Summary_Sp_%s",cqcut[iq+1]),800,800);
+    cIMnpipi_Summary_Sp[iq] = new TCanvas(Form("cIMnpipi_Summary_Sp_%s",cqcut[iq+1]),Form("cIMnpipi_Summary_Sp_%s",cqcut[iq+1]),1000,800);
     //all sum
+    IMnpipi_wSid_n_Sp[iq+1]->SetYTitle("Counts/ 15 MeV");
+    IMnpipi_wSid_n_Sp[iq+1]->GetYaxis()->CenterTitle();
     IMnpipi_wSid_n_Sp[iq+1]->Draw("HE");
     IMnpipi_Sp_noK0_noSm[iq] = (TH1D*)IMnpipi_wSid_n_Sp[iq+1]->Clone(Form("IMnpipi_Sp_noK0_noSm%d",iq));
     IMnpipi_Sp_noK0_noSm[iq]->Add(IMnpipi_K0orSp_ToK0[iq],-1);
@@ -544,16 +562,20 @@ void plot_AfterDecompos()
 
   TCanvas *cIMnpipi_Summary_Sp_re[2];
   for(int iq=0;iq<2;iq++){
-    cIMnpipi_Summary_Sp_re[iq] = new TCanvas(Form("cIMnpipi_Summary_Sp_re%s",cqcut[iq+1]),Form("cIMnpipi_Summary_Sp_re%s",cqcut[iq+1]),800,800);
+    cIMnpipi_Summary_Sp_re[iq] = new TCanvas(Form("cIMnpipi_Summary_Sp_re%s",cqcut[iq+1]),Form("cIMnpipi_Summary_Sp_re%s",cqcut[iq+1]),1000,800);
     //all sum
+    IMnpipi_Sp_noK0_noSm[iq]->SetYTitle("Counts/ 15 MeV");
+    IMnpipi_Sp_noK0_noSm[iq]->GetYaxis()->CenterTitle();
     IMnpipi_Sp_noK0_noSm[iq]->Draw("HE");
   }
 
   TCanvas *cIMnpipi_Summary_Sm[2];
   TH1D* IMnpipi_Sm_noK0_noSp[2];
   for(int iq=0;iq<2;iq++){
-    cIMnpipi_Summary_Sm[iq] = new TCanvas(Form("cIMnpipi_Summary_Sm_%s",cqcut[iq+1]),Form("cIMnpipi_Summary_Sm_%s",cqcut[iq+1]),800,800);
+    cIMnpipi_Summary_Sm[iq] = new TCanvas(Form("cIMnpipi_Summary_Sm_%s",cqcut[iq+1]),Form("cIMnpipi_Summary_Sm_%s",cqcut[iq+1]),1000,800);
     //all sum
+    IMnpipi_wSid_n_Sm[iq+1]->SetYTitle("Counts/ 15 MeV");
+    IMnpipi_wSid_n_Sm[iq+1]->GetYaxis()->CenterTitle();
     IMnpipi_wSid_n_Sm[iq+1]->Draw("HE");
     IMnpipi_Sm_noK0_noSp[iq] = (TH1D*)IMnpipi_wSid_n_Sm[iq+1]->Clone(Form("IMnpipi_Sm_noK0_noSp%d",iq));
     IMnpipi_Sm_noK0_noSp[iq]->Add(IMnpipi_K0orSm_ToK0[iq],-1);
@@ -564,8 +586,11 @@ void plot_AfterDecompos()
 
   TCanvas *cIMnpipi_Summary_Sm_re[2];
   for(int iq=0;iq<2;iq++){
-    cIMnpipi_Summary_Sm_re[iq] = new TCanvas(Form("cIMnpipi_Summary_Sm_re%s",cqcut[iq+1]),Form("cIMnpipi_Summary_Sm_re%s",cqcut[iq+1]),800,800);
+    cIMnpipi_Summary_Sm_re[iq] = new TCanvas(Form("cIMnpipi_Summary_Sm_re%s",cqcut[iq+1]),Form("cIMnpipi_Summary_Sm_re%s",cqcut[iq+1]),1000,800);
     //all sum
+    IMnpipi_Sm_noK0_noSp[iq]->SetYTitle("Counts/ 15 MeV");
+    IMnpipi_Sm_noK0_noSp[iq]->GetYaxis()->CenterTitle();;
+    IMnpipi_Sm_noK0_noSp[iq]->Draw("HE");
     IMnpipi_Sm_noK0_noSp[iq]->Draw("HE");
   }
    
@@ -693,25 +718,38 @@ void plot_AfterDecompos()
   TCanvas *ccsSp[2];
   TCanvas *ccsSm[2];
   TCanvas *ccsK0[2];
+  TH1D* IMnpipi_Sp_cs_single[2];
+  TH1D* IMnpipi_Sm_cs_single[2];
+  TH1D* IMnpipi_K0_cs_single[2];
   for(int iq=0;iq<2;iq++){
     ccsSp[iq] = new TCanvas(Form("ccsSp%d",iq),Form("ccsSp%d",iq),1600,800);
     ccsSp[iq]->Divide(2,1);
     ccsSp[iq]->cd(1);
     q_IMnpipi_Sp_cs[iq]->Draw("colz");
     ccsSp[iq]->cd(2);
-    q_IMnpipi_Sp_cs[iq]->ProjectionX()->Draw("HE");
+    IMnpipi_Sp_cs_single[iq]= (TH1D*)q_IMnpipi_Sp_cs[iq]->ProjectionX(Form("IMnpipi_Sp_cs_single%d",iq));
+    IMnpipi_Sp_cs_single[iq]->SetYTitle("d#sigma/dM [#mu b (MeV/c^{2})]");
+    IMnpipi_Sp_cs_single[iq]->GetYaxis()->CenterTitle();
+    IMnpipi_Sp_cs_single[iq]->Draw("HE");
     ccsSm[iq] = new TCanvas(Form("ccsSm%d",iq),Form("ccsSm%d",iq),1600,800);
     ccsSm[iq]->Divide(2,1);
     ccsSm[iq]->cd(1);
     q_IMnpipi_Sm_cs[iq]->Draw("colz");
     ccsSm[iq]->cd(2);
-    q_IMnpipi_Sm_cs[iq]->ProjectionX()->Draw("HE");
+    IMnpipi_Sm_cs_single[iq]= (TH1D*)q_IMnpipi_Sm_cs[iq]->ProjectionX(Form("IMnpipi_Sm_cs_single%d",iq));
+    IMnpipi_Sm_cs_single[iq]->SetYTitle("d#sigma/dM [#mu b (MeV/c^{2})]");
+    IMnpipi_Sm_cs_single[iq]->GetYaxis()->CenterTitle();
+    IMnpipi_Sm_cs_single[iq]->Draw("HE");
+
     ccsK0[iq] = new TCanvas(Form("ccsK0%d",iq),Form("ccsK0%d",iq),1600,800);
     ccsK0[iq]->Divide(2,1);
     ccsK0[iq]->cd(1);
     q_IMnpipi_K0_cs[iq]->Draw("colz");
     ccsK0[iq]->cd(2);
-    q_IMnpipi_K0_cs[iq]->ProjectionX()->Draw("HE");
+    IMnpipi_K0_cs_single[iq]= (TH1D*)q_IMnpipi_K0_cs[iq]->ProjectionX(Form("IMnpipi_K0_cs_single%d",iq));
+    IMnpipi_K0_cs_single[iq]->SetYTitle("d#sigma/dM [#mu b (MeV/c^{2})]");
+    IMnpipi_K0_cs_single[iq]->GetYaxis()->CenterTitle();
+    IMnpipi_K0_cs_single[iq]->Draw("HE");
   }
   
   
@@ -777,8 +815,40 @@ void plot_AfterDecompos()
     IMnpipi_Sm_cs[iq]->Draw("HEsame");
   }
 
+  TIter nexthist(gDirectory->GetList());
+  TH1F *h1 = nullptr;
+  TH1D *h1d = nullptr;
+  TH2F *h2 = nullptr;
+  TObject *obj = nullptr;
+  while( (obj = (TObject*)nexthist())!=nullptr  ) {
+    if(obj->InheritsFrom("TH1F")) {
+      h1 = (TH1F*) obj;
+      h1->GetXaxis()->CenterTitle();
+      h1->GetYaxis()->CenterTitle();
+      //h1->GetXaxis()->SetTitleSize(0.05);
+      //h1->GetXaxis()->SetTitleOffset(0.80);
+      //h1->GetYaxis()->SetTitleOffset(1.4);
+    }
+    if(obj->InheritsFrom("TH1D")) {
+      h1d = (TH1D*) obj;
+      h1d->GetXaxis()->CenterTitle();
+      h1d->GetYaxis()->CenterTitle();
+      //h1d->GetXaxis()->SetTitleSize(0.05);
+      //h1d->GetXaxis()->SetTitleOffset(0.80);
+      //h1d->GetYaxis()->SetTitleOffset(1.4);
+    }
+    if(obj->InheritsFrom("TH2")) {
+      h2 = (TH2F*) obj;
+      h2->GetXaxis()->CenterTitle();
+      h2->GetYaxis()->CenterTitle();
+      //h2->GetXaxis()->SetTitleSize(0.05);
+      //h2->GetXaxis()->SetTitleOffset(0.80);
+      //h2->GetYaxis()->SetTitleSize(0.05);
+      h2->GetYaxis()->SetTitleOffset(1.3);
+    }
+  }
 
-  TCanvas *c = NULL;
+  TCanvas *c = nullptr;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
   int size = SCol->GetSize();
   TIter next(SCol);
@@ -786,6 +856,8 @@ void plot_AfterDecompos()
   for(int i=0;i<size;i++){
     //pdf->NewPage();
     c= (TCanvas*)next();
+    c->Modified();
+    c->Update();
     c->Draw();
     c->cd();
     //inside the canvas
