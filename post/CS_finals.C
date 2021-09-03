@@ -1,6 +1,7 @@
 void CS_finals()
 {
 
+  gStyle->SetErrorX(0.);  
   TFile *fpisigma = TFile::Open("cs_pisigma.root","READ");
   TFile *flpim    = TFile::Open("cs_lpim.root","READ");
 
@@ -37,18 +38,41 @@ void CS_finals()
 
   TCanvas *c1 = new TCanvas("c1","c1",1000,800);
   c1->cd();
-  IMnpipi_Sp_cs[1]->Draw("HE");
+  IMnpipi_Sp_cs[1]->SetMarkerStyle(20);
+  IMnpipi_Sp_cs[1]->SetMarkerColor(3);
+  IMnpipi_Sp_cs[1]->SetXTitle("IM(#pi^{-}#Sigma^{+}) [GeV/c^{2}]");
+  IMnpipi_Sp_cs[1]->Draw("E");
   TH1D* CS_IMppipi_p_wL_sum_350_ToSp = (TH1D*)CS_IMppipi_p_wL_sum_350->Clone("CS_IMppipi_p_wL_sum_350_ToSp");
   CS_IMppipi_p_wL_sum_350_ToSp->Scale(br_s1385TopiSigma*br_SpToNpi/3.0); 
-  CS_IMppipi_p_wL_sum_350_ToSp->Draw("HEsame"); 
+  CS_IMppipi_p_wL_sum_350_ToSp->SetMarkerStyle(20); 
+  CS_IMppipi_p_wL_sum_350_ToSp->SetMarkerColor(6); 
+  CS_IMppipi_p_wL_sum_350_ToSp->SetMarkerColor(6); 
+  CS_IMppipi_p_wL_sum_350_ToSp->Draw("Esame"); 
 
 
   TCanvas *c2 = new TCanvas("c2","c2",1000,800);
   c2->cd();
-  IMnpipi_Sm_cs[1]->Draw("HE");
+  IMnpipi_Sm_cs[1]->SetMarkerStyle(20);
+  IMnpipi_Sm_cs[1]->SetMarkerColor(4);
+  IMnpipi_Sm_cs[1]->SetXTitle("IM(#pi^{+}#Sigma^{-}) [GeV/c^{2}]");
+  IMnpipi_Sm_cs[1]->Draw("E");
   TH1D* CS_IMppipi_p_wL_sum_350_ToSm = (TH1D*)CS_IMppipi_p_wL_sum_350->Clone("CS_IMppipi_p_wL_sum_350_ToSm");
   CS_IMppipi_p_wL_sum_350_ToSm->Scale(br_s1385TopiSigma*br_SmToNpi/3.0); 
-  CS_IMppipi_p_wL_sum_350_ToSm->Draw("HEsame"); 
+  CS_IMppipi_p_wL_sum_350_ToSm->SetMarkerStyle(20); 
+  CS_IMppipi_p_wL_sum_350_ToSm->SetMarkerColor(6); 
+  CS_IMppipi_p_wL_sum_350_ToSm->Draw("Esame"); 
+
+
+  TCanvas *c3 = new TCanvas("c3","c3",1000,800);
+  c3->cd();
+  TH1D* IMnpipi_sum_cs[2];
+  IMnpipi_sum_cs[1] = (TH1D*)IMnpipi_Sp_cs[1]->Clone("IMnpipi_sum_cs1");
+  IMnpipi_sum_cs[1]->Add(IMnpipi_Sm_cs[1]);
+  IMnpipi_sum_cs[1]->Draw("E");
+  TH1D* IMLpim_sum_350 = (TH1D*)CS_IMppipi_p_wL_sum_350_ToSp->Clone("CS_IMppipi_p_wL_sum");
+  IMLpim_sum_350->Add(CS_IMppipi_p_wL_sum_350_ToSm);
+  IMLpim_sum_350->Draw("Esame");
+
 
 
 }
