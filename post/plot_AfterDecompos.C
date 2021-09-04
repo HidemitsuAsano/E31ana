@@ -809,10 +809,18 @@ void plot_AfterDecompos()
     //IMnpipi_Sm_cs[iq]->RebinX(2);
     //IMnpipi_K0_cs[iq]->Draw("HE");
     //IMnpipi_Sp_cs[iq]->Draw("HEsame");
-    IMnpipi_Sp_cs[iq]->Draw("HE");
+    IMnpipi_Sp_cs[iq]->SetMarkerStyle(20);
+    IMnpipi_Sp_cs[iq]->Draw("E");
     IMnpipi_Sp_cs[iq]->SetYTitle("d#sigma/dM [#mu b (MeV/c^{2})]");
     IMnpipi_Sp_cs[iq]->GetYaxis()->CenterTitle();
-    IMnpipi_Sm_cs[iq]->Draw("HEsame");
+    IMnpipi_Sm_cs[iq]->Draw("Esame");
+    //IMnpipi_K0_cs[iq]->Draw("HEsame");
+  
+    TLegend *lcs = new TLegend(0.6,0.7,0.9,0.9);
+    lcs->AddEntry(IMnpipi_Sp_cs[iq],"#Sigma^{+} mode","l");
+    lcs->AddEntry(IMnpipi_Sm_cs[iq],"#Sigma^{-} mode","l");
+    //lcs->AddEntry(IMnpipi_K0_cs[iq],"#bar{K}^{0} mode","l");
+    lcs->Draw();
   }
 
   TIter nexthist(gDirectory->GetList());
@@ -873,6 +881,18 @@ void plot_AfterDecompos()
     //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
   }
   
+  TFile* fout = new TFile("cs_pisigma.root","RECREATE");
+  fout->Print();
+  fout->cd();
+  for(int iq=0;iq<2;iq++){
+    q_IMnpipi_Sp_cs[iq]->Write();
+    q_IMnpipi_Sm_cs[iq]->Write();
+    q_IMnpipi_K0_cs[iq]->Write();
+    IMnpipi_Sp_cs[iq]->Write();
+    IMnpipi_Sm_cs[iq]->Write();
+    IMnpipi_K0_cs[iq]->Write();
+  }
+  fout->Close();
 
   return;
 
