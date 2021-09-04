@@ -8504,6 +8504,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     if(obj->InheritsFrom("TH1D")) {
       h1d = (TH1D*) obj;
       h1d->GetXaxis()->CenterTitle();
+      h1d->GetYaxis()->CenterTitle();
       //h1d->GetXaxis()->SetTitleSize(0.05);
       //h1d->GetXaxis()->SetTitleOffset(0.80);
       h1d->GetYaxis()->SetTitleOffset(1.4);
@@ -8518,6 +8519,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       h2->GetYaxis()->SetTitleOffset(1.3);
     }
   }
+
   TCanvas *c = nullptr;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
   int size = SCol->GetSize();

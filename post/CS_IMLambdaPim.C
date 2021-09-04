@@ -35,12 +35,19 @@ void CS_IMLambdaPim()
   const int bin350 = CS_q_IMppipi_p_wL_sum->GetYaxis()->FindBin(0.35);
   TCanvas *cCS_px_0 = new TCanvas("cCS_px_0","cCS_px_0",800,800);
   TH1D* CS_IMppipi_p_wL_sum_0 = (TH1D*)CS_q_IMppipi_p_wL_sum->ProjectionX("CS_IMppipi_p_wL_sum_0",1,bin350-1);
-  CS_IMppipi_p_wL_sum_0->GetXaxis()->SetRangeUser(1.2,1.6);
+  //CS_IMppipi_p_wL_sum_0->GetXaxis()->SetRangeUser(1.2,1.6);
   CS_IMppipi_p_wL_sum_0->Draw("HE");
 
   TCanvas *cCS_px_350 = new TCanvas("cCS_px_350","cCS_px_350",800,800);
   TH1D* CS_IMppipi_p_wL_sum_350 = (TH1D*)CS_q_IMppipi_p_wL_sum->ProjectionX("CS_IMppipi_p_wL_sum_350",bin350,600);
-  CS_IMppipi_p_wL_sum_350->GetXaxis()->SetRangeUser(1.2,1.6);
+  //CS_IMppipi_p_wL_sum_350->GetXaxis()->SetRangeUser(1.2,1.6);
   CS_IMppipi_p_wL_sum_350->Draw("HE");
 
+  TFile *fout = new TFile("cs_lpim.root","RECREATE");
+  fout->Print();
+  fout->cd();
+  CS_q_IMppipi_p_wL_sum->Write();
+  CS_IMppipi_p_wL_sum_0->Write();
+  CS_IMppipi_p_wL_sum_350->Write();
+  fout->Close();
 }
