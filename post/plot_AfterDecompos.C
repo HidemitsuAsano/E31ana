@@ -126,7 +126,7 @@ void plot_AfterDecompos()
     q_IMnpipi_wK0_n[iq] = (TH2D*)fr[iq]->Get("q_IMnpipi_wK0_n");
     q_IMnpipi_wK0_n[iq]->RebinX(3);
 
-    //Draw
+    //Draw plots for comfirmation
     cq_IMnpipi_wSid_n_Sp[iq] = new TCanvas(Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]),Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]));
     q_IMnpipi_wSid_n_Sp[iq]->Draw("colz");
     cq_IMnpipi_wK0_wSid_n_Sp[iq] = new TCanvas(Form("cq_IMnpipi_wK0_wSid_n_Sp_%s",cqcut[iq]),Form("cq_IMnpipi_wK0_wSid_n_Sp_%s",cqcut[iq]));
@@ -215,14 +215,14 @@ void plot_AfterDecompos()
     }
   }
 
-  //only qlo(=0) and qhi(1) decomposition results;
+  //You have only qlo(=0) and qhi(1) decomposition results so far.
   TH2D* IMnpim_IMnpip_K0inter[2];
   TGraphErrors *gr_SpONnpim_fin_pol1[2];
   TGraphErrors *gr_SmONnpip_fin_pol1[2];
   TGraphErrors *gr_SpONnpim_fin_3rd[2];
   TGraphErrors *gr_SmONnpip_fin_3rd[2];
 
-  //only qlo(=0) and qhi(1) decomposition results;
+  //only qlo(=0) and qhi(1) decomposition results so far
   for(int iq=0;iq<2;iq++){
     IMnpim_IMnpip_K0inter[iq] = (TH2D*)fdeco[iq]->Get("h2K0inter_3fine");
     gr_SpONnpim_fin_pol1[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SpONnpim_fin_pol1");
@@ -231,7 +231,7 @@ void plot_AfterDecompos()
     gr_SmONnpip_fin_3rd[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SmONnpip_fin_3rd");
   }
   
-  //have data only in Sigma+/- region
+  //has data only in Sigma+/- region
   TCanvas *cK0inter = new TCanvas("cK0inter","cK0inter",1600,800);
   cK0inter->Divide(2,1);
   cK0inter->cd(1);
@@ -239,11 +239,6 @@ void plot_AfterDecompos()
   cK0inter->cd(2);
   IMnpim_IMnpip_K0inter[1]->Draw("colz");
   
-
-  TH2D* q_IMnpipi_K0orSp_ToSp[2];
-  TH2D* q_IMnpipi_K0orSp_ToK0[2];
-  TH1D* IMnpipi_K0orSp_ToSp[2];
-  TH1D* IMnpipi_K0orSp_ToK0[2];
    
   //check overlap btw wide-binning IMnpip or IMnpim
   TCanvas *cIMnpim_Spmode_wbinoverlap[2];
@@ -277,6 +272,15 @@ void plot_AfterDecompos()
     IMnpip_Sm_wbin[2][iq]->Draw("HEsame");
   }
 
+  //Index 0 : qlow
+  //Index 1 : qhigh
+  //Index 2 : theta_n small
+  TH2D* q_IMnpipi_K0orSp_ToSp[3];
+  TH2D* q_IMnpipi_K0orSp_ToK0[3];
+  TH1D* IMnpipi_K0orSp_ToSp[3];
+  TH1D* IMnpipi_K0orSp_ToK0[3];
+  double nSp_SporK0[2][nwbin];//q-region (low or hi), wbin
+  double nK0_SporK0[2][nwbin];//q-region (low or hi), wbin
   
   const float wbinlow[nwbin] = {1.0,1.40,1.52};
   const float wbinhigh[nwbin] = {1.40,1.52,2.00};
@@ -284,11 +288,8 @@ void plot_AfterDecompos()
                             {21,38}};
   const int spbinhi[2][2]={{40,87},
                            {42,114}};
+  //get Sp/K0 ratio in overlap region
   for(int iq=0;iq<2;iq++){
-    q_IMnpipi_K0orSp_ToSp[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("q_IMnpipi_K0orSp_ToSp%d",iq));
-    q_IMnpipi_K0orSp_ToK0[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("q_IMnpipi_K0orSp_ToK0%d",iq));
-    q_IMnpipi_K0orSp_ToSp[iq]->Reset();
-    q_IMnpipi_K0orSp_ToK0[iq]->Reset();
     for(int iwbin=1;iwbin<3;iwbin++){//wbin=0 : no overlap region,so start from 1
       double nK0orSp = IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iq+1]->Integral();
       double nSp = 0.0;
@@ -311,43 +312,55 @@ void plot_AfterDecompos()
           }
         }
       }//if nK0orSp
-      //std::cout << "bin low "  << spbinlow[iwbin-1][iq] << std::endl;
-      //std::cout << "bin high " <<  spbinhi[iwbin-1][iq] << std::endl;
-      //std::cout << "nSp " << nSp << std::endl;
-      //std::cout << "nK0 " << nK0 << std::endl;
-      int wbinl = q_IMnpipi_K0orSp_ToSp[iq]->GetXaxis()->FindBin(wbinlow[iwbin]);
-      int wbinh = q_IMnpipi_K0orSp_ToSp[iq]->GetXaxis()->FindBin(wbinhigh[iwbin]);
+      nSp_SporK0[iq][iwbin] = nSp;
+      nK0_SporK0[iq][iwbin] = nK0;
+    }//iwbin
+  }//iq
+  
+  //q-low,q-hi,ntheta_small
+  for(int iq=0;iq<3;iq++){
+    q_IMnpipi_K0orSp_ToSp[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("q_IMnpipi_K0orSp_ToSp%d",iq));
+    q_IMnpipi_K0orSp_ToK0[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("q_IMnpipi_K0orSp_ToK0%d",iq));
+    q_IMnpipi_K0orSp_ToSp[iq]->Reset();
+    q_IMnpipi_K0orSp_ToK0[iq]->Reset();
+    //std::cout << "bin low "  << spbinlow[iwbin-1][iq] << std::endl;
+    //std::cout << "bin high " <<  spbinhi[iwbin-1][iq] << std::endl;
+    int wbinl = q_IMnpipi_K0orSp_ToSp[iq]->GetXaxis()->FindBin(wbinlow[iwbin]);
+    int wbinh = q_IMnpipi_K0orSp_ToSp[iq]->GetXaxis()->FindBin(wbinhigh[iwbin]);
      
-      double NevtWide=0.0;
-      for(int ibin=wbinl;ibin<=wbinh;ibin++){
-        for(int iqbin=0;iqbin<q_IMnpipi_wK0_wSid_n_Sp[iq+1]->GetNbinsY();iqbin++){
-          double nevt = q_IMnpipi_wK0_wSid_n_Sp[iq+1]->GetBinContent(ibin,iqbin);
+    double NevtWide=0.0;
+    const int q350bin = q_IMnpipi_wK0_wSid_n_Sp[iq+1]->FindBin(0.35);
+    for(int ibin=wbinl;ibin<=wbinh;ibin++){
+      for(int iqbin=0;iqbin<q_IMnpipi_wK0_wSid_n_Sp[iq+1]->GetNbinsY();iqbin++){
+        int qlowhigh = 0;
+        if(q350bin <= iqbin ) qlowhigh=1;
+        double nevt = q_IMnpipi_wK0_wSid_n_Sp[iq+1]->GetBinContent(ibin,iqbin);
           //if(nevt>0.0){
-            double ToSp = nevt*nSp/(nSp+nK0);
-            double ToK0 = nevt*nK0/(nSp+nK0);
-            if(iwbin==1 && iq==0){
-            //if(isnan(ToSp)){
-            //  std::cout << "iq: "   << iq << std::endl;
-            //  std::cout << "ibin:"  << ibin << std::endl;
-            //  std::cout << "iqbin:"  << iqbin << std::endl;
-            //  std::cout << "nevt: " << nevt << std::endl;
-            //  std::cout << "nK0orSp " << nK0orSp << std::endl;
-            //  std::cout << "ToK0: " << nK0 << std::endl;
-            }
-              q_IMnpipi_K0orSp_ToSp[iq]->SetBinContent(ibin,iqbin,ToSp);
-              q_IMnpipi_K0orSp_ToSp[iq]->SetBinError(ibin,iqbin,0);
-              q_IMnpipi_K0orSp_ToK0[iq]->SetBinContent(ibin,iqbin,ToK0);
-              q_IMnpipi_K0orSp_ToK0[iq]->SetBinError(ibin,iqbin,0);
-           // }
-          //}
-          //if(nevt<=0.0 || nK0orSp <=0.0){ 
-          //  q_IMnpipi_K0orSp_ToSp[iq]->SetBinContent(ibin,iqbin,0);
-          //  q_IMnpipi_K0orSp_ToSp[iq]->SetBinError(ibin,iqbin,0);
-          //  q_IMnpipi_K0orSp_ToK0[iq]->SetBinContent(ibin,iqbin,0);
-          //  q_IMnpipi_K0orSp_ToK0[iq]->SetBinError(ibin,iqbin,0);
-          //}
-          //}
+        double ToSp = nevt*nSp_SporK0[qlowhigh]/(nSp_SporK0[qlowhigh]+nK0_SporK0[qlowhigh]);
+        double ToK0 = nevt*nK0_SporK0[qlowhigh]/(nSp_SporK0[qlowhigh]+nK0_SporK0[qlowhigh]);
+        if(iwbin==1 && iq==0){
+          //if(isnan(ToSp)){
+          //  std::cout << "iq: "   << iq << std::endl;
+          //  std::cout << "ibin:"  << ibin << std::endl;
+          //  std::cout << "iqbin:"  << iqbin << std::endl;
+          //  std::cout << "nevt: " << nevt << std::endl;
+          //  std::cout << "nK0orSp " << nK0orSp << std::endl;
+          //  std::cout << "ToK0: " << nK0 << std::endl;
         }
+        q_IMnpipi_K0orSp_ToSp[iq]->SetBinContent(ibin,iqbin,ToSp);
+        q_IMnpipi_K0orSp_ToSp[iq]->SetBinError(ibin,iqbin,0);
+        q_IMnpipi_K0orSp_ToK0[iq]->SetBinContent(ibin,iqbin,ToK0);
+        q_IMnpipi_K0orSp_ToK0[iq]->SetBinError(ibin,iqbin,0);
+        // }
+        //}
+        //if(nevt<=0.0 || nK0orSp <=0.0){ 
+        //  q_IMnpipi_K0orSp_ToSp[iq]->SetBinContent(ibin,iqbin,0);
+        //  q_IMnpipi_K0orSp_ToSp[iq]->SetBinError(ibin,iqbin,0);
+        //  q_IMnpipi_K0orSp_ToK0[iq]->SetBinContent(ibin,iqbin,0);
+        //  q_IMnpipi_K0orSp_ToK0[iq]->SetBinError(ibin,iqbin,0);
+        //}
+        //}
+        }//iqbin
       }//ibin
     }//iwbin
     IMnpipi_K0orSp_ToSp[iq] = (TH1D*)q_IMnpipi_K0orSp_ToSp[iq]->ProjectionX(Form("IMnpipi_K0orSp_ToSp%d",iq));
@@ -355,20 +368,21 @@ void plot_AfterDecompos()
   }//iq
   
 
-
-  TH2D* q_IMnpipi_K0orSm_ToSm[2];
-  TH2D* q_IMnpipi_K0orSm_ToK0[2];
-  TH1D* IMnpipi_K0orSm_ToSm[2];
-  TH1D* IMnpipi_K0orSm_ToK0[2];
+  //Index 0 : qlow
+  //Index 1 : qhigh
+  //Index 2 : theta_n small
+  TH2D* q_IMnpipi_K0orSm_ToSm[3];
+  TH2D* q_IMnpipi_K0orSm_ToK0[3];
+  TH1D* IMnpipi_K0orSm_ToSm[3];
+  TH1D* IMnpipi_K0orSm_ToK0[3];
+  double nSm_SmorK0[2][nwbin];//q-region (low or hi), wbin
+  double nK0_SmorK0[2][nwbin];//q-region (low or hi), wbin
   const int smbinlow[2][2]={{16,34},
                             {17,34}};
   const int smbinhi[2][2]={{39,98},
                            {40,116}};
+  
   for(int iq=0;iq<2;iq++){
-    q_IMnpipi_K0orSm_ToSm[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sm[iq+1]->Clone(Form("q_IMnpipi_K0orSm_ToSm%d",iq));
-    q_IMnpipi_K0orSm_ToK0[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sm[iq+1]->Clone(Form("q_IMnpipi_K0orSm_ToK0%d",iq));
-    q_IMnpipi_K0orSm_ToSm[iq]->Reset();
-    q_IMnpipi_K0orSm_ToK0[iq]->Reset();
     for(int iwbin=1;iwbin<3;iwbin++){//wbin=0 : no overlap region, so start from 1
       double nK0orSm = IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin][iq+1]->Integral();
       double nSm = 0.0;
@@ -386,6 +400,16 @@ void plot_AfterDecompos()
           }
         }
       }//if nK0orSm
+      nSm_SmorK0[iq][iwbin] = nSm;
+      nK0_SmorK0[iq][iwbin] = nK0;
+    }
+  }
+
+  for(int iq=0;iq<2;iq++){
+    q_IMnpipi_K0orSm_ToSm[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sm[iq+1]->Clone(Form("q_IMnpipi_K0orSm_ToSm%d",iq));
+    q_IMnpipi_K0orSm_ToK0[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sm[iq+1]->Clone(Form("q_IMnpipi_K0orSm_ToK0%d",iq));
+    q_IMnpipi_K0orSm_ToSm[iq]->Reset();
+    q_IMnpipi_K0orSm_ToK0[iq]->Reset();
       int wbinl = q_IMnpipi_K0orSm_ToSm[iq]->GetXaxis()->FindBin(wbinlow[iwbin]);
       int wbinh = q_IMnpipi_K0orSm_ToSm[iq]->GetXaxis()->FindBin(wbinhigh[iwbin]);
       double NevtWide=0.0;
