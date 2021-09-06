@@ -33,7 +33,6 @@ bool RebinMode = true;
 bool Sidefar=false;
 bool FitNoWeight=true;
 
-
 void plot_AfterDecompos()
 {
   TFile *fr[4]={nullptr};
@@ -111,7 +110,7 @@ void plot_AfterDecompos()
   const char cqcut[][10]= {"all","qlo","qhi","theta"};
   std::cout << __LINE__ << std::endl;
   for(int iq=qstart;iq<nqcut;iq++){
-    //get
+    //get hists from root files
     q_IMnpipi_wK0_wSid_n_SpSm[iq] = (TH2F*)fr[iq]->Get("q_IMnpipi_wK0_wSid_n_SpSm");
     q_IMnpipi_wK0_wSid_n_SpSm[iq]->RebinX(3);
     q_IMnpipi_wSid_n_Sp[iq] = (TH2D*)fr[iq]->Get("q_IMnpipi_wSid_n_Sp");
