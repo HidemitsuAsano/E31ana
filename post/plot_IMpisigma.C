@@ -4312,7 +4312,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
     TVector3 boost_vtx[2] = {(*LVec_target+*LVec_beam_Sp).BoostVector(),(*LVec_target+*LVec_beam_Sm).BoostVector()} ;
     double cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());
     double nmissthetalab = acos(cos_nmisslab);
-    if(qvalcutflag==3 && (nmissthetalab>15.0/180.0*TMath::Pi())) continue;
     TLorentzVector LVec_npipimiss_CM = LVec_npipimiss;
     TLorentzVector LVec_beam_CM = *LVec_beam;
     LVec_npipimiss_CM.Boost(-boost);
@@ -5096,6 +5095,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       qkn = *LVec_beam-LVec_npipimiss;
       nmiss_mass = LVec_npipimiss.M();
       nmiss_mom = LVec_npipimiss.P();
+      cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
+      nmissthetalab = acos(cos_nmisslab);  
     }else if(SigmaPFlag){
       *LVec_n = *LVec_n_Sp;
       LVec_pip_n = *LVec_n_Sp+*LVec_pip;
@@ -5105,6 +5106,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       qkn = *LVec_beam-LVec_npipimiss;
       nmiss_mass = LVec_npipimiss.M();
       nmiss_mom = LVec_npipimiss.P();
+      cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
+      nmissthetalab = acos(cos_nmisslab);  
     }else if(SigmaMFlag){
       *LVec_n = *LVec_n_Sm;
       LVec_pip_n = *LVec_n_Sm+*LVec_pip;
@@ -5114,6 +5117,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       qkn = *LVec_beam-LVec_npipimiss;
       nmiss_mass = LVec_npipimiss.M();
       nmiss_mom = LVec_npipimiss.P();
+      cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
+      nmissthetalab = acos(cos_nmisslab);  
     }
 
     if( (qkn.P()>=anacuts::qvalcut) && (qvalcutflag==1) ) continue;
@@ -5123,6 +5128,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       if(LVec_pip_n.P()<anacuts::SigmaPMomCut) continue;
       if(LVec_pim_n.P()<anacuts::SigmaMMomCut) continue;
     }
+    if(qvalcutflag==3 && (nmissthetalab>15.0/180.0*TMath::Pi())) continue;
 
     //std::cout << __LINE__ << std::endl;
     double weight = 1.0;

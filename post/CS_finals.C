@@ -41,6 +41,7 @@ void CS_finals()
   IMnpipi_Sp_cs[1]->SetMarkerStyle(20);
   IMnpipi_Sp_cs[1]->SetMarkerColor(3);
   IMnpipi_Sp_cs[1]->SetXTitle("IM(#pi^{-}#Sigma^{+}) [GeV/c^{2}]");
+  IMnpipi_Sm_cs[1]->SetTitle("#pi^{-}#Sigma^{+} mode");
   IMnpipi_Sp_cs[1]->Draw("E");
   TH1D* CS_IMppipi_p_wL_sum_350_ToSp = (TH1D*)CS_IMppipi_p_wL_sum_350->Clone("CS_IMppipi_p_wL_sum_350_ToSp");
   CS_IMppipi_p_wL_sum_350_ToSp->Scale(br_s1385TopiSigma*br_SpToNpi/3.0); 
@@ -55,6 +56,7 @@ void CS_finals()
   IMnpipi_Sm_cs[1]->SetMarkerStyle(20);
   IMnpipi_Sm_cs[1]->SetMarkerColor(4);
   IMnpipi_Sm_cs[1]->SetXTitle("IM(#pi^{+}#Sigma^{-}) [GeV/c^{2}]");
+  IMnpipi_Sm_cs[1]->SetTitle("#pi^{+}#Sigma^{-} mode");
   IMnpipi_Sm_cs[1]->Draw("E");
   TH1D* CS_IMppipi_p_wL_sum_350_ToSm = (TH1D*)CS_IMppipi_p_wL_sum_350->Clone("CS_IMppipi_p_wL_sum_350_ToSm");
   CS_IMppipi_p_wL_sum_350_ToSm->Scale(br_s1385TopiSigma*br_SmToNpi/3.0); 
@@ -67,7 +69,10 @@ void CS_finals()
   c3->cd();
   TH1D* IMnpipi_sum_cs[2];
   IMnpipi_sum_cs[1] = (TH1D*)IMnpipi_Sp_cs[1]->Clone("IMnpipi_sum_cs1");
+  IMnpipi_sum_cs[1]->SetTitle("Charge Sum");
   IMnpipi_sum_cs[1]->Add(IMnpipi_Sm_cs[1]);
+  IMnpipi_sum_cs[1]->SetLineColor(2);
+  IMnpipi_sum_cs[1]->SetMarkerColor(2);
   IMnpipi_sum_cs[1]->Draw("E");
   TH1D* IMLpim_sum_350 = (TH1D*)CS_IMppipi_p_wL_sum_350_ToSp->Clone("CS_IMppipi_p_wL_sum");
   IMLpim_sum_350->Add(CS_IMppipi_p_wL_sum_350_ToSm);
