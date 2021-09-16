@@ -144,6 +144,7 @@ private:
   TVector3 CA_p_pim2p;
   TVector3 CA_pim1_pim1pim2;
   TVector3 CA_pim2_pim1pim2;
+  int ForwardCharge;
   int run_num;   // run number
   int event_num; // event number
   int block_num; // block number
@@ -298,6 +299,7 @@ void EventAnalysis::Initialize( ConfMan *conf )
   ppimpimTree->Branch( "CA_p_pim2p",&CA_p_pim2p);
   ppimpimTree->Branch( "CA_pim1_pim1pim2",&CA_pim1_pim1pim2);
   ppimpimTree->Branch( "CA_pim2_pim1pim2",&CA_pim2_pim1pim2);
+  ppimpimTree->Branch( "ForwardCharge", &ForwardCharge);  
   //ppimpimTree->Branch( "run_num", &run_num );
   //ppimpimTree->Branch( "event_num", &event_num );
   //ppimpimTree->Branch( "block_num", &block_num );
@@ -659,7 +661,15 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
   //check forward charge
   //not used for event selection
-  bool isforwardcharge = Util::IsForwardCharge(blMan);
+  //bool forwardcharge = Util::IsForwardCharge(blMan);
+  bool forwardcharge=false;
+
+  int nPC =0 ;
+  for( int i=0; i<blMan->nPC(); i++ ) {
+    if( blMan->PC(i)->CheckRange() ) nPC++;
+  }
+  if(nPC) forwardcharge=true;
+
   //  pi+ pi- X event
   //  with CDH multiplicity selection
   //bool ppimpimFlag = false;
@@ -1086,9 +1096,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       CA_p_pim2p = ca_p_pim2p;
       CA_pim1_pim1pim2 = ca_pim1_pim1pim2;
       CA_pim2_pim1pim2 = ca_pim2_pim1pim2;
-      run_num   = confMan->GetRunNumber(); // run number
-      event_num = Event_Number;            // event number
-      block_num = Block_Event_Number;      // block number
+      ForwardCharge = forwardcharge;
+      //run_num   = confMan->GetRunNumber(); // run number
+      //event_num = Event_Number;            // event number
+      //block_num = Block_Event_Number;      // block number
 
       if(Verbosity>10)std::cout<<"End loop :: %%% npippim event: Event_Number, Block_Event_Number, CDC_Event_Number = "
                                  <<Event_Number<<" , "<<Block_Event_Number<<" , "<<CDC_Event_Number<<std::endl;
@@ -1242,6 +1253,7 @@ void EventAnalysis::Clear( int &nAbort)
   blc2GoodTrackID=-1;
   bpcGoodTrackID=-1;
   ctmT0 = 0;
+  ForwardCharge = 0;
 
   //CDS
   vtx_reaction.SetXYZ(-9999.,-9999.,-9999.);
@@ -1258,7 +1270,6 @@ void EventAnalysis::Clear( int &nAbort)
   CA_p_pim2p.SetXYZ(-9999.,-9999.,-9999.);
   CA_pim1_pim1pim2.SetXYZ(-9999.,-9999.,-9999.);
   CA_pim2_pim1pim2.SetXYZ(-9999.,-9999.,-9999.);
-
   return;
 }
 

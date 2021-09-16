@@ -50,6 +50,7 @@ const bool DoCDCRetiming = false;
 const double MOM_RES = 2.0; // (MeV/c)
 const bool IsVtxDoubleCheck = false;
 const bool UseDecayVtx = true;
+const bool UseRealBeamMom = true;
 
 //** cut parameters **//
 double PARA_blc2bpc_dx_MIN;
@@ -81,15 +82,22 @@ TVector3 vtx_displaced;
 TVector3 vtx_pim1_beam; //
 TVector3 vtx_pim2_beam; //
 TVector3 vtx_p_beam; //
+TVector3 vtx_p2_beam; //
 TVector3 vtx_pim1_cdc;
 TVector3 vtx_pim2_cdc;
 TVector3 vtx_p_cdc;
+TVector3 vtx_p2_cdc;
 TVector3 CA_pim1_pim1p;
 TVector3 CA_p_pim1p;
+TVector3 CA_p2_pim1p2;
+TVector3 CA_pim1_pim1p2;
 TVector3 CA_pim2_pim2p;
 TVector3 CA_p_pim2p;
+TVector3 CA_p2_pim2p2;
+TVector3 CA_pim2_pim2p2;
 TVector3 CA_pim1_pim1pim2;
 TVector3 CA_pim2_pim1pim2;
+int ForwardCharge;
 int run_num;   // run number
 int event_num; // event number
 int block_num; // block number
@@ -182,6 +190,16 @@ int main( int argc, char** argv )
   //** Conf file open **//
   ConfMan *confMan = new ConfMan(argv[1]);
   confMan->Initialize();
+  
+  //realistic beam momentum file
+  TFile *bMomfile = new TFile("/gpfs/home/had/hiasano/ana/k18ana/post/fbeam_lpim.root","READ");
+  TH1D* realBeamMom = NULL ;
+  if(UseRealBeamMom && bMomfile->IsOpen()){
+    realBeamMom = (TH1D*)bMomfile->Get("BeamMom");    
+  }else if(UseRealBeamMom && !bMomfile->IsOpen()){
+    std::cout << "L." << __LINE__ << " FILE not opened: " << bMomfile->GetName() << std::endl;
+    return false;
+  }
 
   //** Simulation file open **//
   SimDataMan *simMan = new SimDataMan();
@@ -189,7 +207,7 @@ int main( int argc, char** argv )
   TTree *tree2 = (TTree*)simfile->Get("tree2");
   RunHeaderMC *runHeader=0;
   tree2->SetBranchAddress("RunHeaderMC", &runHeader);
-
+   
   TTree *tree=(TTree*)simfile->Get("tree");
   EventHeaderMC *evHeaderMC = new EventHeaderMC();
   DetectorData  *detData  = new DetectorData();
@@ -240,15 +258,22 @@ int main( int argc, char** argv )
   ppimpimTree->Branch( "vtx_pim1_beam", &vtx_pim1_beam );
   ppimpimTree->Branch( "vtx_pim2_beam", &vtx_pim2_beam );
   ppimpimTree->Branch( "vtx_p_beam", &vtx_p_beam );
+  ppimpimTree->Branch( "vtx_p2_beam", &vtx_p2_beam );
   ppimpimTree->Branch( "vtx_pim1_cdc", &vtx_pim1_cdc );
   ppimpimTree->Branch( "vtx_pim2_cdc", &vtx_pim2_cdc );
   ppimpimTree->Branch( "vtx_p_cdc", &vtx_p_cdc );
+  ppimpimTree->Branch( "vtx_p2_cdc", &vtx_p2_cdc );
   ppimpimTree->Branch( "CA_pim1_pim1p",&CA_pim1_pim1p);
   ppimpimTree->Branch( "CA_p_pim1p",&CA_p_pim1p);
+  ppimpimTree->Branch( "CA_pim1_pim1p2",&CA_pim1_pim1p2);
+  ppimpimTree->Branch( "CA_p2_pim1p2",&CA_p2_pim1p2);
   ppimpimTree->Branch( "CA_pim2_pim2p",&CA_pim2_pim2p);
   ppimpimTree->Branch( "CA_p_pim2p",&CA_p_pim2p);
+  ppimpimTree->Branch( "CA_pim2_pim2p2",&CA_pim2_pim2p2);
+  ppimpimTree->Branch( "CA_p2_pim2p2",&CA_p2_pim2p2);
   ppimpimTree->Branch( "CA_pim1_pim1pim2",&CA_pim1_pim1pim2);
   ppimpimTree->Branch( "CA_pim2_pim1pim2",&CA_pim2_pim1pim2);
+  ppimpimTree->Branch( "ForwardCharge", &ForwardCharge);  
   //ppimpimTree->Branch( "run_num", &run_num );
   //ppimpimTree->Branch( "event_num", &event_num );
   //ppimpimTree->Branch( "block_num", &block_num );
@@ -740,7 +765,12 @@ int main( int argc, char** argv )
       //beam K (K+) to -Z direction
       //beam momentum is fixed in GEANT simulation. It is smeared here by gaussian.
       if( pdgcode==321 && parent==0 ) {
-        beammom = (mcData->track(imctrk)->momentum().Mag()+gRandom->Gaus(0,MOM_RES))/1000.0;
+        if(!UseRealBeamMom){
+          beammom = (mcData->track(imctrk)->momentum().Mag()+gRandom->Gaus(0,MOM_RES))/1000.0;
+        }else{
+          beammom = realBeamMom->GetRandom();
+        }
+        
         if(Verbosity_>100) {
           std::cout << "L." << __LINE__ << " beam mom:" << beammom << std::endl;
         }
@@ -836,8 +866,13 @@ int main( int argc, char** argv )
     Tools::Fill1D( Form("ntrack_pi_minus"), pim_ID.size() );
     Tools::Fill1D( Form("ntrack_K_minus"),  km_ID.size() );
 
-    //bool forwardcharge= Util::IsForwardCharge(blMan);
+    bool forwardcharge= false; //Util::IsForwardCharge(blMan);
 
+    int nPC =0 ;
+    for( int i=0; i<blMan->nPC(); i++ ) {
+      if( blMan->PC(i)->CheckRange() ) nPC++;
+    }
+    if(nPC) forwardcharge=true;
     // + + + + + + + + + + + //
     //  pi+ pi- X event  //
     // + + + + + + + + + + + //
@@ -908,6 +943,7 @@ int main( int argc, char** argv )
       if(p_ID.size()==2){
         TrackTools::Calc2HelixVertex(track_pim2, track_p2, CroA_pim2_pim2p2, CroA_p2_pim2p2);
       }
+
       //reaction vertex is determined from beam and nearest vtx
       if(dcapim1vtx <= dcapim2vtx) {
         //follows sakuma/sada's way , avg. of scattered particle ana beam particle [20180829]
@@ -935,6 +971,10 @@ int main( int argc, char** argv )
           vtx_dis = vtx_p2;
         }
       }
+
+
+
+
 
       // beam kaon tof
       TVector3 Pos_T0;
@@ -976,8 +1016,12 @@ int main( int argc, char** argv )
       LVec_pim2.SetVectM( P_pim2, piMass );
       LVec_p.SetVectM(   P_p,   pMass );//CDS p
       LVec_p2.SetVectM( P_p2, pMass);
-
+      
       const double mm_mass   = (LVec_target+LVec_beam-LVec_pim1-LVec_pim2-LVec_p).M();
+      double mm_mass2= 0.0;
+      if(p_ID.size()==2){
+        mm_mass2   = (LVec_target+LVec_beam-LVec_pim1-LVec_pim2-LVec_p2).M();
+      }
       const TVector3 P_missp = (LVec_target+LVec_beam-LVec_pim1-LVec_pim2-LVec_p).Vect();
       LVec_pmiss.SetVectM( P_missp, pMass );
       //TVector3 boost = (LVec_target+LVec_beam).BoostVector();
@@ -995,6 +1039,21 @@ int main( int argc, char** argv )
       kf_flag = -1;
       bool MissPFlag=false;
       bool LambdaFlag=false;
+      bool MissP2Flag=false;
+      bool Lambda2Flag=false;
+      
+      //missing mass neutron ID
+      if( anacuts_lpim::proton_MIN<mm_mass && mm_mass<anacuts_lpim::proton_MAX ) MissPFlag=true;
+
+      //Lambda production in CDS
+      if( (anacuts_lpim::ppi_MIN<(LVec_p+LVec_pim1).M() && (LVec_p+LVec_pim1).M()<anacuts_lpim::ppi_MAX)) LambdaFlag=true;
+      if( (anacuts_lpim::ppi_MIN<(LVec_p+LVec_pim2).M() && (LVec_p+LVec_pim2).M()<anacuts_lpim::ppi_MAX)) LambdaFlag=true;
+      
+      if(p_ID.size()==2) {
+        if( anacuts_lpim::proton_MIN<mm_mass2 && mm_mass2 <anacuts_lpim::proton_MAX ) MissP2Flag=true;
+        if( (anacuts_lpim::ppi_MIN<(LVec_p2+LVec_pim1).M() && (LVec_p2+LVec_pim1).M()<anacuts_lpim::ppi_MAX)) Lambda2Flag=true;
+        if( (anacuts_lpim::ppi_MIN<(LVec_p2+LVec_pim2).M() && (LVec_p2+LVec_pim2).M()<anacuts_lpim::ppi_MAX)) Lambda2Flag=true;
+      }
 
       Tools::Fill2D( Form("MMom_MMass"), mm_mass, P_missp.Mag() );
 
@@ -1024,12 +1083,6 @@ int main( int argc, char** argv )
         Tools::Fill2D( Form("IMppim1_IMppim2"), (LVec_p+LVec_pim1).M(), (LVec_p+LVec_pim2).M() );
         Tools::Fill2D( Form("q_IMppipi"), (LVec_p+LVec_pim1+LVec_pim2).M(), (LVec_beam.Vect()-LVec_pmiss.Vect()).Mag());
 
-        //missing mass neutron ID
-        if( anacuts_lpim::proton_MIN<mm_mass && mm_mass<anacuts_lpim::proton_MAX ) MissPFlag=true;
-
-        //Lambda production in CDS
-        if( (anacuts_lpim::ppi_MIN<(LVec_p+LVec_pim1).M() && (LVec_p+LVec_pim1).M()<anacuts_lpim::ppi_MAX)) LambdaFlag=true;
-        if( (anacuts_lpim::ppi_MIN<(LVec_p+LVec_pim2).M() && (LVec_p+LVec_pim2).M()<anacuts_lpim::ppi_MAX)) LambdaFlag=true;
 
 
         if(MissPFlag) {
@@ -1369,18 +1422,25 @@ int main( int argc, char** argv )
         vtx_pim1_beam = vtx_beam_wpim1;
         vtx_pim2_beam = vtx_beam_wpim2;
         vtx_p_beam = vtx_beam_wp;
+        vtx_p2_beam = vtx_beam_wp2;
         vtx_pim1_cdc = vtx_pim1;
         vtx_pim2_cdc = vtx_pim2;
         vtx_p_cdc = vtx_p;
+        vtx_p2_cdc = vtx_p2;
         CA_pim1_pim1p = CroA_pim1_pim1p;
         CA_p_pim1p = CroA_p_pim1p;
+        CA_pim1_pim1p2 = CroA_pim1_pim1p2;
+        CA_p2_pim1p2 = CroA_p2_pim1p2;
         CA_pim2_pim2p = CroA_pim2_pim2p;
         CA_p_pim2p = CroA_p_pim2p;
+        CA_pim2_pim2p2 = CroA_pim2_pim2p2;
+        CA_p2_pim2p2 = CroA_p2_pim2p2;
         CA_pim1_pim1pim2 = CroA_pim1_pim1pim2;
         CA_pim2_pim1pim2 = CroA_pim2_pim1pim2;
-        run_num   = confMan->GetRunNumber(); // run number
-        event_num = iev;     // event number
-        block_num = 0;      // block number (temp)
+        ForwardCharge = forwardcharge;
+        //run_num   = confMan->GetRunNumber(); // run number
+        //event_num = iev;     // event number
+        //block_num = 0;      // block number (temp)
 
         if(Verbosity_) {
           std::cout<<"%%% pippimn event: Event_Number, Block_Event_Number, CDC_Event_Number = "
@@ -1486,16 +1546,24 @@ void InitTreeVal()
   mom_p.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // 4-momentum(neutron)
   mom_p2.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);      // 4-momentum(neutron)
   vtx_reaction.SetXYZ(-9999., -9999., -9999.); //  vertex(reaction)
+  vtx_displaced.SetXYZ(-9999., -9999., -9999.); //  vertex(reaction)
   vtx_pim1_beam.SetXYZ(-9999., -9999., -9999.); //
   vtx_pim2_beam.SetXYZ(-9999., -9999., -9999.); //
+  vtx_p_beam.SetXYZ(-9999., -9999., -9999.); //
+  vtx_p2_beam.SetXYZ(-9999., -9999., -9999.); //
   vtx_pim1_cdc.SetXYZ(-9999., -9999., -9999.);
   vtx_pim2_cdc.SetXYZ(-9999., -9999., -9999.);
+  vtx_p_cdc.SetXYZ(-9999., -9999., -9999.);
+  vtx_p2_cdc.SetXYZ(-9999., -9999., -9999.);
   CA_pim1_pim1p.SetXYZ(-9999., -9999., -9999.);
   CA_p_pim1p.SetXYZ(-9999., -9999., -9999.);
+  CA_p2_pim1p2.SetXYZ(-9999., -9999., -9999.);
   CA_pim2_pim2p.SetXYZ(-9999., -9999., -9999.);
   CA_p_pim2p.SetXYZ(-9999., -9999., -9999.);
+  CA_p2_pim2p2.SetXYZ(-9999., -9999., -9999.);
   CA_pim1_pim1pim2.SetXYZ(-9999., -9999., -9999.);
   CA_pim2_pim1pim2.SetXYZ(-9999., -9999., -9999.);
+  ForwardCharge = 0;
   run_num=-9999;   // run number
   event_num=-9999; // event number
   block_num=-9999; // block number
@@ -1508,7 +1576,7 @@ void InitTreeVal()
   react_pmiss.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
   react_Lambda.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
   react_pim.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);
-
+  
   mc_vtx.SetXYZ(-9999., -9999., -9999.);
   kfMomBeamSpmode.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);   // 4-momentum(beam) after kinematical refit for pi- Sigma+
   kfMom_pip_Spmode.SetPxPyPzE(-9999.,-9999.,-9999.,-9999.);    // 4-momentum(pi+) after kinematical refit for pi- Sigma+
