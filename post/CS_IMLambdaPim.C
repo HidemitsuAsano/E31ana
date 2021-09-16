@@ -1,6 +1,6 @@
 void CS_IMLambdaPim()
 {
-
+  gStyle->SetOptStat(0);
   TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v10_out.root","READ");
   TFile *facc = TFile::Open("../simpost/accmapLpim.root");
   TFile *flumi = TFile::Open("InteLumi.root");
@@ -13,10 +13,17 @@ void CS_IMLambdaPim()
   std::cout << "Err:   " << lumierr << std::endl;
   TCanvas *cq_IMppipi_p_wL_sum  = new TCanvas("cq_IMppipi_p_wL_sum","cq_IMppipi_p_wL_sum",800,800);
   TH2F* q_IMppipi_p_wL_sum = (TH2F*)file->Get("q_IMppipi_p_wL_sum");
+  q_IMppipi_p_wL_sum->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
   q_IMppipi_p_wL_sum->Draw("colz");
 
+  TCanvas *cq_IMppipi_p_wL_sum_f  = new TCanvas("cq_IMppipi_p_wL_sum_f","cq_IMppipi_p_wL_sum_f",800,800);
+  TH2F* q_IMppipi_p_wL_sum_f = (TH2F*)file->Get("q_IMppipi_p_wL_sum_forward");
+  q_IMppipi_p_wL_sum_f->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
+  q_IMppipi_p_wL_sum_f->Draw("colz");
+  
   TCanvas *cacc = new TCanvas("cacc","cacc",800,800);
   TH2F* q_IMppipi_p_wL_acc = (TH2F*)facc->Get("q_IMppipi_p_wL_acc");
+  q_IMppipi_p_wL_acc->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
   q_IMppipi_p_wL_acc->Draw("colz");  
 
 
@@ -25,9 +32,11 @@ void CS_IMLambdaPim()
   TCanvas *cCS = new TCanvas("cCS","cCS",800,800);
   double binwidth = CS_q_IMppipi_p_wL_sum->ProjectionX()->GetBinWidth(1)*1000.0;
   CS_q_IMppipi_p_wL_sum->Scale(1.0/binwidth/trigScale/lumi);
-  CS_q_IMppipi_p_wL_sum->SetMaximum(0.02);
+//  CS_q_IMppipi_p_wL_sum->SetMaximum(0.02);
+  CS_q_IMppipi_p_wL_sum->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
   CS_q_IMppipi_p_wL_sum->Draw("colz");
 
+  
   TCanvas *cCS_px = new TCanvas("cCS_px","cCS_px",800,800);
   TH1D* CS_IMppipi_p_wL_sum = (TH1D*)CS_q_IMppipi_p_wL_sum->ProjectionX("CS_IMppipi_p_wL_sum");
   CS_IMppipi_p_wL_sum->Draw("HE");
@@ -43,6 +52,33 @@ void CS_IMLambdaPim()
   //CS_IMppipi_p_wL_sum_350->GetXaxis()->SetRangeUser(1.2,1.6);
   CS_IMppipi_p_wL_sum_350->Draw("HE");
 
+  TCanvas *cCS_f = new TCanvas("cCS_f","cCS_f",800,800);
+  TH2F* CS_q_IMppipi_p_wL_sum_f = (TH2F*)q_IMppipi_p_wL_sum_f->Clone("CS_q_IMppipi_p_wL_sum_f");
+  CS_q_IMppipi_p_wL_sum_f->Divide(q_IMppipi_p_wL_acc);
+  CS_q_IMppipi_p_wL_sum_f->Scale(1.0/binwidth/trigScale/lumi);
+//  CS_q_IMppipi_p_wL_sum->SetMaximum(0.02);
+  CS_q_IMppipi_p_wL_sum_f->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
+  CS_q_IMppipi_p_wL_sum_f->Draw("colz");
+  
+  TCanvas *cCS_f_px_0 = new TCanvas("cCS_f_px_0","cCS_f_px_0",800,800);
+  TH1D* CS_IMppipi_p_wL_sum_f_0 = (TH1D*)CS_q_IMppipi_p_wL_sum_f->ProjectionX("CS_IMppipi_p_wL_sum_f_0",1,bin350-1);
+  //CS_IMppipi_p_wL_sum_0->GetXaxis()->SetRangeUser(1.2,1.6);
+  CS_IMppipi_p_wL_sum_f_0->Draw("HE");
+
+  TCanvas *cCS_f_px_350 = new TCanvas("cCS_f_px_350","cCS_f_px_350",800,800);
+  TH1D* CS_IMppipi_p_wL_sum_f_350 = (TH1D*)CS_q_IMppipi_p_wL_sum_f->ProjectionX("CS_IMppipi_p_wL_sum_f_350",bin350,600);
+  //CS_IMppipi_p_wL_sum_350->GetXaxis()->SetRangeUser(1.2,1.6);
+  CS_IMppipi_p_wL_sum_f_350->Draw("HE");
+ 
+  TCanvas *cCS_q = new TCanvas("cCS_q","cCS_q",1000,800);
+  const int bin1360 = CS_q_IMppipi_p_wL_sum->GetXaxis()->FindBin(1.360);
+  const int bin1410 = CS_q_IMppipi_p_wL_sum->GetXaxis()->FindBin(1.410);
+  TH1D* CS_q = (TH1D*)CS_q_IMppipi_p_wL_sum->ProjectionY("CS_q",bin1360,bin1410);
+  CS_q->SetMarkerStyle(20);
+  CS_q->Draw("E");
+
+
+  
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
   int size = SCol->GetSize();

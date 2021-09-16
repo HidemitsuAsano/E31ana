@@ -2,13 +2,15 @@
 
 void dispIMLpimHists()
 {
-
-
-  TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v10_out.root","READ");
-  //TFile *file = TFile::Open("../simpost/simIMLpim_ppimpim_v10_out.root","READ");
+  TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v13_out.root","READ");
+  //TFile *file = TFile::Open("../simpost/simIMLpim_ppimpim_v15_out.root","READ");
   bool SimMode = (std::string(file->GetName()).find("sim")!= std::string::npos);
   
-  TCanvas *cpcos = new TCanvas("cpcos","cpcos",800,800);
+  TCanvas *cBeamMom = new TCanvas("cBeamMom","cBeamMom",1000,800);
+  TH1D* BeamMom = (TH1D*)file->Get("BeamMom");
+  BeamMom->Draw("HE");
+
+  TCanvas *cpcos = new TCanvas("cpcos","cpcos",1000,800);
   TH1D* pcos =  (TH1D*)file->Get("pcos");
   TH1D* pmisscos = (TH1D*)file->Get("pmisscos");
   TH1D* p2cos = (TH1D*)file->Get("p2cos");
@@ -24,48 +26,51 @@ void dispIMLpimHists()
   hp2flag->Draw("HE");
 
   
-  TCanvas *cIMppim1_IMppim2 = new TCanvas("cIMppim1_IMppim2","cIMppim1_IMppim2",800,800);
+  TCanvas *cIMppim1_IMppim2 = new TCanvas("cIMppim1_IMppim2","cIMppim1_IMppim2",1000,800);
   TH2F* IMppim1_IMppim2 = (TH2F*)file->Get("IMppim1_IMppim2");
   IMppim1_IMppim2->Draw("colz");
 
-  TCanvas *cIMppim1_IMp2pim1 = new TCanvas("cIMppim1_IMp2pim1","cIMppim1_IMp2pim1",800,800);
+  TCanvas *cIMppim1_IMp2pim1 = new TCanvas("cIMppim1_IMp2pim1","cIMppim1_IMp2pim1",1000,800);
   TH2F* IMppim1_IMp2pim1 = (TH2F*)file->Get("IMppim1_IMp2pim1");
   IMppim1_IMp2pim1->Draw("colz");
 
-  TCanvas *cIMppim2_IMp2pim2 = new TCanvas("cIMppim2_IMp2pim2","cIMppim2_IMp2pim2",800,800);
+  TCanvas *cIMppim2_IMp2pim2 = new TCanvas("cIMppim2_IMp2pim2","cIMppim2_IMp2pim2",1000,800);
   TH2F* IMppim2_IMp2pim2 = (TH2F*)file->Get("IMppim2_IMp2pim2");
   IMppim2_IMp2pim2->Draw("colz");
 
-  TCanvas *cIMp2pim1_IMp2pim2 = new TCanvas("cIMp2pim1_IMp2pim2","cIMp2pim1_IMp2pim2",800,800);
+  TCanvas *cIMp2pim1_IMp2pim2 = new TCanvas("cIMp2pim1_IMp2pim2","cIMp2pim1_IMp2pim2",1000,800);
   TH2F* IMp2pim1_IMp2pim2 = (TH2F*)file->Get("IMp2pim1_IMp2pim2");
   IMp2pim1_IMp2pim2->Draw("colz");
 
-  TCanvas *cMMom_PMom = new TCanvas("cMMom_PMom","cMMom_PMom",800,800);
+  TCanvas *cMMom_PMom = new TCanvas("cMMom_PMom","cMMom_PMom",1000,800);
   TH2F* MMom_PMom = (TH2F*)file->Get("MMom_PMom");
   MMom_PMom->Draw("colz");
 
-  TCanvas *cMMom_PMom_2 = new TCanvas("cMMom_PMom_2","cMMom_PMom_2",800,800);
+  TCanvas *cMMom_PMom_2 = new TCanvas("cMMom_PMom_2","cMMom_PMom_2",1000,800);
   TH2F* MMom_PMom_2 = (TH2F*)file->Get("MMom_PMom_2");
   MMom_PMom_2->Draw("colz");
 
-  TCanvas *cq_PMom = new TCanvas("cq_PMom","cq_PMom",800,800);
+  TCanvas *cq_PMom = new TCanvas("cq_PMom","cq_PMom",1000,800);
   TH2F* q_PMom = (TH2F*)file->Get("q_PMom");
   q_PMom->Draw("colz");
 
-  TCanvas *cq_PMom_2 = new TCanvas("cq_PMom_2","cq_PMom_2",800,800);
-  TH2F* q_PMom_2 = (TH2F*)file->Get("q_PMom_2");
-  q_PMom_2->Draw("colz");
+  TCanvas *cPmom = new TCanvas("cPmom","cPmom",1000,800);
+  TH1D* PMom = (TH1D*)q_PMom->ProjectionX("PMom");
+  PMom->Draw("HE");
 
+  TCanvas *cq_P2Mom = new TCanvas("cq_P2Mom","cq_P2Mom",1000,800);
+  TH2F* q_P2Mom = (TH2F*)file->Get("q_P2Mom");
+  q_P2Mom->Draw("colz");
 
-  TCanvas *cMiss = new TCanvas("cMiss","cMiss",800,800);
+  TCanvas *cP2mom = new TCanvas("cP2mom","cP2mom",1000,800);
+  TH1D* P2Mom = (TH1D*)q_P2Mom->ProjectionX("P2Mom");
+  P2Mom->Draw("HE");
+
+  TCanvas *cMiss = new TCanvas("cMiss","cMiss",1000,800);
   TH2F* MMom_MMass = (TH2F*)file->Get("MMom_MMass");
   TH2F* MMom_MMass_2 = (TH2F*)file->Get("MMom_MMass_2");
-   
-
-
   TH1D* MMass = (TH1D*)MMom_MMass->ProjectionX("MMass");
   TH1D* MMass_2 = (TH1D*)MMom_MMass_2->ProjectionX("MMass_2");
-
   MMass->Draw("HE");
   MMass_2->SetLineColor(2);
   MMass_2->Draw("HEsame");
@@ -81,7 +86,7 @@ void dispIMLpimHists()
   phigh->SetLineStyle(10);
   phigh->Draw();
 
-  TCanvas *cMiss_sum = new TCanvas("cMiss_sum","cMiss_sum",800,800);
+  TCanvas *cMiss_sum = new TCanvas("cMiss_sum","cMiss_sum",1000,800);
   TH1D* MMass_sum = (TH1D*)MMass->Clone("MMass_sum");
   MMass_sum->Add(MMass_2);
   MMass_sum->Draw("HE");
@@ -99,11 +104,12 @@ void dispIMLpimHists()
   MMass_p_sum->Draw("HEsame");
   
 
-  TCanvas *cLambda  = new TCanvas("cLambda","cLambda",800,800);
+  TCanvas *cLambda  = new TCanvas("cLambda","cLambda",1000,800);
   TH1D* IMppim1 = (TH1D*)IMppim1_IMppim2->ProjectionY("IMppim1");
   TH1D* IMppim2 = (TH1D*)IMppim1_IMppim2->ProjectionX("IMppim2");
   TH1D* IMp2pim1 = (TH1D*)IMp2pim1_IMp2pim2->ProjectionY("IMp2pim1");
   TH1D* IMp2pim2 = (TH1D*)IMp2pim1_IMp2pim2->ProjectionX("IMp2pim2");
+  IMppim1->GetXaxis()->SetRangeUser(1,1.3);
   IMppim1->Draw("HE");
   IMppim2->SetLineColor(2);
   IMppim2->Draw("HEsame");
@@ -123,19 +129,36 @@ void dispIMLpimHists()
   lhigh->SetLineStyle(10);
   lhigh->Draw();
 
-  TCanvas *cq_IMppipi_p_wL = new TCanvas("cq_IMppipi_p_wL","cq_IMppipi_p_wL",800,800);
+
+  TCanvas *cMMass_wL_or = new TCanvas("cMMass_wL_or","cMMass_wL_or",1000,800);
+  TH1D* MMass_wL_or = (TH1D*)file->Get("MMass_wL_or");
+  MMass_wL_or->Draw("HE");
+
+  TCanvas *cMMass_IMppipi_wL_sum = new TCanvas("cMMass_IMppipi_wL_sum","cMMass_IMppipi_wL_sum",1000,800);
+  TH2D* MMass_IMppipi_wL_sum = (TH2D*)file->Get("MMass_IMppipi_wL_sum");
+  MMass_IMppipi_wL_sum->Draw("colz");
+
+
+  TCanvas *cq_IMppipi_p_wL = new TCanvas("cq_IMppipi_p_wL","cq_IMppipi_p_wL",1000,800);
   TH2F* q_IMppipi_p_wL = (TH2F*)file->Get("q_IMppipi_p_wL");
   q_IMppipi_p_wL->Draw("colz");
 
-  TCanvas *cq_IMp2pipi_p2_wL = new TCanvas("cq_IMp2pipi_p2_wL","cq_IMp2pipi_p2_wL",800,800);
+  TCanvas *cq_IMp2pipi_p2_wL = new TCanvas("cq_IMp2pipi_p2_wL","cq_IMp2pipi_p2_wL",1000,800);
   TH2F* q_IMp2pipi_p2_wL = (TH2F*)file->Get("q_IMp2pipi_p2_wL");
   q_IMp2pipi_p2_wL->Draw("colz");
 
 
-  TCanvas *cq_IMppipi_p_wL_sum  = new TCanvas("cq_IMppipi_p_wL_sum","cq_IMppipi_p_wL_sum");
+  TCanvas *cq_IMppipi_p_wL_sum  = new TCanvas("cq_IMppipi_p_wL_sum","cq_IMppipi_p_wL_sum",1000,800);
   TH2F* q_IMppipi_p_wL_sum = (TH2F*)file->Get("q_IMppipi_p_wL_sum");
   q_IMppipi_p_wL_sum->Draw("colz");
   
+  TCanvas *cq_IMppipi_p_wL_sum_forward  = new TCanvas("cq_IMppipi_p_wL_sum_f","cq_IMppipi_p_wL_sum_f",1000,800);
+  TH2F* q_IMppipi_p_wL_sum_forward = (TH2F*)file->Get("q_IMppipi_p_wL_sum_forward");
+  q_IMppipi_p_wL_sum_forward->Draw("colz");
+  
+  TCanvas *cq_IMppipi_p_wL_sum_fp  = new TCanvas("cq_IMppipi_p_wL_sum_fp","cq_IMppipi_p_wL_sum_fp",1000,800);
+  TH2F* q_IMppipi_p_wL_sum_fp = (TH2F*)file->Get("q_IMppipi_p_wL_sum_fp");
+  q_IMppipi_p_wL_sum_fp->Draw("colz");
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
@@ -144,7 +167,8 @@ void dispIMLpimHists()
   TString pdfname;
   pdfname= "Lpim_data.pdf";
   if(SimMode) pdfname= "Lpim_sim.pdf";
-  
+   
+
   for(int i=0;i<size;i++){
     //pdf->NewPage();
     c= (TCanvas*)next();
@@ -163,7 +187,11 @@ void dispIMLpimHists()
     //make separated pdf files
     //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
   }
-
+  
+  TFile *fbeam = new TFile("fbeam_lpim.root","RECREATE");
+  fbeam->cd();
+  BeamMom->Write();
+  fbeam->Close();
 
 }
 
