@@ -89,8 +89,12 @@ namespace anacuts {
   
   const double Lambda_MIN = 1.1075;//not tuned
   const double Lambda_MAX = 1.1225;//not tuned
-  const double Proton_MIN = 0.83;//not tuned
-  const double Proton_MAX = 1.04;//not tuned
+  //const double Proton_MIN = 0.8303;//wide 
+  //const double Proton_MAX = 1.0279;//wide
+  //const double Proton_MIN_narrow = 0.8825;
+  //const double Proton_MAX_narrow = 0.9794;
+  const double Proton_MIN = 0.8825;
+  const double Proton_MAX = 0.9794;
 
 }
 

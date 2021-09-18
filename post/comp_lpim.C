@@ -61,6 +61,8 @@ void comp_lpim()
   PMom_sim->SetLineColor(2);
   PMom_sim->Draw("HEsame");
 
+  
+  TCanvas *cpphi
 
 
 }

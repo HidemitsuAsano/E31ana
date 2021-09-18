@@ -12,8 +12,8 @@ void GetAccMapLpim()
   TFile *fLpim=NULL;
   TFile *fgen=NULL;
 
-  fLpim = TFile::Open("simIMLpim_ppimpim_v12_out.root");
-  fgen = TFile::Open("simIMLpim_v12.root");
+  fLpim = TFile::Open("simIMLpim_ppimpim_v15_out.root");
+  fgen = TFile::Open("simIMLpim_v15.root");
   
   TH2F* q_IMLPim_gen;
   q_IMLPim_gen = (TH2F*) fgen->Get("React_q_IMLPim");

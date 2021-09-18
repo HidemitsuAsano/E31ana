@@ -43,6 +43,8 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   gStyle->SetStatY(0.9);      
   gStyle->SetPalette(1);
   gStyle->SetStatBorderSize(1);
+//  gStyle->SetMarkerStyle(20);
+//  gStyle->SetMarkerSize(1.2);
   gStyle->SetCanvasDefH(800); gStyle->SetCanvasDefW(900);
   gStyle->SetPadRightMargin(0.15);
   gStyle->SetPadLeftMargin(0.12);
@@ -186,6 +188,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* q_PMom_p_wL;
   TH2F* q_P2Mom;
   TH2F* q_P2Mom_p2_wL;
+  TH2F* q_PMom_p_wL_sum;
   TH2F* MMom_PMom;
   TH2F* MMom_PMom_2;
   TH2F* IMppim1_IMppim2;
@@ -275,6 +278,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   q_P2Mom_p2_wL = new TH2F("q_P2Mom_p2_wL","q_P2Mom_p2_wL",200,0,2,200,0,2.0);
   q_P2Mom_p2_wL->SetXTitle("P_{2} Mom. [GeV/c]");
   q_P2Mom_p2_wL->SetYTitle("Mom. Transfer. [GeV/c]");
+  
+  q_PMom_p_wL_sum = new TH2F("q_PMom_p_wL_sum","q_PMom_p_wL_sum",200,0,2,200,0,2.0);
+  q_PMom_p_wL_sum->SetXTitle("P_{2} Mom. [GeV/c]");
+  q_PMom_p_wL_sum->SetYTitle("Mom. Transfer. [GeV/c]");
 
   MMom_PMom = new TH2F("MMom_PMom","MMom_PMom",200,0,2,200,0,2.0);
   MMom_PMom->SetXTitle("P Mom. [GeV/c]");
@@ -380,6 +387,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH1D* pim1cos = new TH1D("pim1cos","pim1cos",10000,-1,1);
   TH1D* pim2cos = new TH1D("pim2cos","pim2cos",10000,-1,1);
   TH1D* pcos = new TH1D("pcos","pcos",10000,-1,1);
+  TH1D* ptheta = new TH1D("ptheta","ptheta",1000,-1.0*TMath::Pi(),TMath::Pi());
+  TH1D* p2theta = new TH1D("p2theta","p2theta",1000,-1.0*TMath::Pi(),TMath::Pi());
+  TH1D* pphi = new TH1D("pphi","pphi",1000,-1.0*TMath::Pi(),TMath::Pi());
+  TH1D* p2phi = new TH1D("p2phi","p2phi",1000,-1.0*TMath::Pi(),TMath::Pi());
   TH1D* p2cos = new TH1D("p2cos","p2cos",10000,-1,1);
   TH1D* ppmisscostheta = new TH1D("ppmisscostheta","ppmisscostheta",10000,-1,1);
   TH1D* pp2cosphi = new TH1D("pp2cosphi","pp2cosphi",100,-1.0*TMath::Pi(),TMath::Pi());
@@ -399,6 +410,14 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   MMass_wL_1->SetXTitle("Missing Mass [GeV/c^{2}]");
   TH1D* MMass_wL_2 = new TH1D("MMass_wL_2","MMass_wL_2",nbinpmiss, pmisslow, pmisshigh);
   MMass_wL_2->SetXTitle("Missing Mass [GeV/c^{2}]");
+  TH1D* MMass_woL = new TH1D("MMass_woL","MMass_woL",nbinpmiss, pmisslow, pmisshigh);
+  MMass_woL->SetXTitle("Missing Mass [GeV/c^{2}]");
+  
+  TH2D* diffpcos_pcos = new TH2D("diffpcos_pcos","diffpcos_pcos",1000,0,1,2000,-0.1,0.1);
+  TH2D* diffIMppipi_IMppipi = new TH2D("diffIMppipi_IMppipi","diffIMppipi_IMppipi",nbinIMppipi,IMppipilow,IMppipihigh,100,-0.1,0.1);
+  TH2D* diffIMppipi_IMppipi_f = new TH2D("diffIMppipi_IMppipi_f","diffIMppipi_IMppipi_f",nbinIMppipi,IMppipilow,IMppipihigh,100,-0.1,0.1);
+  TH2D* diffq_q = new TH2D("diffq","diffq",nbinq,0,1.5,1000,-0.1,0.1);
+  
 
   Int_t nevent = tree->GetEntries();
   std::cerr<<"# of events = "<<nevent<<std::endl;
@@ -468,11 +487,15 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     pim1cos->Fill((*LVec_pim1).CosTheta());
     pim2cos->Fill((*LVec_pim2).CosTheta());
     pcos->Fill((*LVec_p).CosTheta());
+    ptheta->Fill((*LVec_p).Theta());
+    pphi->Fill((*LVec_p).Phi());
     pmisscos->Fill(LVec_p_miss.CosTheta());
     if(ForwardCharge)pmisscos_fp->Fill(LVec_p_miss.CosTheta());
     ppmisscostheta->Fill(cos(LVec_p_miss.Theta()-(*LVec_p).Theta()));
     if(p2flag){
       p2cos->Fill((*LVec_p2).CosTheta());
+      p2theta->Fill((*LVec_p2).Theta());
+      p2phi->Fill((*LVec_p2).Phi());
       p2misscos->Fill(LVec_p2_miss.CosTheta());
       pp2cosphi->Fill(cos((*LVec_p2).Phi()-(*LVec_p).Phi()));
       pp2costheta->Fill(cos((*LVec_p2).Theta()-(*LVec_p).Theta()));
@@ -596,6 +619,8 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       MMass_wL_2->Fill(LVec_p2_miss.M());
       MMass_IMp2pipi_wL->Fill(LVec_pim1_pim2_p2.M(),p2miss_mass);
       MMass_IMppipi_wL_sum->Fill(LVec_pim1_pim2_p2.M(),p2miss_mass);
+    }else{
+      MMass_woL->Fill(LVec_p_miss.M());
     }
 
     if(MissPFlag && LambdaFlag){
@@ -604,10 +629,48 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       if(ForwardCharge)q_IMppipi_p_wL_sum_fp->Fill(LVec_pim1_pim2_p.M(),qkn.P());
       pmisscos_wL_p->Fill(LVec_p_miss.CosTheta());
       if(ForwardCharge)pmisscos_wL_p_fp->Fill(LVec_p_miss.CosTheta());
+      q_PMom_p_wL->Fill((*LVec_p).P(),qkn.P());
+      q_PMom_p_wL_sum->Fill((*LVec_p).P(),qkn.P());
+      if(SimMode){
+         double diffpcos = LVec_p_miss.CosTheta() - (*react_pmiss).CosTheta();
+         diffpcos_pcos->Fill(LVec_p_miss.CosTheta(),diffpcos);
+         TLorentzVector TL_LambdaPim = *react_Lambda + *react_pim;
+         double diffmass = LVec_pim1_pim2_p.M()-TL_LambdaPim.M()/1000.;
+         diffIMppipi_IMppipi->Fill(LVec_pim1_pim2_p.M(),diffmass);
+         if(LVec_p_miss.CosTheta()>ForwardAngle){ 
+           diffIMppipi_IMppipi_f->Fill(LVec_pim1_pim2_p.M(),diffmass);
+         }
+        TLorentzVector TL_beam;
+        TVector3 beammom(0,0,1000.);
+        TL_beam.SetVectM(beammom, 493.);
+        TLorentzVector qkn_mc = (TL_beam - *react_pmiss);
+        double diffq = qkn.P()-qkn_mc.P()/1000.;
+        diffq_q->Fill(qkn.P(),diffq);
+      }
+
     }else if(MissP2Flag && Lambda2Flag){
       q_IMppipi_p_wL_sum->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
       if(LVec_p2_miss.CosTheta()>ForwardAngle)q_IMppipi_p_wL_sum_forward->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
       if(ForwardCharge)q_IMppipi_p_wL_sum_fp->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
+      q_P2Mom_p2_wL->Fill((*LVec_p2).P(),qkn2.P());
+      q_PMom_p_wL_sum->Fill((*LVec_p2).P(),qkn2.P());
+      if(SimMode){
+         double diffpcos = LVec_p2_miss.CosTheta()- (*react_pmiss).CosTheta();
+         diffpcos_pcos->Fill((*react_pmiss).CosTheta(),diffpcos);
+         TLorentzVector TL_LambdaPim = *react_Lambda + *react_pim;
+         double diffmass = LVec_pim1_pim2_p.M()-TL_LambdaPim.M()/1000.;
+         diffIMppipi_IMppipi->Fill(LVec_pim1_pim2_p2.M(),diffmass);
+         if(LVec_p2_miss.CosTheta()>ForwardAngle){ 
+           diffIMppipi_IMppipi_f->Fill(LVec_pim1_pim2_p2.M(),diffmass);
+         }
+        TLorentzVector TL_beam;
+        TVector3 beammom(0,0,1000.);
+        TL_beam.SetVectM(beammom, 493.);
+        TLorentzVector qkn_mc = (TL_beam - *react_pmiss);
+        double diffq = qkn2.P()-qkn_mc.P()/1000.;
+        diffq_q->Fill(qkn2.P(),diffq);
+
+       }
     }
     
    

@@ -1,7 +1,7 @@
 void CS_IMLambdaPim()
 {
   gStyle->SetOptStat(0);
-  TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v10_out.root","READ");
+  TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v13_out.root","READ");
   TFile *facc = TFile::Open("../simpost/accmapLpim.root");
   TFile *flumi = TFile::Open("InteLumi.root");
   TParameter<double>*IntegLumi = flumi->Get("IntegLumi");
