@@ -887,12 +887,12 @@ int main( int argc, char** argv )
 
       nFill_pimpim++;
 
-      CDSTrack *track_pim1 = cdstrackMan->Track( pim_ID[0] ); // only 1 track
-      CDSTrack *track_pim2 = cdstrackMan->Track( pim_ID[1] ); // only 1 track
-      CDSTrack *track_p    = cdstrackMan->Track( p_ID[0] ); // only 1 track
+      CDSTrack *track_pim1 = cdstrackMan->Track( pim_ID.at(0) ); // only 1 track
+      CDSTrack *track_pim2 = cdstrackMan->Track( pim_ID.at(1) ); // only 1 track
+      CDSTrack *track_p    = cdstrackMan->Track( p_ID.at(0) ); // only 1 track
       CDSTrack *track_p2;
       if(p_ID.size()==2) {
-        track_p2 = cdstrackMan->Track( p_ID[1] ); // only 1 track
+        track_p2 = cdstrackMan->Track( p_ID.at(1) ); // only 1 track
       }
 
       TVector3 vtx_react;//reaction vertex

@@ -104,11 +104,16 @@ void CS_IMLambdaPim()
     //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
   }
 
+  TObject *obj = NULL;
+  TIter nexthist2(gDirectory->GetList());
   TFile *fout = new TFile("cs_lpim.root","RECREATE");
   fout->Print();
   fout->cd();
-  CS_q_IMppipi_p_wL_sum->Write();
-  CS_IMppipi_p_wL_sum_0->Write();
-  CS_IMppipi_p_wL_sum_350->Write();
+  while( (obj = (TObject*)nexthist2())!=NULL) {
+    obj->Write();
+  }
+  //CS_q_IMppipi_p_wL_sum->Write();
+  //CS_IMppipi_p_wL_sum_0->Write();
+  //CS_IMppipi_p_wL_sum_350->Write();
   fout->Close();
 }

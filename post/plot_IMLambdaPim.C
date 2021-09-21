@@ -185,7 +185,17 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* MMom_MMass_p2;
   TH2F* MMom_MMass_p_wL;
   TH2F* q_PMom;
+  TH2F* q_MMom;
+  TH2F* q_MMomCosTheta;
+  TH2F* q_MMomCosTheta_nop2;
+  TH2F* q_MMomCosTheta_wp2;
+  TH2F* q_pmisscos;
   TH2F* q_PMom_p_wL;
+  TH2F* q_MMom_p_wL;
+  TH2F* q_MMomCosTheta_p_wL;
+  TH2F* q_MMomCosTheta_p_wL_nop2;
+  TH2F* q_MMomCosTheta_p_wL_wp2;
+  TH2F* q_pmiss_p_wL;
   TH2F* q_P2Mom;
   TH2F* q_P2Mom_p2_wL;
   TH2F* q_PMom_p_wL_sum;
@@ -267,9 +277,41 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   q_PMom->SetXTitle("P Mom. [GeV/c]");
   q_PMom->SetYTitle("Mom. Transfer. [GeV/c]");
   
+  q_MMom = new TH2F("q_MMom","q_MMom",200,0,2,200,0,2.0);
+  q_MMom->SetXTitle("Miss Mom. [GeV/c]");
+  q_MMom->SetYTitle("Mom. Transfer. [GeV/c]");
+  
+  q_MMomCosTheta = new TH2F("q_MMomCosTheta","q_MMomCosTheta",200,0,1,200,0,2.0);
+  q_MMomCosTheta->SetXTitle("Miss Mom. CosTheta ");
+  q_MMomCosTheta->SetYTitle("Mom. Transfer. [GeV/c]");
+  
+  q_MMomCosTheta_nop2 = new TH2F("q_MMomCosTheta_nop2","q_MMomCosTheta_nop2",200,0,1,200,0,2.0);
+  q_MMomCosTheta_nop2->SetXTitle("Miss Mom. CosTheta ");
+  q_MMomCosTheta_nop2->SetYTitle("Mom. Transfer. [GeV/c]");
+  
+  q_MMomCosTheta_wp2 = new TH2F("q_MMomCosTheta_wp2","q_MMomCosTheta_wp2",200,0,1,200,0,2.0);
+  q_MMomCosTheta_wp2->SetXTitle("Miss Mom. CosTheta ");
+  q_MMomCosTheta_wp2->SetYTitle("Mom. Transfer. [GeV/c]");
+  
   q_PMom_p_wL = new TH2F("q_PMom_p_wL","q_PMom_p_wL",200,0,2,200,0,2.0);
   q_PMom_p_wL->SetXTitle("P Mom. [GeV/c]");
   q_PMom_p_wL->SetYTitle("Mom. Transfer. [GeV/c]");
+  
+  q_MMom_p_wL = new TH2F("q_MMom_p_wL","q_MMom_p_wL",200,0,2,200,0,2.0);
+  q_MMom_p_wL->SetXTitle("Miss Mom. [GeV/c]");
+  q_MMom_p_wL->SetYTitle("Mom. Transfer. [GeV/c]");
+  
+  q_MMomCosTheta_p_wL = new TH2F("q_MMomCosTheta_p_wL","q_MMomCosTheta_p_wL",200,0,1,200,0,2.0);
+  q_MMomCosTheta_p_wL->SetXTitle("Miss Mom. [GeV/c]");
+  q_MMomCosTheta_p_wL->SetYTitle("Mom. Transfer. CosTheta ");
+  
+  q_MMomCosTheta_p_wL_nop2 = new TH2F("q_MMomCosTheta_p_wL_nop2","q_MMomCosTheta_p_wL_nop2",200,0,1,200,0,2.0);
+  q_MMomCosTheta_p_wL_nop2->SetXTitle("Miss Mom. [GeV/c]");
+  q_MMomCosTheta_p_wL_nop2->SetYTitle("Mom. Transfer. CosTheta ");
+  
+  q_MMomCosTheta_p_wL_wp2 = new TH2F("q_MMomCosTheta_p_wL_wp2","q_MMomCosTheta_p_wL_wp2",200,0,1,200,0,2.0);
+  q_MMomCosTheta_p_wL_wp2->SetXTitle("Miss Mom. [GeV/c]");
+  q_MMomCosTheta_p_wL_wp2->SetYTitle("Mom. Transfer. CosTheta ");
   
   q_P2Mom = new TH2F("q_P2Mom","q_P2Mom",200,0,2,200,0,2.0);
   q_P2Mom->SetXTitle("P_{2} Mom. [GeV/c]");
@@ -393,8 +435,19 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH1D* p2phi = new TH1D("p2phi","p2phi",1000,-1.0*TMath::Pi(),TMath::Pi());
   TH1D* p2cos = new TH1D("p2cos","p2cos",10000,-1,1);
   TH1D* ppmisscostheta = new TH1D("ppmisscostheta","ppmisscostheta",10000,-1,1);
-  TH1D* pp2cosphi = new TH1D("pp2cosphi","pp2cosphi",100,-1.0*TMath::Pi(),TMath::Pi());
-  TH1D* pp2costheta = new TH1D("pp2theta","pp2theta",100,-1.0*TMath::Pi(),TMath::Pi());
+  TH1D* pp2phi = new TH1D("pp2phi","pp2phi",100,-1.0*TMath::Pi(),TMath::Pi());
+  TH1D* pp2theta = new TH1D("pp2theta","pp2theta",100,-0.5*TMath::Pi(),0.5*TMath::Pi());
+  TH2D* diffpp2theta_mom = new TH2D("diffpp2theta_mom","diffpp2theta_mom",1000,-1,1,100,-0.5*TMath::Pi(),0.5*TMath::Pi());
+  TH2D* diffpmissp2theta_mom = new TH2D("diffpmissp2theta_mom","diffpmissp2theta_mom",1000,-1,1,100,-0.5*TMath::Pi(),0.5*TMath::Pi());
+  diffpmissp2theta_mom->SetXTitle("diff mom. pmiss - p2 [GeV/c^{2}]");
+  diffpmissp2theta_mom->SetYTitle("diff theta pmiss - p2 ");
+  TH2D* pmisstheta_diffp2pmissmom = new TH2D("pmisstheta_diffp2pmissmom","pmisstheta_diffp2pmissmom",1000,-1,1,100,-1,1.0);
+  pmisstheta_diffp2pmissmom->SetXTitle("diff mom. pmiss - p2 [GeV/c^{2}]");
+  pmisstheta_diffp2pmissmom->SetYTitle("cos theta pmiss ");
+  
+  TH1D* diffpmissmom_mc = new TH1D("diffpmissmom_mc","diffpmissmom_mc",1000,-1,1);
+  TH1D* diffp2mom_mc = new TH1D("diffp2mom_mc","diffp2mom_mc",1000,-1,1);
+  
   TH1D* pmisscos = new TH1D("pmisscos","pmisscos",10000,-1,1);
   TH1D* pmisscos_fp = new TH1D("pmisscos_fp","pmisscos_fp",10000,-1,1);
   TH1D* pmisscos_wL_p = new TH1D("pmisscos_wL_p","pmisscos_wL_p",10000,-1,1);
@@ -497,8 +550,12 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       p2theta->Fill((*LVec_p2).Theta());
       p2phi->Fill((*LVec_p2).Phi());
       p2misscos->Fill(LVec_p2_miss.CosTheta());
-      pp2cosphi->Fill(cos((*LVec_p2).Phi()-(*LVec_p).Phi()));
-      pp2costheta->Fill(cos((*LVec_p2).Theta()-(*LVec_p).Theta()));
+      pp2phi->Fill((*LVec_p2).Phi()-(*LVec_p).Phi());
+      pp2theta->Fill((*LVec_p2).Theta()-(*LVec_p).Theta());
+      diffpp2theta_mom->Fill((*LVec_p2).P()-(*LVec_p).P(),(*LVec_p2).Theta()-(*LVec_p).Theta());
+      diffpmissp2theta_mom->Fill((LVec_p_miss).P()-(*LVec_p2).P(),(LVec_p_miss).Theta()-(*LVec_p2).Theta());
+      pmisstheta_diffp2pmissmom->Fill((LVec_p_miss).P()-(*LVec_p2).P(),(LVec_p_miss).CosTheta());
+
     }
     BeamMom->Fill((*LVec_beam).P());
 
@@ -518,16 +575,32 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     if(p2flag && (anacuts::Lambda_MIN<LVec_pim1_p2.M() && LVec_pim1_p2.M()<anacuts::Lambda_MAX)) Lambda2Flag=true;
     if(p2flag && (anacuts::Lambda_MIN<LVec_pim2_p2.M() && LVec_pim2_p2.M()<anacuts::Lambda_MAX)) Lambda2Flag=true;
         
-    if(anacuts::Proton_MIN<pmiss_mass && pmiss_mass<anacuts::Proton_MAX ) MissPFlag=true;
-    if(p2flag && anacuts::Proton_MIN<p2miss_mass && p2miss_mass<anacuts::Proton_MAX ) MissP2Flag=true;
+    if(anacuts::Proton_MIN_narrow<pmiss_mass && pmiss_mass<anacuts::Proton_MAX_narrow ) MissPFlag=true;
+    if(p2flag && anacuts::Proton_MIN_narrow<p2miss_mass && p2miss_mass<anacuts::Proton_MAX_narrow ) MissP2Flag=true;
 
     if(p2flag){
       IMp2pim1_IMp2pim2->Fill(LVec_pim2_p2.M(),LVec_pim1_p2.M());
     }
 
+    if(SimMode){
+      if(LambdaFlag){
+        //TLorentzVector TL_p_diff = LVec_p_miss -*mcmom_pmiss;
+        TLorentzVector TL_p_diff = LVec_p_miss -*react_pmiss*0.001;
+        diffpmissmom_mc->Fill(TL_p_diff.P());;
+        if(p2flag){
+          //TLorentzVector TL_p2_diff = *LVec_p2 - *mcmom_pmiss;
+          TLorentzVector TL_p2_diff = *LVec_p2 - *react_pmiss*0.001;
+          diffp2mom_mc->Fill(TL_p2_diff.P());;
+        }
+      }
+    }
    
     MMom_MMass->Fill(pmiss_mass,pmiss_mom);
     q_PMom->Fill((*LVec_p).P(),qkn.P());
+    q_MMom->Fill(pmiss_mom,qkn.P());
+    q_MMomCosTheta->Fill(LVec_p_miss.CosTheta(),qkn.P());
+    if(!p2flag)q_MMomCosTheta_nop2->Fill(LVec_p_miss.CosTheta(),qkn.P());
+    else if(p2flag)q_MMomCosTheta_wp2->Fill(LVec_p_miss.CosTheta(),qkn.P());
     MMom_PMom->Fill((*LVec_p).P(),pmiss_mom);
     if(p2flag){
       q_P2Mom->Fill((*LVec_p2).P(),qkn2.P());
@@ -585,7 +658,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     }
     
 
-    if(MissPFlag && LambdaFlag){
+    if(MissPFlag && LambdaFlag && Lambda2Flag && MissP2Flag){
       if((anacuts::Lambda_MIN<LVec_pim1_p.M() && LVec_pim1_p.M()<anacuts::Lambda_MAX)){
         MMass_IMppim_p_wL->Fill(LVec_pim1_p.M(),pmiss_mass);
       }else if((anacuts::Lambda_MIN<LVec_pim2_p.M() && LVec_pim2_p.M()<anacuts::Lambda_MAX)){
@@ -630,6 +703,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       pmisscos_wL_p->Fill(LVec_p_miss.CosTheta());
       if(ForwardCharge)pmisscos_wL_p_fp->Fill(LVec_p_miss.CosTheta());
       q_PMom_p_wL->Fill((*LVec_p).P(),qkn.P());
+      q_MMom_p_wL->Fill(pmiss_mom,qkn.P());
+      q_MMomCosTheta_p_wL->Fill(LVec_p_miss.CosTheta(),qkn.P());
+      if(p2flag)q_MMomCosTheta_p_wL_wp2->Fill(LVec_p_miss.CosTheta(),qkn.P());
+      else if(!p2flag)q_MMomCosTheta_p_wL_nop2->Fill(LVec_p_miss.CosTheta(),qkn.P());
       q_PMom_p_wL_sum->Fill((*LVec_p).P(),qkn.P());
       if(SimMode){
          double diffpcos = LVec_p_miss.CosTheta() - (*react_pmiss).CosTheta();

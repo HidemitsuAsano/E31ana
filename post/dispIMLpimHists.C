@@ -133,6 +133,19 @@ void dispIMLpimHists()
   TCanvas *cMMass_wL_or = new TCanvas("cMMass_wL_or","cMMass_wL_or",1000,800);
   TH1D* MMass_wL_or = (TH1D*)file->Get("MMass_wL_or");
   MMass_wL_or->Draw("HE");
+  plow->Draw();
+  phigh->Draw();
+  TLine *phigh_narrow = new TLine(anacuts::Proton_MAX_narrow,0,anacuts::Proton_MAX_narrow,mmax);
+  phigh_narrow->SetLineColor(5);
+  phigh_narrow->SetLineWidth(2.0);
+  phigh_narrow->SetLineStyle(10);
+  phigh_narrow->Draw();
+  TLine *plow_narrow = new TLine(anacuts::Proton_MIN_narrow,0,anacuts::Proton_MIN_narrow,mmax);
+  plow_narrow->SetLineColor(5);
+  plow_narrow->SetLineWidth(2.0);
+  plow_narrow->SetLineStyle(10);
+  plow_narrow->Draw();
+  
 
   TCanvas *cMMass_IMppipi_wL_sum = new TCanvas("cMMass_IMppipi_wL_sum","cMMass_IMppipi_wL_sum",1000,800);
   TH2D* MMass_IMppipi_wL_sum = (TH2D*)file->Get("MMass_IMppipi_wL_sum");

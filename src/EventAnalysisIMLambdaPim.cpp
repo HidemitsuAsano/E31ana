@@ -41,7 +41,7 @@
 
 
 #include "IMPiSigmaAnaPar.h"
-#include "IMPiSigmaHist.h"
+# include "IMPiSigmaHist.h"
 #include "IMPiSigmaUtil.h"
 
 #define KFDEBUG 0 // verbose level of the KinFitter
@@ -642,12 +642,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
                            DoCDCRetiming,
                            bpctrack, cdsMan, trackMan, confMan,blMan,
                            LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,pim_cdhprojected,pip_cdhprojected);
-  if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
-  if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );
-  if(nIDedTrack==-9) Tools::Fill1D( Form("EventCheck"), 9 );
-  if(nIDedTrack==-10) Tools::Fill1D( Form("EventCheck"), 10 );
-  if(nIDedTrack==-11) Tools::Fill1D( Form("EventCheck"), 11 );
-  if(nIDedTrack==-12) Tools::Fill1D( Form("EventCheck"), 12 );
+  if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );//chi2
+  if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );//CDH hit
+  if(nIDedTrack==-9) Tools::Fill1D( Form("EventCheck"), 9 );//no CDH sharing
+  if(nIDedTrack==-10) Tools::Fill1D( Form("EventCheck"), 10 );//FindMass2_1
+  if(nIDedTrack==-11) Tools::Fill1D( Form("EventCheck"), 11 );//FindMass2_2
+  if(nIDedTrack==-12) Tools::Fill1D( Form("EventCheck"), 12 );//Energy loss
   if(nIDedTrack<0) {
     Clear(nAbort_CDSPID);
     return true;
@@ -690,10 +690,10 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
     CDSTrack *track_pim1 = trackMan->Track( pim_ID.at(0) ); //
     CDSTrack *track_pim2 = trackMan->Track( pim_ID.at(1) ); //
-    CDSTrack *track_p    = trackMan->Track( p_ID.at(0) ); //must be only 1 track due to the nCDH cut
+    CDSTrack *track_p    = trackMan->Track( p_ID.at(0) ); //
     CDSTrack *track_p2;
     if(p_ID.size()==2) {
-      track_p2 = trackMan->Track( p_ID[1] ); // only 1 track
+      track_p2 = trackMan->Track( p_ID.at(1) ); //
     }
 
     if(Verbosity) {
