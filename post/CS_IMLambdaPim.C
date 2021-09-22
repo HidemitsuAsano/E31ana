@@ -2,8 +2,9 @@ void CS_IMLambdaPim()
 {
   gStyle->SetOptStat(0);
   TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v13_out.root","READ");
-  TFile *facc = TFile::Open("../simpost/accmapLpim.root");
-  TFile *flumi = TFile::Open("InteLumi.root");
+  TFile *facc = TFile::Open("../simpost/accmapLpim.root","READ");
+  TFile *flumi = TFile::Open("InteLumi.root","READ");
+  TFile *fkin = TFile::Open("../simpost/NumericalRootFinderLPim.root","READ");
   TParameter<double>*IntegLumi = flumi->Get("IntegLumi");
   TParameter<double>*Err = flumi->Get("Err");
   double lumi = IntegLumi->GetVal();
@@ -15,6 +16,14 @@ void CS_IMLambdaPim()
   TH2F* q_IMppipi_p_wL_sum = (TH2F*)file->Get("q_IMppipi_p_wL_sum");
   q_IMppipi_p_wL_sum->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
   q_IMppipi_p_wL_sum->Draw("colz");
+  TGraph *gth = (TGraph*)fkin->Get("th");
+  gth->Draw("pc");
+  TGraph *gr_0 = (TGraph*)fkin->Get("gr_0");
+  gr_0->Draw("pc");
+  TGraph *gr_100 = (TGraph*)fkin->Get("gr_100");
+  gr_100->Draw("pc");
+  TGraph *gr_65 = (TGraph*)fkin->Get("gr_65");
+  gr_65->Draw("pc");
 
   TCanvas *cq_IMppipi_p_wL_sum_f  = new TCanvas("cq_IMppipi_p_wL_sum_f","cq_IMppipi_p_wL_sum_f",800,800);
   TH2F* q_IMppipi_p_wL_sum_f = (TH2F*)file->Get("q_IMppipi_p_wL_sum_forward");
@@ -25,6 +34,14 @@ void CS_IMLambdaPim()
   TH2F* q_IMppipi_p_wL_acc = (TH2F*)facc->Get("q_IMppipi_p_wL_acc");
   q_IMppipi_p_wL_acc->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
   q_IMppipi_p_wL_acc->Draw("colz");  
+  //TGraph *gth = (TGraph*)fkin->Get("th");
+  gth->Draw("pc");
+  //TGraph *gr_0 = (TGraph*)fkin->Get("gr_0");
+  gr_0->Draw("pc");
+  //TGraph *gr_100 = (TGraph*)fkin->Get("gr_100");
+  gr_100->Draw("pc");
+  //TGraph *gr_65 = (TGraph*)fkin->Get("gr_65");
+  gr_65->Draw("pc");
 
 
   TH2F* CS_q_IMppipi_p_wL_sum = (TH2F*)q_IMppipi_p_wL_sum->Clone("CS_q_IMppipi_p_wL_sum");
