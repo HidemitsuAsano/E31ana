@@ -106,6 +106,7 @@ private:
   //** counters for filling **//
   int nFill_ppimpim;
   //** counters for event abort **//
+  int nAbort_KCDH3trg;
   int nAbort_nGoodTrack;
   int nAbort_CDSPID;
   int nAbort_nCDH;
@@ -498,6 +499,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   if(IsTrigKCDH3) {
     Tools::Fill1D(Form("Trigger"),1);
   } else {
+    Clear(nAbort_KCDH3trg);
+    return true;
     //return true;
   }
 
