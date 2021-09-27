@@ -97,6 +97,11 @@ TVector3 CA_p2_pim2p2;
 TVector3 CA_pim2_pim2p2;
 TVector3 CA_pim1_pim1pim2;
 TVector3 CA_pim2_pim1pim2;
+//[0] p1_pim1 ,[1]p1_pim2, [2]p2_pim1,[3]p2_pim2
+TVector3 vtx_Lcan_p_pim1;
+TVector3 vtx_Lcan_p_pim2;
+TVector3 vtx_Lcan_p2_pim1;
+TVector3 vtx_Lcan_p2_pim2;
 int ForwardCharge;
 int run_num;   // run number
 int event_num; // event number
@@ -273,6 +278,10 @@ int main( int argc, char** argv )
   ppimpimTree->Branch( "CA_p2_pim2p2",&CA_p2_pim2p2);
   ppimpimTree->Branch( "CA_pim1_pim1pim2",&CA_pim1_pim1pim2);
   ppimpimTree->Branch( "CA_pim2_pim1pim2",&CA_pim2_pim1pim2);
+  ppimpimTree->Branch( "vtx_Lcan_p_pim1",&vtx_Lcan_p_pim1);
+  ppimpimTree->Branch( "vtx_Lcan_p_pim2",&vtx_Lcan_p_pim2);
+  ppimpimTree->Branch( "vtx_Lcan_p2_pim1",&vtx_Lcan_p2_pim1);
+  ppimpimTree->Branch( "vtx_Lcan_p2_pim2",&vtx_Lcan_p2_pim2);
   ppimpimTree->Branch( "ForwardCharge", &ForwardCharge);  
   //ppimpimTree->Branch( "run_num", &run_num );
   //ppimpimTree->Branch( "event_num", &event_num );
@@ -974,8 +983,6 @@ int main( int argc, char** argv )
 
 
 
-
-
       // beam kaon tof
       TVector3 Pos_T0;
       confMan->GetGeomMapManager()->GetPos( CID_T0, 0, Pos_T0 );
@@ -1014,8 +1021,40 @@ int main( int argc, char** argv )
 
       LVec_pim1.SetVectM( P_pim1, piMass );
       LVec_pim2.SetVectM( P_pim2, piMass );
-      LVec_p.SetVectM(   P_p,   pMass );//CDS p
+      LVec_p.SetVectM(  P_p,   pMass );//CDS p
       LVec_p2.SetVectM( P_p2, pMass);
+      
+      TVector3 P_ppim1 = P_p + P_pim1;
+      TVector3 P_ppim2 = P_p + P_pim2;
+      TVector3 P2_p2pim1 = P_p2 + P_pim1;
+      TVector3 P2_p2pim2 = P_p2 + P_pim2;
+
+      double dl=0;
+      double dist=0;
+      TVector3 nest;
+      nest.SetXYZ(0,0,0);
+      TVector3 CA_ppim1_center = 0.5*(CroA_p_pim1p+CroA_pim1_pim1p);
+      MathTools::LineToLine(CA_ppim1_center,P_ppim1.Unit(),bpctrack->GetPosatZ(0), bpctrack->GetMomDir(),dl,dist,vtx_Lcan_p_pim1,nest);
+
+      dl=0;
+      dist=0;
+      nest.SetXYZ(0,0,0);
+      TVector3 CA_ppim2_center = 0.5*(CroA_p_pim2p+CroA_pim2_pim2p);
+      MathTools::LineToLine(CA_ppim2_center,P_ppim2.Unit(),bpctrack->GetPosatZ(0), bpctrack->GetMomDir(),dl,dist,vtx_Lcan_p_pim2,nest);
+      
+      if(p_ID.size()==2) {
+        dl=0;
+        dist=0;
+        nest.SetXYZ(0,0,0);
+        TVector3 CA_p2pim1_center = 0.5*(CroA_p2_pim1p2+CroA_pim1_pim1p2);
+        MathTools::LineToLine(CA_p2pim1_center,P2_p2pim1.Unit(),bpctrack->GetPosatZ(0), bpctrack->GetMomDir(),dl,dist,vtx_Lcan_p2_pim1,nest);
+
+        dl=0;
+        dist=0;
+        nest.SetXYZ(0,0,0);
+        TVector3 CA_p2pim2_center = 0.5*(CroA_p2_pim2p2+CroA_pim2_pim2p2);
+        MathTools::LineToLine(CA_p2pim2_center,P2_p2pim2.Unit(),bpctrack->GetPosatZ(0), bpctrack->GetMomDir(),dl,dist,vtx_Lcan_p2_pim2,nest);
+      }
       
       const double mm_mass   = (LVec_target+LVec_beam-LVec_pim1-LVec_pim2-LVec_p).M();
       double mm_mass2= 0.0;
@@ -1563,6 +1602,10 @@ void InitTreeVal()
   CA_p2_pim2p2.SetXYZ(-9999., -9999., -9999.);
   CA_pim1_pim1pim2.SetXYZ(-9999., -9999., -9999.);
   CA_pim2_pim1pim2.SetXYZ(-9999., -9999., -9999.);
+  vtx_Lcan_p_pim1.SetXYZ(-9999., -9999., -9999.);
+  vtx_Lcan_p_pim2.SetXYZ(-9999., -9999., -9999.);
+  vtx_Lcan_p2_pim1.SetXYZ(-9999., -9999., -9999.);
+  vtx_Lcan_p2_pim2.SetXYZ(-9999., -9999., -9999.);
   ForwardCharge = 0;
   run_num=-9999;   // run number
   event_num=-9999; // event number

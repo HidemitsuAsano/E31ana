@@ -41,7 +41,7 @@
 
 
 #include "IMPiSigmaAnaPar.h"
-# include "IMPiSigmaHist.h"
+#include "IMPiSigmaHist.h"
 #include "IMPiSigmaUtil.h"
 
 #define KFDEBUG 0 // verbose level of the KinFitter
@@ -52,8 +52,7 @@
 const unsigned int Verbosity = 0;
 const bool DoCDCRetiming = false;
 const bool DoKinFit = false;
-const bool IsVtxDoubleCheck = false;
-const bool UseDecayVtx = true;
+const bool IsVtxDoubleCheck = true;
 //-----------------------------------------//
 //--- covariance matrices for KinFitter ---//
 //-----------------------------------------//
@@ -141,10 +140,18 @@ private:
   TVector3 vtx_p_cdc;//
   TVector3 CA_pim1_pim1p;//closest approach of pim1-p pim1 side
   TVector3 CA_p_pim1p;//closest approach of pim1-p p side
+  TVector3 CA_pim1_pim1p2;//closest approach of pim1-p pim1 side
+  TVector3 CA_p2_pim1p2;//closest approach of pim1-p p side
   TVector3 CA_pim2_pim2p;
   TVector3 CA_p_pim2p;
+  TVector3 CA_pim2_pim2p2;
+  TVector3 CA_p2_pim2p2;
   TVector3 CA_pim1_pim1pim2;
   TVector3 CA_pim2_pim1pim2;
+  TVector3 vtx_Lcan_p_pim1;
+  TVector3 vtx_Lcan_p_pim2;
+  TVector3 vtx_Lcan_p2_pim1;
+  TVector3 vtx_Lcan_p2_pim2;
   int ForwardCharge;
   int run_num;   // run number
   int event_num; // event number
@@ -214,11 +221,6 @@ void EventAnalysis::Initialize( ConfMan *conf )
   std::cout << "Double Check VTX fid cut ? " ;
   if(IsVtxDoubleCheck) std::cout << " Yes" << std::endl;
   else         std::cout << " No"  << std::endl;
-
-  std::cout << "Use Decay VTX for neutron ? " ;
-  if(UseDecayVtx) std::cout << " Yes" << std::endl;
-  else         std::cout << " No"  << std::endl;
-
 
   std::cout << " CDH TDC cuts " << cdscuts_lpim::tdc_cdh_max << std::endl;
   std::cout << " CDH multiplicity cut: " << cdscuts_lpim::cdhmulti << std::endl;
@@ -296,10 +298,18 @@ void EventAnalysis::Initialize( ConfMan *conf )
   ppimpimTree->Branch( "vtx_p_cdc", &vtx_p_cdc );
   ppimpimTree->Branch( "CA_pim1_pim1p",&CA_pim1_pim1p);
   ppimpimTree->Branch( "CA_p_pim1p",&CA_p_pim1p);
+  ppimpimTree->Branch( "CA_pim1_pim1p2",&CA_pim1_pim1p2);
+  ppimpimTree->Branch( "CA_p2_pim1p2",&CA_p2_pim1p2);
   ppimpimTree->Branch( "CA_pim2_pim2p",&CA_pim2_pim2p);
   ppimpimTree->Branch( "CA_p_pim2p",&CA_p_pim2p);
+  ppimpimTree->Branch( "CA_pim2_pim2p2",&CA_pim2_pim2p2);
+  ppimpimTree->Branch( "CA_p2_pim2p2",&CA_p2_pim2p2);
   ppimpimTree->Branch( "CA_pim1_pim1pim2",&CA_pim1_pim1pim2);
   ppimpimTree->Branch( "CA_pim2_pim1pim2",&CA_pim2_pim1pim2);
+  ppimpimTree->Branch( "vtx_Lcan_p_pim1",&vtx_Lcan_p_pim1);
+  ppimpimTree->Branch( "vtx_Lcan_p_pim2",&vtx_Lcan_p_pim2);
+  ppimpimTree->Branch( "vtx_Lcan_p2_pim1",&vtx_Lcan_p2_pim1);
+  ppimpimTree->Branch( "vtx_Lcan_p2_pim2",&vtx_Lcan_p2_pim2);
   ppimpimTree->Branch( "ForwardCharge", &ForwardCharge);  
   //ppimpimTree->Branch( "run_num", &run_num );
   //ppimpimTree->Branch( "event_num", &event_num );
@@ -754,15 +764,16 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     if(vtx_flag3) dcapim1pim2 = (ca_pim1_pim1pim2-ca_pim2_pim1pim2).Mag();
     Tools::Fill1D( Form("DCA_pim1pim2"), dcapim1pim2);
 
-    TVector3 CroA_pim1_pim1p2,CroA_p2_pim1p2;
+    TVector3 ca_pim1_pim1p2,ca_p2_pim1p2;
     if(p_ID.size()==2) {
-      TrackTools::Calc2HelixVertex(track_pim1, track_p2, CroA_pim1_pim1p2, CroA_p2_pim1p2);
+      TrackTools::Calc2HelixVertex(track_pim1, track_p2, ca_pim1_pim1p2, ca_p2_pim1p2);
     }
 
-    TVector3 CroA_pim2_pim2p2,CroA_p2_pim2p2;
+    TVector3 ca_pim2_pim2p2,ca_p2_pim2p2;
     if(p_ID.size()==2) {
-      TrackTools::Calc2HelixVertex(track_pim2, track_p2, CroA_pim2_pim2p2, CroA_p2_pim2p2);
+      TrackTools::Calc2HelixVertex(track_pim2, track_p2, ca_pim2_pim2p2, ca_p2_pim2p2);
     }
+
     //reaction vertex is determined from beam and nearest vtx of pi-
     TVector3 vtx_beam;
     //determine by pim-proton DCA
@@ -830,6 +841,44 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     LVec_pim2.SetVectM( P_pim2, piMass );
     LVec_p.SetVectM(   P_p,   pMass );//
     LVec_p2.SetVectM( P_p2, pMass);
+
+    TVector3 P_ppim1 = P_p + P_pim1;
+    TVector3 P_ppim2 = P_p + P_pim2;
+    TVector3 P2_p2pim1 = P_p2 + P_pim1;
+    TVector3 P2_p2pim2 = P_p2 + P_pim2;
+
+    double dl=0;
+    double dist=0;
+    TVector3 nest;
+    nest.SetXYZ(0,0,0);
+    TVector3 CA_ppim1_center = 0.5*(ca_p_pim1p+ca_pim1_pim1p);
+    MathTools::LineToLine(CA_ppim1_center,P_ppim1.Unit(),bpctrack->GetPosatZ(0), bpctrack->GetMomDir(),dl,dist,vtx_Lcan_p_pim1,nest);
+
+    dl=0;
+    dist=0;
+    nest.SetXYZ(0,0,0);
+    TVector3 CA_ppim2_center = 0.5*(ca_p_pim2p+ca_pim2_pim2p);
+    MathTools::LineToLine(CA_ppim2_center,P_ppim2.Unit(),bpctrack->GetPosatZ(0), bpctrack->GetMomDir(),dl,dist,vtx_Lcan_p_pim2,nest);
+
+    if(p_ID.size()==2) {
+      dl=0;
+      dist=0;
+      nest.SetXYZ(0,0,0);
+      TVector3 CA_p2pim1_center = 0.5*(ca_p2_pim1p2+ca_pim1_pim1p2);
+      MathTools::LineToLine(CA_p2pim1_center,P2_p2pim1.Unit(),bpctrack->GetPosatZ(0), bpctrack->GetMomDir(),dl,dist,vtx_Lcan_p2_pim1,nest);
+
+      dl=0;
+      dist=0;
+      nest.SetXYZ(0,0,0);
+      TVector3 CA_p2pim2_center = 0.5*(ca_p2_pim2p2+ca_pim2_pim2p2);
+      MathTools::LineToLine(CA_p2pim2_center,P2_p2pim2.Unit(),bpctrack->GetPosatZ(0), bpctrack->GetMomDir(),dl,dist,vtx_Lcan_p2_pim2,nest);
+    }
+
+
+
+
+
+
 
     //const double pimphi = P_pim.Phi();
     //const double pipphi = P_pip.Phi();
@@ -1095,8 +1144,12 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       vtx_p_cdc = vtx_p;
       CA_pim1_pim1p = ca_pim1_pim1p;
       CA_p_pim1p = ca_p_pim1p;
+      CA_pim1_pim1p2 = ca_pim1_pim1p2;
+      CA_p2_pim1p2 = ca_p2_pim1p2;
       CA_pim2_pim2p = ca_pim2_pim2p;
       CA_p_pim2p = ca_p_pim2p;
+      CA_pim2_pim2p2 = ca_pim2_pim2p2;
+      CA_p2_pim2p2 = ca_p2_pim2p2;
       CA_pim1_pim1pim2 = ca_pim1_pim1pim2;
       CA_pim2_pim1pim2 = ca_pim2_pim1pim2;
       ForwardCharge = forwardcharge;
@@ -1269,10 +1322,19 @@ void EventAnalysis::Clear( int &nAbort)
   vtx_p_cdc.SetXYZ(-9999.,-9999.,-9999.);
   CA_pim1_pim1p.SetXYZ(-9999.,-9999.,-9999.);
   CA_p_pim1p.SetXYZ(-9999.,-9999.,-9999.);
+  CA_pim1_pim1p2.SetXYZ(-9999.,-9999.,-9999.);
+  CA_p2_pim1p2.SetXYZ(-9999.,-9999.,-9999.);
   CA_pim2_pim2p.SetXYZ(-9999.,-9999.,-9999.);
   CA_p_pim2p.SetXYZ(-9999.,-9999.,-9999.);
+  CA_pim2_pim2p2.SetXYZ(-9999.,-9999.,-9999.);
+  CA_p2_pim2p2.SetXYZ(-9999.,-9999.,-9999.);
   CA_pim1_pim1pim2.SetXYZ(-9999.,-9999.,-9999.);
   CA_pim2_pim1pim2.SetXYZ(-9999.,-9999.,-9999.);
+  vtx_Lcan_p_pim1.SetXYZ(-9999.,-9999.,-9999.);
+  vtx_Lcan_p_pim2.SetXYZ(-9999.,-9999.,-9999.);
+  vtx_Lcan_p2_pim1.SetXYZ(-9999.,-9999.,-9999.);
+  vtx_Lcan_p2_pim2.SetXYZ(-9999.,-9999.,-9999.);
+  
   return;
 }
 
