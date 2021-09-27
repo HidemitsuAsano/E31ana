@@ -52,7 +52,7 @@
 const unsigned int Verbosity = 0;
 const bool DoCDCRetiming = false;
 const bool DoKinFit = false;
-const bool IsVtxDoubleCheck = true;
+const bool IsVtxDoubleCheck = false;
 //-----------------------------------------//
 //--- covariance matrices for KinFitter ---//
 //-----------------------------------------//
