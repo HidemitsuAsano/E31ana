@@ -247,12 +247,12 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH1F* BeamMom = new TH1F("BeamMom","Beam Mom." ,100,0.9,1.1);
   BeamMom->SetXTitle("Beam Mom. [GeV/c]");
   
-  TH2D* Vtx_ZX_Lcan = new TH2D("Vtx_ZX_Lcan","Vtx_ZX_Lcan",1000,-25,25,500,-12.5,12.5);
-  TH2D* Vtx_ZY_Lcan = new TH2D("Vtx_ZY_Lcan","Vtx_ZY_Lcan",1000,-25,25,500,-12.5,12.5);
-  TH2D* Vtx_XY_Lcan = new TH2D("Vtx_XY_Lcan","Vtx_XY_Lcan",500,-12.5,12.5,500,-12.5,12.5);
-  TH2D* Vtx_ZX_Lcan_fid = new TH2D("Vtx_ZX_Lcan_fid","Vtx_ZX_Lcan_fid",1000,-25,25,500,-12.5,12.5);
-  TH2D* Vtx_ZY_Lcan_fid = new TH2D("Vtx_ZY_Lcan_fid","Vtx_ZY_Lcan_fid",1000,-25,25,500,-12.5,12.5);
-  TH2D* Vtx_XY_Lcan_fid = new TH2D("Vtx_XY_Lcan_fid","Vtx_XY_Lcan_fid",500,-12.5,12.5,500,-12.5,12.5);
+  TH2D* Vtx_ZX_Lcan = new TH2D("Vtx_ZX_Lcan","Vtx_ZX_Lcan",500,-25,25,250,-12.5,12.5);
+  TH2D* Vtx_ZY_Lcan = new TH2D("Vtx_ZY_Lcan","Vtx_ZY_Lcan",500,-25,25,250,-12.5,12.5);
+  TH2D* Vtx_XY_Lcan = new TH2D("Vtx_XY_Lcan","Vtx_XY_Lcan",250,-12.5,12.5,250,-12.5,12.5);
+  TH2D* Vtx_ZX_Lcan_fid = new TH2D("Vtx_ZX_Lcan_fid","Vtx_ZX_Lcan_fid",500,-25,25,250,-12.5,12.5);
+  TH2D* Vtx_ZY_Lcan_fid = new TH2D("Vtx_ZY_Lcan_fid","Vtx_ZY_Lcan_fid",500,-25,25,250,-12.5,12.5);
+  TH2D* Vtx_XY_Lcan_fid = new TH2D("Vtx_XY_Lcan_fid","Vtx_XY_Lcan_fid",250,-12.5,12.5,250,-12.5,12.5);
 
   // w/ kinematic fit
   //TH2F* MMom_MMass_fid_kin;
