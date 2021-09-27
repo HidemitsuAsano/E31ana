@@ -1,14 +1,46 @@
 #include <anacuts.h>
+#include <TGeoManager.h>
+#include "../src/GlobalVariables.h"
 
 void dispIMLpimHists()
 {
-  TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v14_out.root","READ");
-  //TFile *file = TFile::Open("../simpost/simIMLpim_ppimpim_v15_out.root","READ");
+
+
+  TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v15_out.root","READ");
+  //TFile *file = TFile::Open("../simpost/simIMLpim_ppimpim_v17_out.root","READ");
   bool SimMode = (std::string(file->GetName()).find("sim")!= std::string::npos);
   
   TCanvas *cBeamMom = new TCanvas("cBeamMom","cBeamMom",1000,800);
   TH1D* BeamMom = (TH1D*)file->Get("BeamMom");
   BeamMom->Draw("HE");
+  
+  TCanvas *cVtx_XY = new TCanvas("cVtx_XY","cVtx_XY",1000,800);
+  TH2D* Vtx_XY_Lcan = (TH2D*)file->Get("Vtx_XY_Lcan");
+  Vtx_XY_Lcan->Draw("colz");
+
+  TH2D* Vtx_XY_Lcan_fid = (TH2D*)file->Get("Vtx_XY_Lcan_fid");
+  Vtx_XY_Lcan_fid->RebinX(2);
+  Vtx_XY_Lcan_fid->RebinY(2);
+  Vtx_XY_Lcan_fid->Draw("boxsame");
+
+
+  TCanvas *cVtx_ZX = new TCanvas("cVtx_ZX","cVtx_ZX",1000,800);
+  TH2D* Vtx_ZX_Lcan = (TH2D*)file->Get("Vtx_ZX_Lcan");
+  Vtx_ZX_Lcan->Draw("colz");
+
+  TH2D* Vtx_ZX_Lcan_fid = (TH2D*)file->Get("Vtx_ZX_Lcan_fid");
+  Vtx_ZX_Lcan_fid->RebinX(2);
+  Vtx_ZX_Lcan_fid->RebinY(2);
+  Vtx_ZX_Lcan_fid->Draw("boxsame");
+
+  
+  TCanvas *cVtx_ZY = new TCanvas("cVtx_ZY","cVtx_ZY",1000,800);
+  TH2D* Vtx_ZY_Lcan = (TH2D*)file->Get("Vtx_ZY_Lcan");
+  Vtx_ZY_Lcan->Draw("colz");
+  TH2D* Vtx_ZY_Lcan_fid = (TH2D*)file->Get("Vtx_ZY_Lcan_fid");
+  Vtx_ZY_Lcan_fid->RebinX(2);
+  Vtx_ZY_Lcan_fid->RebinY(2);
+  Vtx_ZY_Lcan_fid->Draw("boxsame");
 
   TCanvas *cpcos = new TCanvas("cpcos","cpcos",1000,800);
   TH1D* pcos =  (TH1D*)file->Get("pcos");
