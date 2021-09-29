@@ -253,6 +253,7 @@ namespace gen {
   const int reactionID_Spmode = 1725;
   const int reactionID_Smmode = 1525;
   const int reactionID_pLpim  = 3098;
+  const int reactionID_pS0pim = 3099;
   const int reactionID_npipiL = 2006;
   const int reactionID_nK0n   = 735;
 }

@@ -459,7 +459,9 @@ int main( int argc, char** argv )
     const int PDG_pLpim[kinpLpim::npart] = {321, -211, 3122, 2212, 2212,  -211}; // K-d->S(1385)p->Lpi-p->ppi-pi-p
     int PDG[kinpLpim::npart] = {0, 0, 0, 0, 0, 0};
     for( int i=0; i<kinpLpim::npart; i++ ) {
-      if( reactionID==gen::reactionID_pLpim ) {
+      if( reactionID==gen::reactionID_pLpim ||
+          reactionID==gen::reactionID_pS0pim
+          ) {
         PDG[i] = PDG_pLpim[i];
         if(Verbosity_)std::cout << "L." << __LINE__ << " This is Sigma+ mode sim. " << std::endl;
         //std::cout << "L." << __LINE__ << " This is p L pi-  sim. " << std::endl;
