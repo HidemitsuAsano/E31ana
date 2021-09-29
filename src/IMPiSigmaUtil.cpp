@@ -945,7 +945,7 @@ void Util::AnaReactionData( ReactionData *reactionData){
     double mass = TL_piSigma.M()/1000.;
     Tools::H2(Form("React_q_IMPiSigma"),mass,q,900,1.2,2.1,300,0,1.5);
   }
-  if(reactionID == gen::reactionID_pLpim){
+  if(reactionID == gen::reactionID_pLpim || reactionID == gen::reactionID_pLpimpi0){
     TLorentzVector TL_pmiss = reactionData->GetParticle(2);
     double q = (TL_beam.Vect()-TL_pmiss.Vect()).Mag()/1000.;
     TLorentzVector TL_Lambda = reactionData->GetParticle(0);
