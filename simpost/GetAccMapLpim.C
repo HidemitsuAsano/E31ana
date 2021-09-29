@@ -1,4 +1,4 @@
-const bool RemoveNotEnough = true;
+const bool RemoveNotEnough = false;
 const double UncertCut = 0.20;
 
 void GetAccMapLpim()
@@ -12,11 +12,14 @@ void GetAccMapLpim()
   TFile *fLpim=NULL;
   TFile *fgen=NULL;
 
-  fLpim = TFile::Open("simIMLpim_ppimpim_v15_out.root");
-  fgen = TFile::Open("simIMLpim_v15.root");
+  fLpim = TFile::Open("simIMLpim_ppimpim_v17_out.root");
+  fgen = TFile::Open("simIMLpim_v17.root");
+//  fLpim = TFile::Open("simIMLpim_ppimpim_pS0pim_v1_out.root");
+//  fgen = TFile::Open("simIMLpim_pS0pim_v1.root");
   
   TH2F* q_IMLPim_gen;
   q_IMLPim_gen = (TH2F*) fgen->Get("React_q_IMLPim");
+//  q_IMLPim_gen = (TH2F*) fgen->Get("React_q_IMS0Pim");
   q_IMLPim_gen->SetTitle("generated evt. ");
   q_IMLPim_gen->SetXTitle("true IM(#pi^{-}#Lambda) [GeV/c^{2}]");
   q_IMLPim_gen->SetYTitle("true Mom. Transfer [GeV/c]");
@@ -80,7 +83,8 @@ void GetAccMapLpim()
   q_IMppipi_p_wL_accerr->Draw("colz");
     
  
-  TFile *fout = new TFile("accmapLpim.root","RECREATE");
+//  TFile *fout = new TFile("accmapLpim_pS0pim.root","RECREATE");
+  TFile *fout = new TFile("accmapLpimv17.root","RECREATE");
   q_IMppipi_p_wL_acc->Write();
   q_IMppipi_p_wL_accerr->Write();
   fout->Close();

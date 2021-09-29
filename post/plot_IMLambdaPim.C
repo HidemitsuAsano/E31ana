@@ -246,13 +246,27 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   DCA_pim1_pim2->SetXTitle("DCA #pi^{-}1#pi^{-}2");
   TH1F* BeamMom = new TH1F("BeamMom","Beam Mom." ,100,0.9,1.1);
   BeamMom->SetXTitle("Beam Mom. [GeV/c]");
+  TH1F* BeamMomCosTheta = new TH1F("BeamMomCosTheta","Beam Mom. CosTheta" ,10000,0,1);
+  BeamMomCosTheta->SetXTitle("Beam Mom. CosTheta");
   
   TH2D* Vtx_ZX_Lcan = new TH2D("Vtx_ZX_Lcan","Vtx_ZX_Lcan",500,-25,25,250,-12.5,12.5);
+  Vtx_ZX_Lcan->SetXTitle("vertex Z [cm]");
+  Vtx_ZX_Lcan->SetYTitle("vertex X [cm]");
   TH2D* Vtx_ZY_Lcan = new TH2D("Vtx_ZY_Lcan","Vtx_ZY_Lcan",500,-25,25,250,-12.5,12.5);
+  Vtx_ZY_Lcan->SetXTitle("vertex Z [cm]");
+  Vtx_ZY_Lcan->SetYTitle("vertex Y [cm]");
   TH2D* Vtx_XY_Lcan = new TH2D("Vtx_XY_Lcan","Vtx_XY_Lcan",250,-12.5,12.5,250,-12.5,12.5);
+  Vtx_XY_Lcan->SetXTitle("vertex X [cm]");
+  Vtx_XY_Lcan->SetYTitle("vertex Y [cm]");
   TH2D* Vtx_ZX_Lcan_fid = new TH2D("Vtx_ZX_Lcan_fid","Vtx_ZX_Lcan_fid",500,-25,25,250,-12.5,12.5);
+  Vtx_ZX_Lcan_fid->SetXTitle("vertex Z [cm]");
+  Vtx_ZX_Lcan_fid->SetYTitle("vertex X [cm]");
   TH2D* Vtx_ZY_Lcan_fid = new TH2D("Vtx_ZY_Lcan_fid","Vtx_ZY_Lcan_fid",500,-25,25,250,-12.5,12.5);
+  Vtx_ZY_Lcan_fid->SetXTitle("vertex Z [cm]");
+  Vtx_ZY_Lcan_fid->SetYTitle("vertex Y [cm]");
   TH2D* Vtx_XY_Lcan_fid = new TH2D("Vtx_XY_Lcan_fid","Vtx_XY_Lcan_fid",250,-12.5,12.5,250,-12.5,12.5);
+  Vtx_XY_Lcan_fid->SetXTitle("vertex X [cm]");
+  Vtx_XY_Lcan_fid->SetYTitle("vertex Y [cm]");
 
   // w/ kinematic fit
   //TH2F* MMom_MMass_fid_kin;
@@ -638,7 +652,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
 
     }
     BeamMom->Fill((*LVec_beam).P());
-
+    BeamMomCosTheta->Fill((*LVec_beam).CosTheta());
     bool MissPFlag=false;
     bool MissP2Flag=false;
     bool LambdaFlag=false;
@@ -654,19 +668,23 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     double dca_pim1_pim2 =((*CA_pim1_pim1pim2)-(*CA_pim2_pim1pim2)).Mag();
    
     //Lambda production in CDS
-    if( (anacuts::Lambda_MIN<LVec_pim1_p.M() && LVec_pim1_p.M()<anacuts::Lambda_MAX)){
+   // if( (anacuts::Lambda_MIN<LVec_pim1_p.M() && LVec_pim1_p.M()<anacuts::Lambda_MAX)){
+    if( (anacuts::Lambda_MIN_narrow<LVec_pim1_p.M() && LVec_pim1_p.M()<anacuts::Lambda_MAX_narrow)){
       LambdaFlag=true;
       LambdaFlag_1=true;
     }
-    if( (anacuts::Lambda_MIN<LVec_pim2_p.M() && LVec_pim2_p.M()<anacuts::Lambda_MAX)){
+//    if( (anacuts::Lambda_MIN<LVec_pim2_p.M() && LVec_pim2_p.M()<anacuts::Lambda_MAX)){
+    if( (anacuts::Lambda_MIN_narrow<LVec_pim2_p.M() && LVec_pim2_p.M()<anacuts::Lambda_MAX_narrow)){
       LambdaFlag=true;
       LambdaFlag_2=true;
     }
-    if(p2flag && (anacuts::Lambda_MIN<LVec_pim1_p2.M() && LVec_pim1_p2.M()<anacuts::Lambda_MAX)){
+//    if(p2flag && (anacuts::Lambda_MIN<LVec_pim1_p2.M() && LVec_pim1_p2.M()<anacuts::Lambda_MAX)){
+    if(p2flag && (anacuts::Lambda_MIN_narrow<LVec_pim1_p2.M() && LVec_pim1_p2.M()<anacuts::Lambda_MAX_narrow)){
       Lambda2Flag=true;
       Lambda2Flag_1=true;
     }
-    if(p2flag && (anacuts::Lambda_MIN<LVec_pim2_p2.M() && LVec_pim2_p2.M()<anacuts::Lambda_MAX)){
+//    if(p2flag && (anacuts::Lambda_MIN<LVec_pim2_p2.M() && LVec_pim2_p2.M()<anacuts::Lambda_MAX)){
+    if(p2flag && (anacuts::Lambda_MIN_narrow<LVec_pim2_p2.M() && LVec_pim2_p2.M()<anacuts::Lambda_MAX_narrow)){
       Lambda2Flag=true;
       Lambda2Flag_2=true;
     }
@@ -718,7 +736,6 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
         LvtxOK=true;
       }
     }
-    if(!LvtxOK) continue;
 
     if(SimMode){
       if(LambdaFlag){
@@ -754,6 +771,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     MMass_IMppim1->Fill(LVec_pim1_p.M(),pmiss_mass);
     MMass_IMppim2->Fill(LVec_pim2_p.M(),pmiss_mass);
     
+    if(!LvtxOK) continue;
     if(MissPFlag){
       MMom_MMass_p->Fill(pmiss_mass,pmiss_mom);
       IMppim1_IMppim2_p->Fill(LVec_pim2_p.M(),LVec_pim1_p.M());

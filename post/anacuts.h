@@ -87,8 +87,12 @@ namespace anacuts {
   const double CDHwidthphi = 0.12;//radian
 
   
-  const double Lambda_MIN = 1.1075;//not tuned
-  const double Lambda_MAX = 1.1225;//not tuned
+//  const double Lambda_MIN = 1.1075;//not tuned
+//  const double Lambda_MAX = 1.1225;//not tuned
+  const double Lambda_MIN = 1.1067;//3 sigma
+  const double Lambda_MAX = 1.1250;//3 sigma
+  const double Lambda_MIN_narrow = 1.1113;//1.5 sigma
+  const double Lambda_MAX_narrow = 1.1204;//1.5 sigma
   const double Proton_MIN = 0.8303;//wide 
   const double Proton_MAX = 1.0279;//wide
   const double Proton_MIN_narrow = 0.8825;
