@@ -16,7 +16,7 @@ const double Lpim_mass = 1.115683+0.13957;
 #endif
 
 //const double pK = 1.05; //GeV/c = maximum ~ 1.018*1.025
-const double pK = 1.00; //default value of simulation
+const double pK = 1.0; //default value of simulation
 const double EK = sqrt(K_mass*K_mass+pK*pK);
 
 double func_EM(double *x, double *par);
