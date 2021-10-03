@@ -21,7 +21,9 @@ void CalcIntegratedLumi()
   
   std::cout << "IF run dep. is ignored "  << std::endl;
   std::cout << "Integrated Lumi " << InteLumi << std::endl;
-
+  const double simBeamOK = 2.47625376000000000e+08;
+  const double simBeamNO = 3.81361560000000000e+07;
+  std::cout << "Sim. Beam survival factor " << simBeamOK / (simBeamOK+simBeamNO) << std::endl;
   std::cout << "Err " << sqrt(pow(D2density_err*CDH3trgeff*scalerKaon*Survival*DAQeff,2.0)
                              +pow(D2density*CDH3trgeff_err*scalerKaon*Survival*DAQeff,2.0)   
                              +pow(D2density*CDH3trgeff*scalerKaon_err*Survival*DAQeff,2.0)   

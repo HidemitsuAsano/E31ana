@@ -5,6 +5,7 @@ void CS_finals()
   TFile *fpisigma = TFile::Open("cs_pisigma.root","READ");
   TFile *flpim    = TFile::Open("cs_lpim.root","READ");
 
+  const double br_s1385ToLambdapi = 0.87;
   const double br_s1385TopiSigma = 0.117;
   const double br_s1385TopiSigma_err = 0.015;
   const double br_SpToNpi = 0.4831;
@@ -44,7 +45,7 @@ void CS_finals()
   IMnpipi_Sm_cs[1]->SetTitle("#pi^{-}#Sigma^{+} mode");
   IMnpipi_Sp_cs[1]->Draw("E");
   TH1D* CS_IMppipi_p_wL_sum_350_ToSp = (TH1D*)CS_IMppipi_p_wL_sum_350->Clone("CS_IMppipi_p_wL_sum_350_ToSp");
-  CS_IMppipi_p_wL_sum_350_ToSp->Scale(br_s1385TopiSigma*br_SpToNpi/3.0); 
+  CS_IMppipi_p_wL_sum_350_ToSp->Scale(br_s1385TopiSigma/3.0/br_s1385ToLambdapi); 
   CS_IMppipi_p_wL_sum_350_ToSp->SetMarkerStyle(20); 
   CS_IMppipi_p_wL_sum_350_ToSp->SetMarkerColor(6); 
   CS_IMppipi_p_wL_sum_350_ToSp->SetMarkerColor(6); 
@@ -59,7 +60,7 @@ void CS_finals()
   IMnpipi_Sm_cs[1]->SetTitle("#pi^{+}#Sigma^{-} mode");
   IMnpipi_Sm_cs[1]->Draw("E");
   TH1D* CS_IMppipi_p_wL_sum_350_ToSm = (TH1D*)CS_IMppipi_p_wL_sum_350->Clone("CS_IMppipi_p_wL_sum_350_ToSm");
-  CS_IMppipi_p_wL_sum_350_ToSm->Scale(br_s1385TopiSigma*br_SmToNpi/3.0); 
+  CS_IMppipi_p_wL_sum_350_ToSm->Scale(br_s1385TopiSigma/3.0/br_s1385ToLambdapi); 
   CS_IMppipi_p_wL_sum_350_ToSm->SetMarkerStyle(20); 
   CS_IMppipi_p_wL_sum_350_ToSm->SetMarkerColor(6); 
   CS_IMppipi_p_wL_sum_350_ToSm->Draw("Esame"); 
@@ -70,14 +71,15 @@ void CS_finals()
   TH1D* IMnpipi_sum_cs[2];
   IMnpipi_sum_cs[1] = (TH1D*)IMnpipi_Sp_cs[1]->Clone("IMnpipi_sum_cs1");
   IMnpipi_sum_cs[1]->SetTitle("Charge Sum");
+  IMnpipi_sum_cs[1]->SetXTitle("IM(#pi#Sigma) [GeV/c^{2}]");
   IMnpipi_sum_cs[1]->Add(IMnpipi_Sm_cs[1]);
   IMnpipi_sum_cs[1]->SetLineColor(2);
   IMnpipi_sum_cs[1]->SetMarkerColor(2);
+  IMnpipi_sum_cs[1]->SetYTitle("d#rho/dM [#mu b (MeV/c^{2})]");
   IMnpipi_sum_cs[1]->Draw("E");
   TH1D* IMLpim_sum_350 = (TH1D*)CS_IMppipi_p_wL_sum_350_ToSp->Clone("CS_IMppipi_p_wL_sum");
   IMLpim_sum_350->Add(CS_IMppipi_p_wL_sum_350_ToSm);
+  IMLpim_sum_350->GetXaxis()->SetRangeUser(1.35,1.41);
   IMLpim_sum_350->Draw("Esame");
-
-
 
 }
