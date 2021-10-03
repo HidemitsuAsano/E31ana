@@ -1,4 +1,4 @@
-const bool RemoveNotEnough = false;
+const bool RemoveNotEnough = true;
 const double UncertCut = 0.20;
 
 void GetAccMapLpim()
