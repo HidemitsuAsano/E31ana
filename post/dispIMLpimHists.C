@@ -6,8 +6,8 @@ void dispIMLpimHists()
 {
 
 
-  TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v15_out.root","READ");
-  //TFile *file = TFile::Open("../simpost/simIMLpim_ppimpim_v17_out.root","READ");
+  //TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v15_out.root","READ");
+  TFile *file = TFile::Open("../simpost/simIMLpim_ppimpim_v17_out.root","READ");
   bool SimMode = (std::string(file->GetName()).find("sim")!= std::string::npos);
   
   TCanvas *cBeamMom = new TCanvas("cBeamMom","cBeamMom",1000,800);
@@ -160,6 +160,16 @@ void dispIMLpimHists()
   lhigh->SetLineWidth(2.0);
   lhigh->SetLineStyle(10);
   lhigh->Draw();
+  TLine *llow_n = new TLine(anacuts::Lambda_MIN_narrow,0,anacuts::Lambda_MIN_narrow,imax);
+  llow_n->SetLineColor(4);
+  llow_n->SetLineWidth(2.0);
+  llow_n->SetLineStyle(10);
+  llow_n->Draw();
+  TLine *lhigh_n = new TLine(anacuts::Lambda_MAX_narrow,0,anacuts::Lambda_MAX_narrow,imax);
+  lhigh_n->SetLineColor(4);
+  lhigh_n->SetLineWidth(2.0);
+  lhigh_n->SetLineStyle(10);
+  lhigh_n->Draw();
 
 
   TCanvas *cMMass_wL_or = new TCanvas("cMMass_wL_or","cMMass_wL_or",1000,800);

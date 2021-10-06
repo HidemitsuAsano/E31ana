@@ -53,7 +53,6 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   gStyle->SetPadLeftMargin(0.12);
   //gStyle->SetTitleFontSize(0.1);
   
-  TH1::SetDefaultSumw2();
 
   std::cout << "infile " << filename <<std::endl;
   TString pdfname = std::string(filename);
@@ -231,6 +230,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* MMass_IMppipi_wL;
   TH2F* MMass_IMp2pipi_wL;
   TH2F* MMass_IMppipi_wL_sum;
+  TH2F* q_IMppipi_mc;
   TH2F* q_IMppipi_p;
   TH2F* q_IMp2pipi_p2;
   TH2F* q_IMppipi_p_wL;
@@ -445,6 +445,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   MMass_IMppipi_wL_sum->SetXTitle("IM(p#pi^{-}#pi^{+}) [GeV/c^{2}]");
   MMass_IMppipi_wL_sum->SetYTitle("Missing Mass [GeV/c^{2}]");
 
+  q_IMppipi_mc = new TH2F("q_IMppipi_mc","q_IMppipi_mc",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
+  q_IMppipi_mc->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
+  q_IMppipi_mc->SetYTitle("Mom. Transfer [GeV/c]");
+  
   q_IMppipi_p = new TH2F("q_IMppipi_p","q_IMppipi_p",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
   q_IMppipi_p->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   q_IMppipi_p->SetYTitle("Mom. Transfer [GeV/c]");
@@ -760,6 +764,11 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     }
 
     if(SimMode){
+      TLorentzVector TL_LambdaPim = *mcmom_p+*mcmom_pim1+*mcmom_pim2;
+      TLorentzVector TL_q = *mcmom_pmiss -*mcmom_beam;
+      q_IMppipi_mc->Fill(TL_LambdaPim.M(),TL_q.P());
+    
+    
       if(LambdaFlag){
         //TLorentzVector TL_p_diff = LVec_p_miss -*mcmom_pmiss;
         TLorentzVector TL_p_diff = LVec_p_miss -*react_pmiss*0.001;
@@ -856,7 +865,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       CosTheta_IMppipi_p_wL_sum->Fill(LVec_pim1_pim2_p.M(),LVec_p_miss.CosTheta());
       if(LVec_p_miss.CosTheta()>ForwardAngle){
         q_IMppipi_p_wL_sum_forward->Fill(LVec_pim1_pim2_p.M(),qkn.P());
-        CosTheta_IMppipi_p_wL_sum_forward->Fill(LVec_pim1_pim2_p1.M(),LVec_p1_miss.CosTheta());
+        CosTheta_IMppipi_p_wL_sum_forward->Fill(LVec_pim1_pim2_p.M(),LVec_p_miss.CosTheta());
       }
       if(ForwardCharge)q_IMppipi_p_wL_sum_fp->Fill(LVec_pim1_pim2_p.M(),qkn.P());
       pmisscos_wL_p->Fill(LVec_p_miss.CosTheta());
