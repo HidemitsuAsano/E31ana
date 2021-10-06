@@ -14,6 +14,7 @@ void GetAccMapLpim()
 
   fLpim = TFile::Open("simIMLpim_ppimpim_v17_out.root");
   fgen = TFile::Open("simIMLpim_v17.root");
+  TFile *fkin = TFile::Open("NumericalRootFinderLPim.root","READ");
 //  fLpim = TFile::Open("simIMLpim_ppimpim_pS0pim_v1_out.root");
 //  fgen = TFile::Open("simIMLpim_pS0pim_v1.root");
   
@@ -73,11 +74,27 @@ void GetAccMapLpim()
   cLpim->Divide(2,2);
   cLpim->cd(1);
   q_IMLPim_gen->Draw("colz");
+  TGraph *gth = (TGraph*)fkin->Get("th");
+  gth->Draw("pc");
+  TGraph *gr_0 = (TGraph*)fkin->Get("gr_0");
+  gr_0->Draw("pc");
+  TGraph *gr_100 = (TGraph*)fkin->Get("gr_100");
+  gr_100->Draw("pc");
+  TGraph *gr_65 = (TGraph*)fkin->Get("gr_65");
+  gr_65->Draw("pc");
   cLpim->cd(2);
   q_IMppipi_p_wL_sum->Draw("colz");
+  gth->Draw("pc");
+  gr_0->Draw("pc");
+  gr_100->Draw("pc");
+  gr_65->Draw("pc");
   cLpim->cd(3);
-  q_IMppipi_p_wL_acc->SetMaximum(0.08);
+  q_IMppipi_p_wL_acc->SetMaximum(0.05);
   q_IMppipi_p_wL_acc->Draw("colz");
+  gth->Draw("pc");
+  gr_0->Draw("pc");
+  gr_100->Draw("pc");
+  gr_65->Draw("pc");
   cLpim->cd(4);
   q_IMppipi_p_wL_accerr->SetMaximum(0.5);
   q_IMppipi_p_wL_accerr->Draw("colz");

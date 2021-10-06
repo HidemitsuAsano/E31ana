@@ -625,7 +625,10 @@ int main( int argc, char** argv )
 
 
     //if( Util::GetCDHMul(cdsMan,nGoodTrack,true,true)!=cdscuts_lpim::cdhmulti ){
-    if( Util::GetCDHMul(cdsMan,nGoodTrack,true,true)<cdscuts_lpim::cdhmulti ) {
+
+    int cdhmul = Util::GetCDHMul(cdsMan,nGoodTrack,true,true);
+    //if( Util::GetCDHMul(cdsMan,nGoodTrack,true,true)<cdscuts_lpim::cdhmulti ) {
+    if( !(3<=cdhmul && cdhmul<=4)) {
       if(IsrecoPassed)nAbort_nCDH++;
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nCDH" << std::endl;
       //continue;
@@ -891,7 +894,8 @@ int main( int argc, char** argv )
         flagbmom &&
         (pim_ID.size()==2) &&
         (
-          ((p_ID.size()==1) && (3<=cdstrackMan->nGoodTrack() && cdstrackMan->nGoodTrack()<=4))
+    //      ((p_ID.size()==1) && (3<=cdstrackMan->nGoodTrack() && cdstrackMan->nGoodTrack()<=4))
+          ((p_ID.size()==1) && (cdstrackMan->nGoodTrack() ==3))
           ||((p_ID.size()==2) && (cdstrackMan->nGoodTrack()==4))
         )
       ) {

@@ -525,7 +525,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
   //CDH-hits cut
   //if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false)!=cdscuts_lpim::cdhmulti){
-  if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false)<cdscuts_lpim::cdhmulti ) {
+//  if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false)<cdscuts_lpim::cdhmulti ) {
+  int cdhmul = Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false);
+  if( !(3<=cdhmul && cdhmul<=4)) {
     Clear( nAbort_nCDH );
     return true;
   }
@@ -689,7 +691,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   //if( pim_ID.size()==2 && p_ID.size()==1) ppimpimFlag = true;
   if((pim_ID.size()==2) &&
       (
-        ((p_ID.size()==1) && (3<=trackMan->nGoodTrack() && trackMan->nGoodTrack()<=4))
+      //  ((p_ID.size()==1) && (3<=trackMan->nGoodTrack() && trackMan->nGoodTrack()<=4))
+        ((p_ID.size()==1) && (trackMan->nGoodTrack()==3))
         ||((p_ID.size()==2) && (trackMan->nGoodTrack()==4))
       )
     ) {
@@ -873,11 +876,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       TVector3 CA_p2pim2_center = 0.5*(ca_p2_pim2p2+ca_pim2_pim2p2);
       MathTools::LineToLine(CA_p2pim2_center,P2_p2pim2.Unit(),bpctrack->GetPosatZ(0), bpctrack->GetMomDir(),dl,dist,vtx_Lcan_p2_pim2,nest);
     }
-
-
-
-
-
 
 
     //const double pimphi = P_pim.Phi();
