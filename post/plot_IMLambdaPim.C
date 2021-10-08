@@ -243,6 +243,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* CosTheta_IMppipi_p_wL_sum_forward;
   TH2F* q_IMppipi_p_wL_sum_fp;
   TH2F* CosTheta_IMppipi_p_wL_sum_fp;
+
   TH1F* DCA_pim1_beam = new TH1F("DCA_pim1_beam","DCA_pim1_beam",300,0,30);
   DCA_pim1_beam->SetXTitle("DCA #pi^{-}1 [cm]");
   TH1F* DCA_pim2_beam = new TH1F("DCA_pim2_beam","DCA_pim2_beam",300,0,30);
@@ -272,6 +273,11 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2D* Vtx_XY_Lcan_fid = new TH2D("Vtx_XY_Lcan_fid","Vtx_XY_Lcan_fid",250,-12.5,12.5,250,-12.5,12.5);
   Vtx_XY_Lcan_fid->SetXTitle("vertex X [cm]");
   Vtx_XY_Lcan_fid->SetYTitle("vertex Y [cm]");
+
+  TH2F* pcos_Lambdacos = new TH2F("pcos_Lambdacos","pcos_Lambdacos",1000,-1,1,1000,-1,1);
+  pcos_Lambdacos->SetXTitle("cos. #Lambda");
+  pcos_Lambdacos->SetYTitle("cos. missp");
+
 
   // w/ kinematic fit
   //TH2F* MMom_MMass_fid_kin;
@@ -891,6 +897,14 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       DCA_pim1_beam->Fill( dca_pim1_beam );
       DCA_pim2_beam->Fill( dca_pim2_beam );
       DCA_pim1_pim2->Fill( dca_pim1_pim2 );
+      
+      if(LambdaFlag_1){
+        pcos_Lambdacos->Fill(LVec_pim1_p.CosTheta(),LVec_p_miss.CosTheta());
+      }else if(LambdaFlag_2){
+        pcos_Lambdacos->Fill(LVec_pim2_p.CosTheta(),LVec_p_miss.CosTheta());
+      }
+
+
       if(SimMode){
          double diffpcos = LVec_p_miss.CosTheta() - (*react_pmiss).CosTheta();
          diffpcos_pcos->Fill(LVec_p_miss.CosTheta(),diffpcos);
@@ -927,6 +941,11 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       }
       //MMom_MMass_p_wL->Fill(pmiss_mass,pmiss_mom);
       IMp2pim1_IMp2pim2_p2_wL->Fill(LVec_pim2_p2.M(),LVec_pim1_p2.M());
+      if(Lambda2Flag_1){
+        pcos_Lambdacos->Fill(LVec_pim1_p2.CosTheta(),LVec_p2_miss.CosTheta());
+      }else if(Lambda2Flag_2){
+        pcos_Lambdacos->Fill(LVec_pim2_p2.CosTheta(),LVec_p2_miss.CosTheta());
+      }
       if(SimMode){
          double diffpcos = LVec_p2_miss.CosTheta()- (*react_pmiss).CosTheta();
          diffpcos_pcos->Fill((*react_pmiss).CosTheta(),diffpcos);
