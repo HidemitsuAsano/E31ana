@@ -255,6 +255,7 @@ namespace gen {
   const int reactionID_pLpim  = 3098;
   const int reactionID_pLpimpi0  = 3098;
   const int reactionID_pS0pim = 3099;
+  const int reactionID_pS0pim_ps = 923;
   const int reactionID_npipiL = 2006;
   const int reactionID_nK0n   = 735;
 }
