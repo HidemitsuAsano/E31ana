@@ -12,8 +12,8 @@ void GetAccMapLpim()
   TFile *fLpim=NULL;
   TFile *fgen=NULL;
 
-  fLpim = TFile::Open("simIMLpim_ppimpim_v17_out.root");
-  fgen = TFile::Open("simIMLpim_v17.root");
+  fLpim = TFile::Open("simIMLpim_ppimpim_v18_out.root");
+  fgen = TFile::Open("simIMLpim_v18.root");
   TFile *fkin = TFile::Open("NumericalRootFinderLPim.root","READ");
 //  fLpim = TFile::Open("simIMLpim_ppimpim_pS0pim_v1_out.root");
 //  fgen = TFile::Open("simIMLpim_pS0pim_v1.root");
@@ -62,7 +62,10 @@ void GetAccMapLpim()
   for(int ix=0;ix<q_IMppipi_p_wL_accerr->GetNbinsX();ix++){
     for(int iy=0;iy<q_IMppipi_p_wL_accerr->GetNbinsY();iy++){
       double err = q_IMppipi_p_wL_accerr->GetBinContent(ix,iy);
-      if( RemoveNotEnough && (err>UncertCut)){
+      if( RemoveNotEnough && (err>UncertCut) 
+          || q_IMppipi_p_wL_acc->GetBinContent(ix,iy)>0.045 
+          || q_IMppipi_p_wL_acc->GetXaxis()->GetBinCenter(ix)>1.895 
+          || q_IMppipi_p_wL_acc->GetXaxis()->GetBinCenter(ix)<1.260) {
         q_IMppipi_p_wL_acc->SetBinContent(ix,iy,0);
         q_IMppipi_p_wL_acc->SetBinError(ix,iy,0);
       }
@@ -70,38 +73,40 @@ void GetAccMapLpim()
   }
   
   TCanvas *cLpim;
-  cLpim = new TCanvas(Form("cLpim"),Form("cLpim"),1300,1000);
+  cLpim = new TCanvas(Form("cLpim"),Form("cLpim"),2000,1200);
   cLpim->Divide(2,2);
   cLpim->cd(1);
   q_IMLPim_gen->Draw("colz");
+ 
   TGraph *gth = (TGraph*)fkin->Get("th");
-  gth->Draw("pc");
   TGraph *gr_0 = (TGraph*)fkin->Get("gr_0");
-  gr_0->Draw("pc");
   TGraph *gr_100 = (TGraph*)fkin->Get("gr_100");
-  gr_100->Draw("pc");
   TGraph *gr_65 = (TGraph*)fkin->Get("gr_65");
-  gr_65->Draw("pc");
+ 
+  //gth->Draw("pc");
+  //gr_0->Draw("pc");
+  //gr_65->Draw("pc");
+  //gr_100->Draw("pc");
   cLpim->cd(2);
   q_IMppipi_p_wL_sum->Draw("colz");
-  gth->Draw("pc");
-  gr_0->Draw("pc");
-  gr_100->Draw("pc");
-  gr_65->Draw("pc");
+  //gth->Draw("pc");
+  //gr_0->Draw("pc");
+  //gr_100->Draw("pc");
+  //gr_65->Draw("pc");
   cLpim->cd(3);
   q_IMppipi_p_wL_acc->SetMaximum(0.05);
   q_IMppipi_p_wL_acc->Draw("colz");
-  gth->Draw("pc");
-  gr_0->Draw("pc");
-  gr_100->Draw("pc");
-  gr_65->Draw("pc");
+  //gth->Draw("pc");
+  //gr_0->Draw("pc");
+  //gr_100->Draw("pc");
+  //gr_65->Draw("pc");
   cLpim->cd(4);
   q_IMppipi_p_wL_accerr->SetMaximum(0.5);
   q_IMppipi_p_wL_accerr->Draw("colz");
     
  
 //  TFile *fout = new TFile("accmapLpim_pS0pim.root","RECREATE");
-  TFile *fout = new TFile("accmapLpimv17.root","RECREATE");
+  TFile *fout = new TFile("accmapLpimv18.root","RECREATE");
   q_IMppipi_p_wL_acc->Write();
   q_IMppipi_p_wL_accerr->Write();
   fout->Close();
