@@ -238,6 +238,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* CosTheta_IMppipi_p_wL;
   TH2F* CosTheta_IMp2pipi_p2_wL;
   TH2F* q_IMppipi_p_wL_sum;
+  TH2F* q_IMppipi_p_wL_nop2;
   TH2F* CosTheta_IMppipi_p_wL_sum;
   TH2F* q_IMppipi_p_wL_sum_forward;
   TH2F* CosTheta_IMppipi_p_wL_sum_forward;
@@ -483,6 +484,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   q_IMppipi_p_wL_sum = new TH2F("q_IMppipi_p_wL_sum","q_IMppipi_p_wL_sum",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
   q_IMppipi_p_wL_sum->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
   q_IMppipi_p_wL_sum->SetYTitle("Mom. Transfer [GeV/c]");
+  
+  q_IMppipi_p_wL_nop2 = new TH2F("q_IMppipi_p_wL_nop2","q_IMppipi_p_wL_nop2",nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
+  q_IMppipi_p_wL_nop2->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
+  q_IMppipi_p_wL_nop2->SetYTitle("Mom. Transfer [GeV/c]");
   
   CosTheta_IMppipi_p_wL_sum = new TH2F("CosTheta_IMppipi_p_wL_sum","CosTheta_IMppipi_p_wL_sum",nbinIMppipi,IMppipilow,IMppipihigh, 2000,-1.,1.);
   CosTheta_IMppipi_p_wL_sum->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
@@ -868,6 +873,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       q_IMppipi_p_wL->Fill(LVec_pim1_pim2_p.M(),qkn.P());
       CosTheta_IMppipi_p_wL->Fill(LVec_pim1_pim2_p.M(),LVec_p_miss.CosTheta());
       q_IMppipi_p_wL_sum->Fill(LVec_pim1_pim2_p.M(),qkn.P());
+      if(!p2flag)q_IMppipi_p_wL_nop2->Fill(LVec_pim1_pim2_p.M(),qkn.P());
       CosTheta_IMppipi_p_wL_sum->Fill(LVec_pim1_pim2_p.M(),LVec_p_miss.CosTheta());
       if(LVec_p_miss.CosTheta()>ForwardAngle){
         q_IMppipi_p_wL_sum_forward->Fill(LVec_pim1_pim2_p.M(),qkn.P());
