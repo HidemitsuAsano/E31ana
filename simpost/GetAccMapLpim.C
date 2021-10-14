@@ -217,15 +217,16 @@ void GetAccMapLpim()
   CosTheta_IMppipi_p_wL_test->Draw("colz");
 
   TCanvas *cLpimCosTestDiff = new TCanvas("cLpimCosTestDiff","cLpimCosTestDiff",1000,800);
-  TH1D* hLpimCosTestDiff = new TH1D("hLpimCosTestDiff","hLpimCosTestDiff",10000,-5000,5000);
+  TH1D* hLpimCosTestDiff = new TH1D("hLpimCosTestDiff","hLpimCosTestDiff",10000,-0.0001,0.0001);
   for(int ix=0;ix<CosTheta_IMppipi_p_wL_test->GetNbinsX();ix++){
     for(int iy=0;iy<CosTheta_IMppipi_p_wL_test->GetNbinsY();iy++){
       double conttest = CosTheta_IMppipi_p_wL_test->GetBinContent(ix,iy);
       double contgen = costhetap_IMLpim_gen->GetBinContent(ix,iy);
-      hLpimCosTestDiff->Fill(conttest-contgen);
+      if(contgen!=0)
+      hLpimCosTestDiff->Fill((conttest-contgen)/contgen*100.0);
     }
   }
-  hLpimCosTestDiff->Draw();
+  hLpimCosTestDiff->Draw("HE");
 
   //  TFile *fout = new TFile("accmapLpim_pS0pim.root","RECREATE");
   TFile *fout = new TFile("accmapLpimv18.root","RECREATE");
