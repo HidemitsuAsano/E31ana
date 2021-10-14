@@ -222,6 +222,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* IMp2pim1_IMp2pim2_p2;
   TH2F* IMppim1_IMppim2_p_wL;
   TH2F* IMp2pim1_IMp2pim2_p2_wL;
+  TH2F* IMMissppim1_IMMissppim2_p_wL;
   TH2F* MMass_IMppim1;
   TH2F* MMass_IMppim2;
   TH2F* MMass_IMppim_wL;
@@ -420,6 +421,12 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   IMp2pim1_IMp2pim2_p2_wL->SetXTitle("IM(p_{2}#pi^{-}2) [GeV/c^{2}]");
   IMp2pim1_IMp2pim2_p2_wL->SetYTitle("IM(p_{2}#pi^{-}1) [GeV/c^{2}]");
 
+  IMMissppim1_IMMissppim2_p_wL = new TH2F("IMMissppim1_IMMissppim2_p_wL","IMMissppim1_IMMissppim2_p_wL",nbinIMppi,1.,2.0,nbinIMppi,1.,2.0);
+  IMMissppim1_IMMissppim2_p_wL->SetXTitle("IM(missp#pi^{-}2) [GeV/c^{2}]");
+  IMMissppim1_IMMissppim2_p_wL->SetYTitle("IM(missp#pi^{-}1) [GeV/c^{2}]");
+
+
+
   MMass_IMppim1 = new TH2F("MMass_IMppim1","MMass_IMppim1",nbinIMppi,1.,2.0,nbinpmiss, pmisslow, pmisshigh);
   MMass_IMppim1->SetXTitle("IM(p#pi^{-}) [GeV/c^{2}]");
   MMass_IMppim1->SetYTitle("Missing Mass [GeV/c^{2}]");
@@ -469,7 +476,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   q_IMppipi_p_wL->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   q_IMppipi_p_wL->SetYTitle("Mom. Transfer [GeV/c]");
   
-  CosTheta_IMppipi_p_wL = new TH2F("CosTheta_IMppipi_p_wL","CosTheta_IMppipi_p_wL",nbinIMppipi,IMppipilow,IMppipihigh, 1000,-1,1);
+  CosTheta_IMppipi_p_wL = new TH2F("CosTheta_IMppipi_p_wL","CosTheta_IMppipi_p_wL",nbinIMppipi,IMppipilow,IMppipihigh, 2000,-1,1);
   CosTheta_IMppipi_p_wL->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   CosTheta_IMppipi_p_wL->SetYTitle("miss. p CosTheta");
   
@@ -477,7 +484,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   q_IMp2pipi_p2_wL->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   q_IMp2pipi_p2_wL->SetYTitle("Mom. Transfer [GeV/c]");
   
-  CosTheta_IMp2pipi_p2_wL = new TH2F("CosTheta_IMp2pipi_p2_wL","CosTheta_IMp2pipi_p2_wL",nbinIMppipi,IMppipilow,IMppipihigh, 1000,-1,1);
+  CosTheta_IMp2pipi_p2_wL = new TH2F("CosTheta_IMp2pipi_p2_wL","CosTheta_IMp2pipi_p2_wL",nbinIMppipi,IMppipilow,IMppipihigh, 2000,-1,1);
   CosTheta_IMp2pipi_p2_wL->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   CosTheta_IMp2pipi_p2_wL->SetYTitle("miss. p CosTheta");
   
@@ -910,6 +917,9 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
         pcos_Lambdacos->Fill(LVec_pim2_p.CosTheta(),LVec_p_miss.CosTheta());
       }
 
+      TLorentzVector LVec_Missp_pim1 = LVec_p_miss+*LVec_pim1;
+      TLorentzVector LVec_Missp_pim2 = LVec_p_miss+*LVec_pim2;
+      IMMissppim1_IMMissppim2_p_wL->Fill( LVec_Missp_pim2.M(), LVec_Missp_pim1.M());
 
       if(SimMode){
          double diffpcos = LVec_p_miss.CosTheta() - (*react_pmiss).CosTheta();
@@ -947,6 +957,9 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       }
       //MMom_MMass_p_wL->Fill(pmiss_mass,pmiss_mom);
       IMp2pim1_IMp2pim2_p2_wL->Fill(LVec_pim2_p2.M(),LVec_pim1_p2.M());
+      TLorentzVector LVec_Missp_pim1 = LVec_p_miss+*LVec_pim1;
+      TLorentzVector LVec_Missp_pim2 = LVec_p_miss+*LVec_pim2;
+      IMMissppim1_IMMissppim2_p_wL->Fill( LVec_Missp_pim2.M(), LVec_Missp_pim1.M());
       if(Lambda2Flag_1){
         pcos_Lambdacos->Fill(LVec_pim1_p2.CosTheta(),LVec_p2_miss.CosTheta());
       }else if(Lambda2Flag_2){
