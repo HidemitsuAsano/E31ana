@@ -1,8 +1,8 @@
 void CS_IMLambdaPim()
 {
   gStyle->SetOptStat(0);
-  TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v15_out.root","READ");
-  TFile *facc = TFile::Open("../simpost/accmapLpimv17.root","READ");
+  TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v16_out.root","READ");
+  TFile *facc = TFile::Open("../simpost/accmapLpimv20.root","READ");
   TFile *flumi = TFile::Open("InteLumi.root","READ");
   TFile *fkin = TFile::Open("../simpost/NumericalRootFinderLPim.root","READ");
   TParameter<double>*IntegLumi = flumi->Get("IntegLumi");
@@ -98,7 +98,29 @@ void CS_IMLambdaPim()
   CS_q->Draw("E");
 
 
+  TCanvas *cIMLpim_coscut = new TCanvas("cIMLpim_coscut","cIMLpim_coscut",1000,800);
+  TH2F* CosTheta_IMppipi_p_wL_sum=NULL;
+  CosTheta_IMppipi_p_wL_sum = (TH2F*)file->Get("CosTheta_IMppipi_p_wL_sum");
+  CosTheta_IMppipi_p_wL_sum ->SetTitle("reco. evt.");
+  const int bin0995 = CosTheta_IMppipi_p_wL_sum->GetYaxis()->FindBin(0.995);
+  const int bin1000 = CosTheta_IMppipi_p_wL_sum->GetYaxis()->FindBin(1.0);
+  CosTheta_IMppipi_p_wL_sum->ProjectionX("IMppipi_p_cosf",bin0995,bin1000)->Draw("HE");
+
   
+  TCanvas *cCS_CosTheta_IMppipi_p_wL = new TCanvas("cCS_CosTheta_IMppipi_p_wL","cCS_CosTheta_IMppipi_p_wL",1000,800);
+  TH2F* CS_CosTheta_IMppipi_p_wL = (TH2F*)CosTheta_IMppipi_p_wL_sum->Clone("CS_CosTheta_IMppipi_p_wL");
+  TH2F* CosTheta_IMppipi_p_wL_acc = (TH2F*)facc->Get("CosTheta_IMppipi_p_wL_acc_clean");
+  CS_CosTheta_IMppipi_p_wL->Divide(CosTheta_IMppipi_p_wL_acc);
+  CS_CosTheta_IMppipi_p_wL->Scale(1.0/binwidth/trigScale/lumi/0.02);
+  CS_CosTheta_IMppipi_p_wL->Draw("colz");
+
+
+  TCanvas *cCS_IMppipi_p_wL_coscut = new TCanvas("cCS_IMppipi_p_wL_coscut","cCS_IMppipi_p_wL_coscut",1000,800);
+  TH1D* CS_IMppipi_p_wL_coscut = (TH1D*)CS_CosTheta_IMppipi_p_wL->ProjectionX("CS_IMppipi_p_wL_coscut",bin0995,bin1000);
+  CS_IMppipi_p_wL_coscut->Draw("HE");
+
+
+
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
   int size = SCol->GetSize();
