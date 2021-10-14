@@ -218,20 +218,35 @@ void GetAccMapLpim()
 
   TCanvas *cLpimCosTestDiff = new TCanvas("cLpimCosTestDiff","cLpimCosTestDiff",1000,800);
   TH1D* hLpimCosTestDiff = new TH1D("hLpimCosTestDiff","hLpimCosTestDiff",10000,-0.0001,0.0001);
+  TH2F* CosTheta_IMppipi_p_wL_acc_clean = (TH2F*)CosTheta_IMppipi_p_wL_acc->Clone("CosTheta_IMppipi_p_wL_acc_clean");
   for(int ix=0;ix<CosTheta_IMppipi_p_wL_test->GetNbinsX();ix++){
     for(int iy=0;iy<CosTheta_IMppipi_p_wL_test->GetNbinsY();iy++){
       double conttest = CosTheta_IMppipi_p_wL_test->GetBinContent(ix,iy);
       double contgen = costhetap_IMLpim_gen->GetBinContent(ix,iy);
-      if(contgen!=0)
-      hLpimCosTestDiff->Fill((conttest-contgen)/contgen*100.0);
+      if(contgen!=0){
+        hLpimCosTestDiff->Fill((conttest-contgen)/contgen*100.0);
+        if(fabs((conttest-contgen)/contgen*100.0)>0.02e-03){
+          CosTheta_IMppipi_p_wL_acc_clean->SetBinContent(ix,iy,0);
+          CosTheta_IMppipi_p_wL_acc_clean->SetBinError(ix,iy,0);
+          //std::cout << "ix:iy" << ix << " " << iy << std::endl;
+        }
+      }
     }
   }
   hLpimCosTestDiff->Draw("HE");
 
+  TCanvas *cLpimCosClean = new TCanvas("cLpimCosClean","cLpimCosClean",1000,800);
+  CosTheta_IMppipi_p_wL_acc_clean->Draw("colz");
+        
+
+
+
   //  TFile *fout = new TFile("accmapLpim_pS0pim.root","RECREATE");
-  TFile *fout = new TFile("accmapLpimv18.root","RECREATE");
+  TFile *fout = new TFile("accmapLpimv20.root","RECREATE");
   q_IMppipi_p_wL_acc->Write();
   q_IMppipi_p_wL_accerr->Write();
   q_IMppipi_p_wL_acc_clean->Write();
+  CosTheta_IMppipi_p_wL_acc->Write();
+  CosTheta_IMppipi_p_wL_acc_clean->Write();
   fout->Close();
 }
