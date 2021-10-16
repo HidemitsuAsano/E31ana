@@ -392,6 +392,7 @@ int main( int argc, char** argv )
 
     InitTreeVal();
     bool IsrecoPassed=true;
+    bool IsBLAnaPassed=true;
     if(Verbosity_) {
       std::cout<<"> Event Number "<<iev<<std::endl;
     } else if( /*iev<100 ||*/ iev%1000==0 ) {
@@ -649,10 +650,11 @@ int main( int argc, char** argv )
     int t0seg=-1;
     const double ctmT0 = Util::AnalyzeT0(blMan,confMan,t0seg);
     if(ctmT0<-9000) {
-      if(IsrecoPassed) nAbort_nT0++;
+      if(IsBLAnaPassed) nAbort_nT0++;
       Tools::Fill1D( Form("EventCheck"), 15 );
       //continue;
       IsrecoPassed = false;
+      IsBLAnaPassed= false;
     }
 
     //** BPC track selection **//
@@ -662,19 +664,42 @@ int main( int argc, char** argv )
       nbpc++;
       bpcid = i;
     }
+    for( int layer=1; layer<=8; layer++ ){
+      int nwire = confMan->GetBLDCWireMapManager()->GetNWire( CID_BPC, layer );
+      int tmpmul=blMan->nBLDC(CID_BPC,layer);
+      for( int i=0; i<tmpmul; i++ ){
+        ChamberLikeHit *hit = blMan->BLDC(CID_BPC,layer,i);
+        int wire = hit->wire();
+        int tdc = hit->tdc();
+        //Tools::H1( Form("TBPC_%d",layer) , tdc ,2048,-0.5,2047.5);
+        //Tools::H1( Form("TBPC_%d_%d",layer,wire) , tdc  ,2048,-0.5,2047.5);
+        Tools::H1( Form("HitPatBPC_%d",layer) , wire , nwire, 0.5, nwire+0.5 );
+        if(layer%2==1)
+        {
+          for( int i2=0; i2<blMan->nBLDC(CID_BPC,layer+1); i2++ ){
+            ChamberLikeHit *hit2 = blMan->BLDC(CID_BPC,layer+1,i2);
+            int wire2 = hit2->wire();
+            //	      int tdc2 = hit2->tdc();
+            Tools::H2( Form("WirePatBPC_%d",layer), wire,wire2, nwire, 0.5, nwire+0.5, nwire, 0.5, nwire+0.5 );
+          }
+        }
+      }
+    }
     Tools::Fill1D( Form("ntrack_BPC"), nbpc );
     if( nbpc!=1 ) {
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nbpc" << std::endl;
-      if(IsrecoPassed)nAbort_nbpc++;
+      if(IsBLAnaPassed)nAbort_nbpc++;
       //continue;
       IsrecoPassed = false;
+      IsBLAnaPassed = false;
     }
     LocalTrack *bpctrack = bltrackMan->trackBPC(bpcid);
     if( bpctrack->chi2all()>10 ) {
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_bpctrack" << std::endl;
-      if(IsrecoPassed)nAbort_bpctrack++;
+      if(IsBLAnaPassed)nAbort_bpctrack++;
       //continue;
       IsrecoPassed = false;
+      IsBLAnaPassed = false;
     }
 
     // vertex calculation //
@@ -702,15 +727,16 @@ int main( int argc, char** argv )
     Tools::Fill1D( Form("ntrack_BLC2"), nblc2 );
     if( !(nblc2==1 && blc2id!=-1) ) {
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nblc2" << std::endl;
-      if(IsrecoPassed)nAbort_nblc2++;
+      if(IsBLAnaPassed)nAbort_nblc2++;
       //continue;
       IsrecoPassed=false;
+      IsBLAnaPassed=false;
     }
 
     //### BLC2-BPC position matching
     //TODO : take into account beam loss by these cut
     bool fblc2bpc = true;//always true because this is simulation
-    if(IsrecoPassed) {
+    if(IsrecoPassed && IsBLAnaPassed) {
       for( int iblc2trk=0; iblc2trk<bltrackMan->ntrackBLC2(); iblc2trk++ ) {
         if( iblc2trk!=blc2id ) continue;
         LocalTrack *blc2 = bltrackMan->trackBLC2(iblc2trk);
@@ -751,9 +777,10 @@ int main( int argc, char** argv )
 
     if( !fblc2bpc ) {
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_fblc2bpc" << std::endl;
-      if(IsrecoPassed)nAbort_fblc2bpc++;
+      if(IsBLAnaPassed)nAbort_fblc2bpc++;
       //continue;
       IsrecoPassed=false;
+      IsBLAnaPassed=false;
     }
 
     //** beam momentum calculation **//
@@ -794,7 +821,7 @@ int main( int argc, char** argv )
 
     double x1, y1, x2, y2;
     const double z1 = 0, z2 = 20;//TODO: what is this 20 ?
-    if(IsrecoPassed) {
+    if(IsBLAnaPassed) {
       bpctrack->XYPosatZ(z1, x1, y1);
       bpctrack->XYPosatZ(z2, x2, y2);
     }
@@ -1504,6 +1531,7 @@ int main( int argc, char** argv )
       nAbort_pimpim++;
     }
 
+    Tools::H1("BLAnaPassed",IsBLAnaPassed,2,-0.5,1.5);
     nAbort_end++;
     delete detData2;
 
