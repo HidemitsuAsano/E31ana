@@ -291,6 +291,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   //TH2F* q_IMppipi_kin[2];
   
   const int nbinIMppipi = 60;//1.2-2 GeV/c^2
+  const int nbinIMppipicos = 90;//1.2-2 GeV/c^2
   const double IMppipilow = 1.2;//1.2-2 GeV/c^2
   const double IMppipihigh = 2.1;//1.2-2 GeV/c^2
   const int nbinq = 100;//0-1.5 GeV/c
@@ -479,7 +480,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   q_IMppipi_p_wL->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   q_IMppipi_p_wL->SetYTitle("Mom. Transfer [GeV/c]");
   
-  CosTheta_IMppipi_p_wL = new TH2F("CosTheta_IMppipi_p_wL","CosTheta_IMppipi_p_wL",nbinIMppipi,IMppipilow,IMppipihigh, 2000,-1,1);
+  CosTheta_IMppipi_p_wL = new TH2F("CosTheta_IMppipi_p_wL","CosTheta_IMppipi_p_wL",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1,1);
   CosTheta_IMppipi_p_wL->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   CosTheta_IMppipi_p_wL->SetYTitle("miss. p CosTheta");
   
@@ -487,7 +488,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   q_IMp2pipi_p2_wL->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   q_IMp2pipi_p2_wL->SetYTitle("Mom. Transfer [GeV/c]");
   
-  CosTheta_IMp2pipi_p2_wL = new TH2F("CosTheta_IMp2pipi_p2_wL","CosTheta_IMp2pipi_p2_wL",nbinIMppipi,IMppipilow,IMppipihigh, 2000,-1,1);
+  CosTheta_IMp2pipi_p2_wL = new TH2F("CosTheta_IMp2pipi_p2_wL","CosTheta_IMp2pipi_p2_wL",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1,1);
   CosTheta_IMp2pipi_p2_wL->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   CosTheta_IMp2pipi_p2_wL->SetYTitle("miss. p CosTheta");
   
@@ -499,7 +500,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   q_IMppipi_p_wL_nop2->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
   q_IMppipi_p_wL_nop2->SetYTitle("Mom. Transfer [GeV/c]");
   
-  CosTheta_IMppipi_p_wL_sum = new TH2F("CosTheta_IMppipi_p_wL_sum","CosTheta_IMppipi_p_wL_sum",nbinIMppipi,IMppipilow,IMppipihigh, 2000,-1.,1.);
+  CosTheta_IMppipi_p_wL_sum = new TH2F("CosTheta_IMppipi_p_wL_sum","CosTheta_IMppipi_p_wL_sum",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1.,1.);
   CosTheta_IMppipi_p_wL_sum->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
   CosTheta_IMppipi_p_wL_sum->SetYTitle("miss. p CosTheta");
   
@@ -507,7 +508,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   q_IMppipi_p_wL_sum_forward->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
   q_IMppipi_p_wL_sum_forward->SetYTitle("Mom. Transfer [GeV/c]");
   
-  CosTheta_IMppipi_p_wL_sum_forward = new TH2F("CosTheta_IMppipi_p_wL_sum_forward","CosTheta_IMppipi_p_wL_sum_forward",nbinIMppipi,IMppipilow,IMppipihigh, 2000,-1,1);
+  CosTheta_IMppipi_p_wL_sum_forward = new TH2F("CosTheta_IMppipi_p_wL_sum_forward","CosTheta_IMppipi_p_wL_sum_forward",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1,1);
   CosTheta_IMppipi_p_wL_sum_forward->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
   CosTheta_IMppipi_p_wL_sum_forward->SetYTitle("miss. p CosTheta");
   
