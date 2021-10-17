@@ -12,8 +12,8 @@ void GetAccMapLpim()
   TFile *fLpim=NULL;
   TFile *fgen=NULL;
 
-  fLpim = TFile::Open("simIMLpim_ppimpim_v20_out.root");
-  fgen = TFile::Open("simIMLpim_v20.root");
+  fLpim = TFile::Open("simIMLpim_ppimpim_v21_out.root");
+  fgen = TFile::Open("simIMLpim_v21.root");
   TFile *fkin = TFile::Open("NumericalRootFinderLPim.root","READ");
 //  fLpim = TFile::Open("simIMLpim_ppimpim_pS0pim_v1_out.root");
 //  fgen = TFile::Open("simIMLpim_pS0pim_v1.root");
@@ -30,13 +30,19 @@ void GetAccMapLpim()
   q_IMLPim_gen->RebinX(15);
   q_IMLPim_gen->RebinY(3);
   q_IMLPim_gen->Print("base");
-  
+   
 
    
   TH2F* q_IMppipi_p_wL_sum;
   q_IMppipi_p_wL_sum= (TH2F*)fLpim->Get("q_IMppipi_p_wL_sum");
   q_IMppipi_p_wL_sum->GetYaxis()->SetRangeUser(0,1.5);
   q_IMppipi_p_wL_sum->SetTitle("reco. evt.");
+  TH1F* BLAnaPassed = (TH1F*)fgen->Get("BLAnaPassed");
+  double SimBeamSurvivalOK = BLAnaPassed->GetBinContent(2);//passed
+  double SimBeamSurvivalFail = BLAnaPassed->GetBinContent(1);//not passed
+  double SimBeamSurvivalRate = SimBeamSurvivalOK / (SimBeamSurvivalOK+SimBeamSurvivalFail);
+  std::cout << "L " << __LINE__ << " SimBeamSurvivalRate " << SimBeamSurvivalRate << std::endl;
+  q_IMppipi_p_wL_sum->Scale(1./SimBeamSurvivalRate);
   //q_IMppipi_p_wL_sum->RebinX(3);
   //q_IMppipi_p_wL_sum->RebinY(3);
 
@@ -159,12 +165,13 @@ void GetAccMapLpim()
   costhetap_IMLpim_gen->GetXaxis()->CenterTitle();
   costhetap_IMLpim_gen->GetYaxis()->CenterTitle();
   costhetap_IMLpim_gen->Print("base");
-  costhetap_IMLpim_gen->RebinX(15);
+  costhetap_IMLpim_gen->RebinX(10);
   costhetap_IMLpim_gen->Print("base");
  
   TH2F* CosTheta_IMppipi_p_wL_sum=NULL;
   CosTheta_IMppipi_p_wL_sum = (TH2F*)fLpim->Get("CosTheta_IMppipi_p_wL_sum");
   CosTheta_IMppipi_p_wL_sum ->SetTitle("reco. evt.");
+  CosTheta_IMppipi_p_wL_sum->Scale(1./SimBeamSurvivalRate);
 
   TH2F* CosTheta_IMppipi_p_wL_acc=NULL;
   CosTheta_IMppipi_p_wL_acc = (TH2F*)CosTheta_IMppipi_p_wL_sum->Clone("CosTheta_IMppipi_p_wL_acc");

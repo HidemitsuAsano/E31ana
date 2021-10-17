@@ -76,6 +76,18 @@ void GetAccMap()
   TH2F* q_IMnpipi_wSid_n_Sp_reco[nqcut];
   TH2F* q_IMnpipi_wSid_n_Sm_reco[nqcut];
   TH2F* q_IMnpipi_wK0_n_K0_reco[nqcut];
+  TH1F* BLAnaPassedSp = (TH1F*)fSpgen->Get("BLAnaPassed");
+  double SimBeamSurvivalOKSp = BLAnaPassedSp->GetBinContent(2);//passed
+  double SimBeamSurvivalFailSp = BLAnaPassedSp->GetBinContent(1);//not passed
+  double SimBeamSurvivalRateSp = SimBeamSurvivalOKSp / (SimBeamSurvivalOKSp+SimBeamSurvivalFailSp);
+  TH1F* BLAnaPassedSm = (TH1F*)fSmgen->Get("BLAnaPassed");
+  double SimBeamSurvivalOKSm = BLAnaPassedSm->GetBinContent(2);//passed
+  double SimBeamSurvivalFailSm = BLAnaPassedSm->GetBinContent(1);//not passed
+  double SimBeamSurvivalRateSm = SimBeamSurvivalOKSm / (SimBeamSurvivalOKSm+SimBeamSurvivalFailSm);
+  TH1F* BLAnaPassedK0 = (TH1F*)fK0gen->Get("BLAnaPassed");
+  double SimBeamSurvivalOKK0 = BLAnaPassedK0->GetBinContent(2);//passed
+  double SimBeamSurvivalFailK0 = BLAnaPassedK0->GetBinContent(1);//not passed
+  double SimBeamSurvivalRateK0 = SimBeamSurvivalOKK0 / (SimBeamSurvivalOKK0+SimBeamSurvivalFailK0);
   for(int iq=0;iq<nqcut;iq++){
     q_IMnpipi_wSid_n_Sp_reco[iq] = (TH2F*)fSp[iq]->Get("q_IMnpipi_wSid_n_Sp");
     q_IMnpipi_wSid_n_Sp_reco[iq]->SetTitle("reco. evt. Sp");
@@ -85,8 +97,11 @@ void GetAccMap()
     q_IMnpipi_wK0_n_K0_reco[iq]->GetYaxis()->SetRangeUser(0,1.5);
     q_IMnpipi_wK0_n_K0_reco[iq]->SetTitle("reco. evt. K0");
     q_IMnpipi_wSid_n_Sp_reco[iq]->RebinX(3);
+    q_IMnpipi_wSid_n_Sp_reco[iq]->Scale(1./SimBeamSurvivalRateSp);
     q_IMnpipi_wSid_n_Sm_reco[iq]->RebinX(3);
+    q_IMnpipi_wSid_n_Sm_reco[iq]->Scale(1./SimBeamSurvivalRateSm);
     q_IMnpipi_wK0_n_K0_reco[iq]->RebinX(3);
+    q_IMnpipi_wK0_n_K0_reco[iq]->Scale(1./SimBeamSurvivalRateK0);
   }
   
 
