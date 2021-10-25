@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
 set Version="1"
-set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simpS0pim${Version}/"
+set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simpS0pim_ps${Version}/"
 set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 
 set logbasedir="/home/had/hiasano/logs/"
@@ -12,7 +12,7 @@ if( ! -d $logdir) then
   mkdir -p  $logdir
 endif 
 
-set OUTDIRSUB="${OUTDIR}simDSTpS0pim${Version}"
+set OUTDIRSUB="${OUTDIR}simDSTpS0pim_ps${Version}"
 if( ! -d $OUTDIRSUB) then 
  mkdir -p $OUTDIRSUB
 endif
@@ -21,21 +21,21 @@ set SRCDIR="/gpfs/home/had/hiasano/ana/k18ana/src/"
 cp $SRCDIR/UserSimDatG4.cpp $OUTDIRSUB/
 
 
-@ i = 400
-while ($i < 1600)   
+@ i = 0
+while ($i < 400)   
 
   set EXEC___="./bin/sim"
   set CONF___="conf/Run78/analyzer_kwsk_sim.conf"
   set jobnum=`printf  "%03d"  $i`
 
-  set INPFILE=${DATADIR}"sim_pS0pim_0${jobnum}.root"
+  set INPFILE=${DATADIR}"sim_pS0pim_ps_0${jobnum}.root"
   
-  set OUTFILE=${OUTDIRSUB}"/simDST_pS0pim_0${jobnum}.root"
+  set OUTFILE=${OUTDIRSUB}"/simDST_pS0pim_ps_0${jobnum}.root"
 
   echo ${INPFILE}
   echo ${OUTFILE}
 
-  set logname = "${logdir}/runpS0pim$i.log"
+  set logname = "${logdir}/runpS0pim_ps$i.log"
   bsub -o $logname -q s ${EXEC___} ${CONF___} ${OUTFILE} ${INPFILE} 
     @ i ++
 end

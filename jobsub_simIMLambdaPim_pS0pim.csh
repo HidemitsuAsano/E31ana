@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="1"
+set Version="2"
 set DSTVersion="1"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simpS0pim${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
@@ -39,7 +39,7 @@ ln -s $OUTDIRSUB/simIMLpim_all.root simpost/simIMLpim_pS0pim_v${Version}.root
 ln -s $OUTDIRSUB/simIMLpim_ppimpim_all.root simpost/simIMLpim_ppimpim_pS0pim_v${Version}.root
 
 @ i = 0
-while ($i < 400)   
+while ($i < 1600)   
 
   set EXEC___="./bin/simIMLPim"
   set jobnum=`printf  "%03d"  $i`

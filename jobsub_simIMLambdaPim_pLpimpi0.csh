@@ -1,15 +1,15 @@
 #!/bin/tcsh -f
-set Version="21"
-set DSTVersion="3"
-set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simpLpim${DSTVersion}/"
+set Version="1"
+set DSTVersion="1"
+set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simpLpimpi0${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
-set CDSDIRSUB="${CDSDIR}simDSTpLpim${DSTVersion}"
-set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simIMLPim/"
+set CDSDIRSUB="${CDSDIR}simDSTpLpimpi0${DSTVersion}"
+set OUTDIR="/gpfs/group/had/knucl/e15/asano/sim/simIMLPim_pLpimpi0/"
 
 set starttime=`date '+%y/%m/%d %H:%M:%S'`
 set logbasedir="/home/had/hiasano/logs/"
 set date=`date +%Y%m%d_%H%M`
-set logdir="${logbasedir}${date}_simIMLpim_${Version}"
+set logdir="${logbasedir}${date}_simIMLpim_pLpimpi0_${Version}"
 echo "log files  ${logdir}"
 
 if( ! -d $logdir) then 
@@ -35,8 +35,8 @@ cp $CONF___ $OUTDIRSUB
 
 cp hadd_simlpimhist.csh $OUTDIRSUB/
 cp hadd_simlpim_ppimpim.csh $OUTDIRSUB/
-ln -s $OUTDIRSUB/simIMLpim_all.root simpost/simIMLpim_v${Version}.root
-ln -s $OUTDIRSUB/simIMLpim_ppimpim_all.root simpost/simIMLpim_ppimpim_v${Version}.root
+ln -s $OUTDIRSUB/simIMLpim_all.root simpost/simIMLpim_pLpimpi0_v${Version}.root
+ln -s $OUTDIRSUB/simIMLpim_ppimpim_all.root simpost/simIMLpim_ppimpim_pLpimpi0_v${Version}.root
 
 @ i = 0
 while ($i < 400)   
@@ -44,9 +44,9 @@ while ($i < 400)
   set EXEC___="./bin/simIMLPim"
   set jobnum=`printf  "%03d"  $i`
 
-  set INPFILE=${DATADIR}"sim_pLpim_0${jobnum}.root"
+  set INPFILE=${DATADIR}"sim_pLpimpi0_0${jobnum}.root"
   
-  set CDSFILE=${CDSDIRSUB}"/simDST_pLpim_0${jobnum}.root"
+  set CDSFILE=${CDSDIRSUB}"/simDST_pLpimpi0_0${jobnum}.root"
   
   set OUTFILE=${OUTDIRSUB}"/simIMLpim_0${jobnum}.root"
 
@@ -54,7 +54,7 @@ while ($i < 400)
   echo ${CDSFILE} 
   echo ${OUTFILE}
   
-  set logname = "${logdir}/runIMLpim$i.log"
+  set logname = "${logdir}/runIMLpim_pLpimpi0$i.log"
   bsub -o $logname -q s ${EXEC___} ${CONF___} ${OUTFILE} ${INPFILE} ${CDSFILE}
   @ i ++
 end

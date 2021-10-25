@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
-set Version="21"
-set DSTVersion="3"
+set Version="1"
+set DSTVersion="4"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simpLpim${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 set CDSDIRSUB="${CDSDIR}simDSTpLpim${DSTVersion}"
@@ -16,7 +16,7 @@ if( ! -d $logdir) then
   mkdir -p  $logdir
 endif 
 
-set OUTDIRSUB="${OUTDIR}_v${Version}"
+set OUTDIRSUB="${OUTDIR}PS_v${Version}"
 if( ! -d $OUTDIRSUB) then 
  mkdir -p $OUTDIRSUB
 else 
@@ -35,8 +35,8 @@ cp $CONF___ $OUTDIRSUB
 
 cp hadd_simlpimhist.csh $OUTDIRSUB/
 cp hadd_simlpim_ppimpim.csh $OUTDIRSUB/
-ln -s $OUTDIRSUB/simIMLpim_all.root simpost/simIMLpim_v${Version}.root
-ln -s $OUTDIRSUB/simIMLpim_ppimpim_all.root simpost/simIMLpim_ppimpim_v${Version}.root
+ln -s $OUTDIRSUB/simIMLpim_all.root simpost/simIMLpim_PS_v${Version}.root
+ln -s $OUTDIRSUB/simIMLpim_ppimpim_all.root simpost/simIMLpim_PS_ppimpim_v${Version}.root
 
 @ i = 0
 while ($i < 400)   
