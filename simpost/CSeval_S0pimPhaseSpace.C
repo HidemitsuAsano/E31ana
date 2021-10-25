@@ -2,7 +2,7 @@ void CSeval_S0pimPhaseSpace()
 {
   gStyle->SetOptStat(0);
   TFile *file = TFile::Open("simIMLpim_ppimpim_pS0pim_v2_out.root","READ");
-  TFile *facc = TFile::Open("../simpost/accmapLpimv18.root","READ");
+  TFile *facc = TFile::Open("../simpost/accmapLpimv21.root","READ");
   TFile *flumi = TFile::Open("../post/InteLumi.root","READ");
   TFile *fkin = TFile::Open("../simpost/NumericalRootFinderLPim.root","READ");
   TParameter<double>*IntegLumi = flumi->Get("IntegLumi");
