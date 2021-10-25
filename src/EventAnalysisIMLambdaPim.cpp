@@ -524,8 +524,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   Tools::Fill1D( Form("EventCheck"), 1 );
 
   //CDH-hits cut
-  //if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false)!=cdscuts_lpim::cdhmulti){
-//  if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false)<cdscuts_lpim::cdhmulti ) {
   int cdhmul = Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false);
   if( !(3<=cdhmul && cdhmul<=4)) {
     Clear( nAbort_nCDH );
