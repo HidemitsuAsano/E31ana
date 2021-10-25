@@ -56,7 +56,7 @@ void plot_AfterDecompos()
   TParameter<double>*Err = (TParameter<double>*)flumi->Get("Err");
   double lumi = IntegLumi->GetVal();
   double lumierr = Err->GetVal();
-  const double trigScale = 2.0;
+  const double trigScale = 0.5;
   std::cout << "Lumi:  " << lumi << std::endl;
   std::cout << "Err:   " << lumierr << std::endl;
   
