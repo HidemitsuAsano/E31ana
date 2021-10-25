@@ -53,8 +53,11 @@ void plot_S0Pim()
   std::cout << CS_q_IMppipi_p_wL_sum->GetXaxis()->GetBinLowEdge(bin1360) << std::endl;
   std::cout << CS_q_IMppipi_p_wL_sum->GetXaxis()->GetBinLowEdge(bin1410+1) << std::endl;
   TH1D* CS_q = (TH1D*)CS_q_IMppipi_p_wL_sum->ProjectionY("CS_q",bin1360,bin1410);
+  TH1D* CS_q_true = (TH1D*)React_q_IMS0Pim->ProjectionY("CS_q_true",bin1360,bin1410);
   CS_q->SetMarkerStyle(20);
   CS_q->SetYTitle("d#rho/dM [#mu b (MeV/c^{2})]");
   CS_q->Draw("E");
+  CS_q_true->SetLineColor(2);
+  CS_q_true->Draw("Esame");
 
 }
