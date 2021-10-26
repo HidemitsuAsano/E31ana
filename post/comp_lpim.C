@@ -1,8 +1,8 @@
 void comp_lpim()
 {
 
-  TFile *fdata = TFile::Open("evanaIMLambdaPim_ppimpim_v13_out.root","READ");
-  TFile *fsim = TFile::Open("../simpost/simIMLpim_ppimpim_v15_out.root","READ");
+  TFile *fdata = TFile::Open("evanaIMLambdaPim_ppimpim_v16_out.root","READ");
+  TFile *fsim = TFile::Open("../simpost/simIMLpim_ppimpim_v21_out.root","READ");
 
 
   TH2F* IMppim1_IMppim2_data = (TH2F*)fdata->Get("IMppim1_IMppim2");
@@ -11,6 +11,9 @@ void comp_lpim()
   TH1D* IMppim1_sim = (TH1D*)IMppim1_IMppim2_sim->ProjectionY("IMppim1_sim");
   TH1D* IMppim2_data = (TH1D*)IMppim1_IMppim2_data->ProjectionX("IMppim2_data");
   TH1D* IMppim2_sim = (TH1D*)IMppim1_IMppim2_sim->ProjectionX("IMppim2_sim");
+  TH1D* MMass_wL_or_data = (TH1D*)fdata->Get("MMass_wL_or");
+  TH1D* MMass_wL_or_sim = (TH1D*)fsim->Get("MMass_wL_or");
+
 
   TCanvas *clpim = new TCanvas("clpim","clpim");
   IMppim1_data->Draw("HE");
@@ -62,7 +65,17 @@ void comp_lpim()
   PMom_sim->Draw("HEsame");
 
   
-  TCanvas *cpphi
+ // TCanvas *cpphi
+  TCanvas *cMMass_wL_or = new TCanvas("cMMass_wL_or","cMMass_wL_or");
+  MMass_wL_or_data->Draw("HE");
+  double maxdata6 = MMass_wL_or_data->GetMaximum();
+  double maxsim6 = MMass_wL_or_sim->GetMaximum();
+  MMass_wL_or_sim->Scale(maxdata6/maxsim6);
+  MMass_wL_or_sim->SetLineColor(2);
+  MMass_wL_or_sim->Draw("HEsame");
+
+
+
 
 
 }
