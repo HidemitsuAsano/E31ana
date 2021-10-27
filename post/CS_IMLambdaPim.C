@@ -1,5 +1,6 @@
 void CS_IMLambdaPim()
 {
+  const double ForwardAngle = 0.996;
   gStyle->SetOptStat(0);
   TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v16_out.root","READ");
   TFile *facc = TFile::Open("../simpost/accmapLpimv21.root","READ");
@@ -108,7 +109,7 @@ void CS_IMLambdaPim()
   CosTheta_IMppipi_p_wL_sum->Draw("colz"); 
   
   TCanvas *cIMLpim_coscut_px = new TCanvas("cIMLpim_coscut_px","cIMLpim_coscut_px",1000,800);
-  const int bin0995 = CosTheta_IMppipi_p_wL_sum->GetYaxis()->FindBin(0.995);
+  const int bin0995 = CosTheta_IMppipi_p_wL_sum->GetYaxis()->FindBin(ForwardAngle);
   const int bin1000 = CosTheta_IMppipi_p_wL_sum->GetYaxis()->FindBin(1.0);
   CosTheta_IMppipi_p_wL_sum->ProjectionX("IMppipi_p_cosf",bin0995,bin1000+1)->Draw("HE");
  
@@ -122,7 +123,8 @@ void CS_IMLambdaPim()
   TCanvas *cCS_CosTheta_IMppipi_p_wL = new TCanvas("cCS_CosTheta_IMppipi_p_wL","cCS_CosTheta_IMppipi_p_wL",1000,800);
   TH2F* CS_CosTheta_IMppipi_p_wL = (TH2F*)CosTheta_IMppipi_p_wL_sum->Clone("CS_CosTheta_IMppipi_p_wL");
   CS_CosTheta_IMppipi_p_wL->Divide(CosTheta_IMppipi_p_wL_acc);
-  CS_CosTheta_IMppipi_p_wL->Scale(1.0/binwidth/trigScale/lumi/0.0235);
+//  CS_CosTheta_IMppipi_p_wL->Scale(1.0/binwidth/trigScale/lumi/0.0314);
+  CS_CosTheta_IMppipi_p_wL->Scale(1.0/binwidth/trigScale/lumi/0.02512);
   CS_CosTheta_IMppipi_p_wL->Draw("colz");
 
 
