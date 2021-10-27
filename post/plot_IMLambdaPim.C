@@ -28,7 +28,7 @@ const double pvalcut = 0.005;
 const bool gridon=true;
 const bool staton=false;
 const bool UseKinFitVal = false;
-const double ForwardAngle=0.995;
+const double ForwardAngle=0.996;
 
 int GetID(const TVector3 &pos,TGeoManager *geom);
 //mode 0: Sigma+ ,1: Sigma- 
@@ -191,6 +191,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* MMom_MMass;
   TH2F* MMom_MMass_2;
   TH2F* q_MMass;
+  TH2F* q_MMass_forward;
   TH2F* MMom_MMass_p;
   TH2F* MMom_MMass_p2;
   TH2F* MMom_MMass_p_wL;
@@ -231,6 +232,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* MMass_IMppipi_wL;
   TH2F* MMass_IMp2pipi_wL;
   TH2F* MMass_IMppipi_wL_sum;
+  TH2F* MMass_IMppipi_wL_sum_forward;
   TH2F* Mppim1_Mppim2_p_wL_sum;
   TH2F* q_IMppipi_mc;
   TH2F* q_IMppipi_p;
@@ -298,6 +300,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   const int nbinIMppipicos = 90;//1.2-2 GeV/c^2
   const double IMppipilow = 1.2;//1.2-2 GeV/c^2
   const double IMppipihigh = 2.1;//1.2-2 GeV/c^2
+  //const int nbinq = 50;//0-1.5 GeV/c :TODO use 50 because q-resolution is ~25 MeV
   const int nbinq = 100;//0-1.5 GeV/c
   const int nbinIMppi = 2000; //1-2 GeV/c^2
   const int nbinpmiss = 150; //0-1.5 GeV/c
@@ -315,6 +318,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   q_MMass = new TH2F("q_MMass","q_MMass", nbinpmiss, pmisslow, pmisshigh, 200, 0, 2.0);
   q_MMass->SetXTitle("Missing Mass [GeV/c^{2}]");
   q_MMass->SetYTitle("Mom. Transfer. [GeV/c]");
+  
+  q_MMass_forward = new TH2F("q_MMass_forward","q_MMass_forward", nbinpmiss, pmisslow, pmisshigh, 200, 0, 2.0);
+  q_MMass_forward->SetXTitle("Missing Mass [GeV/c^{2}]");
+  q_MMass_forward->SetYTitle("Mom. Transfer. [GeV/c]");
 
   MMom_MMass_p = new TH2F("MMom_MMass_p","MMom_MMass_p", nbinpmiss, pmisslow, pmisshigh, 200, 0, 2.0);
   MMom_MMass_p->SetXTitle("Missing Mass [GeV/c^{2}]");
@@ -466,6 +473,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   MMass_IMppipi_wL_sum = new TH2F("MMass_IMppipi_wL_sum","MMass_IMppipi_wL_sum",nbinIMppipi,IMppipilow,IMppipihigh,nbinpmiss, pmisslow, pmisshigh);
   MMass_IMppipi_wL_sum->SetXTitle("IM(p#pi^{-}#pi^{+}) [GeV/c^{2}]");
   MMass_IMppipi_wL_sum->SetYTitle("Missing Mass [GeV/c^{2}]");
+  
+  MMass_IMppipi_wL_sum_forward = new TH2F("MMass_IMppipi_wL_sum_forward","MMass_IMppipi_wL_sum_forward",nbinIMppipi,IMppipilow,IMppipihigh,nbinpmiss, pmisslow, pmisshigh);
+  MMass_IMppipi_wL_sum_forward->SetXTitle("IM(p#pi^{-}#pi^{+}) [GeV/c^{2}]");
+  MMass_IMppipi_wL_sum_forward->SetYTitle("Missing Mass [GeV/c^{2}]");
   
   Mppim1_Mppim2_p_wL_sum = new TH2F("Mppim1_Mppim2_p_wL_sum","Mppim1_Mppim2_p_wL_sum",nbinIMppi/5.,1.,2.0,nbinIMppi/5.,1.,2.0);
   Mppim1_Mppim2_p_wL_sum->SetXTitle("Miss. Mass.  d(K^{-},p#pi^{-}_{2}) [GeV/c^{2}]");
@@ -918,12 +929,20 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       MMass_IMppipi_wL->Fill(LVec_pim1_pim2_p.M(),pmiss_mass);
       MMass_IMppipi_wL_sum->Fill(LVec_pim1_pim2_p.M(),pmiss_mass);
       q_MMass->Fill(pmiss_mass,qkn.P());
+      if(LVec_p_miss.CosTheta()>ForwardAngle){
+        q_MMass_forward->Fill(pmiss_mass,qkn.P());
+        MMass_IMppipi_wL_sum_forward->Fill(LVec_pim1_pim2_p.M(),pmiss_mass);
+      }
     }else if(Lambda2Flag){
       MMass_wL_or->Fill(LVec_p2_miss.M());
       MMass_wL_2->Fill(LVec_p2_miss.M());
       MMass_IMp2pipi_wL->Fill(LVec_pim1_pim2_p2.M(),p2miss_mass);
       MMass_IMppipi_wL_sum->Fill(LVec_pim1_pim2_p2.M(),p2miss_mass);
       q_MMass->Fill(p2miss_mass,qkn2.P());
+      if(LVec_p_miss.CosTheta()>ForwardAngle){
+        q_MMass_forward->Fill(p2miss_mass,qkn2.P());
+        MMass_IMppipi_wL_sum_forward->Fill(LVec_pim1_pim2_p2.M(),p2miss_mass);
+      }
     }else{
       MMass_woL->Fill(LVec_p_miss.M());
     }
