@@ -242,6 +242,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* CosTheta_IMppipi_p_wL;
   TH2F* CosTheta_IMp2pipi_p2_wL;
   TH2F* q_IMppipi_p_wL_sum;
+  TH2F* q_IMppipi_p_wL_sum_cut[4];//0 half low, 1 half high, 2 sigma0 region,3
   TH2F* q_IMppipi_pboth_wL;
   TH2F* q_IMppipi_p_wL_nop2;
   TH2F* CosTheta_IMppipi_p_wL_sum;
