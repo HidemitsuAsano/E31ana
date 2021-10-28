@@ -460,9 +460,7 @@ int main( int argc, char** argv )
     const int PDG_pLpim[kinpLpim::npart] = {321, -211, 3122, 2212, 2212,  -211}; // K-d->S(1385)p->Lpi-p->ppi-pi-p
     int PDG[kinpLpim::npart] = {0, 0, 0, 0, 0, 0};
     for( int i=0; i<kinpLpim::npart; i++ ) {
-      if( reactionID==gen::reactionID_pLpim ||
-          reactionID==gen::reactionID_pS0pim
-          ) {
+      if( reactionID==gen::reactionID_pLpim ) {
         PDG[i] = PDG_pLpim[i];
         if(Verbosity_)std::cout << "L." << __LINE__ << " This is Sigma+ mode sim. " << std::endl;
         //std::cout << "L." << __LINE__ << " This is p L pi-  sim. " << std::endl;
@@ -470,6 +468,17 @@ int main( int argc, char** argv )
         std::cout << "L." << __LINE__ << " reaction ID is wrong !! " << reactionID << std::endl;
       }
     }
+    
+    const int npartS0=7;
+    //                               K+    pi-   S0    pmiss  L      pcds   pi-
+    const int PDG_pS0pim[npartS0] = {321, -211, 3212, 2212,  3122,   2212,  -211}; // K-d->S0pi-p->L,gamma,pi-p->ppi-gammapi-p
+    int PDGS0[npartS0] = {0, 0, 0, 0, 0, 0,0};
+    for(int i=0;i<npartS0;i++){
+      if( reactionID==gen::reactionID_pS0pim){
+        PDGS0[i] = PDG_pS0pim[i];
+      }
+    }
+
 
     //  beam_K(K-), pi-, pmiss, p from Lambda, pi- from Lambda
     //  0: init. val. for prompt particles , -1:init. val. for decay particles
@@ -486,6 +495,15 @@ int main( int argc, char** argv )
                << std::endl;
       std::cout<< std::endl;
     }
+    
+    //  beam_K(K-), pi-, pmiss, S0,L, p from Lambda, pi- from Lambda
+    //  0: init. val. for prompt particles , -1:init. val. for decay particles
+    int parentIDS0[npartS0] = {0, 0, 0, 0,-1, -1, -1};
+    // IDs defined by imctrk which is the serial number in mcData class
+    int IDS0[npartS0]       = {-1, -1, -1, -1, -1, -1};
+    // track ID assigned in mcData class
+    int trackIDS0[npartS0]  = {-1, -1, -1, -1, -1, -1,-1};
+   
 
     for( int imctrk=0; imctrk<mcData->trackSize(); imctrk++ ) {
       //pdg ID
@@ -507,30 +525,60 @@ int main( int argc, char** argv )
         std::cout<<"vertex Z: " << vec_vertex.Z() << std::endl;
         std::cout<<"flight length:" << flightlength << std::endl;
       }
-      for( int ip=0; ip<kinpLpim::npart; ip++ ) {
-        //   pick up necessary particles stored in PDG[] array.
-        //   if it is primary particle ,parentID is 0, decay particles are rejected by the parentID selection
-        if( pdgcode==PDG[ip] && parent==parentID[ip] && ID[ip]==-1 ) {
-          ID[ip] = imctrk;
-          trackID[ip] = track;
-          nparticle++;
-          if(Verbosity_) {
-            std::cout<<"ip:" << ip<<" | "<<pdgcode<<" "<<parent<<" "<<track<<" "<<mcData->track(imctrk)->momentum().Mag()
-                     <<" ("<<mcData->track(imctrk)->momentum().CosTheta()<<" , "<<mcData->track(imctrk)->momentum().Phi()*360./TwoPi<<")"<<std::endl;
-          }
 
-          //assign parent IDs for the proton and the pi- from the Lambda
-          if( ip==kinpLpim::L ) { //Sp and Sm are same.
-            parentID[kinpLpim::pcds] = track;//proton from Lambda
-            parentID[kinpLpim::pim_g2] = track;//pim from Lambda
+      if(reactionID==gen::reactionID_pLpim){
+        for( int ip=0; ip<kinpLpim::npart; ip++ ) {
+          //   pick up necessary particles stored in PDG[] array.
+          //   if it is primary particle ,parentID is 0, decay particles are rejected by the parentID selection
+          if( pdgcode==PDG[ip] && parent==parentID[ip] && ID[ip]==-1 ) {
+            ID[ip] = imctrk;
+            trackID[ip] = track;
+            nparticle++;
             if(Verbosity_) {
-              std::cout << "parentID n  from Sigma:" << parentID[kinpLpim::pcds] << std::endl;
-              std::cout << "parentID pi from Sigma:" << parentID[kinpLpim::pim_g2] << std::endl;
+              std::cout<<"ip:" << ip<<" | "<<pdgcode<<" "<<parent<<" "<<track<<" "<<mcData->track(imctrk)->momentum().Mag()
+                <<" ("<<mcData->track(imctrk)->momentum().CosTheta()<<" , "<<mcData->track(imctrk)->momentum().Phi()*360./TwoPi<<")"<<std::endl;
             }
-          }
-          break;
-        }//if
-      }//for ip
+
+            //assign parent IDs for the proton and the pi- from the Lambda
+            if( ip==kinpLpim::L ) { //
+              parentID[kinpLpim::pcds] = track;//proton from Lambda
+              parentID[kinpLpim::pim_g2] = track;//pim from Lambda
+              if(Verbosity_) {
+                std::cout << "parentID n  from Sigma:" << parentID[kinpLpim::pcds] << std::endl;
+                std::cout << "parentID pi from Sigma:" << parentID[kinpLpim::pim_g2] << std::endl;
+              }
+            }
+            break;
+          }//if
+        }//for ip
+      }//if reactID =plpim
+      else if(reactionID==gen::reactionID_pS0pim){
+        for( int ip=0; ip<npartS0; ip++ ) {
+          //   pick up necessary particles stored in PDG[] array.
+          //   if it is primary particle ,parentID is 0, decay particles are rejected by the parentID selection
+          if( pdgcode==PDGS0[ip] && parent==parentIDS0[ip] && IDS0[ip]==-1 ) {
+            IDS0[ip] = imctrk;
+            trackIDS0[ip] = track;
+            nparticle++;
+            if(Verbosity_) {
+              std::cout<<"ip:" << ip<<" | "<<pdgcode<<" "<<parent<<" "<<track<<" "<<mcData->track(imctrk)->momentum().Mag()
+                <<" ("<<mcData->track(imctrk)->momentum().CosTheta()<<" , "<<mcData->track(imctrk)->momentum().Phi()*360./TwoPi<<")"<<std::endl;
+            }
+         
+            //assign parent IDs for the Lambda from the Sigma0
+            if(ip==2){
+              parentIDS0[4]= track;
+            }
+            //assign parent IDs for the proton and the pi- from the Lambda
+            if( ip==4  ) { //TODO this does not work, because parent Lambda is decay particle from S0 in this reaction
+              parentID[5] = track;//proton from Lambda
+              parentID[6] = track;//pim from Lambda
+            }
+            break;
+          }//if
+        }//for ip
+
+      }//if reactID = pS0pim
     }//for imctrk
 
     if( nparticle==kinpLpim::npart ) {
@@ -539,6 +587,11 @@ int main( int argc, char** argv )
     } else {
       if(Verbosity_) std::cout << "L." <<  __LINE__ << " nparticle " << nparticle << std::endl;
     }
+
+
+
+
+
 
 
 
