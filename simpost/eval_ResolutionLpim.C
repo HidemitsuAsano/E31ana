@@ -120,6 +120,7 @@ void eval_ResolutionLpim()
   const int nbinsxq = diffq_q->GetNbinsX();
   for(int i=0;i<nbinsxq;i++){
     pxq[i] = (TH1D*)diffq_q->ProjectionY(Form("pxq%d",i),i+1,i+2);
+    pxq[i]->RebinX(2);
     if(pxq[i]->Integral()>100){
       pxq[i]->Fit("gaus","q","",-0.1,0.1);
       if(pxq[i]->GetFunction("gaus")){
@@ -128,6 +129,8 @@ void eval_ResolutionLpim()
         gausssigmaq[i] = pxq[i]->GetFunction("gaus")->GetParameter(2);
         gausssigmaerrq[i] = pxq[i]->GetFunction("gaus")->GetParError(2);
         q[i] = diffq_q->GetXaxis()->GetBinCenter(i+1);
+        rmsq[i] = pxq[i]->GetRMS();
+        rmserrorq[i] = pxq[i]->GetRMSError();
       }
     }
   }
@@ -144,14 +147,11 @@ void eval_ResolutionLpim()
   grqshift->GetXaxis()->CenterTitle();
   grqshift->GetYaxis()->CenterTitle();
   grqshift->Draw("AP");
-  for(int i=0;i<grqshift->GetN();i++){
-    double qshift = grqshift->GetY(i);
-
-  }
   grqshift->Print();
 
   TCanvas *c4reso = new TCanvas("c4reso","c4reso");
   TGraphErrors *grq = new TGraphErrors(nbinsxq,q,gausssigmaq,0,gausssigmaerrq);
+  //TGraphErrors *grq = new TGraphErrors(nbinsxq,q,rmsq,0,rmserrorq);
   grq->SetName("qreso");
   grq->SetTitle("Mom. Transfer resolution");
   grq->SetMarkerColor(2);
