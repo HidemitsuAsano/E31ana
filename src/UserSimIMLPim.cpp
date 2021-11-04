@@ -50,7 +50,7 @@ const bool DoCDCRetiming = false;
 const double MOM_RES = 2.0; // (MeV/c)
 const bool IsVtxDoubleCheck = false;
 const bool UseDecayVtx = true;
-const bool UseRealBeamMom = true;
+const bool UseRealBeamMom = false;
 
 //** cut parameters **//
 double PARA_blc2bpc_dx_MIN;
@@ -142,10 +142,13 @@ int main( int argc, char** argv )
   std::cout << " Double Check VTX fid cut ? " ;
   if(IsVtxDoubleCheck) std::cout << " Yes" << std::endl;
   else         std::cout << " No"  << std::endl;
-
+  
   std::cout << "Isolation cut range ? " ;
 
-  TDatabasePDG *pdg = new TDatabasePDG();
+  if(UseRealBeamMom) std::cout << "Use realistic beam mom." << std::endl;
+  else               std::cout << "beam mom. is smeared by gaussian" << std::endl;
+  
+    TDatabasePDG *pdg = new TDatabasePDG();
   pdg->ReadPDGTable("pdg_table.txt");
   //pdg->Print();
   //-----------------------------------------//

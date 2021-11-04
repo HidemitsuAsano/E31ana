@@ -1653,7 +1653,7 @@ int main( int argc, char** argv )
             //int genID[kin::npart] = {0,1,2,3,4,5};
             //IsncdsfromSigma = true;
             bool isInitial = false; 
-            if( val1<val2 ){ // is there more good selection way?
+            if( val1<val2 ){ // is there better selection way?
               genID[kin::nmiss] = kin::ncds;
               genID[kin::ncds] = kin::nmiss;
               isInitial = true;
