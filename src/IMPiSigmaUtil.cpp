@@ -935,9 +935,10 @@ void Util::AnaReactionData( ReactionData *reactionData){
     double moml = (reactionData->GetParticle(ipart).P())/1000.;
     Tools::H1(Form("Reactmom_%d",ipart),moml, 150,0,1.5);
   }
-  TVector3 beammom(0,0,1000);//1 MeV/c 
-  TLorentzVector TL_beam;
-  TL_beam.SetVectM(beammom, 493.677);
+
+  //TVector3 beammom(0,0,1000);//1 MeV/c 
+  TLorentzVector TL_beam = reactionData->GetInitParticle(0);
+  //TL_beam.SetVectM(beammom, 493.677);
   if(reactionID == gen::reactionID_Spmode || gen::reactionID_Smmode){
     TLorentzVector TL_nmiss = reactionData->GetParticle(0);
     double q = (TL_beam.Vect()-TL_nmiss.Vect()).Mag()/1000.;

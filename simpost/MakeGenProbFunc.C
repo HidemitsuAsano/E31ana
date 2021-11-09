@@ -8,7 +8,7 @@ void MakeGenProbFunc()
   //TFile *file = new TFile("simIMLpim_DoraAir_v2.root","READ");
   //TFile *file = new TFile("simIMpisigma_npipiL_DoraAir_v10.root","READ");
   //TFile *file = new TFile("simIMpisigma_K0nn_v10.root","READ");
-  TFile *file = new TFile("simIMLpim_v8.root","READ");
+  TFile *file = new TFile("simIMLpim_PS_v1.root","READ");
   std::cout << "file name:" << file->GetName() << std::endl;
 
   //TH2F* React_q_IMPiSigma = (TH2F*)file->Get("React_q_IMPiSigma_Sp");

@@ -12,8 +12,8 @@ void GetAccMapLpim()
   TFile *fLpim=NULL;
   TFile *fgen=NULL;
 
-  fLpim = TFile::Open("simIMLpim_ppimpim_v21_out.root");
-  fgen = TFile::Open("simIMLpim_v21.root");
+  fLpim = TFile::Open("simIMLpim_ppimpim_v22_out.root");
+  fgen = TFile::Open("simIMLpim_v22.root");
   TFile *fkin = TFile::Open("NumericalRootFinderLPim.root","READ");
 //  fLpim = TFile::Open("simIMLpim_ppimpim_pS0pim_v1_out.root");
 //  fgen = TFile::Open("simIMLpim_pS0pim_v1.root");
@@ -32,73 +32,84 @@ void GetAccMapLpim()
   q_IMLPim_gen->Print("base");
    
 
-   
-  TH2F* q_IMppipi_p_wL_sum;
-  q_IMppipi_p_wL_sum= (TH2F*)fLpim->Get("q_IMppipi_p_wL_sum");
-  q_IMppipi_p_wL_sum->GetYaxis()->SetRangeUser(0,1.5);
-  q_IMppipi_p_wL_sum->SetTitle("reco. evt.");
   TH1F* BLAnaPassed = (TH1F*)fgen->Get("BLAnaPassed");
-  double SimBeamSurvivalOK = BLAnaPassed->GetBinContent(2);//passed
-  double SimBeamSurvivalFail = BLAnaPassed->GetBinContent(1);//not passed
-  double SimBeamSurvivalRate = SimBeamSurvivalOK / (SimBeamSurvivalOK+SimBeamSurvivalFail);
+  const double SimBeamSurvivalOK = BLAnaPassed->GetBinContent(2);//passed
+  const double SimBeamSurvivalFail = BLAnaPassed->GetBinContent(1);//not passed
+  const double SimBeamSurvivalRate = SimBeamSurvivalOK / (SimBeamSurvivalOK+SimBeamSurvivalFail);
   std::cout << "L " << __LINE__ << " SimBeamSurvivalRate " << SimBeamSurvivalRate << std::endl;
-  q_IMppipi_p_wL_sum->Scale(1./SimBeamSurvivalRate);
-  //q_IMppipi_p_wL_sum->RebinX(3);
-  //q_IMppipi_p_wL_sum->RebinY(3);
+   
+  TH2F* q_IMppipi_p_wL_sum[5];
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_sum[icut]= (TH2F*)fLpim->Get(Form("q_IMppipi_p_wL_sum%d",icut));
+    q_IMppipi_p_wL_sum[icut]->GetYaxis()->SetRangeUser(0,1.5);
+    q_IMppipi_p_wL_sum[icut]->SetTitle("reco. evt.");
+    q_IMppipi_p_wL_sum[icut]->Scale(1./SimBeamSurvivalRate);
+    //q_IMppipi_p_wL_sum[icut]->RebinX(3);
+    //q_IMppipi_p_wL_sum[icut]->RebinY(3);
+  }
 
-  TH2F* q_IMppipi_p_wL_acc;
-  q_IMppipi_p_wL_acc = (TH2F*)q_IMppipi_p_wL_sum->Clone(Form("q_IMppipi_p_wL_acc"));
-  q_IMppipi_p_wL_acc->SetTitle(Form("q_IMppipi_p_wL acc. "));
-  q_IMppipi_p_wL_acc->Print("base");
-  q_IMppipi_p_wL_acc->Divide(q_IMppipi_p_wL_acc,q_IMLPim_gen,1.0,1.0,"b");
+  TH2F* q_IMppipi_p_wL_acc[5];
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum[icut]->Clone(Form("q_IMppipi_p_wL_acc%d",icut));
+    q_IMppipi_p_wL_acc[icut]->SetTitle(Form("q_IMppipi_p_wL acc. %d",icut));
+    q_IMppipi_p_wL_acc[icut]->Print("base");
+    q_IMppipi_p_wL_acc[icut]->Divide(q_IMppipi_p_wL_acc[icut],q_IMLPim_gen,1.0,1.0,"b");
+  }
 
-  TH2F* q_IMppipi_p_wL_accerr=NULL;
-  q_IMppipi_p_wL_accerr = (TH2F*)q_IMppipi_p_wL_acc->Clone(Form("q_IMppipi_p_wL_accerr"));
-  q_IMppipi_p_wL_accerr->Reset();
-  q_IMppipi_p_wL_accerr->SetTitle(Form("q_IMppipi_p_wL precision"));
-  for(int ix=0;ix<q_IMppipi_p_wL_accerr->GetNbinsX();ix++){
-    for(int iy=0;iy<q_IMppipi_p_wL_accerr->GetNbinsY();iy++){
-      double cont = q_IMppipi_p_wL_acc->GetBinContent(ix,iy);
-      double err = q_IMppipi_p_wL_acc->GetBinError(ix,iy);
-      if(cont!=0){
-        q_IMppipi_p_wL_accerr->SetBinContent(ix,iy,err/cont);  
+  TH2F* q_IMppipi_p_wL_accerr[5];
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_accerr[icut] = (TH2F*)q_IMppipi_p_wL_acc[icut]->Clone(Form("q_IMppipi_p_wL_accerr%d",icut));
+    q_IMppipi_p_wL_accerr[icut]->Reset();
+    q_IMppipi_p_wL_accerr[icut]->SetTitle(Form("q_IMppipi_p_wL precision %d",icut));
+    for(int ix=0;ix<q_IMppipi_p_wL_accerr[icut]->GetNbinsX();ix++){
+      for(int iy=0;iy<q_IMppipi_p_wL_accerr[icut]->GetNbinsY();iy++){
+        double cont = q_IMppipi_p_wL_acc[icut]->GetBinContent(ix,iy);
+        double err = q_IMppipi_p_wL_acc[icut]->GetBinError(ix,iy);
+        if(cont!=0){
+          q_IMppipi_p_wL_accerr[icut]->SetBinContent(ix,iy,err/cont);  
+        }
       }
     }
-  }
+  }//icut
   
   
-  TCanvas *cLpim;
-  cLpim = new TCanvas(Form("cLpim"),Form("cLpim"),2000,1200);
-  cLpim->Divide(2,2);
-  cLpim->cd(1);
-  q_IMLPim_gen->Draw("colz");
- 
+  TCanvas *cLpim[5];
   TGraph *gth = (TGraph*)fkin->Get("th");
   TGraph *gr_0 = (TGraph*)fkin->Get("gr_0");
   TGraph *gr_100 = (TGraph*)fkin->Get("gr_100");
   TGraph *gr_65 = (TGraph*)fkin->Get("gr_65");
+  
+  for(int icut=0;icut<5;icut++){
+    cLpim[icut] = new TCanvas(Form("cLpim%d",icut),Form("cLpim%d",icut),2000,1200);
+    cLpim[icut]->Divide(2,2);
+    cLpim[icut]->cd(1);
+    q_IMLPim_gen->Draw("colz");
  
-  //gth->Draw("pc");
-  //gr_0->Draw("pc");
-  //gr_65->Draw("pc");
-  //gr_100->Draw("pc");
-  cLpim->cd(2);
-  q_IMppipi_p_wL_sum->Draw("colz");
-  //gth->Draw("pc");
-  //gr_0->Draw("pc");
-  //gr_100->Draw("pc");
-  //gr_65->Draw("pc");
-  cLpim->cd(3);
-  q_IMppipi_p_wL_acc->SetMaximum(0.055);
-  q_IMppipi_p_wL_acc->Draw("colz");
-  //gth->Draw("pc");
-  //gr_0->Draw("pc");
-  //gr_100->Draw("pc");
-  //gr_65->Draw("pc");
-  cLpim->cd(4);
-  q_IMppipi_p_wL_accerr->SetMaximum(0.5);
-  q_IMppipi_p_wL_accerr->Draw("colz");
-   
+ 
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_65->Draw("pc");
+    //gr_100->Draw("pc");
+    cLpim[icut]->cd(2);
+    q_IMppipi_p_wL_sum[icut]->Draw("colz");
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_100->Draw("pc");
+    //gr_65->Draw("pc");
+    cLpim[icut]->cd(3);
+    //q_IMppipi_p_wL_acc[icut]->SetMaximum(0.055);
+    q_IMppipi_p_wL_acc[icut]->SetMaximum(0.075);
+    q_IMppipi_p_wL_acc[icut]->Draw("colz");
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_100->Draw("pc");
+    //gr_65->Draw("pc");
+    cLpim[icut]->cd(4);
+    q_IMppipi_p_wL_accerr[icut]->SetMaximum(0.5);
+    q_IMppipi_p_wL_accerr[icut]->Draw("colz");
+  }
+  
+  /*
   //test for reco.events/acc map 
   TCanvas *cLpim_gentest = new TCanvas("cLpim_gentest","cLpim_gentest",2000,800);
   cLpim_gentest->Divide(2,1);
@@ -109,7 +120,7 @@ void GetAccMapLpim()
   q_IMppipi_p_wL_gentest->Draw("colz");
   cLpim_gentest->cd(2);
   q_IMLPim_gen->Draw("colz");
-   
+
   TH1F* htest = new TH1F("htest","htest",8000,-6000,2000);
   for(int ix=0;ix<q_IMppipi_p_wL_gentest->GetNbinsX();ix++){
     for(int iy=0;iy<q_IMppipi_p_wL_gentest->GetNbinsY();iy++){
@@ -121,48 +132,60 @@ void GetAccMapLpim()
   TCanvas *ctest  = new TCanvas("ctest","ctest",1000,800);
   htest->Draw("HE");
 
-  TCanvas *ccleanup = new TCanvas("ccleanup","ccleanup",1000,800);
-  TH2F* q_IMppipi_p_wL_gentest_clean = (TH2F*)q_IMppipi_p_wL_gentest->Clone("q_IMppipi_p_wL_gentest_clean");
-  TH2F* q_IMppipi_p_wL_acc_clean = (TH2F*)q_IMppipi_p_wL_acc->Clone("q_IMppipi_p_wL_acc_clean");
-  q_IMppipi_p_wL_acc_clean->SetName("q_IMppipi_p_wL_acc_clean");
-  q_IMppipi_p_wL_acc_clean->SetTitle("q_IMppipi_p_wL_acc_clean");
-  for(int ix=0;ix<q_IMppipi_p_wL_gentest->GetNbinsX();ix++){
-    for(int iy=0;iy<q_IMppipi_p_wL_gentest->GetNbinsY();iy++){
-      double cont = q_IMppipi_p_wL_gentest->GetBinContent(ix,iy);
-      double gen = q_IMLPim_gen->GetBinContent(ix,iy);
-      if(cont -gen < -100 ){
-        q_IMppipi_p_wL_gentest_clean->SetBinContent(ix,iy,0);
-        q_IMppipi_p_wL_gentest_clean->SetBinError(ix,iy,0);
-        q_IMppipi_p_wL_acc_clean->SetBinContent(ix,iy,0);
-        q_IMppipi_p_wL_acc_clean->SetBinError(ix,iy,0);
-      }
-    }
-  }
-  
-  
-  for(int ix=0;ix<q_IMppipi_p_wL_accerr->GetNbinsX();ix++){
-    for(int iy=0;iy<q_IMppipi_p_wL_accerr->GetNbinsY();iy++){
-      double err = q_IMppipi_p_wL_accerr->GetBinContent(ix,iy);
-      if( RemoveNotEnough && (err>UncertCut) 
-        //  || q_IMppipi_p_wL_acc->GetBinContent(ix,iy)>0.053
-        //  || q_IMppipi_p_wL_acc->GetXaxis()->GetBinCenter(ix)>1.895 
-          || q_IMppipi_p_wL_acc->GetXaxis()->GetBinCenter(ix)<1.260) {
-        q_IMppipi_p_wL_acc_clean->SetBinContent(ix,iy,0);
-        q_IMppipi_p_wL_acc_clean->SetBinError(ix,iy,0);
-      }
-    }
-  }
-  q_IMppipi_p_wL_gentest_clean->SetMaximum(q_IMppipi_p_wL_gentest->GetMaximum());
-  q_IMppipi_p_wL_gentest_clean->Draw("colz");
+  TCanvas *ccleanup[5];
+  TH2F* q_IMppipi_p_wL_gentest_clean[5];
 
-  TCanvas *cacccleanup = new TCanvas("cacccleanup","cacccleanup",1000,800);
-  q_IMppipi_p_wL_acc_clean->SetMaximum(q_IMppipi_p_wL_acc->GetMaximum());
-  q_IMppipi_p_wL_acc_clean->Draw("colz");
-  gr_0->Draw("pc");
-  gr_100->Draw("pc");
-  gr_65->Draw("pc");
-  gth->Draw("pc");
-   
+  for(int icut=0;icut<5;icut++){
+    ccleanup[icut] = new TCanvas(Form("ccleanup%d",icut),Form("ccleanup%d",icut),1000,800);
+    q_IMppipi_p_wL_gentest_clean[icut] = (TH2F*)q_IMppipi_p_wL_gentest[icut]->Clone(Form("q_IMppipi_p_wL_gentest_clean%d",icut));
+    q_IMppipi_p_wL_acc_clean[icut] = (TH2F*)q_IMppipi_p_wL_acc[icut]->Clone(Form("q_IMppipi_p_wL_acc_clean%d",icut));
+    q_IMppipi_p_wL_acc_clean[icut]->SetName(Form("q_IMppipi_p_wL_acc_clean%d",icut));
+    q_IMppipi_p_wL_acc_clean[icut]->SetTitle(Form("q_IMppipi_p_wL_acc_clean%d",icut));
+    for(int ix=0;ix<q_IMppipi_p_wL_gentest->GetNbinsX();ix++){
+      for(int iy=0;iy<q_IMppipi_p_wL_gentest->GetNbinsY();iy++){
+        double cont = q_IMppipi_p_wL_gentest->GetBinContent(ix,iy);
+        double gen = q_IMLPim_gen->GetBinContent(ix,iy);
+        if(cont -gen < -100 ){
+          q_IMppipi_p_wL_gentest_clean->SetBinContent(ix,iy,0);
+          q_IMppipi_p_wL_gentest_clean->SetBinError(ix,iy,0);
+          q_IMppipi_p_wL_acc_clean->SetBinContent(ix,iy,0);
+          q_IMppipi_p_wL_acc_clean->SetBinError(ix,iy,0);
+        }
+      }
+    }
+  }
+  
+  */
+  
+  TH2F* q_IMppipi_p_wL_acc_clean[5];     
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_acc_clean[icut] = (TH2F*)q_IMppipi_p_wL_acc[icut]->Clone(Form("q_IMppipi_p_wL_acc_clean%d",icut));
+    q_IMppipi_p_wL_acc_clean[icut]->SetName(Form("q_IMppipi_p_wL_acc_clean%d",icut));
+    q_IMppipi_p_wL_acc_clean[icut]->SetTitle(Form("q_IMppipi_p_wL_acc_clean%d",icut));
+    for(int ix=0;ix<q_IMppipi_p_wL_accerr[icut]->GetNbinsX();ix++){
+      for(int iy=0;iy<q_IMppipi_p_wL_accerr[icut]->GetNbinsY();iy++){
+        double err = q_IMppipi_p_wL_accerr[icut]->GetBinContent(ix,iy);
+        if( RemoveNotEnough && (err>UncertCut) 
+            //  || q_IMppipi_p_wL_acc->GetBinContent(ix,iy)>0.053
+            //  || q_IMppipi_p_wL_acc->GetXaxis()->GetBinCenter(ix)>1.895 
+            || q_IMppipi_p_wL_acc[icut]->GetXaxis()->GetBinCenter(ix)<1.260) {
+          q_IMppipi_p_wL_acc_clean[icut]->SetBinContent(ix,iy,0);
+          q_IMppipi_p_wL_acc_clean[icut]->SetBinError(ix,iy,0);
+        }
+      }
+    }
+  }
+
+  TCanvas *cacccleanup[5];
+  for(int icut=0;icut<5;icut++){
+    cacccleanup[icut]= new TCanvas(Form("cacccleanup%d",icut),Form("cacccleanup%d",icut),1000,800);
+    q_IMppipi_p_wL_acc_clean[icut]->SetMaximum(q_IMppipi_p_wL_acc[icut]->GetMaximum());
+    q_IMppipi_p_wL_acc_clean[icut]->Draw("colz");
+    gr_0->Draw("pc");
+    gr_100->Draw("pc");
+    gr_65->Draw("pc");
+    gth->Draw("pc");
+  }
   //////////////////////////////////////////////////////////
   //acceptance map for costheta_missing p v.s. IM(pi-Lambda) 
   //////////////////////////////////////////////////////////
@@ -272,10 +295,12 @@ void GetAccMapLpim()
 
 
   //  TFile *fout = new TFile("accmapLpim_pS0pim.root","RECREATE");
-  TFile *fout = new TFile("accmapLpimv21.root","RECREATE");
-  q_IMppipi_p_wL_acc->Write();
-  q_IMppipi_p_wL_accerr->Write();
-  q_IMppipi_p_wL_acc_clean->Write();
+  TFile *fout = new TFile("accmapLpimv22.root","RECREATE");
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_acc[icut]->Write();
+    q_IMppipi_p_wL_accerr[icut]->Write();
+    q_IMppipi_p_wL_acc_clean[icut]->Write();
+  }
   CosTheta_IMppipi_p_wL_acc->Write();
   CosTheta_IMppipi_p_wL_acc_clean->Write();
   fout->Close();
