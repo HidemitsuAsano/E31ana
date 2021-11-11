@@ -38,9 +38,10 @@ void GetAccMapLpim()
   const double SimBeamSurvivalRate = SimBeamSurvivalOK / (SimBeamSurvivalOK+SimBeamSurvivalFail);
   std::cout << "L " << __LINE__ << " SimBeamSurvivalRate " << SimBeamSurvivalRate << std::endl;
    
+  //get sum of p1 and p2
   TH2F* q_IMppipi_p_wL_sum[5];
   for(int icut=0;icut<5;icut++){
-    q_IMppipi_p_wL_sum[icut]= (TH2F*)fLpim->Get(Form("q_IMppipi_p_wL_sum%d",icut));
+    q_IMppipi_p_wL_sum[icut]= (TH2F*)fLpim->Get(Form("q_IMppipi_p_wL_sum_nocombi%d",icut));
     q_IMppipi_p_wL_sum[icut]->GetYaxis()->SetRangeUser(0,1.5);
     q_IMppipi_p_wL_sum[icut]->SetTitle("reco. evt.");
     q_IMppipi_p_wL_sum[icut]->Scale(1./SimBeamSurvivalRate);
@@ -72,6 +73,71 @@ void GetAccMapLpim()
     }
   }//icut
   
+  //get no p2 hists
+  TH2F* q_IMppipi_p_wL_sum_nop2[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_sum_nop2[icut]= (TH2F*)fLpim->Get(Form("q_IMppipi_p_wL_sum_nocombi_nop2%d",icut));
+    q_IMppipi_p_wL_sum_nop2[icut]->GetYaxis()->SetRangeUser(0,1.5);
+    q_IMppipi_p_wL_sum_nop2[icut]->SetTitle("reco. evt.");
+    q_IMppipi_p_wL_sum_nop2[icut]->Scale(1./SimBeamSurvivalRate);
+  }//icut 
+
+  TH2F* q_IMppipi_p_wL_nop2_acc[5];
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_nop2_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_nop2[icut]->Clone(Form("q_IMppipi_p_wL_nop2_acc%d",icut));
+    q_IMppipi_p_wL_nop2_acc[icut]->SetTitle(Form("q_IMppipi_p_wL nop2 acc. %d",icut));
+    q_IMppipi_p_wL_nop2_acc[icut]->Print("base");
+    q_IMppipi_p_wL_nop2_acc[icut]->Divide(q_IMppipi_p_wL_nop2_acc[icut],q_IMLPim_gen,1.0,1.0,"b");
+  }
+
+  TH2F* q_IMppipi_p_wL_nop2_accerr[5];
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_nop2_accerr[icut] = (TH2F*)q_IMppipi_p_wL_nop2_acc[icut]->Clone(Form("q_IMppipi_p_wL_nop2_accerr%d",icut));
+    q_IMppipi_p_wL_nop2_accerr[icut]->Reset();
+    q_IMppipi_p_wL_nop2_accerr[icut]->SetTitle(Form("q_IMppipi_p_wL_nop2 precision %d",icut));
+    for(int ix=0;ix<q_IMppipi_p_wL_nop2_accerr[icut]->GetNbinsX();ix++){
+      for(int iy=0;iy<q_IMppipi_p_wL_nop2_accerr[icut]->GetNbinsY();iy++){
+        double cont = q_IMppipi_p_wL_nop2_acc[icut]->GetBinContent(ix,iy);
+        double err = q_IMppipi_p_wL_nop2_acc[icut]->GetBinError(ix,iy);
+        if(cont!=0){
+          q_IMppipi_p_wL_nop2_accerr[icut]->SetBinContent(ix,iy,err/cont);  
+        }
+      }
+    }
+  }//icut
+
+  //get w p2 hists
+  TH2F* q_IMppipi_p_wL_sum_wp2[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_sum_wp2[icut]= (TH2F*)fLpim->Get(Form("q_IMppipi_p_wL_sum_nocombi_wp2%d",icut));
+    q_IMppipi_p_wL_sum_wp2[icut]->GetYaxis()->SetRangeUser(0,1.5);
+    q_IMppipi_p_wL_sum_wp2[icut]->SetTitle("reco. evt.");
+    q_IMppipi_p_wL_sum_wp2[icut]->Scale(1./SimBeamSurvivalRate);
+  }//icut 
+
+  TH2F* q_IMppipi_p_wL_wp2_acc[5];
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_wp2_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_wp2[icut]->Clone(Form("q_IMppipi_p_wL_wp2_acc%d",icut));
+    q_IMppipi_p_wL_wp2_acc[icut]->SetTitle(Form("q_IMppipi_p_wL wp2 acc. %d",icut));
+    q_IMppipi_p_wL_wp2_acc[icut]->Print("base");
+    q_IMppipi_p_wL_wp2_acc[icut]->Divide(q_IMppipi_p_wL_wp2_acc[icut],q_IMLPim_gen,1.0,1.0,"b");
+  }
+
+  TH2F* q_IMppipi_p_wL_wp2_accerr[5];
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_wp2_accerr[icut] = (TH2F*)q_IMppipi_p_wL_wp2_acc[icut]->Clone(Form("q_IMppipi_p_wL_wp2_accerr%d",icut));
+    q_IMppipi_p_wL_wp2_accerr[icut]->Reset();
+    q_IMppipi_p_wL_wp2_accerr[icut]->SetTitle(Form("q_IMppipi_p_wL_wp2 precision %d",icut));
+    for(int ix=0;ix<q_IMppipi_p_wL_wp2_accerr[icut]->GetNbinsX();ix++){
+      for(int iy=0;iy<q_IMppipi_p_wL_wp2_accerr[icut]->GetNbinsY();iy++){
+        double cont = q_IMppipi_p_wL_wp2_acc[icut]->GetBinContent(ix,iy);
+        double err = q_IMppipi_p_wL_wp2_acc[icut]->GetBinError(ix,iy);
+        if(cont!=0){
+          q_IMppipi_p_wL_wp2_accerr[icut]->SetBinContent(ix,iy,err/cont);  
+        }
+      }
+    }
+  }//icut
   
   TCanvas *cLpim[5];
   TGraph *gth = (TGraph*)fkin->Get("th");
@@ -108,6 +174,69 @@ void GetAccMapLpim()
     q_IMppipi_p_wL_accerr[icut]->SetMaximum(0.5);
     q_IMppipi_p_wL_accerr[icut]->Draw("colz");
   }
+  
+  TCanvas *cLpim_nop2[5];
+  for(int icut=0;icut<5;icut++){
+    cLpim_nop2[icut] = new TCanvas(Form("cLpim_nop2%d",icut),Form("cLpim_nop2%d",icut),2000,1200);
+    cLpim_nop2[icut]->Divide(2,2);
+    cLpim_nop2[icut]->cd(1);
+    q_IMLPim_gen->Draw("colz");
+ 
+ 
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_65->Draw("pc");
+    //gr_100->Draw("pc");
+    cLpim_nop2[icut]->cd(2);
+    q_IMppipi_p_wL_sum_nop2[icut]->Draw("colz");
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_100->Draw("pc");
+    //gr_65->Draw("pc");
+    cLpim_nop2[icut]->cd(3);
+    //q_IMppipi_p_wL_acc[icut]->SetMaximum(0.055);
+    q_IMppipi_p_wL_nop2_acc[icut]->SetMaximum(0.075);
+    q_IMppipi_p_wL_nop2_acc[icut]->Draw("colz");
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_100->Draw("pc");
+    //gr_65->Draw("pc");
+    cLpim_nop2[icut]->cd(4);
+    q_IMppipi_p_wL_nop2_accerr[icut]->SetMaximum(0.5);
+    q_IMppipi_p_wL_nop2_accerr[icut]->Draw("colz");
+  }
+  
+  TCanvas *cLpim_wp2[5];
+  for(int icut=0;icut<5;icut++){
+    cLpim_wp2[icut] = new TCanvas(Form("cLpim_wp2%d",icut),Form("cLpim_wp2%d",icut),2000,1200);
+    cLpim_wp2[icut]->Divide(2,2);
+    cLpim_wp2[icut]->cd(1);
+    q_IMLPim_gen->Draw("colz");
+ 
+ 
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_65->Draw("pc");
+    //gr_100->Draw("pc");
+    cLpim_wp2[icut]->cd(2);
+    q_IMppipi_p_wL_sum_wp2[icut]->Draw("colz");
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_100->Draw("pc");
+    //gr_65->Draw("pc");
+    cLpim_wp2[icut]->cd(3);
+    //q_IMppipi_p_wL_acc[icut]->SetMaximum(0.055);
+    q_IMppipi_p_wL_wp2_acc[icut]->SetMaximum(0.075);
+    q_IMppipi_p_wL_wp2_acc[icut]->Draw("colz");
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_100->Draw("pc");
+    //gr_65->Draw("pc");
+    cLpim_wp2[icut]->cd(4);
+    q_IMppipi_p_wL_wp2_accerr[icut]->SetMaximum(0.5);
+    q_IMppipi_p_wL_wp2_accerr[icut]->Draw("colz");
+  }
+  
   
   /*
   //test for reco.events/acc map 
