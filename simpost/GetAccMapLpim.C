@@ -424,7 +424,7 @@ void GetAccMapLpim()
 
 
   //  TFile *fout = new TFile("accmapLpim_pS0pim.root","RECREATE");
-  TFile *fout = new TFile("accmapLpimv22.root","RECREATE");
+  TFile *fout = new TFile("accmapLpimv23.root","RECREATE");
   for(int icut=0;icut<5;icut++){
     q_IMppipi_p_wL_acc[icut]->Write();
     q_IMppipi_p_wL_accerr[icut]->Write();
@@ -433,4 +433,34 @@ void GetAccMapLpim()
   CosTheta_IMppipi_p_wL_acc->Write();
   CosTheta_IMppipi_p_wL_acc_clean->Write();
   fout->Close();
+
+  TString pdfname = "accmaplpim.pdf";
+  TCanvas *c = NULL;
+  //TPDF *pdf = new TPDF(pdfname);
+  TSeqCollection *SCol = gROOT->GetListOfCanvases();
+  int size = SCol->GetSize();
+  //TIter next(gROOT->GetListOfCanvases());
+  TIter next(SCol);
+  for(int i=0; i<size; i++) {
+    //while((c= (TCanvas*)next())){
+    //pdf->NewPage();
+    c= (TCanvas*)next();
+    c->Draw();
+    c->cd();
+    TPaveText *pt;
+    pt = new TPaveText(.80,0.90,0.98,0.99,"NDC");
+    pt->AddText("MC");
+    pt->SetFillColor(kCyan-9);
+    pt->SetBorderSize(1);
+    pt->Draw();
+
+    //gPad->SetLeftMargin(0.13);
+    //gPad->SetBottomMargin(0.13);
+    c->Modified();
+    c->Update();
+    if(i==0) c->Print(pdfname+"(",Form("Title:%s",c->GetTitle()));
+    else if(i==size-1)c->Print(pdfname+")",Form("Title:%s",c->GetTitle()));
+    else c->Print(pdfname,Form("Title:%s",c->GetTitle()));
+  }
+
 }

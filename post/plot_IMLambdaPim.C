@@ -251,6 +251,9 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* q_IMppipi_p_wL_sum_nocombi[5];
   TH2F* q_IMppipi_p_wL_sum_nocombi_nop2[5];
   TH2F* q_IMppipi_p_wL_sum_nocombi_wp2[5];
+  TH2F* q_IMppipi_p_wL_sum_nocombi_mc[5];
+  TH2F* q_IMppipi_p_wL_sum_nocombi_nop2_mc[5];
+  TH2F* q_IMppipi_p_wL_sum_nocombi_wp2_mc[5];
   TH2F* q_IMppipi_pboth_wL;
   TH2F* q_IMppipi_p_wL_nop2;
   TH2F* q_IMppipi_p_wL_wp2;
@@ -549,16 +552,30 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     q_IMppipi_p_wL_sum_nocombi[icut] = new TH2F(Form("q_IMppipi_p_wL_sum_nocombi%d",icut),Form("q_IMppipi_p_wL_sum_nocombi%d",icut),nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
     q_IMppipi_p_wL_sum_nocombi[icut]->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
     q_IMppipi_p_wL_sum_nocombi[icut]->SetYTitle("Mom. Transfer [GeV/c]");
+    
+    q_IMppipi_p_wL_sum_nocombi_mc[icut] = new TH2F(Form("q_IMppipi_p_wL_sum_nocombi_mc%d",icut),Form("q_IMppipi_p_wL_sum_nocombi_mc%d",icut),nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
+    q_IMppipi_p_wL_sum_nocombi_mc[icut]->SetXTitle("true IM(#Lambda#pi^{-}) [GeV/c^{2}]");
+    q_IMppipi_p_wL_sum_nocombi_mc[icut]->SetYTitle("true Mom. Transfer [GeV/c]");
 
     q_IMppipi_p_wL_sum_nocombi_nop2[icut] 
     = new TH2F(Form("q_IMppipi_p_wL_sum_nocombi_nop2%d",icut),Form("q_IMppipi_p_wL_sum_nocombi_nop2%d",icut),nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
     q_IMppipi_p_wL_sum_nocombi_nop2[icut]->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
     q_IMppipi_p_wL_sum_nocombi_nop2[icut]->SetYTitle("Mom. Transfer [GeV/c]");
+    
+    q_IMppipi_p_wL_sum_nocombi_nop2_mc[icut] 
+    = new TH2F(Form("q_IMppipi_p_wL_sum_nocombi_nop2_mc%d",icut),Form("q_IMppipi_p_wL_sum_nocombi_nop2_mc%d",icut),nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
+    q_IMppipi_p_wL_sum_nocombi_nop2_mc[icut]->SetXTitle("true IM(#Lambda#pi^{-}) [GeV/c^{2}]");
+    q_IMppipi_p_wL_sum_nocombi_nop2_mc[icut]->SetYTitle("true Mom. Transfer [GeV/c]");
 
     q_IMppipi_p_wL_sum_nocombi_wp2[icut]
     = new TH2F(Form("q_IMppipi_p_wL_sum_nocombi_wp2%d",icut),Form("q_IMppipi_p_wL_sum_nocombi_wp2%d",icut),nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
     q_IMppipi_p_wL_sum_nocombi_wp2[icut]->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
     q_IMppipi_p_wL_sum_nocombi_wp2[icut]->SetYTitle("Mom. Transfer [GeV/c]");
+    
+    q_IMppipi_p_wL_sum_nocombi_wp2_mc[icut]
+    = new TH2F(Form("q_IMppipi_p_wL_sum_nocombi_wp2%d_mc",icut),Form("q_IMppipi_p_wL_sum_nocombi_wp2%d_mc",icut),nbinIMppipi,IMppipilow,IMppipihigh, nbinq,0,1.5);
+    q_IMppipi_p_wL_sum_nocombi_wp2_mc[icut]->SetXTitle("true IM(#Lambda#pi^{-}) [GeV/c^{2}]");
+    q_IMppipi_p_wL_sum_nocombi_wp2_mc[icut]->SetYTitle("true Mom. Transfer [GeV/c]");
   }//icut
 
 
@@ -625,7 +642,8 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   pmisstheta_diffp2pmissmom->SetYTitle("cos theta pmiss ");
 
   TH1D* diffpmissmom_mc = new TH1D("diffpmissmom_mc","diffpmissmom_mc",1000,-1,1);
-  TH1D* diffp2mom_mc = new TH1D("diffp2mom_mc","diffp2mom_mc",1000,-1,1);
+  TH1D* diffpmissmom_nop2_mc = new TH1D("diffpmissmom_nop2_mc","diffpmissmom_nop2_mc",1000,-1,1);
+  TH1D* diffpmissmom_wp2_mc = new TH1D("diffpmissmom_wp2_mc","diffpmissmom_wp2_mc",1000,-1,1);
 
   TH1D* pmisscos = new TH1D("pmisscos","pmisscos",10000,-1,1);
   TH1D* pmisscos_fp = new TH1D("pmisscos_fp","pmisscos_fp",10000,-1,1);
@@ -792,18 +810,23 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
 
     TLorentzVector LVec_Lambda_mc ;
     TLorentzVector LVec_LambdaPim_mc ;
-    TLorentzVector LVec_LambdaPim_react ;
+    TLorentzVector LVec_LambdaPim_reactcor ;
     TLorentzVector qkn_mc ; 
+    TLorentzVector LVec_pmiss_reactcor;
     
     if(SimMode){
       LVec_Lambda_mc = *mcmom_p+*mcmom_pim2;
       LVec_LambdaPim_mc = *mcmom_p+*mcmom_pim1+*mcmom_pim2;
-      LVec_LambdaPim_react = *react_Lambda+*react_pim;
-      TLorentzVector react_pmisscorr;
       double m = (*react_pmiss).M()/1000.;
       TVector3 vec = (*react_pmiss).Vect()*0.001;
-      react_pmisscorr.SetVectM(vec,m);
-      qkn_mc = react_pmisscorr -*mcmom_beam;     
+      LVec_pmiss_reactcor.SetVectM(vec,m);
+      qkn_mc = LVec_pmiss_reactcor -*mcmom_beam;     
+      TLorentzVector LVec_LambdaPim_react ;
+      LVec_LambdaPim_react = *react_Lambda+*react_pim;
+      LVec_LambdaPim_react = *react_Lambda+*react_pim;
+      double mm = LVec_LambdaPim_react.M()/1000.;
+      TVector3 vvec = LVec_LambdaPim_react.Vect()*0.001;
+      LVec_LambdaPim_reactcor.SetVectM(vvec,mm);
     }
 
     if( (qkn.P()>=anacuts::qvalcut) && (qvalcutflag==1) ) continue;
@@ -941,17 +964,17 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
 
     if(SimMode) {
       if(p2flag)q_IMppipi_p_wL_wp2->Fill(LVec_pim1_pim2_p.M(),qkn.P());
-      q_IMppim_mc->Fill(LVec_Lambda_mc.M(),qkn_mc.P());
-      q_IMppipi_mc->Fill(LVec_LambdaPim_mc.M(),qkn_mc.P());
+      q_IMppim_mc->Fill((*react_Lambda).M(),qkn_mc.P());
+      q_IMppipi_mc->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
 
       if(LambdaFlag) {
         //TLorentzVector TL_p_diff = LVec_p_miss -*mcmom_pmiss;
-        TLorentzVector TL_p_diff = LVec_p_miss -*react_pmiss*0.001;
+        TLorentzVector TL_p_diff = LVec_p_miss -LVec_pmiss_reactcor;
         diffpmissmom_mc->Fill(TL_p_diff.P());;
         if(p2flag) {
           //TLorentzVector TL_p2_diff = *LVec_p2 - *mcmom_pmiss;
-          TLorentzVector TL_p2_diff = *LVec_p2 - *react_pmiss*0.001;
-          diffp2mom_mc->Fill(TL_p2_diff.P());;
+          TLorentzVector TL_p2_diff = *LVec_p - LVec_pmiss_reactcor;
+          diffpmissmom_wp2_mc->Fill(TL_p2_diff.P());;
         }
       }
     }
@@ -982,9 +1005,9 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       IMppim1_IMppim2_p->Fill(LVec_pim2_p.M(),LVec_pim1_p.M());
       q_IMppipi_p->Fill(LVec_pim1_pim2_p.M(),qkn.P());
       if(SimMode) {
-        if(!p2flag)react_q_IMLambdaPim_1->Fill(LVec_LambdaPim_react.M()/1000.,qkn_mc.P());
+        if(!p2flag)react_q_IMLambdaPim_1->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
 
-        TLorentzVector TL_p_diff = *LVec_p -*mcmom_pmiss;
+        TLorentzVector TL_p_diff = *LVec_p - LVec_pmiss_reactcor;
         q_diffpmom_mc->Fill(TL_p_diff.P(),qkn_mc.P());
       }
     }
@@ -994,7 +1017,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       IMp2pim1_IMp2pim2_p2->Fill(LVec_pim2_p.M(),LVec_pim1_p.M());
       q_IMp2pipi_p2->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
       if(SimMode) {
-        react_q_IMLambdaPim_2->Fill(LVec_LambdaPim_react.M()/1000.,qkn_mc.P());
+        react_q_IMLambdaPim_2->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
       }
     }
 
@@ -1033,31 +1056,39 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
 
     //for acceptance map without combinatorial background
     if(SimMode){
-      double diffLpimMom = LVec_pim1_pim2_p.P()-(*mcmom_p+*mcmom_pim1+*mcmom_pim2).P();
-      double diffLpim2Mom = LVec_pim1_pim2_p2.P()-(*mcmom_p+*mcmom_pim1+*mcmom_pim2).P();
-      TLorentzVector LVec_diffpmiss = LVec_p_miss-(*mcmom_pmiss);
-      TLorentzVector LVec_diffp2miss = LVec_p2_miss-(*mcmom_pmiss);
-      TLorentzVector LVec_diffpcdsMom = *LVec_p-(*mcmom_pmiss);
-      TLorentzVector LVec_diffp2cdsMom = *LVec_p2-(*mcmom_pmiss);
-      double diffpmissMom = LVec_p_miss.P()-(*mcmom_pmiss).P();
-      double diffp2missMom = LVec_p2_miss.P()-(*mcmom_pmiss).P();
-      double diffpcdsMom = (*LVec_p).P()-(*mcmom_pmiss).P();
-      double diffp2cdsMom = (*LVec_p2).P()-(*mcmom_pmiss).P();
+      double diffLpimMom = LVec_pim1_pim2_p.P()-LVec_LambdaPim_reactcor.P();
+      double diffLpim2Mom = LVec_pim1_pim2_p2.P()-LVec_LambdaPim_reactcor.P();
+      TLorentzVector LVec_diffpmiss = LVec_p_miss-LVec_pmiss_reactcor;
+      TLorentzVector LVec_diffp2miss = LVec_p2_miss-LVec_pmiss_reactcor;
+      TLorentzVector LVec_diffpcdsMom = *LVec_p-LVec_pmiss_reactcor;
+      TLorentzVector LVec_diffp2cdsMom = *LVec_p2-LVec_pmiss_reactcor;
+      double diffpmissMom = LVec_p_miss.P()-LVec_pmiss_reactcor.P();
+      double diffp2missMom = LVec_p2_miss.P()-LVec_pmiss_reactcor.P();
+      double diffpcdsMom = (*LVec_p).P()-LVec_pmiss_reactcor.P();
+      double diffp2cdsMom = (*LVec_p2).P()-LVec_pmiss_reactcor.P();
       if(MissPFlag[0] && LambdaFlag) {
         if(p2flag)diffpmissMom_diffpcdsMom_wp2->Fill(LVec_diffpcdsMom.P(),LVec_diffpmiss.P());
         else diffpmissMom_diffpcdsMom_nop2->Fill(LVec_diffpcdsMom.P(),LVec_diffpmiss.P());
         if(LVec_diffpcdsMom.P()>LVec_diffpmiss.P()){
           diffpmissMom_diffLpimMom->Fill(diffLpimMom,diffpmissMom);
           q_IMppipi_p_wL_sum_nocombi[0]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
-          if(p2flag)q_IMppipi_p_wL_sum_nocombi_wp2[0]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
-          else q_IMppipi_p_wL_sum_nocombi_nop2[0]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
+          q_IMppipi_p_wL_sum_nocombi_mc[0]->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
+          if(p2flag){
+            q_IMppipi_p_wL_sum_nocombi_wp2[0]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
+            q_IMppipi_p_wL_sum_nocombi_wp2_mc[0]->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
+          }else{
+            q_IMppipi_p_wL_sum_nocombi_nop2[0]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
+            q_IMppipi_p_wL_sum_nocombi_nop2_mc[0]->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
+          }
         }
       }else if(MissP2Flag[0] && Lambda2Flag) {
         diffpmissMom_diffpcdsMom_wp2->Fill(LVec_diffp2cdsMom.P(),LVec_diffp2miss.P());
         if(LVec_diffp2cdsMom.P()>LVec_diffp2miss.P()){
           diffpmissMom_diffLpimMom->Fill(diffLpim2Mom,diffp2missMom);
           q_IMppipi_p_wL_sum_nocombi[0]->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
+          q_IMppipi_p_wL_sum_nocombi_mc[0]->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
           q_IMppipi_p_wL_sum_nocombi_wp2[0]->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
+          q_IMppipi_p_wL_sum_nocombi_wp2_mc[0]->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
         }
       }
     }
@@ -1138,7 +1169,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
         if(LVec_pim1_pim2_p.M()<1.6) {
           diffpcos_pcos->Fill(LVec_p_miss.CosTheta(),diffpcos);
         }
-        double diffmass = LVec_pim1_pim2_p.M()-LVec_LambdaPim_react.M()/1000.;
+        double diffmass = LVec_pim1_pim2_p.M()-LVec_LambdaPim_reactcor.M();
         diffIMppipi_IMppipi->Fill(LVec_pim1_pim2_p.M(),diffmass);
         if(LVec_p_miss.CosTheta()>ForwardAngle) {
           diffIMppipi_IMppipi_f->Fill(LVec_pim1_pim2_p.M(),diffmass);
@@ -1146,9 +1177,9 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
         double diffq = qkn.P()-qkn_mc.P();
         diffq_q->Fill(qkn.P(),diffq);
         diffq_IMppipi->Fill(LVec_pim1_pim2_p.M(), diffq);
-        q_IMppipi_p_wL_mc->Fill(LVec_LambdaPim_react.M()/1000.,qkn_mc.P());
-        if(p2flag) q_IMppipi_p_wL_wp2_mc->Fill(LVec_LambdaPim_react.M()/1000,qkn_mc.P());
-        else q_IMppipi_p_wL_nop2_mc->Fill(LVec_LambdaPim_react.M()/1000.,qkn_mc.P());
+        q_IMppipi_p_wL_mc->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
+        if(p2flag) q_IMppipi_p_wL_wp2_mc->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
+        else q_IMppipi_p_wL_nop2_mc->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
 
       }
     }else if(MissP2Flag[0] && Lambda2Flag ) {
@@ -1207,7 +1238,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
         if(LVec_pim1_pim2_p.M()<1.6) {
           diffpcos_pcos->Fill((*react_pmiss).CosTheta(),diffpcos);
         }
-        double diffmass = LVec_pim1_pim2_p.M()-LVec_LambdaPim_react.M()/1000.;
+        double diffmass = LVec_pim1_pim2_p.M()-LVec_LambdaPim_reactcor.M();
         diffIMppipi_IMppipi->Fill(LVec_pim1_pim2_p2.M(),diffmass);
         if(LVec_p2_miss.CosTheta()>ForwardAngle) {
           diffIMppipi_IMppipi_f->Fill(LVec_pim1_pim2_p2.M(),diffmass);
@@ -1215,8 +1246,8 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
         double diffq = qkn2.P()-qkn_mc.P();
         diffq_q->Fill(qkn2.P(),diffq);
         diffq_IMppipi->Fill(LVec_pim1_pim2_p.M(), diffq);
-        q_IMppipi_p_wL_mc->Fill(LVec_LambdaPim_mc.M()/1000.,qkn_mc.P());
-        q_IMppipi_p_wL_wp2_mc->Fill(LVec_LambdaPim_mc.M()/1000.,qkn_mc.P());
+        q_IMppipi_p_wL_mc->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
+        q_IMppipi_p_wL_wp2_mc->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
       }
     }
 
