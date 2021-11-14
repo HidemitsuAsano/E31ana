@@ -195,6 +195,8 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* MMom_MMass_p;
   TH2F* MMom_MMass_p2;
   TH2F* MMom_MMass_p_wL;
+  TH2F* MMom_MMass_p_wL_nop2;
+  TH2F* MMom_MMass_p_wL_wp2;
   TH2F* q_PMom;
   TH2F* q_MMom;
   TH2F* q_MMomCosTheta;
@@ -344,6 +346,14 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   MMom_MMass_p_wL->SetXTitle("Missing Mass [GeV/c^{2}]");
   MMom_MMass_p_wL->SetYTitle("Missing Mom. [GeV/c]");
 
+  MMom_MMass_p_wL_nop2 = new TH2F("MMom_MMass_p_wL_nop2","MMom_MMass_p_wL_nop2", nbinpmiss, pmisslow, pmisshigh, 200, 0, 2.0);
+  MMom_MMass_p_wL_nop2->SetXTitle("Missing Mass [GeV/c^{2}]");
+  MMom_MMass_p_wL_nop2->SetYTitle("Missing Mom. [GeV/c]");
+  
+  MMom_MMass_p_wL_wp2 = new TH2F("MMom_MMass_p_wL_wp2","MMom_MMass_p_wL_wp2", nbinpmiss, pmisslow, pmisshigh, 200, 0, 2.0);
+  MMom_MMass_p_wL_wp2->SetXTitle("Missing Mass [GeV/c^{2}]");
+  MMom_MMass_p_wL_wp2->SetYTitle("Missing Mom. [GeV/c]");
+  
   q_PMom = new TH2F("q_PMom","q_PMom",200,0,2,200,0,2.0);
   q_PMom->SetXTitle("P Mom. [GeV/c]");
   q_PMom->SetYTitle("Mom. Transfer. [GeV/c]");
@@ -1128,6 +1138,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       
       if(p2flag){
         q_MMpppipi_p_wL->Fill(LVec_allmiss.M(),qkn.P());
+        MMom_MMass_p_wL_wp2->Fill(pmiss_mass,pmiss_mom);
         if(SimMode){
           TLorentzVector LVec_allmiss_mc = *LVec_target+*LVec_beam-LVec_LambdaPim_reactcor-LVec_pmiss_reactcor;
           q_MMpppipi_p_wL_mc->Fill(LVec_allmiss_mc.M(),qkn_mc.P());
@@ -1230,6 +1241,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
         q_IMppipi_p_wL_sum_forward_minus->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
       }
       q_MMpppipi_p_wL->Fill(LVec_allmiss.M(),qkn2.P());
+      MMom_MMass_p_wL_wp2->Fill(p2miss_mass,p2miss_mom);
       if(SimMode){
         TLorentzVector LVec_allmiss_mc = *LVec_target+*LVec_beam-LVec_LambdaPim_reactcor-LVec_pmiss_reactcor;
         q_MMpppipi_p_wL_mc->Fill(LVec_allmiss_mc.M(),qkn_mc.P());
@@ -1308,7 +1320,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
           TLorentzVector LVec_diffp2cdsMom = *LVec_p2-LVec_pmiss_reactcor;
           if(LVec_diffpcdsMom.P()>LVec_diffpmiss.P()){
             q_IMppipi_p_wL_sum_nocombi[icut]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
-            if(p2flag)q_IMppipi_p_wL_sum_nocombi_wp2[icut]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
+            if(p2flag && ((LVec_allmiss.M()>-0.2)))q_IMppipi_p_wL_sum_nocombi_wp2[icut]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
             else      q_IMppipi_p_wL_sum_nocombi_nop2[icut]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
           }
         }
@@ -1319,7 +1331,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
           TLorentzVector LVec_diffp2miss = LVec_p2_miss-LVec_pmiss_reactcor;
           TLorentzVector LVec_diffpcdsMom = *LVec_p-LVec_pmiss_reactcor;
           TLorentzVector LVec_diffp2cdsMom = *LVec_p2-LVec_pmiss_reactcor;
-          if(LVec_diffp2cdsMom.P()>LVec_diffp2miss.P()){
+          if(LVec_diffp2cdsMom.P()>LVec_diffp2miss.P() && ((LVec_allmiss.M()>-0.2))){
             q_IMppipi_p_wL_sum_nocombi[icut]->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
             q_IMppipi_p_wL_sum_nocombi_wp2[icut]->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
           }
