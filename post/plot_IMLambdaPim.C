@@ -29,6 +29,7 @@ const bool gridon=true;
 const bool staton=false;
 const bool UseKinFitVal = false;
 const double ForwardAngle=0.996;
+const double MallCut= -0.2;
 
 int GetID(const TVector3 &pos,TGeoManager *geom);
 //mode 0: Sigma+ ,1: Sigma-
@@ -1101,10 +1102,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
           diffpmissMom_diffLpimMom->Fill(diffLpimMom,diffpmissMom);
           q_IMppipi_p_wL_sum_nocombi[0]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
           q_IMppipi_p_wL_sum_nocombi_mc[0]->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
-          if(p2flag && (LVec_allmiss.M()>-0.2)   ){ // && LVec_pmiss_reactcor.CosTheta()>0.60 ){
+          if(p2flag && (LVec_allmiss.M()>MallCut)   ){ // && LVec_pmiss_reactcor.CosTheta()>0.60 ){
             q_IMppipi_p_wL_sum_nocombi_wp2[0]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
             q_IMppipi_p_wL_sum_nocombi_wp2_mc[0]->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
-          }else{
+          }else if(!p2flag){
             q_IMppipi_p_wL_sum_nocombi_nop2[0]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
             q_IMppipi_p_wL_sum_nocombi_nop2_mc[0]->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
           }
@@ -1120,8 +1121,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
           diffpmissMom_diffLpimMom->Fill(diffLpim2Mom,diffp2missMom);
           q_IMppipi_p_wL_sum_nocombi[0]->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
           q_IMppipi_p_wL_sum_nocombi_mc[0]->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
-          q_IMppipi_p_wL_sum_nocombi_wp2[0]->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
-          q_IMppipi_p_wL_sum_nocombi_wp2_mc[0]->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
+          if( LVec_allmiss.M()>MallCut   ){ 
+            q_IMppipi_p_wL_sum_nocombi_wp2[0]->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
+            q_IMppipi_p_wL_sum_nocombi_wp2_mc[0]->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
+          }
         }
         if(LVec_diffpim1p2.P()<LVec_diffpim2p2.P() ){
           diffLmom_mc->Fill(LVec_pim1_p2.P()-LVec_Lambda_reactcor.P());
@@ -1145,8 +1148,8 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
         }
       }
 
-      if(p2flag)q_IMppipi_p_wL_sum_wp2[0]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
-      else q_IMppipi_p_wL_sum_nop2[0]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
+      if(p2flag &&  (LVec_allmiss.M()>MallCut)   )q_IMppipi_p_wL_sum_wp2[0]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
+      else if(!p2flag)q_IMppipi_p_wL_sum_nop2[0]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
       CosTheta_IMppipi_p_wL_sum->Fill(LVec_pim1_pim2_p.M(),LVec_p_miss.CosTheta());
       if(LVec_p_miss.CosTheta()>ForwardAngle) {
         q_IMppipi_p_wL_sum_forward->Fill(LVec_pim1_pim2_p.M(),qkn.P());
@@ -1250,12 +1253,14 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       if(ForwardCharge)q_IMppipi_p_wL_sum_fp->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
       q_P2Mom_p2_wL->Fill((*LVec_p2).P(),qkn2.P());
       q_PMom_p_wL_sum->Fill((*LVec_p2).P(),qkn2.P());
-      q2_MMom2CosTheta_p2_wL_wp2->Fill(LVec_p2_miss.CosTheta(),qkn2.P());
-      q_IMppipi_p_wL_sum_wp2[0]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
-      if((anacuts::Lambda_MIN<LVec_pim1_p2.M() && LVec_pim1_p2.M()<anacuts::Lambda_MAX)) {
-        MMass_IMp2pim_p2_wL->Fill(LVec_pim1_p2.M(),p2miss_mass);
-      } else if((anacuts::Lambda_MIN<LVec_pim2_p2.M() && LVec_pim2_p2.M()<anacuts::Lambda_MAX)) {
-        MMass_IMp2pim_p2_wL->Fill(LVec_pim2_p2.M(),p2miss_mass);
+      if(LVec_allmiss.M()>MallCut){
+        q2_MMom2CosTheta_p2_wL_wp2->Fill(LVec_p2_miss.CosTheta(),qkn2.P());
+        q_IMppipi_p_wL_sum_wp2[0]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
+        if((anacuts::Lambda_MIN<LVec_pim1_p2.M() && LVec_pim1_p2.M()<anacuts::Lambda_MAX)) {
+          MMass_IMp2pim_p2_wL->Fill(LVec_pim1_p2.M(),p2miss_mass);
+        } else if((anacuts::Lambda_MIN<LVec_pim2_p2.M() && LVec_pim2_p2.M()<anacuts::Lambda_MAX)) {
+          MMass_IMp2pim_p2_wL->Fill(LVec_pim2_p2.M(),p2miss_mass);
+        }
       }
       //MMom_MMass_p_wL->Fill(pmiss_mass,pmiss_mom);
       IMp2pim1_IMp2pim2_p2_wL->Fill(LVec_pim2_p2.M(),LVec_pim1_p2.M());
@@ -1311,8 +1316,8 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     for(int icut=1;icut<5;icut++){
       if(MissPFlag[icut] && LambdaFlag) {
         q_IMppipi_p_wL_sum[icut]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
-        if(p2flag)q_IMppipi_p_wL_sum_wp2[icut]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
-        else      q_IMppipi_p_wL_sum_nop2[icut]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
+        if(p2flag && LVec_allmiss.M()>MallCut )q_IMppipi_p_wL_sum_wp2[icut]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
+        else if(!p2flag) q_IMppipi_p_wL_sum_nop2[icut]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
         if(SimMode){
           TLorentzVector LVec_diffpmiss = LVec_p_miss-LVec_pmiss_reactcor;
           TLorentzVector LVec_diffp2miss = LVec_p2_miss-LVec_pmiss_reactcor;
@@ -1320,18 +1325,21 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
           TLorentzVector LVec_diffp2cdsMom = *LVec_p2-LVec_pmiss_reactcor;
           if(LVec_diffpcdsMom.P()>LVec_diffpmiss.P()){
             q_IMppipi_p_wL_sum_nocombi[icut]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
-            if(p2flag && ((LVec_allmiss.M()>-0.2)))q_IMppipi_p_wL_sum_nocombi_wp2[icut]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
-            else      q_IMppipi_p_wL_sum_nocombi_nop2[icut]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
+            if(p2flag && ((LVec_allmiss.M()>MallCut)))q_IMppipi_p_wL_sum_nocombi_wp2[icut]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
+            else if(!p2flag){
+              q_IMppipi_p_wL_sum_nocombi_nop2[icut]->Fill(LVec_pim1_pim2_p.M(),qkn.P());
+              q_IMppipi_p_wL_sum_nocombi_nop2_mc[icut]->Fill(LVec_LambdaPim_reactcor.M(),qkn_mc.P());
+            }
           }
         }
       }else if(MissP2Flag[icut] && Lambda2Flag){
-        if(p2flag)q_IMppipi_p_wL_sum_wp2[icut]->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
+        if(p2flag && LVec_allmiss.M()>MallCut )q_IMppipi_p_wL_sum_wp2[icut]->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
         if(SimMode){
           TLorentzVector LVec_diffpmiss = LVec_p_miss-LVec_pmiss_reactcor;
           TLorentzVector LVec_diffp2miss = LVec_p2_miss-LVec_pmiss_reactcor;
           TLorentzVector LVec_diffpcdsMom = *LVec_p-LVec_pmiss_reactcor;
           TLorentzVector LVec_diffp2cdsMom = *LVec_p2-LVec_pmiss_reactcor;
-          if(LVec_diffp2cdsMom.P()>LVec_diffp2miss.P() && ((LVec_allmiss.M()>-0.2))){
+          if(LVec_diffp2cdsMom.P()>LVec_diffp2miss.P() && ((LVec_allmiss.M()>MallCut))){
             q_IMppipi_p_wL_sum_nocombi[icut]->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
             q_IMppipi_p_wL_sum_nocombi_wp2[icut]->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
           }

@@ -3,7 +3,7 @@ void CS_IMLambdaPim()
   const double ForwardAngle = 0.996;
   gStyle->SetOptStat(0);
   TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v16_out.root","READ");
-  TFile *facc = TFile::Open("../simpost/accmapLpimv21.root","READ");
+  TFile *facc = TFile::Open("../simpost/accmapLpimv23.root","READ");
   TFile *flumi = TFile::Open("InteLumi.root","READ");
   TFile *fkin = TFile::Open("../simpost/NumericalRootFinderLPim.root","READ");
   TParameter<double>*IntegLumi = (TParameter<double>*)flumi->Get("IntegLumi");
@@ -14,7 +14,7 @@ void CS_IMLambdaPim()
   std::cout << "Lumi:  " << lumi << std::endl;
   std::cout << "Err:   " << lumierr << std::endl;
   TCanvas *cq_IMppipi_p_wL_sum  = new TCanvas("cq_IMppipi_p_wL_sum","cq_IMppipi_p_wL_sum",1000,800);
-  TH2F* q_IMppipi_p_wL_sum = (TH2F*)file->Get("q_IMppipi_p_wL_sum");
+  TH2F* q_IMppipi_p_wL_sum = (TH2F*)file->Get("q_IMppipi_p_wL_sum0");
   q_IMppipi_p_wL_sum->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
   q_IMppipi_p_wL_sum->Draw("colz");
   TGraph *gth = (TGraph*)fkin->Get("th");
@@ -32,7 +32,7 @@ void CS_IMLambdaPim()
   q_IMppipi_p_wL_sum_f->Draw("colz");
   
   TCanvas *cacc = new TCanvas("cacc","cacc",1000,800);
-  TH2F* q_IMppipi_p_wL_acc = (TH2F*)facc->Get("q_IMppipi_p_wL_acc_clean");
+  TH2F* q_IMppipi_p_wL_acc = (TH2F*)facc->Get("q_IMppipi_p_wL_acc_clean0");
   q_IMppipi_p_wL_acc->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
   q_IMppipi_p_wL_acc->Draw("colz");  
   //TGraph *gth = (TGraph*)fkin->Get("th");
@@ -99,6 +99,26 @@ void CS_IMLambdaPim()
   CS_q->SetYTitle("d#rho/dM [#mu b /(MeV/c^{2})]");
   CS_q->GetYaxis()->CenterTitle();
   CS_q->Draw("E");
+  
+  //divided acceptance map
+  TH2F* q_IMppipi_p_wL_sum_nop2[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
+  TH2F* q_IMppipi_p_wL_sum_wp2[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
+
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_sum_nop2[icut] = (TH2F*)file->Get(Form("q_IMppipi_p_wL_sum_nop2%d",icut));
+    q_IMppipi_p_wL_sum_wp2[icut]  = (TH2F*)file->Get(Form("q_IMppipi_p_wL_sum_wp2%d",icut));
+  }
+  
+  TCanvas *cq_IMppipi_p_wL_sum_nop2[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
+  TCanvas *cq_IMppipi_p_wL_sum_wp2[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
+  
+  for(int icut=0;icut<5;icut++){
+    cq_IMppipi_p_wL_sum_nop2[icut] = new TCanvas(Form("cq_IMppipi_p_wL_sum_nop2%d",icut),Form("cq_IMppipi_p_wL_sum_nop2%d",icut),1000,800);
+    q_IMppipi_p_wL_sum_nop2[icut]->Draw("colz");
+    cq_IMppipi_p_wL_sum_wp2[icut] = new TCanvas(Form("cq_IMppipi_p_wL_sum_wp2%d",icut),Form("cq_IMppipi_p_wL_sum_wp2%d",icut),1000,800);
+    q_IMppipi_p_wL_sum_wp2[icut]->Draw("colz");
+  }
+
 
 
   TCanvas *cIMLpim_coscut = new TCanvas("cIMLpim_coscut","cIMLpim_coscut",1000,800);
@@ -124,7 +144,8 @@ void CS_IMLambdaPim()
   TH2F* CS_CosTheta_IMppipi_p_wL = (TH2F*)CosTheta_IMppipi_p_wL_sum->Clone("CS_CosTheta_IMppipi_p_wL");
   CS_CosTheta_IMppipi_p_wL->Divide(CosTheta_IMppipi_p_wL_acc);
 //  CS_CosTheta_IMppipi_p_wL->Scale(1.0/binwidth/trigScale/lumi/0.0314);
-  CS_CosTheta_IMppipi_p_wL->Scale(1.0/binwidth/trigScale/lumi/0.02512);
+  const double solidAngleCoscut = 0.02512;
+  CS_CosTheta_IMppipi_p_wL->Scale(1.0/binwidth/trigScale/lumi/solidAngleCoscut);
   CS_CosTheta_IMppipi_p_wL->Draw("colz");
 
 
