@@ -315,6 +315,69 @@ void GetAccMapLpim()
     gr_65->Draw("pc");
     gth->Draw("pc");
   }
+
+
+  TH2F* q_IMppipi_p_wL_nop2_acc_clean[5];     
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_nop2_acc_clean[icut] = (TH2F*)q_IMppipi_p_wL_nop2_acc[icut]->Clone(Form("q_IMppipi_p_wL_nop2_acc_clean%d",icut));
+    q_IMppipi_p_wL_nop2_acc_clean[icut]->SetName(Form("q_IMppipi_p_wL_nop2_acc_clean%d",icut));
+    q_IMppipi_p_wL_nop2_acc_clean[icut]->SetTitle(Form("q_IMppipi_p_wL_nop2_acc_clean%d",icut));
+    for(int ix=0;ix<q_IMppipi_p_wL_nop2_accerr[icut]->GetNbinsX();ix++){
+      for(int iy=0;iy<q_IMppipi_p_wL_nop2_accerr[icut]->GetNbinsY();iy++){
+        double err = q_IMppipi_p_wL_nop2_accerr[icut]->GetBinContent(ix,iy);
+        if( RemoveNotEnough && (err>UncertCut) 
+            //  || q_IMppipi_p_wL_acc->GetBinContent(ix,iy)>0.053
+            //  || q_IMppipi_p_wL_acc->GetXaxis()->GetBinCenter(ix)>1.895 
+            || q_IMppipi_p_wL_nop2_acc[icut]->GetXaxis()->GetBinCenter(ix)<1.260) {
+          q_IMppipi_p_wL_nop2_acc_clean[icut]->SetBinContent(ix,iy,0);
+          q_IMppipi_p_wL_nop2_acc_clean[icut]->SetBinError(ix,iy,0);
+        }
+      }
+    }
+  }
+
+  TCanvas *cacccleanup_nop2[5];
+  for(int icut=0;icut<5;icut++){
+    cacccleanup_nop2[icut]= new TCanvas(Form("cacccleanup_nop2%d",icut),Form("cacccleanup_nop2%d",icut),1000,800);
+    q_IMppipi_p_wL_nop2_acc_clean[icut]->SetMaximum(q_IMppipi_p_wL_nop2_acc[icut]->GetMaximum());
+    q_IMppipi_p_wL_nop2_acc_clean[icut]->Draw("colz");
+    gr_0->Draw("pc");
+    gr_100->Draw("pc");
+    gr_65->Draw("pc");
+    gth->Draw("pc");
+  }
+
+  TH2F* q_IMppipi_p_wL_wp2_acc_clean[5];     
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_wp2_acc_clean[icut] = (TH2F*)q_IMppipi_p_wL_wp2_acc[icut]->Clone(Form("q_IMppipi_p_wL_wp2_acc_clean%d",icut));
+    q_IMppipi_p_wL_wp2_acc_clean[icut]->SetName(Form("q_IMppipi_p_wL_wp2_acc_clean%d",icut));
+    q_IMppipi_p_wL_wp2_acc_clean[icut]->SetTitle(Form("q_IMppipi_p_wL_wp2_acc_clean%d",icut));
+    for(int ix=0;ix<q_IMppipi_p_wL_wp2_accerr[icut]->GetNbinsX();ix++){
+      for(int iy=0;iy<q_IMppipi_p_wL_wp2_accerr[icut]->GetNbinsY();iy++){
+        double err = q_IMppipi_p_wL_wp2_accerr[icut]->GetBinContent(ix,iy);
+        if( RemoveNotEnough && (err>UncertCut) 
+            //  || q_IMppipi_p_wL_acc->GetBinContent(ix,iy)>0.053
+            //  || q_IMppipi_p_wL_acc->GetXaxis()->GetBinCenter(ix)>1.895 
+            || q_IMppipi_p_wL_wp2_acc[icut]->GetXaxis()->GetBinCenter(ix)<1.260) {
+          q_IMppipi_p_wL_wp2_acc_clean[icut]->SetBinContent(ix,iy,0);
+          q_IMppipi_p_wL_wp2_acc_clean[icut]->SetBinError(ix,iy,0);
+        }
+      }
+    }
+  }
+
+  TCanvas *cacccleanup_wp2[5];
+  for(int icut=0;icut<5;icut++){
+    cacccleanup_wp2[icut]= new TCanvas(Form("cacccleanup_wp2%d",icut),Form("cacccleanup_wp2%d",icut),1000,800);
+    q_IMppipi_p_wL_wp2_acc_clean[icut]->SetMaximum(q_IMppipi_p_wL_wp2_acc[icut]->GetMaximum());
+    q_IMppipi_p_wL_wp2_acc_clean[icut]->Draw("colz");
+    gr_0->Draw("pc");
+    gr_100->Draw("pc");
+    gr_65->Draw("pc");
+    gth->Draw("pc");
+  }
+
+
   //////////////////////////////////////////////////////////
   //acceptance map for costheta_missing p v.s. IM(pi-Lambda) 
   //////////////////////////////////////////////////////////
@@ -427,8 +490,14 @@ void GetAccMapLpim()
   TFile *fout = new TFile("accmapLpimv23.root","RECREATE");
   for(int icut=0;icut<5;icut++){
     q_IMppipi_p_wL_acc[icut]->Write();
+    q_IMppipi_p_wL_nop2_acc[icut]->Write();
+    q_IMppipi_p_wL_wp2_acc[icut]->Write();
     q_IMppipi_p_wL_accerr[icut]->Write();
+    q_IMppipi_p_wL_nop2_accerr[icut]->Write();
+    q_IMppipi_p_wL_wp2_accerr[icut]->Write();
     q_IMppipi_p_wL_acc_clean[icut]->Write();
+    q_IMppipi_p_wL_nop2_acc_clean[icut]->Write();
+    q_IMppipi_p_wL_wp2_acc_clean[icut]->Write();
   }
   CosTheta_IMppipi_p_wL_acc->Write();
   CosTheta_IMppipi_p_wL_acc_clean->Write();
