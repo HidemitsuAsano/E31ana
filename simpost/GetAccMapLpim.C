@@ -106,6 +106,40 @@ void GetAccMapLpim()
     }
   }//icut
 
+
+  //get no p2 hists_mc w/ true val.
+  TH2F* q_IMppipi_p_wL_sum_nop2_mc[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_sum_nop2_mc[icut]= (TH2F*)fLpim->Get(Form("q_IMppipi_p_wL_sum_nocombi_nop2_mc%d",icut));
+    q_IMppipi_p_wL_sum_nop2_mc[icut]->GetYaxis()->SetRangeUser(0,1.5);
+    q_IMppipi_p_wL_sum_nop2_mc[icut]->SetTitle("reco. evt.");
+    q_IMppipi_p_wL_sum_nop2_mc[icut]->Scale(1./SimBeamSurvivalRate);
+  }//icut 
+
+  TH2F* q_IMppipi_p_wL_nop2_mc_acc[5];
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_nop2_mc_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_nop2_mc[icut]->Clone(Form("q_IMppipi_p_wL_nop2_mc_acc%d",icut));
+    q_IMppipi_p_wL_nop2_mc_acc[icut]->SetTitle(Form("q_IMppipi_p_wL nop2 true val. acc. %d",icut));
+    q_IMppipi_p_wL_nop2_mc_acc[icut]->Print("base");
+    q_IMppipi_p_wL_nop2_mc_acc[icut]->Divide(q_IMppipi_p_wL_nop2_mc_acc[icut],q_IMLPim_gen,1.0,1.0,"b");
+  }
+
+  TH2F* q_IMppipi_p_wL_nop2_mc_accerr[5];
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_nop2_mc_accerr[icut] = (TH2F*)q_IMppipi_p_wL_nop2_mc_acc[icut]->Clone(Form("q_IMppipi_p_wL_nop2_mc_accerr%d",icut));
+    q_IMppipi_p_wL_nop2_mc_accerr[icut]->Reset();
+    q_IMppipi_p_wL_nop2_mc_accerr[icut]->SetTitle(Form("q_IMppipi_p_wL_nop2_mc precision %d",icut));
+    for(int ix=0;ix<q_IMppipi_p_wL_nop2_mc_accerr[icut]->GetNbinsX();ix++){
+      for(int iy=0;iy<q_IMppipi_p_wL_nop2_mc_accerr[icut]->GetNbinsY();iy++){
+        double cont = q_IMppipi_p_wL_nop2_mc_acc[icut]->GetBinContent(ix,iy);
+        double err = q_IMppipi_p_wL_nop2_mc_acc[icut]->GetBinError(ix,iy);
+        if(cont!=0){
+          q_IMppipi_p_wL_nop2_mc_accerr[icut]->SetBinContent(ix,iy,err/cont);  
+        }
+      }
+    }
+  }//icut
+
   //get w p2 hists
   TH2F* q_IMppipi_p_wL_sum_wp2[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
   for(int icut=0;icut<5;icut++){
@@ -138,7 +172,41 @@ void GetAccMapLpim()
       }
     }
   }//icut
-  
+ 
+  //get w p2 hists w/ true val.
+  TH2F* q_IMppipi_p_wL_sum_wp2_mc[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_sum_wp2_mc[icut]= (TH2F*)fLpim->Get(Form("q_IMppipi_p_wL_sum_nocombi_wp2_mc%d",icut));
+    q_IMppipi_p_wL_sum_wp2_mc[icut]->GetYaxis()->SetRangeUser(0,1.5);
+    q_IMppipi_p_wL_sum_wp2_mc[icut]->SetTitle("reco. evt.");
+    q_IMppipi_p_wL_sum_wp2_mc[icut]->Scale(1./SimBeamSurvivalRate);
+  }//icut 
+
+  TH2F* q_IMppipi_p_wL_wp2_mc_acc[5];
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_wp2_mc_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_wp2_mc[icut]->Clone(Form("q_IMppipi_p_wL_wp2_mc_acc%d",icut));
+    q_IMppipi_p_wL_wp2_mc_acc[icut]->SetTitle(Form("q_IMppipi_p_wL wp2 true val. acc. %d",icut));
+    q_IMppipi_p_wL_wp2_mc_acc[icut]->Print("base");
+    q_IMppipi_p_wL_wp2_mc_acc[icut]->Divide(q_IMppipi_p_wL_wp2_mc_acc[icut],q_IMLPim_gen,1.0,1.0,"b");
+  }
+
+  TH2F* q_IMppipi_p_wL_wp2_mc_accerr[5];
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_wp2_mc_accerr[icut] = (TH2F*)q_IMppipi_p_wL_wp2_mc_acc[icut]->Clone(Form("q_IMppipi_p_wL_wp2_mc_accerr%d",icut));
+    q_IMppipi_p_wL_wp2_mc_accerr[icut]->Reset();
+    q_IMppipi_p_wL_wp2_mc_accerr[icut]->SetTitle(Form("q_IMppipi_p_wL_wp2_mc precision %d",icut));
+    for(int ix=0;ix<q_IMppipi_p_wL_wp2_mc_accerr[icut]->GetNbinsX();ix++){
+      for(int iy=0;iy<q_IMppipi_p_wL_wp2_mc_accerr[icut]->GetNbinsY();iy++){
+        double cont = q_IMppipi_p_wL_wp2_mc_acc[icut]->GetBinContent(ix,iy);
+        double err = q_IMppipi_p_wL_wp2_mc_acc[icut]->GetBinError(ix,iy);
+        if(cont!=0){
+          q_IMppipi_p_wL_wp2_mc_accerr[icut]->SetBinContent(ix,iy,err/cont);  
+        }
+      }
+    }
+  }//icut
+
+
   TCanvas *cLpim[5];
   TGraph *gth = (TGraph*)fkin->Get("th");
   TGraph *gr_0 = (TGraph*)fkin->Get("gr_0");
@@ -206,6 +274,37 @@ void GetAccMapLpim()
     q_IMppipi_p_wL_nop2_accerr[icut]->Draw("colz");
   }
   
+  TCanvas *cLpim_nop2_mc[5];
+  for(int icut=0;icut<5;icut++){
+    cLpim_nop2_mc[icut] = new TCanvas(Form("cLpim_nop2_mc%d",icut),Form("cLpim_nop2_mc%d",icut),2000,1200);
+    cLpim_nop2_mc[icut]->Divide(2,2);
+    cLpim_nop2_mc[icut]->cd(1);
+    q_IMLPim_gen->Draw("colz");
+ 
+ 
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_65->Draw("pc");
+    //gr_100->Draw("pc");
+    cLpim_nop2_mc[icut]->cd(2);
+    q_IMppipi_p_wL_sum_nop2_mc[icut]->Draw("colz");
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_100->Draw("pc");
+    //gr_65->Draw("pc");
+    cLpim_nop2_mc[icut]->cd(3);
+    //q_IMppipi_p_wL_acc[icut]->SetMaximum(0.055);
+    q_IMppipi_p_wL_nop2_mc_acc[icut]->SetMaximum(0.075);
+    q_IMppipi_p_wL_nop2_mc_acc[icut]->Draw("colz");
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_100->Draw("pc");
+    //gr_65->Draw("pc");
+    cLpim_nop2_mc[icut]->cd(4);
+    q_IMppipi_p_wL_nop2_mc_accerr[icut]->SetMaximum(0.5);
+    q_IMppipi_p_wL_nop2_mc_accerr[icut]->Draw("colz");
+  }
+  
   TCanvas *cLpim_wp2[5];
   for(int icut=0;icut<5;icut++){
     cLpim_wp2[icut] = new TCanvas(Form("cLpim_wp2%d",icut),Form("cLpim_wp2%d",icut),2000,1200);
@@ -237,6 +336,37 @@ void GetAccMapLpim()
     q_IMppipi_p_wL_wp2_accerr[icut]->Draw("colz");
   }
   
+
+  TCanvas *cLpim_wp2_mc[5];
+  for(int icut=0;icut<5;icut++){
+    cLpim_wp2_mc[icut] = new TCanvas(Form("cLpim_wp2_mc%d",icut),Form("cLpim_wp2_mc%d",icut),2000,1200);
+    cLpim_wp2_mc[icut]->Divide(2,2);
+    cLpim_wp2_mc[icut]->cd(1);
+    q_IMLPim_gen->Draw("colz");
+ 
+ 
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_65->Draw("pc");
+    //gr_100->Draw("pc");
+    cLpim_wp2_mc[icut]->cd(2);
+    q_IMppipi_p_wL_sum_wp2_mc[icut]->Draw("colz");
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_100->Draw("pc");
+    //gr_65->Draw("pc");
+    cLpim_wp2_mc[icut]->cd(3);
+    //q_IMppipi_p_wL_acc[icut]->SetMaximum(0.055);
+    q_IMppipi_p_wL_wp2_mc_acc[icut]->SetMaximum(0.075);
+    q_IMppipi_p_wL_wp2_mc_acc[icut]->Draw("colz");
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_100->Draw("pc");
+    //gr_65->Draw("pc");
+    cLpim_wp2_mc[icut]->cd(4);
+    q_IMppipi_p_wL_wp2_mc_accerr[icut]->SetMaximum(0.5);
+    q_IMppipi_p_wL_wp2_mc_accerr[icut]->Draw("colz");
+  }
   
   /*
   //test for reco.events/acc map 
@@ -318,10 +448,14 @@ void GetAccMapLpim()
 
 
   TH2F* q_IMppipi_p_wL_nop2_acc_clean[5];     
+  TH2F* q_IMppipi_p_wL_nop2_mc_acc_clean[5];     
   for(int icut=0;icut<5;icut++){
     q_IMppipi_p_wL_nop2_acc_clean[icut] = (TH2F*)q_IMppipi_p_wL_nop2_acc[icut]->Clone(Form("q_IMppipi_p_wL_nop2_acc_clean%d",icut));
     q_IMppipi_p_wL_nop2_acc_clean[icut]->SetName(Form("q_IMppipi_p_wL_nop2_acc_clean%d",icut));
     q_IMppipi_p_wL_nop2_acc_clean[icut]->SetTitle(Form("q_IMppipi_p_wL_nop2_acc_clean%d",icut));
+    q_IMppipi_p_wL_nop2_mc_acc_clean[icut] = (TH2F*)q_IMppipi_p_wL_nop2_mc_acc[icut]->Clone(Form("q_IMppipi_p_wL_nop2_mc_acc_clean%d",icut));
+    q_IMppipi_p_wL_nop2_mc_acc_clean[icut]->SetName(Form("q_IMppipi_p_wL_nop2_mc_acc_clean%d",icut));
+    q_IMppipi_p_wL_nop2_mc_acc_clean[icut]->SetTitle(Form("q_IMppipi_p_wL_nop2_mc_acc_clean%d",icut));
     for(int ix=0;ix<q_IMppipi_p_wL_nop2_accerr[icut]->GetNbinsX();ix++){
       for(int iy=0;iy<q_IMppipi_p_wL_nop2_accerr[icut]->GetNbinsY();iy++){
         double err = q_IMppipi_p_wL_nop2_accerr[icut]->GetBinContent(ix,iy);
@@ -331,6 +465,8 @@ void GetAccMapLpim()
             || q_IMppipi_p_wL_nop2_acc[icut]->GetXaxis()->GetBinCenter(ix)<1.260) {
           q_IMppipi_p_wL_nop2_acc_clean[icut]->SetBinContent(ix,iy,0);
           q_IMppipi_p_wL_nop2_acc_clean[icut]->SetBinError(ix,iy,0);
+          q_IMppipi_p_wL_nop2_mc_acc_clean[icut]->SetBinContent(ix,iy,0);
+          q_IMppipi_p_wL_nop2_mc_acc_clean[icut]->SetBinError(ix,iy,0);
         }
       }
     }
@@ -348,10 +484,14 @@ void GetAccMapLpim()
   }
 
   TH2F* q_IMppipi_p_wL_wp2_acc_clean[5];     
+  TH2F* q_IMppipi_p_wL_wp2_mc_acc_clean[5];     
   for(int icut=0;icut<5;icut++){
     q_IMppipi_p_wL_wp2_acc_clean[icut] = (TH2F*)q_IMppipi_p_wL_wp2_acc[icut]->Clone(Form("q_IMppipi_p_wL_wp2_acc_clean%d",icut));
     q_IMppipi_p_wL_wp2_acc_clean[icut]->SetName(Form("q_IMppipi_p_wL_wp2_acc_clean%d",icut));
     q_IMppipi_p_wL_wp2_acc_clean[icut]->SetTitle(Form("q_IMppipi_p_wL_wp2_acc_clean%d",icut));
+    q_IMppipi_p_wL_wp2_mc_acc_clean[icut] = (TH2F*)q_IMppipi_p_wL_wp2_mc_acc[icut]->Clone(Form("q_IMppipi_p_wL_wp2_mc_acc_clean%d",icut));
+    q_IMppipi_p_wL_wp2_mc_acc_clean[icut]->SetName(Form("q_IMppipi_p_wL_wp2_mc_acc_clean%d",icut));
+    q_IMppipi_p_wL_wp2_mc_acc_clean[icut]->SetTitle(Form("q_IMppipi_p_wL_wp2_mc_acc_clean%d",icut));
     for(int ix=0;ix<q_IMppipi_p_wL_wp2_accerr[icut]->GetNbinsX();ix++){
       for(int iy=0;iy<q_IMppipi_p_wL_wp2_accerr[icut]->GetNbinsY();iy++){
         double err = q_IMppipi_p_wL_wp2_accerr[icut]->GetBinContent(ix,iy);
@@ -361,6 +501,8 @@ void GetAccMapLpim()
             || q_IMppipi_p_wL_wp2_acc[icut]->GetXaxis()->GetBinCenter(ix)<1.260) {
           q_IMppipi_p_wL_wp2_acc_clean[icut]->SetBinContent(ix,iy,0);
           q_IMppipi_p_wL_wp2_acc_clean[icut]->SetBinError(ix,iy,0);
+          q_IMppipi_p_wL_wp2_mc_acc_clean[icut]->SetBinContent(ix,iy,0);
+          q_IMppipi_p_wL_wp2_mc_acc_clean[icut]->SetBinError(ix,iy,0);
         }
       }
     }
@@ -419,8 +561,6 @@ void GetAccMapLpim()
     }
   }
   
-
-
   TCanvas *cLpimCos;
   cLpimCos = new TCanvas(Form("cLpimCos"),Form("cLpimCos"),2000,1200);
   cLpimCos->Divide(2,2);
@@ -492,12 +632,18 @@ void GetAccMapLpim()
     q_IMppipi_p_wL_acc[icut]->Write();
     q_IMppipi_p_wL_nop2_acc[icut]->Write();
     q_IMppipi_p_wL_wp2_acc[icut]->Write();
+    q_IMppipi_p_wL_nop2_mc_acc[icut]->Write();
+    q_IMppipi_p_wL_wp2_mc_acc[icut]->Write();
     q_IMppipi_p_wL_accerr[icut]->Write();
     q_IMppipi_p_wL_nop2_accerr[icut]->Write();
     q_IMppipi_p_wL_wp2_accerr[icut]->Write();
+    q_IMppipi_p_wL_nop2_mc_accerr[icut]->Write();
+    q_IMppipi_p_wL_wp2_mc_accerr[icut]->Write();
     q_IMppipi_p_wL_acc_clean[icut]->Write();
     q_IMppipi_p_wL_nop2_acc_clean[icut]->Write();
     q_IMppipi_p_wL_wp2_acc_clean[icut]->Write();
+    q_IMppipi_p_wL_nop2_mc_acc_clean[icut]->Write();
+    q_IMppipi_p_wL_wp2_mc_acc_clean[icut]->Write();
   }
   CosTheta_IMppipi_p_wL_acc->Write();
   CosTheta_IMppipi_p_wL_acc_clean->Write();
