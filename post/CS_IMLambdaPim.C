@@ -103,7 +103,6 @@ void CS_IMLambdaPim()
   //divided acceptance map
   TH2F* q_IMppipi_p_wL_sum_nop2[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
   TH2F* q_IMppipi_p_wL_sum_wp2[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
-
   for(int icut=0;icut<5;icut++){
     q_IMppipi_p_wL_sum_nop2[icut] = (TH2F*)file->Get(Form("q_IMppipi_p_wL_sum_nop2%d",icut));
     q_IMppipi_p_wL_sum_wp2[icut]  = (TH2F*)file->Get(Form("q_IMppipi_p_wL_sum_wp2%d",icut));
@@ -111,13 +110,39 @@ void CS_IMLambdaPim()
   
   TCanvas *cq_IMppipi_p_wL_sum_nop2[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
   TCanvas *cq_IMppipi_p_wL_sum_wp2[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
-  
   for(int icut=0;icut<5;icut++){
     cq_IMppipi_p_wL_sum_nop2[icut] = new TCanvas(Form("cq_IMppipi_p_wL_sum_nop2%d",icut),Form("cq_IMppipi_p_wL_sum_nop2%d",icut),1000,800);
     q_IMppipi_p_wL_sum_nop2[icut]->Draw("colz");
     cq_IMppipi_p_wL_sum_wp2[icut] = new TCanvas(Form("cq_IMppipi_p_wL_sum_wp2%d",icut),Form("cq_IMppipi_p_wL_sum_wp2%d",icut),1000,800);
     q_IMppipi_p_wL_sum_wp2[icut]->Draw("colz");
   }
+
+  //get acceptance map from file
+  TH2F* q_IMppipi_p_wL_wp2_acc[5];//normal acc.
+  TH2F* q_IMppipi_p_wL_nop2_acc[5];//normal acc.
+  TH2F* q_IMppipi_p_wL_wp2_mc_acc[5];//with true val.
+  TH2F* q_IMppipi_p_wL_nop2_mc_acc[5];//with true val.
+  for(int icut=0;icut<5;icut++){
+    q_IMppipi_p_wL_wp2_acc[icut] = (TH2F*)facc->Get(Form("q_IMppipi_p_wL_wp2_acc_clean%d",icut));
+    q_IMppipi_p_wL_nop2_acc[icut] = (TH2F*)facc->Get(Form("q_IMppipi_p_wL_nop2_acc_clean%d",icut));
+    q_IMppipi_p_wL_wp2_mc_acc[icut] = (TH2F*)facc->Get(Form("q_IMppipi_p_wL_wp2_acc_mc_clean%d",icut));
+    q_IMppipi_p_wL_nop2_mc_acc[icut] = (TH2F*)facc->Get(Form("q_IMppipi_p_wL_nop2_acc_mc_clean%d",icut));
+  }
+
+  TH2F* CS_q_IMppipi_p_wL_wp2_acc[5];//normal acc.
+  TH2F* CS_q_IMppipi_p_wL_nop2_acc[5];//normal acc.
+  TH2F* CS_q_IMppipi_p_wL_wp2_mc_acc[5];//with true val.
+  TH2F* CS_q_IMppipi_p_wL_nop2_mc_acc[5];//with true val.
+
+  for(int icut=0;icut<5;icut++){
+    CS_q_IMppipi_p_wL_nop2_acc[icut] = (TH2F*) q_IMppipi_p_wL_sum_nop2[icut]->Clone(Form("CS_q_IMppipi_p_wL_nop2_acc%d",icut));
+    CS_q_IMppipi_p_wL_wp2_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_wp2[icut]->Clone(Form("CS_q_IMppipi_p_wL_wp2_acc%d",icut));
+    CS_q_IMppipi_p_wL_nop2_mc_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_nop2[icut]->Clone(Form("CS_q_IMppipi_p_wL_nop2_mc_acc%d",icut));
+    CS_q_IMppipi_p_wL_wp2_mc_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_wp2[icut]->Clone(Form("CS_q_IMppipi_p_wL_wp2_mc_acc%d",icut));
+  }
+
+
+
 
 
 
