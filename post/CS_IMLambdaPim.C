@@ -118,27 +118,40 @@ void CS_IMLambdaPim()
   }
 
   //get acceptance map from file
-  TH2F* q_IMppipi_p_wL_wp2_acc[5];//normal acc.
   TH2F* q_IMppipi_p_wL_nop2_acc[5];//normal acc.
-  TH2F* q_IMppipi_p_wL_wp2_mc_acc[5];//with true val.
+  TH2F* q_IMppipi_p_wL_wp2_acc[5];//normal acc.
   TH2F* q_IMppipi_p_wL_nop2_mc_acc[5];//with true val.
+  TH2F* q_IMppipi_p_wL_wp2_mc_acc[5];//with true val.
   for(int icut=0;icut<5;icut++){
-    q_IMppipi_p_wL_wp2_acc[icut] = (TH2F*)facc->Get(Form("q_IMppipi_p_wL_wp2_acc_clean%d",icut));
     q_IMppipi_p_wL_nop2_acc[icut] = (TH2F*)facc->Get(Form("q_IMppipi_p_wL_nop2_acc_clean%d",icut));
-    q_IMppipi_p_wL_wp2_mc_acc[icut] = (TH2F*)facc->Get(Form("q_IMppipi_p_wL_wp2_acc_mc_clean%d",icut));
-    q_IMppipi_p_wL_nop2_mc_acc[icut] = (TH2F*)facc->Get(Form("q_IMppipi_p_wL_nop2_acc_mc_clean%d",icut));
+    q_IMppipi_p_wL_wp2_acc[icut] = (TH2F*)facc->Get(Form("q_IMppipi_p_wL_wp2_acc_clean%d",icut));
+    q_IMppipi_p_wL_nop2_mc_acc[icut] = (TH2F*)facc->Get(Form("q_IMppipi_p_wL_nop2_mc_acc_clean%d",icut));
+    q_IMppipi_p_wL_wp2_mc_acc[icut] = (TH2F*)facc->Get(Form("q_IMppipi_p_wL_wp2_mc_acc_clean%d",icut));
   }
 
-  TH2F* CS_q_IMppipi_p_wL_wp2_acc[5];//normal acc.
   TH2F* CS_q_IMppipi_p_wL_nop2_acc[5];//normal acc.
-  TH2F* CS_q_IMppipi_p_wL_wp2_mc_acc[5];//with true val.
+  TH2F* CS_q_IMppipi_p_wL_wp2_acc[5];//normal acc.
   TH2F* CS_q_IMppipi_p_wL_nop2_mc_acc[5];//with true val.
+  TH2F* CS_q_IMppipi_p_wL_wp2_mc_acc[5];//with true val.
 
   for(int icut=0;icut<5;icut++){
     CS_q_IMppipi_p_wL_nop2_acc[icut] = (TH2F*) q_IMppipi_p_wL_sum_nop2[icut]->Clone(Form("CS_q_IMppipi_p_wL_nop2_acc%d",icut));
     CS_q_IMppipi_p_wL_wp2_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_wp2[icut]->Clone(Form("CS_q_IMppipi_p_wL_wp2_acc%d",icut));
     CS_q_IMppipi_p_wL_nop2_mc_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_nop2[icut]->Clone(Form("CS_q_IMppipi_p_wL_nop2_mc_acc%d",icut));
     CS_q_IMppipi_p_wL_wp2_mc_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_wp2[icut]->Clone(Form("CS_q_IMppipi_p_wL_wp2_mc_acc%d",icut));
+  
+    CS_q_IMppipi_p_wL_nop2_acc[icut]->Divide(q_IMppipi_p_wL_nop2_acc[icut]);
+    CS_q_IMppipi_p_wL_wp2_acc[icut]->Divide(q_IMppipi_p_wL_wp2_acc[icut]);
+    CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->Divide(q_IMppipi_p_wL_nop2_mc_acc[icut]);
+    CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->Divide(q_IMppipi_p_wL_wp2_mc_acc[icut]);
+    CS_q_IMppipi_p_wL_nop2_acc[icut]->Scale(1.0/binwidth/trigScale/lumi);
+    CS_q_IMppipi_p_wL_nop2_acc[icut]->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
+    CS_q_IMppipi_p_wL_wp2_acc[icut]->Scale(1.0/binwidth/trigScale/lumi);
+    CS_q_IMppipi_p_wL_wp2_acc[icut]->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
+    CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->Scale(1.0/binwidth/trigScale/lumi);
+    CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
+    CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->Scale(1.0/binwidth/trigScale/lumi);
+    CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
   }
 
 
