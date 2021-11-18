@@ -1102,6 +1102,7 @@ int main( int argc, char** argv )
       if( !track_p->GetMomentum( vtx_p, P_p, true, true ) ) {
         std::cerr<<"L." << __LINE__ << " !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
       }
+
       if(p_ID.size()==2) {
         if( !track_p2->GetMomentum( vtx_p2, P_p2, true, true ) ) {
           std::cerr<<"L." << __LINE__ << " !!! failure in momentum calculation [GetMomentum()] !!! "<<std::endl;
@@ -1110,7 +1111,7 @@ int main( int argc, char** argv )
 
       LVec_pim1.SetVectM( P_pim1, piMass );
       LVec_pim2.SetVectM( P_pim2, piMass );
-      LVec_p.SetVectM(  P_p,   pMass );//CDS p
+      LVec_p.SetVectM( P_p,  pMass );//CDS p
       LVec_p2.SetVectM( P_p2, pMass);
       
       TVector3 P_ppim1 = P_p + P_pim1;

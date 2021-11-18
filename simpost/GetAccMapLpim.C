@@ -583,6 +583,56 @@ void GetAccMapLpim()
   CosTheta_IMppipi_p_wL_accerr->GetYaxis()->SetRangeUser(0,1);
   CosTheta_IMppipi_p_wL_accerr->Draw("colz");
   
+
+  TH2F* CosTheta_IMppipi_p_wL_sum_mc=NULL;
+  CosTheta_IMppipi_p_wL_sum_mc = (TH2F*)fLpim->Get("CosTheta_IMppipi_p_wL_sum_mc");
+  CosTheta_IMppipi_p_wL_sum_mc ->SetTitle("reco. evt.");
+  CosTheta_IMppipi_p_wL_sum_mc->Scale(1./SimBeamSurvivalRate);
+
+  TH2F* CosTheta_IMppipi_p_wL_mc_acc=NULL;
+  CosTheta_IMppipi_p_wL_mc_acc = (TH2F*)CosTheta_IMppipi_p_wL_sum_mc->Clone("CosTheta_IMppipi_p_wL_mc_acc");
+  CosTheta_IMppipi_p_wL_mc_acc->SetTitle("CosTheta_IMppipi_p_wL_mc_acc");
+  CosTheta_IMppipi_p_wL_mc_acc->Print("base");
+  CosTheta_IMppipi_p_wL_mc_acc->Divide(CosTheta_IMppipi_p_wL_mc_acc,costhetap_IMLpim_gen,1.0,1.0,"b");
+
+
+  TH2F* CosTheta_IMppipi_p_wL_mc_accerr=NULL;
+  CosTheta_IMppipi_p_wL_mc_accerr = (TH2F*)CosTheta_IMppipi_p_wL_mc_acc->Clone("CosTheta_IMppipi_p_wL_mc_accerr");
+  CosTheta_IMppipi_p_wL_mc_accerr->Reset();
+  CosTheta_IMppipi_p_wL_mc_accerr->SetTitle("CosTheta_IMppipi_p_wL_mc_acc precision");
+  
+  for(int ix=0;ix<CosTheta_IMppipi_p_wL_mc_accerr->GetNbinsX();ix++){
+    for(int iy=0;iy<CosTheta_IMppipi_p_wL_mc_accerr->GetNbinsY();iy++){
+      double cont = CosTheta_IMppipi_p_wL_mc_acc->GetBinContent(ix,iy);
+      double err = CosTheta_IMppipi_p_wL_mc_acc->GetBinError(ix,iy);
+      if(cont!=0){
+        CosTheta_IMppipi_p_wL_mc_accerr->SetBinContent(ix,iy,err/cont);  
+      }
+    }
+  }
+  
+  TCanvas *cLpimCos_mc;
+  cLpimCos_mc = new TCanvas(Form("cLpimCos_mc"),Form("cLpimCos_mc"),2000,1200);
+  cLpimCos_mc->Divide(2,2);
+  cLpimCos_mc->cd(1);
+  costhetap_IMLpim_gen->GetYaxis()->SetRangeUser(0,1);
+  costhetap_IMLpim_gen->Draw("colz");
+  gPad->SetLogz();
+  cLpimCos_mc->cd(2);
+  CosTheta_IMppipi_p_wL_sum_mc->GetYaxis()->SetRangeUser(0,1);
+  CosTheta_IMppipi_p_wL_sum_mc->Draw("colz");
+  gPad->SetLogz();
+  cLpimCos_mc->cd(3);
+  //CosThetaIMppipi_p_wL_mc_acc->SetMaximum(0.05);
+  CosTheta_IMppipi_p_wL_mc_acc->GetYaxis()->SetRangeUser(0,1);
+  CosTheta_IMppipi_p_wL_mc_acc->SetMaximum(0.05);
+  CosTheta_IMppipi_p_wL_mc_acc->Draw("colz");
+ // gPad->SetLogz();
+  cLpimCos_mc->cd(4);
+  //CosThetaIMppipi_p_wL_mc_accerr->SetMaximum(0.5);
+  CosTheta_IMppipi_p_wL_mc_accerr->GetYaxis()->SetRangeUser(0,1);
+  CosTheta_IMppipi_p_wL_mc_accerr->Draw("colz");
+
   //TCanvas *cLpimCosTest = new TCanvas("cLpimCosTest","cLpimCosTest",1000,800);
   //TH2F* CosTheta_IMppipi_p_wL_test = (TH2F*)CosTheta_IMppipi_p_wL_sum->Clone("CosTheta_IMppipi_p_wL_test");
   //CosTheta_IMppipi_p_wL_test->Divide(CosTheta_IMppipi_p_wL_acc);
