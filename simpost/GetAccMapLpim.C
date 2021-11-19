@@ -458,11 +458,14 @@ void GetAccMapLpim()
     q_IMppipi_p_wL_nop2_mc_acc_clean[icut]->SetTitle(Form("q_IMppipi_p_wL_nop2_mc_acc_clean%d",icut));
     for(int ix=0;ix<q_IMppipi_p_wL_nop2_accerr[icut]->GetNbinsX();ix++){
       for(int iy=0;iy<q_IMppipi_p_wL_nop2_accerr[icut]->GetNbinsY();iy++){
+        double cont = q_IMppipi_p_wL_nop2_acc[icut]->GetBinContent(ix,iy);
         double err = q_IMppipi_p_wL_nop2_accerr[icut]->GetBinContent(ix,iy);
         if( RemoveNotEnough && (err>UncertCut) 
             //  || q_IMppipi_p_wL_acc->GetBinContent(ix,iy)>0.053
             //  || q_IMppipi_p_wL_acc->GetXaxis()->GetBinCenter(ix)>1.895 
-            || q_IMppipi_p_wL_nop2_acc[icut]->GetXaxis()->GetBinCenter(ix)<1.260) {
+            || q_IMppipi_p_wL_nop2_acc[icut]->GetXaxis()->GetBinCenter(ix)<1.260
+            || cont == 0.0
+            ) {
           q_IMppipi_p_wL_nop2_acc_clean[icut]->SetBinContent(ix,iy,0);
           q_IMppipi_p_wL_nop2_acc_clean[icut]->SetBinError(ix,iy,0);
           q_IMppipi_p_wL_nop2_mc_acc_clean[icut]->SetBinContent(ix,iy,0);
