@@ -154,8 +154,32 @@ void CS_IMLambdaPim()
     CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
   }
 
+  TCanvas *cCS_nop2[5];
+  TCanvas *cCS_nop2_mc[5];
+  TCanvas *cCS_wp2[5];
+  TCanvas *cCS_wp2_mc[5];
+
+  for(int icut=0;icut<5;icut++){
+    cCS_nop2[icut] = new TCanvas(Form("cCS_nop2%d",icut),Form("cCS_nop2%d",icut),1000,800);
+    cCS_nop2[icut]->cd();
+    CS_q_IMppipi_p_wL_nop2_acc[icut]->SetMaximum(0.18);
+    CS_q_IMppipi_p_wL_nop2_acc[icut]->Draw("colz");
+    
+    
+    cCS_nop2_mc[icut] = new TCanvas(Form("cCS_nop2_mc%d",icut),Form("cCS_nop2_mc%d",icut),1000,800);
+    cCS_nop2_mc[icut]->cd();
+    CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->SetMaximum(0.18);
+    CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->Draw("colz");
 
 
+    cCS_wp2[icut] = new TCanvas(Form("cCS_wp2%d",icut),Form("cCS_wp2%d",icut),1000,800);
+    cCS_wp2[icut]->cd();
+    CS_q_IMppipi_p_wL_wp2_acc[icut]->Draw("colz");
+
+    cCS_wp2_mc[icut] = new TCanvas(Form("cCS_wp2_mc%d",icut),Form("cCS_wp2_mc%d",icut),1000,800);
+    cCS_wp2_mc[icut]->cd();
+    CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->Draw("colz");
+  }
 
 
 
