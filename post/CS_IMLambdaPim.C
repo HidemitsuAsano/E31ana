@@ -192,7 +192,8 @@ void CS_IMLambdaPim()
     CS_q_nop2_mc[icut] = (TH1D*)CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->ProjectionY(Form("CS_q_nop2_mc%d",icut),bin1360,bin1410);
     CS_q_wp2[icut] = (TH1D*)CS_q_IMppipi_p_wL_wp2_acc[icut]->ProjectionY(Form("CS_q_wp2%d",icut),bin1360,bin1410);
     CS_q_wp2_mc[icut] = (TH1D*)CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->ProjectionY(Form("CS_q_wp2_mc%d",icut),bin1360,bin1410);
-    CS_q_nop2[icut]->Draw("HE");
+    CS_q_nop2[icut]->SetMarkerStyle(21);
+    CS_q_nop2[icut]->Draw("E");
     CS_q_wp2[icut]->SetMarkerStyle(20);
     CS_q_wp2[icut]->Draw("Esame");
     CS_q_nop2_mc[icut]->SetMarkerStyle(22);

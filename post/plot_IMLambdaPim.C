@@ -157,7 +157,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   //tree->SetBranchAddress( "run_num", &run_num );
   //tree->SetBranchAddress( "event_num", &event_num );
   //tree->SetBranchAddress( "block_num", &block_num );
-  if(SimMode ) {
+  if(SimMode) {
     tree->SetBranchAddress( "mcmom_beam",  &mcmom_beam );
     tree->SetBranchAddress( "mcmom_pim1", &mcmom_pim1);
     tree->SetBranchAddress( "mcmom_pim2", &mcmom_pim2);//always decay pi- from Lambda

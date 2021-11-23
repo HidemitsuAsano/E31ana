@@ -703,6 +703,7 @@ void GetAccMapLpim()
   }
   CosTheta_IMppipi_p_wL_acc->Write();
   CosTheta_IMppipi_p_wL_acc_clean->Write();
+  CosTheta_IMppipi_p_wL_mc_acc->Write();
   fout->Close();
 
   TString pdfname = "accmaplpim.pdf";
