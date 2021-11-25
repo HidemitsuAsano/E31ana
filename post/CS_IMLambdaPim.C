@@ -285,15 +285,20 @@ void CS_IMLambdaPim()
   
   TObject *obj = NULL;
   TFile *fout = new TFile("cs_lpim_killcombi.root","RECREATE");
-  TIter nexthist2(gDirectory->GetList());
+  //TIter nexthist2(gDirectory->GetList());
   //TIter nexthist2(gROOT->GetList());
   //fout->Print();
   //fout->cd();
-  while( (obj = (TObject*)nexthist2())!=NULL) {
-    obj->Write();
-  }
+  //while( (obj = (TObject*)nexthist2())!=NULL) {
+  //  obj->Write();
+  //}
   CS_q_IMppipi_p_wL_sum->Write();
   CS_q->Write();
+  CS_q_IMppipi_p_wL_nop2_acc[0]->Write();
+  CS_q_IMppipi_p_wL_wp2_acc[0]->Write();
+  CS_q_nop2[0]->Write();
+  CS_q_wp2[0]->Write();
+  
   //CS_IMppipi_p_wL_sum_0->Write();
   //CS_IMppipi_p_wL_sum_350->Write();
   fout->Close();
@@ -314,6 +319,7 @@ void CS_IMLambdaPim()
     //TPaveText *pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
     c->Modified();
     c->Update();
+    c->GetListOfPrimitives();//->Print();
     //std::cout << c->GetName() << std::endl;
     //make 1 pdf file
     if(i==0) c->Print(pdfname+"(",Form("pdf Title:%s",c->GetTitle()));

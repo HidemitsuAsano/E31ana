@@ -97,6 +97,8 @@ namespace anacuts {
   const double Proton_MAX = 1.0279;//wide
   const double Proton_MIN_narrow = 0.8825;//1.5 sigma
   const double Proton_MAX_narrow = 0.9794;//1.5 sigma
+  const double Proton_MIN_tiny = 0.8962;//1.5 sigma
+  const double Proton_MAX_tiny = 0.9620;//1.5 sigma
   //const double Proton_MIN = 0.8825;
   //const double Proton_MAX = 0.9794;
 
