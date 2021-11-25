@@ -1,11 +1,13 @@
+const int ncut=6;
+
 void CS_IMLambdaPim()
 {
   const double ForwardAngle = 0.996;
   gStyle->SetOptStat(0);
-  TFile *file = TFile::Open("evanaIMLambdaPim_ppimpim_v16_out.root","READ");
-  TFile *facc = TFile::Open("../simpost/accmapLpimv23.root","READ");
-  TFile *flumi = TFile::Open("InteLumi.root","READ");
-  TFile *fkin = TFile::Open("../simpost/NumericalRootFinderLPim.root","READ");
+  TFile *file = new TFile("evanaIMLambdaPim_ppimpim_v16_out.root","READ");
+  TFile *facc = new TFile("../simpost/accmapLpimv23.root","READ");
+  TFile *flumi = new TFile("InteLumi.root","READ");
+  TFile *fkin = new TFile("../simpost/NumericalRootFinderLPim.root","READ");
   TParameter<double>*IntegLumi = (TParameter<double>*)flumi->Get("IntegLumi");
   TParameter<double>*Err = (TParameter<double>*)flumi->Get("Err");
   double lumi = IntegLumi->GetVal();
@@ -101,40 +103,47 @@ void CS_IMLambdaPim()
   CS_q->Draw("E");
   
   //divided acceptance map
-  TH2F* q_IMppipi_p_wL_sum_nop2[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
-  TH2F* q_IMppipi_p_wL_sum_wp2[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
-  for(int icut=0;icut<5;icut++){
+  TH2F* q_IMppipi_p_wL_sum_nop2[ncut];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
+  TH2F* q_IMppipi_p_wL_sum_wp2[ncut];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
+  for(int icut=0;icut<ncut;icut++){
     q_IMppipi_p_wL_sum_nop2[icut] = (TH2F*)file->Get(Form("q_IMppipi_p_wL_sum_nop2%d",icut));
     q_IMppipi_p_wL_sum_wp2[icut]  = (TH2F*)file->Get(Form("q_IMppipi_p_wL_sum_wp2%d",icut));
   }
   
-  TCanvas *cq_IMppipi_p_wL_sum_nop2[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
-  TCanvas *cq_IMppipi_p_wL_sum_wp2[5];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
-  for(int icut=0;icut<5;icut++){
+  TCanvas *cq_IMppipi_p_wL_sum_nop2[ncut];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
+  TCanvas *cq_IMppipi_p_wL_sum_wp2[ncut];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
+  for(int icut=0;icut<ncut;icut++){
     cq_IMppipi_p_wL_sum_nop2[icut] = new TCanvas(Form("cq_IMppipi_p_wL_sum_nop2%d",icut),Form("cq_IMppipi_p_wL_sum_nop2%d",icut),1000,800);
+    q_IMppipi_p_wL_sum_nop2[icut]->SetMaximum(90);
     q_IMppipi_p_wL_sum_nop2[icut]->Draw("colz");
+    
+    gth->Draw("pc");
+    gr_0->Draw("pc");
+    gr_100->Draw("pc");
+    gr_65->Draw("pc");
+
     cq_IMppipi_p_wL_sum_wp2[icut] = new TCanvas(Form("cq_IMppipi_p_wL_sum_wp2%d",icut),Form("cq_IMppipi_p_wL_sum_wp2%d",icut),1000,800);
     q_IMppipi_p_wL_sum_wp2[icut]->Draw("colz");
   }
 
   //get acceptance map from file
-  TH2F* q_IMppipi_p_wL_nop2_acc[5];//normal acc.
-  TH2F* q_IMppipi_p_wL_wp2_acc[5];//normal acc.
-  TH2F* q_IMppipi_p_wL_nop2_mc_acc[5];//with true val.
-  TH2F* q_IMppipi_p_wL_wp2_mc_acc[5];//with true val.
-  for(int icut=0;icut<5;icut++){
+  TH2F* q_IMppipi_p_wL_nop2_acc[ncut];//normal acc.
+  TH2F* q_IMppipi_p_wL_wp2_acc[ncut];//normal acc.
+  TH2F* q_IMppipi_p_wL_nop2_mc_acc[ncut];//with true val.
+  TH2F* q_IMppipi_p_wL_wp2_mc_acc[ncut];//with true val.
+  for(int icut=0;icut<ncut;icut++){
     q_IMppipi_p_wL_nop2_acc[icut] = (TH2F*)facc->Get(Form("q_IMppipi_p_wL_nop2_acc_clean%d",icut));
     q_IMppipi_p_wL_wp2_acc[icut] = (TH2F*)facc->Get(Form("q_IMppipi_p_wL_wp2_acc_clean%d",icut));
     q_IMppipi_p_wL_nop2_mc_acc[icut] = (TH2F*)facc->Get(Form("q_IMppipi_p_wL_nop2_mc_acc_clean%d",icut));
     q_IMppipi_p_wL_wp2_mc_acc[icut] = (TH2F*)facc->Get(Form("q_IMppipi_p_wL_wp2_mc_acc_clean%d",icut));
   }
 
-  TH2F* CS_q_IMppipi_p_wL_nop2_acc[5];//normal acc.
-  TH2F* CS_q_IMppipi_p_wL_wp2_acc[5];//normal acc.
-  TH2F* CS_q_IMppipi_p_wL_nop2_mc_acc[5];//with true val.
-  TH2F* CS_q_IMppipi_p_wL_wp2_mc_acc[5];//with true val.
+  TH2F* CS_q_IMppipi_p_wL_nop2_acc[ncut];//normal acc.
+  TH2F* CS_q_IMppipi_p_wL_wp2_acc[ncut];//normal acc.
+  TH2F* CS_q_IMppipi_p_wL_nop2_mc_acc[ncut];//with true val.
+  TH2F* CS_q_IMppipi_p_wL_wp2_mc_acc[ncut];//with true val.
 
-  for(int icut=0;icut<5;icut++){
+  for(int icut=0;icut<ncut;icut++){
     CS_q_IMppipi_p_wL_nop2_acc[icut] = (TH2F*) q_IMppipi_p_wL_sum_nop2[icut]->Clone(Form("CS_q_IMppipi_p_wL_nop2_acc%d",icut));
     CS_q_IMppipi_p_wL_wp2_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_wp2[icut]->Clone(Form("CS_q_IMppipi_p_wL_wp2_acc%d",icut));
     CS_q_IMppipi_p_wL_nop2_mc_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_nop2[icut]->Clone(Form("CS_q_IMppipi_p_wL_nop2_mc_acc%d",icut));
@@ -149,17 +158,17 @@ void CS_IMLambdaPim()
     CS_q_IMppipi_p_wL_wp2_acc[icut]->Scale(1.0/binwidth/trigScale/lumi);
     CS_q_IMppipi_p_wL_wp2_acc[icut]->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
     CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->Scale(1.0/binwidth/trigScale/lumi);
-    CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
+    CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->SetXTitle("true IM(#pi^{-}#Lambda) [GeV/c^{2}]");
     CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->Scale(1.0/binwidth/trigScale/lumi);
-    CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
+    CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->SetXTitle("true IM(#pi^{-}#Lambda) [GeV/c^{2}]");
   }
 
-  TCanvas *cCS_nop2[5];
-  TCanvas *cCS_nop2_mc[5];
-  TCanvas *cCS_wp2[5];
-  TCanvas *cCS_wp2_mc[5];
+  TCanvas *cCS_nop2[ncut];
+  TCanvas *cCS_nop2_mc[ncut];
+  TCanvas *cCS_wp2[ncut];
+  TCanvas *cCS_wp2_mc[ncut];
 
-  for(int icut=0;icut<5;icut++){
+  for(int icut=0;icut<ncut;icut++){
     cCS_nop2[icut] = new TCanvas(Form("cCS_nop2%d",icut),Form("cCS_nop2%d",icut),1000,800);
     cCS_nop2[icut]->cd();
     CS_q_IMppipi_p_wL_nop2_acc[icut]->SetMaximum(0.18);
@@ -181,12 +190,12 @@ void CS_IMLambdaPim()
     CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->Draw("colz");
   }
 
-  TCanvas *cCS_q_sum[5];
-  TH1D* CS_q_nop2[5];
-  TH1D* CS_q_wp2[5];
-  TH1D* CS_q_nop2_mc[5];
-  TH1D* CS_q_wp2_mc[5];
-  for(int icut=0;icut<5;icut++){
+  TCanvas *cCS_q_sum[ncut];
+  TH1D* CS_q_nop2[ncut];
+  TH1D* CS_q_wp2[ncut];
+  TH1D* CS_q_nop2_mc[ncut];
+  TH1D* CS_q_wp2_mc[ncut];
+  for(int icut=0;icut<ncut;icut++){
     cCS_q_sum[icut]  = new TCanvas(Form("cCS_q_sum%d",icut),Form("cCS_q_sum%d",icut),1000,800);
     CS_q_nop2[icut] = (TH1D*)CS_q_IMppipi_p_wL_nop2_acc[icut]->ProjectionY(Form("CS_q_nop2%d",icut),bin1360,bin1410);
     CS_q_nop2_mc[icut] = (TH1D*)CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->ProjectionY(Form("CS_q_nop2_mc%d",icut),bin1360,bin1410);
@@ -195,7 +204,11 @@ void CS_IMLambdaPim()
     CS_q_nop2[icut]->SetMarkerStyle(21);
     CS_q_nop2[icut]->Draw("E");
     CS_q_wp2[icut]->SetMarkerStyle(20);
+    CS_q_wp2[icut]->SetMarkerColor(2);
+    CS_q_wp2[icut]->SetLineColor(2);
+    //CS_q_wp2[icut]->SetMaximum(CS_q_nop2[icut]->GetMaximum());
     CS_q_wp2[icut]->Draw("Esame");
+    /*
     CS_q_nop2_mc[icut]->SetMarkerStyle(22);
     CS_q_nop2_mc[icut]->SetMarkerColor(2);
     CS_q_nop2_mc[icut]->SetLineColor(2);
@@ -203,7 +216,7 @@ void CS_IMLambdaPim()
     CS_q_wp2_mc[icut]->SetMarkerStyle(23);
     CS_q_wp2_mc[icut]->SetMarkerColor(2);
     CS_q_wp2_mc[icut]->SetLineColor(2);
-    CS_q_wp2_mc[icut]->Draw("Esame");
+    CS_q_wp2_mc[icut]->Draw("Esame");*/
   }
 
 
@@ -269,6 +282,21 @@ void CS_IMLambdaPim()
   CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
   TGraphErrors *grinoue = (TGraphErrors*)finoue->Get("Graph");
   grinoue->Draw("P");
+  
+  TObject *obj = NULL;
+  TFile *fout = new TFile("cs_lpim_killcombi.root","RECREATE");
+  TIter nexthist2(gDirectory->GetList());
+  //TIter nexthist2(gROOT->GetList());
+  //fout->Print();
+  //fout->cd();
+  while( (obj = (TObject*)nexthist2())!=NULL) {
+    obj->Write();
+  }
+  CS_q_IMppipi_p_wL_sum->Write();
+  CS_q->Write();
+  //CS_IMppipi_p_wL_sum_0->Write();
+  //CS_IMppipi_p_wL_sum_350->Write();
+  fout->Close();
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
@@ -294,18 +322,6 @@ void CS_IMLambdaPim()
     //make separated pdf files
     //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
   }
-
-  TObject *obj = NULL;
-  TFile *fout = new TFile("cs_lpim_killcombi.root","RECREATE");
-  TIter nexthist2(gDirectory->GetList());
-  fout->Print();
-  fout->cd();
-  while( (obj = (TObject*)nexthist2())!=NULL) {
-    obj->Write();
-  }
-  CS_q_IMppipi_p_wL_sum->Write();
-  CS_q->Write();
-  //CS_IMppipi_p_wL_sum_0->Write();
-  //CS_IMppipi_p_wL_sum_350->Write();
-  fout->Close();
+  
+  //file->cd();
 }
