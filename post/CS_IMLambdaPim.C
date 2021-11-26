@@ -2,7 +2,7 @@ const int ncut=6;
 
 void CS_IMLambdaPim()
 {
-  const double ForwardAngle = 0.996;
+  const double ForwardAngle = 0.997;
   gStyle->SetOptStat(0);
   TFile *file = new TFile("evanaIMLambdaPim_ppimpim_v16_out.root","READ");
   TFile *facc = new TFile("../simpost/accmapLpimv23.root","READ");
@@ -223,7 +223,7 @@ void CS_IMLambdaPim()
   //reco.
   TCanvas *cIMLpim_coscut = new TCanvas("cIMLpim_coscut","cIMLpim_coscut",1000,800);
   TH2F* CosTheta_IMppipi_p_wL_sum=NULL;
-  CosTheta_IMppipi_p_wL_sum = (TH2F*)file->Get("CosTheta_IMppipi_p_wL_sum");
+  CosTheta_IMppipi_p_wL_sum = (TH2F*)file->Get("CosTheta_IMppipi_p_wL");
   CosTheta_IMppipi_p_wL_sum->SetTitle("reco. evt.");
   CosTheta_IMppipi_p_wL_sum->GetYaxis()->SetRangeUser(0.95,1);
   CosTheta_IMppipi_p_wL_sum->Draw("colz"); 
@@ -262,46 +262,29 @@ void CS_IMLambdaPim()
   CS_CosTheta_IMppipi_p_wL_mc->Draw("colz");
 
   TCanvas *cCS_IMppipi_p_wL_coscut = new TCanvas("cCS_IMppipi_p_wL_coscut","cCS_IMppipi_p_wL_coscut",1000,800);
-  TH1D* CS_IMppipi_p_wL_coscut = (TH1D*)CS_CosTheta_IMppipi_p_wL->ProjectionX("CS_IMppipi_p_wL_coscut",bin0995,bin1000);
+  TH1D* CS_IMppipi_p_wL_coscut = (TH1D*)CS_CosTheta_IMppipi_p_wL->ProjectionX("CS_IMppipi_p_wL_coscut",bin0995,bin1000+1);
   CS_IMppipi_p_wL_coscut->GetXaxis()->SetRangeUser(1.3,1.6);
   CS_IMppipi_p_wL_coscut->Draw("HE");
   
   //TCanvas *cCS_IMppipi_p_wL_mc_coscut = new TCanvas("cCS_IMppipi_p_wL_mc_coscut","cCS_IMppipi_p_wL_mc_coscut",1000,800);
-  TH1D* CS_IMppipi_p_wL_mc_coscut = (TH1D*)CS_CosTheta_IMppipi_p_wL_mc->ProjectionX("CS_IMppipi_p_wL_mc_coscut",bin0995,bin1000);
+  TH1D* CS_IMppipi_p_wL_mc_coscut = (TH1D*)CS_CosTheta_IMppipi_p_wL_mc->ProjectionX("CS_IMppipi_p_wL_mc_coscut",bin0995,bin1000+1);
   CS_IMppipi_p_wL_mc_coscut->GetXaxis()->SetRangeUser(1.3,1.6);
   //CS_IMppipi_p_wL_mc_coscut->Draw("HE");
   CS_IMppipi_p_wL_mc_coscut->SetLineColor(2);
   CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
 
   TCanvas *cCompInoue= new TCanvas("cCompInoue","cCompInoue",1000,800);  
-  TFile *finoue = TFile::Open("pimL_CS.root","READ");
+  cCompInoue->cd();
   CS_IMppipi_p_wL_coscut->SetTitle("C.S.");
   CS_IMppipi_p_wL_coscut->SetYTitle("d^{2}#rho/d#Omega dM [#mu b/sr /(MeV/c^{2})]");
   CS_IMppipi_p_wL_coscut->GetYaxis()->CenterTitle();
-  CS_IMppipi_p_wL_coscut->Draw("HE");
-  CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
+  TFile *finoue = TFile::Open("pimL_CS.root","READ");
   TGraphErrors *grinoue = (TGraphErrors*)finoue->Get("Graph");
+  CS_IMppipi_p_wL_coscut->Draw("HEsame");
+  CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
   grinoue->Draw("P");
+  grinoue->Print();
   
-  TObject *obj = NULL;
-  TFile *fout = new TFile("cs_lpim_killcombi.root","RECREATE");
-  //TIter nexthist2(gDirectory->GetList());
-  //TIter nexthist2(gROOT->GetList());
-  //fout->Print();
-  //fout->cd();
-  //while( (obj = (TObject*)nexthist2())!=NULL) {
-  //  obj->Write();
-  //}
-  CS_q_IMppipi_p_wL_sum->Write();
-  CS_q->Write();
-  CS_q_IMppipi_p_wL_nop2_acc[0]->Write();
-  CS_q_IMppipi_p_wL_wp2_acc[0]->Write();
-  CS_q_nop2[0]->Write();
-  CS_q_wp2[0]->Write();
-  
-  //CS_IMppipi_p_wL_sum_0->Write();
-  //CS_IMppipi_p_wL_sum_350->Write();
-  fout->Close();
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
@@ -329,5 +312,26 @@ void CS_IMLambdaPim()
     //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
   }
   
+  TObject *obj = NULL;
+  TFile *fout = new TFile("cs_lpim_killcombi.root","RECREATE");
+  //TIter nexthist2(gDirectory->GetList());
+  //TIter nexthist2(gROOT->GetList());
+  //fout->Print();
+  //fout->cd();
+  //while( (obj = (TObject*)nexthist2())!=NULL) {
+  //  obj->Write();
+  //}
+  CS_q_IMppipi_p_wL_sum->Write();
+  CS_q->Write();
+  CS_q_IMppipi_p_wL_nop2_acc[0]->Write();
+  CS_q_IMppipi_p_wL_wp2_acc[0]->Write();
+  CS_q_nop2[0]->Write();
+  CS_q_wp2[0]->Write();
+  CS_IMppipi_p_wL_coscut->Draw("HE");
+  //grinoue->Write();
+
+  //CS_IMppipi_p_wL_sum_0->Write();
+  //CS_IMppipi_p_wL_sum_350->Write();
+  fout->Close();
   //file->cd();
 }
