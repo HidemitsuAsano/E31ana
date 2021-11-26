@@ -13,9 +13,9 @@ void GetAccMapLpim()
   TFile *fLpim=NULL;
   TFile *fgen=NULL;
 
-  fLpim = TFile::Open("simIMLpim_ppimpim_v23_out.root");
-  fgen = TFile::Open("simIMLpim_v23.root");
-  TFile *fkin = TFile::Open("NumericalRootFinderLPim.root","READ");
+  fLpim = TFile::Open("../simpost/simIMLpim_ppimpim_v23_out.root");
+  fgen = TFile::Open("../simpost/simIMLpim_v23.root");
+  TFile *fkin = TFile::Open("../simpost/NumericalRootFinderLPim.root","READ");
 //  fLpim = TFile::Open("simIMLpim_ppimpim_pS0pim_v1_out.root");
 //  fgen = TFile::Open("simIMLpim_pS0pim_v1.root");
   
