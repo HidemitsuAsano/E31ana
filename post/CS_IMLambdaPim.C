@@ -2,7 +2,8 @@ const int ncut=6;
 
 void CS_IMLambdaPim()
 {
-  const double ForwardAngle = 0.997;
+  const double ForwardAngle = 0.996;
+  const double ForwardAngle2 = 0.997;
   gStyle->SetOptStat(0);
   TFile *file = new TFile("evanaIMLambdaPim_ppimpim_v16_out.root","READ");
   TFile *facc = new TFile("../simpost/accmapLpimv23.root","READ");
@@ -222,16 +223,17 @@ void CS_IMLambdaPim()
 
   //reco.
   TCanvas *cIMLpim_coscut = new TCanvas("cIMLpim_coscut","cIMLpim_coscut",1000,800);
-  TH2F* CosTheta_IMppipi_p_wL_sum=NULL;
-  CosTheta_IMppipi_p_wL_sum = (TH2F*)file->Get("CosTheta_IMppipi_p_wL");
-  CosTheta_IMppipi_p_wL_sum->SetTitle("reco. evt.");
-  CosTheta_IMppipi_p_wL_sum->GetYaxis()->SetRangeUser(0.95,1);
-  CosTheta_IMppipi_p_wL_sum->Draw("colz"); 
+  TH2F* CosTheta_IMppipi_p_wL=NULL;
+  CosTheta_IMppipi_p_wL = (TH2F*)file->Get("CosTheta_IMppipi_p_wL");
+  CosTheta_IMppipi_p_wL->SetTitle("reco. evt.");
+  CosTheta_IMppipi_p_wL->GetYaxis()->SetRangeUser(0.95,1);
+  CosTheta_IMppipi_p_wL->Draw("colz"); 
   
   TCanvas *cIMLpim_coscut_px = new TCanvas("cIMLpim_coscut_px","cIMLpim_coscut_px",1000,800);
-  const int bin0995 = CosTheta_IMppipi_p_wL_sum->GetYaxis()->FindBin(ForwardAngle);
-  const int bin1000 = CosTheta_IMppipi_p_wL_sum->GetYaxis()->FindBin(1.0);
-  CosTheta_IMppipi_p_wL_sum->ProjectionX("IMppipi_p_cosf",bin0995,bin1000+1)->Draw("HE");
+  const int bin0996 = CosTheta_IMppipi_p_wL->GetYaxis()->FindBin(ForwardAngle);
+  const int bin0997 = CosTheta_IMppipi_p_wL->GetYaxis()->FindBin(ForwardAngle2);
+  const int bin1000 = CosTheta_IMppipi_p_wL->GetYaxis()->FindBin(1.0);
+  CosTheta_IMppipi_p_wL->ProjectionX("IMppipi_p_cosf",bin0996,bin1000+1)->Draw("HE");
   
   //acc.
   TCanvas *cCosacc = new TCanvas("cCosacc","cCosacc",1000,800);
@@ -247,7 +249,7 @@ void CS_IMLambdaPim()
   CosTheta_IMppipi_p_wL_mc_acc->Draw("colz");
 
   TCanvas *cCS_CosTheta_IMppipi_p_wL = new TCanvas("cCS_CosTheta_IMppipi_p_wL","cCS_CosTheta_IMppipi_p_wL",1000,800);
-  TH2F* CS_CosTheta_IMppipi_p_wL = (TH2F*)CosTheta_IMppipi_p_wL_sum->Clone("CS_CosTheta_IMppipi_p_wL");
+  TH2F* CS_CosTheta_IMppipi_p_wL = (TH2F*)CosTheta_IMppipi_p_wL->Clone("CS_CosTheta_IMppipi_p_wL");
   CS_CosTheta_IMppipi_p_wL->Divide(CosTheta_IMppipi_p_wL_acc);
 //  CS_CosTheta_IMppipi_p_wL->Scale(1.0/binwidth/trigScale/lumi/0.0314);
   const double solidAngleCoscut = 0.02512;
@@ -255,19 +257,23 @@ void CS_IMLambdaPim()
   CS_CosTheta_IMppipi_p_wL->Draw("colz");
 
   TCanvas *cCS_CosTheta_IMppipi_p_wL_mc = new TCanvas("cCS_CosTheta_IMppipi_p_wL_mc","cCS_CosTheta_IMppipi_p_wL_mc",1000,800);
-  TH2F* CS_CosTheta_IMppipi_p_wL_mc = (TH2F*)CosTheta_IMppipi_p_wL_sum->Clone("CS_CosTheta_IMppipi_p_wL_mc");
+  TH2F* CS_CosTheta_IMppipi_p_wL_mc = (TH2F*)CosTheta_IMppipi_p_wL->Clone("CS_CosTheta_IMppipi_p_wL_mc");
   CS_CosTheta_IMppipi_p_wL_mc->Divide(CosTheta_IMppipi_p_wL_mc_acc);
 //  CS_CosTheta_IMppipi_p_wL->Scale(1.0/binwidth/trigScale/lumi/0.0314);
   CS_CosTheta_IMppipi_p_wL_mc->Scale(1.0/binwidth/trigScale/lumi/solidAngleCoscut);
   CS_CosTheta_IMppipi_p_wL_mc->Draw("colz");
 
   TCanvas *cCS_IMppipi_p_wL_coscut = new TCanvas("cCS_IMppipi_p_wL_coscut","cCS_IMppipi_p_wL_coscut",1000,800);
-  TH1D* CS_IMppipi_p_wL_coscut = (TH1D*)CS_CosTheta_IMppipi_p_wL->ProjectionX("CS_IMppipi_p_wL_coscut",bin0995,bin1000+1);
+  TH1D* CS_IMppipi_p_wL_coscut = (TH1D*)CS_CosTheta_IMppipi_p_wL->ProjectionX("CS_IMppipi_p_wL_coscut",bin0996,bin1000+1);
   CS_IMppipi_p_wL_coscut->GetXaxis()->SetRangeUser(1.3,1.6);
   CS_IMppipi_p_wL_coscut->Draw("HE");
+  TH1D* CS_IMppipi_p_wL_coscut2 = (TH1D*)CS_CosTheta_IMppipi_p_wL->ProjectionX("CS_IMppipi_p_wL_coscut2",bin0997,bin1000+1);
+  //CS_IMppipi_p_wL_coscut2->GetXaxis()->SetRangeUser(1.3,1.6);
+  CS_IMppipi_p_wL_coscut2->SetLineColor(3);
+  CS_IMppipi_p_wL_coscut2->Draw("HEsame");
   
   //TCanvas *cCS_IMppipi_p_wL_mc_coscut = new TCanvas("cCS_IMppipi_p_wL_mc_coscut","cCS_IMppipi_p_wL_mc_coscut",1000,800);
-  TH1D* CS_IMppipi_p_wL_mc_coscut = (TH1D*)CS_CosTheta_IMppipi_p_wL_mc->ProjectionX("CS_IMppipi_p_wL_mc_coscut",bin0995,bin1000+1);
+  TH1D* CS_IMppipi_p_wL_mc_coscut = (TH1D*)CS_CosTheta_IMppipi_p_wL_mc->ProjectionX("CS_IMppipi_p_wL_mc_coscut",bin0996,bin1000+1);
   CS_IMppipi_p_wL_mc_coscut->GetXaxis()->SetRangeUser(1.3,1.6);
   //CS_IMppipi_p_wL_mc_coscut->Draw("HE");
   CS_IMppipi_p_wL_mc_coscut->SetLineColor(2);
@@ -281,7 +287,8 @@ void CS_IMLambdaPim()
   TFile *finoue = TFile::Open("pimL_CS.root","READ");
   TGraphErrors *grinoue = (TGraphErrors*)finoue->Get("Graph");
   CS_IMppipi_p_wL_coscut->Draw("HEsame");
-  CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
+  CS_IMppipi_p_wL_coscut2->Draw("HEsame");
+  //CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
   grinoue->Draw("P");
   grinoue->Print();
   
