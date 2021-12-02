@@ -687,6 +687,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH1I* hp2flag = new TH1I("hp2flag","hp2flag",2,0,2);
   TH1D* MMass_wL_or = new TH1D("MMass_wL_or","MMass_wL_or",nbinpmiss, pmisslow, pmisshigh);
   MMass_wL_or->SetXTitle("Missing Mass [GeV/c^{2}]");
+  TH1D* IMppim_p_or = new TH1D("IMppim_p_or","IMppim_p_or",10000,1,2);
+  IMppim_p_or->SetXTitle("IM p#pi^{-} [GeV/c^{2}]");
+
+
   TH1D* MMass_wL_1 = new TH1D("MMass_wL_1","MMass_wL_1",nbinpmiss, pmisslow, pmisshigh);
   MMass_wL_1->SetXTitle("Missing Mass [GeV/c^{2}]");
   TH1D* MMass_wL_2 = new TH1D("MMass_wL_2","MMass_wL_2",nbinpmiss, pmisslow, pmisshigh);
@@ -770,7 +774,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     targetCell_rot);
   hadron_hall->AddNode(targetCell,CID_TarCell,targetCell_trans);
 
-  Double_t tgtsize_r = 3*cm;
+  Double_t tgtsize_r = 3.0*cm;
   Double_t tgtsize_z = 12.5*cm/2.0;
   TGeoVolume *tgt = k18br_geom->MakeTube("Fiducial",
                                          Vacuum,
@@ -1195,8 +1199,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       q_PMom_p_wL->Fill((*LVec_p).P(),qkn.P());
       if(LambdaFlag_1) {
         q_LMom_p_wL->Fill((LVec_pim1_p.P()),qkn.P());
+        IMppim_p_or->Fill(LVec_pim1_p.M());
       } else if(LambdaFlag_2) {
         q_LMom_p_wL->Fill((LVec_pim2_p.P()),qkn.P());
+        IMppim_p_or->Fill(LVec_pim2_p.M());
       }
       q_MMom_p_wL->Fill(pmiss_mom,qkn.P());
       q_MMomCosTheta_p_wL->Fill(LVec_p_miss.CosTheta(),qkn.P());
@@ -1300,19 +1306,19 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
         TLorentzVector LVec_misspL2 = LVec_p_miss+LVec_pim1_p2;
         IMmisspL_IMppipi_p_wL->Fill(LVec_pim1_pim2_p2.M(), LVec_misspL2.M());
         IMmisspL_q_p_wL->Fill(qkn2.P(), LVec_misspL2.M());
+        TLorentzVector LVec_pL2 = *LVec_p+LVec_pim1_p2;
+        IMpL_p_wL_wp2->Fill(LVec_pL2.M());
+        IMppim_p_or->Fill(LVec_pim1_p2.M());
       } else if(Lambda2Flag_2) {
         pcos_Lambdacos->Fill(LVec_pim2_p2.CosTheta(),LVec_p2_miss.CosTheta());
         TLorentzVector LVec_misspL2 = LVec_p_miss+LVec_pim2_p2;
         IMmisspL_IMppipi_p_wL->Fill(LVec_pim1_pim2_p2.M(), LVec_misspL2.M());
-        IMmisspL_q_p_wL->Fill(qkn2.P(), LVec_misspL2.M());
-      }
-      if(Lambda2Flag_1) {
-        TLorentzVector LVec_pL2 = *LVec_p+LVec_pim1_p2;
-        IMpL_p_wL_wp2->Fill(LVec_pL2.M());
-      } else if(LambdaFlag_2) {
         TLorentzVector LVec_pL2 = *LVec_p+LVec_pim2_p2;
         IMpL_p_wL_wp2->Fill(LVec_pL2.M());
+        IMmisspL_q_p_wL->Fill(qkn2.P(), LVec_misspL2.M());
+        IMppim_p_or->Fill(LVec_pim2_p2.M());
       }
+
       if(SimMode) {
         double diffpcos = LVec_p2_miss.CosTheta()- (*react_pmiss).CosTheta();
 

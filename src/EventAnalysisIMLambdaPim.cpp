@@ -511,7 +511,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   } else {
     Clear(nAbort_KCDH3trg);
     return true;
-    //return true;
   }
 
   const int nGoodTrack = trackMan->nGoodTrack();
@@ -690,8 +689,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   if((pim_ID.size()==2) &&
       (
       //  ((p_ID.size()==1) && (3<=trackMan->nGoodTrack() && trackMan->nGoodTrack()<=4))
-        ((p_ID.size()==1) && (trackMan->nGoodTrack()==3))
-        ||((p_ID.size()==2) && (trackMan->nGoodTrack()==4))
+        ((p_ID.size()==1) && (nGoodTrack==3))
+        ||((p_ID.size()==2) && (nGoodTrack==4))
       )
     ) {
     //=== pi+ pi- X candidates ===//
@@ -701,6 +700,9 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     if(Verbosity) std::cout<<"### filled: Event_Number, Block_Event_Number, CDC_Event_Number = "
                              <<Event_Number<<" , "<<Block_Event_Number<<" , "<<CDC_Event_Number<<std::endl;
     nFill_ppimpim++;
+    //DEBUG
+    //std::cout << "L." << __LINE__ << "pim_ID_1 " <<  pim_ID.at(0)  << " pim_ID_2 " << pim_ID.at(1) << " p_ID " << p_ID.at(0) <<  std::endl;
+
 
     CDSTrack *track_pim1 = trackMan->Track( pim_ID.at(0) ); //
     CDSTrack *track_pim2 = trackMan->Track( pim_ID.at(1) ); //
@@ -777,6 +779,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
     //reaction vertex is determined from beam and nearest vtx of pi-
     TVector3 vtx_beam;
+    /* v16 bug ?
     //determine by pim-proton DCA
     if(dcapim1p < dcapim2p) {
       vtx_react = 0.5*(vtx_pim2+vtx_beam_wpim2);
@@ -786,8 +789,17 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       vtx_react = 0.5*(vtx_pim1+vtx_beam_wpim1);
       vtx_dis = ca_p_pim2p;
       vtx_beam = vtx_beam_wpim2;
-    }
+    */
 
+    if(dcapim1vtx < dcapim2vtx) {
+      vtx_react = 0.5*(vtx_pim1+vtx_beam_wpim1);
+      vtx_dis = ca_p_pim2p;
+      vtx_beam = vtx_beam_wpim1;
+    } else {
+      vtx_react = 0.5*(vtx_pim2+vtx_beam_wpim2);
+      vtx_dis = ca_p_pim1p;
+      vtx_beam = vtx_beam_wpim2;
+    }
 
     //** beam kaon tof **//
     TVector3 Pos_T0;
@@ -804,7 +816,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     //Energy loss correction of beam
     ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), vtx_react,
                                    LVec_beambf.Vect().Mag(), kpMass, momout, beamtof );
-    LVec_beam.SetVectM( momout*LVec_beambf.Vect().Unit(), kpMass );
+    LVec_beam.SetVectM( momout*(LVec_beambf.Vect().Unit()), kpMass );
 
 
     //** reconstructoin of missing proton **//

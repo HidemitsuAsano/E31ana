@@ -1,8 +1,8 @@
 void comp_lpim()
 {
 
-  TFile *fdata = TFile::Open("evanaIMLambdaPim_ppimpim_v16_out.root","READ");
-  TFile *fsim = TFile::Open("../simpost/simIMLpim_ppimpim_v21_out.root","READ");
+  TFile *fdata = TFile::Open("evanaIMLambdaPim_ppimpim_v18_out.root","READ");
+  TFile *fsim = TFile::Open("../simpost/simIMLpim_ppimpim_v24_out.root","READ");
 
 
   TH2F* IMppim1_IMppim2_data = (TH2F*)fdata->Get("IMppim1_IMppim2");
