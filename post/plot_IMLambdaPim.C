@@ -965,6 +965,12 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       IMp2pim1_IMp2pim2->Fill(LVec_pim2_p2.M(),LVec_pim1_p2.M());
     }
     bool LvtxOK=false;
+    if(GetID((*vtx_pim1_beam),k18br_geom)!=CID_Fiducial) continue;
+    if(GetID((*vtx_pim2_beam),k18br_geom)!=CID_Fiducial) continue;
+    if(GetID((*vtx_p_beam),k18br_geom)!=CID_Fiducial) continue;
+    //if(MissLFlag) continue;
+    //if(MissL2Flag) continue;
+
     if(LambdaFlag_1) {
       Vtx_ZX_Lcan->Fill((*vtx_Lcan_p_pim1).Z(),(*vtx_Lcan_p_pim1).X());
       Vtx_ZY_Lcan->Fill((*vtx_Lcan_p_pim1).Z(),(*vtx_Lcan_p_pim1).Y());

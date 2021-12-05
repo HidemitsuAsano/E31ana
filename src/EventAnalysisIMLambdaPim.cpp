@@ -817,8 +817,6 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     ELossTools::CalcElossBeamTGeo( bpctrack->GetPosatZ(z_pos), vtx_react,
                                    LVec_beambf.Vect().Mag(), kpMass, momout, beamtof );
     LVec_beam.SetVectM( momout*(LVec_beambf.Vect().Unit()), kpMass );
-
-
     //** reconstructoin of missing proton **//
     TVector3 P_pim1; // Momentum(pi-)
     TVector3 P_pim2; // Momentum(pi-)

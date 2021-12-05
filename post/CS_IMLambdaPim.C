@@ -5,8 +5,8 @@ void CS_IMLambdaPim()
   const double ForwardAngle = 0.996;
   const double ForwardAngle2 = 0.997;
   gStyle->SetOptStat(0);
-  TFile *file = new TFile("evanaIMLambdaPim_ppimpim_v17_out.root","READ");
-  TFile *facc = new TFile("../simpost/accmapLpimv23.root","READ");
+  TFile *file = new TFile("evanaIMLambdaPim_ppimpim_v18_out.root","READ");
+  TFile *facc = new TFile("../simpost/accmapLpimv26.root","READ");
   TFile *flumi = new TFile("InteLumi.root","READ");
   TFile *fkin = new TFile("../simpost/NumericalRootFinderLPim.root","READ");
   TParameter<double>*IntegLumi = (TParameter<double>*)flumi->Get("IntegLumi");
@@ -52,12 +52,12 @@ void CS_IMLambdaPim()
   TH2F* CS_q_IMppipi_p_wL_sum = (TH2F*)q_IMppipi_p_wL_sum->Clone("CS_q_IMppipi_p_wL_sum");
   CS_q_IMppipi_p_wL_sum->Divide(q_IMppipi_p_wL_acc);
   TCanvas *cCS = new TCanvas("cCS","cCS",1000,800);
-  const double binwidth = CS_q_IMppipi_p_wL_sum->ProjectionX()->GetBinWidth(1)*1000.0;
+  const double binwidth = CS_q_IMppipi_p_wL_sum->GetXaxis()->GetBinWidth(1)*1000.0;
+  const double binwidthq = CS_q_IMppipi_p_wL_sum->GetYaxis()->GetBinWidth(1)*1000.0;
   CS_q_IMppipi_p_wL_sum->Scale(1.0/binwidth/trigScale/lumi);
 //  CS_q_IMppipi_p_wL_sum->SetMaximum(0.02);
   CS_q_IMppipi_p_wL_sum->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
   CS_q_IMppipi_p_wL_sum->Draw("colz");
-
   
   TCanvas *cCS_px = new TCanvas("cCS_px","cCS_px",1000,800);
   TH1D* CS_IMppipi_p_wL_sum = (TH1D*)CS_q_IMppipi_p_wL_sum->ProjectionX("CS_IMppipi_p_wL_sum");
@@ -231,6 +231,7 @@ void CS_IMLambdaPim()
   CosTheta_IMppipi_p_wL->Draw("colz"); 
   
   TCanvas *cIMLpim_coscut_px = new TCanvas("cIMLpim_coscut_px","cIMLpim_coscut_px",1000,800);
+  const int bin0995 = CosTheta_IMppipi_p_wL->GetYaxis()->FindBin(0.995);
   const int bin0996 = CosTheta_IMppipi_p_wL->GetYaxis()->FindBin(ForwardAngle);
   const int bin0997 = CosTheta_IMppipi_p_wL->GetYaxis()->FindBin(ForwardAngle2);
   const int bin1000 = CosTheta_IMppipi_p_wL->GetYaxis()->FindBin(1.0);
@@ -252,25 +253,27 @@ void CS_IMLambdaPim()
   TCanvas *cCS_CosTheta_IMppipi_p_wL = new TCanvas("cCS_CosTheta_IMppipi_p_wL","cCS_CosTheta_IMppipi_p_wL",1000,800);
   TH2F* CS_CosTheta_IMppipi_p_wL = (TH2F*)CosTheta_IMppipi_p_wL->Clone("CS_CosTheta_IMppipi_p_wL");
   CS_CosTheta_IMppipi_p_wL->Divide(CosTheta_IMppipi_p_wL_acc);
-  const double binwidthcos = CS_CosTheta_IMppipi_p_wL->ProjectionX()->GetBinWidth(1)*1000.0;
 //  CS_CosTheta_IMppipi_p_wL->Scale(1.0/binwidthcos/trigScale/lumi/0.0314);
-  const double solidAngleCoscut = 0.02512;
-  CS_CosTheta_IMppipi_p_wL->Scale(1.0/binwidthcos/trigScale/lumi/solidAngleCoscut);
+  CS_CosTheta_IMppipi_p_wL->Scale(1.0/trigScale/lumi);
   CS_CosTheta_IMppipi_p_wL->Draw("colz");
 
   TCanvas *cCS_CosTheta_IMppipi_p_wL_mc = new TCanvas("cCS_CosTheta_IMppipi_p_wL_mc","cCS_CosTheta_IMppipi_p_wL_mc",1000,800);
   TH2F* CS_CosTheta_IMppipi_p_wL_mc = (TH2F*)CosTheta_IMppipi_p_wL->Clone("CS_CosTheta_IMppipi_p_wL_mc");
   CS_CosTheta_IMppipi_p_wL_mc->Divide(CosTheta_IMppipi_p_wL_mc_acc);
 //  CS_CosTheta_IMppipi_p_wL->Scale(1.0/binwidthcos/trigScale/lumi/0.0314);
-  CS_CosTheta_IMppipi_p_wL_mc->Scale(1.0/binwidthcos/trigScale/lumi/solidAngleCoscut);
+  CS_CosTheta_IMppipi_p_wL_mc->Scale(1.0/trigScale/lumi);
   CS_CosTheta_IMppipi_p_wL_mc->Draw("colz");
 
   TCanvas *cCS_IMppipi_p_wL_coscut = new TCanvas("cCS_IMppipi_p_wL_coscut","cCS_IMppipi_p_wL_coscut",1000,800);
-  TH1D* CS_IMppipi_p_wL_coscut = (TH1D*)CS_CosTheta_IMppipi_p_wL->ProjectionX("CS_IMppipi_p_wL_coscut",bin0996,bin1000+1);
+  const double solidAngleCoscut = 2.0*3.1415*(1.00-0.995);//Sr,=0.025132
+  TH1D* CS_IMppipi_p_wL_coscut = (TH1D*)CS_CosTheta_IMppipi_p_wL->ProjectionX("CS_IMppipi_p_wL_coscut",bin0995,bin1000);
   CS_IMppipi_p_wL_coscut->GetXaxis()->SetRangeUser(1.3,1.6);
+  const double binwidthcos = CS_CosTheta_IMppipi_p_wL->GetXaxis()->GetBinWidth(1)*1000.0;//GeV/c^2 -> MeV/c^2 binwidth
+  CS_IMppipi_p_wL_coscut->Scale(1.0/solidAngleCoscut/binwidthcos);
   CS_IMppipi_p_wL_coscut->Draw("HE");
-  TH1D* CS_IMppipi_p_wL_coscut2 = (TH1D*)CS_CosTheta_IMppipi_p_wL->ProjectionX("CS_IMppipi_p_wL_coscut2",bin0997,bin1000+1);
+  TH1D* CS_IMppipi_p_wL_coscut2 = (TH1D*)CS_CosTheta_IMppipi_p_wL->ProjectionX("CS_IMppipi_p_wL_coscut2",bin0997,bin1000);
   //CS_IMppipi_p_wL_coscut2->GetXaxis()->SetRangeUser(1.3,1.6);
+  CS_IMppipi_p_wL_coscut2->Scale(1.0/solidAngleCoscut/binwidthcos);
   CS_IMppipi_p_wL_coscut2->SetLineColor(3);
   CS_IMppipi_p_wL_coscut2->Draw("HEsame");
   
@@ -279,6 +282,7 @@ void CS_IMLambdaPim()
   CS_IMppipi_p_wL_mc_coscut->GetXaxis()->SetRangeUser(1.3,1.6);
   //CS_IMppipi_p_wL_mc_coscut->Draw("HE");
   CS_IMppipi_p_wL_mc_coscut->SetLineColor(2);
+  CS_IMppipi_p_wL_mc_coscut->Scale(1.0/solidAngleCoscut/binwidthcos);
   CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
 
   TCanvas *cCompInoue= new TCanvas("cCompInoue","cCompInoue",1000,800);  
@@ -288,7 +292,7 @@ void CS_IMLambdaPim()
   CS_IMppipi_p_wL_coscut->GetYaxis()->CenterTitle();
   TFile *finoue = TFile::Open("pimL_CS.root","READ");
   TGraphErrors *grinoue = (TGraphErrors*)finoue->Get("Graph");
-  CS_IMppipi_p_wL_coscut->Draw("HEsame");
+  CS_IMppipi_p_wL_coscut->Draw("HE");
   CS_IMppipi_p_wL_coscut2->Draw("HEsame");
   //CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
   grinoue->Draw("P");
