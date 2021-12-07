@@ -1444,7 +1444,7 @@ bool CDSTrack::Retiming(CDSHitMan *cdsMan, ConfMan *conf,double beta,bool SLEW)
 	}
 	else{
 	  ctime = conf-> GetSlewingMapManager()-> CalcCValue(CID_CDC, layer, 0, ctime, obeta2);
-	}
+  }
       }
       cdc->SetTimeOffset(conf,ctime);
     }

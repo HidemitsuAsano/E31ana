@@ -2,6 +2,7 @@ const int ncut=6;
 
 void CS_IMLambdaPim()
 {
+  gROOT->SetBatch();
   const double ForwardAngle = 0.996;
   const double ForwardAngle2 = 0.997;
   gStyle->SetOptStat(0);
@@ -54,7 +55,7 @@ void CS_IMLambdaPim()
   TCanvas *cCS = new TCanvas("cCS","cCS",1000,800);
   const double binwidth = CS_q_IMppipi_p_wL_sum->GetXaxis()->GetBinWidth(1)*1000.0;
   const double binwidthq = CS_q_IMppipi_p_wL_sum->GetYaxis()->GetBinWidth(1)*1000.0;
-  CS_q_IMppipi_p_wL_sum->Scale(1.0/binwidth/trigScale/lumi);
+  CS_q_IMppipi_p_wL_sum->Scale(1.0/binwidth/binwidthq/trigScale/lumi);
 //  CS_q_IMppipi_p_wL_sum->SetMaximum(0.02);
   CS_q_IMppipi_p_wL_sum->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
   CS_q_IMppipi_p_wL_sum->Draw("colz");
@@ -155,13 +156,13 @@ void CS_IMLambdaPim()
     CS_q_IMppipi_p_wL_wp2_acc[icut]->Divide(q_IMppipi_p_wL_wp2_acc[icut]);
     CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->Divide(q_IMppipi_p_wL_nop2_mc_acc[icut]);
     CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->Divide(q_IMppipi_p_wL_wp2_mc_acc[icut]);
-    CS_q_IMppipi_p_wL_nop2_acc[icut]->Scale(1.0/binwidth/trigScale/lumi);
+    CS_q_IMppipi_p_wL_nop2_acc[icut]->Scale(1.0/binwidth/binwidthq/trigScale/lumi);
     CS_q_IMppipi_p_wL_nop2_acc[icut]->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
-    CS_q_IMppipi_p_wL_wp2_acc[icut]->Scale(1.0/binwidth/trigScale/lumi);
+    CS_q_IMppipi_p_wL_wp2_acc[icut]->Scale(1.0/binwidth/binwidthq/trigScale/lumi);
     CS_q_IMppipi_p_wL_wp2_acc[icut]->SetXTitle("IM(#pi^{-}#Lambda) [GeV/c^{2}]");
-    CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->Scale(1.0/binwidth/trigScale/lumi);
+    CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->Scale(1.0/binwidth/binwidthq/trigScale/lumi);
     CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->SetXTitle("true IM(#pi^{-}#Lambda) [GeV/c^{2}]");
-    CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->Scale(1.0/binwidth/trigScale/lumi);
+    CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->Scale(1.0/binwidth/binwidthq/trigScale/lumi);
     CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->SetXTitle("true IM(#pi^{-}#Lambda) [GeV/c^{2}]");
   }
 
