@@ -6,8 +6,8 @@ void CS_IMLambdaPim()
   const double ForwardAngle = 0.996;
   const double ForwardAngle2 = 0.997;
   gStyle->SetOptStat(0);
-  TFile *file = new TFile("evanaIMLambdaPim_ppimpim_v18_out.root","READ");
-  TFile *facc = new TFile("../simpost/accmapLpimv26.root","READ");
+  TFile *file = new TFile("evanaIMLambdaPim_ppimpim_v22_out.root","READ");
+  TFile *facc = new TFile("../simpost/accmapLpimv23.root","READ");
   TFile *flumi = new TFile("InteLumi.root","READ");
   TFile *fkin = new TFile("../simpost/NumericalRootFinderLPim.root","READ");
   TParameter<double>*IntegLumi = (TParameter<double>*)flumi->Get("IntegLumi");
@@ -117,7 +117,7 @@ void CS_IMLambdaPim()
   TCanvas *cq_IMppipi_p_wL_sum_wp2[ncut];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
   for(int icut=0;icut<ncut;icut++){
     cq_IMppipi_p_wL_sum_nop2[icut] = new TCanvas(Form("cq_IMppipi_p_wL_sum_nop2%d",icut),Form("cq_IMppipi_p_wL_sum_nop2%d",icut),1000,800);
-    q_IMppipi_p_wL_sum_nop2[icut]->SetMaximum(90);
+ //   q_IMppipi_p_wL_sum_nop2[icut]->SetMaximum(90);
     q_IMppipi_p_wL_sum_nop2[icut]->Draw("colz");
     
     gth->Draw("pc");
@@ -174,13 +174,13 @@ void CS_IMLambdaPim()
   for(int icut=0;icut<ncut;icut++){
     cCS_nop2[icut] = new TCanvas(Form("cCS_nop2%d",icut),Form("cCS_nop2%d",icut),1000,800);
     cCS_nop2[icut]->cd();
-    CS_q_IMppipi_p_wL_nop2_acc[icut]->SetMaximum(0.18);
+ //   CS_q_IMppipi_p_wL_nop2_acc[icut]->SetMaximum(0.18);
     CS_q_IMppipi_p_wL_nop2_acc[icut]->Draw("colz");
     
     
     cCS_nop2_mc[icut] = new TCanvas(Form("cCS_nop2_mc%d",icut),Form("cCS_nop2_mc%d",icut),1000,800);
     cCS_nop2_mc[icut]->cd();
-    CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->SetMaximum(0.18);
+ //   CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->SetMaximum(0.18);
     CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->Draw("colz");
 
 
@@ -242,13 +242,13 @@ void CS_IMLambdaPim()
   TCanvas *cCosacc = new TCanvas("cCosacc","cCosacc",1000,800);
   TH2F* CosTheta_IMppipi_p_wL_acc = (TH2F*)facc->Get("CosTheta_IMppipi_p_wL_acc");
   CosTheta_IMppipi_p_wL_acc->GetYaxis()->SetRangeUser(0.95,1);
-  CosTheta_IMppipi_p_wL_acc->SetMaximum(0.05);
+//  CosTheta_IMppipi_p_wL_acc->SetMaximum(0.05);
   CosTheta_IMppipi_p_wL_acc->Draw("colz");
 
   TCanvas *cCosacc_mc = new TCanvas("cCosacc_mc","cCosacc_mc",1000,800);
   TH2F* CosTheta_IMppipi_p_wL_mc_acc = (TH2F*)facc->Get("CosTheta_IMppipi_p_wL_mc_acc");
   CosTheta_IMppipi_p_wL_mc_acc->GetYaxis()->SetRangeUser(0.95,1);
-  CosTheta_IMppipi_p_wL_mc_acc->SetMaximum(0.05);
+//  CosTheta_IMppipi_p_wL_mc_acc->SetMaximum(0.05);
   CosTheta_IMppipi_p_wL_mc_acc->Draw("colz");
 
   TCanvas *cCS_CosTheta_IMppipi_p_wL = new TCanvas("cCS_CosTheta_IMppipi_p_wL","cCS_CosTheta_IMppipi_p_wL",1000,800);
@@ -343,6 +343,8 @@ void CS_IMLambdaPim()
   CS_q_wp2[0]->Write();
   CS_IMppipi_p_wL_coscut->Write();
   grinoue->Write();
+  q_IMppipi_p_wL_nop2_acc_clean[0]->Write();
+  q_IMppipi_p_wL_wp2_acc_clean[0]->Write();
 
   //CS_IMppipi_p_wL_sum_0->Write();
   //CS_IMppipi_p_wL_sum_350->Write();

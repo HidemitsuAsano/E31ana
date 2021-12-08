@@ -12,9 +12,10 @@ void GetAccMapLpim()
   TH1::SetDefaultSumw2(true);
   TFile *fLpim=NULL;
   TFile *fgen=NULL;
+  const int version = 23;
 
-  fLpim = TFile::Open("../simpost/simIMLpim_ppimpim_v26_out.root");
-  fgen = TFile::Open("../simpost/simIMLpim_v26.root");
+  fLpim = TFile::Open(Form("../simpost/simIMLpim_ppimpim_v%d_out.root",version));
+  fgen = TFile::Open(Form("../simpost/simIMLpim_v%d.root",version));
   TFile *fkin = TFile::Open("../simpost/NumericalRootFinderLPim.root","READ");
 //  fLpim = TFile::Open("simIMLpim_ppimpim_pS0pim_v1_out.root");
 //  fgen = TFile::Open("simIMLpim_pS0pim_v1.root");
@@ -684,7 +685,7 @@ void GetAccMapLpim()
 
 
   //  TFile *fout = new TFile("accmapLpim_pS0pim.root","RECREATE");
-  TFile *fout = new TFile("accmapLpimv26.root","RECREATE");
+  TFile *fout = new TFile(Form("accmapLpimv%d.root",version),"RECREATE");
   for(int icut=0;icut<ncut;icut++){
     q_IMppipi_p_wL_acc[icut]->Write();
     q_IMppipi_p_wL_nop2_acc[icut]->Write();
