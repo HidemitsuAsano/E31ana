@@ -1,12 +1,15 @@
-const int npartfit=4;
 
 Double_t BWandFormS(Double_t *x,Double_t *par)
 {
-  Double_t 
 
 
+  return 0;
+}
 
+Double_t FormP(Double_t *x,Double_t *par)
+{
 
+  return par[1]*pow(x[0]/par[0],2.0)*exp(-1.0*pow(x[0]/par[0],2.0));
 
 }
 
@@ -15,7 +18,9 @@ Double_t BWandFormP(Double_t *x,Double_t *par)
 {
   Double_t r1 = par[0]*pow(par[1]/2.0,2.0)/((pow(x[0]-par[2]),2.0)+pow(par[1]/2.0,2.0));
  
-  Double_t r2 = pow(x[1]/par[4],2.0)*exp(-pow(x[1]/par[4],2.0));
+  Double_t r2 = pow(x[1]/par[4],2.0)*exp(-1.0*pow(x[1]/par[4],2.0));
+
+  return r1*r2;
 
 }
 
@@ -69,10 +74,28 @@ void FitCslpim()
   }
   CS_sum_fit->Draw("colz");
   
+  TF2 *f2 = new TF2("f2",BWandFormP,1.30,1.40,0.4,0.8,5);
+  f2->SetParameter(1,0.1);
+  f2->FixParameter(2,1.38);
+  f2->SetRange(1.30,1.40,0.4,0.8);
+  CS_sum_fit->Fit("f2","R","");
+  f2->Draw("cont1 same");
+
+
+  TCanvas *cCS_q_fit = new TCanvas("cCS_q_fit","cCS_q_fit",1000,800);
   
-   
+  const int bin1360 = CS_sum_fit->GetXaxis()->FindBin(1.36);
+  const int bin1400 = CS_sum_fit->GetXaxis()->FindBin(1.40);
+  TH1D* CS_q_fit = (TH1D*)CS_sum_fit->ProjectionY("CS_q_fit",bin1360,bin1400);
+  CS_q_fit->SetMarkerStyle(20);
+  CS_q_fit->Draw("E");
+  TF1 *f1 = new TF1("f1",FormP,0.4,0.8,2);
+  CS_q_fit->Fit("f1","","",0.4,0.75);
+
+  return;
 
 
+  /*
   TCanvas *cCS_q = new TCanvas("cCS_q","cCS_q",1000,800);
   TH1D* CS_q_nop20 = (TH1D*)file->Get("CS_q_nop20");
   CS_q_nop20->Draw("");
@@ -124,6 +147,7 @@ void FitCslpim()
   gr_wp2->SetLineColor(2);
   gr_wp2->Draw("P");
   
+  */
   
 
 
