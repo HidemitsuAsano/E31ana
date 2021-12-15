@@ -136,10 +136,10 @@ void FitCslpim()
   f2->SetParameter(0,0.00025);
   f2->SetParameter(1,0.045);
   f2->FixParameter(2,1.3872);//PDG mass
-  f2->SetParameter(3,0.47);
-  f2->SetParLimits(3,0.2,0.5);
-  f2->SetParameter(4,0.11);
-  f2->SetParLimits(4,0.1,1000000);
+  f2->SetParameter(3,0.51);//landau mpv
+  f2->SetParLimits(3,0.51,0.55);
+  f2->SetParameter(4,0.09);
+  f2->SetParLimits(4,0.01,0.1);//landau sigma
   f2->FixParameter(5,0.001);
   f2->SetNpx(8);
   f2->SetNpy(12);
@@ -179,7 +179,27 @@ void FitCslpim()
   CS_q_fit->Draw("E");
   TF1 *f1 = new TF1("f1",FormP,0.4,0.8,2);
   CS_q_fit->Fit("f1","","",0.4,0.75);
+  
 
+  TF2 *f3 = new TF2("f3",VGandLandau,1.32,1.44,0.21,0.75,6);
+  f3->SetParameters(f2->GetParameters());
+  f3->SetNpx(8);
+  f3->SetNpy(18);
+  f3->Print();
+  
+
+  TH2D* f3hist = (TH2D*)f3->GetHistogram();
+  cfittest->cd(1);
+  TH1D* f3hist_px = (TH1D*)f3hist->ProjectionX("f3hist_px");
+  f3hist_px->SetLineColor(4);
+  f3hist_px->SetFillColor(0);
+  f3hist_px->Draw("same");
+
+  cfittest->cd(4);
+  TH1D* f3hist_py = (TH1D*)f3hist->ProjectionY("f3hist_py");
+  f3hist_py->SetLineColor(4);
+  f3hist_py->SetFillColor(0);
+  f3hist_py->Draw("same");
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
