@@ -55,7 +55,7 @@ void FitCslpim()
 {
   TFile *file = TFile::Open("cs_lpim_killcombi.root");
   file->cd();
- 
+  gStyle->SetOptStat(0);
   TH2F* CS_q_IMppipi_p_wL_nop2 = (TH2F*)file->Get(Form("CS_q_IMppipi_p_wL_nop2_acc%d",0));
   TH2F* CS_q_IMppipi_p_wL_wp2 = (TH2F*)file->Get(Form("CS_q_IMppipi_p_wL_wp2_acc%d",0));
   
@@ -92,8 +92,8 @@ void FitCslpim()
     for(int iy=0;iy<CS_sum_fit->GetNbinsY();iy++){
       double acccont = acc_sum->GetBinContent(ix,iy);
       if(acccont<0.01){
-         CS_sum_fit->SetBinContent(ix,iy,0);
-         CS_sum_fit->SetBinError(ix,iy,0);
+        CS_sum_fit->SetBinContent(ix,iy,0);
+        CS_sum_fit->SetBinError(ix,iy,0);
       }
     }
   }
@@ -170,15 +170,9 @@ void FitCslpim()
   TH1D* f2hist_py = (TH1D*)f2hist->ProjectionY();
   f2hist_py->Draw("same");
   std::cout << "width y " << f2hist_py->GetBinWidth(1) << std::endl;
-  TCanvas *cCS_q_fit = new TCanvas("cCS_q_fit","cCS_q_fit",1000,800);
   
-  const int bin1360 = CS_sum_fit->GetXaxis()->FindBin(1.36);
-  const int bin1400 = CS_sum_fit->GetXaxis()->FindBin(1.40);
-  TH1D* CS_q_fit = (TH1D*)CS_sum_fit->ProjectionY("CS_q_fit",bin1360,bin1400);
-  CS_q_fit->SetMarkerStyle(20);
-  CS_q_fit->Draw("E");
-  TF1 *f1 = new TF1("f1",FormP,0.4,0.8,2);
-  CS_q_fit->Fit("f1","","",0.4,0.75);
+  
+  
   
 
   TF2 *f3 = new TF2("f3",VGandLandau,1.32,1.44,0.21,0.75,6);
@@ -200,6 +194,23 @@ void FitCslpim()
   f3hist_py->SetLineColor(4);
   f3hist_py->SetFillColor(0);
   f3hist_py->Draw("same");
+
+  TCanvas *cCS_q_fit = new TCanvas("cCS_q_fit","cCS_q_fit",1000,800);
+  const int bin1360 = CS_sum_fit->GetXaxis()->FindBin(1.35);
+  const int bin1400 = CS_sum_fit->GetXaxis()->FindBin(1.395);
+  TH1D* CS_q_fit = (TH1D*)CS_sum_fit->ProjectionY("CS_q_fit",bin1360,bin1400);
+  CS_q_fit->SetMarkerStyle(20);
+  CS_q_fit->Draw("E");
+  const int bin1360fit = f3hist->GetXaxis()->FindBin(1.35);
+  const int bin1400fit = f3hist->GetXaxis()->FindBin(1.395);
+  TH1D* f3hist_py2 = (TH1D*)f3hist->ProjectionY("f3hist_py2",bin1360fit,bin1400fit);
+  f3hist_py2->SetLineColor(4);
+  f3hist_py2->SetFillColor(0);
+  f3hist_py2->Draw("same");
+  //TF1 *f1 = new TF1("f1",FormP,0.4,0.8,2);
+  //CS_q_fit->Fit("f1","","",0.4,0.75);
+
+
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();

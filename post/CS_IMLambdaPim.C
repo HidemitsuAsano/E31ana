@@ -343,8 +343,8 @@ void CS_IMLambdaPim()
   CS_q_wp2[0]->Write();
   CS_IMppipi_p_wL_coscut->Write();
   grinoue->Write();
-  q_IMppipi_p_wL_nop2_acc_clean[0]->Write();
-  q_IMppipi_p_wL_wp2_acc_clean[0]->Write();
+  q_IMppipi_p_wL_nop2_acc[0]->Write();
+  q_IMppipi_p_wL_wp2_acc[0]->Write();
 
   //CS_IMppipi_p_wL_sum_0->Write();
   //CS_IMppipi_p_wL_sum_350->Write();
