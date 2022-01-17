@@ -172,13 +172,10 @@ void FitCslpim()
   std::cout << "width y " << f2hist_py->GetBinWidth(1) << std::endl;
   
   
-  
-  
-
-  TF2 *f3 = new TF2("f3",VGandLandau,1.32,1.44,0.21,0.75,6);
+  TF2 *f3 = new TF2("f3",VGandLandau,1.32,1.44,0.21,0.99,6);
   f3->SetParameters(f2->GetParameters());
   f3->SetNpx(8);
-  f3->SetNpy(18);
+  f3->SetNpy(26);
   f3->Print();
   
 
@@ -209,6 +206,16 @@ void FitCslpim()
   f3hist_py2->Draw("same");
   //TF1 *f1 = new TF1("f1",FormP,0.4,0.8,2);
   //CS_q_fit->Fit("f1","","",0.4,0.75);
+
+  TCanvas *cCS_q_all = new TCanvas("cCS_q_all","cCS_q_all",1000,800);
+  TH1D* CS_q_all = (TH1D*)CS_sum->ProjectionY("CS_q_all",bin1360,bin1400);
+  CS_q_all->SetMarkerStyle(20);
+  CS_q_all->Draw("E");
+  f3hist_py2->Draw("same");
+  const int binq350 = f3hist_py2->FindBin(0.35);
+  const int binq650 = f3hist_py2->FindBin(0.65);
+  std::cout << f3hist_py2->Integral(binq350,binq650)  << std::endl;
+  std::cout << f3hist_py2->Integral(1,binq350) << std::endl;
 
 
 
