@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
-set Version="25"
-set DSTVersion="5"
+set Version="26"
+set DSTVersion="6"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simpLpim${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
 set CDSDIRSUB="${CDSDIR}simDSTpLpim${DSTVersion}"
