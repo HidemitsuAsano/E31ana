@@ -821,8 +821,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       if( !TrackTools::FindMass2( track, bpctrack, tof, LVec_beam.Vect().Mag(),
             Beam_Kaon, beta_calc, mass2, correctedtof ) ) {
       }
-      //const int pid = TrackTools::PIDcorr_wide(mom,mass2);
-      const int pid = TrackTools::PIDcorr(mom,mass2);
+      const int pid = TrackTools::PIDcorr_wide(mom,mass2);
+      //const int pid = TrackTools::PIDcorr(mom,mass2);
       track->SetPID( pid );
       Tools::Fill2D( "PID_CDS_beta_select", 1./beta_calc, mom );
       Tools::Fill2D( "PID_CDS_select", mass2, mom );
@@ -1258,8 +1258,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
                 Beam_Kaon, beta_calc, mass2, correctedtof ) ) {
 
           }
-          //const int pid = TrackTools::PIDcorr_wide(mom,mass2);
-          const int pid = TrackTools::PIDcorr(mom,mass2);
+          const int pid = TrackTools::PIDcorr_wide(mom,mass2);
+          //const int pid = TrackTools::PIDcorr(mom,mass2);
           track->SetPID( pid );
           Tools::Fill2D( "PID_CDS_beta_select2", 1./beta_calc, mom );
           Tools::Fill2D( "PID_CDS_select2", mass2, mom );

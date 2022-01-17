@@ -127,7 +127,7 @@ int Util::GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector
   }
   
   if(pippimhit.size()!=2){
-    std::cout << __FILE__ << " L." << __LINE__ << "# of pion tracks !=2 " << std::endl; 
+    //std::cout << __FILE__ << " L." << __LINE__ << "# of pion tracks !=2 " << std::endl; 
   }
   for( int ineuseg=0; ineuseg<(int)seg.size(); ineuseg++ ) {
     for( int iseg=0; iseg<(int)pippimhit.size(); iseg++ ) {
@@ -381,7 +381,8 @@ int Util::CDSChargedAna(const bool docdcretiming,
                         std::vector <int> &protonid,
                         TVector3 &pim_projected,
                         TVector3 &pip_projected,
-                        const bool MCFlag)
+                        const bool MCFlag,
+                        const int H2data)
 {
   int CDHseg=-1;
   bool chi2OK = true;
@@ -502,12 +503,13 @@ int Util::CDSChargedAna(const bool docdcretiming,
     }
 
     int pid = -1;
-    //if(!MCFlag){
+    if(!H2data){
       pid = TrackTools::PIDcorr_wide(mom,mass2);
-      //pid = TrackTools::PIDcorr3(mom,mass2);
-    //}else{
-    //  pid = TrackTools::PIDcorr(mom,mass2);
-    //}
+    }else if(H2data==1){
+      //yamaga param ?
+      pid = TrackTools::PIDcorr3(mom,mass2);
+    }
+
     track->SetPID( pid );
     Tools::Fill2D( "PID_CDS_beta", 1./beta_calc, mom );
     Tools::Fill2D( "PID_CDS", mass2, mom );
@@ -627,20 +629,41 @@ double Util::AnalyzeT0(BeamLineHitMan *blman,ConfMan *confman,int &t0seg)
 }
 
 
-int Util::BeamPID(EventHeader *header, const double ctmt0,BeamLineHitMan *blman)
+int Util::BeamPID(EventHeader *header, const double ctmt0,BeamLineHitMan *blman,const int H2data)
 {
   //  beamline analysis & event selection
   double ctmBHD=0;
   int PIDBeam = -1; // 0:pi 1:K 3:else
+  static int state = 0;
+  if(H2data==0){
+    if(!state){
+      std::cout << __FILE__ << " L." <<  __LINE__ << " d2 data " << std::endl;
+      std::cout << "kaon beam tof range " << blcuts::beam_tof_k_min << " - " << blcuts::beam_tof_k_max << std::endl;
+      state = 1;
+    }
+  }else if(H2data==1){
+    if(!state){
+      std::cout << __FILE__ << " L." <<  __LINE__ << " H2 data " << std::endl;
+      std::cout << "kaon beam tof range " << blcuts::beam_tof_k_min_h2 << " - " << blcuts::beam_tof_k_max_h2 << std::endl;
+      state = 1;
+    }
+  }
   for( int i=0; i<blman->nBHD(); i++ ) {
     if( blman->BHD(i)->CheckRange() ) {
       ctmBHD = blman->BHD(i)->ctmean();
       double tofBHDT0 = ctmt0-ctmBHD;
       Tools::Fill1D( Form("tof_T0BHD"), tofBHDT0 );
-      if( header->kaon() && (blcuts::beam_tof_k_min <tofBHDT0) && (tofBHDT0<blcuts::beam_tof_k_max)  )
-        PIDBeam = Beam_Kaon;
-      else if( header->pion() && (blcuts::beam_tof_pi_min<tofBHDT0) && (tofBHDT0<blcuts::beam_tof_pi_max) )
-        PIDBeam = Beam_Pion;
+      if(!H2data){
+        if( header->kaon() && (blcuts::beam_tof_k_min <tofBHDT0) && (tofBHDT0<blcuts::beam_tof_k_max)  )
+          PIDBeam = Beam_Kaon;
+        else if( header->pion() && (blcuts::beam_tof_pi_min<tofBHDT0) && (tofBHDT0<blcuts::beam_tof_pi_max) )
+          PIDBeam = Beam_Pion;
+      }else if(H2data){
+        if( header->kaon() && (blcuts::beam_tof_k_min_h2 <tofBHDT0) && (tofBHDT0<blcuts::beam_tof_k_max_h2)  )
+          PIDBeam = Beam_Kaon;
+        else if( header->pion() && (blcuts::beam_tof_pi_min_h2<tofBHDT0) && (tofBHDT0<blcuts::beam_tof_pi_max_h2) )
+          PIDBeam = Beam_Pion;
+      }
     }
   }
   Tools::Fill1D(Form("PID_beam"), PIDBeam);

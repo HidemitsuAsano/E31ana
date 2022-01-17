@@ -13,7 +13,10 @@ namespace blcuts {
   const double beam_tof_k_max=31.0;
   const double beam_tof_pi_min=25.0;//rough
   const double beam_tof_pi_max=27.0;//rough
-
+  const double beam_tof_k_min_h2=27.9637;
+  const double beam_tof_k_max_h2=29.4648;
+  const double beam_tof_pi_min_h2=25.0;//rough
+  const double beam_tof_pi_max_h2=27.0;//rough
   //FDC1 cuts
   const double fdc1_time_window_min=-30.;
   const double fdc1_time_window_max=100.;

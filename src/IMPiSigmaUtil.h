@@ -50,10 +50,11 @@ namespace Util
                     std::vector <int> &protonid,
                     TVector3 &pim_projected,
                     TVector3 &pip_projected,
-                    const bool MCFlag=false
+                    const bool MCFlag=false,
+                    const int H2data=0
                     );
   double AnalyzeT0(BeamLineHitMan *blman, ConfMan *confman,int &t0seg);
-  int BeamPID(EventHeader *header, const double ctmt0, BeamLineHitMan *blman); 
+  int BeamPID(EventHeader *header, const double ctmt0, BeamLineHitMan *blman, const int H2data=0); 
   int EveSelectBeamline(BeamLineTrackMan *bltrackman, 
                         CDSTrackingMan *trackman,
                         ConfMan *confman,
