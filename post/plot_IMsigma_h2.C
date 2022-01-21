@@ -174,7 +174,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   TH2F* MMom_MMass;
   TH2F* MMom_MMass_wSid;
   //TH2F* MMom_MMass_wSid_n;
-  TH1F* MMnpimiss_react; 
+  TH1F* MMnpim_react; 
 
   //
   TH2F* nmom_IMnpim_mc;
@@ -219,9 +219,9 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   TH1F* diff_nmiss_wSid_n_reactmc;//store mcData - reaction data mom.
   TH1F* diff_cosnmiss_reactmc;//store mcData - reaction data mom.
   TH1F* diff_cosnmiss_wSid_n_reactmc;//store mcData - reaction data mom.
-  TH2F* diff2D_MMnpimissIMnpim_reactmc;
+  TH2F* diff2D_MMnpim_IMnpim_reactmc;
   TH2F* diff2D_MMnpimissIMnpim_wSid_n_reactmc;
-  TH2F* diff2D_MMnpimissIMnpip_reactmc;
+  TH2F* diff2D_MMnpip_IMnpip_reactmc;
   TH2F* diff2D_MMnpimissIMnpip_wSid_n_reactmc;
   
   //GEANT mcData - reco. data matching 
@@ -291,23 +291,22 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   
   //w dE cuts
   TH2F* MMnpi_IMnpip;
-  TH2F* MMnpi_IMnpip_fake;
+  //TH2F* MMnpi_IMnpip_fake;
   TH2F* MMnpi_IMnpim;
-  TH2F* MMnpi_IMnpim_fake;//for m
+  //TH2F* MMnpi_IMnpim_fake;//for m
   TH2F* Cospicm_IMnpip;//cos pi cm 
   TH2F* Cospicm_IMnpim;//cos pi cm
-  TH2F* MMn_IMnpip;
-  TH2F* MMn_IMnpim;
-  TH2F* MMpi_IMnpip;
-  TH2F* MMpi_IMnpim;
+  TH2F* MMn_IMnpip;//for checking forward K0bar
+  TH2F* MMn_IMnpim;//for checking forward K0bar
+  TH2F* MMpi_IMnpip;//checking forward sigma
+  TH2F* MMpi_IMnpim;//checking forward sigma
   
   TH2F* dE_CDHphi;
   TH2F* dE_CDHz;
   TH2F* dE_IMnpim;
-  TH2F* dE_IMnpim_pi;
   TH2F* dE_IMnpip;
+  TH2F* dE_IMnpim_pi;
   TH2F* dE_IMnpip_pi;
-  const int nthetacut=36; //180/5=36
   //low high side,
   //distance to signal
   TH2F* nmom_CDHphi;
@@ -413,8 +412,8 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   //MMom_MMass_wSid_n->SetXTitle("Missing Mass [GeV/c^{2}]");
   //MMom_MMass_wSid_n->SetYTitle("Missing Mom. [GeV/c]");
 
-  MMnpimissreact = new TH1F("MMnpimissreact","MMnpimissreact",100,0,1.5);
-  MMnpimissreact->SetXTitle("react. Missing Mass [GeV/c^{2}");
+  //MMnpim_react = new TH1F("MMnpimissreact","MMnpimissreact",100,0,1.5);
+  //MMnpim_react->SetXTitle("react. Missing Mass [GeV/c^{2}");
   
   diff_IMnpim_reactmc = new TH1F("diff_IMnpim_reactmc","diff_IMnpim_reactmc",100,-1.0,1.0);
   diff_IMnpim_reactmc->SetXTitle("diff. IMnpim (MCData - Reac.) [GeV/c^{2}]");
@@ -508,17 +507,17 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   diff_cosnmiss_wSid_n_reactmc = new TH1F("diff_cosnmiss_wSid_n_reactmc","diff_cosnmiss_wSid_n_reactmc",200,-1.0,1.0);
   diff_cosnmiss_wSid_n_reactmc->SetXTitle("diff. cos. nmiss (MCData - Reac.) [radian]");
   
-  diff2D_MMnpimissIMnpim_reactmc = new TH2F("diff2D_MMnpimissIMnpim_reactmc","diff2D_MMnpimissIMnpim_reactmc",200,-1.0,1.0,150,-1.5,1.5);
-  diff2D_MMnpimissIMnpim_reactmc->SetXTitle("diff. IMnpim (MCData - Reac.) [GeV/c^{2}]");
-  diff2D_MMnpimissIMnpim_reactmc->SetYTitle("diff. Missing Mass (MCData - Reac.) [GeV/c^{2}]");
+  diff2D_MMnpim_IMnpim_reactmc = new TH2F("diff2D_MMnpim_IMnpim_reactmc","diff2D_MMnpim_IMnpim_reactmc",200,-1.0,1.0,150,-1.5,1.5);
+  diff2D_MMnpim_IMnpim_reactmc->SetXTitle("diff. IMnpim (MCData - Reac.) [GeV/c^{2}]");
+  diff2D_MMnpim_IMnpim_reactmc->SetYTitle("diff. Missing Mass (MCData - Reac.) [GeV/c^{2}]");
    
   diff2D_MMnpimissIMnpim_wSid_n_reactmc = new TH2F("diff2D_MMnpimissIMnpim_wSid_n_reactmc","diff2D_MMnpimissIMnpim_wSid_n_reactmc",200,-1.0,1.0,150,-1.5,1.5);
   diff2D_MMnpimissIMnpim_wSid_n_reactmc->SetXTitle("diff. IMnpim (MCData - Reac.) [GeV/c^{2}]");
   diff2D_MMnpimissIMnpim_wSid_n_reactmc->SetYTitle("diff. Missing Mass (MCData - Reac.) [GeV/c^{2}]");
 
-  diff2D_MMnpimissIMnpip_reactmc = new TH2F("diff2D_MMnpimissIMnpip_reactmc","diff2D_MMnpimissIMnpip_reactmc",200,-1.0,1.0,150,-1.5,1.5);
-  diff2D_MMnpimissIMnpip_reactmc->SetXTitle("diff. IMnpip (MCData - Reac.) [GeV/c^{2}]");
-  diff2D_MMnpimissIMnpip_reactmc->SetYTitle("diff. Missing Mass (MCData - Reac.) [GeV/c^{2}]");
+  diff2D_MMnpip_IMnpip_reactmc = new TH2F("diff2D_MMnpip_IMnpip_reactmc","diff2D_MMnpip_IMnpip_reactmc",200,-1.0,1.0,150,-1.5,1.5);
+  diff2D_MMnpip_IMnpip_reactmc->SetXTitle("diff. IMnpip (MCData - Reac.) [GeV/c^{2}]");
+  diff2D_MMnpip_IMnpip_reactmc->SetYTitle("diff. Missing Mass (MCData - Reac.) [GeV/c^{2}]");
    
   diff2D_MMnpimissIMnpip_wSid_n_reactmc = new TH2F("diff2D_MMnpimissIMnpip_wSid_n_reactmc","diff2D_MMnpimissIMnpip_wSid_n_reactmc",200,-1.0,1.0,150,-1.5,1.5);
   diff2D_MMnpimissIMnpip_wSid_n_reactmc->SetXTitle("diff. IMnpip (MCData - Reac.) [GeV/c^{2}]");
@@ -548,7 +547,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   diff2D_nmom_IMnpim_recomc_wSid_n_fake1->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
   diff2D_nmom_IMnpim_recomc_wSid_n_fake1->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
 
-  if(SimSpmode || SimSmmode || SimK0nnmode){
+  if(SimSpmode || SimSmmode || SimK0nmode){
     diff2D_nmom_IMnpip_recomc_wSid_n = new TH2F("diff2D_nmom_IMnpip_recomc_wSid_n","diff2D_nmom_IMnpip_recomc_wSid_n",2000,-0.2,0.2,400,-0.4,0.4);
     diff2D_nmom_IMnpip_recomc_wSid_n->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
     diff2D_nmom_IMnpip_recomc_wSid_n->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
@@ -648,22 +647,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   const double IMnpip_binhigh2 = anacuts::Sigmap_center + 93.0*anacuts::Sigmap_sigma;
   */
 
-  MMnpimiss_IMnpip_dE = new TH2F("MMnpimiss_IMnpip", "MMnpimiss_IMnpip",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
-  MMnpimiss_IMnpip_dE->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
-  MMnpimiss_IMnpip_dE->SetYTitle("Miss Mass. [GeV/c^{2}]");
   
-  MMnpimiss_IMnpip_fake = new TH2F("MMnpimiss_IMnpip_fake", "MMnpimiss_IMnpip_fake",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
-  MMnpimiss_IMnpip_fake->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
-  MMnpimiss_IMnpip_fake->SetYTitle("Miss Mass. [GeV/c^{2}]");
-  
-  MMnpimiss_IMnpim = new TH2F("MMnpimiss_IMnpim", "MMnpimiss_IMnpim",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
-  MMnpimiss_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
-  MMnpimiss_IMnpim->SetYTitle("Miss Mass. [GeV/c^{2}]");
-  
-  MMnpimiss_IMnpim_fake = new TH2F("MMnpimiss_IMnpim_fake", "MMnpimiss_IMnpim_fake",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
-  MMnpimiss_IMnpim_fake->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
-  MMnpimiss_IMnpim_fake->SetYTitle("Miss Mass. [GeV/c^{2}]");
-
   IMnpim_IMnpim_mc_dE_n = new TH2F("IMnpim_IMnpim_mc_dE_n","IMnpim_IMnpim_mc_dE_n",nbinIMnpi, 1, 2.0, nbinIMnpi, -1.0, 1.0);
   IMnpim_IMnpim_mc_dE_n->SetXTitle("reco. IM(n#pi^{-}) [GeV/c^{2}]");
   IMnpim_IMnpim_mc_dE_n->SetYTitle("reco. - true IM(n#pi^{-}) [GeV/c^{2}]");
@@ -778,10 +762,39 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   nmom_Momnpip_n_Sp->SetXTitle("Mom.(n#pi^{+}) [GeV/c]");
   nmom_Momnpip_n_Sp->SetYTitle("nmom. [GeV/c]");
   
-  MMnpim_MMnpip_woSid_n = new TH2F("MMnpim_MMnpip_woSid_n","MMnpim_MMnpip_woSid_n",280, 1, 1.7, 280, 1, 1.7);
-  MMnpim_MMnpip_woSid_n->SetXTitle("Miss. Mass (K^{-}d #rightarrow n#pi^{+}) [GeV/c^{2}]");
-  MMnpim_MMnpip_woSid_n->SetYTitle("Miss. Mass (K^{-}d #rightarrow n#pi^{-}) [GeV/c^{2}]");
+  MMnpi_IMnpip = new TH2F("MMnpi_IMnpip","MMnpi_IMnpip",700,1.,1.7,200,-1.,1.);
+  MMnpi_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  MMnpi_IMnpip->SetYTitle("Miss. Mass (n#pi^{+}) [GeV/c^{2}]");
+  
+  MMnpi_IMnpim = new TH2F("MMnpi_IMnpim","MMnpi_IMnpim",700,1.,1.7,200,-1.,1.);
+  MMnpi_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  MMnpi_IMnpim->SetYTitle("Miss. Mass (n#pi^{-}) [GeV/c^{2}]");  
 
+  Cospicm_IMnpip = new TH2F("Cospicm_IMnpip","Cospicm_IMnpip",700,1,1.7 ,100,-1,1);
+  Cospicm_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  Cospicm_IMnpip->SetYTitle("Cos.#theta_{CM} miss-#pi" );
+  
+  Cospicm_IMnpim = new TH2F("Cospicm_IMnpim","Cospicm_IMnpim",700,1,1.7 ,100,-1,1);
+  Cospicm_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  Cospicm_IMnpim->SetYTitle("Cos.#theta_{CM} miss-#pi" );
+  
+  MMn_IMnpip = new TH2F("MMn_IMnpip","MMn_IMnpip",700,1.,1.7,100,0.,1.);
+  MMn_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  MMn_IMnpip->SetYTitle("Miss. Mass (n) [GeV/c^{2}]");  
+  
+  MMn_IMnpim = new TH2F("MMn_IMnpim","MMn_IMnpim",700,1.,1.7,100,0.,1.);
+  MMn_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  MMn_IMnpim->SetYTitle("Miss. Mass (n) [GeV/c^{2}]");  
+
+  MMpi_IMnpip = new TH2F("MMpi_IMnpip","MMpi_IMnpip",700,1.,1.7,100,1,2.);
+  MMpi_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  MMpi_IMnpip->SetYTitle("Miss. Mass (#pi) [GeV/c^{2}]");  
+  
+  MMpi_IMnpim = new TH2F("MMpi_IMnpim","MMpi_IMnpim",700,1.,1.7,100,1.,2.);
+  MMpi_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  MMpi_IMnpim->SetYTitle("Miss. Mass (#pi) [GeV/c^{2}]");  
+
+  
   dE_CDHphi = new TH2F(Form("dE_CDHphi"),Form("dE_CDHphi"),100,-3.14,3.14, nbindE,0,50);
   dE_CDHphi->SetXTitle("CDH phi");
   dE_CDHphi->SetYTitle("dE [MeVee]");
@@ -794,17 +807,17 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   dE_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   dE_IMnpim->SetYTitle("dE [MeVee]");
 
-  dE_IMnpim_n = new TH2F(Form("dE_IMnpim_n"),Form("dE_IMnpim_n"), nbinIMnpi, 1.0, 2.0, nbindE, 0, 50.);
-  dE_IMnpim_n->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
-  dE_IMnpim_n->SetYTitle("dE [MeVee]");
+  dE_IMnpim_pi = new TH2F(Form("dE_IMnpim_pi"),Form("dE_IMnpim_pi"), nbinIMnpi, 1.0, 2.0, nbindE, 0, 50.);
+  dE_IMnpim_pi->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  dE_IMnpim_pi->SetYTitle("dE [MeVee]");
 
   dE_IMnpip = new TH2F(Form("dE_IMnpip"),Form("dE_IMnpip"), nbinIMnpi, 1.0, 2.0, nbindE, 0, 50.);
   dE_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   dE_IMnpip->SetYTitle("dE [MeVee]");
 
-  dE_IMnpip_n = new TH2F(Form("dE_IMnpip_n"),Form("dE_IMnpip_n"), nbinIMnpi, 1.0, 2.0, nbindE, 0, 50.);
-  dE_IMnpip_n->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
-  dE_IMnpip_n->SetYTitle("dE [MeVee]");
+  dE_IMnpip_pi = new TH2F(Form("dE_IMnpip_pi"),Form("dE_IMnpip_pi"), nbinIMnpi, 1.0, 2.0, nbindE, 0, 50.);
+  dE_IMnpip_pi->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  dE_IMnpip_pi->SetYTitle("dE [MeVee]");
 
   nmom_CDHphi = new TH2F("nmom_CDHphi","nmom_CDHphi",100,-3.14,3.14,nbinnmom,0,1.0);
   nmom_CDHphi->SetXTitle("CDH phi");
@@ -1055,8 +1068,8 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     TVector3 vtx_pi = *vtx_pi_cdc ;
     // calc missing npi+pi- mass //
     TLorentzVector LVec_npimiss = *LVec_target+*LVec_beam-*LVec_pi-*LVec_n;
-    double pimiss_mass = LVec_npimiss.M();
-    //if(nmiss_mass<0) continue;
+    double npimiss_mass = LVec_npimiss.M();
+    //if(npimiss_mass<0) continue;
     double pimiss_mom = LVec_npimiss.P();
 
     // calc cos(theta) of missing npi+pi- //
@@ -1106,22 +1119,22 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     }
 
     // calc missing pi+neutron //
-    TLorentzVector LVec_pinmiss = *LVec_target+*LVec_beam-*LVec_pi-*LVec_n;
+    TLorentzVector LVec_npimiss = *LVec_target+*LVec_beam-*LVec_pi-*LVec_n;
 
-    TLorentzVector LVec_pinmiss_mc;
+    TLorentzVector LVec_npimiss_mc;
     if(SimSpmode || SimSmmode || SimK0nmode) {
-      LVec_pinmiss_mc = *LVec_target+*mcmom_beam-*mcmom_pi-*mcmom_ncds;
+      LVec_npimiss_mc = *LVec_target+*mcmom_beam-*mcmom_pi-*mcmom_ncds;
     }
 
     //update the momentum 
     if( (SimSpmode || SimSmmode) && 
         SimRejectFake && 
       (mcpattern!=2)) continue;
-    if(SimK0nnmode && SimRejectFake && (mcpattern!=7) ) continue;
+    if(SimK0nmode && SimRejectFake && (mcpattern!=7) ) continue;
 
     //std::cout << __LINE__ << std::endl;
     TLorentzVector LVec_Sigma_react;
-    TLorentzVector LVec_pi_react;
+    TLorentzVector LVec_pi_react;//missing pi 
     TLorentzVector LVec_piSigma_react;
     bool IsFakeN1 = false;
     bool IsFakeN2 = false;
@@ -1159,7 +1172,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       }
       
       if(!IsFakebyVTX  &&  (*mcmom_pimiss).P()>0.01 && (*mcmom_pimiss).P()<100.0 && (*mcmom_ncds).P()>0.01 && (*mcmom_pi).P()>0.01) {
-        IMnpi_MMnpi_mc_vtx->Fill(LVec_pi_nmiss_mc.M(),LVec_pi_n_mc.M());
+        IMnpi_MMnpi_mc_vtx->Fill(LVec_npimiss_mc.M(),LVec_pi_n_mc.M());
         //true neutron from Sigma decay case
         if(mcpattern==2){
           IMnpi_MMnpi_mc_vtx_pat2->Fill(LVec_pi_nmiss_mc.M(),LVec_pi_n_mc.M());
@@ -1171,8 +1184,8 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       }
       
       diff_nmiss_reactmc->Fill((*mcmom_pimiss).P()-(*react_pimiss).P()/1000.);
-      diff2D_MMnpimissIMnpim_reactmc->Fill(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.,(*mcmom_pimiss).M()-(*react_pimiss).M()/1000.);
-      diff2D_MMnpimissIMnpip_reactmc->Fill(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.,(*mcmom_pimiss).M()-(*react_pimiss).M()/1000.);
+      diff2D_MMnpim_IMnpim_reactmc->Fill(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.,(*mcmom_pimiss).M()-(*react_pimiss).M()/1000.);
+      diff2D_MMnpip_IMnpip_reactmc->Fill(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.,(*mcmom_pimiss).M()-(*react_pimiss).M()/1000.);
       nmom_IMnpip_mc->Fill((*mcmom_ncds).P(), LVec_pip_n_mc.M());
       nmom_IMnpim_mc->Fill((*mcmom_ncds).P(), LVec_pim_n_mc.M());
       //if(SimSpmode){
@@ -1204,7 +1217,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
 
     }
 
-    bool MissNFlag=false;
+    bool MissPiFlag=false;
     bool MissNwideFlag=false;
     bool NBetaOK=false;
     bool NdEOK=false;
@@ -1293,40 +1306,40 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
 
     //vicinity of Sigma+ & NMiss events
     if(pow(((MassNPip - anacuts::Sigmap_center)/5.0/anacuts::Sigmap_sigma),2.0) +
-       pow(((nmiss_mass - anacuts::neutron_center)/5.0/anacuts::neutron_sigma),2.0) < 1.0){
-       if(nmiss_mass < 1.05){
+       pow(((npimiss_mass - anacuts::neutron_center)/5.0/anacuts::neutron_sigma),2.0) < 1.0){
+       if(npimiss_mass < 1.05){
          SigmaPMissNViciFlag=true;
        }
     }
     
     //vicinity of Sigma+ &Nmiss events +extended area
-    if( (nmiss_mass >=anacuts::neutron_center) && (pow(((MassNPip - anacuts::Sigmap_center)/5.0/anacuts::Sigmap_sigma),2.0) +
-       pow(((nmiss_mass - anacuts::neutron_center)/5.0/anacuts::neutron_sigma),2.0) < 1.0)){
-       if(nmiss_mass < 1.05){
+    if( (npimiss_mass >=anacuts::neutron_center) && (pow(((MassNPip - anacuts::Sigmap_center)/5.0/anacuts::Sigmap_sigma),2.0) +
+       pow(((npimiss_mass - anacuts::neutron_center)/5.0/anacuts::neutron_sigma),2.0) < 1.0)){
+       if(npimiss_mass < 1.05){
          SigmaPMissNViciextFlag=true;
        }
     }
     
-    if( (nmiss_mass < anacuts::neutron_center) && (fabs( MassNPip - anacuts::Sigmap_center) < 5.0*anacuts::Sigmap_sigma)){
+    if( (npimiss_mass < anacuts::neutron_center) && (fabs( MassNPip - anacuts::Sigmap_center) < 5.0*anacuts::Sigmap_sigma)){
       SigmaPMissNViciextFlag=true;
     }
 
 
     //vicinity of Sigma- & NMiss events
-    if( (nmiss_mass >= anacuts::neutron_center) && 
+    if( (npimiss_mass >= anacuts::neutron_center) && 
         (pow(((MassNPim - anacuts::Sigmam_center)/5.0/anacuts::Sigmam_sigma),2.0) +
-        pow(((nmiss_mass - anacuts::neutron_center)/3.0/anacuts::neutron_sigma),2.0) < 1.0)){
+        pow(((npimiss_mass - anacuts::neutron_center)/3.0/anacuts::neutron_sigma),2.0) < 1.0)){
         SigmaMMissNViciFlag=true;
         SigmaMMissNViciextFlag=true;
     }
-    if( (nmiss_mass < anacuts::neutron_center) && 
+    if( (npimiss_mass < anacuts::neutron_center) && 
         (pow(((MassNPim - anacuts::Sigmam_center)/5.0/anacuts::Sigmam_sigma),2.0) +
-        pow(((nmiss_mass - anacuts::neutron_center)/5.0/anacuts::neutron_sigma),2.0) < 1.0)){
+        pow(((npimiss_mass - anacuts::neutron_center)/5.0/anacuts::neutron_sigma),2.0) < 1.0)){
         SigmaMMissNViciFlag=true;
     }
 
     
-    if( (nmiss_mass < anacuts::neutron_center) && (fabs( MassNPim - anacuts::Sigmam_center) < 5.0*anacuts::Sigmam_sigma)){
+    if( (npimiss_mass < anacuts::neutron_center) && (fabs( MassNPim - anacuts::Sigmam_center) < 5.0*anacuts::Sigmam_sigma)){
       SigmaMMissNViciextFlag=true;
     }
 
@@ -1386,8 +1399,8 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
 
 
 
-    if(anacuts::neutron_MIN<nmiss_mass && nmiss_mass<anacuts::neutron_MAX ) MissNFlag=true;
-    if(anacuts::neutron_MIN_wide<nmiss_mass && nmiss_mass<anacuts::neutron_MAX_wide ) MissNwideFlag=true;
+    if(anacuts::neutron_MIN<npimiss_mass && npimiss_mass<anacuts::neutron_MAX ) MissPiFlag=true;
+    if(anacuts::neutron_MIN_wide<npimiss_mass && npimiss_mass<anacuts::neutron_MAX_wide ) MissNwideFlag=true;
 
     //momentum update
     if(SigmaPFlag){
@@ -1397,7 +1410,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       LVec_pip_pim_n = *LVec_n_Sp+*LVec_pip+*LVec_pim;
       LVec_npipimiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n_Sp;
       qkn = *LVec_beam-LVec_npipimiss;
-      nmiss_mass = LVec_npipimiss.M();
+      npimiss_mass = LVec_npipimiss.M();
       nmiss_mom = LVec_npipimiss.P();
       cos_pimisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
       nmissthetalab = acos(cos_pimisslab);  
@@ -1408,7 +1421,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       LVec_pip_pim_n = *LVec_n_Sm+*LVec_pip+*LVec_pim;
       LVec_npipimiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n_Sm;
       qkn = *LVec_beam-LVec_npipimiss;
-      nmiss_mass = LVec_npipimiss.M();
+      npimiss_mass = LVec_npipimiss.M();
       nmiss_mom = LVec_npipimiss.P();
       cos_pimisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
       nmissthetalab = acos(cos_pimisslab);  
@@ -1471,39 +1484,39 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       dE_IMnpim->Fill(LVec_pim_n.M(),dE);
       dE_IMnpip->Fill(LVec_pip_n.M(),dE);
     }
-    if(NBetaOK && MissNFlag) {
-      dE_IMnpim_n->Fill(LVec_pim_n.M(),dE,weight);
-      dE_IMnpip_n->Fill(LVec_pip_n.M(),dE,weight);
+    if(NBetaOK && MissPiFlag) {
+      dE_IMnpim_pi->Fill(LVec_pim_n.M(),dE,weight);
+      dE_IMnpip_pi->Fill(LVec_pip_n.M(),dE,weight);
     }
     if(NBetaOK && NdEOK) {
 
       CDHz_nmom_fid->Fill((*LVec_n).P(),(*CDH_Pos).z());
       MMom_MMass->Fill(LVec_npipimiss.M(),LVec_npipimiss.P(),weight);
-      MMnpimiss_IMnpip->Fill(LVec_pip_n.M(),nmiss_mass,weight);
-      MMnpimiss_IMnpim->Fill(LVec_pim_n.M(),nmiss_mass,weight);
+      MMnpim_IMnpip->Fill(LVec_pip_n.M(),npimiss_mass,weight);
+      MMnpi_IMnpim->Fill(LVec_pim_n.M(),npimiss_mass,weight);
       nmom_Momnpip->Fill(LVec_pip_n.P(),(*LVec_n).P());
       nmom_Momnpim->Fill(LVec_pim_n.P(),(*LVec_n).P());
       if(SimSpmode || SimSmmode || SimK0nmode){
         if(IsFakebyVTX || IsFakeN2){
-          MMnpimiss_IMnpip_fake->Fill(LVec_pip_n.M(),nmiss_mass,weight);
-          MMnpimiss_IMnpim_fake->Fill(LVec_pim_n.M(),nmiss_mass,weight);
+          MMnpim_IMnpip_fake->Fill(LVec_pip_n.M(),npimiss_mass,weight);
+          MMnpim_IMnpim_fake->Fill(LVec_pim_n.M(),npimiss_mass,weight);
         }
       }
       if(SigmaPFlag || SigmaMFlag) {
         MMom_MMass_wSid->Fill(LVec_npipimiss.M(),LVec_npipimiss.P(),weight);
-        nmom_MMnpimisswSid->Fill(nmiss_mass,(*LVec_n).P(),weight);
+        nmom_MMnpimisswSid->Fill(npimiss_mass,(*LVec_n).P(),weight);
         
         if(SimSpmode || SimSmmode || SimK0nmode){
           //if(IsFakebyVTX || IsFakeN2){
           if(!( (mcpattern==2)  ||  (mcpattern==7))) {// || IsFakebyVTX ){
-            nmom_MMnpimisswSid_fake->Fill(nmiss_mass,(*LVec_n).P(),weight);
+            nmom_MMnpimisswSid_fake->Fill(npimiss_mass,(*LVec_n).P(),weight);
           }
         }
       }
       //pipmom_IMnpip_dE->Fill(LVec_pip_n.M(),(*LVec_pip).P());
       //pimmom_IMnpim_dE->Fill(LVec_pim_n.M(),(*LVec_pim).P());
-      //pipmom_MMnpimissdE->Fill(nmiss_mass,(*LVec_pip).P());
-      //pimmom_MMnpimissdE->Fill(nmiss_mass,(*LVec_pim).P());
+      //pipmom_MMnpimissdE->Fill(npimiss_mass,(*LVec_pip).P());
+      //pimmom_MMnpimissdE->Fill(npimiss_mass,(*LVec_pim).P());
       nmom_CDHphi->Fill((*CDH_Pos).Phi(),(*LVec_n).P());
       diff2d_CDC_CDH_pim->Fill(diffPhinpim,diffpim.z());
       diff2d_CDC_CDH_pim_phi_tof->Fill(diffPhinpim,difftofnpim);
@@ -1513,9 +1526,9 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       diff2d_CDC_CDH_pip_z_tof->Fill(diffpip.z(),difftofnpip);
       dE_diffphi_CDC_CDH_pim->Fill(diffPhinpim,dE);
       dE_diffphi_CDC_CDH_pip->Fill(diffPhinpip,dE);
-      //MMnpimissdE->Fill(dE, nmiss_mass);
-      MMnpimissdiffphi_CDC_CDH_pim->Fill(diffPhinpim, nmiss_mass);
-      MMnpimissdiffphi_CDC_CDH_pip->Fill(diffPhinpip, nmiss_mass);
+      //MMnpimissdE->Fill(dE, npimiss_mass);
+      MMnpimissdiffphi_CDC_CDH_pim->Fill(diffPhinpim, npimiss_mass);
+      MMnpimissdiffphi_CDC_CDH_pip->Fill(diffPhinpip, npimiss_mass);
       pimmom_diffphi_CDC_CDH_pim->Fill(diffPhinpim,(*LVec_pim).P());
       pipmom_diffphi_CDC_CDH_pip->Fill(diffPhinpip,(*LVec_pip).P());
       pimmom_diffz_CDC_CDH_pim->Fill(diffpim.z(),(*LVec_pim).P());
@@ -1526,8 +1539,8 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       nmom_diffz_CDC_CDH_pip->Fill(diffpip.z(),(*LVec_n).P());
 
       if(!SigmawidePFlag && !SigmawideMFlag ) { 
-        MMnpimiss_IMnpip_woSid->Fill(LVec_pip_n.M(),nmiss_mass,weight);
-        MMnpimiss_IMnpim_woSid->Fill(LVec_pim_n.M(),nmiss_mass,weight);
+        MMnpim_IMnpip_woSid->Fill(LVec_pip_n.M(),npimiss_mass,weight);
+        MMnpim_IMnpim_woSid->Fill(LVec_pim_n.M(),npimiss_mass,weight);
       }
       
 
@@ -1536,7 +1549,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
 
 
     //std::cout << __LINE__ << std::endl;
-    if(NBetaOK && NdEOK && MissNFlag) {
+    if(NBetaOK && NdEOK && MissPiFlag) {
       
       if(SimSpmode || SimSmmode){
         IMnpim_IMnpim_mc_dE_n->Fill(LVec_pim_n.M(),LVec_pim_n.M()-LVec_pim_n_mc.M(),weight);
@@ -1552,12 +1565,6 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
             IMnpip_IMnpip_mc_dE_n_vtx_pat7->Fill(LVec_pip_n.M(),LVec_pip_n.M()-LVec_pip_n_mc.M(),weight);
           }
         }
-      }
-
-
-      if(!SigmaPFlag  && !SigmaMFlag){
-        //MMnpim_MMnpip_woSid_n->Fill(LVec_pip_nmiss.M(),LVec_pim_nmiss.M());
-        MMnpim_MMnpip_woSid_n->Fill(LVec_pimmiss_nmiss.M(),LVec_pinmiss.M(),weight);
       }
 
 
@@ -1589,7 +1596,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
         pipmom_Momnpip_wSid_n->Fill(LVec_pip_n.P(),(*LVec_pip).P(),weight);
         pimmom_Momnpim_wSid_n->Fill(LVec_pim_n.P(),(*LVec_pim).P(),weight);
 
-        nmom_MMnpimisswSid_n->Fill(nmiss_mass,(*LVec_n).P(),weight);
+        nmom_MMnpimisswSid_n->Fill(npimiss_mass,(*LVec_n).P(),weight);
         if(SigmaPFlag){
           pipmom_Momnpip_wSid_n_Sp->Fill(LVec_pip_n.P(),(*LVec_pip).P() ,weight);
         }
@@ -1604,7 +1611,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
         if(SimSpmode || SimSmmode || SimK0nmode){
           double diffIMnpim_reactmc = LVec_pim_n.M()- LVec_pim_n_mc.M();
           double diffIMnpip_reactmc = LVec_pip_n.M()- LVec_pip_n_mc.M();
-          double diffMMnpimissrecomc = nmiss_mass - (*mcmom_pimiss).M();
+          double diffMMnpimissrecomc = npimiss_mass - (*mcmom_pimiss).M();
           
           //MCdata missing mass check
           if(fabs((*mcmom_pimiss).M()-nMass)<0.01) IsMissMassNOK = true;
@@ -1712,7 +1719,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
           vtxr_vtxz_ncan_wSid_n_mc->Fill(mcncanvtxz,mcncanvtxr);
           if(mcpattern==2)vtxr_vtxz_ncan_wSid_n_mc_pat2->Fill(mcncanvtxz,mcncanvtxr);
           else if(mcpattern==7)vtxr_vtxz_ncan_wSid_n_mc_pat7->Fill(mcncanvtxz,mcncanvtxr);
-          //if(!IsFakeN1){
+          
           if(!IsFakebyVTX){
             diff2D_MMnpimissIMnpim_recomc_wSid_n_fake1->Fill(diffIMnpim_recomc,diffMMnpimissrecomc);
             diff2D_MMnpimissIMnpip_recomc_wSid_n_fake1->Fill(diffIMnpip_recomc,diffMMnpimissrecomc);
@@ -1721,23 +1728,6 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
               diff2D_nmom_IMnpip_recomc_wSid_n_fake1->Fill(diffIMnpip_recomc,diffnmom_recomc);
             }
           }
-          //if(SimSpmode){
-          //  if( (diffIMnpip_recomc<-0.012) || (0.010<diffIMnpip_recomc)) IsFakeN2=true;
-            //if(diffnpip_recomc.P()>0.10) IsFakeN2 = true;
-          //}
-          //if(SimSmmode){
-          //  if( (diffIMnpim_recomc<-0.012) || (0.012<diffIMnpim_recomc)) IsFakeN2=true;
-            //if(diffnpim_recomc.P()>0.10) IsFakeN2 = true;
-          //}
-          //if(IsFakeN1 || !IsMissMassNOK || !IsMcNMassOK || IsFakeN2){
-          //if(!IsMissMassNOK || !IsMcNMassOK || IsFakeN2){
-          //if( (mcncdsgen!=3) || (mcncanvtxr>20)  ){
-          //if( (mcncanvtxr>58)  && (mcncdsgen!=3) ){
-          //if(IsFakebyVTX  || IsFakeN2){
-          //if( !((mcpattern==2))) { //|| (mcpattern==7))) { // || IsFakebyVTX ){
-          //if( IsFakebyVTX ){
-            //if(  (SimSpmode &&  ( ( LVec_pip_nmiss_mc.M() < 1.189) || (1.190 < LVec_pip_nmiss_mc.M())) )
-            //   ||(SimSmmode &&  ( ( LVec_pim_nmiss_mc.M() < 1.197) || (1.198 < LVec_pim_nmiss_mc.M())) 
           if(!( (mcpattern==2)  ||  (mcpattern==7))) {// || IsFakebyVTX ){
             IMnpim_MMnpim_mc_wSid_n_fake->Fill(LVec_pim_nmiss_mc.M(),LVec_pim_n_mc.M());
             IMnpip_MMnpip_mc_wSid_n_fake->Fill(LVec_pip_nmiss_mc.M(),LVec_pip_n_mc.M());
@@ -1746,7 +1736,6 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       }//wSid_n
 
     //std::cout << __LINE__ << std::endl;
-    //if(i> 1.00e+06) break;
   }//for ievt
   //--- Filling Histogram END --------------------------------------------------
 
