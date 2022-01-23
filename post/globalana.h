@@ -7,6 +7,7 @@
   TLorentzVector *LVec_target=NULL; // 4-momentum(target)
   TLorentzVector *LVec_pip=NULL;    // 4-momentum(pi+)
   TLorentzVector *LVec_pim=NULL;    // 4-momentum(pi-)
+  TLorentzVector *LVec_pi=NULL;    // 4-momentum(pi+/pi-) for H2
   TLorentzVector *LVec_n=NULL;      // 4-momentum(neutron)
   TLorentzVector *LVec_n_beam=NULL;      // 4-momentum(neutron)
   TLorentzVector *LVec_n_Sp=NULL;      // 4-momentum(neutron),Sp mode assumption
@@ -15,9 +16,12 @@
   TLorentzVector *mcmom_beam=NULL;   // generated 4-momentum(beam)
   TLorentzVector *mcmom_pip=NULL;    // generated 4-momentum(pi+)
   TLorentzVector *mcmom_pim=NULL;    // generated 4-momentum(pi-)
+  TLorentzVector *mcmom_pi=NULL;    // generated 4-momentum(pi-)
   TLorentzVector *mcmom_ncds=NULL;      // generated 4-momentum(neutron)
   TLorentzVector *mcmom_nmiss=NULL;      // generated 4-momentum(neutron)
+  TLorentzVector *mcmom_pimiss=NULL;      // generated 4-momentum(neutron)
   TLorentzVector *react_nmiss=NULL;      // generated 4-momentum(neutron)
+  TLorentzVector *react_pimiss=NULL;      // generated 4-momentum(neutron)
   TLorentzVector *react_Sigma=NULL;      // generated 4-momentum(neutron)
   TLorentzVector *react_pi=NULL;      // generated 4-momentum(neutron)
   double NeutralBetaCDH; // velocity of neutral particle on CDH
@@ -25,26 +29,33 @@
   double NeutralBetaCDH_vtx[3]; // velocity of neutral particle on CDH,0: Spmode 1:Smmode
   double tofpim;
   double tofpip;
+  double tofpi;//for H2
   double tofn;
   double dE;   // energy deposit on CDH
   int neutralseg;
   int nhitOutCDC;
   int ForwardCharge;
+  int chargepi;//for H2
   double mcncanvtxr;
   double mcncanvtxz;
   int mcncdsgen;
   int mcpattern;
+  int mcchargepi;
   TVector3 *vtx_reaction = NULL; // vertex(reaction) 
   TVector3 *vtx_displaced = NULL; // vertex(displaced) 
   TVector3 *vtx_pip_beam = NULL; //C.A.P of pip-beam beam side
   TVector3 *vtx_pim_beam = NULL; //C.A.P of pim-beam beam side
+  TVector3 *vtx_pi_beam = NULL; //C.A.P of pim-beam beam side for H2
   TVector3 *vtx_pip_cdc = NULL;//C.A.P of pip-beam pip side
   TVector3 *vtx_pim_cdc = NULL;//C.A.P of pim-beam pim side
+  TVector3 *vtx_pi_cdc = NULL;//C.A.P of pim-beam pim side
   TVector3 *CA_pip = NULL;//C.A.P of pip-pim pip side
   TVector3 *CA_pim = NULL;//C.A.P of pip-pim pim side
+  TVector3 *CA_pi = NULL;//C.A.P of pip-pim pip side
   TVector3 *CDH_Pos = NULL;
   TVector3 *CDH_Pos_pim = NULL;
   TVector3 *CDH_Pos_pip = NULL;
+  TVector3 *CDH_Pos_pi = NULL; //for H2
   TVector3 *mc_vtx = NULL;
   TVector3 *mc_disvtx = NULL;
   //int run_num;   // run number

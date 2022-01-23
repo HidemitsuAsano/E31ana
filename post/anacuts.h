@@ -102,5 +102,10 @@ namespace anacuts {
   //const double Proton_MIN = 0.8825;
   //const double Proton_MAX = 0.9794;
 
+  //H2 analysis 
+  const double Miss2Pi_MIN = -0.03; 
+  const double Miss2Pi_MAX = 0.06;
+
+
 }
 

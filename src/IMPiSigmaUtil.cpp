@@ -877,7 +877,7 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
     Tools::Fill2D( Form("CDH_mom_diffpos_p_z"), diff.Z(), track->Momentum() );
     Tools::Fill2D( Form("CDH_diffpos_z_p_z"), track_pos.Z(),diff.Z());
   }
-  /*
+  
   for( int icdh=0; icdh<track->nCDHHit(); icdh++ ){
     HodoscopeLikeHit *cdhhit=track->CDHHit(cdsman,icdh);
     HodoscopeLikeHit *t0hit = blman->T0(0);
@@ -901,7 +901,7 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
         Tools::H1( Form("CTMean%d_p",cdhhit->seg()), cdhhit->ctmean(), 2000,-50,150 );
         Tools::H1( Form("CTSub%d_p",cdhhit->seg()), cdhhit->ctsub(), 1000,-50,50 );
       }
-    }*/
+    }
     /*
     if( (fabs(track->Momentum())>0.1) && t0seg==3// &&
     if(!MCFlag  && t0seg==3 &&
@@ -927,8 +927,8 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
       //Tools::H2(Form("ectT0U%d",t0seg),t0hit->eu(),t0hit->ctu(),200,-0.5,4.5,300,5,20);
       //Tools::H2(Form("ectT0D%d",t0seg),t0hit->ed(),t0hit->ctd(),200,-0.5,4.5,300,5,20);
     }//!MCFlag
-    
-  }*/
+    */ 
+  }
 }
 
 void Util::AnaReactionData( ReactionData *reactionData){
