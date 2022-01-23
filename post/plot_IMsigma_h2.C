@@ -27,9 +27,6 @@
 #include "../src/GlobalVariables.h"
 #include "anacuts.h"
 #include "globalana.h"
-//#include "weightfunc.h"
-//#include "weightfuncGSp.h"
-//#include "weightfuncGSm.h"
 
 const double pvalcut = 0.005;
 const bool gridon=true;
@@ -91,9 +88,6 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   std::cout << "infile " << filename <<std::endl;
   TString pdfname = std::string(filename);
   if(qvalcutflag==0) pdfname.Replace(std::string(filename).size()-5,6,".pdf");
-  if(qvalcutflag==1) pdfname.Replace(std::string(filename).size()-5,8,"_qlo.pdf");
-  if(qvalcutflag==2) pdfname.Replace(std::string(filename).size()-5,8,"_qhi.pdf");
-  if(qvalcutflag==3) pdfname.Replace(std::string(filename).size()-5,8,"_theta15.pdf");
   std::cout << "pdfname: " << pdfname << std::endl;
   std::cout << std::endl;
 
@@ -109,7 +103,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   bool SimSpmode = (std::string(filename).find("Sp")!= std::string::npos);
   bool SimSmmode = (std::string(filename).find("Sm")!= std::string::npos);
   bool SimK0nmode = (std::string(filename).find("K0n")!= std::string::npos);//K0n
-  bool RealDatamode = (std::string(filename).find("evanaIMsigma_h2")!=std::string::npos);
+  bool RealDatamode = (std::string(filename).find("evanaIMsigma_npi_h2")!=std::string::npos);
   bool MIXmode = (std::string(filename).find("MIX")!=std::string::npos);
   
   if(RealDatamode) std::cout << "Real Data analysis" << std::endl;
@@ -139,7 +133,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   tree->SetBranchAddress( "vtx_reaction", &vtx_reaction );
   tree->SetBranchAddress( "vtx_pi_beam",&vtx_pi_beam);
   tree->SetBranchAddress( "vtx_pi_cdc",&vtx_pi_cdc);
-  tree->SetBranchAddress( "CA_pi",&CA_pi);
+  //tree->SetBranchAddress( "CA_pi",&CA_pi);
   tree->SetBranchAddress( "CDH_Pos",&CDH_Pos);
   tree->SetBranchAddress( "CDH_Pos_pi",&CDH_Pos_pi);//
   if(SimSpmode || SimSmmode || SimK0nmode) {
@@ -148,7 +142,8 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     tree->SetBranchAddress( "mcncdsgen", &mcncdsgen);
     tree->SetBranchAddress( "mcpattern", &mcpattern);
     tree->SetBranchAddress( "mcmom_beam",  &mcmom_beam );
-    tree->SetBranchAddress( "mcmom_pi", &mcmom_pi);//TODO :add chargepi val.
+    tree->SetBranchAddress( "mcmom_pi", &mcmom_pi);//TODO :add chargepi val. to sim reco code
+    tree->SetBranchAddress( "mcchargepi", &mcchargepi);//TODO :add chargepi val. to sim reco code
     tree->SetBranchAddress( "mcmom_ncds", &mcmom_ncds);
     tree->SetBranchAddress( "mcmom_nmiss", &mcmom_pimiss);
     tree->SetBranchAddress( "react_nmiss", &react_pimiss);
@@ -200,7 +195,6 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   TH2F* IMnpim_MMnpim_mc_wSid_n_fake;//store mcData
   TH2F* IMnpim_MMnpim_mc_wSid_n_fake_pat2;//store mcData
   TH2F* IMnpim_MMnpim_mc_wSid_n_fake_pat7;//store mcData
-  TH2F* IMnpi_MMnpi_mc_vtx;//store mcData 
   TH2F* IMnpim_MMnpim_mc_vtx_pat2;//store mcData 
   TH2F* IMnpim_MMnpim_mc_vtx_pat7;//store mcData
   TH2F* diff2D_IMnpim_Momnpim_wSid_n_reactmc;//store mcData - reaction data
@@ -246,16 +240,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   const int nbinnmom = 200;
   const int nbinmomnpi = 150;
   
-  const float wbinlow[nwbin] = {1.0,1.40,1.52};
-  const float wbinhigh[nwbin] = {1.40,1.52,2.00};
-
   //bin width to be adjusted to resolution
-  const double IMnpip_wbinlow = anacuts::Sigmap_center-17.0*2.0*anacuts::Sigmap_sigma;
-  const double IMnpip_wbinhigh = anacuts::Sigmap_center+47.0*2.0*anacuts::Sigmap_sigma;
-  const int nbinIMnpip_wbin = 32;
-  const double IMnpim_wbinlow = anacuts::Sigmam_center-17.0*2.0*anacuts::Sigmam_sigma;
-  const double IMnpim_wbinhigh = anacuts::Sigmam_center+41.0*2.0*anacuts::Sigmam_sigma;
-  const int nbinIMnpim_wbin = 29;
   TH2F* IMnpim_IMnpim_mc_dE_n;//
   TH2F* IMnpim_IMnpim_mc_dE_n_vtx;//
   TH2F* IMnpim_IMnpim_mc_dE_n_vtx_pat2;//Sigma decay neutron
@@ -291,8 +276,10 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   
   //w dE cuts
   TH2F* MMnpi_IMnpip;
+  TH2F* MM2npi_IMnpip;
   //TH2F* MMnpi_IMnpip_fake;
   TH2F* MMnpi_IMnpim;
+  TH2F* MM2npi_IMnpim;
   //TH2F* MMnpi_IMnpim_fake;//for m
   TH2F* Cospicm_IMnpip;//cos pi cm 
   TH2F* Cospicm_IMnpim;//cos pi cm
@@ -300,6 +287,12 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   TH2F* MMn_IMnpim;//for checking forward K0bar
   TH2F* MMpi_IMnpip;//checking forward sigma
   TH2F* MMpi_IMnpim;//checking forward sigma
+  TH2F* MMn_IMnpip_pi;//for checking forward K0bar
+  TH2F* MMn_IMnpim_pi;//for checking forward K0bar
+  TH2F* MMpi_IMnpip_pi;//checking forward sigma
+  TH2F* MMpi_IMnpim_pi;//checking forward sigma
+  TH2F* Cospicm_IMnpip_pi;//cos pi cm 
+  TH2F* Cospicm_IMnpim_pi;//cos pi cm
   
   TH2F* dE_CDHphi;
   TH2F* dE_CDHz;
@@ -316,8 +309,8 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   TH2F* nmom_MMnpimisswSid;
   TH2F* nmom_MMnpimisswSid_fake;
   TH2F* nmom_MMnpimisswSid_n;
-  TH2F* diffnmom_diffdca_n;
-  TH2F* diffnmom_diffdcar_n;
+  //TH2F* diffnmom_diffdca_n;
+  //TH2F* diffnmom_diffdcar_n;
   TH2F* diffnmom_diffdcaz_n;
   TH2F* vtxr_vtxz_n;
   TH2F* disvtxr_disvtxz_n;
@@ -376,11 +369,11 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   CDHz_nmom_fid->SetXTitle("nmom. [GeV/c]");
   CDHz_nmom_fid->SetYTitle("CDH z [cm]");
 
-  dE_betainv_fid = new TH2F(Form("dE_betainv_fid"),Form("dE_betainv_fid"),100, 0, 50, nbindE, 0, 50);
+  dE_betainv_fid = new TH2F("dE_betainv_fid","dE_betainv_fid",1000, 0, 50, nbindE, 0, 50);
   dE_betainv_fid->SetXTitle("1/#beta");
   dE_betainv_fid->SetYTitle("dE [MeVee]");
 
-  dE_nmom_fid_beta = new TH2F("dE_nmom_fid_beta","dE_nmom_fid_beta",100, 0, 1.5, 500, 0, 50);
+  dE_nmom_fid_beta = new TH2F("dE_nmom_fid_beta","dE_nmom_fid_beta",1000, 0, 1.5, 500, 0, 50);
   dE_nmom_fid_beta->SetXTitle("Mom. [GeV/c]");
   dE_nmom_fid_beta->SetYTitle("dE [MeVee]");
 
@@ -431,10 +424,6 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   IMnpim_MMnpim_mc_wSid_n_fake_pat7->SetYTitle("true  IM(n_{CDS}#pi^{-}) [GeV/c^{2}]");
   IMnpim_MMnpim_mc_wSid_n_fake_pat7->SetXTitle("true  IM(n_{miss}#pi^{-}) [GeV/c^{2}]");
   
-  
-  IMnpi_MMnpi_mc_vtx = new TH2F("IMnpi_MMnpi_mc_vtx","IMnpi_MMnpi_mc_vtx",140,1.,1.7,140,1.0,1.7);
-  IMnpi_MMnpi_mc_vtx->SetYTitle("true  IM(n_{CDS}#pi^{-})  [GeV/c^{2}]");
-  IMnpi_MMnpi_mc_vtx->SetXTitle("true  IM(n_{miss}#pi^{-}) [GeV/c^{2}]");
   
   IMnpim_MMnpim_mc_vtx_pat2 = new TH2F("IMnpim_MMnpim_mc_vtx_pat2","IMnpim_MMnpim_mc_vtx_pat2",140,1.,1.7,140,1.0,1.7);
   IMnpim_MMnpim_mc_vtx_pat2->SetYTitle("true  IM(n_{CDS}#pi^{-})  [GeV/c^{2}]");
@@ -627,27 +616,6 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     generation_diffMass_npim_ncan_wSid_n_mc->SetYTitle("n_{CDS} generation");
   }
 
-  const int nbinIMnpim_bin = 120;
-  const double IMnpim_binlow = anacuts::Sigmam_center - 30.0*anacuts::Sigmam_sigma;
-  //const double IMnpim_binlow = anacuts::Sigmam_center - 30.0*anacuts::Sigmam_sigma;
-  const double IMnpim_binhigh = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
-  //const double IMnpim_binhigh = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
-  const int nbinIMnpip_bin = 120;
-  const double IMnpip_binlow = anacuts::Sigmap_center - 26.0*anacuts::Sigmap_sigma;
-  const double IMnpip_binhigh = anacuts::Sigmap_center + 94.0*anacuts::Sigmap_sigma;
-  
-  /*
-  const int nbinIMnpim_bin2 = 40;
-  const double IMnpim_binlow2 = anacuts::Sigmam_center - 10.0*3.0*anacuts::Sigmam_sigma;
-  //const double IMnpim_binlow = anacuts::Sigmam_center - 30.0*anacuts::Sigmam_sigma;
-  const double IMnpim_binhigh2 = anacuts::Sigmam_center + 10.0*3.0*anacuts::Sigmam_sigma;
-  //const double IMnpim_binhigh = anacuts::Sigmam_center + 90.0*anacuts::Sigmam_sigma;
-  const int nbinIMnpip_bin2= 40;
-  const double IMnpip_binlow2 = anacuts::Sigmap_center - 27.0*anacuts::Sigmap_sigma;
-  const double IMnpip_binhigh2 = anacuts::Sigmap_center + 93.0*anacuts::Sigmap_sigma;
-  */
-
-  
   IMnpim_IMnpim_mc_dE_n = new TH2F("IMnpim_IMnpim_mc_dE_n","IMnpim_IMnpim_mc_dE_n",nbinIMnpi, 1, 2.0, nbinIMnpi, -1.0, 1.0);
   IMnpim_IMnpim_mc_dE_n->SetXTitle("reco. IM(n#pi^{-}) [GeV/c^{2}]");
   IMnpim_IMnpim_mc_dE_n->SetYTitle("reco. - true IM(n#pi^{-}) [GeV/c^{2}]");
@@ -762,38 +730,69 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   nmom_Momnpip_n_Sp->SetXTitle("Mom.(n#pi^{+}) [GeV/c]");
   nmom_Momnpip_n_Sp->SetYTitle("nmom. [GeV/c]");
   
-  MMnpi_IMnpip = new TH2F("MMnpi_IMnpip","MMnpi_IMnpip",700,1.,1.7,200,-1.,1.);
+  MMnpi_IMnpip = new TH2F("MMnpi_IMnpip","MMnpi_IMnpip",140,1.,1.7,200,-1.,1.);
   MMnpi_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   MMnpi_IMnpip->SetYTitle("Miss. Mass (n#pi^{+}) [GeV/c^{2}]");
   
-  MMnpi_IMnpim = new TH2F("MMnpi_IMnpim","MMnpi_IMnpim",700,1.,1.7,200,-1.,1.);
+  MM2npi_IMnpip = new TH2F("MM2npi_IMnpip","MM2npi_IMnpip",140,1.,1.7,200,-1,1.);
+  MM2npi_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  MM2npi_IMnpip->SetYTitle("Miss. Mass^{2} (n#pi^{+}) [(GeV/c^{2})^{2}]");
+  
+  MMnpi_IMnpim = new TH2F("MMnpi_IMnpim","MMnpi_IMnpim",140,1.,1.7,200,-1.,1.);
   MMnpi_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MMnpi_IMnpim->SetYTitle("Miss. Mass (n#pi^{-}) [GeV/c^{2}]");  
+  
+  MM2npi_IMnpim = new TH2F("MM2npi_IMnpim","MM2npi_IMnpim",140,1.,1.7,200,-1.,1.);
+  MM2npi_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  MM2npi_IMnpim->SetYTitle("Miss. Mass^{2} (n#pi^{-}) [(GeV/c^{2})^{2}]");  
 
-  Cospicm_IMnpip = new TH2F("Cospicm_IMnpip","Cospicm_IMnpip",700,1,1.7 ,100,-1,1);
+  Cospicm_IMnpip = new TH2F("Cospicm_IMnpip","Cospicm_IMnpip",140,1,1.7 ,50,0,1);
   Cospicm_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   Cospicm_IMnpip->SetYTitle("Cos.#theta_{CM} miss-#pi" );
   
-  Cospicm_IMnpim = new TH2F("Cospicm_IMnpim","Cospicm_IMnpim",700,1,1.7 ,100,-1,1);
+  Cospicm_IMnpim = new TH2F("Cospicm_IMnpim","Cospicm_IMnpim",140,1,1.7 ,50,0,1);
   Cospicm_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   Cospicm_IMnpim->SetYTitle("Cos.#theta_{CM} miss-#pi" );
   
-  MMn_IMnpip = new TH2F("MMn_IMnpip","MMn_IMnpip",700,1.,1.7,100,0.,1.);
+  Cospicm_IMnpip_pi = new TH2F("Cospicm_IMnpip_pi","Cospicm_IMnpip_pi",140,1,1.7 ,50,0,1);
+  Cospicm_IMnpip_pi->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  Cospicm_IMnpip_pi->SetYTitle("Cos.#theta_{CM} miss-#pi" );
+  
+  Cospicm_IMnpim_pi = new TH2F("Cospicm_IMnpim_pi","Cospicm_IMnpim_pi",140,1,1.7 ,50,0,1);
+  Cospicm_IMnpim_pi->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  Cospicm_IMnpim_pi->SetYTitle("Cos.#theta_{CM} miss-#pi" );
+  
+  MMn_IMnpip = new TH2F("MMn_IMnpip","MMn_IMnpip",140,1.,1.7,100,0.,1.);
   MMn_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   MMn_IMnpip->SetYTitle("Miss. Mass (n) [GeV/c^{2}]");  
   
-  MMn_IMnpim = new TH2F("MMn_IMnpim","MMn_IMnpim",700,1.,1.7,100,0.,1.);
+  MMn_IMnpim = new TH2F("MMn_IMnpim","MMn_IMnpim",140,1.,1.7,100,0.,1.);
   MMn_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MMn_IMnpim->SetYTitle("Miss. Mass (n) [GeV/c^{2}]");  
 
-  MMpi_IMnpip = new TH2F("MMpi_IMnpip","MMpi_IMnpip",700,1.,1.7,100,1,2.);
+  MMpi_IMnpip = new TH2F("MMpi_IMnpip","MMpi_IMnpip",140,1.,1.7,100,1,2.);
   MMpi_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
-  MMpi_IMnpip->SetYTitle("Miss. Mass (#pi) [GeV/c^{2}]");  
+  MMpi_IMnpip->SetYTitle("Miss. Mass (#pi^{+}) [GeV/c^{2}]");  
   
-  MMpi_IMnpim = new TH2F("MMpi_IMnpim","MMpi_IMnpim",700,1.,1.7,100,1.,2.);
+  MMpi_IMnpim = new TH2F("MMpi_IMnpim","MMpi_IMnpim",140,1.,1.7,100,1.,2.);
   MMpi_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
-  MMpi_IMnpim->SetYTitle("Miss. Mass (#pi) [GeV/c^{2}]");  
+  MMpi_IMnpim->SetYTitle("Miss. Mass (#pi^{-}) [GeV/c^{2}]");  
 
+  MMn_IMnpip_pi = new TH2F("MMn_IMnpip_pi","MMn_IMnpip_pi",140,1.,1.7,100,0.,1.);
+  MMn_IMnpip_pi->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  MMn_IMnpip_pi->SetYTitle("Miss. Mass (n) [GeV/c^{2}]");  
+  
+  MMn_IMnpim_pi = new TH2F("MMn_IMnpim_pi","MMn_IMnpim_pi",140,1.,1.7,100,0.,1.);
+  MMn_IMnpim_pi->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  MMn_IMnpim_pi->SetYTitle("Miss. Mass (n) [GeV/c^{2}]");  
+
+  MMpi_IMnpip_pi = new TH2F("MMpi_IMnpip_pi","MMpi_IMnpip_pi",140,1.,1.7,100,1,2.);
+  MMpi_IMnpip_pi->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  MMpi_IMnpip_pi->SetYTitle("Miss. Mass (#pi^{+}) [GeV/c^{2}]");  
+  
+  MMpi_IMnpim_pi = new TH2F("MMpi_IMnpim_pi","MMpi_IMnpim_pi",140,1.,1.7,100,1.,2.);
+  MMpi_IMnpim_pi->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  MMpi_IMnpim_pi->SetYTitle("Miss. Mass (#pi^{-}) [GeV/c^{2}]");  
   
   dE_CDHphi = new TH2F(Form("dE_CDHphi"),Form("dE_CDHphi"),100,-3.14,3.14, nbindE,0,50);
   dE_CDHphi->SetXTitle("CDH phi");
@@ -843,13 +842,13 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   nmom_MMnpimisswSid_n->SetXTitle("Miss. Mass [GeV/c^{2}]");
   nmom_MMnpimisswSid_n->SetYTitle("nmom  [GeV/c]");
   
-  diffnmom_diffdca_n = new TH2F("diffnmom_diffdca_n","diffnmom_diffdca_n",1000,-2,2,1000,-0.2,0.2);
-  diffnmom_diffdca_n->SetXTitle("reco - true n_{CDS} vertex. [cm]");
-  diffnmom_diffdca_n->SetYTitle("reco - true n_{CDS} mom. [GeV/c]");
+  //diffnmom_diffdca_n = new TH2F("diffnmom_diffdca_n","diffnmom_diffdca_n",1000,-2,2,1000,-0.2,0.2);
+  //diffnmom_diffdca_n->SetXTitle("reco - true n_{CDS} vertex. [cm]");
+  //diffnmom_diffdca_n->SetYTitle("reco - true n_{CDS} mom. [GeV/c]");
 
-  diffnmom_diffdcar_n = new TH2F("diffnmom_diffdcar_n","diffnmom_diffdcar_n",1000,-2,2,1000,-0.2,0.2);
-  diffnmom_diffdcar_n->SetXTitle("reco - true n_{CDS} vertex in r. [cm]");
-  diffnmom_diffdcar_n->SetYTitle("reco - true n_{CDS} mom. [GeV/c]");
+  //diffnmom_diffdcar_n = new TH2F("diffnmom_diffdcar_n","diffnmom_diffdcar_n",1000,-2,2,1000,-0.2,0.2);
+  //diffnmom_diffdcar_n->SetXTitle("reco - true n_{CDS} vertex in r. [cm]");
+  //diffnmom_diffdcar_n->SetYTitle("reco - true n_{CDS} mom. [GeV/c]");
   
   diffnmom_diffdcaz_n = new TH2F("diffnmom_diffdcaz_n","diffnmom_diffdcaz_n",1000,-4,4,1000,-0.2,0.2);
   diffnmom_diffdcaz_n->SetXTitle("reco - true n_{CDS} vertex in z. [cm]");
@@ -1040,13 +1039,6 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   TCanvas *cinfo = new TCanvas("cinfo","info");
   cinfo->cd();
   TPaveText *pt = new TPaveText(.05,.05,.95,.7);
-  if(qvalcutflag == 1) {
-    pt->AddText(Form("Mom. Transfer  < %0.2f ",anacuts::qvalcut));
-  } else if(qvalcutflag == 2) {
-    pt->AddText(Form("Mom. Transfer  > %0.2f ",anacuts::qvalcut));
-  }else if(qvalcutflag ==3){
-    pt->AddText(Form("nmiss thetacut 15 "));
-  }
   
   pt->AddText(Form("p-value cut: %f ",pvalcut));
   pt->AddText(Form("dE cut: %0.2f ",anacuts::dE_MIN));
@@ -1065,13 +1057,28 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   for ( Int_t i=0; i<nevent; i++ ) {
     tree->GetEvent(i);
     if(i%50000==0) std::cout << "Event# " << i << std::endl;
-    TVector3 vtx_pi = *vtx_pi_cdc ;
+    //TVector3 vtx_pi = *vtx_pi_cdc ;
     // calc missing npi+pi- mass //
+    TLorentzVector LVec_pim;
+    TLorentzVector LVec_pip;
+    if(chargepi==1) LVec_pip = *LVec_pi;
+    if(chargepi==0) LVec_pim = *LVec_pi;
+
+    TLorentzVector LVec_nmiss = *LVec_target+*LVec_beam-*LVec_n;
+    TLorentzVector LVec_pimiss = *LVec_target+*LVec_beam-*LVec_pi;
     TLorentzVector LVec_npimiss = *LVec_target+*LVec_beam-*LVec_pi-*LVec_n;
     double npimiss_mass = LVec_npimiss.M();
+    double npimiss_mass2 = LVec_npimiss.M2();
     //if(npimiss_mass<0) continue;
-    double pimiss_mom = LVec_npimiss.P();
-
+    double npimiss_mom = LVec_npimiss.P();
+    TLorentzVector LVec_pip_n;
+    TLorentzVector LVec_pim_n;
+    if(chargepi==1){
+      LVec_pip_n = *LVec_n+*LVec_pi;
+    }else if(chargepi==0){
+      LVec_pim_n = *LVec_n+*LVec_pi;
+    }
+    //std::cout << __LINE__ << std::endl;
     // calc cos(theta) of missing npi+pi- //
     TVector3 boost = (*LVec_target+*LVec_beam).BoostVector();
     double cos_pimisslab = LVec_npimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());
@@ -1093,13 +1100,12 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     LVec_pi_CM.Boost(-boost);
     double cos_piCM = LVec_pi_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pi_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
 
+    //std::cout << __LINE__ << std::endl;
     if(SimSpmode || SimSmmode || SimK0nmode) {
       TVector3 boost_mc =  (*LVec_target+*mcmom_beam).BoostVector();
     }
-    TLorentzVector qkn_mc;
     TLorentzVector mcmom_pimiss_calc;
     if(SimSpmode || SimSmmode || SimK0nmode) {
-      qkn_mc = *mcmom_beam-*mcmom_pimiss;
       mcmom_pimiss_calc = *LVec_target+*mcmom_beam-*mcmom_pi-*mcmom_ncds;
     }
 
@@ -1113,13 +1119,15 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     else if(phi_npi>1.0*TMath::Pi()) phi_npi -= 2.0*TMath::Pi();
 
 
-    TLorentzVector LVec_pi_n_mc;
+    TLorentzVector LVec_pip_n_mc;
+    TLorentzVector LVec_pim_n_mc;
     if(SimSpmode || SimSmmode || SimK0nmode) {
-      LVec_pi_n_mc  = *mcmom_pi+*mcmom_ncds;
+      if(mcchargepi==1){
+        LVec_pip_n_mc  = *mcmom_pi+*mcmom_ncds;
+      }else if(mcchargepi==0){
+        LVec_pim_n_mc  = *mcmom_pi+*mcmom_ncds;
+      }
     }
-
-    // calc missing pi+neutron //
-    TLorentzVector LVec_npimiss = *LVec_target+*LVec_beam-*LVec_pi-*LVec_n;
 
     TLorentzVector LVec_npimiss_mc;
     if(SimSpmode || SimSmmode || SimK0nmode) {
@@ -1162,7 +1170,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       //std::cout << "beam p " << LVec_beam_unit.P() << std::endl;
       //std::cout << "beam m " << LVec_beam_unit.M() << std::endl;
       //std::cout << "nmiss P" <<  (*react_pimiss).P() << std::endl;
-      
+      std::cout << __LINE__ << std::endl;
       vtxr_vtxz_mc->Fill(mcncanvtxz,mcncanvtxr);
       if(mcpattern==2){
         vtxr_vtxz_mc_pat2->Fill(mcncanvtxz,mcncanvtxr);
@@ -1172,14 +1180,15 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       }
       
       if(!IsFakebyVTX  &&  (*mcmom_pimiss).P()>0.01 && (*mcmom_pimiss).P()<100.0 && (*mcmom_ncds).P()>0.01 && (*mcmom_pi).P()>0.01) {
-        IMnpi_MMnpi_mc_vtx->Fill(LVec_npimiss_mc.M(),LVec_pi_n_mc.M());
         //true neutron from Sigma decay case
         if(mcpattern==2){
-          IMnpi_MMnpi_mc_vtx_pat2->Fill(LVec_pi_nmiss_mc.M(),LVec_pi_n_mc.M());
+          IMnpim_MMnpim_mc_vtx_pat2->Fill(LVec_npimiss_mc.M(),LVec_pim_n_mc.M());
+          IMnpip_MMnpip_mc_vtx_pat2->Fill(LVec_npimiss_mc.M(),LVec_pip_n_mc.M());
         }
         //true initial neutron case
         if(mcpattern==7){
-          IMnpi_MMnpi_mc_vtx_pat7->Fill(LVec_pi_nmiss_mc.M(),LVec_pi_n_mc.M());
+          IMnpim_MMnpim_mc_vtx_pat7->Fill(LVec_npimiss_mc.M(),LVec_pim_n_mc.M());
+          IMnpip_MMnpip_mc_vtx_pat7->Fill(LVec_npimiss_mc.M(),LVec_pip_n_mc.M());
         }
       }
       
@@ -1201,6 +1210,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       //  diff_cosnmiss_reactmc->Fill((*mcmom_pimiss).CosTheta()-(*react_pimiss).CosTheta());
       //  if(fabs((*mcmom_pimiss).CosTheta()-(*react_pimiss).CosTheta())>0.002) IsFakeN1 = true;
       //}
+      std::cout << __LINE__ << std::endl;
       if(SimSpmode){
         if(fabs(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.)>0.02) IsFakeN2=true;
         //if( (LVec_pip_n.M() -  LVec_pip_n_mc.M())< -0.012 || 0.010< (LVec_pip_n.M() -  LVec_pip_n_mc.M())) IsFakeN2=true;
@@ -1230,29 +1240,46 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     bool SigmaPMissNViciextFlag=false;//select vicinity of the signal
     bool SigmaMMissNViciextFlag=false;//select vicinity of the signal
 
-
+    
 
     if( (LVec_pip_n.P()<anacuts::SigmaPMomCut) ){
-      Vtx_ZX->Fill((*vtx_pip_cdc).Z(),(*vtx_pip_cdc).X());
-      Vtx_XY->Fill((*vtx_pip_cdc).X(),(*vtx_pip_cdc).Y());
+      Vtx_ZX->Fill((*vtx_pi_cdc).Z(),(*vtx_pi_cdc).X());
+      Vtx_XY->Fill((*vtx_pi_cdc).X(),(*vtx_pi_cdc).Y());
     }
-    double dca_pip_beam = (*vtx_pip_beam-*vtx_pip_cdc).Mag();
-    double dca_pim_beam = (*vtx_pim_beam-*vtx_pim_cdc).Mag();
-    double dca_pip_pim =(*CA_pip-*CA_pim).Mag();
+    double dca_pip_beam = (*vtx_pi_beam-*vtx_pi_cdc).Mag();
+    double dca_pim_beam = (*vtx_pi_beam-*vtx_pi_cdc).Mag();
+    //double dca_pip_pim =(*CA_pip-*CA_pim).Mag();
 
 
     //-- neutron-ID, K0 and missing neutron selection --//
     if(anacuts::beta_MIN<NeutralBetaCDH &&  NeutralBetaCDH<anacuts::beta_MAX  ) NBetaOK=true;
     if(anacuts::dE_MIN<dE) NdEOK=true;
-    double MassNPip= (*LVec_n+*LVec_pip).M();
-    double MassNPim= (*LVec_n+*LVec_pim).M();
+    double MassNPip= (*LVec_n+*LVec_pi).M();
+    double MassNPim= (*LVec_n+*LVec_pi).M();
 
-    TVector3 diffpim = (*CDH_Pos)-(*CDH_Pos_pim);
-    double diffPhinpim = (*CDH_Pos).Phi()-(*CDH_Pos_pim).Phi();
-    const double difftofnpim = tofn - tofpim;
+    TVector3 diffpim;
+    double diffPhinpim = 0;
+    double difftofnpim = 0;
+    if(chargepi==0){
+      diffpim = (*CDH_Pos)-(*CDH_Pos_pi);
+      diffPhinpim = (*CDH_Pos).Phi()-(*CDH_Pos_pi).Phi();
+      difftofnpim = tofn - tofpi;
+    }
     if(diffPhinpim<-1.0*TMath::Pi()) diffPhinpim += 2.0*TMath::Pi();
     else if(diffPhinpim>1.0*TMath::Pi()) diffPhinpim -= 2.0*TMath::Pi();
-    if(IsolationFlag==1) {
+    
+    TVector3 diffpip; 
+    double diffPhinpip = 0;
+    double difftofnpip = 0;
+    if(chargepi==1){
+      diffpip = (*CDH_Pos)-(*CDH_Pos_pi);
+      diffPhinpip = (*CDH_Pos).Phi()-(*CDH_Pos_pi).Phi();
+      difftofnpip = tofn - tofpi;
+    }
+    if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
+    else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
+    
+    if(IsolationFlag==1 && (chargepi==0)) {
       //round cut
       if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ) continue;
       //for mixed events, avoid sharing same CDH segments
@@ -1268,12 +1295,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
     }
 
-    TVector3 diffpip = (*CDH_Pos)-(*CDH_Pos_pip);
-    double diffPhinpip = (*CDH_Pos).Phi()-(*CDH_Pos_pip).Phi();
-    const double difftofnpip = tofn - tofpip;
-    if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
-    else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
-    if(IsolationFlag==1 || IsolationFlag==2) {
+    if(IsolationFlag==1 && (chargepi==1) ) {
       //round cut
       if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) continue;
       //for mixed events, avoid sharing same CDH segments
@@ -1285,7 +1307,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     }
 
     if(CDCChargeVetoFlag && (nhitOutCDC!=0) ) continue;
-
+    
     if(ForwardVetoFlag && ForwardCharge) continue;
     
     //Sigma+ production in CDS
@@ -1343,96 +1365,17 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       SigmaMMissNViciextFlag=true;
     }
 
-    //
-    //diagonal cuts
-    //
-    //Sigma cross region top
-    if(  (MassNPim >=  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )
-         && (MassNPim > -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagTop=true;
 
-    //Sigma cross region bottom
-    if(  (MassNPim <=  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )
-         && (MassNPim < -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagBottom=true;
-
-    //Sigma cross region right
-    if(  (MassNPim <  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )
-         && (MassNPim >= -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagRight=true;
-
-    //Sigma cross region left
-    if(  (MassNPim >  (MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center )
-         && (MassNPim <= -(MassNPip - anacuts::Sigmap_center) + anacuts::Sigmam_center ) ) SigmaCrossFlagLeft=true;
-
-
-    //0: diagonal cut
-    //1: 3 sigma cut
-    //2: 5 simga cut
-    bool SigmaPcutFlag[3] = {false,false,false};
-    bool SigmaMcutFlag[3] = {false,false,false};
-
-    //diagnal cut
-    if(sigmacuttype==0) {
-      if(SigmaPFlag && !SigmaCrossFlagLeft && !SigmaCrossFlagRight) {
-        SigmaPcutFlag[0]=true;
-      }
-      if(SigmaMFlag && !SigmaCrossFlagTop  && !SigmaCrossFlagBottom) {
-        SigmaMcutFlag[0]=true;
-      }
-    }
-
-    if(sigmacuttype==1) {
-      if(SigmaPFlag && !SigmaMFlag) {
-        SigmaPcutFlag[1]=true;
-      }
-      if(SigmaMFlag && !SigmaPFlag) {
-        SigmaMcutFlag[1]=true;
-      }
-    }
-
-    if(sigmacuttype==2) {
-      if(SigmaPFlag && !SigmawideMFlag) {
-        SigmaPcutFlag[2]=true;
-      }
-      if(SigmaMFlag && !SigmawidePFlag) {
-        SigmaMcutFlag[2]=true;
-      }
-    }
-
-
-
-    if(anacuts::neutron_MIN<npimiss_mass && npimiss_mass<anacuts::neutron_MAX ) MissPiFlag=true;
+    if(anacuts::Miss2Pi_MIN<npimiss_mass2 && npimiss_mass2<anacuts::Miss2Pi_MAX ) MissPiFlag=true;
     if(anacuts::neutron_MIN_wide<npimiss_mass && npimiss_mass<anacuts::neutron_MAX_wide ) MissNwideFlag=true;
 
     //momentum update
-    if(SigmaPFlag){
-      *LVec_n = *LVec_n_Sp;
-      LVec_pip_n = *LVec_n_Sp+*LVec_pip;
-      LVec_pim_n = *LVec_n_Sp+*LVec_pim;
-      LVec_pip_pim_n = *LVec_n_Sp+*LVec_pip+*LVec_pim;
-      LVec_npipimiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n_Sp;
-      qkn = *LVec_beam-LVec_npipimiss;
-      npimiss_mass = LVec_npipimiss.M();
-      nmiss_mom = LVec_npipimiss.P();
-      cos_pimisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
-      nmissthetalab = acos(cos_pimisslab);  
-    }else if(SigmaMFlag){
-      *LVec_n = *LVec_n_Sm;
-      LVec_pip_n = *LVec_n_Sm+*LVec_pip;
-      LVec_pim_n = *LVec_n_Sm+*LVec_pim;
-      LVec_pip_pim_n = *LVec_n_Sm+*LVec_pip+*LVec_pim;
-      LVec_npipimiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n_Sm;
-      qkn = *LVec_beam-LVec_npipimiss;
-      npimiss_mass = LVec_npipimiss.M();
-      nmiss_mom = LVec_npipimiss.P();
-      cos_pimisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
-      nmissthetalab = acos(cos_pimisslab);  
-    }
 
     //if( (*LVec_n).P()<anacuts::nmomcut) continue;
     if(RejectStoppedSigma){
-      if(LVec_pip_n.P()<anacuts::SigmaPMomCut) continue;
-      if(LVec_pim_n.P()<anacuts::SigmaMMomCut) continue;
+      if(LVec_pip_n.P()<anacuts::SigmaPMomCut && chargepi==1) continue;
+      if(LVec_pim_n.P()<anacuts::SigmaMMomCut && chargepi==0) continue;
     }
-    //if(qvalcutflag==3 && (nmissthetalab>15.0/180.0*TMath::Pi())) continue;
 
     //std::cout << __LINE__ << std::endl;
     double weight = 1.0;
@@ -1470,14 +1413,15 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     CDHphi_betainv_fid->Fill(1./NeutralBetaCDH,(*CDH_Pos).Phi());
     CDHz_betainv_fid->Fill(1./NeutralBetaCDH,(*CDH_Pos).z());
     dE_betainv_fid->Fill(1./NeutralBetaCDH,dE);
-    //pipmom_IMnpip->Fill(LVec_pip_n.M(),(*LVec_pip).P());
-    //pimmom_IMnpim->Fill(LVec_pim_n.M(),(*LVec_pim).P());
+    //pipmom_IMnpip->Fill(LVec_pip_n.M(),(LVec_pip).P());
+    //pimmom_IMnpim->Fill(LVec_pim_n.M(),(LVec_pim).P());
+    //std::cout << __LINE__ << std::endl;
     if(NBetaOK) {
       dE_nmom_fid_beta->Fill((*LVec_n).P(),dE);
-      dE_MMom_fid_beta->Fill(LVec_npipimiss.P(),dE);
-      dE_MMass_fid_beta->Fill(LVec_npipimiss.M(),dE);
+      dE_MMom_fid_beta->Fill(LVec_npimiss.P(),dE);
+      dE_MMass_fid_beta->Fill(LVec_npimiss.M(),dE);
       if(SigmaPFlag || SigmaMFlag) {
-        dE_MMass_fid_beta_wSid->Fill(LVec_npipimiss.M(),dE);
+        dE_MMass_fid_beta_wSid->Fill(LVec_npimiss.M(),dE);
       }
       dE_CDHphi->Fill((*CDH_Pos).Phi(),dE);
       dE_CDHz->Fill((*CDH_Pos).z(),dE);
@@ -1491,66 +1435,82 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     if(NBetaOK && NdEOK) {
 
       CDHz_nmom_fid->Fill((*LVec_n).P(),(*CDH_Pos).z());
-      MMom_MMass->Fill(LVec_npipimiss.M(),LVec_npipimiss.P(),weight);
-      MMnpim_IMnpip->Fill(LVec_pip_n.M(),npimiss_mass,weight);
-      MMnpi_IMnpim->Fill(LVec_pim_n.M(),npimiss_mass,weight);
+      MMom_MMass->Fill(LVec_npimiss.M(),LVec_npimiss.P(),weight);
       nmom_Momnpip->Fill(LVec_pip_n.P(),(*LVec_n).P());
       nmom_Momnpim->Fill(LVec_pim_n.P(),(*LVec_n).P());
-      if(SimSpmode || SimSmmode || SimK0nmode){
-        if(IsFakebyVTX || IsFakeN2){
-          MMnpim_IMnpip_fake->Fill(LVec_pip_n.M(),npimiss_mass,weight);
-          MMnpim_IMnpim_fake->Fill(LVec_pim_n.M(),npimiss_mass,weight);
-        }
-      }
       if(SigmaPFlag || SigmaMFlag) {
-        MMom_MMass_wSid->Fill(LVec_npipimiss.M(),LVec_npipimiss.P(),weight);
+        MMom_MMass_wSid->Fill(LVec_npimiss.M(),LVec_npimiss.P(),weight);
         nmom_MMnpimisswSid->Fill(npimiss_mass,(*LVec_n).P(),weight);
         
         if(SimSpmode || SimSmmode || SimK0nmode){
-          //if(IsFakebyVTX || IsFakeN2){
-          if(!( (mcpattern==2)  ||  (mcpattern==7))) {// || IsFakebyVTX ){
+          if(!( (mcpattern==2)  ||  (mcpattern==7))) {// || IsFakebyVTX )
             nmom_MMnpimisswSid_fake->Fill(npimiss_mass,(*LVec_n).P(),weight);
           }
         }
       }
-      //pipmom_IMnpip_dE->Fill(LVec_pip_n.M(),(*LVec_pip).P());
-      //pimmom_IMnpim_dE->Fill(LVec_pim_n.M(),(*LVec_pim).P());
-      //pipmom_MMnpimissdE->Fill(npimiss_mass,(*LVec_pip).P());
-      //pimmom_MMnpimissdE->Fill(npimiss_mass,(*LVec_pim).P());
+      //pipmom_IMnpip_dE->Fill(LVec_pip_n.M(),(LVec_pip).P());
+      //pimmom_IMnpim_dE->Fill(LVec_pim_n.M(),(LVec_pim).P());
+      //pipmom_MMnpimissdE->Fill(npimiss_mass,(LVec_pip).P());
+      //pimmom_MMnpimissdE->Fill(npimiss_mass,(LVec_pim).P());
       nmom_CDHphi->Fill((*CDH_Pos).Phi(),(*LVec_n).P());
-      diff2d_CDC_CDH_pim->Fill(diffPhinpim,diffpim.z());
-      diff2d_CDC_CDH_pim_phi_tof->Fill(diffPhinpim,difftofnpim);
-      diff2d_CDC_CDH_pim_z_tof->Fill(diffpim.z(),difftofnpim);
-      diff2d_CDC_CDH_pip->Fill(diffPhinpip,diffpip.z());
-      diff2d_CDC_CDH_pip_phi_tof->Fill(diffPhinpip,difftofnpip);
-      diff2d_CDC_CDH_pip_z_tof->Fill(diffpip.z(),difftofnpip);
-      dE_diffphi_CDC_CDH_pim->Fill(diffPhinpim,dE);
-      dE_diffphi_CDC_CDH_pip->Fill(diffPhinpip,dE);
-      //MMnpimissdE->Fill(dE, npimiss_mass);
-      MMnpimissdiffphi_CDC_CDH_pim->Fill(diffPhinpim, npimiss_mass);
-      MMnpimissdiffphi_CDC_CDH_pip->Fill(diffPhinpip, npimiss_mass);
-      pimmom_diffphi_CDC_CDH_pim->Fill(diffPhinpim,(*LVec_pim).P());
-      pipmom_diffphi_CDC_CDH_pip->Fill(diffPhinpip,(*LVec_pip).P());
-      pimmom_diffz_CDC_CDH_pim->Fill(diffpim.z(),(*LVec_pim).P());
-      pipmom_diffz_CDC_CDH_pip->Fill(diffpip.z(),(*LVec_pip).P());
-      nmom_diffphi_CDC_CDH_pim->Fill(diffPhinpim,(*LVec_n).P());
-      nmom_diffphi_CDC_CDH_pip->Fill(diffPhinpip,(*LVec_n).P());
-      nmom_diffz_CDC_CDH_pim->Fill(diffpim.z(),(*LVec_n).P());
-      nmom_diffz_CDC_CDH_pip->Fill(diffpip.z(),(*LVec_n).P());
-
-      if(!SigmawidePFlag && !SigmawideMFlag ) { 
-        MMnpim_IMnpip_woSid->Fill(LVec_pip_n.M(),npimiss_mass,weight);
-        MMnpim_IMnpim_woSid->Fill(LVec_pim_n.M(),npimiss_mass,weight);
+      if(chargepi==0){//pi-
+        diff2d_CDC_CDH_pim->Fill(diffPhinpim,diffpim.z());
+        diff2d_CDC_CDH_pim_phi_tof->Fill(diffPhinpim,difftofnpim);
+        diff2d_CDC_CDH_pim_z_tof->Fill(diffpim.z(),difftofnpim);
+        dE_diffphi_CDC_CDH_pim->Fill(diffPhinpim,dE);
+        MMnpimissdiffphi_CDC_CDH_pim->Fill(diffPhinpim, npimiss_mass);
+        pimmom_diffphi_CDC_CDH_pim->Fill(diffPhinpim,(LVec_pim).P());
+        pimmom_diffz_CDC_CDH_pim->Fill(diffpim.z(),(LVec_pim).P());
+        nmom_diffphi_CDC_CDH_pim->Fill(diffPhinpim,(*LVec_n).P());
+        nmom_diffz_CDC_CDH_pim->Fill(diffpim.z(),(*LVec_n).P());
+        MMnpi_IMnpim->Fill(LVec_pim_n.M(),npimiss_mass);
+        MM2npi_IMnpim->Fill(LVec_pim_n.M(),npimiss_mass2);
+        Cospicm_IMnpim->Fill(LVec_pim_n.M(),cos_pimissCM);
+        MMn_IMnpim->Fill(LVec_pim_n.M(),LVec_nmiss.M());
+        MMpi_IMnpim->Fill(LVec_pim_n.M(),LVec_pimiss.M());
       }
-      
+      if(chargepi==1){//pi+
+        diff2d_CDC_CDH_pip->Fill(diffPhinpip,diffpip.z());
+        diff2d_CDC_CDH_pip_phi_tof->Fill(diffPhinpip,difftofnpip);
+        diff2d_CDC_CDH_pip_z_tof->Fill(diffpip.z(),difftofnpip);
+        dE_diffphi_CDC_CDH_pip->Fill(diffPhinpip,dE);
+      //MMnpimissdE->Fill(dE, npimiss_mass);
+        MMnpimissdiffphi_CDC_CDH_pip->Fill(diffPhinpip, npimiss_mass);
+        pipmom_diffphi_CDC_CDH_pip->Fill(diffPhinpip,(LVec_pip).P());
+        pipmom_diffz_CDC_CDH_pip->Fill(diffpip.z(),(LVec_pip).P());
+        nmom_diffphi_CDC_CDH_pip->Fill(diffPhinpip,(*LVec_n).P());
+        nmom_diffz_CDC_CDH_pip->Fill(diffpip.z(),(*LVec_n).P());
+        MMnpi_IMnpip->Fill(LVec_pip_n.M(),npimiss_mass);
+        MM2npi_IMnpip->Fill(LVec_pip_n.M(),npimiss_mass2);
+        Cospicm_IMnpip->Fill(LVec_pip_n.M(),cos_pimissCM);
+        MMn_IMnpip->Fill(LVec_pip_n.M(),LVec_nmiss.M());
+        MMpi_IMnpip->Fill(LVec_pip_n.M(),LVec_pimiss.M());
+      }
+    } //if(NBetaOK && NdEOK) 
 
-    }
-
+    //std::cout << __LINE__ << std::endl;
 
 
     //std::cout << __LINE__ << std::endl;
     if(NBetaOK && NdEOK && MissPiFlag) {
-      
+      nmom->Fill((*LVec_n).P());
+      mnmom->Fill(npimiss_mom);
+      dE_nmom->Fill((*LVec_n).P(),dE);
+      if(chargepi==1)npipmom->Fill(LVec_pip_n.P());
+      if(chargepi==0)npimmom->Fill(LVec_pim_n.P());
+       
+      if(chargepi==0){//pi-
+        nmom_IMnpim_dE_n->Fill(LVec_pim_n.M(),(*LVec_n).P(),weight);
+        MMn_IMnpim_pi->Fill(LVec_pim_n.M(),LVec_nmiss.M());
+        MMpi_IMnpim_pi->Fill(LVec_pim_n.M(),LVec_pimiss.M());
+        Cospicm_IMnpim_pi->Fill(LVec_pim_n.M(),cos_pimissCM);
+      }else if(chargepi==1){
+        MMn_IMnpip_pi->Fill(LVec_pip_n.M(),LVec_nmiss.M());
+        MMpi_IMnpip_pi->Fill(LVec_pip_n.M(),LVec_pimiss.M());
+        nmom_IMnpip_dE_n->Fill(LVec_pip_n.M(),(*LVec_n).P(),weight);
+        Cospicm_IMnpip_pi->Fill(LVec_pip_n.M(),cos_pimissCM);
+      }
+
       if(SimSpmode || SimSmmode){
         IMnpim_IMnpim_mc_dE_n->Fill(LVec_pim_n.M(),LVec_pim_n.M()-LVec_pim_n_mc.M(),weight);
         IMnpip_IMnpip_mc_dE_n->Fill(LVec_pip_n.M(),LVec_pip_n.M()-LVec_pip_n_mc.M(),weight);
@@ -1567,22 +1527,11 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
         }
       }
 
-
-      //0: diagonal cut
-      //1: 3 sigma cut
-      //2: 5 simga cut
-      nmom->Fill((*LVec_n).P());
-      mnmom->Fill(nmiss_mom);
-      dE_nmom->Fill((*LVec_n).P(),dE);
-      npipmom->Fill(LVec_pip_n.P());
-      npimmom->Fill(LVec_pim_n.P());
-      nmom_IMnpim_dE_n->Fill(LVec_pim_n.M(),(*LVec_n).P(),weight);
-      nmom_IMnpip_dE_n->Fill(LVec_pip_n.M(),(*LVec_n).P(),weight);
       if(SigmaPFlag) {
         nmom_IMnpip_dE_n_Sp->Fill(LVec_pip_n.M(),(*LVec_n).P(),weight);
         nmom_Momnpip_n_Sp->Fill(LVec_pip_n.P(),(*LVec_n).P(),weight);
       }
-
+      //std::cout << __LINE__ << std::endl;
 
       if(SigmaMFlag) {
         nmom_IMnpim_dE_n_Sm->Fill(LVec_pim_n.M(),(*LVec_n).P(),weight);
@@ -1592,17 +1541,17 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       if(SigmaPFlag || SigmaMFlag) {
         //MMom_MMass_wSid_n->Fill(LVec_npipimiss.M(),LVec_npipimiss.P(),weight);
         nmom_cosn_wSid_n->Fill(cos_ncdslab,(*LVec_n).P(),weight);
-        nmom_cosnmiss_wSid_n->Fill(cos_nmissCM,(*LVec_n).P(),weight);
-        pipmom_Momnpip_wSid_n->Fill(LVec_pip_n.P(),(*LVec_pip).P(),weight);
-        pimmom_Momnpim_wSid_n->Fill(LVec_pim_n.P(),(*LVec_pim).P(),weight);
+        nmom_cosnmiss_wSid_n->Fill(cos_pimissCM,(*LVec_n).P(),weight);
+        pipmom_Momnpip_wSid_n->Fill(LVec_pip_n.P(),(LVec_pip).P(),weight);
+        pimmom_Momnpim_wSid_n->Fill(LVec_pim_n.P(),(LVec_pim).P(),weight);
 
         nmom_MMnpimisswSid_n->Fill(npimiss_mass,(*LVec_n).P(),weight);
         if(SigmaPFlag){
-          pipmom_Momnpip_wSid_n_Sp->Fill(LVec_pip_n.P(),(*LVec_pip).P() ,weight);
+          pipmom_Momnpip_wSid_n_Sp->Fill(LVec_pip_n.P(),(LVec_pip).P() ,weight);
         }
 
         if(SigmaMFlag){
-          pimmom_Momnpim_wSid_n_Sm->Fill(LVec_pim_n.P(),(*LVec_pim).P(),weight);
+          pimmom_Momnpim_wSid_n_Sm->Fill(LVec_pim_n.P(),(LVec_pim).P(),weight);
         }
 
         //reaction data - mcData matching
@@ -1650,15 +1599,15 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
           double diffIMnpip_recomc = LVec_pip_n.M()- LVec_pip_n_mc.M();
           TLorentzVector diffnpip_recomc = LVec_pip_n - LVec_pip_n_mc; 
           TLorentzVector diffnpim_recomc = LVec_pim_n - LVec_pim_n_mc; 
-          TLorentzVector diffMMom_recomc = LVec_npipimiss - *mcmom_pimiss;
+          TLorentzVector diffMMom_recomc = LVec_npimiss - *mcmom_pimiss;
           double diffnmom_recomc = (*LVec_n).P() - (*mcmom_ncds).P();
           double diffnpip_mcreact = LVec_pip_n_mc.P() - LVec_Sigma_react.P()/1000.0;
           double diffnpim_mcreact = LVec_pim_n_mc.P() - LVec_Sigma_react.P()/1000.0;
           double diffMassnpip_mcreact = LVec_pip_n_mc.M() - LVec_Sigma_react.M()/1000.0;
           double diffMassnpim_mcreact = LVec_pim_n_mc.M() - LVec_Sigma_react.M()/1000.0;
-          double dcareco = (*vtx_displaced-*vtx_reaction).Mag();
-          double dcarreco = (*vtx_displaced-*vtx_reaction).Perp();
-          double dcazreco = (*vtx_displaced-*vtx_reaction).z();
+          //double dcareco = (*vtx_displaced-*vtx_reaction).Mag();
+          //double dcarreco = (*vtx_displaced-*vtx_reaction).Perp();
+          //double dcazreco = (*vtx_displaced-*vtx_reaction).z();
           double dcatrue = (*mc_disvtx-*mc_vtx).Mag();
           double dcartrue = (*mc_disvtx-*mc_vtx).Perp();
           double dcaztrue = (*mc_disvtx-*mc_vtx).z();
@@ -1676,7 +1625,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
           double diffdisvtx_cdcbeam_pim_z = (*vtx_pim_cdc-*mc_disvtx).z();
           
           vtxr_vtxz_n->Fill((*vtx_reaction).z(),(*vtx_reaction).Perp());
-          disvtxr_disvtxz_n->Fill((*vtx_displaced).z(),(*vtx_displaced).Perp());
+          //disvtxr_disvtxz_n->Fill((*vtx_displaced).z(),(*vtx_displaced).Perp());
           //disvtxr_disvtxz_n->Fill((*vtx_pip_cdc).z(),(*vtx_pip_cdc).Perp());
           mcvtxr_mcvtxz_n_mc->Fill((*mc_vtx).z(),(*mc_vtx).Perp() );
           mcdisvtxr_mcdisvtxz_n_mc->Fill((*mc_disvtx).z(),(*mc_disvtx).Perp() );
@@ -1686,9 +1635,9 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
           diff2D_nmom_IMnpip_recomc_wSid_n->Fill(diffIMnpip_recomc,diffnmom_recomc);
           diffMMom_recomc_wSid_n->Fill(diffMMom_recomc.P());
           vtxr_generation_ncan_wSid_n_mc->Fill(mcncdsgen,mcncanvtxr);
-          diffnmom_diffdca_n->Fill(dcareco-dcatrue,diffnmom_recomc);
-          diffnmom_diffdcar_n->Fill(dcarreco-dcartrue,diffnmom_recomc);
-          diffnmom_diffdcaz_n->Fill(dcazreco-dcaztrue,diffnmom_recomc);
+          //diffnmom_diffdca_n->Fill(dcareco-dcatrue,diffnmom_recomc);
+          //diffnmom_diffdcar_n->Fill(dcarreco-dcartrue,diffnmom_recomc);
+          //diffnmom_diffdcaz_n->Fill(dcazreco-dcaztrue,diffnmom_recomc);
           
           diffnmom_diffdisvtx_CApip_n->Fill(diffdisvtx_CApip,diffnmom_recomc);
           diffnmom_diffdisvtx_CApip_r_n->Fill(diffdisvtx_CApip_r,diffnmom_recomc);
@@ -1728,13 +1677,13 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
               diff2D_nmom_IMnpip_recomc_wSid_n_fake1->Fill(diffIMnpip_recomc,diffnmom_recomc);
             }
           }
-          if(!( (mcpattern==2)  ||  (mcpattern==7))) {// || IsFakebyVTX ){
-            IMnpim_MMnpim_mc_wSid_n_fake->Fill(LVec_pim_nmiss_mc.M(),LVec_pim_n_mc.M());
-            IMnpip_MMnpip_mc_wSid_n_fake->Fill(LVec_pip_nmiss_mc.M(),LVec_pip_n_mc.M());
+          if(!( (mcpattern==2)  ||  (mcpattern==7))) {// || IsFakebyVTX )
+            IMnpim_MMnpim_mc_wSid_n_fake->Fill(LVec_npimiss_mc.M(),LVec_pim_n_mc.M());
+            IMnpip_MMnpip_mc_wSid_n_fake->Fill(LVec_npimiss_mc.M(),LVec_pip_n_mc.M());
           }
         }//SimSpmode or SimSmmode
       }//wSid_n
-
+    }
     //std::cout << __LINE__ << std::endl;
   }//for ievt
   //--- Filling Histogram END --------------------------------------------------

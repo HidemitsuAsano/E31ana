@@ -677,7 +677,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   TLorentzVector LVec_beambf;  // 4-Momentum(beam) in LAB
   TLorentzVector LVec_beam;    // 4-Momentum(beam) in LAB with Eloss correcion
   TLorentzVector LVec_target;  // 4-Momentum(deuteron-target) in LAB
-  LVec_target.SetVectM( Pp_target, dMass );//deuteron target
+  LVec_target.SetVectM( Pp_target, pMass );//deuteron target
   TLorentzVector LVec_targetP; // 4-Momentum(p-target) in LAB
   //LVec_targetP.SetVectM( Pp_target, pMass );//H target
   TLorentzVector LVec_beambfCM;  // 4-Momentum(beam) in CM
@@ -1525,7 +1525,7 @@ void EventAnalysis::Clear( int &nAbort)
   NeutralBetaCDH=-9999.;
   tofpi=-9999.;
   tofn=-9999.;
-
+  chargepi=-1;
   dE=-9999.;
   neutralseg=-1;
   nhitOutCDC=-1;
