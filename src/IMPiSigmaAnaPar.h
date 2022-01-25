@@ -252,6 +252,25 @@ namespace kinpLpim {
   };
 }
 
+
+namespace kinh2 {
+  const int npart=5;
+  const int kmbeam=0;
+  const int pim_g1=1;//pi- 1st generation
+  const int Sp=2;
+  const int ncds=3;
+  const int pip_g2=4;//pi+ 2nd generation
+  const int pip_g1=1;//pi- 1st generation
+  const int Sm=2;
+  const int pim_g2=4;//pi- 2nd generation
+
+  const int maxitr=50;
+  const double maxdchi2=5e-5;
+  const double maxsumconst=1e-4;
+
+  const double chi2cut=6;
+}
+
 namespace gen {
   const int reactionID_Spmode = 1725;
   const int reactionID_Smmode = 1525;
@@ -261,6 +280,8 @@ namespace gen {
   const int reactionID_pS0pim_ps = 923;
   const int reactionID_npipiL = 2006;
   const int reactionID_nK0n   = 735;
+  const int reactionID_h2Spmode = 476;
+  const int reactionID_h2Smmode = 536;
 }
 
 #endif 
