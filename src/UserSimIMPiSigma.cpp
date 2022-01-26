@@ -641,7 +641,6 @@ int main( int argc, char** argv )
 
     if( nparticle==kin::npart ) { 
       flagG4Decay = true;
-      
 
       if(Verbosity_) {
         std::cout << "L." << __LINE__ << " flagG4Decay OK " << std::endl;
@@ -846,14 +845,17 @@ int main( int argc, char** argv )
       IsrecoPassed=false;
       IsBLAnaPassed=false;
     }
+
     LocalTrack *bpctrack = bltrackMan->trackBPC(bpcid);    
-    Tools::Fill1D( Form("trackchi2_BPC"),bpctrack->chi2all());
-    if(IsrecoPassed && bpctrack->chi2all()>blcuts::bpc_chi2_max){
-      if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_bpctrack" << std::endl;
-      if(IsBLAnaPassed)nAbort_bpctrack++;
-      //continue;
-      IsrecoPassed=false;
-      IsBLAnaPassed=false;
+    if(IsrecoPassed){
+      Tools::Fill1D( Form("trackchi2_BPC"),bpctrack->chi2all());
+      if(bpctrack->chi2all()>blcuts::bpc_chi2_max){
+        if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_bpctrack" << std::endl;
+        if(IsBLAnaPassed)nAbort_bpctrack++;
+        //continue;
+        IsrecoPassed=false;
+        IsBLAnaPassed=false;
+      }
     }
 
     // vertex calculation //

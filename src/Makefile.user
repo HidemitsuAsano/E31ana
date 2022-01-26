@@ -130,7 +130,24 @@ simIMLPim:$(TMPDIR)/UserSimIMLPim.o IMPiSigmaAnaPar.h\
 	$(patsubst %,$(TMPDIR)/%,$(OBJS))
 	$(CXX) $(CFLAGS) -o  $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB) $(KFLIB)
 
+
+simIMSigma_h2:$(TMPDIR)/UserSimIMSigma_H2.o IMPiSigmaAnaPar.h\
+	$(TMPDIR)/IMPiSigmaHist.o \
+	$(TMPDIR)/IMPiSigmaUtil.o \
+	$(TMPDIR)/SimDataMan.o \
+	$(TMPDIR)/SimDataMan_Dict.o \
+	$(TMPDIR)/KnuclRootData.o \
+	$(TMPDIR)/KnuclRootData_Dict.o \
+	$(TMPDIR)/ComCrossSectionTable.o \
+	$(TMPDIR)/ComCrossSectionTable_Dict.o \
+	$(patsubst %,$(TMPDIR)/%,$(OBJS))
+	$(CXX) $(CFLAGS) -o  $(BINDIR)/$@ $^ $(LIBLINK) $(OBJSLIB) $(KFLIB)
+
+
 simclean:
 	rm -rf $(BINDIR)/simIMPiSigma $(TMPDIR)/IMPiSigma* $(TMPDIR)/UserSimIMPiSigma.*
 simlpimclean:
 	rm -rf $(BINDIR)/simIMLPim  $(TMPDIR)/IMPiSigma* $(TMPDIR)/UserSimIMLPim.*
+simh2clean:
+	rm -rf $(BINDIR)/simIMSigma_H2  $(TMPDIR)/IMPiSigma* $(TMPDIR)/UserSimIMSigma_H2.*
+

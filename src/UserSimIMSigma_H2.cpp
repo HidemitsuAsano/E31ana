@@ -181,7 +181,7 @@ int main( int argc, char** argv )
   }
 
   //** output file 2 : pippimn final-sample tree **// 
-  std::string outfile2_name = string(argv[2]);
+  std::string outfile2_name = std::string(argv[2]);
   outfile2_name.insert( outfile2_name.size()-5, "_npi" );
   std::cout<<"pippimn file "<<outfile2_name<<std::endl;
   TFile *outfile2 = new TFile( outfile2_name.c_str(), "recreate" );
@@ -189,7 +189,7 @@ int main( int argc, char** argv )
   TTree *npiTree = new TTree( "EventTree", "EventTree" );
   npiTree->Branch( "mom_beam",   &mom_beam );//
   npiTree->Branch( "mom_target", &mom_target );
-  npiTree->Branch( "mom_pi", &mom_pip );
+  npiTree->Branch( "mom_pi", &mom_pi );
   npiTree->Branch( "chargepi", &chargepi );
   npiTree->Branch( "mom_n", &mom_n );
   npiTree->Branch( "NeutralBetaCDH", &NeutralBetaCDH );
@@ -417,7 +417,7 @@ int main( int argc, char** argv )
     //                                   K+    pi+  S-    ncds    pi- 
     const int PDG_Smmode[kinh2::npart] = {321,  211, 3112, 2112, -211}; // pi+Sigma- mode
     //                                   K+  ncds  K0bar nmiss pi-  pi+
-    int PDG[kinh2::npart] = {0, 0, 0, 0, 0, 0};
+    int PDG[kinh2::npart] = {0, 0, 0, 0, 0};
     for( int i=0; i<kinh2::npart; i++ ){
       if( reactionID==gen::reactionID_h2Spmode ){
         PDG[i] = PDG_Spmode[i];
@@ -594,14 +594,17 @@ int main( int argc, char** argv )
       IsrecoPassed=false;
       IsBLAnaPassed=false;
     }
+
     LocalTrack *bpctrack = bltrackMan->trackBPC(bpcid);    
-    Tools::Fill1D( Form("trackchi2_BPC"),bpctrack->chi2all());
-    if(IsrecoPassed && bpctrack->chi2all()>blcuts::bpc_chi2_max){
-      if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_bpctrack" << std::endl;
-      if(IsBLAnaPassed)nAbort_bpctrack++;
-      //continue;
-      IsrecoPassed=false;
-      IsBLAnaPassed=false;
+    if(IsrecoPassed){
+      Tools::Fill1D( Form("trackchi2_BPC"),bpctrack->chi2all());
+      if(bpctrack->chi2all()>blcuts::bpc_chi2_max){
+        if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_bpctrack" << std::endl;
+        if(IsBLAnaPassed)nAbort_bpctrack++;
+        //continue;
+        IsrecoPassed=false;
+        IsBLAnaPassed=false;
+      }
     }
 
     // vertex calculation //
@@ -813,7 +816,7 @@ int main( int argc, char** argv )
     // + + + + + + + + + + + //
     if( IsrecoPassed && 
         flagbmom && 
-        ((pim_ID.size()==1) ||  (pip_ID.size()==1))  
+        ((pim_ID.size()==1) ||  (pip_ID.size()==1))  &&
         (cdstrackMan->nGoodTrack()==1) 
         //&& !forwardcharge 
         ){
@@ -847,11 +850,11 @@ int main( int argc, char** argv )
         if(pid == CDS_PiMinus){
           Tools::Fill2D("PID_CDS_PIM_beta_select",1./beta_calc,mom);
           Tools::Fill2D("PID_CDS_PIM_select",mass2,mom);
-          tofpim = tof;
+          tofpi = tof;
         }else if(pid == CDS_PiPlus){
           Tools::Fill2D("PID_CDS_PIP_beta_select",1./beta_calc,mom);
           Tools::Fill2D("PID_CDS_PIP_select",mass2,mom);
-          tofpip = tof;
+          tofpi = tof;
         }
         else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton_select",mass2,mom);
         else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon_select",mass2,mom);
@@ -937,7 +940,7 @@ int main( int argc, char** argv )
       if(IsrecoPassed){
         //nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
         nCDCforVeto = Util::GetNHitsCDCOuterNoAss(Pos_CDH,cdsMan,cdstrackMan,cdscuts::chargevetoangle);
-        Util::AnaPipPimCDCCDH(Pos_CDH,NeutralCDHseg,pip_ID[0],pim_ID[0],cdsMan,cdstrackMan);
+        //Util::AnaPipPimCDCCDH(Pos_CDH,NeutralCDHseg,pip_ID[0],pim_ID[0],cdsMan,cdstrackMan);
         Tools::Fill1D(Form("NCDCOutHit"),nCDCforVeto);
       }
       //Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is wrong in SIM [20170925]
@@ -959,7 +962,7 @@ int main( int argc, char** argv )
         Tools::Fill1D(Form("CDHNeutralSeg"),NeutralCDHseg.at(0));
       }
 
-      CDSTrack *track_pi
+      CDSTrack *track_pi;
       if(pip_ID.size()==1){  
         track_pi = cdstrackMan->Track( pip_ID[0] ); // only 1 track
       }else if(pim_ID.size()==1){
@@ -975,7 +978,7 @@ int main( int argc, char** argv )
       track_pi->GetVertex( bpctrack->GetPosatZ(0), bpctrack->GetMomDir(), vtx_beam_wpi, vtx_pi ); 
       double dcapivtx =  (vtx_pi-vtx_beam_wpi).Mag();
       const TVector3 vtx_pi_mean = 0.5*(vtx_pi+vtx_beam_wpi);
-      Tools::Fill1D( Form("DCA_pi"), dcapivtx );
+      //Tools::Fill1D( Form("DCA_pi"), dcapivtx );
 
       vtx_react = 0.5*(vtx_pi+vtx_beam_wpi);
       vtx_dis  = vtx_pi;//determined by CDC-beam
@@ -1044,7 +1047,6 @@ int main( int argc, char** argv )
       //** + + + + + + + + + + + + + **//
       //**  fill histograms & tree   **//
       //** + + + + + + + + + + + + + **//
-      kf_flag = -1;
       bool MissNFlag=false;
       bool SigmaPFlag=false;
       bool SigmaMFlag=false;
@@ -1085,8 +1087,6 @@ int main( int argc, char** argv )
           if( NBetaOK && NdEOK ){
             Tools::Fill2D( Form("dE_betainv_fid_beta_dE"), 1./NeutralBetaCDH, ncdhhit->emean() );
             Tools::Fill2D( Form("MMom_MMass_fid_beta_dE"), mm_mass, P_misspi.Mag() );
-            Tools::Fill1D( Form("IMpipi_dE"), (LVec_pim+LVec_pip).M() );
-            Tools::Fill2D( Form("IMpipi_NMom_dE"),P_n.Mag(), (LVec_pim+LVec_pip).M());
             //added Jul.28th, 2019
             //purpose  QA of PID 
             for( int it=0; it<cdstrackMan->nGoodTrack(); it++ ) {
@@ -1123,7 +1123,6 @@ int main( int argc, char** argv )
               else if(pid == CDS_Proton) Tools::Fill2D("PID_CDS_Proton_select2",mass2,mom);
               else if(pid == CDS_Kaon) Tools::Fill2D("PID_CDS_Kaon_select2",mass2,mom);
             }//for it
-          }//NbetaOK
 
             // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
             // %%% Kinematical Fit using KinFitter %%% //
@@ -1169,7 +1168,7 @@ int main( int argc, char** argv )
             //std::cout << "momdiff" << momdiff_npim << std::endl;
 
 
-            if(Verbosity_)std::cout<< "L." << __LINE__ << " val = "<<val1<<" "<<val2<<" -> "<< genID[kinh2::nmiss] <<" "<< genID[kinh2::ncds] << std::endl;
+            //if(Verbosity_)std::cout<< "L." << __LINE__ << " val = "<<val1<<" "<<val2<<" -> "<< genID[kinh2::nmiss] <<" "<< genID[kinh2::ncds] << std::endl;
 
           } // if( NBetaOK && NdEOK )
 
@@ -1204,7 +1203,9 @@ int main( int argc, char** argv )
             vtx_pi_beam = vtx_beam_wpi;
             vtx_pi_cdc = vtx_pi;
             CDH_Pos = Pos_CDH;
-            CDH_Pos_pi = pi_cdhprojected;
+            if(charge_pi==1) CDH_Pos_pi = pip_cdhprojected;
+            else if(charge_pi==0) CDH_Pos_pi = pim_cdhprojected;
+
             TLorentzVector mcmom_ncdspi = TL_gene[genID[kinh2::ncds]]+TL_gene[kinh2::pip_g2];
             //std::cout << __LINE__ << mcmom_ncdspi.M() << std::endl;
             mc_nparticle = nparticle;
