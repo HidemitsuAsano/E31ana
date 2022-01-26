@@ -145,8 +145,8 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     tree->SetBranchAddress( "mcmom_pi", &mcmom_pi);//TODO :add chargepi val. to sim reco code
     tree->SetBranchAddress( "mcchargepi", &mcchargepi);//TODO :add chargepi val. to sim reco code
     tree->SetBranchAddress( "mcmom_ncds", &mcmom_ncds);
-    tree->SetBranchAddress( "mcmom_nmiss", &mcmom_pimiss);
-    tree->SetBranchAddress( "react_nmiss", &react_pimiss);
+    tree->SetBranchAddress( "mcmom_pimiss", &mcmom_pimiss);
+    tree->SetBranchAddress( "react_pimiss", &react_pimiss);
     tree->SetBranchAddress( "react_Sigma", &react_Sigma);
     tree->SetBranchAddress( "react_pi", &react_pi);
     tree->SetBranchAddress( "mc_vtx",&mc_vtx);
@@ -730,67 +730,67 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   nmom_Momnpip_n_Sp->SetXTitle("Mom.(n#pi^{+}) [GeV/c]");
   nmom_Momnpip_n_Sp->SetYTitle("nmom. [GeV/c]");
   
-  MMnpi_IMnpip = new TH2F("MMnpi_IMnpip","MMnpi_IMnpip",140,1.,1.7,200,-1.,1.);
+  MMnpi_IMnpip = new TH2F("MMnpi_IMnpip","MMnpi_IMnpip",700,1.,1.7,200,-1.,1.);
   MMnpi_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   MMnpi_IMnpip->SetYTitle("Miss. Mass (n#pi^{+}) [GeV/c^{2}]");
   
-  MM2npi_IMnpip = new TH2F("MM2npi_IMnpip","MM2npi_IMnpip",140,1.,1.7,200,-1,1.);
+  MM2npi_IMnpip = new TH2F("MM2npi_IMnpip","MM2npi_IMnpip",700,1.,1.7,200,-1,1.);
   MM2npi_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   MM2npi_IMnpip->SetYTitle("Miss. Mass^{2} (n#pi^{+}) [(GeV/c^{2})^{2}]");
   
-  MMnpi_IMnpim = new TH2F("MMnpi_IMnpim","MMnpi_IMnpim",140,1.,1.7,200,-1.,1.);
+  MMnpi_IMnpim = new TH2F("MMnpi_IMnpim","MMnpi_IMnpim",700,1.,1.7,200,-1.,1.);
   MMnpi_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MMnpi_IMnpim->SetYTitle("Miss. Mass (n#pi^{-}) [GeV/c^{2}]");  
   
-  MM2npi_IMnpim = new TH2F("MM2npi_IMnpim","MM2npi_IMnpim",140,1.,1.7,200,-1.,1.);
+  MM2npi_IMnpim = new TH2F("MM2npi_IMnpim","MM2npi_IMnpim",700,1.,1.7,200,-1.,1.);
   MM2npi_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MM2npi_IMnpim->SetYTitle("Miss. Mass^{2} (n#pi^{-}) [(GeV/c^{2})^{2}]");  
 
-  Cospicm_IMnpip = new TH2F("Cospicm_IMnpip","Cospicm_IMnpip",140,1,1.7 ,50,0,1);
+  Cospicm_IMnpip = new TH2F("Cospicm_IMnpip","Cospicm_IMnpip",700,1,1.7 ,50,0,1);
   Cospicm_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   Cospicm_IMnpip->SetYTitle("Cos.#theta_{CM} miss-#pi" );
   
-  Cospicm_IMnpim = new TH2F("Cospicm_IMnpim","Cospicm_IMnpim",140,1,1.7 ,50,0,1);
+  Cospicm_IMnpim = new TH2F("Cospicm_IMnpim","Cospicm_IMnpim",700,1,1.7 ,50,0,1);
   Cospicm_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   Cospicm_IMnpim->SetYTitle("Cos.#theta_{CM} miss-#pi" );
   
-  Cospicm_IMnpip_pi = new TH2F("Cospicm_IMnpip_pi","Cospicm_IMnpip_pi",140,1,1.7 ,50,0,1);
+  Cospicm_IMnpip_pi = new TH2F("Cospicm_IMnpip_pi","Cospicm_IMnpip_pi",700,1,1.7 ,50,0,1);
   Cospicm_IMnpip_pi->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   Cospicm_IMnpip_pi->SetYTitle("Cos.#theta_{CM} miss-#pi" );
   
-  Cospicm_IMnpim_pi = new TH2F("Cospicm_IMnpim_pi","Cospicm_IMnpim_pi",140,1,1.7 ,50,0,1);
+  Cospicm_IMnpim_pi = new TH2F("Cospicm_IMnpim_pi","Cospicm_IMnpim_pi",700,1,1.7 ,50,0,1);
   Cospicm_IMnpim_pi->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   Cospicm_IMnpim_pi->SetYTitle("Cos.#theta_{CM} miss-#pi" );
   
-  MMn_IMnpip = new TH2F("MMn_IMnpip","MMn_IMnpip",140,1.,1.7,100,0.,1.);
+  MMn_IMnpip = new TH2F("MMn_IMnpip","MMn_IMnpip",700,1.,1.7,100,0.,1.);
   MMn_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   MMn_IMnpip->SetYTitle("Miss. Mass (n) [GeV/c^{2}]");  
   
-  MMn_IMnpim = new TH2F("MMn_IMnpim","MMn_IMnpim",140,1.,1.7,100,0.,1.);
+  MMn_IMnpim = new TH2F("MMn_IMnpim","MMn_IMnpim",700,1.,1.7,100,0.,1.);
   MMn_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MMn_IMnpim->SetYTitle("Miss. Mass (n) [GeV/c^{2}]");  
 
-  MMpi_IMnpip = new TH2F("MMpi_IMnpip","MMpi_IMnpip",140,1.,1.7,100,1,2.);
+  MMpi_IMnpip = new TH2F("MMpi_IMnpip","MMpi_IMnpip",700,1.,1.7,100,1,2.);
   MMpi_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   MMpi_IMnpip->SetYTitle("Miss. Mass (#pi^{+}) [GeV/c^{2}]");  
   
-  MMpi_IMnpim = new TH2F("MMpi_IMnpim","MMpi_IMnpim",140,1.,1.7,100,1.,2.);
+  MMpi_IMnpim = new TH2F("MMpi_IMnpim","MMpi_IMnpim",700,1.,1.7,100,1.,2.);
   MMpi_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MMpi_IMnpim->SetYTitle("Miss. Mass (#pi^{-}) [GeV/c^{2}]");  
 
-  MMn_IMnpip_pi = new TH2F("MMn_IMnpip_pi","MMn_IMnpip_pi",140,1.,1.7,100,0.,1.);
+  MMn_IMnpip_pi = new TH2F("MMn_IMnpip_pi","MMn_IMnpip_pi",700,1.,1.7,100,0.,1.);
   MMn_IMnpip_pi->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   MMn_IMnpip_pi->SetYTitle("Miss. Mass (n) [GeV/c^{2}]");  
   
-  MMn_IMnpim_pi = new TH2F("MMn_IMnpim_pi","MMn_IMnpim_pi",140,1.,1.7,100,0.,1.);
+  MMn_IMnpim_pi = new TH2F("MMn_IMnpim_pi","MMn_IMnpim_pi",700,1.,1.7,100,0.,1.);
   MMn_IMnpim_pi->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MMn_IMnpim_pi->SetYTitle("Miss. Mass (n) [GeV/c^{2}]");  
 
-  MMpi_IMnpip_pi = new TH2F("MMpi_IMnpip_pi","MMpi_IMnpip_pi",140,1.,1.7,100,1,2.);
+  MMpi_IMnpip_pi = new TH2F("MMpi_IMnpip_pi","MMpi_IMnpip_pi",700,1.,1.7,100,1,2.);
   MMpi_IMnpip_pi->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   MMpi_IMnpip_pi->SetYTitle("Miss. Mass (#pi^{+}) [GeV/c^{2}]");  
   
-  MMpi_IMnpim_pi = new TH2F("MMpi_IMnpim_pi","MMpi_IMnpim_pi",140,1.,1.7,100,1.,2.);
+  MMpi_IMnpim_pi = new TH2F("MMpi_IMnpim_pi","MMpi_IMnpim_pi",700,1.,1.7,100,1.,2.);
   MMpi_IMnpim_pi->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MMpi_IMnpim_pi->SetYTitle("Miss. Mass (#pi^{-}) [GeV/c^{2}]");  
   
@@ -1170,7 +1170,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       //std::cout << "beam p " << LVec_beam_unit.P() << std::endl;
       //std::cout << "beam m " << LVec_beam_unit.M() << std::endl;
       //std::cout << "nmiss P" <<  (*react_pimiss).P() << std::endl;
-      std::cout << __LINE__ << std::endl;
+      //std::cout << __LINE__ << std::endl;
       vtxr_vtxz_mc->Fill(mcncanvtxz,mcncanvtxr);
       if(mcpattern==2){
         vtxr_vtxz_mc_pat2->Fill(mcncanvtxz,mcncanvtxr);
@@ -1210,9 +1210,10 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       //  diff_cosnmiss_reactmc->Fill((*mcmom_pimiss).CosTheta()-(*react_pimiss).CosTheta());
       //  if(fabs((*mcmom_pimiss).CosTheta()-(*react_pimiss).CosTheta())>0.002) IsFakeN1 = true;
       //}
-      std::cout << __LINE__ << std::endl;
+      //std::cout << __LINE__ << std::endl;
       if(SimSpmode){
         if(fabs(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.)>0.02) IsFakeN2=true;
+        //std::cout << __LINE__ << std::endl;
         //if( (LVec_pip_n.M() -  LVec_pip_n_mc.M())< -0.012 || 0.010< (LVec_pip_n.M() -  LVec_pip_n_mc.M())) IsFakeN2=true;
         //if( fabs(LVec_pip_nmiss_mc.M()-1.18937)<0.01) IsFakeN2=true;
         //if( (diffIMnpip_recomc<-0.012) || (0.010<diffIMnpip_recomc)) IsFakeN2=true;
@@ -1310,6 +1311,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     
     if(ForwardVetoFlag && ForwardCharge) continue;
     
+    //std::cout << __LINE__ << std::endl;
     //Sigma+ production in CDS
     //band cut for signal
     if( (anacuts::Sigmap_MIN<MassNPip && MassNPip<anacuts::Sigmap_MAX)) SigmaPFlag=true;
@@ -1492,6 +1494,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
 
 
     //std::cout << __LINE__ << std::endl;
+    //std::cout << __LINE__ << std::endl;
     if(NBetaOK && NdEOK && MissPiFlag) {
       nmom->Fill((*LVec_n).P());
       mnmom->Fill(npimiss_mom);
@@ -1611,6 +1614,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
           double dcatrue = (*mc_disvtx-*mc_vtx).Mag();
           double dcartrue = (*mc_disvtx-*mc_vtx).Perp();
           double dcaztrue = (*mc_disvtx-*mc_vtx).z();
+          /*
           double diffdisvtx_CApip = (*CA_pip-*mc_disvtx).Mag();
           double diffdisvtx_CApip_r = (*CA_pip-*mc_disvtx).Perp();
           double diffdisvtx_CApip_z = (*CA_pip-*mc_disvtx).z();
@@ -1623,7 +1627,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
           double diffdisvtx_cdcbeam_pim = (*vtx_pim_cdc-*mc_disvtx).Mag();
           double diffdisvtx_cdcbeam_pim_r = (*vtx_pim_cdc-*mc_disvtx).Perp();
           double diffdisvtx_cdcbeam_pim_z = (*vtx_pim_cdc-*mc_disvtx).z();
-          
+          */
           vtxr_vtxz_n->Fill((*vtx_reaction).z(),(*vtx_reaction).Perp());
           //disvtxr_disvtxz_n->Fill((*vtx_displaced).z(),(*vtx_displaced).Perp());
           //disvtxr_disvtxz_n->Fill((*vtx_pip_cdc).z(),(*vtx_pip_cdc).Perp());
@@ -1638,7 +1642,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
           //diffnmom_diffdca_n->Fill(dcareco-dcatrue,diffnmom_recomc);
           //diffnmom_diffdcar_n->Fill(dcarreco-dcartrue,diffnmom_recomc);
           //diffnmom_diffdcaz_n->Fill(dcazreco-dcaztrue,diffnmom_recomc);
-          
+          /*
           diffnmom_diffdisvtx_CApip_n->Fill(diffdisvtx_CApip,diffnmom_recomc);
           diffnmom_diffdisvtx_CApip_r_n->Fill(diffdisvtx_CApip_r,diffnmom_recomc);
           diffnmom_diffdisvtx_CApip_z_n->Fill(diffdisvtx_CApip_z,diffnmom_recomc);
@@ -1652,7 +1656,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
           diffnmom_diffdisvtx_cdcbeam_pim_n->Fill(diffdisvtx_cdcbeam_pim,diffnmom_recomc);
           diffnmom_diffdisvtx_cdcbeam_pim_r_n->Fill(diffdisvtx_cdcbeam_pim_r,diffnmom_recomc);
           diffnmom_diffdisvtx_cdcbeam_pim_z_n->Fill(diffdisvtx_cdcbeam_pim_z,diffnmom_recomc);
-          
+          */
           
           if(!IsFakebyVTX){
             vtxr_diffmom_npip_ncan_wSid_n_mc->Fill(diffnpip_mcreact,mcncanvtxr);
