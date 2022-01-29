@@ -22,8 +22,8 @@ cp $SRCDIR/UserSimDatG4.cpp $OUTDIRSUB/
 
 #ln -s $OUTDIRSUB/simIMpisigma_all.root simpost/simIMpisigma_all_v${Version}.root
 
-@ i = 0
-while ($i < 1600)   
+@ i = 1600
+while ($i < 3200)   
 
   set EXEC___="./bin/sim"
   set CONF___="conf/Run78/analyzer_kwsk_sim.conf"

@@ -277,9 +277,11 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   //w dE cuts
   TH2F* MMnpi_IMnpip;
   TH2F* MM2npi_IMnpip;
+  TH2F* MM2npi_IMnpip_vici;
   //TH2F* MMnpi_IMnpip_fake;
   TH2F* MMnpi_IMnpim;
   TH2F* MM2npi_IMnpim;
+  TH2F* MM2npi_IMnpim_vici;
   //TH2F* MMnpi_IMnpim_fake;//for m
   TH2F* Cospicm_IMnpip;//cos pi cm 
   TH2F* Cospicm_IMnpim;//cos pi cm
@@ -348,7 +350,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   TH2F* nmom_diffphi_CDC_CDH_pip;
   TH2F* nmom_diffz_CDC_CDH_pim;
   TH2F* nmom_diffz_CDC_CDH_pip;
-
+  TH1I* h_chargepi;
   std::cout << __LINE__ << std::endl;
 
   
@@ -738,6 +740,10 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   MM2npi_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   MM2npi_IMnpip->SetYTitle("Miss. Mass^{2} (n#pi^{+}) [(GeV/c^{2})^{2}]");
   
+  MM2npi_IMnpip_vici = new TH2F("MM2npi_IMnpip_vici","MM2npi_IMnpip_vici",700,1.,1.7,200,-1,1.);
+  MM2npi_IMnpip_vici->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  MM2npi_IMnpip_vici->SetYTitle("Miss. Mass^{2} (n#pi^{+}) [(GeV/c^{2})^{2}]");
+  
   MMnpi_IMnpim = new TH2F("MMnpi_IMnpim","MMnpi_IMnpim",700,1.,1.7,200,-1.,1.);
   MMnpi_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MMnpi_IMnpim->SetYTitle("Miss. Mass (n#pi^{-}) [GeV/c^{2}]");  
@@ -746,6 +752,10 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   MM2npi_IMnpim->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MM2npi_IMnpim->SetYTitle("Miss. Mass^{2} (n#pi^{-}) [(GeV/c^{2})^{2}]");  
 
+  MM2npi_IMnpim_vici = new TH2F("MM2npi_IMnpim_vici","MM2npi_IMnpim_vici",700,1.,1.7,200,-1.,1.);
+  MM2npi_IMnpim_vici->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  MM2npi_IMnpim_vici->SetYTitle("Miss. Mass^{2} (n#pi^{-}) [(GeV/c^{2})^{2}]");  
+  
   Cospicm_IMnpip = new TH2F("Cospicm_IMnpip","Cospicm_IMnpip",700,1,1.7 ,50,0,1);
   Cospicm_IMnpip->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   Cospicm_IMnpip->SetYTitle("Cos.#theta_{CM} miss-#pi" );
@@ -995,6 +1005,8 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   nmom_diffz_CDC_CDH_pip = new TH2F("nmom_diffz_CDC_CDH_pip","nmom_diffz_CDC_CDH_pip",100,-100,100,100,0,1);
   nmom_diffz_CDC_CDH_pip->SetXTitle("CDH hit - #pi^{+} track (z) [cm]");
   nmom_diffz_CDC_CDH_pip->SetYTitle("nmom.  [GeV/c]");
+  
+  h_chargepi = new TH1I("h_chargepi","h_chargepi",2,0,2);
 
   //
   TH1F *nmom = new TH1F("nmom", "nmom", 50, 0, 1.0);
@@ -1236,12 +1248,12 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     bool SigmaMFlag=false;
     bool SigmawidePFlag=false;
     bool SigmawideMFlag=false;
-    bool SigmaPMissNViciFlag=false;//select vicinity of the signal
-    bool SigmaMMissNViciFlag=false;//select vicinity of the signal
+    bool SigmaPMissPiViciFlag=false;//select vicinity of the signal
+    bool SigmaMMissPiViciFlag=false;//select vicinity of the signal
     bool SigmaPMissNViciextFlag=false;//select vicinity of the signal
     bool SigmaMMissNViciextFlag=false;//select vicinity of the signal
 
-    
+    h_chargepi->Fill(chargepi);
 
     if( (LVec_pip_n.P()<anacuts::SigmaPMomCut) ){
       Vtx_ZX->Fill((*vtx_pi_cdc).Z(),(*vtx_pi_cdc).X());
@@ -1328,14 +1340,18 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     if( (anacuts::Sigmam_MIN_wide<MassNPim && MassNPim<anacuts::Sigmam_MAX_wide)) SigmawideMFlag=true;
     
 
-    //vicinity of Sigma+ & NMiss events
+    //vicinity of Sigma+ & PiMiss events
     if(pow(((MassNPip - anacuts::Sigmap_center)/5.0/anacuts::Sigmap_sigma),2.0) +
-       pow(((npimiss_mass - anacuts::neutron_center)/5.0/anacuts::neutron_sigma),2.0) < 1.0){
-       if(npimiss_mass < 1.05){
-         SigmaPMissNViciFlag=true;
-       }
+       pow(((npimiss_mass2 - 0.139*0.139)/7.0/0.017),2.0) < 1.0){
+      SigmaPMissPiViciFlag=true;
     }
     
+    if(pow(((MassNPim - anacuts::Sigmam_center)/5.0/anacuts::Sigmam_sigma),2.0) +
+       pow(((npimiss_mass2 - 0.139*0.139)/7.0/0.017),2.0) < 1.0){
+      SigmaMMissPiViciFlag=true;
+    }
+    
+    /*
     //vicinity of Sigma+ &Nmiss events +extended area
     if( (npimiss_mass >=anacuts::neutron_center) && (pow(((MassNPip - anacuts::Sigmap_center)/5.0/anacuts::Sigmap_sigma),2.0) +
        pow(((npimiss_mass - anacuts::neutron_center)/5.0/anacuts::neutron_sigma),2.0) < 1.0)){
@@ -1353,15 +1369,15 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     if( (npimiss_mass >= anacuts::neutron_center) && 
         (pow(((MassNPim - anacuts::Sigmam_center)/5.0/anacuts::Sigmam_sigma),2.0) +
         pow(((npimiss_mass - anacuts::neutron_center)/3.0/anacuts::neutron_sigma),2.0) < 1.0)){
-        SigmaMMissNViciFlag=true;
+        SigmaMMissPiViciFlag=true;
         SigmaMMissNViciextFlag=true;
     }
     if( (npimiss_mass < anacuts::neutron_center) && 
         (pow(((MassNPim - anacuts::Sigmam_center)/5.0/anacuts::Sigmam_sigma),2.0) +
         pow(((npimiss_mass - anacuts::neutron_center)/5.0/anacuts::neutron_sigma),2.0) < 1.0)){
-        SigmaMMissNViciFlag=true;
-    }
-
+        SigmaMMissPiViciFlag=true;
+    } 
+    */
     
     if( (npimiss_mass < anacuts::neutron_center) && (fabs( MassNPim - anacuts::Sigmam_center) < 5.0*anacuts::Sigmam_sigma)){
       SigmaMMissNViciextFlag=true;
@@ -1381,8 +1397,14 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
 
     //std::cout << __LINE__ << std::endl;
     double weight = 1.0;
+    double RatioPimOverPip= 1.0; 
     if(MIXmode){
-      weight = 4.24608060240400029e-02;
+      //weight = 0.0545 ;
+      //weight = 0.0505 ;
+      weight = 0.0405 ;
+      //weight = 0.0005 ;
+      RatioPimOverPip = 7.62423227247347790e-01;   
+      //weight = 0.045 ;
       if(SimSpmode){
         weight *=0.72;
         weight *=6.45779095649856028e-01;
@@ -1402,6 +1424,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       if(SimSmmode) std::cout << "Sim Sm mode " << std::endl;
       if(SimK0nmode) std::cout << "Sim K0n mode " << std::endl;
       std::cout  << " weighting factor " << weight << std::endl;
+      std::cout  << " Ratio pi-/pi+ " << RatioPimOverPip << std::endl;
       isState = true;
     }
 
@@ -1454,39 +1477,45 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       //pimmom_IMnpim_dE->Fill(LVec_pim_n.M(),(LVec_pim).P());
       //pipmom_MMnpimissdE->Fill(npimiss_mass,(LVec_pip).P());
       //pimmom_MMnpimissdE->Fill(npimiss_mass,(LVec_pim).P());
-      nmom_CDHphi->Fill((*CDH_Pos).Phi(),(*LVec_n).P());
+      nmom_CDHphi->Fill((*CDH_Pos).Phi(),(*LVec_n).P(),weight);
       if(chargepi==0){//pi-
-        diff2d_CDC_CDH_pim->Fill(diffPhinpim,diffpim.z());
-        diff2d_CDC_CDH_pim_phi_tof->Fill(diffPhinpim,difftofnpim);
-        diff2d_CDC_CDH_pim_z_tof->Fill(diffpim.z(),difftofnpim);
-        dE_diffphi_CDC_CDH_pim->Fill(diffPhinpim,dE);
-        MMnpimissdiffphi_CDC_CDH_pim->Fill(diffPhinpim, npimiss_mass);
-        pimmom_diffphi_CDC_CDH_pim->Fill(diffPhinpim,(LVec_pim).P());
-        pimmom_diffz_CDC_CDH_pim->Fill(diffpim.z(),(LVec_pim).P());
-        nmom_diffphi_CDC_CDH_pim->Fill(diffPhinpim,(*LVec_n).P());
-        nmom_diffz_CDC_CDH_pim->Fill(diffpim.z(),(*LVec_n).P());
-        MMnpi_IMnpim->Fill(LVec_pim_n.M(),npimiss_mass);
-        MM2npi_IMnpim->Fill(LVec_pim_n.M(),npimiss_mass2);
-        Cospicm_IMnpim->Fill(LVec_pim_n.M(),cos_pimissCM);
-        MMn_IMnpim->Fill(LVec_pim_n.M(),LVec_nmiss.M());
-        MMpi_IMnpim->Fill(LVec_pim_n.M(),LVec_pimiss.M());
+        diff2d_CDC_CDH_pim->Fill(diffPhinpim,diffpim.z(),weight*RatioPimOverPip);
+        diff2d_CDC_CDH_pim_phi_tof->Fill(diffPhinpim,difftofnpim,weight*RatioPimOverPip);
+        diff2d_CDC_CDH_pim_z_tof->Fill(diffpim.z(),difftofnpim,weight*RatioPimOverPip);
+        dE_diffphi_CDC_CDH_pim->Fill(diffPhinpim,dE,weight*RatioPimOverPip);
+        MMnpimissdiffphi_CDC_CDH_pim->Fill(diffPhinpim, npimiss_mass,weight*RatioPimOverPip);
+        pimmom_diffphi_CDC_CDH_pim->Fill(diffPhinpim,(LVec_pim).P(),weight*RatioPimOverPip);
+        pimmom_diffz_CDC_CDH_pim->Fill(diffpim.z(),(LVec_pim).P(),weight*RatioPimOverPip);
+        nmom_diffphi_CDC_CDH_pim->Fill(diffPhinpim,(*LVec_n).P(),weight*RatioPimOverPip);
+        nmom_diffz_CDC_CDH_pim->Fill(diffpim.z(),(*LVec_n).P(),weight*RatioPimOverPip);
+        MMnpi_IMnpim->Fill(LVec_pim_n.M(),npimiss_mass,weight*RatioPimOverPip);
+        MM2npi_IMnpim->Fill(LVec_pim_n.M(),npimiss_mass2,weight*RatioPimOverPip);
+        if(SigmaMMissPiViciFlag){
+          MM2npi_IMnpim_vici->Fill(LVec_pim_n.M(),npimiss_mass2,weight*RatioPimOverPip);
+        }
+        Cospicm_IMnpim->Fill(LVec_pim_n.M(),cos_pimissCM,weight*RatioPimOverPip);
+        MMn_IMnpim->Fill(LVec_pim_n.M(),LVec_nmiss.M(),weight*RatioPimOverPip);
+        MMpi_IMnpim->Fill(LVec_pim_n.M(),LVec_pimiss.M(),weight*RatioPimOverPip);
       }
       if(chargepi==1){//pi+
-        diff2d_CDC_CDH_pip->Fill(diffPhinpip,diffpip.z());
-        diff2d_CDC_CDH_pip_phi_tof->Fill(diffPhinpip,difftofnpip);
-        diff2d_CDC_CDH_pip_z_tof->Fill(diffpip.z(),difftofnpip);
-        dE_diffphi_CDC_CDH_pip->Fill(diffPhinpip,dE);
-      //MMnpimissdE->Fill(dE, npimiss_mass);
-        MMnpimissdiffphi_CDC_CDH_pip->Fill(diffPhinpip, npimiss_mass);
-        pipmom_diffphi_CDC_CDH_pip->Fill(diffPhinpip,(LVec_pip).P());
-        pipmom_diffz_CDC_CDH_pip->Fill(diffpip.z(),(LVec_pip).P());
-        nmom_diffphi_CDC_CDH_pip->Fill(diffPhinpip,(*LVec_n).P());
-        nmom_diffz_CDC_CDH_pip->Fill(diffpip.z(),(*LVec_n).P());
-        MMnpi_IMnpip->Fill(LVec_pip_n.M(),npimiss_mass);
-        MM2npi_IMnpip->Fill(LVec_pip_n.M(),npimiss_mass2);
-        Cospicm_IMnpip->Fill(LVec_pip_n.M(),cos_pimissCM);
-        MMn_IMnpip->Fill(LVec_pip_n.M(),LVec_nmiss.M());
-        MMpi_IMnpip->Fill(LVec_pip_n.M(),LVec_pimiss.M());
+        diff2d_CDC_CDH_pip->Fill(diffPhinpip,diffpip.z(),weight);
+        diff2d_CDC_CDH_pip_phi_tof->Fill(diffPhinpip,difftofnpip,weight);
+        diff2d_CDC_CDH_pip_z_tof->Fill(diffpip.z(),difftofnpip,weight);
+        dE_diffphi_CDC_CDH_pip->Fill(diffPhinpip,dE,weight);
+        //MMnpimissdE->Fill(dE, npimiss_mass);
+        MMnpimissdiffphi_CDC_CDH_pip->Fill(diffPhinpip, npimiss_mass,weight);
+        pipmom_diffphi_CDC_CDH_pip->Fill(diffPhinpip,(LVec_pip).P(),weight);
+        pipmom_diffz_CDC_CDH_pip->Fill(diffpip.z(),(LVec_pip).P(),weight);
+        nmom_diffphi_CDC_CDH_pip->Fill(diffPhinpip,(*LVec_n).P(),weight);
+        nmom_diffz_CDC_CDH_pip->Fill(diffpip.z(),(*LVec_n).P(),weight);
+        MMnpi_IMnpip->Fill(LVec_pip_n.M(),npimiss_mass,weight);
+        MM2npi_IMnpip->Fill(LVec_pip_n.M(),npimiss_mass2,weight);
+        if(SigmaPMissPiViciFlag){
+          MM2npi_IMnpip_vici->Fill(LVec_pip_n.M(),npimiss_mass2,weight);
+        }
+        Cospicm_IMnpip->Fill(LVec_pip_n.M(),cos_pimissCM,weight);
+        MMn_IMnpip->Fill(LVec_pip_n.M(),LVec_nmiss.M(),weight);
+        MMpi_IMnpip->Fill(LVec_pip_n.M(),LVec_pimiss.M(),weight);
       }
     } //if(NBetaOK && NdEOK) 
 
@@ -1503,15 +1532,15 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       if(chargepi==0)npimmom->Fill(LVec_pim_n.P());
        
       if(chargepi==0){//pi-
-        nmom_IMnpim_dE_n->Fill(LVec_pim_n.M(),(*LVec_n).P(),weight);
-        MMn_IMnpim_pi->Fill(LVec_pim_n.M(),LVec_nmiss.M());
-        MMpi_IMnpim_pi->Fill(LVec_pim_n.M(),LVec_pimiss.M());
-        Cospicm_IMnpim_pi->Fill(LVec_pim_n.M(),cos_pimissCM);
+        nmom_IMnpim_dE_n->Fill(LVec_pim_n.M(),(*LVec_n).P(),weight*RatioPimOverPip);
+        MMn_IMnpim_pi->Fill(LVec_pim_n.M(),LVec_nmiss.M(),weight*RatioPimOverPip);
+        MMpi_IMnpim_pi->Fill(LVec_pim_n.M(),LVec_pimiss.M(),weight*RatioPimOverPip);
+        Cospicm_IMnpim_pi->Fill(LVec_pim_n.M(),cos_pimissCM,weight*RatioPimOverPip);
       }else if(chargepi==1){
-        MMn_IMnpip_pi->Fill(LVec_pip_n.M(),LVec_nmiss.M());
-        MMpi_IMnpip_pi->Fill(LVec_pip_n.M(),LVec_pimiss.M());
+        MMn_IMnpip_pi->Fill(LVec_pip_n.M(),LVec_nmiss.M(),weight);
+        MMpi_IMnpip_pi->Fill(LVec_pip_n.M(),LVec_pimiss.M(),weight);
         nmom_IMnpip_dE_n->Fill(LVec_pip_n.M(),(*LVec_n).P(),weight);
-        Cospicm_IMnpip_pi->Fill(LVec_pip_n.M(),cos_pimissCM);
+        Cospicm_IMnpip_pi->Fill(LVec_pip_n.M(),cos_pimissCM,weight);
       }
 
       if(SimSpmode || SimSmmode){

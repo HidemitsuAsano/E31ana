@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="1"
+set Version="4"
 set DATADIR="/group/had/knucl/e15/data/Run62/"
 set OUTDIR="/group/had/knucl/e15/asano/Run62/"
 set CDSTRACKDIR="/group/had/knucl/e15/asano/Run62/"
