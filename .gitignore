@@ -8,6 +8,7 @@
 *.swp
 *.pdf
 *.a
+*.out
 *.pcm
 src/*.a
 src/tmp/
