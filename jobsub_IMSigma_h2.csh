@@ -1,8 +1,9 @@
 #!/bin/tcsh -f
-set Version="4"
+set Version="6"
 set DATADIR="/group/had/knucl/e15/data/Run62/"
 set OUTDIR="/group/had/knucl/e15/asano/Run62/"
-set CDSTRACKDIR="/group/had/knucl/e15/asano/Run62/"
+#set CDSTRACKDIR="/group/had/knucl/e15/asano/Run62/"
+set CDSTRACKDIR="/group/had/knucl/e15/asano/Run62/yamagaCDS/"
 
 set starttime=`date '+%y/%m/%d %H:%M:%S'`
 set logbasedir="/home/had/hiasano/logs/"
@@ -44,7 +45,8 @@ while ($i < 241)
 
   set INPFILE=${DATADIR}"run62_0${jobnum}.dat"
   set OUTFILE=${OUTDIRSUB}"/evanaIMsigma_h2_0${jobnum}.root"
-  set CDSFILE=${CDSTRACKDIR}"CDStrack_0${jobnum}.root"
+  #set CDSFILE=${CDSTRACKDIR}"CDStrack_0${jobnum}.root"
+  set CDSFILE=${CDSTRACKDIR}"run62_0${jobnum}_v05.root"
 
   echo ${INPFILE}
   echo ${OUTFILE}

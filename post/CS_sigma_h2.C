@@ -207,7 +207,30 @@ void CS_sigma_h2()
   }
 
   TFile *facc = TFile::Open("accH2.root","READ");
-  TH1F* accSp->Get(
+  TH1D* accSp = (TH1D*)facc->Get("accCosSp");
+  TH1D* accSm = (TH1D*)facc->Get("accCosSm");
+   
+  TH1D* CS_Sp = (TH1D*)Cospicm_IMnpip_pi->ProjectionY("CS_Sp",Splow,Sphigh);
+  TH1D* CS_Sm = (TH1D*)Cospicm_IMnpim_pi->ProjectionY("CS_Sm",Smlow,Smhigh);
+  std::cout << "bin width: " << CS_Sp->GetBinWidth(2) << std::endl;
+  CS_Sp->RebinX(5);
+  CS_Sm->RebinX(5);
+  CS_Sp->Divide(accSp);
+  CS_Sm->Divide(accSm);
+
+  double Lumi=321.0;
+  TCanvas *cCS_Sp = new TCanvas("cCS_Sp","cCS_Sp",1000,800);
+  //CS_Sp->RebinX(5);
+  double CospiBinW = CS_Sp->GetBinWidth(2);
+  const double cosToStrbin = 2*3.1415*(CospiBinW); 
+  CS_Sp->Scale(1./cosToStrbin/Lumi);
+  CS_Sp->Draw("E");
+  TCanvas *cCS_Sm = new TCanvas("cCS_Sm","cCS_Sm",1000,800);
+  //CS_Sm->RebinX(5);
+  CS_Sm->Scale(1./cosToStrbin/Lumi);
+  CS_Sm->Draw("E");
+
+
 
 
 }

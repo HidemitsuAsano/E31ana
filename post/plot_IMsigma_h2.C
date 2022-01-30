@@ -1267,6 +1267,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     //-- neutron-ID, K0 and missing neutron selection --//
     if(anacuts::beta_MIN<NeutralBetaCDH &&  NeutralBetaCDH<anacuts::beta_MAX  ) NBetaOK=true;
     if(anacuts::dE_MIN<dE) NdEOK=true;
+    //if(1.0<dE) NdEOK=true;
     double MassNPip= (*LVec_n+*LVec_pi).M();
     double MassNPim= (*LVec_n+*LVec_pi).M();
 

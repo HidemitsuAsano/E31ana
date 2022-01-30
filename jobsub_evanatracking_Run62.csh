@@ -1,6 +1,7 @@
 #!/bin/tcsh -f
 
 set DATADIR="/group/had/knucl/e15/data/Run62/"
+#set OUTDIR="/group/had/knucl/e15/asano/Run62/testold/"
 set OUTDIR="/group/had/knucl/e15/asano/Run62/"
 
 if( ! -d $OUTDIR) then 
