@@ -1044,7 +1044,7 @@ int main( int argc, char** argv )
           nIDedTrack = Util::CDSChargedAna(
           DoCDCRetiming,
           bpctrack, cdsMan, cdstrackMan, confMan, blMan,
-          LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,pim_cdhprojected,pip_cdhprojected,true);
+          LVec_beam, ctmT0,vCDHseg,pim_ID,pip_ID,km_ID,p_ID,pim_cdhprojected,pip_cdhprojected,true,0);
       if(nIDedTrack==-7) Tools::Fill1D( Form("EventCheck"), 7 );
       if(nIDedTrack==-8) Tools::Fill1D( Form("EventCheck"), 8 );
       if(nIDedTrack==-9){

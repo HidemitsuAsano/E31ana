@@ -557,7 +557,7 @@ int main( int argc, char** argv )
       //Util::AnaMcData(mcData,detData2,cdsMan,reacData,ncanvtxr,ncanvtxz,ncdsgen);
     }
 
-    if( nGoodTrack!=1 && nallTrack!=1 ){ // dedicated for pi+ pi- event
+    if( nGoodTrack!=1 ){ // dedicated for pi+ pi- event
       if(IsrecoPassed)nAbort_nGoodTrack++;
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nGoodTrack" << std::endl;
       //continue;
@@ -685,8 +685,9 @@ int main( int argc, char** argv )
         if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_fblc2bpc" << std::endl;
         if(IsBLAnaPassed) nAbort_fblc2bpc++;
         //continue;
-        IsrecoPassed=false;
-        IsBLAnaPassed=false;
+        //20220201 do not take into accout BLC-BPC matching
+        //IsrecoPassed=false;
+        //IsBLAnaPassed=false;
       }
     }
 

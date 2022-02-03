@@ -579,21 +579,22 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   }
   Tools::Fill1D( Form("EventCheck"), 1 );
 
-  /*
+  
   //CDH emean recalibrator
   static bool isState=false;
+  const double CDHemeanCalH2 = 6.1/5.0;
   if(!isState){ 
     std::cout << "***********************************************" << std::endl;   
     std::cout << "L." << __LINE__ << " CDH emean is recalibrated " << std::endl;
-    std::cout << "correction factor " << cdscuts::CDHemeanCal << std::endl;
+    std::cout << "correction factor " << CDHemeanCalH2 << std::endl;
     std::cout << "***********************************************" << std::endl;   
     isState=true;
-  }*/
+  }
 
-  //emean calibration for d2 data
+  //emean calibration for H data
   //for( int i=0; i<cdsMan->nCDH(); i++ ){
     //double emean = cdsMan->CDH(i)->emean();
-    //cdsMan->CDH(i)->SetEMean(emean*cdscuts::CDHemeanCal);
+    //cdsMan->CDH(i)->SetEMean(emean*CDHemeanCalH2);
   //}
   
   //CDH-hits cut

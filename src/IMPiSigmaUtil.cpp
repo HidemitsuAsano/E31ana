@@ -503,7 +503,7 @@ int Util::CDSChargedAna(const bool docdcretiming,
     }
 
     int pid = -1;
-    if(!H2data){
+    if(H2data==0){
       pid = TrackTools::PIDcorr_wide(mom,mass2);
     }else if(H2data==1){
       //yamaga param ?
@@ -517,10 +517,12 @@ int Util::CDSChargedAna(const bool docdcretiming,
       Tools::Fill2D("PID_CDS_PIM_beta",1./beta_calc,mom);
       Tools::Fill2D("PID_CDS_PIM",mass2,mom);
       Tools::H2("PIM_TOF_MOM",fabs(mom),correctedtof,100,0,2,10000,0,100);
+      Tools::H2("dE_mom_pi",mom,dE,100,0,2,500,0,50);
     }else if(pid == CDS_PiPlus){
       Tools::Fill2D("PID_CDS_PIP_beta",1./beta_calc,mom);
       Tools::Fill2D("PID_CDS_PIP",mass2,mom);
       Tools::H2("PIP_TOF_MOM",mom,correctedtof,100,0,2,10000,0,100);
+      Tools::H2("dE_mom_pi",mom,dE,100,0,2,500,0,50);
     }
     else if(pid == CDS_Proton){
       Tools::Fill2D("PID_CDS_Proton",mass2,mom);
@@ -547,7 +549,7 @@ int Util::CDSChargedAna(const bool docdcretiming,
        EnergyLossOK && 
       ( (pid==CDS_PiMinus) || (pid==CDS_PiPlus) || (pid==CDS_Proton)) 
       ){
-        Util::AnaCDHHitPos(tof,beta_calc,bpctrack,LVecbeam,ctmt0,track,cdsman,confman,blman,correctedtof,pid,MCFlag);
+        //Util::AnaCDHHitPos(tof,beta_calc,bpctrack,LVecbeam,ctmt0,track,cdsman,confman,blman,correctedtof,pid,MCFlag);
     }
 
     TVector3 cdh_projected = track->CDHVertex();
