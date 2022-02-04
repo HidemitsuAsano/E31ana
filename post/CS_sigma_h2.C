@@ -36,7 +36,7 @@ void CS_sigma_h2()
   CS_Sp2->Divide(accSp2);
   CS_Sm2->Divide(accSm2);
  
-  double Lumi=311.0;
+  double Lumi=381.0;
   //double Lumi=577.0;
   TCanvas *cCS_Sp = new TCanvas("cCS_Sp","cCS_Sp",1000,800);
   //CS_Sp->RebinX(5);

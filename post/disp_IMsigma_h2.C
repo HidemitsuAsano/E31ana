@@ -3,22 +3,23 @@
 void disp_IMsigma_h2()
 {
   gStyle->SetOptStat(0);
-  bool SimMode=true;
-  bool SimSpMode=true;
+  bool SimSpMode=false;
   bool SimSmMode=false;
 
   TFile *f;
   TFile *fr;
   TFile *fmix;
-  if(!SimMode){
+  if(!SimSpMode && !SimSmMode){
     f = TFile::Open("evanaIMsigma_npi_h2_v8_out_iso_nostop_sub.root");
     fr = TFile::Open("evanaIMsigma_npi_h2_v8_out_iso_nostop.root");
     fmix = TFile::Open("evanaIMsigma_npi_h2_v8_MIX_out_iso_nostop.root");
-  }else{
+  }else if(SimSpMode){
     f = TFile::Open("../simpost/simIMsigma_H2_Sppim_npi_v3_out_noiso_rej_nostop.root");
+  }else if(SimSmMode){
+    f = TFile::Open("../simpost/simIMsigma_H2_Smpip_npi_v3_out_noiso_rej_nostop.root");
   }
   
-  if(!SimMode){
+  if(!SimSpMode && !SimSmMode){
     TCanvas *cvici_Sp = new TCanvas("cvici_Sp","cvici_Sp",1000,800);
     TH2F* MM2npi_IMnpip_vici = (TH2F*)fr->Get("MM2npi_IMnpip_vici");
     TH2F* MM2npi_IMnpip_vici_mix = (TH2F*)fmix->Get("MM2npi_IMnpip_vici");
@@ -183,7 +184,6 @@ void disp_IMsigma_h2()
   TH1D* IMnpim_pi = (TH1D*)Cospicm_IMnpim_pi->ProjectionX("IMnpim_pi");
   IMnpim_pi->Draw("E");
   
-  TCanvas *ccos_Sp = new TCanvas("ccos_Sp","ccos_Sp",1000,800);
   const int ncosbin=6;
   int cosbin[7];
   cosbin[0] = Cospicm_IMnpip_pi->GetYaxis()->FindBin(1.0);
@@ -194,6 +194,7 @@ void disp_IMsigma_h2()
   cosbin[5] = Cospicm_IMnpip_pi->GetYaxis()->FindBin(0.5); 
   cosbin[6] = Cospicm_IMnpip_pi->GetYaxis()->FindBin(0.4); 
   
+  TCanvas *ccos_Sp = new TCanvas("ccos_Sp","ccos_Sp",1000,800);
   ccos_Sp->Divide(3,2);
   TH1D* IMnpip_coscut[6];
   const int Splow = Cospicm_IMnpip_pi->GetXaxis()->FindBin(anacuts::Sigmap_MIN);
@@ -218,6 +219,39 @@ void disp_IMsigma_h2()
     IMnpim_coscut[icosbin]->GetXaxis()->SetRangeUser(1.1,1.3);
     IMnpim_coscut[icosbin]->Draw("E");
   }
+  
+  TCanvas *cCospicim_MM2npi_Sp = new TCanvas("cCospicim_MM2npi_Sp","cCospicim_MM2npi_Sp",1000,800);
+  TH2F* Cospicm_MM2npi_Sp = (TH2F*)f->Get("Cospicm_MM2npi_Sp");
+  Cospicm_MM2npi_Sp->Draw("colz");
+
+  TCanvas *ccos_Sp_MM2 = new TCanvas("ccos_Sp_MM2","ccos_Sp_MM2",1000,800);
+  ccos_Sp_MM2->Divide(3,2);
+  TH1D* MM2npi_coscut_Sp[6];
+  for(int icosbin=0;icosbin<ncosbin;icosbin++){
+    MM2npi_coscut_Sp[icosbin] = (TH1D*)Cospicm_MM2npi_Sp->ProjectionX(Form("MM2npi_coscut%d",icosbin),cosbin[icosbin+1],cosbin[icosbin]);
+    ccos_Sp_MM2->cd(icosbin+1);
+    //std::cout << IMnpim_coscut[icosbin]->Integral(Smlow,Smhigh) << std::endl;
+    MM2npi_coscut_Sp[icosbin]->Rebin(4);
+    MM2npi_coscut_Sp[icosbin]->GetXaxis()->SetRangeUser(-0.4,0.4);
+    MM2npi_coscut_Sp[icosbin]->Draw("E");
+  }
+  
+  TCanvas *cCospicim_MM2npi_Sm = new TCanvas("cCospicim_MM2npi_Sm","cCospicim_MM2npi_Sm",1000,800);
+  TH2F* Cospicm_MM2npi_Sm = (TH2F*)f->Get("Cospicm_MM2npi_Sm");
+  Cospicm_MM2npi_Sm->Draw("colz");
+
+  TCanvas *ccos_Sm_MM2 = new TCanvas("ccos_Sm_MM2","ccos_Sm_MM2",1000,800);
+  ccos_Sm_MM2->Divide(3,2);
+  TH1D* MM2npi_coscut_Sm[6];
+  for(int icosbin=0;icosbin<ncosbin;icosbin++){
+    MM2npi_coscut_Sm[icosbin] = (TH1D*)Cospicm_MM2npi_Sm->ProjectionX(Form("MM2npi_coscut%d",icosbin),cosbin[icosbin+1],cosbin[icosbin]);
+    ccos_Sm_MM2->cd(icosbin+1);
+    //std::cout << IMnpim_coscut[icosbin]->Integral(Smlow,Smhigh) << std::endl;
+    MM2npi_coscut_Sm[icosbin]->Rebin(4);
+    MM2npi_coscut_Sm[icosbin]->GetXaxis()->SetRangeUser(-0.4,0.4);
+    MM2npi_coscut_Sm[icosbin]->Draw("E");
+  }
+
 
   
   TCanvas *cCospicm_pi_Sp = new TCanvas("cCospicm_pi_Sp","cCospicm_pi_Sp",1000,800);
@@ -238,7 +272,8 @@ void disp_IMsigma_h2()
   TIter next(SCol);
   TString pdfname;
   pdfname= "H2_data.pdf";
-  if(SimMode) pdfname= "H2data_sim.pdf";
+  if(SimSpMode) pdfname= "H2data_sim_Sp.pdf";
+  if(SimSmMode) pdfname= "H2data_sim_Sm.pdf";
    
   for(int i=0;i<size;i++){
     //pdf->NewPage();

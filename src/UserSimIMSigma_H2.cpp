@@ -61,7 +61,7 @@ double PARA_lnL_MAX;
 double PARA_MM_LP_MIN;
 double PARA_MM_LP_MAX;
 
-const double ADC_CDH_MIN = 1;  // MeV
+const double ADC_CDH_MIN = 2;  // MeV
 
 //= = = = pippimn final-sample tree = = = =//
 TLorentzVector mom_beam;   // 4-momentum(beam)
