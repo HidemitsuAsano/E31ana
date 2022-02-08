@@ -15,7 +15,8 @@ void InitBasicHist(const bool MCFlag)
 
   // CDC and CDH information from CDC-trackig file **//
   Tools::newTH1F( Form("mul_CDH"),Form("CDH multiplicity"), 11, -0.5, 10.5 );
-  Tools::newTH1F( Form("mul_CDH_assoc"), 11, -0.5, 10.5 );
+  Tools::newTH1F( Form("mul_CDH_iso"),Form("CDH multiplicity after isolation cut"), 11, -0.5, 10.5 );
+  Tools::newTH1F( Form("mul_CDH_assoc"),Form("n CDH associated with CDCtrack" ),11, -0.5, 10.5 );
   Tools::newTH1F( Form("npimangle"),628, 0, 2*3.14);
   Tools::newTH1F( Form("npipangle"),628, 0, 2*3.14);
   Tools::newTH1F( Form("CDCInner3Mul"),20,0,20);

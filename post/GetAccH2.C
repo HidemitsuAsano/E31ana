@@ -3,10 +3,10 @@
 void GetAccH2()
 {
   TH1::SetDefaultSumw2();
-  TFile *fSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_npi_v4_out_iso_rej_nostop.root");
-  TFile *fSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_npi_v4_out_iso_rej_nostop.root");
-  TFile *fGenSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_v4.root");
-  TFile *fGenSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_v4.root");
+  TFile *fSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_npi_v10_out_iso_rej_nostop.root");
+  TFile *fSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_npi_v10_out_iso_rej_nostop.root");
+  TFile *fGenSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_v10.root");
+  TFile *fGenSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_v10.root");
 
   TH2F* Cospicm_IMnpip_pi_Sp = (TH2F*)fSp->Get("Cospicm_IMnpip_pi");//0.02 cos bin 
   TH2F* Cospicm_IMnpim_pi_Sm = (TH2F*)fSm->Get("Cospicm_IMnpim_pi");//0.02 cos bin

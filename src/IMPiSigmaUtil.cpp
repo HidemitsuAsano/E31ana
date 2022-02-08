@@ -933,6 +933,16 @@ void Util::AnaCDHHitPos(const double meas_tof, const double beta_calc,
   }
 }
 
+HodoscopeLikeHit* Util::CDHsegToCDHhitIndex(const int cdhsegid, CDSHitMan *cdsman){
+  int icdh = -1;
+  for( int icdhhit=0; icdhhit<cdsman->nCDH(); icdhhit++ ){
+    if( cdsman->CDH(icdhhit)->seg()==cdhsegid) icdh = icdhhit;
+  }
+  HodoscopeLikeHit *ncdhhitcan = cdsman->CDH(icdh);
+  
+  return ncdhhitcan;
+}
+
 void Util::AnaReactionData( ReactionData *reactionData){
   int ndecay    = reactionData->NParticle(0);
   int nspec     = reactionData->NParticle(1);
@@ -1403,7 +1413,7 @@ void Util::AnaMcData2(MCData *mcdata,
       continue;
     }
     //require CDH hit seg matching
-     int dhitseg  = dhit->channelID()+1;//0 origin
+    int dhitseg  = dhit->channelID()+1;//0 origin
     if(dhitseg != CDHseg) continue;
     
     trackID = dhit->trackID();
@@ -1854,3 +1864,5 @@ std::vector<HodoscopeLikeHit*> Util::getHodo(BeamLineHitMan *blman)
   }
   return hits;
 }*/
+
+

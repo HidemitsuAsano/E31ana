@@ -31,7 +31,7 @@ TVector3 *CDH_Pos2 = NULL;
 TVector3 *CDH_Pos_pi2 = NULL;
 
 
-void GenEventMixTree_h2(const char* filename = "evanaIMsigma_npi_h2_v8.root")
+void GenEventMixTree_h2(const char* filename = "evanaIMsigma_npi_h2_v9.root")
 {
   if(gROOT->GetVersionInt() < 60000){
     std::cout << "Use ROOT6 " << std::endl;

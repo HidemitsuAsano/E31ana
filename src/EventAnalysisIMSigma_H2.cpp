@@ -598,8 +598,14 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   //}
   
   //CDH-hits cut
-  if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH2,false)!=2){
-    Clear( nAbort_nCDH );
+
+  int nCDH = Util::GetCDHMul(cdsMan,nGoodTrack,true,true);
+  //if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH2,false)!=2){
+  //  Clear( nAbort_nCDH );
+  //  return true;
+  //}
+  if(nCDH<2){
+    Clear( nAbort_nCDH);
     return true;
   }
   Tools::Fill1D( Form("EventCheck"), 2 );
@@ -815,7 +821,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     std::set_difference( CDHhitsegall.begin(), CDHhitsegall.end(),
                          vCDHseg.begin(), vCDHseg.end(),
                          std::back_inserter(NeutralCDHseg) );
-
+    
+    /*
     if( NeutralCDHseg.size()!=1 ) {
       //if(Verbosity) {
         std::cerr<<" CDH neutral hit is not 1 :: "<<NeutralCDHseg.size()<<std::endl;
@@ -839,27 +846,61 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         std::cerr<<std::endl;
       }//if Verbosity
     }//NeutralCDHseg check
-    
-    //** isolation cut **//
-    int flag_isolation = 0;
-    if(IsolationCutFlag==2){
-      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhitsegall,vCDHseg,cdsMan);
-      flag_isolation+= Util::GetCDHTwoSegAwayNHits(NeutralCDHseg,CDHhitsegall);
-    }else if(IsolationCutFlag==1){
-      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhitsegall,vCDHseg,cdsMan);
-    }else{
-      //check cdh hit position anyway, but don't apply isolation cuts 
-      flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhitsegall,vCDHseg,cdsMan);
-      flag_isolation = 0;
-    }
+    */
 
-
+    // isolation cut //
     // copy neutral CDH hit candidate
-    int cdhcan = -1;
-    for( int ihit=0; ihit<cdsMan->nCDH(); ihit++ ) {
-      if( cdsMan->CDH(ihit)->seg()==NeutralCDHseg[0] ) cdhcan = ihit;
+    int nNeutralcdhseg = NeutralCDHseg.size();
+    int charge_pi = -1;
+    if(pip_ID.size()==1)charge_pi=1;
+    else if(pim_ID.size()==1) charge_pi=0;
+       
+    int Ncanhitseg=-1;
+    for(int iNeutralCDHseg=0;iNeutralCDHseg<nNeutralcdhseg;iNeutralCDHseg++){
+      HodoscopeLikeHit *ncdhhitcan = Util::CDHsegToCDHhitIndex(NeutralCDHseg.at(iNeutralCDHseg),cdsMan);
+      TVector3 Pos_CDH;//CDH position
+      confMan->GetGeomMapManager()->GetPos( CID_CDH, ncdhhitcan->seg(), Pos_CDH );
+      Pos_CDH.SetZ(-1.*ncdhhitcan->hitpos());
+        
+      TVector3 diffpim;
+      double diffPhinpim = 0;
+      if(charge_pi==0){
+        diffpim = Pos_CDH-pim_cdhprojected;
+        diffPhinpim = Pos_CDH.Phi()-pim_cdhprojected.Phi();
+      }
+      if(diffPhinpim<-1.0*TMath::Pi()) diffPhinpim += 2.0*TMath::Pi();
+      else if(diffPhinpim>1.0*TMath::Pi()) diffPhinpim -= 2.0*TMath::Pi();
+
+      TVector3 diffpip; 
+      double diffPhinpip = 0;
+      if(charge_pi==1){
+        diffpip = Pos_CDH-pip_cdhprojected;
+        diffPhinpip = Pos_CDH.Phi()-pip_cdhprojected.Phi();
+      }
+      if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
+      else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
+
+      if((charge_pi==0)) {
+        //round cut
+        if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ) nCDH--;
+        else if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) nCDH--;
+        else Ncanhitseg= NeutralCDHseg.at(iNeutralCDHseg);
+      }else if(charge_pi==1) {
+        //round cut
+        if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) nCDH--;
+        else if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) nCDH--;
+          else Ncanhitseg= NeutralCDHseg.at(iNeutralCDHseg);
+        }
+    }//for iNeutralCDHseg
+
+    Tools::Fill1D(Form("mul_CDH_iso"),nCDH);
+    if(nCDH !=2){
+      Clear( nAbort_CDHiso );
+      return true;
     }
-    HodoscopeLikeHit *ncdhhit = cdsMan->CDH(cdhcan);
+        
+
+    HodoscopeLikeHit *ncdhhit = Util::CDHsegToCDHhitIndex(Ncanhitseg,cdsMan);
 
     TVector3 Pos_CDH;
     const int CDHSeg = ncdhhit->seg();
@@ -870,35 +911,16 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       std::cerr<<"CDH candidate = "<<CDHSeg<<" -> "<<Pos_CDH.Phi()/TwoPi*360.<<" deg"<<std::endl;
     }
     
-    // charge veto using CDC
-    //Util::AnaPipPimCDCCDH(Pos_CDH,NeutralCDHseg,pip_ID[0],pim_ID[0],cdsMan,trackMan);
     
-    //std::cout << __LINE__ << "  "  << -1.*ncdhhit->hitpos() << std::endl;
-    if( flag_isolation ) {
-      //if(Verbosity) std::cerr<<"CDH neutral hit candidate is NOT isolated !!!"<<std::endl;
-      Clear( nAbort_CDHiso );
-      return true;
-    } else {
-      if(Verbosity) std::cerr<<"CDH isolation cuts : OK " << std::endl;
-      Tools::Fill1D( Form("EventCheck"), 14 );
-    }
     const int nCDCInner3Lay = Util::GetNHitsCDCInner3Lay(cdsMan);
     Tools::Fill1D(Form("CDCInner3Mul"),nCDCInner3Lay);
      
-    //if(nCDCInner3Lay>6){
-    //  Clear(nAbort_CDCInner3Lay);
-    //  return true;
-    //}
 
     const int nCDCforVeto = Util::GetNHitsCDCOuterNoAss(Pos_CDH,cdsMan,trackMan,cdscuts::chargevetoangle);
     Tools::Fill1D(Form("NCDCOutHit"),nCDCforVeto);
     Pos_CDH.SetZ(-1.*ncdhhit->hitpos()); // (-1*) is correct in data analysis [20170926]
     //** neutral particle in CDH **//
-    if(NeutralCDHseg.size()!=1) {
-        std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
-    } else {
-      Tools::Fill1D(Form("CDHNeutralSeg"),NeutralCDHseg.at(0));
-    }
+    Tools::Fill1D(Form("CDHNeutralSeg"),Ncanhitseg );
     
     CDSTrack *track_pi;
     if(pip_ID.size()==1){
