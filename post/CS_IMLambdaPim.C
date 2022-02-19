@@ -6,8 +6,9 @@ void CS_IMLambdaPim()
   const double ForwardAngle = 0.996;
   const double ForwardAngle2 = 0.997;
   gStyle->SetOptStat(0);
-  TFile *file = new TFile("evanaIMLambdaPim_ppimpim_v22_out.root","READ");
-  TFile *facc = new TFile("../simpost/accmapLpimv23.root","READ");
+  TFile *file = new TFile("evanaIMLambdaPim_ppimpim_v24_out.root","READ");
+  //TFile *facc = new TFile("../simpost/accmapLpimv28.root","READ");
+  TFile *facc = new TFile("accmapLpimv28.root","READ");
   TFile *flumi = new TFile("InteLumi.root","READ");
   TFile *fkin = new TFile("../simpost/NumericalRootFinderLPim.root","READ");
   TParameter<double>*IntegLumi = (TParameter<double>*)flumi->Get("IntegLumi");
@@ -347,7 +348,7 @@ void CS_IMLambdaPim()
   q_IMppipi_p_wL_wp2_acc[0]->Write();
 
   //CS_IMppipi_p_wL_sum_0->Write();
-  //CS_IMppipi_p_wL_sum_350->Write();
+  CS_IMppipi_p_wL_sum_350->Write();
   fout->Close();
   //file->cd();
 }

@@ -10,13 +10,13 @@ void disp_IMsigma_h2()
   TFile *fr;
   TFile *fmix;
   if(!SimSpMode && !SimSmMode){
-    f = TFile::Open("evanaIMsigma_npi_h2_v8_out_iso_nostop_sub.root");
-    fr = TFile::Open("evanaIMsigma_npi_h2_v8_out_iso_nostop.root");
-    fmix = TFile::Open("evanaIMsigma_npi_h2_v8_MIX_out_iso_nostop.root");
+    f = TFile::Open("evanaIMsigma_npi_h2_v9_out_iso_nostop_sub.root");
+    fr = TFile::Open("evanaIMsigma_npi_h2_v9_out_iso_nostop.root");
+    fmix = TFile::Open("evanaIMsigma_npi_h2_v9_MIX_out_iso_nostop.root");
   }else if(SimSpMode){
-    f = TFile::Open("../simpost/simIMsigma_H2_Sppim_npi_v3_out_noiso_rej_nostop.root");
+    f = TFile::Open("../simpost/simIMsigma_H2_Sppim_npi_v10_out_iso_rej_nostop.root");
   }else if(SimSmMode){
-    f = TFile::Open("../simpost/simIMsigma_H2_Smpip_npi_v3_out_noiso_rej_nostop.root");
+    f = TFile::Open("../simpost/simIMsigma_H2_Smpip_npi_v10_out_iso_rej_nostop.root");
   }
   
   if(!SimSpMode && !SimSmMode){
@@ -97,6 +97,108 @@ void disp_IMsigma_h2()
     TH1D* MMnpim_vici_sub = (TH1D*)MMnpim_vici->Clone("MMnpim_vici_sub");
     MMnpim_vici_sub->Add(MMnpim_vici_mix,-1.0);
     MMnpim_vici_sub->Draw("E");
+    
+    TH2F* Cospicm_IMnpip_pi_r = (TH2F*)fr->Get("Cospicm_IMnpip_pi");
+    Cospicm_IMnpip_pi_r->RebinX(5);
+    Cospicm_IMnpip_pi_r->GetXaxis()->SetRangeUser(1,1.5);
+    TH2F* Cospicm_IMnpip_pi_mix = (TH2F*)fmix->Get("Cospicm_IMnpip_pi");
+    Cospicm_IMnpip_pi_mix->RebinX(5);
+    Cospicm_IMnpip_pi_mix->GetXaxis()->SetRangeUser(1,1.5);
+    
+    TH2F* Cospicm_IMnpim_pi_r = (TH2F*)fr->Get("Cospicm_IMnpim_pi");
+    Cospicm_IMnpim_pi_r->RebinX(5);
+    Cospicm_IMnpim_pi_r->GetXaxis()->SetRangeUser(1,1.5);
+    TH2F* Cospicm_IMnpim_pi_mix = (TH2F*)fmix->Get("Cospicm_IMnpim_pi");
+    Cospicm_IMnpim_pi_mix->RebinX(5);
+    Cospicm_IMnpim_pi_mix->GetXaxis()->SetRangeUser(1,1.5);
+    
+    const int ncosbin=6;
+    int cosbin[7];
+    cosbin[0] = Cospicm_IMnpip_pi_r->GetYaxis()->FindBin(1.0);
+    cosbin[1] = Cospicm_IMnpip_pi_r->GetYaxis()->FindBin(0.9); 
+    cosbin[2] = Cospicm_IMnpip_pi_r->GetYaxis()->FindBin(0.8); 
+    cosbin[3] = Cospicm_IMnpip_pi_r->GetYaxis()->FindBin(0.7); 
+    cosbin[4] = Cospicm_IMnpip_pi_r->GetYaxis()->FindBin(0.6); 
+    cosbin[5] = Cospicm_IMnpip_pi_r->GetYaxis()->FindBin(0.5); 
+    cosbin[6] = Cospicm_IMnpip_pi_r->GetYaxis()->FindBin(0.4); 
+
+    TCanvas *ccos_Sp_rmix = new TCanvas("ccos_Sp_rmix","ccos_Sp_rmix",1000,800);
+    ccos_Sp_rmix->Divide(3,2);
+    TH1D* IMnpip_coscut_r[6];
+    TH1D* IMnpip_coscut_mix[6];
+    const int Splow = Cospicm_IMnpip_pi_r->GetXaxis()->FindBin(anacuts::Sigmap_MIN);
+    const int Sphigh = Cospicm_IMnpip_pi_r->GetXaxis()->FindBin(anacuts::Sigmap_MAX);
+    for(int icosbin=0;icosbin<ncosbin;icosbin++){
+      IMnpip_coscut_r[icosbin] = (TH1D*)Cospicm_IMnpip_pi_r->ProjectionX(Form("IMnpip_coscut_r%d",icosbin),cosbin[icosbin+1],cosbin[icosbin]);
+      IMnpip_coscut_mix[icosbin] = (TH1D*)Cospicm_IMnpip_pi_mix->ProjectionX(Form("IMnpip_coscut_mix%d",icosbin),cosbin[icosbin+1],cosbin[icosbin]);
+      ccos_Sp_rmix->cd(icosbin+1);
+      //std::cout << IMnpip_coscut[icosbin]->Integral(Splow,Sphigh) << std::endl;
+      IMnpip_coscut_r[icosbin]->GetXaxis()->SetRangeUser(1.1,1.3);
+      IMnpip_coscut_r[icosbin]->SetTitle(Form("cos%0.1f-cos%0.1f ", 1-icosbin*0.1, 0.9-icosbin*0.1));
+      IMnpip_coscut_r[icosbin]->Draw("HE");
+      IMnpip_coscut_mix[icosbin]->SetLineColor(2);
+      IMnpip_coscut_mix[icosbin]->Draw("HEsame");
+    }
+
+    TCanvas *ccos_Sm_rmix = new TCanvas("ccos_Sm_rmix","ccos_Sm_rmix",1000,800);
+    ccos_Sm_rmix->Divide(3,2);
+    TH1D* IMnpim_coscut_r[6];
+    TH1D* IMnpim_coscut_mix[6];
+    const int Smlow = Cospicm_IMnpim_pi_r->GetXaxis()->FindBin(anacuts::Sigmam_MIN);
+    const int Smhigh = Cospicm_IMnpim_pi_r->GetXaxis()->FindBin(anacuts::Sigmam_MAX);
+    for(int icosbin=0;icosbin<ncosbin;icosbin++){
+      IMnpim_coscut_r[icosbin] = (TH1D*)Cospicm_IMnpim_pi_r->ProjectionX(Form("IMnpim_coscut_r%d",icosbin),cosbin[icosbin+1],cosbin[icosbin]);
+      IMnpim_coscut_mix[icosbin] = (TH1D*)Cospicm_IMnpim_pi_mix->ProjectionX(Form("IMnpim_coscut_mix%d",icosbin),cosbin[icosbin+1],cosbin[icosbin]);
+      ccos_Sm_rmix->cd(icosbin+1);
+      //std::cout << IMnpim_coscut[icosbin]->Integral(Smlow,Smhigh) << std::endl;
+      IMnpim_coscut_r[icosbin]->GetXaxis()->SetRangeUser(1.1,1.3);
+      IMnpim_coscut_r[icosbin]->SetTitle(Form("cos%0.1f-cos%0.1f ", 1-icosbin*0.1, 0.9-icosbin*0.1));
+      IMnpim_coscut_r[icosbin]->Draw("HE");
+      IMnpim_coscut_mix[icosbin]->SetLineColor(2);
+      IMnpim_coscut_mix[icosbin]->Draw("HEsame");
+    }
+
+    TH2F* Cospicm_MM2npi_Sp_r = (TH2F*)fr->Get("Cospicm_MM2npi_Sp");
+    TH2F* Cospicm_MM2npi_Sp_mix = (TH2F*)fmix->Get("Cospicm_MM2npi_Sp");
+
+    TCanvas *ccos_Sp_MM2_rmix = new TCanvas("ccos_Sp_MM2_rmix","ccos_Sp_MM2_rmix",1000,800);
+    ccos_Sp_MM2_rmix->Divide(3,2);
+    TH1D* MM2npi_coscut_Sp_r[6];
+    TH1D* MM2npi_coscut_Sp_mix[6];
+    for(int icosbin=0;icosbin<ncosbin;icosbin++){
+      MM2npi_coscut_Sp_r[icosbin] = (TH1D*)Cospicm_MM2npi_Sp_r->ProjectionX(Form("MM2npi_coscut_r%d_Sp",icosbin),cosbin[icosbin+1],cosbin[icosbin]);
+      MM2npi_coscut_Sp_mix[icosbin] = (TH1D*)Cospicm_MM2npi_Sp_mix->ProjectionX(Form("MM2npi_coscut_mix%d_Sp",icosbin),cosbin[icosbin+1],cosbin[icosbin]);
+      ccos_Sp_MM2_rmix->cd(icosbin+1);
+      //std::cout << IMnpim_coscut[icosbin]->Integral(Smlow,Smhigh) << std::endl;
+      MM2npi_coscut_Sp_r[icosbin]->Rebin(2);
+      MM2npi_coscut_Sp_mix[icosbin]->Rebin(2);
+      MM2npi_coscut_Sp_r[icosbin]->GetXaxis()->SetRangeUser(-0.4,0.4);
+      MM2npi_coscut_Sp_r[icosbin]->SetTitle(Form("cos%0.1f-cos%0.1f ", 1-icosbin*0.1, 0.9-icosbin*0.1));
+      MM2npi_coscut_Sp_r[icosbin]->Draw("HE");
+      MM2npi_coscut_Sp_mix[icosbin]->SetLineColor(2);
+      MM2npi_coscut_Sp_mix[icosbin]->Draw("HEsame");
+    }
+
+    TH2F* Cospicm_MM2npi_Sm_r = (TH2F*)fr->Get("Cospicm_MM2npi_Sm");
+    TH2F* Cospicm_MM2npi_Sm_mix = (TH2F*)fmix->Get("Cospicm_MM2npi_Sm");
+
+    TCanvas *ccos_Sm_MM2_rmix = new TCanvas("ccos_Sm_MM2_rmix","ccos_Sm_MM2_rmix",1000,800);
+    ccos_Sm_MM2_rmix->Divide(3,2);
+    TH1D* MM2npi_coscut_Sm_r[6];
+    TH1D* MM2npi_coscut_Sm_mix[6];
+    for(int icosbin=0;icosbin<ncosbin;icosbin++){
+      MM2npi_coscut_Sm_r[icosbin] = (TH1D*)Cospicm_MM2npi_Sm_r->ProjectionX(Form("MM2npi_coscut_r%d_Sm",icosbin),cosbin[icosbin+1],cosbin[icosbin]);
+      MM2npi_coscut_Sm_mix[icosbin] = (TH1D*)Cospicm_MM2npi_Sm_mix->ProjectionX(Form("MM2npi_coscut_mix%d_Sm",icosbin),cosbin[icosbin+1],cosbin[icosbin]);
+      ccos_Sm_MM2_rmix->cd(icosbin+1);
+      //std::cout << IMnpim_coscut[icosbin]->Integral(Smlow,Smhigh) << std::endl;
+      MM2npi_coscut_Sm_r[icosbin]->Rebin(2);
+      MM2npi_coscut_Sm_mix[icosbin]->Rebin(2);
+      MM2npi_coscut_Sm_r[icosbin]->GetXaxis()->SetRangeUser(-0.4,0.4);
+      MM2npi_coscut_Sm_r[icosbin]->SetTitle(Form("cos%0.1f-cos%0.1f ", 1-icosbin*0.1, 0.9-icosbin*0.1));
+      MM2npi_coscut_Sm_r[icosbin]->Draw("HE");
+      MM2npi_coscut_Sm_mix[icosbin]->SetLineColor(2);
+      MM2npi_coscut_Sm_mix[icosbin]->Draw("HEsame");
+    }
   }
 
 
@@ -204,7 +306,8 @@ void disp_IMsigma_h2()
     ccos_Sp->cd(icosbin+1);
     //std::cout << IMnpip_coscut[icosbin]->Integral(Splow,Sphigh) << std::endl;
     IMnpip_coscut[icosbin]->GetXaxis()->SetRangeUser(1.1,1.3);
-    IMnpip_coscut[icosbin]->Draw("E");
+    IMnpip_coscut[icosbin]->SetTitle(Form("cos%0.1f-cos%0.1f ", 1-icosbin*0.1, 0.9-icosbin*0.1));
+    IMnpip_coscut[icosbin]->Draw("HE");
   }
   
   TCanvas *ccos_Sm = new TCanvas("ccos_Sm","ccos_Sm",1000,800);
@@ -217,7 +320,8 @@ void disp_IMsigma_h2()
     ccos_Sm->cd(icosbin+1);
     //std::cout << IMnpim_coscut[icosbin]->Integral(Smlow,Smhigh) << std::endl;
     IMnpim_coscut[icosbin]->GetXaxis()->SetRangeUser(1.1,1.3);
-    IMnpim_coscut[icosbin]->Draw("E");
+    IMnpim_coscut[icosbin]->SetTitle(Form("cos%0.1f-cos%0.1f ", 1-icosbin*0.1, 0.9-icosbin*0.1));
+    IMnpim_coscut[icosbin]->Draw("HE");
   }
   
   TCanvas *cCospicim_MM2npi_Sp = new TCanvas("cCospicim_MM2npi_Sp","cCospicim_MM2npi_Sp",1000,800);
@@ -228,12 +332,13 @@ void disp_IMsigma_h2()
   ccos_Sp_MM2->Divide(3,2);
   TH1D* MM2npi_coscut_Sp[6];
   for(int icosbin=0;icosbin<ncosbin;icosbin++){
-    MM2npi_coscut_Sp[icosbin] = (TH1D*)Cospicm_MM2npi_Sp->ProjectionX(Form("MM2npi_coscut%d",icosbin),cosbin[icosbin+1],cosbin[icosbin]);
+    MM2npi_coscut_Sp[icosbin] = (TH1D*)Cospicm_MM2npi_Sp->ProjectionX(Form("MM2npi_coscut%d_Sp",icosbin),cosbin[icosbin+1],cosbin[icosbin]);
     ccos_Sp_MM2->cd(icosbin+1);
     //std::cout << IMnpim_coscut[icosbin]->Integral(Smlow,Smhigh) << std::endl;
-    MM2npi_coscut_Sp[icosbin]->Rebin(4);
+    MM2npi_coscut_Sp[icosbin]->Rebin(2);
     MM2npi_coscut_Sp[icosbin]->GetXaxis()->SetRangeUser(-0.4,0.4);
-    MM2npi_coscut_Sp[icosbin]->Draw("E");
+    MM2npi_coscut_Sp[icosbin]->SetTitle(Form("cos%0.1f-cos%0.1f ", 1-icosbin*0.1, 0.9-icosbin*0.1));
+    MM2npi_coscut_Sp[icosbin]->Draw("HE");
   }
   
   TCanvas *cCospicim_MM2npi_Sm = new TCanvas("cCospicim_MM2npi_Sm","cCospicim_MM2npi_Sm",1000,800);
@@ -244,12 +349,13 @@ void disp_IMsigma_h2()
   ccos_Sm_MM2->Divide(3,2);
   TH1D* MM2npi_coscut_Sm[6];
   for(int icosbin=0;icosbin<ncosbin;icosbin++){
-    MM2npi_coscut_Sm[icosbin] = (TH1D*)Cospicm_MM2npi_Sm->ProjectionX(Form("MM2npi_coscut%d",icosbin),cosbin[icosbin+1],cosbin[icosbin]);
+    MM2npi_coscut_Sm[icosbin] = (TH1D*)Cospicm_MM2npi_Sm->ProjectionX(Form("MM2npi_coscut%d_Sm",icosbin),cosbin[icosbin+1],cosbin[icosbin]);
     ccos_Sm_MM2->cd(icosbin+1);
     //std::cout << IMnpim_coscut[icosbin]->Integral(Smlow,Smhigh) << std::endl;
-    MM2npi_coscut_Sm[icosbin]->Rebin(4);
+    MM2npi_coscut_Sm[icosbin]->Rebin(2);
     MM2npi_coscut_Sm[icosbin]->GetXaxis()->SetRangeUser(-0.4,0.4);
-    MM2npi_coscut_Sm[icosbin]->Draw("E");
+    MM2npi_coscut_Sm[icosbin]->SetTitle(Form("cos%0.1f-cos%0.1f ", 1-icosbin*0.1, 0.9-icosbin*0.1));
+    MM2npi_coscut_Sm[icosbin]->Draw("HE");
   }
 
 

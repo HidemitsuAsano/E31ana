@@ -417,12 +417,61 @@ int main( int argc, char** argv )
     ev_cdc++;
 
     //### CDH ADC cut ###//
+    //cut values is determined segement by segment, because the hardware threshold for each is different 
+    double discri[36]={
+      2.65-0.4,//0
+      2.25-0.2,//1
+      1.95-0.2,//2
+      1.85-0.2,//3
+      1.55-0.2,//4
+      2.05-0.2,//5
+      1.95-0.2,//6
+      1.95-0.2,//7
+      1.95-0.2,//8
+      1.75-0.2,//9
+      1.65-0.2,//10
+      1.75-0.2,//11
+      1.95-0.2,//12
+      1.95-0.2,//13
+      1.65-0.2,//14
+      1.75-0.2,//15
+      1.75-0.2,//16
+      1.85-0.2,//17
+      1.65-0.2,//18
+      1.75-0.2,//19
+      1.95-0.3,//20
+      2.35-0.3,//21
+      1.55-0.1,//22
+      1.75-0.2,//23
+      1.65-0.2,//24
+      1.85-0.2,//25
+      1.85-0.2,//26
+      1.75-0.2,//27
+      1.85-0.2,//28
+      1.85-0.2,//29
+      1.65-0.1,//30
+      1.95-0.2,//31
+      1.65-0.2,//32
+      1.85-0.2,//33
+      1.65-0.2,//34
+      1.95-0.3//35
+    };
+
+    DetectorData *detData2  = new DetectorData();
+    for( int i=0; i<detData->detectorHitSize(); i++ ){
+      if( !((detData->detectorHit(i)->detectorID()==CID_CDH) && (detData->detectorHit(i)->adc()<discri[detData->detectorHit(i)->channelID()])) ){
+        detData2->setDetectorHit(*detData->detectorHit(i));
+      }
+    }
+
+    /*
+    //### CDH ADC cut ###//
     DetectorData *detData2  = new DetectorData();
     for( int i=0; i<detData->detectorHitSize(); i++ ) {
       if( !((detData->detectorHit(i)->detectorID()==CID_CDH) && (detData->detectorHit(i)->adc()<ADC_CDH_MIN)) ) {
         detData2->setDetectorHit(*detData->detectorHit(i));
       }
-    }
+    }*/
 
     simMan->Convert(detData2, confMan, blMan, cdsMan);
     cdstrackMan->Calc(cdsMan, confMan, true);
@@ -685,9 +734,10 @@ int main( int argc, char** argv )
 
     int cdhmul = Util::GetCDHMul(cdsMan,nGoodTrack,true,true);
     //if( Util::GetCDHMul(cdsMan,nGoodTrack,true,true)<cdscuts_lpim::cdhmulti ) {
-    if( !(3<=cdhmul && cdhmul<=4)) {
+    //if( !(3<=cdhmul && cdhmul<=4)) {
+    if( cdhmul<=2 ) {
       if(IsrecoPassed)nAbort_nCDH++;
-      if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nCDH" << std::endl;
+      //if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nCDH" << std::endl;
       //continue;
       IsrecoPassed = false;
     }

@@ -3,7 +3,7 @@ void CS_finals()
 
   gStyle->SetErrorX(0.);  
   TFile *fpisigma = TFile::Open("cs_pisigma.root","READ");
-  TFile *flpim    = TFile::Open("cs_lpim.root","READ");
+  TFile *flpim    = TFile::Open("cs_lpim_killcombi.root","READ");
 
   const double br_s1385ToLambdapi = 0.87;
   const double br_s1385TopiSigma = 0.117;
@@ -73,13 +73,14 @@ void CS_finals()
   IMnpipi_sum_cs[1]->SetTitle("Charge Sum");
   IMnpipi_sum_cs[1]->SetXTitle("IM(#pi#Sigma) [GeV/c^{2}]");
   IMnpipi_sum_cs[1]->Add(IMnpipi_Sm_cs[1]);
-  IMnpipi_sum_cs[1]->SetLineColor(2);
-  IMnpipi_sum_cs[1]->SetMarkerColor(2);
+  IMnpipi_sum_cs[1]->SetLineColor(1);
+  IMnpipi_sum_cs[1]->SetMarkerColor(1);
   IMnpipi_sum_cs[1]->SetYTitle("d#rho/dM [#mu b (MeV/c^{2})]");
   IMnpipi_sum_cs[1]->Draw("E");
   TH1D* IMLpim_sum_350 = (TH1D*)CS_IMppipi_p_wL_sum_350_ToSp->Clone("CS_IMppipi_p_wL_sum");
   IMLpim_sum_350->Add(CS_IMppipi_p_wL_sum_350_ToSm);
-  IMLpim_sum_350->GetXaxis()->SetRangeUser(1.35,1.41);
+  //IMLpim_sum_350->GetXaxis()->SetRangeUser(1.35,1.5);
+  IMLpim_sum_350->Scale(10.);
   IMLpim_sum_350->Draw("Esame");
 
 }

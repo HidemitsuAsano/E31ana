@@ -2,8 +2,9 @@
 
 void CS_sigma_h2()
 {
-
+  TH1::SetDefaultSumw2();
   TFile *f = TFile::Open("evanaIMsigma_npi_h2_v9_out_iso_nostop_sub.root");
+  //TFile *f = TFile::Open("evanaIMsigma_npi_h2_v7_out_iso_nostop_sub.root");
   
   
   TH2F* Cospicm_IMnpip_pi = (TH2F*)f->Get("Cospicm_IMnpip_pi");
@@ -36,8 +37,7 @@ void CS_sigma_h2()
   CS_Sp2->Divide(accSp2);
   CS_Sm2->Divide(accSm2);
  
-  double Lumi=381.0;
-  //double Lumi=577.0;
+  double Lumi=379.8;
   TCanvas *cCS_Sp = new TCanvas("cCS_Sp","cCS_Sp",1000,800);
   //CS_Sp->RebinX(5);
   double CospiBinW = CS_Sp->GetBinWidth(2);
@@ -49,10 +49,10 @@ void CS_sigma_h2()
   CS_Sp2->Scale(1./cosToStrbin2/Lumi);
   CS_Sp->GetXaxis()->SetRangeUser(0.3,1);
   //CS_Sp->Draw("E");
-  TGraphErrors* gCS_Sp = new TGraphErrors(CS_Sp);
+  TGraphAsymmErrors* gCS_Sp = new TGraphAsymmErrors(CS_Sp);
   gCS_Sp->GetXaxis()->SetRangeUser(0.3,1);
   //gCS_Sp->Draw("AP");
-  TGraphErrors* gCS_Sp2 = new TGraphErrors(CS_Sp2);
+  TGraphAsymmErrors* gCS_Sp2 = new TGraphAsymmErrors(CS_Sp2);
   gCS_Sp2->GetXaxis()->SetRangeUser(0.3,1);
   gCS_Sp2->Draw("AP*");
   TCanvas *cCS_Sm = new TCanvas("cCS_Sm","cCS_Sm",1000,800);
@@ -61,10 +61,10 @@ void CS_sigma_h2()
   CS_Sm2->Scale(1./cosToStrbin2/Lumi);
   CS_Sm->GetXaxis()->SetRangeUser(0.3,1);
   //CS_Sm->Draw("E");
-  TGraphErrors* gCS_Sm = new TGraphErrors(CS_Sm);
+  TGraphAsymmErrors* gCS_Sm = new TGraphAsymmErrors(CS_Sm);
   gCS_Sm->GetXaxis()->SetRangeUser(0.3,1);
   //gCS_Sm->Draw("AP");
-  TGraphErrors* gCS_Sm2 = new TGraphErrors(CS_Sm2);
+  TGraphAsymmErrors* gCS_Sm2 = new TGraphAsymmErrors(CS_Sm2);
   gCS_Sm2->GetXaxis()->SetRangeUser(0.3,1);
   gCS_Sm2->Draw("AP*");
 

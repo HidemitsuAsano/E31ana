@@ -52,7 +52,7 @@ const bool RejectStoppedSigma = true;
 
 //color def.
 
-void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
+void plot_IMsigma_h2(const char* filename="", const int dEcut=2)
 {
   gROOT->Reset();
   gROOT->SetBatch(true);
@@ -75,7 +75,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
 
   std::cout << "infile " << filename <<std::endl;
   TString pdfname = std::string(filename);
-  if(qvalcutflag==0) pdfname.Replace(std::string(filename).size()-5,6,".pdf");
+  pdfname.Replace(std::string(filename).size()-5,6,Form("_dE%d.pdf",dEcut));
   std::cout << "pdfname: " << pdfname << std::endl;
   std::cout << std::endl;
 
@@ -1066,6 +1066,11 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   TH2F* Vtx_ZX = new TH2F("Vtx_ZX","Vtx_ZX",1000,-25,25,500,-12.5,12.5);
   TH2F* Vtx_XY = new TH2F("Vtx_XY","Vtx_XY",500,-12.5,12.5,500,-12.5,12.5);
 
+  TH2F* ntof_nmom = new TH2F("ntof_nmom","ntof_nmom",100,0,1,500,0,100);
+  TH2F* ntof_nmom_dE = new TH2F("ntof_nmom_dE","ntof_nmom_dE",100,0,1,500,0,100);
+  TH2F* ntof_nmom_dE_Sp = new TH2F("ntof_nmom_dE_Sp","ntof_nmom_dE_Sp",100,0,1,500,0,100);
+  TH2F* ntof_nmom_dE_Sm = new TH2F("ntof_nmom_dE_Sm","ntof_nmom_dE_Sm",100,0,1,500,0,100);
+  
   std::cout << __LINE__ << std::endl;
 
 
@@ -1175,11 +1180,12 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       LVec_npimiss_mc = *LVec_target+*mcmom_beam-*mcmom_pi-*mcmom_ncds;
     }
 
+    ntof_nmom->Fill((*LVec_n).P(),tofn);
     //update the momentum 
-    if( (SimSpmode || SimSmmode) && 
+    if(( (SimSpmode || SimSmmode) && 
         SimRejectFake && 
-      (mcpattern!=2)) continue;
-    //if(SimK0nmode && SimRejectFake && (mcpattern!=7) ) continue;
+      (mcpattern!=2))) continue;
+    if(SimK0nmode && SimRejectFake && (mcpattern!=7) ) continue;
     EventCheck->Fill(2);
     //std::cout << __LINE__ << std::endl;
     TLorentzVector LVec_Sigma_react;
@@ -1275,7 +1281,8 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     //modified birks formula
     //if(SimSpmode || SimSmmode) dE=1.0+dE*0.2*exp(dE/40.);
     //if(SimSpmode || SimSmmode) dE=dE+1.0;
-    if(anacuts::dE_MIN<dE) NdEOK=true;
+    if((double)dEcut<dE) NdEOK=true;
+    //if(4.0<dE) NdEOK=true;
     h_NBetaOK->Fill(NBetaOK);
     h_NdEOK->Fill(NdEOK);
     double MassNPip= (*LVec_n+*LVec_pi).M();
@@ -1391,10 +1398,10 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
       //weight = 0.0545 ;
       //weight = 0.0505 ;
       //weight = 0.0545 ;
-      weight = 0.0505 ;
+      weight = 0.0505*1.296 ;
       //weight = 0.0005 ;
       //RatioPimOverPip = 7.64495070252263376e-01; original
-      RatioPimOverPip = 6.84495070252263376e-01;   
+      RatioPimOverPip = 6.84495070252263376e-01*1.05;   
       //weight = 0.045 ;
     }
     static bool isState = false;
@@ -1439,6 +1446,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
     }
     if(NBetaOK && NdEOK) {
       EventCheck->Fill(8);
+      ntof_nmom_dE->Fill((*LVec_n).P(),tofn);
       h_chargepi->Fill(chargepi);
       CDHz_nmom_fid->Fill((*LVec_n).P(),(*CDH_Pos).z());
       MMom_MMass->Fill(LVec_npimiss.M(),LVec_npimiss.P(),weight);
@@ -1480,6 +1488,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
         MMpi_IMnpim->Fill(LVec_pim_n.M(),LVec_pimiss.M(),weight*RatioPimOverPip);
         if(SigmaMFlag){
           Cospicm_MM2npi_Sm->Fill(npimiss_mass2,cos_pimissCM,weight);
+          ntof_nmom_dE_Sm->Fill((*LVec_n).P(),tofn);
         }
       }
       if(chargepi==1){//pi+
@@ -1504,6 +1513,7 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
         MMpi_IMnpip->Fill(LVec_pip_n.M(),LVec_pimiss.M(),weight);
         if(SigmaPFlag){
           Cospicm_MM2npi_Sp->Fill(npimiss_mass2,cos_pimissCM,weight);
+          ntof_nmom_dE_Sp->Fill((*LVec_n).P(),tofn);
         }
       }
     } //if(NBetaOK && NdEOK) 
@@ -1827,10 +1837,10 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
 
   TIter nexthist2(gDirectory->GetList());
   TString outname = std::string(filename);
-  if(IsolationFlag==0) outname.Replace(std::string(filename).size()-5,5,"_out_noiso.root");
-  else if(IsolationFlag==1) outname.Replace(std::string(filename).size()-5,5,"_out_iso.root");
-  else if(IsolationFlag==2) outname.Replace(std::string(filename).size()-5,5,"_out_isowide.root");
-  else if(IsolationFlag==3) outname.Replace(std::string(filename).size()-5,5,"_out_isorev.root");
+  if(IsolationFlag==0) outname.Replace(std::string(filename).size()-5,5,Form("_out_dE%d_noiso.root",dEcut));
+  else if(IsolationFlag==1) outname.Replace(std::string(filename).size()-5,5,Form("_out_dE%d_iso.root",dEcut));
+  else if(IsolationFlag==2) outname.Replace(std::string(filename).size()-5,5,Form("_out_dE%d_isowide.root",dEcut));
+  else if(IsolationFlag==3) outname.Replace(std::string(filename).size()-5,5,Form("_out_dE%d_isorev.root",dEcut));
   
   if(SimRejectFake && (SimSpmode || SimSmmode || SimK0nmode)){
     outname.Replace(std::string(outname).size()-5,5,"_rej.root");
@@ -1850,4 +1860,3 @@ void plot_IMsigma_h2(const char* filename="", const int qvalcutflag=0)
   fout->Close();
 
 }
-

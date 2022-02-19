@@ -4251,6 +4251,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
   TH2F* Vtx_ZX = new TH2F("Vtx_ZX","Vtx_ZX",1000,-25,25,500,-12.5,12.5);
   TH2F* Vtx_XY = new TH2F("Vtx_XY","Vtx_XY",500,-12.5,12.5,500,-12.5,12.5);
+  
+  TH2F* ntof_nmom = new TH2F("ntof_nmom","ntof_nmom",100,0,1,500,0,100);
+ 
+
 
   std::cout << __LINE__ << std::endl;
 
@@ -5120,9 +5124,12 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
       cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
       nmissthetalab = acos(cos_nmisslab);  
     }
-
+    
+    ntof_nmom->Fill((*LVec_n).P(),tofn);
     if( (qkn.P()>=anacuts::qvalcut) && (qvalcutflag==1) ) continue;
     if( (qkn.P()<anacuts::qvalcut) && (qvalcutflag==2) ) continue;
+
+
     if( (*LVec_n).P()<anacuts::nmomcut) continue;
     if(RejectStoppedSigma){
       if(LVec_pip_n.P()<anacuts::SigmaPMomCut) continue;

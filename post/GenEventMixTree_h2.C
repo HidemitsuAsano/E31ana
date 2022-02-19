@@ -192,8 +192,8 @@ void GenEventMixTree_h2(const char* filename = "evanaIMsigma_npi_h2_v9.root")
     *vtx_reaction2 = *vtx_reaction;
     *vtx_pi_beam2 = *vtx_pi_beam;
     *vtx_pi_cdc = *vtx_pi_cdc;
-    *CDH_Pos2 = *CDH_Pos;
-    //*CDH_Pos2 = *last_CDH_Pos;//mixing param.
+    //*CDH_Pos2 = *CDH_Pos;
+    *CDH_Pos2 = *last_CDH_Pos;//mixing param.
     *CDH_Pos_pi2 = *CDH_Pos_pi;
     
     //re-use mixing param.

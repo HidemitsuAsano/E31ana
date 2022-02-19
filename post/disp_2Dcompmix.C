@@ -53,8 +53,8 @@ void disp_2Dcompmix(const int qcut=0)
 
   if(qcut==0){
     if(RealDatamode){
-      fr = TFile::Open("evanaIMpisigma_npippim_v206_out_iso.root");
-      fmix = TFile::Open("evanaIMpisigma_npippim_v206_MIX_cut4_out_iso.root");
+      fr = TFile::Open("evanaIMpisigma_npippim_v229_out_iso_nostop.root");
+      fmix = TFile::Open("evanaIMpisigma_npippim_v229_MIX_cut4_out_iso_nostop.root");
     }else if(SimSpmode){
       fr = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_out_iso.root");
       fmix = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_MIX_cut4_out_iso.root");

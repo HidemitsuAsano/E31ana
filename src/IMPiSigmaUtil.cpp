@@ -43,6 +43,12 @@ int Util::GetCDHMul(CDSHitMan *cdsman, const int ntrack,const bool CDH3trgfired,
     }
   }
   Tools::Fill1D( Form("mul_CDH"), nCDH );
+  
+  if(vtime.size()>=2){
+    std::sort(vtime.begin(),vtime.end());
+    Tools::H2( Form("lasttime_mul_CDH2"), nCDH,vtime.at(1),11, -0.5, 10.5,1000,0,100);
+  }
+    
   if(vtime.size()>=3){
     std::sort(vtime.begin(),vtime.end());
     Tools::H2( Form("lasttime_mul_CDH"), nCDH,vtime.at(2),11, -0.5, 10.5,1000,0,100);

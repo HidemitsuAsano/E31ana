@@ -629,10 +629,16 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   }
   
   //CDH-hits cut
-  if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false)!=cdscuts::cdhmulti){
+  int nCDH = Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false);
+  
+  if(nCDH < cdscuts::cdhmulti){
     Clear( nAbort_nCDH );
     return true;
   }
+  //if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false)!=cdscuts::cdhmulti){
+  //  Clear( nAbort_nCDH );
+  //  return true;
+  //}
   Tools::Fill1D( Form("EventCheck"), 2 );
 
   // # of good CDS tracks cut //

@@ -524,7 +524,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
 
   //CDH-hits cut
   int cdhmul = Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH3,false);
-  if( !(3<=cdhmul && cdhmul<=4)) {
+  //if( !(3<=cdhmul && cdhmul<=4)) {
+  if( cdhmul<=2) {
     Clear( nAbort_nCDH );
     return true;
   }

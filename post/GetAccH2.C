@@ -7,6 +7,10 @@ void GetAccH2()
   TFile *fSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_npi_v10_out_iso_rej_nostop.root");
   TFile *fGenSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_v10.root");
   TFile *fGenSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_v10.root");
+  //TFile *fSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_npi_v3_out_iso_rej_nostop.root");
+  //TFile *fSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_npi_v3_out_iso_rej_nostop.root");
+  //TFile *fGenSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_v3.root");
+  //TFile *fGenSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_v3.root");
 
   TH2F* Cospicm_IMnpip_pi_Sp = (TH2F*)fSp->Get("Cospicm_IMnpip_pi");//0.02 cos bin 
   TH2F* Cospicm_IMnpim_pi_Sm = (TH2F*)fSm->Get("Cospicm_IMnpim_pi");//0.02 cos bin
@@ -28,9 +32,13 @@ void GetAccH2()
   
   for(int ibin=0;ibin<51;ibin++){
     double cont = CosGenSp->GetBinContent(ibin+50);
+    double conterr = CosGenSp->GetBinError(ibin+50);
     CosGenSp2->SetBinContent(ibin,cont);
+    CosGenSp2->SetBinError(ibin,conterr);
     double cont2 = CosGenSm->GetBinContent(ibin+50);
+    double conterr2 = CosGenSm->GetBinError(ibin+50);
     CosGenSm2->SetBinContent(ibin,cont2);
+    CosGenSm2->SetBinError(ibin,conterr2);
   }
   std::cout << CosGenSp->GetBinCenter(51) << std::endl;
   std::cout << CosGenSp2->GetBinCenter(1) << std::endl;
@@ -43,7 +51,6 @@ void GetAccH2()
   
   TH1D* Cospicm_pi_Sp = (TH1D*)Cospicm_IMnpip_pi_Sp->ProjectionY("Cospicm_piSp",Splow,Sphigh);
   TH1D* Cospicm_pi_Sm = (TH1D*)Cospicm_IMnpim_pi_Sm->ProjectionY("Cospicm_piSm",Smlow,Smhigh);
-    
   
   Cospicm_pi_Sm->Print("base");
   CosGenSm2->Print("base");
