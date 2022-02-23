@@ -1,22 +1,41 @@
 #include "anacuts.h"
 
-void disp_IMsigma_h2()
+void disp_IMsigma_h2(const int dEcut=2,const int sysud=0,const int simmode=0)
 {
   gStyle->SetOptStat(0);
   bool SimSpMode=false;
   bool SimSmMode=false;
+  bool SimK0Mode=false;//K0n
+  bool SimLppMode=false;//Lambda pi+ pi-
+  
+  if(simmode==0){
 
+  }else if(simmode==1){
+    SimSpMode=true;
+  }else if(simmode==2){
+    SimSmMode=true;
+  }else if(simmode==3){
+    SimK0Mode=true;
+  }else if(simmode==4){
+    SimLppMode=true;
+  }
+  
+  const int version = 9;
   TFile *f;
   TFile *fr;
   TFile *fmix;
   if(!SimSpMode && !SimSmMode){
-    f = TFile::Open("evanaIMsigma_npi_h2_v9_out_iso_nostop_sub.root");
-    fr = TFile::Open("evanaIMsigma_npi_h2_v9_out_iso_nostop.root");
-    fmix = TFile::Open("evanaIMsigma_npi_h2_v9_MIX_out_iso_nostop.root");
+    f = TFile::Open(Form("evanaIMsigma_npi_h2_v%d_out_dE%d_iso_nostop_sub_sys%d.root",version,dEcut,sysud));
+    fr = TFile::Open(Form("evanaIMsigma_npi_h2_v%d_out_dE%d_iso_nostop.root",version,dEcut));
+    fmix = TFile::Open(Form("evanaIMsigma_npi_h2_v%d_MIX_out_dE%d_iso_nostop_sys%d.root",version,dEcut,sysud));
   }else if(SimSpMode){
-    f = TFile::Open("../simpost/simIMsigma_H2_Sppim_npi_v10_out_iso_rej_nostop.root");
+    f = TFile::Open(Form("../simpost/simIMsigma_H2_Sppim_npi_v11_out_iso_dE%d_rej_nostop.root",dEcut));
   }else if(SimSmMode){
-    f = TFile::Open("../simpost/simIMsigma_H2_Smpip_npi_v10_out_iso_rej_nostop.root");
+    f = TFile::Open(Form("../simpost/simIMsigma_H2_Smpip_npi_v11_out_iso_dE%d_rej_nostop.root",dEcut));
+  }else if(SimK0Mode){
+    f = TFile::Open(Form("../simpost/simIMsigma_H2_K0n_npi_v2_out_iso_dE%d_rej_nostop.root",dEcut));
+  }else if(SimLppMode){
+    f = TFile::Open(Form("../simpost/simIMsigma_H2_pipiL_npi_v1_out_iso_dE%d_rej_nostop.root",dEcut));
   }
   
   if(!SimSpMode && !SimSmMode){
@@ -377,7 +396,7 @@ void disp_IMsigma_h2()
   int size = SCol->GetSize();
   TIter next(SCol);
   TString pdfname;
-  pdfname= "H2_data.pdf";
+  pdfname= Form("H2_datav%d_dE%d_sys%d.pdf",version,dEcut,sysud);
   if(SimSpMode) pdfname= "H2data_sim_Sp.pdf";
   if(SimSmMode) pdfname= "H2data_sim_Sm.pdf";
    

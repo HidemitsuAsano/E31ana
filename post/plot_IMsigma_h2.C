@@ -50,10 +50,25 @@ const bool SimRejectFake = true;
 
 const bool RejectStoppedSigma = true;
 
-//color def.
+//sysud
+//flag to control scale of mixed events
+//0 :default
+//1 :up 10%
+//-1 :down 10%
 
-void plot_IMsigma_h2(const char* filename="", const int dEcut=2)
+void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=0)
 {
+  if(sysud==0){
+    std::cout << "default MIX scale "<< std::endl;
+  }else if(sysud==1){
+    std::cout << "MIX scale is increased by 10%"<< std::endl;
+  }else if(sysud==-1){
+    std::cout << "MIX scale is decreased by 10%"<< std::endl;
+  }else{
+    std::cout << "invalid sysud flag !! " << std::endl;
+    return;
+  }
+
   gROOT->Reset();
   gROOT->SetBatch(true);
   //gROOT->SetStyle("Plain");
@@ -289,6 +304,8 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2)
   TH2F* Cospicm_MM2npi_Sm;//cos pi cm 
   TH1F* Cospicm_pi_Sp;//cos pi cm 
   TH1F* Cospicm_pi_Sm;//cos pi cm
+  TH2F* Cospicm_nmom_Sp;//cos pi cm 
+  TH2F* Cospicm_nmom_Sm;//cos pi cm
   TH2F* Cospicm_dE;//cos pi cm 
   
   TH2F* dE_CDHphi;
@@ -791,6 +808,14 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2)
   
   Cospicm_pi_Sm = new TH1F("Cospicm_pi_Sm","Cospicm_pi_Sm",50,0,1);
   Cospicm_pi_Sm->SetXTitle("Cos.#theta_{CM} miss-#pi^{+}" );
+  
+  Cospicm_nmom_Sp = new TH2F("Cospicm_nmom_Sp","Cospicm_nmom_Sp",100,0,1,10,0,1);
+  Cospicm_nmom_Sp->SetXTitle("nmom_{CDS} [GeV/c]" );
+  Cospicm_nmom_Sp->SetYTitle("Cos.#theta_{CM} miss-#pi^{-}" );
+  
+  Cospicm_nmom_Sm = new TH2F("Cospicm_nmom_Sm","Cospicm_nmom_Sm",100,0,1,10,0,1);
+  Cospicm_nmom_Sm->SetXTitle("nmom_{CDS} [GeV/c]" );
+  Cospicm_nmom_Sm->SetYTitle("Cos.#theta_{CM} miss-#pi^{+}" );
   
   Cospicm_dE = new TH2F("Cospicm_dE","Cospicm_dE",100,0,20,50,0,1);
   
@@ -1394,15 +1419,10 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2)
     //std::cout << __LINE__ << std::endl;
     double weight = 1.0;
     double RatioPimOverPip= 1.0; 
+    double sysupdown = 1.0+0.1*(double)sysud;
     if(MIXmode){
-      //weight = 0.0545 ;
-      //weight = 0.0505 ;
-      //weight = 0.0545 ;
-      weight = 0.0505*1.296 ;
-      //weight = 0.0005 ;
-      //RatioPimOverPip = 7.64495070252263376e-01; original
-      RatioPimOverPip = 6.84495070252263376e-01*1.05;   
-      //weight = 0.045 ;
+      weight = 0.0505*1.296*0.98485*sysupdown;
+      RatioPimOverPip = 6.84495070252263376e-01*1.05*1.17792*sysupdown;   
     }
     static bool isState = false;
     if(!isState){
@@ -1538,7 +1558,8 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2)
         Cospicm_IMnpim_pi->Fill(LVec_pim_n.M(),cos_pimissCM,weight*RatioPimOverPip);
         if(SigmaMFlag){
           Cospicm_pi_Sm->Fill(cos_pimissCM,weight*RatioPimOverPip);
-          MM2npi_IMnpim_pi_Sm->Fill(LVec_pim_n.M(),npimiss_mass2,weight);
+          Cospicm_nmom_Sm->Fill((*LVec_n).P(),cos_pimissCM,weight*RatioPimOverPip);
+          MM2npi_IMnpim_pi_Sm->Fill(LVec_pim_n.M(),npimiss_mass2,weight*RatioPimOverPip);
         }
       }else if(chargepi==1){
         EventCheck->Fill(12);
@@ -1548,6 +1569,7 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2)
         Cospicm_IMnpip_pi->Fill(LVec_pip_n.M(),cos_pimissCM,weight);
         if(SigmaPFlag){
           Cospicm_pi_Sp->Fill(cos_pimissCM,weight);
+          Cospicm_nmom_Sp->Fill((*LVec_n).P(),cos_pimissCM,weight);
           MM2npi_IMnpip_pi_Sp->Fill(LVec_pip_n.M(),npimiss_mass2,weight);
         }
       }
@@ -1848,6 +1870,10 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2)
   
   if(RejectStoppedSigma && (RealDatamode || SimSpmode || SimSmmode || SimK0nmode)){
     outname.Replace(std::string(outname).size()-5,5,"_nostop.root");
+  }
+
+  if(MIXmode){
+    outname.Replace(std::string(outname).size()-5,5,Form("_sys%d.root",sysud));
   }
     
   TFile *fout = new TFile(outname.Data(),"RECREATE");
