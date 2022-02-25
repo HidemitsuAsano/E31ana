@@ -101,7 +101,7 @@ void GetAccH2(const int dEcut=2)
   accCosSm2->SetLineColor(2);
   accCosSm2->Draw("Esame");
 
-  TFile *fout = new TFile("accH2.root","RECREATE");
+  TFile *fout = new TFile(Form("accH2dE%d.root",dEcut),"RECREATE");
   fout->cd();
   accCosSp->SetName("accCosSp");
   accCosSm->SetName("accCosSm");
