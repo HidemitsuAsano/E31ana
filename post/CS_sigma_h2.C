@@ -85,30 +85,39 @@ void CS_sigma_h2()
       CS_Sp[iEcut][isys]->GetXaxis()->SetRangeUser(0.3,1);
       gCS_Sp[iEcut][isys] = new TGraphAsymmErrors(CS_Sp[iEcut][isys]);
       gCS_Sp[iEcut][isys]->GetXaxis()->SetRangeUser(0.3,1);
-      gCS_Sp2[iEcut][isys] = new TGraphAsymmErrors(CS_Sp2);
+      gCS_Sp2[iEcut][isys] = new TGraphAsymmErrors(CS_Sp2[iEcut][isys]);
       gCS_Sp2[iEcut][isys]->GetXaxis()->SetRangeUser(0.3,1);
-      if(iECut==0 && isys == 0)gCS_Sp2[iEcut][isys]->Draw("AP*");
+      gCS_Sp2[iEcut][isys]->GetYaxis()->SetRangeUser(0,500);
+      if(iEcut==0 && isys == 0)gCS_Sp2[iEcut][isys]->Draw("AP*");
+      else                     gCS_Sp2[iEcut][isys]->Draw("p*");
     }
   }
   TCanvas *cCS_Sm = new TCanvas("cCS_Sm","cCS_Sm",1000,800);
-  //CS_Sm->RebinX(5);
-  CS_Sm->Scale(1./cosToStrbin/Lumi);
-  CS_Sm2->Scale(1./cosToStrbin2/Lumi);
-  CS_Sm->GetXaxis()->SetRangeUser(0.3,1);
-  //CS_Sm->Draw("E");
-  TGraphAsymmErrors* gCS_Sm = new TGraphAsymmErrors(CS_Sm);
-  gCS_Sm->GetXaxis()->SetRangeUser(0.3,1);
-  //gCS_Sm->Draw("AP");
-  TGraphAsymmErrors* gCS_Sm2 = new TGraphAsymmErrors(CS_Sm2);
-  gCS_Sm2->GetXaxis()->SetRangeUser(0.3,1);
-  gCS_Sm2->Draw("AP*");
-
-
+  
+  TGraphAsymmErrors* gCS_Sm[3][3];
+  TGraphAsymmErrors* gCS_Sm2[3][3];
+  for(int iEcut=0;iEcut<3;iEcut++){
+    for(int isys=0;isys<3;isys++){
+      CS_Sm[iEcut][isys]->Scale(1./cosToStrbin/Lumi);
+      CS_Sm2[iEcut][isys]->Scale(1./cosToStrbin2/Lumi);
+      CS_Sm[iEcut][isys]->GetXaxis()->SetRangeUser(0.3,1);
+      gCS_Sm[iEcut][isys] = new TGraphAsymmErrors(CS_Sm[iEcut][isys]);
+      gCS_Sm[iEcut][isys]->GetXaxis()->SetRangeUser(0.3,1);
+      gCS_Sm2[iEcut][isys] = new TGraphAsymmErrors(CS_Sm2[iEcut][isys]);
+      gCS_Sm2[iEcut][isys]->GetXaxis()->SetRangeUser(0.3,1);
+      gCS_Sm2[iEcut][isys]->GetYaxis()->SetRangeUser(0,500);
+      if(iEcut==0 && isys == 0) gCS_Sm2[iEcut][isys]->Draw("AP*");
+      else                      gCS_Sm2[iEcut][isys]->Draw("P*");
+    }
+  }
   TFile *fout = new TFile("CSsigma_H2.root","RECREATE");
   fout->cd();
-  gCS_Sp->Write();
-  gCS_Sm->Write();
-  gCS_Sp2->Write();
-  gCS_Sm2->Write();
-
+  for(int iEcut=0;iEcut<3;iEcut++){
+    for(int isys=0;isys<3;isys++){
+      gCS_Sp[iEcut][isys]->Write();
+      gCS_Sm[iEcut][isys]->Write();
+      gCS_Sp2[iEcut][isys]->Write();
+      gCS_Sm2[iEcut][isys]->Write();
+    }
+  }
 }
