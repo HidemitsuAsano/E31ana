@@ -218,6 +218,29 @@ void disp_IMsigma_h2(const int dEcut=2,const int sysud=0,const int simmode=0)
       MM2npi_coscut_Sm_mix[icosbin]->SetLineColor(2);
       MM2npi_coscut_Sm_mix[icosbin]->Draw("HEsame");
     }
+
+    TCanvas *ccos_purity_Sp = new TCanvas("ccos_purity_Sp","ccos_purity_Sp");
+
+    TH1F* Cospicm_pi_Sp_S = (TH1F*)f->Get("Cospicm_pi_Sp");
+    Cospicm_pi_Sp_S->RebinX(5);
+
+    TH1F* Cospicm_pi_Sp_SN = (TH1F*)fr->Get("Cospicm_pi_Sp");
+    Cospicm_pi_Sp_SN->RebinX(5);
+    TH1F* Cospicm_purity_Sp = (TH1F*)Cospicm_pi_Sp_S->Clone("Cospicm_putiry");
+    Cospicm_purity_Sp->SetTitle("purity S/(S+N) #Sigma^{+}#pi^{-}");
+    Cospicm_purity_Sp->Divide(Cospicm_pi_Sp_S,Cospicm_pi_Sp_SN,1.,1.,"b");
+    Cospicm_purity_Sp->Draw();
+    
+    TCanvas *ccos_purity_Sm = new TCanvas("ccos_purity_Sm","ccos_purity_Sm");
+    TH1F* Cospicm_pi_Sm_S = (TH1F*)f->Get("Cospicm_pi_Sm");
+    Cospicm_pi_Sm_S->RebinX(5);
+    TH1F* Cospicm_pi_Sm_SN = (TH1F*)fr->Get("Cospicm_pi_Sm");
+    Cospicm_pi_Sm_SN->RebinX(5);
+    TH1F* Cospicm_purity_Sm = (TH1F*)Cospicm_pi_Sm_S->Clone("Cospicm_putiry");
+    Cospicm_purity_Sm->SetTitle("purity S/(S+N) #Sigma^{-}#pi^{+}");
+    Cospicm_purity_Sm->Divide(Cospicm_pi_Sm_S,Cospicm_pi_Sm_SN,1.,1.,"b");
+    Cospicm_purity_Sm->Draw();
+
   }
 
 
