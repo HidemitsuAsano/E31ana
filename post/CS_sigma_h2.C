@@ -68,7 +68,7 @@ void CS_sigma_h2()
     }
   }
   const double Lumi=379.8;
-  TCanvas *cCS_Sp = new TCanvas("cCS_Sp","cCS_Sp",1000,800);
+  TCanvas *cCS_Sp[3];
   //CS_Sp->RebinX(5);
   double CospiBinW = CS_Sp[0][0]->GetBinWidth(2);
   double CospiBinW2 = CS_Sp2[0][0]->GetBinWidth(2);
@@ -79,6 +79,8 @@ void CS_sigma_h2()
   TGraphAsymmErrors* gCS_Sp[3][3];
   TGraphAsymmErrors* gCS_Sp2[3][3];
   for(int iEcut=0;iEcut<3;iEcut++){
+    cCS_Sp[iEcut]= new TCanvas(Form("cCS_Sp%d",iEcut),Form("cCS_Sp%d",iEcut),1000,800);   
+    cCS_Sp[iEcut]->cd();
     for(int isys=0;isys<3;isys++){
       CS_Sp[iEcut][isys]->Scale(1./cosToStrbin/Lumi);
       CS_Sp2[iEcut][isys]->Scale(1./cosToStrbin2/Lumi);
@@ -87,16 +89,19 @@ void CS_sigma_h2()
       gCS_Sp[iEcut][isys]->GetXaxis()->SetRangeUser(0.3,1);
       gCS_Sp2[iEcut][isys] = new TGraphAsymmErrors(CS_Sp2[iEcut][isys]);
       gCS_Sp2[iEcut][isys]->GetXaxis()->SetRangeUser(0.3,1);
-      gCS_Sp2[iEcut][isys]->GetYaxis()->SetRangeUser(0,500);
-      if(iEcut==0 && isys == 0)gCS_Sp2[iEcut][isys]->Draw("AP*");
+      gCS_Sp2[iEcut][isys]->GetYaxis()->SetRangeUser(0,600);
+      if(isys == 0)gCS_Sp2[iEcut][isys]->Draw("AP*");
       else                     gCS_Sp2[iEcut][isys]->Draw("p*");
     }
   }
-  TCanvas *cCS_Sm = new TCanvas("cCS_Sm","cCS_Sm",1000,800);
+
+  TCanvas *cCS_Sm[3]; 
   
   TGraphAsymmErrors* gCS_Sm[3][3];
   TGraphAsymmErrors* gCS_Sm2[3][3];
   for(int iEcut=0;iEcut<3;iEcut++){
+    cCS_Sm[iEcut] = new TCanvas(Form("cCS_Sm%d",iEcut),Form("cCS_Sm%d",iEcut),1000,800);  
+    cCS_Sm[iEcut]->cd();
     for(int isys=0;isys<3;isys++){
       CS_Sm[iEcut][isys]->Scale(1./cosToStrbin/Lumi);
       CS_Sm2[iEcut][isys]->Scale(1./cosToStrbin2/Lumi);
@@ -105,14 +110,181 @@ void CS_sigma_h2()
       gCS_Sm[iEcut][isys]->GetXaxis()->SetRangeUser(0.3,1);
       gCS_Sm2[iEcut][isys] = new TGraphAsymmErrors(CS_Sm2[iEcut][isys]);
       gCS_Sm2[iEcut][isys]->GetXaxis()->SetRangeUser(0.3,1);
-      gCS_Sm2[iEcut][isys]->GetYaxis()->SetRangeUser(0,500);
-      if(iEcut==0 && isys == 0) gCS_Sm2[iEcut][isys]->Draw("AP*");
+      gCS_Sm2[iEcut][isys]->GetYaxis()->SetRangeUser(0,300);
+      if(isys == 0) gCS_Sm2[iEcut][isys]->Draw("AP*");
       else                      gCS_Sm2[iEcut][isys]->Draw("P*");
     }
   }
+
+  
+  TGraphAsymmErrors *gCS_SpdE[3] ;//err:stat
+  TGraphAsymmErrors *gCS_SmdE[3] ;//err:stat 
+  TGraphAsymmErrors *gCS_SpdE_sys[3] ;//err: sys of mix.
+  TGraphAsymmErrors *gCS_SmdE_sys[3] ;//err: sys of mix.
+  
+  TCanvas *cCS_SpdE[3];
+  TCanvas *cCS_SmdE[3];
+  for(int iEcut=0;iEcut<3;iEcut++){
+    gCS_SpdE[iEcut] = (TGraphAsymmErrors*)gCS_Sp[iEcut][0]->Clone(Form("gCS_SpdE%d",iEcut));
+    gCS_SmdE[iEcut] = (TGraphAsymmErrors*)gCS_Sm[iEcut][0]->Clone(Form("gCS_SmdE%d",iEcut));
+    gCS_SpdE_sys[iEcut] = (TGraphAsymmErrors*) gCS_Sp[iEcut][0]->Clone(Form("gCS_SpdE_sys%d",iEcut));
+    gCS_SmdE_sys[iEcut] = (TGraphAsymmErrors*) gCS_Sm[iEcut][0]->Clone(Form("gCS_SmdE_sys%d",iEcut));
+    double *Xerr  = gCS_Sp[iEcut][0]->GetEXhigh();
+    double *YcentSp = gCS_Sp[iEcut][0]->GetY();
+    double *errYhiSp = gCS_Sp[iEcut][2]->GetY();
+    double *errYloSp = gCS_Sp[iEcut][1]->GetY();
+    double *YcentSm = gCS_Sm[iEcut][0]->GetY();
+    double *errYhiSm = gCS_Sm[iEcut][2]->GetY();
+    double *errYloSm = gCS_Sm[iEcut][1]->GetY();
+    if(iEcut==0){
+      //gCS_Sp[iEcut][0]->Print();
+      //gCS_Sp[iEcut][1]->Print();
+      //gCS_Sp[iEcut][2]->Print();
+    }
+
+    for(int ip=0;ip<gCS_SpdE_sys[iEcut]->GetN();ip++){
+      gCS_SpdE_sys[iEcut]->SetPointEYhigh(ip,errYhiSp[ip]-YcentSp[ip]);
+      gCS_SpdE_sys[iEcut]->SetPointEYlow(ip,YcentSp[ip]-errYloSp[ip]);
+      gCS_SpdE_sys[iEcut]->SetPointEXhigh(ip,Xerr[ip]*0.5);
+      gCS_SpdE_sys[iEcut]->SetPointEXlow(ip,Xerr[ip]*0.5);
+    }
+    cCS_SpdE[iEcut] = new TCanvas(Form("cCS_SpdE%d",iEcut),Form("cCS_SpdE%d",iEcut));
+    gCS_SpdE[iEcut]->GetXaxis()->SetRangeUser(0.3,1);
+    gCS_SpdE[iEcut]->GetYaxis()->SetRangeUser(0,600);
+    gCS_SpdE[iEcut]->Draw("AP");
+    gCS_SpdE_sys[iEcut]->SetLineColor(3);
+    gCS_SpdE_sys[iEcut]->SetLineWidth(3);
+    gCS_SpdE_sys[iEcut]->SetMarkerStyle(20);
+    gCS_SpdE_sys[iEcut]->SetFillStyle(0);
+    gCS_SpdE_sys[iEcut]->Draw("5 ");
+    if(iEcut==0){
+     // gCS_SpdE_sys[iEcut]->Print();
+    }
+
+    for(int ip=0;ip<gCS_SmdE_sys[iEcut]->GetN();ip++){
+      gCS_SmdE_sys[iEcut]->SetPointEYhigh(ip,errYhiSm[ip]-YcentSm[ip]);
+      gCS_SmdE_sys[iEcut]->SetPointEYlow(ip,YcentSm[ip]-errYloSm[ip]);
+      gCS_SmdE_sys[iEcut]->SetPointEXhigh(ip,Xerr[ip]*0.5);
+      gCS_SmdE_sys[iEcut]->SetPointEXlow(ip,Xerr[ip]*0.5);
+    }
+    cCS_SmdE[iEcut] = new TCanvas(Form("cCS_SmdE%d",iEcut),Form("cCS_SmdE%d",iEcut));
+    gCS_SmdE[iEcut]->GetXaxis()->SetRangeUser(0.3,1);
+    gCS_SmdE[iEcut]->GetYaxis()->SetRangeUser(0,300);
+    gCS_SmdE[iEcut]->Draw("AP");
+    gCS_SmdE_sys[iEcut]->SetLineColor(3);
+    gCS_SmdE_sys[iEcut]->SetLineWidth(3);
+    gCS_SmdE_sys[iEcut]->SetMarkerStyle(20);
+    gCS_SmdE_sys[iEcut]->SetFillStyle(0);
+    gCS_SmdE_sys[iEcut]->Draw("5 ");
+  }
+  
+  
+  TCanvas *cCS_SpdEsys = new TCanvas("cCS_SpdEsys","cCS_SpdEsys");
+  gCS_SpdE[0]->Draw("AP");
+  gCS_SpdE[1]->SetLineColor(2);
+  gCS_SpdE[2]->SetLineColor(3);
+  gCS_SpdE[1]->Draw("P");
+  gCS_SpdE[2]->Draw("P");
+
+  //gCS_SpdE[0]->Print();
+  //gCS_SpdE[1]->Print();
+  //gCS_SpdE[2]->Print();
+  
+  TCanvas *cCS_SmdEsys = new TCanvas("cCS_SmdEsys","cCS_SmdEsys");
+  gCS_SmdE[0]->Draw("AP");
+  gCS_SmdE[1]->SetLineColor(2);
+  gCS_SmdE[2]->SetLineColor(3);
+  gCS_SmdE[1]->Draw("P");
+  gCS_SmdE[2]->Draw("P");
+  
+
+  
+  TGraphAsymmErrors *gCS_SpdEsys = (TGraphAsymmErrors*)gCS_SpdE[0]->Clone("gCS_SpdEsys");
+  double *Xerr  = gCS_SpdE[0]->GetEXhigh();
+  double *YvalSp[3];
+  for(int iEcut=0;iEcut<3;iEcut++){
+    YvalSp[iEcut] = gCS_SpdE[iEcut]->GetY();
+  }
+
+  for(int ip=0;ip<gCS_SpdE[0]->GetN();ip++){
+    double yeh = 0.00001;
+    double yehcan1 = YvalSp[1][ip]-YvalSp[0][ip];
+    //std::cout << ip << " "  << YvalSp[0][ip] << "  " << YvalSp[1][ip] << "  " << YvalSp[2][ip]  << std::endl;
+    double yehcan2 = YvalSp[2][ip]-YvalSp[0][ip];
+    if(yehcan1>yeh) yeh = yehcan1;
+    if(yehcan2>yeh) yeh = yehcan2;
+    
+    double yel =0.00001;
+    double yelcan1 = YvalSp[1][ip]-YvalSp[0][ip];
+    double yelcan2 = YvalSp[2][ip]-YvalSp[0][ip];
+    if(yel>yelcan1) yel=yelcan1;
+    if(yel>yelcan2) yel=yelcan2;
+    
+    gCS_SpdEsys->SetPointEXhigh(ip,Xerr[ip]*0.2);
+    gCS_SpdEsys->SetPointEXlow(ip,Xerr[ip]*0.2);
+    gCS_SpdEsys->SetPointEYhigh(ip,yeh);
+    gCS_SpdEsys->SetPointEYlow(ip,fabs(yel));
+  }
+  cCS_SpdEsys->cd();
+  gCS_SpdEsys->SetLineColor(4);
+  gCS_SpdEsys->SetFillStyle(0);
+  //gCS_SpdEsys->Print();
+  gCS_SpdEsys->Draw("5");
+
+
+  TGraphAsymmErrors *gCS_SmdEsys = (TGraphAsymmErrors*)gCS_SmdE[0]->Clone("gCS_SmdEsys");
+  double *YvalSm[3];
+  for(int iEcut=0;iEcut<3;iEcut++){
+    YvalSm[iEcut] = gCS_SmdE[iEcut]->GetY();
+  }
+
+  for(int ip=0;ip<gCS_SmdE[0]->GetN();ip++){
+    double yeh = 0.00001;
+    double yehcan1 = YvalSm[1][ip]-YvalSm[0][ip];
+    //std::cout << ip << " "  << YvalSm[0][ip] << "  " << YvalSm[1][ip] << "  " << YvalSm[2][ip]  << std::endl;
+    double yehcan2 = YvalSm[2][ip]-YvalSm[0][ip];
+    if(yehcan1>yeh) yeh = yehcan1;
+    if(yehcan2>yeh) yeh = yehcan2;
+    
+    double yel =0.00001;
+    double yelcan1 = YvalSm[1][ip]-YvalSm[0][ip];
+    double yelcan2 = YvalSm[2][ip]-YvalSm[0][ip];
+    if(yel>yelcan1) yel=yelcan1;
+    if(yel>yelcan2) yel=yelcan2;
+    
+    gCS_SmdEsys->SetPointEXhigh(ip,Xerr[ip]*0.2);
+    gCS_SmdEsys->SetPointEXlow(ip,Xerr[ip]*0.2);
+    gCS_SmdEsys->SetPointEYhigh(ip,yeh);
+    gCS_SmdEsys->SetPointEYlow(ip,fabs(yel));
+  }
+  cCS_SmdEsys->cd();
+  gCS_SmdEsys->SetLineColor(4);
+  gCS_SmdEsys->SetFillStyle(0);
+  //gCS_SmdEsys->Print();
+  gCS_SmdEsys->Draw("5");
+
+  
+  TCanvas *cCS_SpToTal = new TCanvas("cCS_SpTotal","cCS_SpTotal");
+  gCS_SpdE[0]->Draw("AP");
+  gCS_SpdE_sys[0]->Draw("5 ");
+  gCS_SpdEsys->Draw("5 ");
+  
+  TCanvas *cCS_SmToTal = new TCanvas("cCS_SmTotal","cCS_SmTotal");
+  gCS_SmdE[0]->Draw("AP");
+  gCS_SmdE_sys[0]->Draw("5 ");
+  gCS_SmdEsys->Draw("5 ");
+
+
   TFile *fout = new TFile("CSsigma_H2.root","RECREATE");
   fout->cd();
+  gCS_SpdEsys->Write();
+  gCS_SmdEsys->Write();
   for(int iEcut=0;iEcut<3;iEcut++){
+    gCS_SpdE[iEcut]->Write();
+    gCS_SmdE[iEcut]->Write();
+    gCS_SpdE_sys[iEcut]->Write();
+    gCS_SmdE_sys[iEcut]->Write();
+    
     for(int isys=0;isys<3;isys++){
       gCS_Sp[iEcut][isys]->Write();
       gCS_Sm[iEcut][isys]->Write();
