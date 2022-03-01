@@ -411,7 +411,14 @@ void disp_IMsigma_h2(const int dEcut=2,const int sysud=0,const int simmode=0)
   TH1F* Cospicm_pi_Sm = (TH1F*)f->Get("Cospicm_pi_Sm");
   Cospicm_pi_Sm->RebinX(5);
   Cospicm_pi_Sm->Draw("E");
-
+  
+  TCanvas *cCospicm_nmom_Sp = new TCanvas("cCospicm_nmom_Sp","cCospicm_nmom_Sp");
+  TH2F* Cospicm_nmom_Sp = (TH2F*)f->Get("Cospicm_nmom_Sp");
+  Cospicm_nmom_Sp->Draw("colz");
+  
+  TCanvas *cCospicm_nmom_Sm = new TCanvas("cCospicm_nmom_Sm","cCospicm_nmom_Sm");
+  TH2F* Cospicm_nmom_Sm = (TH2F*)f->Get("Cospicm_nmom_Sm");
+  Cospicm_nmom_Sm->Draw("colz");
 
 
   TCanvas *c = NULL;

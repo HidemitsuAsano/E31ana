@@ -476,10 +476,17 @@ void comp_pastDataH2()
   //  his->SetMaximum(600);
   //  his->SetMarkerStyle(20);
   TFile *fcs = TFile::Open("CSsigma_H2.root","READ");
- // TGraphErrors *gCS_Sp = (TGraphErrors*) fcs->Get("Graph_from_CS_Sp");
+  TFile *fK0 = TFile::Open("CS_K0contami_H2.root","READ");
+  // TGraphErrors *gCS_Sp = (TGraphErrors*) fcs->Get("Graph_from_CS_Sp");
 //  TGraphErrors *gCS_Sm = (TGraphErrors*) fcs->Get("Graph_from_CS_Sm");
-  TGraphAsymmErrors *gCS_Sp = (TGraphAsymmErrors*) fcs->Get("Graph_from_Cospicm_pi_Sp");
-  TGraphAsymmErrors *gCS_Sm = (TGraphAsymmErrors*) fcs->Get("Graph_from_Cospicm_pi_Sm");
+  //TGraphAsymmErrors *gCS_Sp = (TGraphAsymmErrors*) fcs->Get("Graph_from_Cospicm_pi_Sp");
+  //TGraphAsymmErrors *gCS_Sm = (TGraphAsymmErrors*) fcs->Get("Graph_from_Cospicm_pi_Sm");
+  TGraphAsymmErrors *gCS_Sp = (TGraphAsymmErrors*) fcs->Get("gCS_Sp_K0sub");
+  TGraphAsymmErrors *gCS_Sm = (TGraphAsymmErrors*) fcs->Get("gCS_Sm_K0sub");
+  TGraphAsymmErrors *gCS_Spsys = (TGraphAsymmErrors*) fcs->Get("gCS_Sp_syssum_K0sub");
+  TGraphAsymmErrors *gCS_Smsys = (TGraphAsymmErrors*) fcs->Get("gCS_Sm_syssum_K0sub");
+  TGraphErrors *gCSK0_Sp = (TGraphErrors*)fK0->Get("gCSK0_Sp");
+  TGraphErrors *gCSK0_Sm = (TGraphErrors*)fK0->Get("gCSK0_Sm");
   TCanvas *cCS_Sp = new TCanvas("cCS_Sp","cCS_Sp",1000,800);
   TLegend *leg = new TLegend(0.3, 0.6, 0.6, 0.9);
   leg->AddEntry(gCS_Sp, "This analysis", "LP");
@@ -497,6 +504,8 @@ void comp_pastDataH2()
   gCS_Sp->GetYaxis()->CenterTitle();
   gCS_Sp->SetTitle("#Sigma^{+}#pi^{-}");
   gCS_Sp->Draw("AP");
+  gCS_Spsys->SetLineColor(1);
+  gCS_Spsys->Draw("5");
   p7071_d40x1y1->Draw("PZ same");//p7071_d40x1y1->Print();
   p7006_d21x1y2->Draw(" PZ same");
   past_data1->Draw(" PZ same");
@@ -520,8 +529,9 @@ void comp_pastDataH2()
   gCS_Sm->GetXaxis()->CenterTitle();
   gCS_Sm->GetYaxis()->CenterTitle();
   gCS_Sm->SetTitle("#Sigma^{-}#pi^{+}");
-  gCS_Sm->
   gCS_Sm->Draw("AP");
+  gCS_Smsys->SetLineColor(1);
+  gCS_Smsys->Draw("5");
       p7071_d60x1y1->Draw("same PZ");
       p7006_d20x1y2->Draw("same PZ");
       past_data3->Draw("same PZ");

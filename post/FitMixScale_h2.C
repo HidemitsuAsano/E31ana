@@ -11,7 +11,7 @@ void FitMixScale_h2()
 {
 
   TFile *f = TFile::Open(Form("evanaIMsigma_npi_h2_v%d_out_dE%d_iso_nostop.root",Version,dEcut));
-  TFile *fmix = TFile::Open(Form("evanaIMsigma_npi_h2_v%d_MIX_out_dE%d_iso_nostop.root",Version,dEcut));
+  TFile *fmix = TFile::Open(Form("evanaIMsigma_npi_h2_v%d_MIX_out_dE%d_iso_nostop_sys0.root",Version,dEcut));
 
   TH2F* MM2npi_IMnpip_vici_f = (TH2F*)f->Get("MM2npi_IMnpip_vici");
   TH2F* MM2npi_IMnpim_vici_f = (TH2F*)f->Get("MM2npi_IMnpim_vici"); 
@@ -73,7 +73,7 @@ void FitMixScale_h2()
   Double_t ret2 = f2->GetParameter(0);
   Double_t ret2err = f2->GetParError(0);
   f2->SetParameter(0,ret2);
-  f2->SetLineColor(3);
+  f2->SetLineColor(4);
   f2->Draw("same");
 
   double avg = (ret*ret2err+ret2*reterr)/(reterr+ret2err);
@@ -82,8 +82,8 @@ void FitMixScale_h2()
   f1u->SetParameter(0,avg*1.1);
   f1d->SetParameter(0,avg*0.9);
   f1->SetLineColor(3);
-  f1u->SetLineColor(3);
-  f1d->SetLineColor(3);
+  f1u->SetLineColor(4);
+  f1d->SetLineColor(4);
   c5->cd();
   f1->Draw("same");
   f1u->Draw("same");
@@ -92,8 +92,8 @@ void FitMixScale_h2()
   f2u->SetParameter(0,avg*1.1);
   f2d->SetParameter(0,avg*0.9);
   f2->SetLineColor(3);
-  f2u->SetLineColor(3);
-  f2d->SetLineColor(3);
+  f2u->SetLineColor(4);
+  f2d->SetLineColor(4);
   c6->cd();
   f2->Draw("same");
   f2u->Draw("same");
@@ -137,8 +137,8 @@ void FitMixScale_h2()
   f3u->SetParameter(0,avg2*1.1);
   f3d->SetParameter(0,avg2*0.9);
   f3->SetLineColor(3);
-  f3u->SetLineColor(3);
-  f3d->SetLineColor(3);
+  f3u->SetLineColor(4);
+  f3d->SetLineColor(4);
   c7->cd();
   f3->Draw("same");
   f3u->Draw("same");
@@ -147,8 +147,8 @@ void FitMixScale_h2()
   f4u->SetParameter(0,avg2*1.1);
   f4d->SetParameter(0,avg2*0.9);
   f4->SetLineColor(3);
-  f4u->SetLineColor(3);
-  f4d->SetLineColor(3);
+  f4u->SetLineColor(4);
+  f4d->SetLineColor(4);
   c8->cd();
   f4->Draw("same");
   f4u->Draw("same");

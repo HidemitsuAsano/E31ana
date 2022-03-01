@@ -90,6 +90,10 @@ void CS_sigma_h2()
       gCS_Sp2[iEcut][isys] = new TGraphAsymmErrors(CS_Sp2[iEcut][isys]);
       gCS_Sp2[iEcut][isys]->GetXaxis()->SetRangeUser(0.3,1);
       gCS_Sp2[iEcut][isys]->GetYaxis()->SetRangeUser(0,600);
+      gCS_Sp2[iEcut][isys]->GetXaxis()->SetTitle("Cos#theta_{CM} miss-#pi^{-}");
+      gCS_Sp2[iEcut][isys]->GetYaxis()->SetTitle("d#sigma/d#Omega [#mub/sr]");
+      gCS_Sp2[iEcut][isys]->GetXaxis()->CenterTitle();
+      gCS_Sp2[iEcut][isys]->GetYaxis()->CenterTitle();
       if(isys == 0)gCS_Sp2[iEcut][isys]->Draw("AP*");
       else                     gCS_Sp2[iEcut][isys]->Draw("p*");
     }
@@ -111,6 +115,10 @@ void CS_sigma_h2()
       gCS_Sm2[iEcut][isys] = new TGraphAsymmErrors(CS_Sm2[iEcut][isys]);
       gCS_Sm2[iEcut][isys]->GetXaxis()->SetRangeUser(0.3,1);
       gCS_Sm2[iEcut][isys]->GetYaxis()->SetRangeUser(0,300);
+      gCS_Sm2[iEcut][isys]->GetXaxis()->SetTitle("Cos#theta_{CM} miss-#pi^{+}");
+      gCS_Sm2[iEcut][isys]->GetYaxis()->SetTitle("d#sigma/d#Omega [#mub/sr]");
+      gCS_Sm2[iEcut][isys]->GetXaxis()->CenterTitle();
+      gCS_Sm2[iEcut][isys]->GetYaxis()->CenterTitle();
       if(isys == 0) gCS_Sm2[iEcut][isys]->Draw("AP*");
       else                      gCS_Sm2[iEcut][isys]->Draw("P*");
     }
@@ -129,6 +137,14 @@ void CS_sigma_h2()
     gCS_SmdE[iEcut] = (TGraphAsymmErrors*)gCS_Sm[iEcut][0]->Clone(Form("gCS_SmdE%d",iEcut));
     gCS_SpdE_sys[iEcut] = (TGraphAsymmErrors*) gCS_Sp[iEcut][0]->Clone(Form("gCS_SpdE_sys%d",iEcut));
     gCS_SmdE_sys[iEcut] = (TGraphAsymmErrors*) gCS_Sm[iEcut][0]->Clone(Form("gCS_SmdE_sys%d",iEcut));
+    gCS_SpdE[iEcut]->GetXaxis()->SetTitle("Cos#theta_{CM} miss-#pi^{-}");
+    gCS_SpdE[iEcut]->GetYaxis()->SetTitle("d#sigma/d#Omega [#mub/sr]");
+    gCS_SpdE[iEcut]->GetXaxis()->CenterTitle();
+    gCS_SpdE[iEcut]->GetYaxis()->CenterTitle();
+    gCS_SmdE[iEcut]->GetXaxis()->SetTitle("Cos#theta_{CM} miss-#pi^{+}");
+    gCS_SmdE[iEcut]->GetYaxis()->SetTitle("d#sigma/d#Omega [#mub/sr]");
+    gCS_SmdE[iEcut]->GetXaxis()->CenterTitle();
+    gCS_SmdE[iEcut]->GetYaxis()->CenterTitle();
     double *Xerr  = gCS_Sp[iEcut][0]->GetEXhigh();
     double *YcentSp = gCS_Sp[iEcut][0]->GetY();
     double *errYhiSp = gCS_Sp[iEcut][2]->GetY();
@@ -269,16 +285,82 @@ void CS_sigma_h2()
   gCS_SpdE_sys[0]->Draw("5 ");
   gCS_SpdEsys->Draw("5 ");
   
+  TCanvas *cCS_SpToTal_syssum = new TCanvas("cCS_SpTotal_syssum","cCS_SpTotal_syssum");
+  gCS_SpdE[0]->Draw("AP");
+  TGraphAsymmErrors *gCS_Sp_syssum = (TGraphAsymmErrors*)gCS_SpdE_sys[0]->Clone("gCS_Sp_syssum");
+  
+  double *yehSp = gCS_Sp_syssum->GetEYhigh();
+  double *yelSp = gCS_Sp_syssum->GetEYlow();
+  double *yehSpadd = gCS_SpdEsys->GetEYhigh();
+  double *yelSpadd = gCS_SpdEsys->GetEYlow();
+  for(int ip=0;ip<gCS_Sp_syssum->GetN();ip++){
+    double eh = sqrt(yehSp[ip]*yehSp[ip]+yehSpadd[ip]*yehSpadd[ip]);
+    double el = sqrt(yelSp[ip]*yelSp[ip]+yelSpadd[ip]*yelSpadd[ip]);
+    gCS_Sp_syssum->SetPointEYhigh(ip,eh);
+    gCS_Sp_syssum->SetPointEYlow(ip,el);
+  }
+  gCS_SpdE[0]->Draw("AP");
+  gCS_Sp_syssum->Draw("5");
+
+
   TCanvas *cCS_SmToTal = new TCanvas("cCS_SmTotal","cCS_SmTotal");
   gCS_SmdE[0]->Draw("AP");
   gCS_SmdE_sys[0]->Draw("5 ");
   gCS_SmdEsys->Draw("5 ");
+ 
+  
+  TCanvas *cCS_SmToTal_syssum = new TCanvas("cCS_SmTotal_syssum","cCS_SmTotal_syssum");
+  gCS_SmdE[0]->Draw("AP");
+  TGraphAsymmErrors *gCS_Sm_syssum = (TGraphAsymmErrors*)gCS_SmdE_sys[0]->Clone("gCS_Sm_syssum");
+  
+  double *yehSm = gCS_Sm_syssum->GetEYhigh();
+  double *yelSm = gCS_Sm_syssum->GetEYlow();
+  double *yehSmadd = gCS_SmdEsys->GetEYhigh();
+  double *yelSmadd = gCS_SmdEsys->GetEYlow();
+  for(int ip=0;ip<gCS_Sm_syssum->GetN();ip++){
+    double eh = sqrt(yehSm[ip]*yehSm[ip]+yehSmadd[ip]*yehSmadd[ip]);
+    double el = sqrt(yelSm[ip]*yelSm[ip]+yelSmadd[ip]*yelSmadd[ip]);
+    gCS_Sm_syssum->SetPointEYhigh(ip,eh);
+    gCS_Sm_syssum->SetPointEYlow(ip,el);
+  }
+  gCS_SmdE[0]->Draw("AP");
+  gCS_Sm_syssum->Draw("5");
+  
+  TFile *fK0 = TFile::Open("CS_K0contami_H2.root","READ");
+  TGraphErrors *gCSK0_Sp = (TGraphErrors*)fK0->Get("gCSK0_Sp");
+  TGraphErrors *gCSK0_Sm = (TGraphErrors*)fK0->Get("gCSK0_Sm");
+  double *xK0Sp = gCSK0_Sp->GetX();
+  double *yK0Sp = gCSK0_Sp->GetY();
+  TGraphAsymmErrors *gCS_Sp_K0sub = (TGraphAsymmErrors*)gCS_SpdE[0]->Clone("gCS_Sp_K0sub");
+  TGraphAsymmErrors *gCS_Sp_syssum_K0sub = (TGraphAsymmErrors*)gCS_Sp_syssum->Clone("gCS_Sp_syssum_K0sub");
+  double *ySp = gCS_Sp_K0sub->GetY();
+  double *ySpsys = gCS_Sp_syssum_K0sub->GetY();
+  for(int ip=0;ip<gCS_Sp_K0sub->GetN();ip++){
+    gCS_Sp_K0sub->SetPoint(ip,xK0Sp[ip],ySp[ip]-yK0Sp[ip]);
+    gCS_Sp_syssum_K0sub->SetPoint(ip,xK0Sp[ip],ySpsys[ip]-yK0Sp[ip]);
+  }
+
+  double *yK0Sm = gCSK0_Sm->GetY();
+  TGraphAsymmErrors *gCS_Sm_K0sub = (TGraphAsymmErrors*)gCS_SmdE[0]->Clone("gCS_Sm_K0sub");
+  TGraphAsymmErrors *gCS_Sm_syssum_K0sub = (TGraphAsymmErrors*)gCS_Sm_syssum->Clone("gCS_Sm_syssum_K0sub");
+  double *ySm = gCS_Sm_K0sub->GetY();
+  double *ySmsys = gCS_Sm_syssum_K0sub->GetY();
+  for(int ip=0;ip<gCS_Sm_K0sub->GetN();ip++){
+    gCS_Sm_K0sub->SetPoint(ip,xK0Sp[ip],ySm[ip]-yK0Sm[ip]);
+    gCS_Sm_syssum_K0sub->SetPoint(ip,xK0Sp[ip],ySmsys[ip]-yK0Sm[ip]);
+  }
 
 
   TFile *fout = new TFile("CSsigma_H2.root","RECREATE");
   fout->cd();
+  gCS_Sp_K0sub->Write();
+  gCS_Sm_K0sub->Write();
+  gCS_Sp_syssum_K0sub->Write();
+  gCS_Sm_syssum_K0sub->Write();
   gCS_SpdEsys->Write();
   gCS_SmdEsys->Write();
+  gCS_Sp_syssum->Write();
+  gCS_Sm_syssum->Write();
   for(int iEcut=0;iEcut<3;iEcut++){
     gCS_SpdE[iEcut]->Write();
     gCS_SmdE[iEcut]->Write();
