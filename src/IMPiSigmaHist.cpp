@@ -1,5 +1,6 @@
 #include "IMPiSigmaHist.h"
 #include "Tools.h"
+#include <TMath.h>
 
 void InitBasicHist(const bool MCFlag)
 {
@@ -166,6 +167,9 @@ void InitIMPiSigmaHist()
   Tools::newTH1F( Form("diff_CDH_CDC_pip"), 181, 0, 181 );
   Tools::newTH1F( Form("diff_CDH_CDC_pim"), 181, 0, 181 );
   
+  Tools::newTH2F("diff2d_CDC_CDH_pim",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
+  Tools::newTH2F("diff2d_CDC_CDH_pip",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
+
   //pi+ pi- X event Neutron ID
   Tools::newTH2F( Form("dE_betainv"), 500, 0, 50, 200, 0, 50);
   Tools::newTH2F( Form("dE_betainv_fid"), 500, 0, 50, 200, 0, 50);
@@ -220,7 +224,7 @@ void InitIMPiSigmaHist()
   Tools::newTH2F( Form("KFchi2_vs"),100,0,100,100,0,100);
   Tools::SetXTitleH2(Form("KFchi2_vs"),"chi2/NDF S+");
   Tools::SetYTitleH2(Form("KFchi2_vs"),"chi2/NDF S-");
-  Tools::newTH1F( Form("KF_decision"), 2, -0.5, 1.5 );//TODO implement
+  Tools::newTH1F( Form("KF_decision"), 2, -0.5, 1.5 );
 }
 
 

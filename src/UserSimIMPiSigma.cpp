@@ -798,8 +798,9 @@ int main( int argc, char** argv )
     double ncanvtxr=999.0;
     double ncanvtxz=999.0;
     int ncdsgen=10;
-
-    if( Util::GetCDHMul(cdsMan,nGoodTrack,true,true)!=cdscuts::cdhmulti ){
+    
+    int nCDH = Util::GetCDHMul(cdsMan,nGoodTrack,true,true);
+    if( nCDH <cdscuts::cdhmulti ){
       if(IsrecoPassed)nAbort_nCDH++;
       if(Verbosity_)std::cout << "L." << __LINE__ << " Abort_nCDH" << std::endl;
       //continue;
@@ -1137,12 +1138,13 @@ int main( int argc, char** argv )
       std::set_difference( CDHhit_list.begin(), CDHhit_list.end(),
 			   vCDHseg.begin(), vCDHseg.end(),
 			   std::back_inserter(NeutralCDHseg) );
-
+      
+      /*
       if( NeutralCDHseg.size()!=1 ){
         std::cout<< "L." << __LINE__ << " CDH neutral hit is not 1 :: "<<NeutralCDHseg.size()<<std::endl;
         std::cout << "vCDHseg " << vCDHseg.size() << std::endl;
         std::cout << "CDHhit_list " << CDHhit_list.size() << std::endl;
-      }
+      }*/
       
       if(Verbosity_){
         std::cout<<"# of diff = "<<NeutralCDHseg.size()<<std::endl;
@@ -1163,6 +1165,7 @@ int main( int argc, char** argv )
       
       // isolation cut //
       int flag_isolation = 0;
+      /*
       if(IsrecoPassed){
         if(IsolationCutFlag==2){
           flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan,true);
@@ -1174,7 +1177,7 @@ int main( int argc, char** argv )
           flag_isolation = Util::GetCDHNeighboringNHits(NeutralCDHseg,CDHhit_list,vCDHseg,cdsMan,true);
           flag_isolation = 0;
         }
-      }
+      }*/
       if( flag_isolation ){
         if(Verbosity_>100)std::cout<< "L."<< __LINE__ << " Event Number: " <<iev <<  " CDH hit candidate is NOT isolated !!!"<<std::endl;
         //if(IsrecoPassed)nAbort_CDHiso++;
@@ -1184,19 +1187,62 @@ int main( int argc, char** argv )
         if(Verbosity_>100) std::cerr<<"CDH isolation cuts : OK " << std::endl;
         Tools::Fill1D( Form("EventCheck"), 14 );
       }
+       
+      int nNeutralcdhseg = NeutralCDHseg.size();
+      int Ncanhitseg=-1;
+      for(int iNeutralCDHseg=0;iNeutralCDHseg<nNeutralcdhseg;iNeutralCDHseg++){
+        HodoscopeLikeHit *ncdhhitcan = Util::CDHsegToCDHhitIndex(NeutralCDHseg.at(iNeutralCDHseg),cdsMan);
+        TVector3 Pos_CDH;//CDH position
+        confMan->GetGeomMapManager()->GetPos( CID_CDH, ncdhhitcan->seg(), Pos_CDH );
+        Pos_CDH.SetZ(ncdhhitcan->hitpos());//sim def of z
+        
+        TVector3 diffpim;
+        double diffPhinpim = 0;
+        diffpim = Pos_CDH-pim_cdhprojected;
+        diffPhinpim = Pos_CDH.Phi()-pim_cdhprojected.Phi();
+        if(diffPhinpim<-1.0*TMath::Pi()) diffPhinpim += 2.0*TMath::Pi();
+        else if(diffPhinpim>1.0*TMath::Pi()) diffPhinpim -= 2.0*TMath::Pi();
+
+        TVector3 diffpip; 
+        double diffPhinpip = 0;
+        diffpip = Pos_CDH-pip_cdhprojected;
+        diffPhinpip = Pos_CDH.Phi()-pip_cdhprojected.Phi();
+        if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
+        else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
       
-      //** copy neutral CDH hit candidate **//
-      int icdh = -1;
-      for( int icdhhit=0; icdhhit<cdsMan->nCDH(); icdhhit++ ){
-        if( cdsMan->CDH(icdhhit)->seg()==NeutralCDHseg[0] ) icdh = icdhhit;
+        Tools::Fill2D(Form("diff2d_CDC_CDH_pim"),diffPhinpim,diffpim.z());
+        Tools::Fill2D(Form("diff2d_CDC_CDH_pip"),diffPhinpip,diffpip.z());
+
+        //round cut
+        if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ){
+          nCDH--;
+        }
+        if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ){
+          nCDH--;
+        }
+      
+        if( (pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) >=1 )
+            &&  (pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) >=1 ))
+        { 
+          Ncanhitseg= NeutralCDHseg.at(iNeutralCDHseg);
+        }
+      }//for iNeutralCDHseg
+
+      Tools::Fill1D(Form("mul_CDH_iso"),nCDH);
+      if(nCDH !=cdscuts::cdhmulti  || Ncanhitseg==-1){
+        IsrecoPassed = false;
       }
-      HodoscopeLikeHit *ncdhhit = cdsMan->CDH(icdh);
-      
+
+      Tools::Fill1D(Form("CDHNeutralSeg"), Ncanhitseg);
+      //** copy neutral CDH hit candidate **//
+      HodoscopeLikeHit *ncdhhit = Util::CDHsegToCDHhitIndex(Ncanhitseg,cdsMan);
+
       //** charge veto using CDC **//
       TVector3 Pos_CDH;
-      confMan->GetGeomMapManager()->GetPos( CID_CDH, ncdhhit->seg(), Pos_CDH );
-      if(Verbosity_) std::cout<<"CDH candidate seg = "<<ncdhhit->seg()<<" -> "<<Pos_CDH.Phi()/TwoPi*360<<" deg"<<std::endl;
-      
+      if(IsrecoPassed){
+        confMan->GetGeomMapManager()->GetPos( CID_CDH, Ncanhitseg, Pos_CDH );
+        if(Verbosity_) std::cout<<"CDH candidate seg = "<<ncdhhit->seg()<<" -> "<<Pos_CDH.Phi()/TwoPi*360<<" deg"<<std::endl;
+      }
       const int nCDCInner3Lay = Util::GetNHitsCDCInner3Lay(cdsMan);
       if(IsrecoPassed)Tools::Fill1D(Form("CDCInner3Mul"),nCDCInner3Lay);
       
@@ -1204,7 +1250,7 @@ int main( int argc, char** argv )
       if(IsrecoPassed){
         //nCDCforVeto = Util::GetNHitsCDCOuter(Pos_CDH,cdsMan,cdscuts::chargevetoangle);
         nCDCforVeto = Util::GetNHitsCDCOuterNoAss(Pos_CDH,cdsMan,cdstrackMan,cdscuts::chargevetoangle);
-        Util::AnaPipPimCDCCDH(Pos_CDH,NeutralCDHseg,pip_ID[0],pim_ID[0],cdsMan,cdstrackMan);
+        Util::AnaPipPimCDCCDH(Pos_CDH,ncdhhit,pip_ID.at(0),pim_ID.at(0),cdsMan,cdstrackMan);
         Tools::Fill1D(Form("NCDCOutHit"),nCDCforVeto);
       }
       //Pos_CDH.SetZ(-1*ncdhhit->hitpos()); // (-1*) is wrong in SIM [20170925]
@@ -1218,16 +1264,8 @@ int main( int argc, char** argv )
         std::cout<<"L."<<__LINE__ << "CDH costheta " << Pos_CDH.CosTheta() <<std::endl;
       }
          
-
-      // neutral particle in CDH //
-      if(NeutralCDHseg.size()!=1) {
-        std::cout << "L." << __LINE__ << " # of seg for neutral hits " << NeutralCDHseg.size() << std::endl;
-      } else {
-        Tools::Fill1D(Form("CDHNeutralSeg"),NeutralCDHseg.at(0));
-      }
-
-      CDSTrack *track_pip = cdstrackMan->Track( pip_ID[0] ); // only 1 track
-      CDSTrack *track_pim = cdstrackMan->Track( pim_ID[0] ); // only 1 track
+      CDSTrack *track_pip = cdstrackMan->Track( pip_ID.at(0) ); // only 1 track
+      CDSTrack *track_pim = cdstrackMan->Track( pim_ID.at(0) ); // only 1 track
 
       TVector3 vtx_react;//reaction vertex
       TVector3 vtx_dis;//displaced vertex
@@ -1323,8 +1361,10 @@ int main( int argc, char** argv )
       tofpim -= beamtof;
       tofpip -= beamtof;
       tofn = ntof;
-
-      Tools::Fill1D(Form("CDH%d_T0%d_TOF_Neutral",ncdhhit->seg() ,t0seg),ntof);
+      
+      if(Ncanhitseg>0){
+        Tools::Fill1D(Form("CDH%d_T0%d_TOF_Neutral",Ncanhitseg ,t0seg),ntof);
+      }
       //std::cout <<"cdh time "<<  ncdhhit->ctmean() << std::endl;
       //std::cout << "ctmt0   " << ctmT0 << std::endl;
       //std::cout <<"beamtof  " <<  beamtof << std::endl;
@@ -1457,12 +1497,13 @@ int main( int argc, char** argv )
           Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_pim_mean.Z(),vtx_pim_mean.X());
           Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_pim_mean.Z(),vtx_pim_mean.Y());
           Tools::Fill2D(Form("Vtx_XY_fid"),vtx_pim_mean.X(),vtx_pim_mean.Y());
-          Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
-          Tools::Fill2D(Form("CDHzNeutraltime"),Pos_CDH.z(),ncdhhit->ctmean()-ctmT0-beamtof);
-          Tools::Fill2D( Form("NMomCDHtime%d",ncdhhit->seg()),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
-          Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
-          Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
-         
+          if(IsrecoPassed){
+            Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
+            Tools::Fill2D(Form("CDHzNeutraltime"),Pos_CDH.z(),ncdhhit->ctmean()-ctmT0-beamtof);
+            Tools::Fill2D( Form("NMomCDHtime%d",Ncanhitseg),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
+            Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
+            Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_missn.Mag() );
+          }
           if(NeutralBetaCDH<anacuts::beta_MAX) NBetaOK=true;
         
           if(NBetaOK){
@@ -1532,7 +1573,7 @@ int main( int argc, char** argv )
               Tools::Fill2D( Form("dE_betainv_fid_beta_dE_woK0"), 1./NeutralBetaCDH, ncdhhit->emean() );
               Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_woK0"), mm_mass, P_missn.Mag() );
 
-              Tools::Fill2D(Form("CDHseg_MMass_fid_beta_dE_woK0"),ncdhhit->seg(),mm_mass);
+              Tools::Fill2D(Form("CDHseg_MMass_fid_beta_dE_woK0"),Ncanhitseg,mm_mass);
               Tools::Fill2D(Form("CDHz_MMass_fid_beta_dE_woK0"),Pos_CDH.z(),mm_mass);
               //Tools::Fill2D(Form("zVTX_MMass_fid_beta_dE_woK0"),vtx_react.z(),mm_mass);
               Tools::Fill2D( Form("IMnpim_IMnpip_dE_woK0"), (LVec_n+LVec_pip).M(), (LVec_n+LVec_pim).M() );
@@ -1542,7 +1583,7 @@ int main( int argc, char** argv )
               Tools::Fill2D( Form("CDHz_IMnpim_fid_beta_dE_woK0_n"),Pos_CDH.z(),(LVec_n+LVec_pim).M());
             }else{
               // K0 selection
-              Tools::Fill2D( Form("NMomCDHtime%d_wK0",ncdhhit->seg()),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
+              Tools::Fill2D( Form("NMomCDHtime%d_wK0",Ncanhitseg),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
               Tools::Fill2D( Form("dE_betainv_fid_beta_dE_wK0"), 1./NeutralBetaCDH, ncdhhit->emean() );
               Tools::Fill2D( Form("MMom_MMass_fid_beta_dE_wK0"), mm_mass, P_missn.Mag() );
             }
@@ -1985,7 +2026,7 @@ int main( int argc, char** argv )
             mcnanc=anc;
 
             dE = ncdhhit->emean();
-            neutralseg = ncdhhit->seg();
+            neutralseg = Ncanhitseg;
             nhitOutCDC = nCDCforVeto;
             ForwardCharge = (int)forwardcharge;
             mom_n_Sp = LVec_n_vtx[0];            // 4-momentum(neutron)

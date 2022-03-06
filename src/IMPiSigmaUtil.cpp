@@ -286,7 +286,7 @@ int Util::GetNHitsCDCOuterNoAss(const TVector3 PosCDH, CDSHitMan *cdsman,CDSTrac
 }
 
 
-void Util::AnaPipPimCDCCDH(const TVector3 PosCDH,const std::vector <int> &seg, const int pip_ID, const int pim_ID, CDSHitMan *cdsman,CDSTrackingMan *trackman)
+void Util::AnaPipPimCDCCDH(const TVector3 PosCDH,const HodoscopeLikeHit *nhit, const int pip_ID, const int pim_ID, CDSHitMan *cdsman,CDSTrackingMan *trackman)
 {
   CDSTrack *track_pip = trackman->Track( pip_ID ); // only 1 track
   CDSTrack *track_pim = trackman->Track( pim_ID ); // only 1 track
@@ -294,8 +294,8 @@ void Util::AnaPipPimCDCCDH(const TVector3 PosCDH,const std::vector <int> &seg, c
   HodoscopeLikeHit *cdhhit_pim = track_pim->CDHHit( cdsman, 0 );
   int CDHseg_pip = cdhhit_pip->seg();
   int CDHseg_pim = cdhhit_pim->seg();
-  Tools::Fill1D( Form("diff_CDH_pip"), seg.at(0)-CDHseg_pip);
-  Tools::Fill1D( Form("diff_CDH_pim"), seg.at(0)-CDHseg_pim);
+  Tools::Fill1D( Form("diff_CDH_pip"), nhit->seg()-CDHseg_pip);
+  Tools::Fill1D( Form("diff_CDH_pim"), nhit->seg()-CDHseg_pim);
 
   const int cdchitpipL14 = track_pip->nTrackHit(14);
   const int cdchitpipL15 = track_pip->nTrackHit(15);

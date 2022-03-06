@@ -889,8 +889,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
         //round cut
         if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) nCDH--;
         else if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) nCDH--;
-          else Ncanhitseg= NeutralCDHseg.at(iNeutralCDHseg);
-        }
+        else Ncanhitseg= NeutralCDHseg.at(iNeutralCDHseg);
+      }
     }//for iNeutralCDHseg
 
     Tools::Fill1D(Form("mul_CDH_iso"),nCDH);

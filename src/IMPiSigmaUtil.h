@@ -33,7 +33,7 @@ namespace Util
   int GetNHitsCDCInner3Lay(CDSHitMan *cdsman);
   int GetNHitsCDCOuter(TVector3 PosCDH, CDSHitMan *cdsman, const double rangedeg=15.0);
   int GetNHitsCDCOuterNoAss(TVector3 PosCDH,CDSHitMan *cdsman, CDSTrackingMan *trackman, const double rangedeg=15.0);
-  void AnaPipPimCDCCDH(const TVector3 PosCDH,const std::vector <int> &seg, const int pip_ID, const int pim_ID, CDSHitMan *cdsman,CDSTrackingMan *trackman);
+  void AnaPipPimCDCCDH(const TVector3 PosCDH,const HodoscopeLikeHit *nhit, const int pip_ID, const int pim_ID, CDSHitMan *cdsman,CDSTrackingMan *trackman);
   
   
   double AnaBeamSpec(ConfMan *confman,BeamLineTrackMan *bltrackman,const int blc1id, const int blc2id);
