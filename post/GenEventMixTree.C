@@ -61,7 +61,7 @@ TVector3 *CDH_Pos_pim2 = NULL;
 TVector3 *CDH_Pos_pip2 = NULL;
 
 
-void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v229.root")
+void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v232.root")
 {
   if(gROOT->GetVersionInt() < 60000){
     std::cout << "Use ROOT6 " << std::endl;
@@ -298,7 +298,7 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v229.root")
   decltype(vec_CDH_Pos)::iterator last_CDH_Pos = vec_CDH_Pos.end();
   
   const size_t nsize=vec_LVec_n.size();
-  const int npipipairused = 10;
+  const int npipipairused = 20;
   for ( Int_t i=0; i<nevent*npipipairused; i++ ) {
     tree->GetEvent(i%(nevent-1));
     if(i%50000==0) std::cout << "Event# " << i << std::endl;

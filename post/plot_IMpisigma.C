@@ -59,7 +59,7 @@ const unsigned int sidebandtype=0;
 //0 no isolation
 //1 round cut
 //2 revert round cut
-const unsigned int IsolationFlag=0;
+const unsigned int IsolationFlag=1;
 
 const bool CDCChargeVetoFlag=true;
 
@@ -89,8 +89,18 @@ const bool RejectStoppedSigma = true;
 //Sm mode sideband high mass side kPink+3
 //neutron mass : 4 (blue)
 
-void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
+void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int dEcut=2,const int sysud=0)
 {
+  if(sysud==0){
+    std::cout << "default MIX scale "<< std::endl;
+  }else if(sysud==1){
+    std::cout << "MIX scale is increased by 10%"<< std::endl;
+  }else if(sysud==-1){
+    std::cout << "MIX scale is decreased by 10%"<< std::endl;
+  }else{
+    std::cout << "invalid sysud flag !! " << std::endl;
+    return;
+  }
   gROOT->Reset();
   gROOT->SetBatch(true);
   //gROOT->SetStyle("Plain");
@@ -111,7 +121,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   TH1::SetDefaultSumw2();
 
   std::cout << "infile " << filename <<std::endl;
-  TString pdfname = std::string(filename);
+  TString sfilename = std::string(filename);
+  //TString pdfdir = "pdf/";
+  TString pdfname = sfilename;
+  pdfname.Replace(std::string(filename).size()-5,6,Form("_dE%d.pdf",dEcut));
   if(qvalcutflag==0) pdfname.Replace(std::string(filename).size()-5,6,".pdf");
   if(qvalcutflag==1) pdfname.Replace(std::string(filename).size()-5,8,"_qlo.pdf");
   if(qvalcutflag==2) pdfname.Replace(std::string(filename).size()-5,8,"_qhi.pdf");
@@ -4744,7 +4757,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
     //-- neutron-ID, K0 and missing neutron selection --//
     if(anacuts::beta_MIN<NeutralBetaCDH &&  NeutralBetaCDH<anacuts::beta_MAX  ) NBetaOK=true;
-    if(anacuts::dE_MIN<dE) NdEOK=true;
+    //if(anacuts::dE_MIN<dE) NdEOK=true;
+    if((double)dEcut<dE) NdEOK=true;
     double MassNPip= (*LVec_n+*LVec_pip).M();
     double MassNPim= (*LVec_n+*LVec_pim).M();
 
@@ -5139,8 +5153,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
     //std::cout << __LINE__ << std::endl;
     double weight = 1.0;
+    double sysupdown = 1.0+0.1*(double)sysud;
     if(MIXmode){
-      weight = 4.24608060240400029e-02;
+      weight = 4.24608060240400029e-02*sysupdown;
       if(SimSpmode){
         weight *=0.72;
         weight *=6.45779095649856028e-01;
@@ -8618,11 +8633,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
 
   TIter nexthist2(gDirectory->GetList());
   TString outname = std::string(filename);
-  if(IsolationFlag==0) outname.Replace(std::string(filename).size()-5,5,"_out_noiso.root");
-  else if(IsolationFlag==1) outname.Replace(std::string(filename).size()-5,5,"_out_iso.root");
-  else if(IsolationFlag==2) outname.Replace(std::string(filename).size()-5,5,"_out_isowide.root");
-  else if(IsolationFlag==3) outname.Replace(std::string(filename).size()-5,5,"_out_isorev.root");
-  //outname.Replace(std::string(filename).size()-5,5,"_outncutK015.root");
+  if(IsolationFlag==0) outname.Replace(std::string(filename).size()-5,5,Form("_out_dE%d_noiso.root",dEcut));
+  else if(IsolationFlag==1) outname.Replace(std::string(filename).size()-5,5,Form("_out_dE%d_iso.root",dEcut));
+  else if(IsolationFlag==2) outname.Replace(std::string(filename).size()-5,5,Form("_out_dE%d_isowide.root",dEcut));
+  else if(IsolationFlag==3) outname.Replace(std::string(filename).size()-5,5,Form("_out_dE%d_isorev.root",dEcut));
   
   if(qvalcutflag==1) outname.Replace(std::string(outname).size()-5,5,"_qlo.root");
   if(qvalcutflag==2) outname.Replace(std::string(outname).size()-5,5,"_qhi.root");
@@ -8634,6 +8648,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0)
   
   if(RejectStoppedSigma && (RealDatamode || SimSpmode || SimSmmode || SimK0nnmode)){
     outname.Replace(std::string(outname).size()-5,5,"_nostop.root");
+  }
+  
+  if(MIXmode){
+    outname.Replace(std::string(outname).size()-5,5,Form("_sys%d.root",sysud));
   }
     
   TFile *fout = new TFile(outname.Data(),"RECREATE");
