@@ -4836,6 +4836,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       nmiss_mom = LVec_npipimiss.P();
       cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
       nmissthetalab = acos(cos_nmisslab);  
+      MassNPip = LVec_pip_n.M();
+      MassNPim = LVec_pim_n.M();
     }else if(SigmaPFlag){
       *LVec_n = *LVec_n_Sp;
       LVec_pip_n = *LVec_n_Sp+*LVec_pip;
@@ -4847,6 +4849,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       nmiss_mom = LVec_npipimiss.P();
       cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
       nmissthetalab = acos(cos_nmisslab);  
+      MassNPip = LVec_pip_n.M();
+      MassNPim = LVec_pim_n.M();
     }else if(SigmaMFlag){
       *LVec_n = *LVec_n_Sm;
       LVec_pip_n = *LVec_n_Sm+*LVec_pip;
@@ -4858,6 +4862,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       nmiss_mom = LVec_npipimiss.P();
       cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
       nmissthetalab = acos(cos_nmisslab);  
+      MassNPip = LVec_pip_n.M();
+      MassNPim = LVec_pim_n.M();
     }
 
     //vicinity of Sigma+ & NMiss events
