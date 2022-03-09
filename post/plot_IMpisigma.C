@@ -124,11 +124,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   TString sfilename = std::string(filename);
   //TString pdfdir = "pdf/";
   TString pdfname = sfilename;
-  pdfname.Replace(std::string(filename).size()-5,6,Form("_dE%d.pdf",dEcut));
-  if(qvalcutflag==0) pdfname.Replace(std::string(filename).size()-5,6,".pdf");
-  if(qvalcutflag==1) pdfname.Replace(std::string(filename).size()-5,8,"_qlo.pdf");
-  if(qvalcutflag==2) pdfname.Replace(std::string(filename).size()-5,8,"_qhi.pdf");
-  if(qvalcutflag==3) pdfname.Replace(std::string(filename).size()-5,8,"_theta15.pdf");
+  if(qvalcutflag==0) pdfname.Replace(std::string(filename).size()-5,9,Form("dE%d.pdf",dEcut));
+  if(qvalcutflag==1) pdfname.Replace(std::string(filename).size()-5,11,Form("dE%d_qlo.pdf",dEcut));
+  if(qvalcutflag==2) pdfname.Replace(std::string(filename).size()-5,11,Form("dE%d_qhi.pdf",dEcut));
+  if(qvalcutflag==3) pdfname.Replace(std::string(filename).size()-5,11,Form("dE%d_theta15.pdf",dEcut));
   std::cout << "pdfname: " << pdfname << std::endl;
   std::cout << std::endl;
 
@@ -4825,6 +4824,41 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     //Sigma- production in CDS
     if( (anacuts::Sigmam_MIN_wide<MassNPim && MassNPim<anacuts::Sigmam_MAX_wide)) SigmawideMFlag=true;
     
+    //momentum update
+    if(K0Flag){
+      *LVec_n = *LVec_n_K0;
+      LVec_pip_n = *LVec_n_K0+*LVec_pip;
+      LVec_pim_n = *LVec_n_K0+*LVec_pim;
+      LVec_pip_pim_n = *LVec_n_K0+*LVec_pip+*LVec_pim;
+      LVec_npipimiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n_K0;
+      qkn = *LVec_beam-LVec_npipimiss;
+      nmiss_mass = LVec_npipimiss.M();
+      nmiss_mom = LVec_npipimiss.P();
+      cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
+      nmissthetalab = acos(cos_nmisslab);  
+    }else if(SigmaPFlag){
+      *LVec_n = *LVec_n_Sp;
+      LVec_pip_n = *LVec_n_Sp+*LVec_pip;
+      LVec_pim_n = *LVec_n_Sp+*LVec_pim;
+      LVec_pip_pim_n = *LVec_n_Sp+*LVec_pip+*LVec_pim;
+      LVec_npipimiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n_Sp;
+      qkn = *LVec_beam-LVec_npipimiss;
+      nmiss_mass = LVec_npipimiss.M();
+      nmiss_mom = LVec_npipimiss.P();
+      cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
+      nmissthetalab = acos(cos_nmisslab);  
+    }else if(SigmaMFlag){
+      *LVec_n = *LVec_n_Sm;
+      LVec_pip_n = *LVec_n_Sm+*LVec_pip;
+      LVec_pim_n = *LVec_n_Sm+*LVec_pim;
+      LVec_pip_pim_n = *LVec_n_Sm+*LVec_pip+*LVec_pim;
+      LVec_npipimiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n_Sm;
+      qkn = *LVec_beam-LVec_npipimiss;
+      nmiss_mass = LVec_npipimiss.M();
+      nmiss_mom = LVec_npipimiss.P();
+      cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
+      nmissthetalab = acos(cos_nmisslab);  
+    }
 
     //vicinity of Sigma+ & NMiss events
     if(pow(((MassNPip - anacuts::Sigmap_center)/5.0/anacuts::Sigmap_sigma),2.0) +
@@ -5103,41 +5137,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     }
 
 
-    //momentum update
-    if(K0Flag){
-      *LVec_n = *LVec_n_K0;
-      LVec_pip_n = *LVec_n_K0+*LVec_pip;
-      LVec_pim_n = *LVec_n_K0+*LVec_pim;
-      LVec_pip_pim_n = *LVec_n_K0+*LVec_pip+*LVec_pim;
-      LVec_npipimiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n_K0;
-      qkn = *LVec_beam-LVec_npipimiss;
-      nmiss_mass = LVec_npipimiss.M();
-      nmiss_mom = LVec_npipimiss.P();
-      cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
-      nmissthetalab = acos(cos_nmisslab);  
-    }else if(SigmaPFlag){
-      *LVec_n = *LVec_n_Sp;
-      LVec_pip_n = *LVec_n_Sp+*LVec_pip;
-      LVec_pim_n = *LVec_n_Sp+*LVec_pim;
-      LVec_pip_pim_n = *LVec_n_Sp+*LVec_pip+*LVec_pim;
-      LVec_npipimiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n_Sp;
-      qkn = *LVec_beam-LVec_npipimiss;
-      nmiss_mass = LVec_npipimiss.M();
-      nmiss_mom = LVec_npipimiss.P();
-      cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
-      nmissthetalab = acos(cos_nmisslab);  
-    }else if(SigmaMFlag){
-      *LVec_n = *LVec_n_Sm;
-      LVec_pip_n = *LVec_n_Sm+*LVec_pip;
-      LVec_pim_n = *LVec_n_Sm+*LVec_pim;
-      LVec_pip_pim_n = *LVec_n_Sm+*LVec_pip+*LVec_pim;
-      LVec_npipimiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n_Sm;
-      qkn = *LVec_beam-LVec_npipimiss;
-      nmiss_mass = LVec_npipimiss.M();
-      nmiss_mom = LVec_npipimiss.P();
-      cos_nmisslab = LVec_npipimiss.Vect().Dot((*LVec_beam).Vect())/(LVec_npipimiss.Vect().Mag()*(*LVec_beam).Vect().Mag());    
-      nmissthetalab = acos(cos_nmisslab);  
-    }
     
     ntof_nmom->Fill((*LVec_n).P(),tofn);
     if( (qkn.P()>=anacuts::qvalcut) && (qvalcutflag==1) ) continue;

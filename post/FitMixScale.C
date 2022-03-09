@@ -1,10 +1,10 @@
 //display vicinity of signal region of data and mixed events
 //determine scaling factor of mixed events by fitting
 
-TH1D* MMnmiss_woK0_woSm_fmix;
-TH1D* IMnpip_woK0_woSm_fmix;
-TH1D* MMnmiss_woK0_woSp_fmix;
-TH1D* IMnpim_woK0_woSp_fmix;
+TH1D* MMnmiss_woK0_woSm_mix;
+TH1D* IMnpip_woK0_woSm_mix;
+TH1D* MMnmiss_woK0_woSp_mix;
+TH1D* IMnpim_woK0_woSp_mix;
 
 const int dEcut=2;
 const int Version=232;
@@ -14,69 +14,51 @@ void FitMixScale()
   fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop.root",Version,dEcut));
   fmix = TFile::Open(Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_dE%d_iso_nostop_sys0.root",Version,dEcut));
 
-  TH2F* MM2npi_IMnpip_vici_f = (TH2F*)f->Get("MM2npi_IMnpip_vici");
-  TH2F* MM2npi_IMnpim_vici_f = (TH2F*)f->Get("MM2npi_IMnpim_vici"); 
+  TH2D* MMnmiss_IMnpip_woK0_woSm_vici_data = (TH2D*)fr->Get("MMnmiss_IMnpip_dE_woK0_woSm_vici");
+  TH2D* MMnmiss_IMnpim_woK0_woSp_vici_data = (TH2D*)fr->Get("MMnmiss_IMnpim_dE_woK0_woSp_vici");
 
-  TH2F* MM2npi_IMnpip_vici_fmix = (TH2F*)fmix->Get("MM2npi_IMnpip_vici");
-  TH2F* MM2npi_IMnpim_vici_fmix = (TH2F*)fmix->Get("MM2npi_IMnpim_vici"); 
+  TH2D* MMnmiss_IMnpip_woK0_woSm_vici_mix = (TH2D*)fmix->Get("MMnmiss_IMnpip_dE_woK0_woSm_vici");
+  TH2D* MMnmiss_IMnpim_woK0_woSp_vici_mix = (TH2D*)fmix->Get("MMnmiss_IMnpim_dE_woK0_woSp_vici");
 
+  MMnmiss_IMnpip_woK0_woSm_vici_data->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpip_woK0_woSm_vici_data->GetYaxis()->SetRangeUser(0.7,1.1);
+  MMnmiss_IMnpip_woK0_woSm_vici_mix->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpip_woK0_woSm_vici_mix->GetYaxis()->SetRangeUser(0.7,1.1);
+  MMnmiss_IMnpim_woK0_woSp_vici_data->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpim_woK0_woSp_vici_data->GetYaxis()->SetRangeUser(0.7,1.1);
+  MMnmiss_IMnpim_woK0_woSp_vici_mix->GetXaxis()->SetRangeUser(1.1,1.3);
+  MMnmiss_IMnpim_woK0_woSp_vici_mix->GetYaxis()->SetRangeUser(0.7,1.1);
+  
   TCanvas *c1 = new TCanvas("c1","c1");
-  MM2npi_IMnpip_vici_f->Draw("colz");
+  MMnmiss_IMnpip_woK0_woSm_vici_data->Draw("colz");
 
   TCanvas *c2 = new TCanvas("c2","c2");
-  MM2npi_IMnpim_vici_f->Draw("colz");
+  MMnmiss_IMnpim_woK0_woSp_vici_data->Draw("colz");
 
   TCanvas *c3 = new TCanvas("c3","c3");
-  MM2npi_IMnpip_vici_fmix->Draw("colz");
+  MMnmiss_IMnpip_woK0_woSm_vici_mix->Draw("colz");
 
   TCanvas *c4 = new TCanvas("c4","c4");
-  MM2npi_IMnpim_vici_fmix->Draw("colz");
-
-  TH1D* MM2npi_f_pip = (TH1D*)MM2npi_IMnpip_vici_f->ProjectionY("MM2npi_f_pip");
-  TH1D* IMnpip_f = (TH1D*)MM2npi_IMnpip_vici_f->ProjectionX("IMnpip_f");
-  TH1D* MM2npi_f_pim = (TH1D*)MM2npi_IMnpim_vici_f->ProjectionY("MM2npi_f_pim");
-  TH1D* IMnpim_f = (TH1D*)MM2npi_IMnpim_vici_f->ProjectionX("IMnpim_f");
-  MM2npi_fmix_pip = (TH1D*)MM2npi_IMnpip_vici_fmix->ProjectionY("MM2npi_fmix_pip");
-  IMnpip_fmix = (TH1D*)MM2npi_IMnpip_vici_fmix->ProjectionX("IMnpip_fmix");
-  MM2npi_fmix_pim = (TH1D*)MM2npi_IMnpim_vici_fmix->ProjectionY("MM2npi_fmix_pim");
-  IMnpim_fmix = (TH1D*)MM2npi_IMnpim_vici_fmix->ProjectionX("IMnpim_fmix");
-  IMnpip_f->RebinX(2);
-  IMnpip_fmix->RebinX(2);
-  IMnpim_f->RebinX(2);
-  IMnpim_fmix->RebinX(2);
+  MMnmiss_IMnpim_woK0_woSp_vici_mix->Draw("colz");
   
   TCanvas *c5 = new TCanvas("c5","c5");
-  MM2npi_f_pip->GetXaxis()->SetRangeUser(-0.2,0.2);
-  MM2npi_f_pip->Draw("HE");
-  //MM2npi_fmix_pip->SetLineColor(3);
-  //MM2npi_fmix_pip->Draw("HEsame");
+  TH1D* IMnpip_woK0_woSm_data = (TH1D*)MMnmiss_IMnpip_woK0_woSm_vici_data->ProjectionX("IMnpip_woK0_woSm_vici_data");
+  IMnpip_woK0_woSm_mix  = (TH1D*)MMnmiss_IMnpip_woK0_woSm_vici_mix->ProjectionX("IMnpip_woK0_woSm_vici_mix");
+  
+  IMnpip_woK0_woSm_data->Draw();
+  TF1 *fIMnpip = new TF1("fIMnpip",fit_IMnpip,-0.2,0.2,1);
+  TF1 *fIMnpip_up = new TF1("f1IMnpip_up",fit_IMnpip,-0.2,0.2,1);
+  TF1 *fIMnpip_down = new TF1("f1IMnip_down",fit_IMnpip,-0.2,0.2,1);
+  fIMnpip->SetParameter(1,1.0);
+  IMnpip_woK0_woSm_data->Fit("fIMnpip","r","",-0.1,-0.06);
+  Double_t ret = fIMnpip->GetParameter(0);
+  Double_t reterr = fIMnpip->GetParError(0);
+  fIMnpip->SetParameter(0,ret);
+  fIMnpip->SetLineColor(3);
+  fIMnpip->Draw("same");
 
-  TF1 *f1 = new TF1("f1",fit_MM2npi_pip,-0.2,0.2,1);
-  TF1 *f1u = new TF1("f1u",fit_MM2npi_pip,-0.2,0.2,1);
-  TF1 *f1d = new TF1("f1d",fit_MM2npi_pip,-0.2,0.2,1);
-  f1->SetParameter(1,1.0);
-  MM2npi_f_pip->Fit("f1","r","",-0.1,-0.06);
-  Double_t ret = f1->GetParameter(0);
-  Double_t reterr = f1->GetParError(0);
-  f1->SetParameter(0,ret);
-  f1->SetLineColor(3);
-  f1->Draw("same");
 
-
-  TCanvas *c6 = new TCanvas("c6","c6");
-  IMnpip_f->GetXaxis()->SetRangeUser(1.14,1.24);
-  IMnpip_f->Draw("HE");
-
-  TF1 *f2 = new TF1("f2",fit_IMnpip,1,2,1);
-  TF1 *f2u = new TF1("f2u",fit_IMnpip,1,2,1);
-  TF1 *f2d = new TF1("f2d",fit_IMnpip,1,2,1);
-  IMnpip_f->Fit("f2","r","",1.21,1.22);
-  Double_t ret2 = f2->GetParameter(0);
-  Double_t ret2err = f2->GetParError(0);
-  f2->SetParameter(0,ret2);
-  f2->SetLineColor(4);
-  f2->Draw("same");
-
+  /*
   double avg = (ret*ret2err+ret2*reterr)/(reterr+ret2err);
   std::cout << "Sp mode scale avg: " << avg << std::endl;
   f1->SetParameter(0,avg);
@@ -156,58 +138,18 @@ void FitMixScale()
   f4d->Draw("same");
   //IMnpip_fmix->SetLineColor(4);
   //IMnpip_fmix->Draw("same");
-}
-
-Double_t fit_MM2npi_pip(Double_t *x,Double_t *par)
-{
-  if(!MM2npi_fmix_pip){
-    std::cout << "cannot find template !! " << std::endl;
-    return 0;
-  }
-  Double_t MM2npi=x[0]; 
-  Int_t bin = MM2npi_fmix_pip->GetXaxis()->FindBin(MM2npi);
-  Double_t br= par[0]*(MM2npi_fmix_pip->GetBinContent(bin));
-   
-  return br;
-
+  */
 }
 
 Double_t fit_IMnpip(Double_t *x,Double_t *par)
 {
-  if(!IMnpip_fmix){
+  if(!IMnpip_woK0_woSm_mix){
     std::cout << "cannot find template !! " << std::endl;
     return 0;
   }
   Double_t IMnpip=x[0]; 
-  Int_t bin = IMnpip_fmix->GetXaxis()->FindBin(IMnpip);
-  Double_t br= par[0]*(IMnpip_fmix->GetBinContent(bin));
-   
-  return br;
-}
-
-Double_t fit_MM2npi_pim(Double_t *x,Double_t *par)
-{
-  if(!MM2npi_fmix_pim){
-    std::cout << "cannot find template !! " << std::endl;
-    return 0;
-  }
-  Double_t MM2npi=x[0]; 
-  Int_t bin = MM2npi_fmix_pim->GetXaxis()->FindBin(MM2npi);
-  Double_t br= par[0]*(MM2npi_fmix_pim->GetBinContent(bin));
-   
-  return br;
-
-}
-
-Double_t fit_IMnpim(Double_t *x,Double_t *par)
-{
-  if(!IMnpim_fmix){
-    std::cout << "cannot find template !! " << std::endl;
-    return 0;
-  }
-  Double_t IMnpim=x[0]; 
-  Int_t bin = IMnpim_fmix->GetXaxis()->FindBin(IMnpim);
-  Double_t br= par[0]*(IMnpim_fmix->GetBinContent(bin));
+  Int_t bin = IMnpip_woK0_woSm_mix->GetXaxis()->FindBin(IMnpip);
+  Double_t br= par[0]*(IMnpip_woK0_woSm_mix->GetBinContent(bin));
    
   return br;
 }
