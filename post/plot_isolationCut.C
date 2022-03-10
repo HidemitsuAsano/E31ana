@@ -1,8 +1,13 @@
-void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v202_out_iso.root"){
+
+const int dEcut=2;
+const int Version=232;
+
+
+void plot_isolationCut(){
   
   gStyle->SetPalette(1);
   gStyle->SetOptStat("e");
-  TFile *f = new TFile(filename,"READ");
+  TFile *f = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop.root",Version,dEcut));
   f->cd();
 
   TCanvas *c1 = new  TCanvas("c1","c1");
@@ -11,7 +16,7 @@ void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v202_out_iso
 
   TCanvas *c2 = new  TCanvas("c2","c2");
   TH2D* diff2d_CDC_CDH_pip = (TH2D*)f->Get("diff2d_CDC_CDH_pip");
-  diff2d_CDC_CDH_pip->SetMaximum(diff2d_CDC_CDH_pim->GetMaximum());
+  //diff2d_CDC_CDH_pip->SetMaximum(diff2d_CDC_CDH_pim->GetMaximum());
   diff2d_CDC_CDH_pip->Draw("colz");
   
   TCanvas *c3 = new TCanvas("c3","c3");
@@ -48,14 +53,15 @@ void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v202_out_iso
   diff2d_CDC_CDH_pip_z_tof->RebinY(2);
   diff2d_CDC_CDH_pip_z_tof->Draw("colz");
 
-  TCanvas *c1_1 = new  TCanvas("c1_1","c1_1");
-  TH2D* diff2d_CDC_CDH_pim_woSid_won = (TH2D*)f->Get("diff2d_CDC_CDH_pim_woSid_won");
-  diff2d_CDC_CDH_pim_woSid_won->Draw("colz");
+  //TCanvas *c1_1 = new  TCanvas("c1_1","c1_1");
+  //TH2D* diff2d_CDC_CDH_pim_woSid_won = (TH2D*)f->Get("diff2d_CDC_CDH_pim_woSid_won");
+  //diff2d_CDC_CDH_pim_woSid_won->Draw("colz");
 
-  TCanvas *c2_2 = new  TCanvas("c2_2","c2_2");
-  TH2D* diff2d_CDC_CDH_pip_woSid_won = (TH2D*)f->Get("diff2d_CDC_CDH_pip_woSid_won");
-  diff2d_CDC_CDH_pip_woSid_won->Draw("colz");
+  //TCanvas *c2_2 = new  TCanvas("c2_2","c2_2");
+  //TH2D* diff2d_CDC_CDH_pip_woSid_won = (TH2D*)f->Get("diff2d_CDC_CDH_pip_woSid_won");
+  //diff2d_CDC_CDH_pip_woSid_won->Draw("colz");
   
+  /*
   TCanvas *c3_3 = new TCanvas("c3_3","c3_3");
   TH1D *pimpx_woSid_won = (TH1D*) diff2d_CDC_CDH_pim_woSid_won->ProjectionX();;
   TH1D *pippx_woSid_won = (TH1D*) diff2d_CDC_CDH_pip_woSid_won->ProjectionX();
@@ -77,7 +83,7 @@ void plot_isolationCut(const char *filename="evanaIMpisigma_npippim_v202_out_iso
   npimtof_woSid_won->Draw("HE");
   npiptof_woSid_won->SetLineColor(2);
   npiptof_woSid_won->Draw("HEsame");
-
+  */
   /*
   TCanvas *c5 = new TCanvas("c5","c5");
   MMnmiss_diffphi_CDC_CDH_pim->Draw("colz");
