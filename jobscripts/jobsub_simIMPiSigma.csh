@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="150"
+set Version="151"
 set DSTVersion="29"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
@@ -21,15 +21,17 @@ if( ! -d $OUTDIRSUB) then
  mkdir -p $OUTDIRSUB
 endif
 
+cd ../
 set SRCDIR="/gpfs/home/had/hiasano/ana/k18ana/src/"
+set CSHDIR="/gpfs/home/had/hiasano/ana/k18ana/jobscripts/"
 cp $SRCDIR/UserSimIMPiSigma.cpp $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaAnaPar.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaHist.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaUtil.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaUtil.cpp $OUTDIRSUB/
 
-cp hadd_simhist.csh $OUTDIRSUB/
-cp hadd_sim_pippimn.csh $OUTDIRSUB/
+cp $CSHDIR/hadd_simhist.csh $OUTDIRSUB/
+cp $CSHDIR/hadd_sim_pippimn.csh $OUTDIRSUB/
 ln -s $OUTDIRSUB/simIMpisigma_nSppim_all.root simpost/simIMpisigma_nSppim_v${Version}.root
 ln -s $OUTDIRSUB/simIMpisigma_nSmpip_all.root simpost/simIMpisigma_nSmpip_v${Version}.root
 ln -s $OUTDIRSUB/simIMpisigma_nSppim_pippimn_all.root simpost/simIMpisigma_nSppim_pippimn_v${Version}.root

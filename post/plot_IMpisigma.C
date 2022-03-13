@@ -58,7 +58,7 @@ const unsigned int sidebandtype=0;
 //v198 def, 
 //0 no isolation
 //1 round cut
-//2 revert round cut
+//2 round cut - v2
 const unsigned int IsolationFlag=1;
 
 const bool CDCChargeVetoFlag=true;
@@ -989,6 +989,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   TH2F* diff2d_Zpippim_Znpim_woSid_won;
   TH2F* diff2d_CDC_CDH_pim;//neutral hit - pim track projected position
   TH2F* diff2d_CDC_CDH_pip;//neutral hit - pip track projected position
+  TH2F* diff2d_CDC_CDH_pim_Sp;//neutral hit - pim track projected position
+  TH2F* diff2d_CDC_CDH_pip_Sp;//neutral hit - pip track projected position
+  TH2F* diff2d_CDC_CDH_pim_Sm;//neutral hit - pim track projected position
+  TH2F* diff2d_CDC_CDH_pip_Sm;//neutral hit - pip track projected position
   TH2F* diff2d_CDC_CDH_pim_phi_tof;//neutral hit - pim track projected position (phi) vs tof(ncan - pim)
   TH2F* diff2d_CDC_CDH_pip_phi_tof;//neutral hit - pip track projected position (phi) vs tof(ncan - pip)
   TH2F* diff2d_CDC_CDH_pim_z_tof;//neutral hit - pim track projected positio (z) vs tof (ncan - -pim)
@@ -3966,6 +3970,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   diff2d_CDC_CDH_pim->SetXTitle("CDH hit - #pi^{-} track (phi) [radian]");
   diff2d_CDC_CDH_pim->SetYTitle("CDH hit - #pi^{-} track (z) [cm]");
   
+  diff2d_CDC_CDH_pim_Sp = new TH2F("diff2d_CDC_CDH_pim_Sp","diff2d_CDC_CDH_pim_Sp",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
+  diff2d_CDC_CDH_pim_Sp->SetXTitle("CDH hit - #pi^{-} track (phi) [radian]");
+  diff2d_CDC_CDH_pim_Sp->SetYTitle("CDH hit - #pi^{-} track (z) [cm]");
+  
+  diff2d_CDC_CDH_pim_Sm = new TH2F("diff2d_CDC_CDH_pim_Sm","diff2d_CDC_CDH_pim_Sm",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
+  diff2d_CDC_CDH_pim_Sm->SetXTitle("CDH hit - #pi^{-} track (phi) [radian]");
+  diff2d_CDC_CDH_pim_Sm->SetYTitle("CDH hit - #pi^{-} track (z) [cm]");
+  
   diff2d_CDC_CDH_pim_phi_tof = new TH2F("diff2d_CDC_CDH_pim_phi_tof","diff2d_CDC_CDH_pim_phi_tof",100,-1.*TMath::Pi(),TMath::Pi(),120,-10,50);
   diff2d_CDC_CDH_pim_phi_tof->SetXTitle("CDH hit - #pi^{-} track (phi) [radian]");
   diff2d_CDC_CDH_pim_phi_tof->SetYTitle("CDH hit - #pi^{-} TOF [nsec]");
@@ -3977,6 +3989,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   diff2d_CDC_CDH_pip = new TH2F("diff2d_CDC_CDH_pip","diff2d_CDC_CDH_pip",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
   diff2d_CDC_CDH_pip->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
   diff2d_CDC_CDH_pip->SetYTitle("CDH hit - #pi^{+} track (z) [cm]");
+  
+  diff2d_CDC_CDH_pip_Sp = new TH2F("diff2d_CDC_CDH_pip_Sp","diff2d_CDC_CDH_pip_Sp",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
+  diff2d_CDC_CDH_pip_Sp->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
+  diff2d_CDC_CDH_pip_Sp->SetYTitle("CDH hit - #pi^{+} track (z) [cm]");
+  
+  diff2d_CDC_CDH_pip_Sm = new TH2F("diff2d_CDC_CDH_pip_Sm","diff2d_CDC_CDH_pip_Sm",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
+  diff2d_CDC_CDH_pip_Sm->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
+  diff2d_CDC_CDH_pip_Sm->SetYTitle("CDH hit - #pi^{+} track (z) [cm]");
   
   diff2d_CDC_CDH_pip_phi_tof = new TH2F("diff2d_CDC_CDH_pip_phi_tof","diff2d_CDC_CDH_pip_phi_tof",100,-1.*TMath::Pi(),TMath::Pi(),120,-10,50);
   diff2d_CDC_CDH_pip_phi_tof->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
@@ -4264,7 +4284,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   TH2F* Vtx_ZX = new TH2F("Vtx_ZX","Vtx_ZX",1000,-25,25,500,-12.5,12.5);
   TH2F* Vtx_XY = new TH2F("Vtx_XY","Vtx_XY",500,-12.5,12.5,500,-12.5,12.5);
   
-  TH2F* ntof_nmom = new TH2F("ntof_nmom","ntof_nmom",100,0,1,500,0,100);
+  TH2F* ntof_nmom = new TH2F("ntof_nmom","ntof_nmom",100,0,1,500,0,200);
  
 
 
@@ -4767,12 +4787,18 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     if(diffPhinpim<-1.0*TMath::Pi()) diffPhinpim += 2.0*TMath::Pi();
     else if(diffPhinpim>1.0*TMath::Pi()) diffPhinpim -= 2.0*TMath::Pi();
     if(IsolationFlag==1) {
+      if(diffPhinpim<0){
+        if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut_left,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ) continue;
+      }else{
+        if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut_right,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ) continue;
+      }
+      /*
       //round cut
       if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ) continue;
       //for mixed events, avoid sharing same CDH segments
       if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
+      */
     }else if(IsolationFlag==2){ 
-      //round cut wide
       if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicutwide,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcutwide,2.0) <1 ) continue;
       //for mixed events, avoid sharing same CDH segments
       if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
@@ -4787,9 +4813,17 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     const double difftofnpip = tofn - tofpip;
     if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
     else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
-    if(IsolationFlag==1 || IsolationFlag==2) {
+    if(IsolationFlag==2){ 
       //round cut
       if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) continue;
+      //for mixed events, avoid sharing same CDH segments
+      if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) continue;
+    } else if(IsolationFlag==1) {
+      if(diffPhinpip<0){
+        if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_left,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) continue;
+      }else{
+        if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_right,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) continue;
+      }
       //for mixed events, avoid sharing same CDH segments
       if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) continue;
     } else if(IsolationFlag==3) {
@@ -5160,7 +5194,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     double weight = 1.0;
     double sysupdown = 1.0+0.1*(double)sysud;
     if(MIXmode){
-      weight = 4.24608060240400029e-02*sysupdown;
+      weight = 4.24608060240400029e-02*0.858179*sysupdown;
       if(SimSpmode){
         weight *=0.72;
         weight *=6.45779095649856028e-01;
@@ -5610,6 +5644,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       nmom_IMnpim_dE_n->Fill(LVec_pim_n.M(),(*LVec_n).P(),weight);
       nmom_IMnpip_dE_n->Fill(LVec_pip_n.M(),(*LVec_n).P(),weight);
       if(SigmaPFlag) {
+        diff2d_CDC_CDH_pip_Sp->Fill(diffPhinpip,diffpip.z());
+        diff2d_CDC_CDH_pim_Sp->Fill(diffPhinpim,diffpim.z());
         nmom_IMnpip_dE_n_Sp->Fill(LVec_pip_n.M(),(*LVec_n).P(),weight);
         q_IMnpipi_wSid_n_Sp->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
         nmom_Momnpip_n_Sp->Fill(LVec_pip_n.P(),(*LVec_n).P(),weight);
@@ -5644,6 +5680,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       }
 
       if(SigmaMFlag) {
+        diff2d_CDC_CDH_pip_Sm->Fill(diffPhinpip,diffpip.z());
+        diff2d_CDC_CDH_pim_Sm->Fill(diffPhinpim,diffpim.z());
         nmom_IMnpim_dE_n_Sm->Fill(LVec_pim_n.M(),(*LVec_n).P(),weight);
         q_IMnpipi_wSid_n_Sm->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
         nmom_Momnpim_n_Sm->Fill(LVec_pim_n.P(),(*LVec_n).P());

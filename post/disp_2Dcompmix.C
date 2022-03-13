@@ -50,64 +50,31 @@ void disp_2Dcompmix(const int qcut=0)
   bool SimSpmode = false;
   bool SimSmmode = false;
   bool SimK0mode = false;
+  const int Version = 233;
+  const int dEcut = 2;
+  const int sysud = 0;
 
   if(qcut==0){
     if(RealDatamode){
-      fr = TFile::Open("evanaIMpisigma_npippim_v229_out_iso_nostop.root");
-      fmix = TFile::Open("evanaIMpisigma_npippim_v229_MIX_cut4_out_iso_nostop.root");
-    }else if(SimSpmode){
-      fr = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_out_iso.root");
-      fmix = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_MIX_cut4_out_iso.root");
-    }else if(SimSmmode){
-      fr = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_out_iso.root");
-      fmix = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso.root");
-    }else if(SimK0mode){
-      fr = TFile::Open("../simpost/simIMpisigma_K0nn_pippimn_v11_out_iso.root");
-      fmix = TFile::Open("../simpost/simIMpisigma_K0nn_pippimn_v11_MIX_cut4_out_iso.root");
+      fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop.root",Version,dEcut));
+      fmix = TFile::Open(Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_dE%d_iso_nostop_sys%d.root",Version,dEcut,sysud));
     }
   }
   else if(qcut==1){
     if(RealDatamode){
-      fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo.root");
-      fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qlo.root");
-    }else if(SimSpmode){
-      fr = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_out_iso_qlo.root");
-      fmix = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_MIX_cut4_out_iso_qlo.root");
-    }else if(SimSmmode){
-      fr = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_out_iso_qlo.root");
-      fmix = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso_qlo.root");
-    }else if(SimK0mode){
-      fr = TFile::Open("../simpost/simIMpisigma_K0nn_pippimn_v11_out_iso_qlo.root");
-      fmix = TFile::Open("../simpost/simIMpiSigma_K0nn_pippim_v11_MIX_cut4_out_iso_qlo.root");
+      fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop_qlo.root",Version,dEcut));
+      fmix = TFile::Open(Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_dE%d_iso_nostop_qlo_sys%d.root",Version,dEcut,sysud));
     }
   }
   else if(qcut==2){
     if(RealDatamode){
-      fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi.root");
-      fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_qhi.root");
-    }else if(SimSpmode){
-      fr = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_out_iso_qhi.root");
-      fmix = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_MIX_cut4_out_iso_qhi.root");
-    }else if(SimSmmode){
-      fr = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_out_iso_qhi.root");
-      fmix = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso_qhi.root");
-    }else if(SimK0mode){
-      fr = TFile::Open("../simpost/simIMpisigma_K0nn_pippimn_v11_out_iso_qhi.root");
-      fmix = TFile::Open("../simpost/simIMpiSigma_K0nn_pippim_v11_MIX_cut4_out_iso_qhi.root");
+      fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop_qhi.root",Version,dEcut));
+      fmix = TFile::Open(Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_dE%d_iso_nostop_qhi_sys%d.root",Version,dEcut,sysud));
     }
   }else if(qcut==3){
     if(RealDatamode){
-      fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_theta15.root");
-      fmix = TFile::Open("evanaIMpisigma_npippim_v202_MIX_cut4_out_iso_theta15.root");
-    }else if(SimSpmode){
-      fr = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_out_iso_theta15.root");
-      fmix = TFile::Open("../simpost/simIMpisigma_nSppim_pippimn_v132_MIX_cut4_out_iso_theta15.root");
-    }else if(SimSmmode){
-      fr = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_out_iso_theta15.root");
-      fmix = TFile::Open("../simpost/simIMpisigma_nSmpip_pippimn_v132_MIX_cut4_out_iso_theta15.root");
-    }else if(SimK0mode){
-      fr = TFile::Open("../simpost/simIMpisigma_K0nn_pippimn_v11_out_iso_theta15.root");
-      fmix = TFile::Open("../simpost/simIMpiSigma_K0nn_pippim_v11_MIX_cut4_out_iso_theta15.root");
+      fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop_theta15.root",Version,dEcut));
+      fmix = TFile::Open(Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_dE%d_iso_nostop_theta15_sys%d.root",Version,dEcut,sysud));
     }
   }
 

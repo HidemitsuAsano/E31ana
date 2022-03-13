@@ -930,7 +930,8 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       
       Tools::Fill2D(Form("diff2d_CDC_CDH_pim"),diffPhinpim,diffpim.z());
       Tools::Fill2D(Form("diff2d_CDC_CDH_pip"),diffPhinpip,diffpip.z());
-
+      
+      /*
       //round cut
       if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ){
         nCDH--;
@@ -944,6 +945,35 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       if( (pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) >=1 )
         &&  (pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) >=1 ))
       { 
+        Ncanhitseg= NeutralCDHseg.at(iNeutralCDHseg);
+      }
+      */
+
+      bool IsIsolated=true;
+      if(diffPhinpim<0){
+        if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut_left,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ){
+          IsIsolated=false;
+          nCDH--;
+        }
+      }else{
+        if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut_right,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ){
+          IsIsolated=false;
+          nCDH--;
+        }
+      }
+      if(diffPhinpip<0){
+        if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_left,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ){
+          IsIsolated=false;
+          nCDH--;
+        }
+      }else{
+        if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_right,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ){
+          IsIsolated=false;
+          nCDH--;
+        }
+      }
+      
+      if(IsIsolated){ 
         Ncanhitseg= NeutralCDHseg.at(iNeutralCDHseg);
       }
     }//for iNeutralCDHseg

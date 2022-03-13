@@ -5,110 +5,79 @@ void SubtractMix(const int mode=0)
   //mode2 Sm
   //mode3 K0
 
-  TFile *fr[4]={NULL};
-  TFile *fmix[4]={NULL};
-  TFile *fsub[4]={NULL};
-  TString fnamer[4];
-  TString fnamem[4];
-  TString fnames[4];
+  const int version = 237;
+  const int dEcut[3]={2,4,6};
+  const int sysud[3]={-1,0,1};
+  TFile *fr[4][3]={NULL};
+  TFile *fmix[4][3][3]={NULL};
+  TFile *fsub[4][3][3]={NULL};
+  TString fnamer[4][3];
+  TString fnamem[4][3][3];
+  TString fnames[4][3][3];
    
   //real data
-  if(mode==0){
-    const int version = 232;
-    /*
-    fnamer[0] = Form("evanaIMpisigma_npippim_v%d_out_iso.root",version);
-    fnamem[0] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso.root",version);
-    fnamer[1] = Form("evanaIMpisigma_npippim_v%d_out_iso_qlo.root",version);
-    fnamem[1] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso_qlo.root",version);
-    fnamer[2] = Form("evanaIMpisigma_npippim_v%d_out_iso_qhi.root",version);
-    fnamem[2] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso_qhi.root",version);
-    fnamer[3] = Form("evanaIMpisigma_npippim_v%d_out_iso_theta15.root",version);
-    fnamem[3] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso_theta15.root",version);
-    */
-    fnamer[0] = Form("evanaIMpisigma_npippim_v%d_out_iso_nostop.root",version);
-    fnamem[0] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso_nostop.root",version);
-    fnamer[1] = Form("evanaIMpisigma_npippim_v%d_out_iso_qlo_nostop.root",version);
-    fnamem[1] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso_qlo_nostop.root",version);
-    fnamer[2] = Form("evanaIMpisigma_npippim_v%d_out_iso_qhi_nostop.root",version);
-    fnamem[2] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso_qhi_nostop.root",version);
-    fnamer[3] = Form("evanaIMpisigma_npippim_v%d_out_iso_theta15_nostop.root",version);
-    fnamem[3] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_iso_theta15_nostop.root",version);
-  }else if(mode==1){
-    const int version = 132;
-    fnamer[0] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_out_iso.root",version);
-    fnamem[0] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_MIX_cut4_out_iso.root",version);
-    fnamer[1] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_out_iso_qlo.root",version);
-    fnamem[1] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_MIX_cut4_out_iso_qlo.root",version);
-    fnamer[2] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_out_iso_qhi.root",version);
-    fnamem[2] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_MIX_cut4_out_iso_qhi.root",version);
-    fnamer[3] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_out_iso_theta15.root",version);
-    fnamem[3] = Form("../simpost/simIMpisigma_nSppim_pippimn_v%d_MIX_cut4_out_iso_theta15.root",version);
-  }else if(mode==2){
-    const int version = 132;
-    fnamer[0] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_out_iso.root",version);
-    fnamem[0] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso.root",version);
-    fnamer[1] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_out_iso_qlo.root",version);
-    fnamem[1] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso_qlo.root",version);
-    fnamer[2] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_out_iso_qhi.root",version);
-    fnamem[2] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso_qhi.root",version);
-    fnamer[3] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_out_iso_theta15.root",version);
-    fnamem[3] = Form("../simpost/simIMpisigma_nSmpip_pippimn_v%d_MIX_cut4_out_iso_theta15.root",version);
-  }else if(mode==3){
-    const int version = 11;
-    fnamer[0] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_out_iso.root",version);
-    fnamem[0] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_MIX_cut4_out_iso.root",version);
-    fnamer[1] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_out_iso_qlo.root",version);
-    fnamem[1] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_MIX_cut4_out_iso_qlo.root",version);
-    fnamer[2] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_out_iso_qhi.root",version);
-    fnamem[2] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_MIX_cut4_out_iso_qhi.root",version);
-    fnamer[3] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_out_iso_theta15.root",version);
-    fnamem[3] = Form("../simpost/simIMpisigma_K0nn_pippimn_v%d_MIX_cut4_out_iso_theta15.root",version);
+  for(int iEcut=0;iEcut<3;iEcut++){
+    fnamer[0][iEcut] = Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop.root",version,dEcut[iEcut]);
+    fnamer[1][iEcut] = Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_qlo_nostop.root",version,dEcut[iEcut]);
+    fnamer[2][iEcut] = Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_qhi_nostop.root",version,dEcut[iEcut]);
+    fnamer[3][iEcut] = Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_theta15_nostop.root",version,dEcut[iEcut]);
+    for(int isys=0;isys<3;isys++){
+      fnamem[0][iEcut][isys] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_dE%d_iso_nostop_sys%d.root",version,dEcut[iEcut],sysud[isys]);
+      fnamem[1][iEcut][isys] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_dE%d_iso_qlo_nostop_sys%d.root",version,dEcut[iEcut],sysud[isys]);
+      fnamem[2][iEcut][isys] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_dE%d_iso_qhi_nostop_sys%d.root",version,dEcut[iEcut],sysud[isys]);
+      fnamem[3][iEcut][isys] = Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_dE%d_iso_theta15_nostop_sys%d.root",version,dEcut[iEcut],sysud[isys]);
+    }
   }
-  
-  TIter *nexthistr[4];
-  TIter *nexthistm[4];
+
+  TIter *nexthistr;
+  TIter *nexthistm;
   const int nqcut = 4;
 
-  TKey *keyr[4];
-  TKey *keym[4];
+  TKey *keyr;
+  TKey *keym;
 
   TH1 *h1r = NULL;
   TH1 *h1m = NULL;
   TH1 *h1s = NULL;
   TObject *obj = NULL;
   for(int iq=0;iq<nqcut;iq++){
-    fr[iq] = TFile::Open(fnamer[iq]);
-    fmix[iq] = TFile::Open(fnamem[iq]);
-    fr[iq]->Print();
-    fmix[iq]->Print();
-    fnames[iq] = fnamer[iq];
-    fnames[iq].Replace(std::string(fnamer[iq]).size()-5,5,"_sub.root");
+    for(int iEcut=0;iEcut<3;iEcut++){
+      fr[iq][iEcut] = TFile::Open(fnamer[iq][iEcut]);
+      fr[iq][iEcut]->Print();
+      for(int isys=0;isys<3;isys++){
+        fmix[iq][iEcut][isys] = TFile::Open(fnamem[iq][iEcut][isys]);
+        if(!fmix[iq][iEcut][isys]) continue;
+        fmix[iq][iEcut][isys]->Print();
+        
+        fnames[iq][iEcut][isys] = fnamer[iq][iEcut];
+        fnames[iq][iEcut][isys].Replace(std::string(fnamer[iq][iEcut]).size()-5,10,Form("_sys%d_sub.root",sysud[isys]));
 
-    fsub[iq] = new TFile(fnames[iq],"RECREATE");
-    fsub[iq]->Print();
+        fsub[iq][iEcut][isys] = new TFile(fnames[iq][iEcut][isys],"RECREATE");
+        fsub[iq][iEcut][isys]->Print();
 
-    nexthistr[iq] = new TIter(fr[iq]->GetListOfKeys());
-    nexthistm[iq] = new TIter(fmix[iq]->GetListOfKeys());
+        nexthistr = new TIter(fr[iq][iEcut]->GetListOfKeys());
+        nexthistm = new TIter(fmix[iq][iEcut][isys]->GetListOfKeys());
 
-    while(  (keyr[iq]= (TKey*)nexthistr[iq]())
-          && (keym[iq]= (TKey*)nexthistm[iq]())
-        ){
-      TClass *clr = gROOT->GetClass(keyr[iq]->GetClassName());
-      TClass *clm = gROOT->GetClass(keym[iq]->GetClassName());
-      if(!clr->InheritsFrom("TH1")) continue;
-      if(!clm->InheritsFrom("TH1")) continue;
-      h1r = (TH1*)keyr[iq]->ReadObj();
-      h1m = (TH1*)keym[iq]->ReadObj();
-      h1r->Add(h1m,-1.0);
-      if(h1r->InheritsFrom("TH2")) {
-        h1r->SetMinimum(0);
+        while(  (keyr= (TKey*)nexthistr())
+            && (keym= (TKey*)nexthistm())
+            ){
+          TClass *clr = gROOT->GetClass(keyr->GetClassName());
+          TClass *clm = gROOT->GetClass(keym->GetClassName());
+          if(!clr->InheritsFrom("TH1")) continue;
+          if(!clm->InheritsFrom("TH1")) continue;
+          h1r = (TH1*)keyr->ReadObj();
+          h1m = (TH1*)keym->ReadObj();
+          h1r->Add(h1m,-1.0);
+          if(h1r->InheritsFrom("TH2")) {
+            h1r->SetMinimum(0);
+          }
+          h1r->Write();
+        }
+        fsub[iq][iEcut][isys]->Close();
+        fmix[iq][iEcut][isys]->Close();
       }
-      h1r->Write();
+      fr[iq][iEcut]->Close();
     }
-    fsub[iq]->Close();
-    fr[iq]->Close();
-    fmix[iq]->Close();
   }
-
 
 }
