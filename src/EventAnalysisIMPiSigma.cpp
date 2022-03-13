@@ -953,22 +953,26 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       if(diffPhinpim<0){
         if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut_left,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ){
           IsIsolated=false;
+          Tools::Fill2D(Form("diff2d_CDC_CDH_pim_veto"),diffPhinpim,diffpim.z());
           nCDH--;
         }
       }else{
         if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut_right,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ){
           IsIsolated=false;
+          Tools::Fill2D(Form("diff2d_CDC_CDH_pim_veto"),diffPhinpim,diffpim.z());
           nCDH--;
         }
       }
       if(diffPhinpip<0){
         if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_left,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ){
           IsIsolated=false;
+          Tools::Fill2D(Form("diff2d_CDC_CDH_pip_veto"),diffPhinpip,diffpip.z());
           nCDH--;
         }
       }else{
         if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_right,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ){
           IsIsolated=false;
+          Tools::Fill2D(Form("diff2d_CDC_CDH_pip_veto"),diffPhinpip,diffpip.z());
           nCDH--;
         }
       }

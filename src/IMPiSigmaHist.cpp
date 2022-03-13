@@ -165,10 +165,13 @@ void InitIMPiSigmaHist()
   Tools::newTH1F( Form("diff_CDH_CDC"), 181, 0, 181 );
   //Tools::newTH2F( Form("diff2D_CDH_CDC"), 181, 0, 181, 500,-50,50);
   Tools::newTH1F( Form("diff_CDH_CDC_pip"), 181, 0, 181 );
+  Tools::newTH1F( Form("diff_CDH_CDC_pip"), 181, 0, 181 );
   Tools::newTH1F( Form("diff_CDH_CDC_pim"), 181, 0, 181 );
   
   Tools::newTH2F("diff2d_CDC_CDH_pim",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
+  Tools::newTH2F("diff2d_CDC_CDH_pim_veto",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
   Tools::newTH2F("diff2d_CDC_CDH_pip",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
+  Tools::newTH2F("diff2d_CDC_CDH_pip_veto",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
 
   //pi+ pi- X event Neutron ID
   Tools::newTH2F( Form("dE_betainv"), 500, 0, 50, 200, 0, 50);

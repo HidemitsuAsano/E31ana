@@ -106,6 +106,7 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
   bool SimSpmode = (std::string(filename).find("Sp")!= std::string::npos);
   bool SimSmmode = (std::string(filename).find("Sm")!= std::string::npos);
   bool SimK0nmode = (std::string(filename).find("K0n")!= std::string::npos);//K0n
+  bool SimLppmode = (std::string(filename).find("pipiL")!= std::string::npos);//pipiL
   bool RealDatamode = (std::string(filename).find("evanaIMsigma_npi_h2")!=std::string::npos);
   bool MIXmode = (std::string(filename).find("MIX")!=std::string::npos);
   
@@ -139,7 +140,7 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
   //tree->SetBranchAddress( "CA_pi",&CA_pi);
   tree->SetBranchAddress( "CDH_Pos",&CDH_Pos);
   tree->SetBranchAddress( "CDH_Pos_pi",&CDH_Pos_pi);//
-  if(SimSpmode || SimSmmode || SimK0nmode) {
+  if(SimSpmode || SimSmmode || SimK0nmode || SimLppmode) {
     tree->SetBranchAddress( "mcncanvtxr", &mcncanvtxr);
     tree->SetBranchAddress( "mcncanvtxz", &mcncanvtxz);
     tree->SetBranchAddress( "mcncdsgen", &mcncdsgen);
@@ -553,7 +554,7 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
   diff2D_nmom_IMnpim_recomc_wSid_n_fake1->SetXTitle("diff. IMnpim (reco. - MCData) [GeV/c^{2}]");
   diff2D_nmom_IMnpim_recomc_wSid_n_fake1->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
 
-  if(SimSpmode || SimSmmode || SimK0nmode){
+  if(SimSpmode || SimSmmode || SimK0nmode || SimLppmode){
     diff2D_nmom_IMnpip_recomc_wSid_n = new TH2F("diff2D_nmom_IMnpip_recomc_wSid_n","diff2D_nmom_IMnpip_recomc_wSid_n",2000,-0.2,0.2,400,-0.4,0.4);
     diff2D_nmom_IMnpip_recomc_wSid_n->SetXTitle("diff. IMnpip (reco. - MCData) [GeV/c^{2}]");
     diff2D_nmom_IMnpip_recomc_wSid_n->SetYTitle("diff. n_{CDS} mom. (reco. - MCData) [GeV/c]");
@@ -1166,11 +1167,11 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
 
     //std::cout << __LINE__ << std::endl;
     TVector3 boost_mc;
-    if(SimSpmode || SimSmmode || SimK0nmode) {
+    if(SimSpmode || SimSmmode || SimK0nmode || SimLppmode) {
       boost_mc =  (*LVec_target+*mcmom_beam).BoostVector();
     }
     double cos_pimissCM_mc=0;
-    if(SimSpmode || SimSmmode || SimK0nmode) {
+    if(SimSpmode || SimSmmode || SimK0nmode || SimLppmode) {
       TLorentzVector mcmom_pimiss_CM = *mcmom_pimiss;
       TLorentzVector mcmom_beam_CM = *mcmom_beam;
       mcmom_pimiss_CM.Boost(-boost_mc);
@@ -1192,7 +1193,7 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
 
     TLorentzVector LVec_pip_n_mc;
     TLorentzVector LVec_pim_n_mc;
-    if(SimSpmode || SimSmmode || SimK0nmode) {
+    if(SimSpmode || SimSmmode || SimK0nmode || SimLppmode) {
       if(mcchargepi==1){
         LVec_pip_n_mc  = *mcmom_pi+*mcmom_ncds;
       }else if(mcchargepi==0){
@@ -1201,7 +1202,7 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
     }
 
     TLorentzVector LVec_npimiss_mc;
-    if(SimSpmode || SimSmmode || SimK0nmode) {
+    if(SimSpmode || SimSmmode || SimK0nmode || SimLppmode) {
       LVec_npimiss_mc = *LVec_target+*mcmom_beam-*mcmom_pi-*mcmom_ncds;
     }
 

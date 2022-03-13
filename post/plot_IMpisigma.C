@@ -609,12 +609,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   TH2F* MMnmiss_IMnpip_dE_woK0;
   TH2F* MMnmiss_IMnpim_dE_woK0;
   TH2F* MMnmiss_IMnpip_dE_woK0_woSm;
+  TH2F* MMnmiss_IMnpip_dE_woK0_woSm_initn;//mc only,Forward sigma events
   TH2F* MMnmiss_IMnpip_dE_woK0_wSid_n_woSm_wbin[nwbin];
   TH2F* MMnmiss_IMnpip_dE_woK0_woSm_vici;//select vicinity of the signal 
   TH2F* MMnmiss_IMnpip_dE_woK0_woSm_viciext;//select vicinity of the signal, +extented
   TH2F* MMnmiss_IMnpip_dE_wK0_woSm;
   TH2F* MMnmiss_IMnpip_dE_woK0_woSm_cross;
   TH2F* MMnmiss_IMnpim_dE_woK0_woSp;
+  TH2F* MMnmiss_IMnpim_dE_woK0_woSp_initn;//mc only,Forward sigma events
   TH2F* MMnmiss_IMnpim_dE_woK0_wSid_n_woSp_wbin[nwbin];
   TH2F* MMnmiss_IMnpim_dE_woK0_woSp_vici;
   TH2F* MMnmiss_IMnpim_dE_woK0_woSp_viciext;
@@ -1769,10 +1771,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   MMnmiss_IMnpip_dE_woSid->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   MMnmiss_IMnpip_dE_woSid->SetYTitle("Miss Mass. [GeV/c^{2}]");
   
-  //MMnmiss_IMnpip_dE_woSid_won = new TH2F("MMnmiss_IMnpip_dE_woSid_won", "MMnmiss_IMnpip_dE_woSid_won",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
-  //MMnmiss_IMnpip_dE_woSid_won->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
-  //MMnmiss_IMnpip_dE_woSid_won->SetYTitle("Miss Mass. [GeV/c^{2}]");
-
   MMnmiss_IMnpip_dE_woK0 = new TH2F("MMnmiss_IMnpip_dE_woK0", "MMnmiss_IMnpip_dE_woK0",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMnpip_dE_woK0->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   MMnmiss_IMnpip_dE_woK0->SetYTitle("Miss Mass. [GeV/c^{2}]");
@@ -1780,6 +1778,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   MMnmiss_IMnpip_dE_woK0_woSm = new TH2F("MMnmiss_IMnpip_dE_woK0_woSm", "MMnmiss_IMnpip_dE_woK0_woSm",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMnpip_dE_woK0_woSm->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
   MMnmiss_IMnpip_dE_woK0_woSm->SetYTitle("Miss Mass. [GeV/c^{2}]");
+  
+  MMnmiss_IMnpip_dE_woK0_woSm_initn = new TH2F("MMnmiss_IMnpip_dE_woK0_woSm_initn", "MMnmiss_IMnpip_dE_woK0_woSm_initn",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
+  MMnmiss_IMnpip_dE_woK0_woSm_initn->SetXTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  MMnmiss_IMnpip_dE_woK0_woSm_initn->SetYTitle("Miss Mass. [GeV/c^{2}]");
 
   for(unsigned int iwbin=0;iwbin<nwbin;iwbin++){
     MMnmiss_IMnpip_dE_woK0_wSid_n_woSm_wbin[iwbin] = new TH2F(Form("MMnmiss_IMnpip_woK0_wSid_n_woSm_wbin%d",iwbin)
@@ -1875,6 +1877,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   MMnmiss_IMnpim_dE_woK0_woSp = new TH2F("MMnmiss_IMnpim_dE_woK0_woSp", "MMnmiss_IMnpim_dE_woK0_woSp",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMnpim_dE_woK0_woSp->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMnpim_dE_woK0_woSp->SetYTitle("Miss Mass. [GeV/c^{2}]");
+  
+  MMnmiss_IMnpim_dE_woK0_woSp_initn = new TH2F("MMnmiss_IMnpim_dE_woK0_woSp_initn", "MMnmiss_IMnpim_dE_woK0_woSp_initn",nbinIMnpi,1.,2.0,nbinnmiss, nmisslow, nmisshigh);
+  MMnmiss_IMnpim_dE_woK0_woSp_initn->SetXTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  MMnmiss_IMnpim_dE_woK0_woSp_initn->SetYTitle("Miss Mass. [GeV/c^{2}]");
   
   for(unsigned int iwbin=0;iwbin<nwbin;iwbin++){
     MMnmiss_IMnpim_dE_woK0_wSid_n_woSp_wbin[iwbin] = new TH2F(Form("MMnmiss_IMnpim_woK0_wSid_n_woSp_wbin%d",iwbin)
@@ -4529,16 +4535,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     TLorentzVector LVec_pip_pim_n_CM = LVec_pip_pim_n;
     LVec_pip_pim_n_CM.Boost(-boost);
     //double cos_X = LVec_pip_pim_n_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pip_pim_n_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
-
-    //update the momentum 
-
+    
     //double chi2 = kfSpmode_chi2<kfSmmode_chi2 ? kfSpmode_chi2:kfSmmode_chi2;
-    double pvalue = -9999;
-    if(UseKinFit) pvalue = kfSmmode_pvalue<kfSpmode_pvalue ? kfSpmode_pvalue:kfSmmode_pvalue;
-    if( (SimSpmode || SimSmmode) && 
-        SimRejectFake && 
-      (mcpattern!=2)) continue;
-    if(SimK0nnmode && SimRejectFake && (mcpattern!=7) ) continue;
     //Filling generated info.
 
     //std::cout << __LINE__ << std::endl;
@@ -4609,31 +4607,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       IMnpim_IMnpip_mc->Fill(LVec_pip_n_mc.M(), LVec_pim_n_mc.M());
       nmom_IMnpip_mc->Fill((*mcmom_ncds).P(), LVec_pip_n_mc.M());
       nmom_IMnpim_mc->Fill((*mcmom_ncds).P(), LVec_pim_n_mc.M());
-      //if(SimSpmode){
-      //  if(fabs(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.) > 0.002) IsFakeN1 = true;
-      //  if(fabs((*mcmom_nmiss).M()-(*react_nmiss).M()/1000.) > 0.002) IsFakeN1 = true;
-      //}
-      //if(SimSmmode){
-      //  if(fabs(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.) > 0.002) IsFakeN1 = true;
-      //  if(fabs((*mcmom_nmiss).M()-(*react_nmiss).M()/1000.) > 0.002) IsFakeN1 = true;
-      //}
-      //added angle check
-      //if(!IsFakeN1){
-      //  diff_cosnmiss_reactmc->Fill((*mcmom_nmiss).CosTheta()-(*react_nmiss).CosTheta());
-      //  if(fabs((*mcmom_nmiss).CosTheta()-(*react_nmiss).CosTheta())>0.002) IsFakeN1 = true;
-      //}
       if(SimSpmode){
         if(fabs(LVec_pip_n_mc.M()-LVec_Sigma_react.M()/1000.)>0.02) IsFakeN2=true;
-        //if( (LVec_pip_n.M() -  LVec_pip_n_mc.M())< -0.012 || 0.010< (LVec_pip_n.M() -  LVec_pip_n_mc.M())) IsFakeN2=true;
-        //if( fabs(LVec_pip_nmiss_mc.M()-1.18937)<0.01) IsFakeN2=true;
-        //if( (diffIMnpip_recomc<-0.012) || (0.010<diffIMnpip_recomc)) IsFakeN2=true;
-        //if(diffnpip_recomc.P()>0.10) IsFakeN2 = true;
       }
       if(SimSmmode){
         if(fabs(LVec_pim_n_mc.M()-LVec_Sigma_react.M()/1000.)>0.02) IsFakeN2=true;
-        //if( (LVec_pim_n.M() -  LVec_pim_n_mc.M())< -0.012 || 0.010< (LVec_pim_n.M() -  LVec_pim_n_mc.M())) IsFakeN2=true;
-        //if( fabs(LVec_pim_nmiss_mc.M()-1.197449)<0.01) IsFakeN2=true;
-        //if(diffnpim_recomc.P()>0.10) IsFakeN2 = true;
       }
 
       if(!IsFakebyVTX)MMnpim_MMnpip_mc->Fill(LVec_pip_nmiss_mc.M(),LVec_pim_nmiss_mc.M());
@@ -4776,10 +4754,80 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
 
     //-- neutron-ID, K0 and missing neutron selection --//
     if(anacuts::beta_MIN<NeutralBetaCDH &&  NeutralBetaCDH<anacuts::beta_MAX  ) NBetaOK=true;
-    //if(anacuts::dE_MIN<dE) NdEOK=true;
     if((double)dEcut<dE) NdEOK=true;
     double MassNPip= (*LVec_n+*LVec_pip).M();
     double MassNPim= (*LVec_n+*LVec_pim).M();
+    
+    if(anacuts::neutron_MIN<nmiss_mass && nmiss_mass<anacuts::neutron_MAX ) MissNFlag=true;
+    if(anacuts::neutron_MIN_wide<nmiss_mass && nmiss_mass<anacuts::neutron_MAX_wide ) MissNwideFlag=true;
+
+    //K0 rejection using original momentum
+    if( (LVec_pip_pim.M()<anacuts::pipi_MIN || anacuts::pipi_MAX<LVec_pip_pim.M())) K0rejectFlag=true;
+    //if( (LVec_pip_pim.M()<anacuts::pipi_MIN_narrow || anacuts::pipi_MAX_narrow<LVec_pip_pim.M())) K0rejectFlag=true;
+    if( (anacuts::pipi_MIN_narrow < LVec_pip_pim.M())  && (LVec_pip_pim.M() < anacuts::pipi_MAX_narrow)) K0Flag=true;
+     
+    bool IsBGregion = false;
+    if(BGFlag_woSid_won==0){
+      if(!SigmawidePFlag && !SigmawideMFlag && !MissNwideFlag){
+        IsBGregion = true;
+      }
+    }
+    //exclude pi+pi-lambda+n_true, pi+pi-pi0+lambda+n_true and so on
+    //pick up n_fake events as much as possible
+    else if(BGFlag_woSid_won==1){
+      if(!SigmawidePFlag && !SigmawideMFlag && !MissNwideFlag ){
+        IsBGregion = true;
+      }
+      if( anacuts::neutron_MAX_wide <=nmiss_mass) IsBGregion = false;
+    }
+
+
+    
+    ntof_nmom->Fill((*LVec_n).P(),tofn);
+    if( (qkn.P()>=anacuts::qvalcut) && (qvalcutflag==1) ) continue;
+    if( (qkn.P()<anacuts::qvalcut) && (qvalcutflag==2) ) continue;
+
+
+    if( (*LVec_n).P()<anacuts::nmomcut) continue;
+    if(RejectStoppedSigma){
+      if(LVec_pip_n.P()<anacuts::SigmaPMomCut) continue;
+      if(LVec_pim_n.P()<anacuts::SigmaMMomCut) continue;
+    }
+    if(qvalcutflag==3 && (nmissthetalab>15.0/180.0*TMath::Pi())) continue;
+    
+    //Sigma+ production in CDS
+    //band cut for signal
+    if( (anacuts::Sigmap_MIN<MassNPip && MassNPip<anacuts::Sigmap_MAX)) SigmaPFlag=true;
+
+    //Sigma- production in CDS
+    //band cut for signal
+    if( (anacuts::Sigmam_MIN<MassNPim && MassNPim<anacuts::Sigmam_MAX)) SigmaMFlag=true;
+
+    //Sigma+ production in CDS
+    //
+    if( (anacuts::Sigmap_MIN_wide<MassNPip && MassNPip<anacuts::Sigmap_MAX_wide)) SigmawidePFlag=true;
+
+    //Sigma- production in CDS
+    if( (anacuts::Sigmam_MIN_wide<MassNPim && MassNPim<anacuts::Sigmam_MAX_wide)) SigmawideMFlag=true;
+    
+    //initial neutron study
+    if( NdEOK && NBetaOK && K0rejectFlag && 
+        (SimSpmode || SimSmmode) && (mcpattern==7) && (mcpattern!=2) ){
+      if(!SigmawideMFlag) MMnmiss_IMnpip_dE_woK0_woSm_initn->Fill(LVec_pip_n.M(),nmiss_mass);
+      if(!SigmawidePFlag) MMnmiss_IMnpim_dE_woK0_woSp_initn->Fill(LVec_pim_n.M(),nmiss_mass);
+    
+    
+    }
+
+
+    if( (SimSpmode || SimSmmode) && 
+        SimRejectFake && 
+      (mcpattern!=2)) continue;
+
+    //K0nn sim. 
+    //neutron could be generated by K-p -> K0n reaction in real world, but the MC
+    //is generated K0bar-nn from the begining and both two neutrons are recognized as initial neutron 
+    if(SimK0nnmode && SimRejectFake && (mcpattern!=7) ) continue;
 
     TVector3 diffpim = (*CDH_Pos)-(*CDH_Pos_pim);
     double diffPhinpim = (*CDH_Pos).Phi()-(*CDH_Pos_pim).Phi();
@@ -4843,21 +4891,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     diff2d_Phipippim_Phinpim->Fill(diffPhinpim,diffPhipippim);
     //diff2d_Zpippim_Znpim->Fill(diffpim.Z(),diffpippim.Z());
 
-    //Sigma+ production in CDS
-    //band cut for signal
-    if( (anacuts::Sigmap_MIN<MassNPip && MassNPip<anacuts::Sigmap_MAX)) SigmaPFlag=true;
-
-    //Sigma- production in CDS
-    //band cut for signal
-    if( (anacuts::Sigmam_MIN<MassNPim && MassNPim<anacuts::Sigmam_MAX)) SigmaMFlag=true;
-
-    //Sigma+ production in CDS
-    //
-    if( (anacuts::Sigmap_MIN_wide<MassNPip && MassNPip<anacuts::Sigmap_MAX_wide)) SigmawidePFlag=true;
-
-    //Sigma- production in CDS
-    if( (anacuts::Sigmam_MIN_wide<MassNPim && MassNPim<anacuts::Sigmam_MAX_wide)) SigmawideMFlag=true;
-    
     //momentum update
     if(K0Flag){
       *LVec_n = *LVec_n_K0;
@@ -5153,48 +5186,12 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     }//izone
 
 
-    if(anacuts::neutron_MIN<nmiss_mass && nmiss_mass<anacuts::neutron_MAX ) MissNFlag=true;
-    if(anacuts::neutron_MIN_wide<nmiss_mass && nmiss_mass<anacuts::neutron_MAX_wide ) MissNwideFlag=true;
-
-    //K0 rejection using original momentum
-    if( (LVec_pip_pim.M()<anacuts::pipi_MIN || anacuts::pipi_MAX<LVec_pip_pim.M())) K0rejectFlag=true;
-    //if( (LVec_pip_pim.M()<anacuts::pipi_MIN_narrow || anacuts::pipi_MAX_narrow<LVec_pip_pim.M())) K0rejectFlag=true;
-    if( (anacuts::pipi_MIN_narrow < LVec_pip_pim.M())  && (LVec_pip_pim.M() < anacuts::pipi_MAX_narrow)) K0Flag=true;
-     
-    bool IsBGregion = false;
-    if(BGFlag_woSid_won==0){
-      if(!SigmawidePFlag && !SigmawideMFlag && !MissNwideFlag){
-        IsBGregion = true;
-      }
-    }
-    //exclude pi+pi-lambda+n_true, pi+pi-pi0+lambda+n_true and so on
-    //pick up n_fake events as much as possible
-    else if(BGFlag_woSid_won==1){
-      if(!SigmawidePFlag && !SigmawideMFlag && !MissNwideFlag ){
-        IsBGregion = true;
-      }
-      if( anacuts::neutron_MAX_wide <=nmiss_mass) IsBGregion = false;
-    }
-
-
-    
-    ntof_nmom->Fill((*LVec_n).P(),tofn);
-    if( (qkn.P()>=anacuts::qvalcut) && (qvalcutflag==1) ) continue;
-    if( (qkn.P()<anacuts::qvalcut) && (qvalcutflag==2) ) continue;
-
-
-    if( (*LVec_n).P()<anacuts::nmomcut) continue;
-    if(RejectStoppedSigma){
-      if(LVec_pip_n.P()<anacuts::SigmaPMomCut) continue;
-      if(LVec_pim_n.P()<anacuts::SigmaMMomCut) continue;
-    }
-    if(qvalcutflag==3 && (nmissthetalab>15.0/180.0*TMath::Pi())) continue;
 
     //std::cout << __LINE__ << std::endl;
     double weight = 1.0;
     double sysupdown = 1.0+0.1*(double)sysud;
     if(MIXmode){
-      weight = 4.24608060240400029e-02*0.858179*sysupdown;
+      weight = 4.24608060240400029e-02*0.858179*0.967316*sysupdown;
       if(SimSpmode){
         weight *=0.72;
         weight *=6.45779095649856028e-01;

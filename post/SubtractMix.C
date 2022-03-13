@@ -5,7 +5,7 @@ void SubtractMix(const int mode=0)
   //mode2 Sm
   //mode3 K0
 
-  const int version = 237;
+  const int version = 238;
   const int dEcut[3]={2,4,6};
   const int sysud[3]={-1,0,1};
   TFile *fr[4][3]={NULL};
@@ -45,7 +45,7 @@ void SubtractMix(const int mode=0)
       fr[iq][iEcut] = TFile::Open(fnamer[iq][iEcut]);
       fr[iq][iEcut]->Print();
       for(int isys=0;isys<3;isys++){
-        fmix[iq][iEcut][isys] = TFile::Open(fnamem[iq][iEcut][isys]);
+        fmix[iq][iEcut][isys] = TFile::Open(fnamem[iq][iEcut][isys],"READ");
         if(!fmix[iq][iEcut][isys]) continue;
         fmix[iq][iEcut][isys]->Print();
         

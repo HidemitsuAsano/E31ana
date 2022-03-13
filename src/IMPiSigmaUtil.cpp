@@ -1528,7 +1528,8 @@ void Util::AnaMcData2(MCData *mcdata,
     }
     if( (AncestorVTX[anc].Perp()) > 58.0) isWentCDHOutSide = true;
     if( fabs(AncestorVTX[anc].Z()) > 40.0) isWentCDHOutSide = true; 
-
+    
+    //2112 :Neutron 
     if( AncestorPDG[anc]==2112){
       nNeutrons++;
       isFromNeutron = true;
@@ -1582,7 +1583,7 @@ void Util::AnaMcData2(MCData *mcdata,
   else if( isFromNeutron && isFromSigma && !isFromPion && !isSigmaNeutronChain ) pattern=4;//BG
   else if( isFromNeutron && !isFromSigma && isFromPion ) pattern=5;//BG
   else if( isFromNeutron && isFromSigma  && isFromPion ) pattern=6;//BG
-  else if( isFromNeutron && !isFromSigma && !isFromPion && !isWentCDHOutSide && isinFiducialORinCDH) pattern=7;//BG but initial neutron
+  else if( isFromNeutron && !isFromSigma && !isFromPion && !isWentCDHOutSide && isinFiducialORinCDH) pattern=7;//initial neutron
   //std::cout << "pattern = " << pattern << std::endl;
   Tools::H1(Form("NfakePattern"),pattern,10,-0.5,9.5);
   

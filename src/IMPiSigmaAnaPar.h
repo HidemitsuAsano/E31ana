@@ -142,9 +142,9 @@ namespace anacuts {
   const double Isonpim_phicut_right = 0.85;//radian
   const double Isonpim_shift = 0;//cm 
   const double Isonpim_zcut = 27.0;//cm
-
   */
-
+  
+  //v237
   const double Isonpip_phicut_left = 0.51;//radian
   const double Isonpip_phicut_right = 0.70;//radian
   const double Isonpip_shift = 0;//cm 
@@ -154,6 +154,18 @@ namespace anacuts {
   const double Isonpim_phicut_right = 0.70;//radian
   const double Isonpim_shift = 0;//cm 
   const double Isonpim_zcut = 26.0;//cm
+  
+  /*
+  const double Isonpip_phicut_left = 0.45;//radian
+  const double Isonpip_phicut_right = 0.65;//radian
+  const double Isonpip_shift = 0;//cm 
+  const double Isonpip_zcut = 23.0;//cm
+
+  const double Isonpim_phicut_left = 0.63;//radian
+  const double Isonpim_phicut_right = 0.68;//radian
+  const double Isonpim_shift = 0;//cm 
+  const double Isonpim_zcut = 25.0;//cm
+  */
 
   const double CDHwidthphi = 0.12;//radian
 

@@ -8,7 +8,7 @@ TH1D* MMnmiss_woK0_woSp_mix;
 TH1D* IMnpim_woK0_woSp_mix;
 
 double sysScale=0.1;
-const int dEcut=2;
+const int dEcut=6;
 const int Version=237;
 
 void FitMixScale()
@@ -54,7 +54,7 @@ void FitMixScale()
   TF1 *fIMnpip_up = new TF1("fIMnpip_up",fit_IMnpip,1.14,1.24,1);
   TF1 *fIMnpip_down = new TF1("fIMnpip_down",fit_IMnpip,1.14,1.24,1);
   fIMnpip->SetParameter(1,1.0);
-  IMnpip_woK0_woSm_data->Fit("fIMnpip","r","",1.2,1.218);
+  IMnpip_woK0_woSm_data->Fit("fIMnpip","r","",1.21,1.218);
   Double_t ret = fIMnpip->GetParameter(0);
   Double_t reterr = fIMnpip->GetParError(0);
   fIMnpip->SetParameter(0,ret);
@@ -89,7 +89,7 @@ void FitMixScale()
   TF1 *fIMnpim_up = new TF1("f1Mnpim_up",fit_IMnpim,1.14,1.24,1);
   TF1 *fIMnpim_down = new TF1("fIMnpim_down",fit_IMnpim,1.14,1.24,1);
   fIMnpim->SetParameter(1,1.0);
-  IMnpim_woK0_woSp_data->Fit("fIMnpim","r","",1.21,1.223);
+  IMnpim_woK0_woSp_data->Fit("fIMnpim","r","",1.215,1.223);
   Double_t ret3 = fIMnpim->GetParameter(0);
   Double_t ret3err = fIMnpim->GetParError(0);
   fIMnpim->SetParameter(0,ret3);
@@ -176,6 +176,23 @@ void FitMixScale()
   MMnmiss_IMnpim_woK0_woSp_mix->Scale(avg);
   MMnmiss_IMpippim_woSid_mix->Scale(avg);
    
+  TCanvas *c8_1 = new TCanvas("c8_1","c8_1");
+  TH2D* MMnmiss_IMnpip_woK0_woSm_sub = (TH2D*)MMnmiss_IMnpip_woK0_woSm_data->Clone("MMnmiss_IMnpip_woK0_woSm_sub");
+  MMnmiss_IMnpip_woK0_woSm_sub->Add(MMnmiss_IMnpip_woK0_woSm_mix,-1.0);
+  MMnmiss_IMnpip_woK0_woSm_sub->Rebin2D(2,2);
+  MMnmiss_IMnpip_woK0_woSm_sub->Draw("colz");
+  
+  TCanvas *c8_2 = new TCanvas("c8_2","c8_2");
+  TH2D* MMnmiss_IMnpim_woK0_woSp_sub = (TH2D*)MMnmiss_IMnpim_woK0_woSp_data->Clone("MMnmiss_IMnpim_woK0_woSp_sub");
+  MMnmiss_IMnpim_woK0_woSp_sub->Add(MMnmiss_IMnpim_woK0_woSp_mix,-1.0);
+  MMnmiss_IMnpim_woK0_woSp_sub->Rebin2D(2,2);
+  MMnmiss_IMnpim_woK0_woSp_sub->Draw("colz");
+  
+  TCanvas *c8_3 = new TCanvas("c8_3","c8_3");
+  TH2D* MMnmiss_IMpippim_woSid_sub = (TH2D*)MMnmiss_IMpippim_woSid_data->Clone("MMnmiss_IMpippim_woSid_sub");
+  MMnmiss_IMpippim_woSid_sub->Add(MMnmiss_IMpippim_woSid_mix,-1.0);
+  MMnmiss_IMpippim_woSid_sub->Rebin2D(2,2);
+  MMnmiss_IMpippim_woSid_sub->Draw("colz");
 
   int Spbinlow = MMnmiss_IMnpip_woK0_woSm_data->GetXaxis()->FindBin(anacuts::Sigmap_MIN);
   int Spbinhi = MMnmiss_IMnpip_woK0_woSm_data->GetXaxis()->FindBin(anacuts::Sigmap_MAX);
@@ -220,6 +237,8 @@ void FitMixScale()
   IMnpim_n_mix->Draw("same");
   
   TCanvas *c13 = new TCanvas("c13","c13");
+  IMpippim_woSid_data->RebinX(2);
+  IMpippim_woSid_mix->RebinX(2);
   IMpippim_woSid_data->Draw();
   IMpippim_woSid_mix->SetLineColor(2);
   IMpippim_woSid_mix->Draw("same");

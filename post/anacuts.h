@@ -106,6 +106,7 @@ namespace anacuts {
   //const double Isonpim_zcut = 25.0;//cm
   */
   
+  //v237 fit this version
   const double Isonpip_phicut_left = 0.51;//radian
   const double Isonpip_phicut_right = 0.70;//radian
   const double Isonpip_shift = 0;//cm 
@@ -115,9 +116,20 @@ namespace anacuts {
   const double Isonpim_phicut_right = 0.70;//radian
   const double Isonpim_shift = 0;//cm 
   const double Isonpim_zcut = 26.0;//cm
+  
+  /*v238 ->erase 
+  const double Isonpip_phicut_left = 0.45;//radian
+  const double Isonpip_phicut_right = 0.65;//radian
+  const double Isonpip_shift = 0;//cm 
+  const double Isonpip_zcut = 23.0;//cm
+
+  const double Isonpim_phicut_left = 0.63;//radian
+  const double Isonpim_phicut_right = 0.68;//radian
+  const double Isonpim_shift = 0;//cm 
+  const double Isonpim_zcut = 25.0;//cm
+  */
 
   const double CDHwidthphi = 0.12;//radian
-
   
 //  const double Lambda_MIN = 1.1075;//not tuned
 //  const double Lambda_MAX = 1.1225;//not tuned
