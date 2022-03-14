@@ -1472,7 +1472,9 @@ void Util::AnaMcData2(MCData *mcdata,
   unsigned int anc=0;
   bool isFromNeutron = false;
   bool isFromSigma = false;
+  bool isFromLambda = false;
   bool isSigmaNeutronChain = false;
+  bool isLambdaNeutronChain = false;
   bool isFromPion = false; 
   double vtxRNeutron = 999.0;//cm
   double vtxZNeutron = 999.0;//cm
@@ -1560,6 +1562,10 @@ void Util::AnaMcData2(MCData *mcdata,
       isFromSigma = true;
       if(generation==genNeutron-1) isSigmaNeutronChain = true;
     }
+    if( (AncestorPDG[anc]==3122) ){
+      isFromLambda = true;
+      if(generation==genNeutron-1) isLambdaNeutronChain = true;
+    }
     //check also sigma -> pion -> .... -> neutron Path
     if( (AncestorPDG[anc]==211) || (AncestorPDG[anc]==-211)) isFromPion = true;
     if( (generation == 1)  && !isWentCDHOutSide){
@@ -1584,6 +1590,8 @@ void Util::AnaMcData2(MCData *mcdata,
   else if( isFromNeutron && !isFromSigma && isFromPion ) pattern=5;//BG
   else if( isFromNeutron && isFromSigma  && isFromPion ) pattern=6;//BG
   else if( isFromNeutron && !isFromSigma && !isFromPion && !isWentCDHOutSide && isinFiducialORinCDH) pattern=7;//initial neutron
+  //currently not working, every lambda-> n goes to case 7
+  else if( isFromNeutron && isFromLambda && !isFromPion && isLambdaNeutronChain && !isWentCDHOutSide && isinFiducialORinCDH ) pattern=8;//Signal 
   //std::cout << "pattern = " << pattern << std::endl;
   Tools::H1(Form("NfakePattern"),pattern,10,-0.5,9.5);
   
@@ -1773,6 +1781,20 @@ bool Util::IsFromSigma(MCData *mcdata,DetectorHit *dhit)
   }
 
   return isFromSigma;
+}
+
+bool Util::IsFromLambda(MCData *mcdata,DetectorHit *dhit)
+{
+  bool isFromLambda=false;
+  Track *parentTr=Util::FindTrackFromMcIndex(mcdata, dhit->parentID());
+  if( (parentTr->pdgID()==3122) ) isFromLambda = true;
+
+  while(parentTr!=0){
+    if( (parentTr->pdgID()==3122) ) isFromLambda = true;
+    parentTr=Util::FindTrackFromMcIndex(mcdata,parentTr->parentTrackID());
+  }
+
+  return isFromLambda;
 }
 
 

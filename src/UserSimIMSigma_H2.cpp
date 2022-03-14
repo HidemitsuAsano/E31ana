@@ -1023,12 +1023,10 @@ int main( int argc, char** argv )
         double ntof = ncdhhit->ctmean()-ctmT0-beamtof;
         tofpi -= beamtof;
         tofn = ntof;
-
-        Tools::Fill1D(Form("CDH%d_T0%d_TOF_Neutral",ncdhhit->seg() ,t0seg),ntof);
-        //std::cout <<"cdh time "<<  ncdhhit->ctmean() << std::endl;
-        //std::cout << "ctmt0   " << ctmT0 << std::endl;
-        //std::cout <<"beamtof  " <<  beamtof << std::endl;
-        //double ntof = ncdhhit->ctmean();
+        
+        if(IsrecoPassed){
+          Tools::Fill1D(Form("CDH%d_T0%d_TOF_Neutral",ncdhhit->seg() ,t0seg),ntof);
+        }
         double nlen = (Pos_CDH-vtx_react).Mag();
         Tools::Fill2D(Form("ntof_nlen"),ntof,nlen);
         NeutralBetaCDH = nlen/ntof/(Const*100.);
@@ -1083,16 +1081,17 @@ int main( int argc, char** argv )
               Tools::Fill2D(Form("dE_CDHtime_pippimn"), cdsMan->CDH(i)->ctmean(), cdsMan->CDH(i)->emean());
             }
           }
-
-          Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_pi_mean.Z(),vtx_pi_mean.X());
-          Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_pi_mean.Z(),vtx_pi_mean.Y());
-          Tools::Fill2D(Form("Vtx_XY_fid"),vtx_pi_mean.X(),vtx_pi_mean.Y());
-          Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
-          Tools::Fill2D(Form("CDHzNeutraltime"),Pos_CDH.z(),ncdhhit->ctmean()-ctmT0-beamtof);
-          Tools::Fill2D( Form("NMomCDHtime%d",ncdhhit->seg()),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
-          Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
-          Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_misspi.Mag() );
-
+          
+          if(IsrecoPassed){
+            Tools::Fill2D(Form("Vtx_ZX_fid"),vtx_pi_mean.Z(),vtx_pi_mean.X());
+            Tools::Fill2D(Form("Vtx_ZY_fid"),vtx_pi_mean.Z(),vtx_pi_mean.Y());
+            Tools::Fill2D(Form("Vtx_XY_fid"),vtx_pi_mean.X(),vtx_pi_mean.Y());
+            Tools::Fill2D(Form("NeutraltimeEnergy"),ncdhhit->ctmean()-ctmT0-beamtof,ncdhhit->emean());
+            Tools::Fill2D(Form("CDHzNeutraltime"),Pos_CDH.z(),ncdhhit->ctmean()-ctmT0-beamtof);
+            Tools::Fill2D( Form("NMomCDHtime%d",ncdhhit->seg()),ncdhhit->ctmean()-ctmT0-beamtof,P_n.Mag()); 
+            Tools::Fill2D( Form("dE_betainv_fid"), 1./NeutralBetaCDH, ncdhhit->emean() );
+            Tools::Fill2D( Form("MMom_MMass_fid"), mm_mass, P_misspi.Mag() );
+          }
           if(NeutralBetaCDH<anacuts::beta_MAX) NBetaOK=true;
 
           if(NBetaOK){
@@ -1174,6 +1173,7 @@ int main( int argc, char** argv )
           //std::cout << "L " << __LINE__ << "  "  << nCDH << std::endl;
           //std::cout << "L " << __LINE__ << "  "  << ncdhhit->seg() << std::endl;
           //std::cout << Ncanhitseg << std::endl;
+          if(IsrecoPassed)
           Util::AnaMcData2(mcData,detData2,ncdhhit->seg(),ncanvtxr2,ncanvtxz2,firstvtxr,firstvtxz,ncdsgen2,pattern,anc);
           mcncanvtxr=ncanvtxr2;
           mcncanvtxz=ncanvtxz2;

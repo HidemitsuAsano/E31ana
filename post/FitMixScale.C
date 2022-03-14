@@ -8,14 +8,17 @@ TH1D* MMnmiss_woK0_woSp_mix;
 TH1D* IMnpim_woK0_woSp_mix;
 
 double sysScale=0.1;
-const int dEcut=6;
-const int Version=237;
+const int dEcut=2;
+const int Version=239;
+const bool Scale=yes;
 
 void FitMixScale()
 {
   gStyle->SetOptStat(0);
   fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop.root",Version,dEcut));
   fmix = TFile::Open(Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_dE%d_iso_nostop_sys0.root",Version,dEcut));
+  fr->Print();
+  frmix->Print();
 
   TH2D* MMnmiss_IMnpip_woK0_woSm_vici_data = (TH2D*)fr->Get("MMnmiss_IMnpip_dE_woK0_woSm_vici");
   TH2D* MMnmiss_IMnpim_woK0_woSp_vici_data = (TH2D*)fr->Get("MMnmiss_IMnpim_dE_woK0_woSp_vici");
@@ -54,7 +57,7 @@ void FitMixScale()
   TF1 *fIMnpip_up = new TF1("fIMnpip_up",fit_IMnpip,1.14,1.24,1);
   TF1 *fIMnpip_down = new TF1("fIMnpip_down",fit_IMnpip,1.14,1.24,1);
   fIMnpip->SetParameter(1,1.0);
-  IMnpip_woK0_woSm_data->Fit("fIMnpip","r","",1.21,1.218);
+  IMnpip_woK0_woSm_data->Fit("fIMnpip","r","",1.212,1.218);
   Double_t ret = fIMnpip->GetParameter(0);
   Double_t reterr = fIMnpip->GetParError(0);
   fIMnpip->SetParameter(0,ret);
@@ -89,7 +92,7 @@ void FitMixScale()
   TF1 *fIMnpim_up = new TF1("f1Mnpim_up",fit_IMnpim,1.14,1.24,1);
   TF1 *fIMnpim_down = new TF1("fIMnpim_down",fit_IMnpim,1.14,1.24,1);
   fIMnpim->SetParameter(1,1.0);
-  IMnpim_woK0_woSp_data->Fit("fIMnpim","r","",1.215,1.223);
+  IMnpim_woK0_woSp_data->Fit("fIMnpim","r","",1.217,1.226);
   Double_t ret3 = fIMnpim->GetParameter(0);
   Double_t ret3err = fIMnpim->GetParError(0);
   fIMnpim->SetParameter(0,ret3);
@@ -171,27 +174,34 @@ void FitMixScale()
   TH2D* MMnmiss_IMnpim_woK0_woSp_mix = (TH2D*)fmix->Get("MMnmiss_IMnpim_dE_woK0_woSp");
   TH2D* MMnmiss_IMpippim_woSid_data = (TH2D*)fr->Get("MMnmiss_IMpippim_dE_woSid");
   TH2D* MMnmiss_IMpippim_woSid_mix = (TH2D*)fmix->Get("MMnmiss_IMpippim_dE_woSid");
+  TH2D* q_IMnpipi_wSid_n_data = (TH2D*)fr->Get("q_IMnpipi_wSid_n");
+  TH2D* q_IMnpipi_wSid_n_mix = (TH2D*)fmix->Get("q_IMnpipi_wSid_n");
   
-  MMnmiss_IMnpip_woK0_woSm_mix->Scale(avg);
-  MMnmiss_IMnpim_woK0_woSp_mix->Scale(avg);
-  MMnmiss_IMpippim_woSid_mix->Scale(avg);
-   
+  if(Scale){
+    MMnmiss_IMnpip_woK0_woSm_mix->Scale(avg);
+    MMnmiss_IMnpim_woK0_woSp_mix->Scale(avg);
+    MMnmiss_IMpippim_woSid_mix->Scale(avg);
+    q_IMnpipi_wSid_n_mix->Scale(avg); 
+  }
+
   TCanvas *c8_1 = new TCanvas("c8_1","c8_1");
   TH2D* MMnmiss_IMnpip_woK0_woSm_sub = (TH2D*)MMnmiss_IMnpip_woK0_woSm_data->Clone("MMnmiss_IMnpip_woK0_woSm_sub");
   MMnmiss_IMnpip_woK0_woSm_sub->Add(MMnmiss_IMnpip_woK0_woSm_mix,-1.0);
   MMnmiss_IMnpip_woK0_woSm_sub->Rebin2D(2,2);
+  MMnmiss_IMnpip_woK0_woSm_sub->GetXaxis()->SetRangeUser(1.0,1.7);
   MMnmiss_IMnpip_woK0_woSm_sub->Draw("colz");
   
   TCanvas *c8_2 = new TCanvas("c8_2","c8_2");
   TH2D* MMnmiss_IMnpim_woK0_woSp_sub = (TH2D*)MMnmiss_IMnpim_woK0_woSp_data->Clone("MMnmiss_IMnpim_woK0_woSp_sub");
   MMnmiss_IMnpim_woK0_woSp_sub->Add(MMnmiss_IMnpim_woK0_woSp_mix,-1.0);
   MMnmiss_IMnpim_woK0_woSp_sub->Rebin2D(2,2);
+  MMnmiss_IMnpim_woK0_woSp_sub->GetXaxis()->SetRangeUser(1.0,1.7);
   MMnmiss_IMnpim_woK0_woSp_sub->Draw("colz");
   
   TCanvas *c8_3 = new TCanvas("c8_3","c8_3");
   TH2D* MMnmiss_IMpippim_woSid_sub = (TH2D*)MMnmiss_IMpippim_woSid_data->Clone("MMnmiss_IMpippim_woSid_sub");
   MMnmiss_IMpippim_woSid_sub->Add(MMnmiss_IMpippim_woSid_mix,-1.0);
-  MMnmiss_IMpippim_woSid_sub->Rebin2D(2,2);
+  MMnmiss_IMpippim_woSid_sub->Rebin2D(4,2);
   MMnmiss_IMpippim_woSid_sub->Draw("colz");
 
   int Spbinlow = MMnmiss_IMnpip_woK0_woSm_data->GetXaxis()->FindBin(anacuts::Sigmap_MIN);
@@ -200,6 +210,7 @@ void FitMixScale()
   int Smbinhi = MMnmiss_IMnpim_woK0_woSp_data->GetXaxis()->FindBin(anacuts::Sigmam_MAX);
   int nlow = MMnmiss_IMnpip_woK0_woSm_data->GetYaxis()->FindBin(anacuts::neutron_MIN);
   int nhi = MMnmiss_IMnpip_woK0_woSm_data->GetYaxis()->FindBin(anacuts::neutron_MAX);
+  int q350 = q_IMnpipi_wSid_n_data->GetYaxis()->FindBin(0.35);
   TH1D* MMnmiss_Sp_data = (TH1D*)MMnmiss_IMnpip_woK0_woSm_data->ProjectionY("MMnmiss_Sp_data",Spbinlow,Spbinhi);
   TH1D* MMnmiss_Sp_mix = (TH1D*)MMnmiss_IMnpip_woK0_woSm_mix->ProjectionY("MMnmiss_Sp_mix",Spbinlow,Spbinhi);
   TH1D* IMnpip_n_data = (TH1D*)MMnmiss_IMnpip_woK0_woSm_data->ProjectionX("IMnpip_n_data",nlow,nhi);
@@ -210,7 +221,11 @@ void FitMixScale()
   TH1D* IMnpim_n_mix  = (TH1D*)MMnmiss_IMnpim_woK0_woSp_mix->ProjectionX("IMnpim_n_mix",nlow,nhi);
   TH1D* IMpippim_woSid_data = (TH1D*)MMnmiss_IMpippim_woSid_data->ProjectionX("IMpippim_data",nlow,nhi);
   TH1D* IMpippim_woSid_mix = (TH1D*)MMnmiss_IMpippim_woSid_mix->ProjectionX("IMpippim_mix",nlow,nhi);
-  
+  TH1D* IMnpipi_wSid_n_data_qhi = (TH1D*)q_IMnpipi_wSid_n_data->ProjectionX("IMnpipi_wSid_n_data_qhi",q350,1000);
+  TH1D* IMnpipi_wSid_n_mix_qhi = (TH1D*)q_IMnpipi_wSid_n_mix->ProjectionX("IMnpipi_wSid_n_mix_qhi",q350,1000);
+  TH1D* IMnpipi_wSid_n_data_qlo = (TH1D*)q_IMnpipi_wSid_n_data->ProjectionX("IMnpipi_wSid_n_data_qlo",0,q350);
+  TH1D* IMnpipi_wSid_n_mix_qlo = (TH1D*)q_IMnpipi_wSid_n_mix->ProjectionX("IMnpipi_wSid_n_mix_qlo",0,q350);
+
   TCanvas *c9 = new TCanvas("c9","c9");
   MMnmiss_Sp_data->Draw();
   MMnmiss_Sp_mix->SetLineColor(2);
@@ -243,6 +258,25 @@ void FitMixScale()
   IMpippim_woSid_mix->SetLineColor(2);
   IMpippim_woSid_mix->Draw("same");
 
+  TCanvas *c14 = new TCanvas("c14","c14");
+  IMnpipi_wSid_n_data_qhi->RebinX(3);
+  IMnpipi_wSid_n_mix_qhi->RebinX(3);
+  IMnpipi_wSid_n_data_qhi->Draw();
+  IMnpipi_wSid_n_mix_qhi->SetLineColor(2);
+  IMnpipi_wSid_n_mix_qhi->Draw("same");
+  
+  TCanvas *c15 = new TCanvas("c15","c15");
+  IMnpipi_wSid_n_data_qlo->RebinX(3);
+  IMnpipi_wSid_n_mix_qlo->RebinX(3);
+  IMnpipi_wSid_n_data_qlo->Draw();
+  IMnpipi_wSid_n_mix_qlo->SetLineColor(2);
+  IMnpipi_wSid_n_mix_qlo->Draw("same");
+
+  TCanvas *c16 = new TCanvas("c16","c16");
+  q_IMnpipi_wSid_n_data->Draw("colz");
+  
+  TCanvas *c17 = new TCanvas("c17","c17");
+  q_IMnpipi_wSid_n_mix->Draw("colz");
 
 }
 

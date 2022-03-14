@@ -1211,7 +1211,7 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
     if(( (SimSpmode || SimSmmode) && 
         SimRejectFake && 
       (mcpattern!=2))) continue;
-    if(SimK0nmode && SimRejectFake && (mcpattern!=7) ) continue;
+    if( (SimK0nmode || SimLppmode) && SimRejectFake && (mcpattern!=7) ) continue;
     EventCheck->Fill(2);
     //std::cout << __LINE__ << std::endl;
     TLorentzVector LVec_Sigma_react;
@@ -1220,7 +1220,7 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
     bool IsFakeN1 = false;
     bool IsFakeN2 = false;
     bool IsFakebyVTX = false;
-    if(SimSpmode || SimSmmode || SimK0nmode) {
+    if(SimSpmode || SimSmmode || SimK0nmode || SimLppmode) {
       if( (mcncanvtxr>58) || (fabs(mcncanvtxz)>40) ){
         IsFakebyVTX = true;
       }
@@ -1338,16 +1338,16 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
     
     if(IsolationFlag==1 && (chargepi==0)) {
       //round cut
-      if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ) continue;
+      if( pow((diffPhinpim-anacuts::dIsonpim_shift)/anacuts::dIsonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::dIsonpim_zcut,2.0) <1 ) continue;
       //for mixed events, avoid sharing same CDH segments
       if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
     }else if(IsolationFlag==2){ 
       //round cut wide
-      if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicutwide,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcutwide,2.0) <1 ) continue;
+      if( pow((diffPhinpim-anacuts::dIsonpim_shift)/anacuts::dIsonpim_phicutwide,2.0)+pow(diffpim.Z()/anacuts::dIsonpim_zcutwide,2.0) <1 ) continue;
       //for mixed events, avoid sharing same CDH segments
       if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
     } else if(IsolationFlag==3) {
-      if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) >=1 ) continue;
+      if( pow((diffPhinpim-anacuts::dIsonpim_shift)/anacuts::dIsonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::dIsonpim_zcut,2.0) >=1 ) continue;
       //for mixed events, avoid sharing same CDH segments
       if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
     }
@@ -1356,11 +1356,11 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
 
     if(IsolationFlag==1 && (chargepi==1) ) {
       //round cut
-      if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) continue;
+      if( pow((diffPhinpip-anacuts::dIsonpip_shift)/anacuts::dIsonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::dIsonpip_zcut,2.0) <1 ) continue;
       //for mixed events, avoid sharing same CDH segments
       if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) continue;
     } else if(IsolationFlag==3) {
-      if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0)>=1 ) continue;
+      if( pow((diffPhinpip-anacuts::dIsonpip_shift)/anacuts::dIsonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::dIsonpip_zcut,2.0)>=1 ) continue;
       //for mixed events, avoid sharing same CDH segments
       if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) continue;
     }
@@ -1430,6 +1430,7 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
       if(SimSpmode) std::cout << "Sim Sp mode " << std::endl;
       if(SimSmmode) std::cout << "Sim Sm mode " << std::endl;
       if(SimK0nmode) std::cout << "Sim K0n mode " << std::endl;
+      if(SimLppmode) std::cout << "Sim Lpp mode " << std::endl;
       std::cout  << " weighting factor " << weight << std::endl;
       std::cout  << " Ratio pi-/pi+ " << RatioPimOverPip << std::endl;
       isState = true;
@@ -1477,7 +1478,7 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
         MMom_MMass_wSid->Fill(LVec_npimiss.M(),LVec_npimiss.P(),weight);
         nmom_MMnpimisswSid->Fill(npimiss_mass,(*LVec_n).P(),weight);
         
-        if(SimSpmode || SimSmmode || SimK0nmode){
+        if(SimSpmode || SimSmmode || SimK0nmode || SimLppmode){
           if(!( (mcpattern==2)  ||  (mcpattern==7))) {// || IsFakebyVTX )
             nmom_MMnpimisswSid_fake->Fill(npimiss_mass,(*LVec_n).P(),weight);
           }
@@ -1622,7 +1623,7 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
         //reaction data - mcData matching
         bool IsMissMassNOK = false;
         bool IsMcNMassOK = false;
-        if(SimSpmode || SimSmmode || SimK0nmode){
+        if(SimSpmode || SimSmmode || SimK0nmode || SimLppmode){
           double diffIMnpim_reactmc = LVec_pim_n.M()- LVec_pim_n_mc.M();
           double diffIMnpip_reactmc = LVec_pip_n.M()- LVec_pip_n_mc.M();
           double diffMMnpimissrecomc = npimiss_mass - (*mcmom_pimiss).M();
@@ -1840,7 +1841,7 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
       pt->SetFillColor(kAzure-4);
       pt->AddText("MC #Sigma-#pi+ mode");
     }
-    else if(SimK0nmode) {
+    else if(SimK0nmode || SimLppmode) {
       pt->SetFillColor(kAzure-4);
       pt->AddText("MC K0nn");
     }else {
@@ -1865,11 +1866,11 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
   else if(IsolationFlag==2) outname.Replace(std::string(filename).size()-5,5,Form("_out_dE%d_isowide.root",dEcut));
   else if(IsolationFlag==3) outname.Replace(std::string(filename).size()-5,5,Form("_out_dE%d_isorev.root",dEcut));
   
-  if(SimRejectFake && (SimSpmode || SimSmmode || SimK0nmode)){
+  if(SimRejectFake && (SimSpmode || SimSmmode || SimK0nmode || SimLppmode)){
     outname.Replace(std::string(outname).size()-5,5,"_rej.root");
   }
   
-  if(RejectStoppedSigma && (RealDatamode || SimSpmode || SimSmmode || SimK0nmode)){
+  if(RejectStoppedSigma && (RealDatamode || SimSpmode || SimSmmode || SimK0nmode || SimLppmode)){
     outname.Replace(std::string(outname).size()-5,5,"_nostop.root");
   }
 

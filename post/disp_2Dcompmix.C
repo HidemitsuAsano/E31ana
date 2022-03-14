@@ -50,7 +50,7 @@ void disp_2Dcompmix(const int qcut=0)
   bool SimSpmode = false;
   bool SimSmmode = false;
   bool SimK0mode = false;
-  const int Version = 233;
+  const int Version = 237;
   const int dEcut = 2;
   const int sysud = 0;
 
@@ -366,9 +366,6 @@ void disp_2Dcompmix(const int qcut=0)
   HistToRorateGraph(MMnmiss_woK0_woSp_data_sub,*gr_MMnmiss_woK0_woSp_data_sub);
   gr_MMnmiss_woK0_woSp_data_sub->Draw("AP");
   //gr_MMnmiss_woK0_woSp_data_sub->Print("all");
-   
- 
-
 
   //draw vicinity subtracted
   TCanvas *cMMnmiss_IMnpim_woK0_woSp_vici_data_sub = new TCanvas("cMMnmiss_IMnpim_woK0_woSp_vici_data_sub","cMMnmiss_IMnpim_woK0_woSp_vici_data_sub",800,800);
@@ -503,8 +500,6 @@ void disp_2Dcompmix(const int qcut=0)
   TH1D* IMnpipi_woK0_wSid_n_woSp_350_sub = (TH1D*)IMnpipi_woK0_wSid_n_woSp_data_350->Clone("IMnpipi_woK0_wSid_n_woSp_350_sub");
   IMnpipi_woK0_wSid_n_woSp_350_sub->Add(IMnpipi_woK0_wSid_n_woSp_mix_350,-1);
   IMnpipi_woK0_wSid_n_woSp_350_sub->Draw("HE");
-
-
 
   
   TH2D* q_IMnpipi_wSid_n_Sp_data = (TH2D*)fr->Get("q_IMnpipi_wSid_n_Sp");

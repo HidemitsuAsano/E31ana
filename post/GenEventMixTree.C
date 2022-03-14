@@ -61,14 +61,13 @@ TVector3 *CDH_Pos_pim2 = NULL;
 TVector3 *CDH_Pos_pip2 = NULL;
 
 
-void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v238.root")
+void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v239.root")
 {
   if(gROOT->GetVersionInt() < 60000){
-    std::cout << "Use ROOT6 " << std::endl;
+    std::cout << "Use ROOT6 !!" << std::endl;
     return;
   }
   TFile *f = new TFile(filename,"READ");
-  //TFile *f = new TFile("sim_piSpn_dE0_Al.root");
   TTree *tree = (TTree*)f->Get("EventTree");
   if(tree==0) {
     std::cout << "EventTree is not found " << std::endl;
@@ -208,83 +207,50 @@ void GenEventMixTree(const char* filename = "evanaIMpisigma_npippim_v238.root")
 
   for ( Int_t i=0; i<nevent; i++ ) {
     tree->GetEvent(i);
-    TLorentzVector LVec_nmiss = *LVec_target+*LVec_beam-*LVec_pip-*LVec_pim-*LVec_n;
-    double nmiss_mass = LVec_nmiss.M();
-    double nmiss_mom = LVec_nmiss.P();
-  
-    TLorentzVector LVec_pip_pim = *LVec_pip+*LVec_pim;
-    TLorentzVector LVec_pip_n = *LVec_pip+*LVec_n;
-    TLorentzVector LVec_pim_n = *LVec_pim+*LVec_n;
-    TLorentzVector LVec_pip_pim_n = *LVec_pip+*LVec_pim+*LVec_n;
-    TLorentzVector qkn = *LVec_beam-LVec_nmiss;
     if( (*LVec_n).P()<anacuts::nmomcut) continue;
 
-    bool K0rejectFlag=false;
-    bool K0rejectFlag_narrow=false;
-    bool MissNFlag=false;
-    bool MissNwideFlag=false;
     bool NBetaOK=false;
     bool NdEOK=false;
-    bool SigmaPFlag=false;
-    bool SigmaMFlag=false;
-    bool SigmawidePFlag=false;
-    bool SigmawideMFlag=false;
   
     if(anacuts::beta_MIN<NeutralBetaCDH &&  NeutralBetaCDH<anacuts::beta_MAX  ) NBetaOK=true;
     if(anacuts::dE_MIN<dE) NdEOK=true;
   
-
-    if(anacuts::neutron_MIN<nmiss_mass && nmiss_mass<anacuts::neutron_MAX ) MissNFlag=true;
-    if(anacuts::neutron_MIN_wide<nmiss_mass && nmiss_mass<anacuts::neutron_MAX_wide ) MissNwideFlag=true;
-
-    //K0 rejection using original momentum
-    if( (LVec_pip_pim.M()<anacuts::pipi_MIN || anacuts::pipi_MAX<LVec_pip_pim.M())) K0rejectFlag=true;
-    if( (LVec_pip_pim.M()<anacuts::pipi_MIN_narrow || anacuts::pipi_MAX_narrow<LVec_pip_pim.M())) K0rejectFlag_narrow=true;
-
-    double MassNPip= (*LVec_n+*LVec_pip).M();
-    double MassNPim= (*LVec_n+*LVec_pim).M();
-    
-    if( (anacuts::Sigmap_MIN<MassNPip && MassNPip<anacuts::Sigmap_MAX)) SigmaPFlag=true;
-    //Sigma- production in CDS
-    //band cut for signal
-    if( (anacuts::Sigmam_MIN<MassNPim && MassNPim<anacuts::Sigmam_MAX)) SigmaMFlag=true;
-
-    //Sigma+ production in CDS
-    //
-    if( (anacuts::Sigmap_MIN_wide<MassNPip && MassNPip<anacuts::Sigmap_MAX_wide)) SigmawidePFlag=true;
-
-    //Sigma- production in CDS
-    if( (anacuts::Sigmam_MIN_wide<MassNPim && MassNPim<anacuts::Sigmam_MAX_wide)) SigmawideMFlag=true;
-    
-
-    
     TVector3 diffpim = (*CDH_Pos)-(*CDH_Pos_pim);
     double diffPhinpim = (*CDH_Pos).Phi()-(*CDH_Pos_pim).Phi();
     if(diffPhinpim<-1.0*TMath::Pi()) diffPhinpim += 2.0*TMath::Pi();
     else if(diffPhinpim>1.0*TMath::Pi()) diffPhinpim -= 2.0*TMath::Pi();
-    if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ) continue;
-    //for mixed events, avoid sharing same CDH segments
+    if(diffPhinpim<0){
+      if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut_left,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ) continue;
+    }else{
+      if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut_right,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ) continue;
+    }
     if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
 
     TVector3 diffpip = (*CDH_Pos)-(*CDH_Pos_pip);
     double diffPhinpip = (*CDH_Pos).Phi()-(*CDH_Pos_pip).Phi();
     if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
     else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
-    if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) continue;
+    if(diffPhinpip<0){
+      if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_left,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) continue;
+    }else{
+      if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_right,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) continue;
+    }
+    //for mixed events, avoid sharing same CDH segments
     if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) continue;
-    //if(!MissNwideFlag ){
-      if(NBetaOK && NdEOK){
-        vec_LVec_n.push_back(*LVec_n);
-        vec_LVec_n_Sp.push_back(*LVec_n_Sp);
-        vec_LVec_n_Sm.push_back(*LVec_n_Sm);
-        vec_LVec_n_K0.push_back(*LVec_n_K0);
-        vec_NeutralBetaCDH.push_back(NeutralBetaCDH);
-        vec_tofn.push_back(tofn);
-        vec_dE.push_back(dE);
-        vec_neutralseg.push_back(neutralseg);
-        vec_CDH_Pos.push_back(*CDH_Pos);
-      }
-    //}
+    
+    //if((nhitOutCDC!=0) ) continue;
+
+    if(NBetaOK && NdEOK){
+      vec_LVec_n.push_back(*LVec_n);
+      vec_LVec_n_Sp.push_back(*LVec_n_Sp);
+      vec_LVec_n_Sm.push_back(*LVec_n_Sm);
+      vec_LVec_n_K0.push_back(*LVec_n_K0);
+      vec_NeutralBetaCDH.push_back(NeutralBetaCDH);
+      vec_tofn.push_back(tofn);
+      vec_dE.push_back(dE);
+      vec_neutralseg.push_back(neutralseg);
+      vec_CDH_Pos.push_back(*CDH_Pos);
+    }
   }
 
   decltype(vec_LVec_n)::iterator last_n = vec_LVec_n.end();

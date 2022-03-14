@@ -4,8 +4,8 @@ void SubtractMix(const int mode=0)
   //mode1 Sp
   //mode2 Sm
   //mode3 K0
-
-  const int version = 238;
+  TH1::SetDefaultSumw2();
+  const int version = 239;
   const int dEcut[3]={2,4,6};
   const int sysud[3]={-1,0,1};
   TFile *fr[4][3]={NULL};

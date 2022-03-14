@@ -121,7 +121,21 @@ namespace anacuts {
   const double Sigmam_sigma = 0.00601265;
   const double Sigmam_MIN = Sigmam_center-Sigma_NSigmacut*Sigmam_sigma;
   const double Sigmam_MAX = Sigmam_center+Sigma_NSigmacut*Sigmam_sigma;  
+  /* 
+  const double Isonpip_shift = -0.05;//cm
+  const double Isonpip_phicut = 0.40;//radian
+  const double Isonpip_zcut = 25.0;//cm
+  const double Isonpip_phicutwide = 0.45;//radian
+  const double Isonpip_zcutwide = 28.0;//cm
+
+  const double Isonpim_shift = 0.05;//cm
+  const double Isonpim_phicut = 0.60;//radian
+  const double Isonpim_zcut = 25.0;//cm
+  const double Isonpim_phicutwide = 0.65;//radian
+  const double Isonpim_zcutwide = 28.0;//cm
   
+  const double CDHwidthphi = 0.12;//radian
+  */
   /*
   //isolation cut parameters
   const double Isonpip_shift = -0.05;//cm
@@ -143,7 +157,21 @@ namespace anacuts {
   const double Isonpim_shift = 0;//cm 
   const double Isonpim_zcut = 27.0;//cm
   */
-  
+   
+
+  const double Isonpip_phicut_left = 0.56;//radian
+  const double Isonpip_phicut_right = 0.75;//radian
+  const double Isonpip_shift = 0;//cm 
+  const double Isonpip_zcut = 25.0;//cm
+
+  const double Isonpim_phicut_left = 0.85;//radian
+  const double Isonpim_phicut_right = 0.85;//radian
+  const double Isonpim_shift = 0;//cm 
+  const double Isonpim_zcut = 27.0;//cm
+
+  const double CDHwidthphi = 0.12;//radian
+
+  /*
   //v237
   const double Isonpip_phicut_left = 0.51;//radian
   const double Isonpip_phicut_right = 0.70;//radian
@@ -154,7 +182,9 @@ namespace anacuts {
   const double Isonpim_phicut_right = 0.70;//radian
   const double Isonpim_shift = 0;//cm 
   const double Isonpim_zcut = 26.0;//cm
-  
+  const double CDHwidthphi = 0.12;//radian
+  */
+
   /*
   const double Isonpip_phicut_left = 0.45;//radian
   const double Isonpip_phicut_right = 0.65;//radian
@@ -167,7 +197,6 @@ namespace anacuts {
   const double Isonpim_zcut = 25.0;//cm
   */
 
-  const double CDHwidthphi = 0.12;//radian
 
 }
 

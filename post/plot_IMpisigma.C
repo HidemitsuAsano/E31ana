@@ -4819,7 +4819,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     
     }
 
-
     if( (SimSpmode || SimSmmode) && 
         SimRejectFake && 
       (mcpattern!=2)) continue;
@@ -4840,46 +4839,35 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       }else{
         if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut_right,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ) continue;
       }
-      /*
-      //round cut
-      if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ) continue;
-      //for mixed events, avoid sharing same CDH segments
-      if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
-      */
     }else if(IsolationFlag==2){ 
-      if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicutwide,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcutwide,2.0) <1 ) continue;
-      //for mixed events, avoid sharing same CDH segments
-      if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
+    //  if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicutwide,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcutwide,2.0) <1 ) continue;
     } else if(IsolationFlag==3) {
-      if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) >=1 ) continue;
-      //for mixed events, avoid sharing same CDH segments
-      if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
+    //  if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) >=1 ) continue;
     }
+    //for mixed events, avoid sharing same CDH segments
+    if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
 
     TVector3 diffpip = (*CDH_Pos)-(*CDH_Pos_pip);
     double diffPhinpip = (*CDH_Pos).Phi()-(*CDH_Pos_pip).Phi();
     const double difftofnpip = tofn - tofpip;
     if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
     else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
-    if(IsolationFlag==2){ 
-      //round cut
-      if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) continue;
-      //for mixed events, avoid sharing same CDH segments
-      if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) continue;
-    } else if(IsolationFlag==1) {
+    if(IsolationFlag==1) {
       if(diffPhinpip<0){
         if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_left,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) continue;
       }else{
         if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_right,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) continue;
       }
-      //for mixed events, avoid sharing same CDH segments
-      if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) continue;
+    }else if(IsolationFlag==2){ 
+      //round cut
+     // if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) continue;
     } else if(IsolationFlag==3) {
-      if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0)>=1 ) continue;
-      //for mixed events, avoid sharing same CDH segments
-      if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) continue;
+     // if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0)>=1 ) continue;
     }
+    //for mixed events, avoid sharing same CDH segments
+    if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) continue;
 
+    NHitCDCOut->Fill(nhitOutCDC);
     if(CDCChargeVetoFlag && (nhitOutCDC!=0) ) continue;
 
     if(ForwardVetoFlag && ForwardCharge) continue;
@@ -4978,8 +4966,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
         pow(((LVec_pip_pim.M() - anacuts::K0_center)/5.0/anacuts::K0_sigma),2.0) <1.0){
       K0MissNViciFlag=true;
     }
-
-
 
     //
     //diagonal cuts
@@ -5191,7 +5177,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     double weight = 1.0;
     double sysupdown = 1.0+0.1*(double)sysud;
     if(MIXmode){
-      weight = 4.24608060240400029e-02*0.858179*0.967316*sysupdown;
+      weight = 4.24608060240400029e-02*0.858179*0.967316*1.02354*1.04191*sysupdown;
       if(SimSpmode){
         weight *=0.72;
         weight *=6.45779095649856028e-01;
@@ -5298,7 +5284,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     //---including K0 --------------------------------------------------------------
 
     //std::cout << __LINE__ << std::endl;
-    NHitCDCOut->Fill(nhitOutCDC,weight);
     IsForwardCharge->Fill(ForwardCharge,weight);
     CDHphi_betainv_fid->Fill(1./NeutralBetaCDH,(*CDH_Pos).Phi());
     CDHz_betainv_fid->Fill(1./NeutralBetaCDH,(*CDH_Pos).z());

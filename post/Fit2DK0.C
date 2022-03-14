@@ -5,6 +5,7 @@
 #include "anacuts.h"
 
 
+
 //2-dimensional fit
 //x gaus
 //y expo x gaus convoluted fit
@@ -52,17 +53,21 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
 }
 
 
-void Fit2DK0(const int qcut=2)
+const int Verision = 237;
+
+void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
 {
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
   TFile *fr = NULL;
   if(qcut==1){
     //fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo_sub.root","READ");
-    fr = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qlo_sub.root","READ");
+    //fr = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qlo_sub.root","READ");
+    fr = TFile::Open("evanaIMpisigma_npippim_v237_out_iso_qlo_sub.root","READ");
   }else if(qcut==2){
     //fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi_sub.root","READ");
-    fr = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qhi_sub.root","READ");
+    //fr = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qhi_sub.root","READ");
+    fr = TFile::Open("evanaIMpisigma_npippim_v237_out_iso_qhi_sub.root","READ");
   }else{
     std::cout << "no file" << std::endl;
     return;
