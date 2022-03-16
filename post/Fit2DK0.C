@@ -4,8 +4,6 @@
 #include <TMath.h>
 #include "anacuts.h"
 
-
-
 //2-dimensional fit
 //x gaus
 //y expo x gaus convoluted fit
@@ -53,37 +51,38 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
 }
 
 
-const int Verision = 237;
+const int Version = 239;
 
 void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
 {
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
   TFile *fr = NULL;
-  if(qcut==1){
-    //fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qlo_sub.root","READ");
+  //Because the statistics is limited, we just divide data into q<0.35 and q>0.35.
+  if(qcut==1){//qlo
     //fr = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qlo_sub.root","READ");
-    fr = TFile::Open("evanaIMpisigma_npippim_v237_out_iso_qlo_sub.root","READ");
-  }else if(qcut==2){
-    //fr = TFile::Open("evanaIMpisigma_npippim_v202_out_iso_qhi_sub.root","READ");
+    fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_qlo_nostop_sys%d_sub.root",Version,dEcut,sysud),"READ");
+  }else if(qcut==2){//qhi
     //fr = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qhi_sub.root","READ");
-    fr = TFile::Open("evanaIMpisigma_npippim_v237_out_iso_qhi_sub.root","READ");
+    fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_qhi_nostop_sys%d_sub.root",Version,dEcut,sysud),"READ");
   }else{
     std::cout << "no file" << std::endl;
     return;
   }
-  auto *IMnpim_IMnpip_dE_wK0_woSid_n_1 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
-  auto *IMnpim_IMnpip_dE_wK0_woSid_n_45rot = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n_45rot");
-  auto *IMnpim_IMnpip_dE_wK0_woSid_n_45rot3 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n_45rot3");
-  auto *cIMnpim_IMnpip_dE_wK0_woSid_n = new TCanvas("cIMnpim_IMnpip_dE_wK0_woSid_n","cIMnpim_IMnpip_dE_wK0_woSid_n",800,800);
+  //
+  TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_1 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
+  //45 degeree rotation of IMnpi- vs IMnpi+
+  TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_45rot = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n_45rot");
+  //deform the distribution so as to align the edge of x-axis
+  TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_45rot3 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n_45rot3");
   
+
+  TCanvas *cIMnpim_IMnpip_dE_wK0_woSid_n = new TCanvas("cIMnpim_IMnpip_dE_wK0_woSid_n","cIMnpim_IMnpip_dE_wK0_woSid_n",800,800);
   cIMnpim_IMnpip_dE_wK0_woSid_n->Divide(2,2,0.,0.);
   cIMnpim_IMnpip_dE_wK0_woSid_n->cd(3);
   //IMnpim_IMnpip_dE_wK0_woSid_n_1->Rebin2D(4,4);
   //IMnpim_IMnpip_dE_wK0_woSid_n_1->RebinX(4);
   //IMnpim_IMnpip_dE_wK0_woSid_n_1->RebinY(4);
-  //IMnpim_IMnpip_dE_wK0_woSid_n->GetXaxis()->SetRangeUser(1.0,1.8);
-  //IMnpim_IMnpip_dE_wK0_woSid_n->GetYaxis()->SetRangeUser(1.0,1.8);
   IMnpim_IMnpip_dE_wK0_woSid_n_1->SetMinimum(0);
   IMnpim_IMnpip_dE_wK0_woSid_n_1->Draw("colz");
   
@@ -96,7 +95,7 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   IMnpim_wK0_woSid_n->Draw("HE");
    
 
-  auto *cIMnpim_IMnpip_dE_wK0_woSid_n_45rot = new TCanvas("cIMnpim_IMnpip_dE_wK0_woSid_n_45rot","cIMnpim_IMnpip_dE_wK0_woSid_n_45rot",800,800);
+  TCanvas *cIMnpim_IMnpip_dE_wK0_woSid_n_45rot = new TCanvas("cIMnpim_IMnpip_dE_wK0_woSid_n_45rot","cIMnpim_IMnpip_dE_wK0_woSid_n_45rot",800,800);
   cIMnpim_IMnpip_dE_wK0_woSid_n_45rot->Divide(2,2,0,0);
   cIMnpim_IMnpip_dE_wK0_woSid_n_45rot->cd(3);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot->SetMinimum(0);
@@ -108,25 +107,27 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   cIMnpim_IMnpip_dE_wK0_woSid_n_45rot->cd(4);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot->ProjectionY()->Draw();
 
-  auto *cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3 = new TCanvas("cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3","cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3",800,800);
+  TCanvas *cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3 = new TCanvas("cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3","cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3",800,800);
   cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3->Divide(2,2,0,0);
   cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3->cd(3);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->SetMinimum(0);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->Draw("colz");
-  
   cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3->cd(1);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->ProjectionX()->Draw();
-  
   cIMnpim_IMnpip_dE_wK0_woSid_n_45rot3->cd(4);
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->ProjectionY()->Draw();
    
   TCanvas *cfitcomp = new TCanvas("cfitcomp","cfitcomp",800,800);
   cfitcomp->Divide(2,2);
   cfitcomp->cd(3);
-  auto *IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2");
+  TH2D *IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_45rot3->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2");
   for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsX();ix++){
     for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetNbinsY();iy++){
       double cont = IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->GetBinContent(ix,iy);
+      //Is this OK ? 
+      //-> without this treatment,
+      //negative bin with very small statistic error which comes from the event mixing method
+      //strongly constraints the entire shape of fitting.
       if(cont<0.001){
         IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->SetBinContent(ix,iy,0);
         IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_2->SetBinError(ix,iy,0);
@@ -224,7 +225,7 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   hf2wide_nosub->Draw("colz");
 
 
-  auto *IMnpim_IMnpip_dE_wK0_woSid_n_2 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_2");
+  TH2D *IMnpim_IMnpip_dE_wK0_woSid_n_2 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_2");
   IMnpim_IMnpip_dE_wK0_woSid_n_2->SetName("IMnpim_IMnpip_dE_wK0_woSid_n_2");
   TCanvas *cinter = new TCanvas("cinter","cinter",800,800);
   cinter->Divide(2,2);
@@ -271,8 +272,8 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   K0interpy->Draw("HISTsame");
   
   //fit to original histogram
-  auto *IMnpim_IMnpip_dE_wK0_woSid_n_3 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_3");
-  auto *cK0fit = new TCanvas("cK0fit","cK0fit",800,800);
+  TH2D *IMnpim_IMnpip_dE_wK0_woSid_n_3 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_3");
+  TCanvas *cK0fit = new TCanvas("cK0fit","cK0fit",800,800);
   cK0fit->Divide(2,2);
   cK0fit->cd(3);
   for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_woSid_n_3->GetNbinsX();ix++){
@@ -387,7 +388,7 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
     }
   }
 
-  auto *ctemp = new TCanvas("ctemp","ctemp",800,800);
+  TCanvas *ctemp = new TCanvas("ctemp","ctemp",800,800);
   ctemp->Divide(2,2);
   ctemp->cd(3);
   //f3widehist->Draw("colz");
@@ -423,7 +424,7 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   TH2D* IMnpim_IMnpip_dE_wK0_woSid_n_3_inter = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_3_inter");
   TH2D* h2K0inter_3 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Clone("h2K0inter_3");
   h2K0inter_3->Reset();
-  auto cinter_3 = new TCanvas("cinter_3","cinter_3",800,800);
+  TCanvas* cinter_3 = new TCanvas("cinter_3","cinter_3",800,800);
   cinter_3->Divide(2,2);
   for(int ixbin=0;ixbin<=nbinsX;ixbin++){
     for(int iybin=0;iybin<=nbinsY;iybin++){
@@ -455,12 +456,12 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   
   h2K0inter_3->SetFillColor(2);
   cinter_3->cd(1);
-  auto *IMnpip_3_inter = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->ProjectionX("IMnpip_3_inter");
+  TH1D *IMnpip_3_inter = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->ProjectionX("IMnpip_3_inter");
   IMnpip_3_inter->Draw("HE");
   h2K0inter_3->ProjectionX()->Draw("HEsame");
 
   cinter_3->cd(4);
-  auto *IMnpim_3_inter = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->ProjectionY("IMnpim_3_inter");
+  TH1D *IMnpim_3_inter = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->ProjectionY("IMnpim_3_inter");
   IMnpim_3_inter->Draw("HE");
   h2K0inter_3->ProjectionY()->Draw("HEsame");
   //auto IMnpim_3_inter->Draw("HE");
@@ -472,7 +473,7 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
 
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
   //TH2F* IMnpim_IMnpip_dE_wSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wSid_n");
-  auto *cwK0orwSid_n = new TCanvas("cwK0orwSid_n","cwK0orwSid_n",1600,800);
+  TCanvas *cwK0orwSid_n = new TCanvas("cwK0orwSid_n","cwK0orwSid_n",1600,800);
   cwK0orwSid_n->Divide(2,1);
   cwK0orwSid_n->cd(1);
   IMnpim_IMnpip_dE_wK0orwSid_n->Rebin2D(4,4);
@@ -488,7 +489,7 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Draw("colz");
   
 
-  auto *cwK0orwSid_n_pro = new TCanvas("cwK0orwSid_n_pro","cwK0orwSid_n_pro",1600,800);
+  TCanvas *cwK0orwSid_n_pro = new TCanvas("cwK0orwSid_n_pro","cwK0orwSid_n_pro",1600,800);
   cwK0orwSid_n_pro->Divide(2,1);
   cwK0orwSid_n_pro->cd(1);
   TH1D* IMnpip_wK0orwSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n->ProjectionX("IMnpip_wK0orwSid_n");
@@ -504,7 +505,7 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
    
 
   //K0 subtracted events
-  auto *cwSid_n_K0sub = new TCanvas("cwSid_n_K0sub","cwK0orwSid_n",800,800);
+  TCanvas *cwSid_n_K0sub = new TCanvas("cwSid_n_K0sub","cwK0orwSid_n",800,800);
   cwSid_n_K0sub->Divide(2,2);
   cwSid_n_K0sub->cd(3);
   IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Draw("colz");
@@ -584,7 +585,7 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   }*/
 
 
-  auto *cwSid_n_K0sub_wo = new TCanvas("cwSid_n_K0sub_wo","cwK0orwSid_n_K0sub_wo",1600,800);
+  TCanvas *cwSid_n_K0sub_wo = new TCanvas("cwSid_n_K0sub_wo","cwK0orwSid_n_K0sub_wo",1600,800);
   cwSid_n_K0sub_wo->Divide(2,1);
   cwSid_n_K0sub_wo->cd(1);
   IMnpip_K0sub_woSp->Draw("HE");
@@ -650,9 +651,9 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
 
   TFile *fout = NULL;
   if(qcut==1){
-     fout = TFile::Open("fout_qlo.root","RECREATE");
+     fout = TFile::Open(Form("fout_qlo_v%d_dE%d_sys%d.root",Version,dEcut,sysud),"RECREATE");
   }else if(qcut==2){
-     fout = TFile::Open("fout_qhi.root","RECREATE");
+     fout = TFile::Open(Form("fout_qhi_v%d_dE%d_sys%d.root",Version,dEcut,sysud),"RECREATE");
   }
   IMnpip_K0sub->Write();
   IMnpim_K0sub->Write();

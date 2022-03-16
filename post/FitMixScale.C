@@ -10,7 +10,7 @@ TH1D* IMnpim_woK0_woSp_mix;
 double sysScale=0.1;
 const int dEcut=2;
 const int Version=239;
-const bool Scale=yes;
+const bool Scale=true;
 
 void FitMixScale()
 {
@@ -18,7 +18,7 @@ void FitMixScale()
   fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop.root",Version,dEcut));
   fmix = TFile::Open(Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_dE%d_iso_nostop_sys0.root",Version,dEcut));
   fr->Print();
-  frmix->Print();
+  fmix->Print();
 
   TH2D* MMnmiss_IMnpip_woK0_woSm_vici_data = (TH2D*)fr->Get("MMnmiss_IMnpip_dE_woK0_woSm_vici");
   TH2D* MMnmiss_IMnpim_woK0_woSp_vici_data = (TH2D*)fr->Get("MMnmiss_IMnpim_dE_woK0_woSp_vici");

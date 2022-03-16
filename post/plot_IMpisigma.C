@@ -418,7 +418,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   TH2F* IMnpim_IMnpip_dE_wK0;
   TH2F* IMnpim_IMnpip_dE_wK0_woSid_n;
   TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_45rot;
+  //45 degeree rotation of IMnpi- vs IMnpi+
   TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_45rot2;
+  //deform the distribution of IM(npi-) vs IM(npi+) so as to align the edge of x-axis
   TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_45rot3;
   TH2F* IMnpim_IMnpip_dE_wK0_n_45rot3;
   TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_wbin[nwbin];
@@ -7073,43 +7075,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   //std::cout << "bg (trapezoid)          :" << trapezoidbgSm    << std::endl;
   */
 
-  /*
-     TCanvas *cq_IMnpipi_woK0_wSid_n_px_side = new TCanvas("cq_IMnpipi_woK0_wSid_n_px_side","q_IMnpipi_woK0_wSid_n_px_side");
-     TH1D *q_IMnpipi_wSid_n_px1  = q_IMnpipi_wSid_n->ProjectionX();
-  //w/o K0
-  //q_IMnpipi_woK0_wSid_n_px->GetYaxis()->SetTitle("Counts / 20 MeV/c^{2}");
-  q_IMnpipi_woK0_wSid_n_px->GetYaxis()->CenterTitle();
-  q_IMnpipi_woK0_wSid_n_px->Draw("EH");
-  //including K0
-  q_IMnpipi_wSid_n_px1->SetLineColor(5);
-  //q_IMnpipi_wSid_n_px1->GetYaxis()->SetTitle("Counts / 20 MeV/c^{2}");
-  q_IMnpipi_wSid_n_px1->GetYaxis()->CenterTitle();
-  //q_IMnpipi_wSid_n_px1->Draw("HEsame");
-
-  //sideband w/o K0
-  TH1D *q_IMnpipi_woK0_wSid_n_side_px = q_IMnpipi_woK0_wSid_n_side->ProjectionX();
-  q_IMnpipi_woK0_wSid_n_side_px->SetLineColor(4);
-  //std::cout << "scale "  ;
-  //std::cout << 0.8*(float)q_IMnpipi_woK0_wSid_n_px->Integral()/(float) q_IMnpipi_woK0_wSid_n_side_px->Integral() << std::endl;
-  //q_IMnpipi_woK0_wSid_n_side_px->Scale(0.8*q_IMnpipi_woK0_wSid_n_px->Integral()/q_IMnpipi_woK0_wSid_n_side_px->Integral());
-  //q_IMnpipi_woK0_wSid_n_side_px->Scale(1.23);
-  q_IMnpipi_woK0_wSid_n_side_px->Draw("HEsame");
-
-  //sideband including K0
-  TH1D *q_IMnpipi_wSid_n_side_px = q_IMnpipi_wSid_n_side->ProjectionX();
-  q_IMnpipi_wSid_n_side_px->SetLineColor(3);
-  //q_IMnpipi_wSid_n_side_px->Scale(1.23);
-  //q_IMnpipi_wSid_n_side_px->Draw("HEsame");
-  */
-  /*
-  //TCanvas *csub = new TCanvas("csub","csub");
-  //TH1D *q_IMnpipi_woK0_wSid_n_px_sub = (TH1D*) q_IMnpipi_woK0_wSid_n_px->Clone();
-  //q_IMnpipi_woK0_wSid_n_px_sub->Add(q_IMnpipi_woK0_wSid_n_side_px,-1);
-  //q_IMnpipi_woK0_wSid_n_px_sub->SetMinimum(0);
-  //q_IMnpipi_woK0_wSid_n_px_sub->Draw("EH");
-  //fkp->Draw("same");
-  */
-
   const double Kp_mass = pMass + kpMass;
   TF1 *fkp = new TF1("f", "sqrt(((x*x-[0]*[0]-[1]*[1])/(2*[0]))*((x*x-[0]*[0]-[1]*[1])/(2*[0]))-[1]*[1])",Kp_mass-0.0001,2);
   fkp->SetParameter(0,nMass);
@@ -7131,14 +7096,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   TMultiGraph *mg = (TMultiGraph*)fnuSp->Get("mg");
   mg->Draw("c");
   f->cd();
-
-  /*
-  TCanvas *cq_IMnpipi_wK0_n = new TCanvas("cq_IMnpipi_wK0_n","q_IMnpipi_wK0_n");
-  cq_IMnpipi_wK0_n->cd();
-  //q_IMnpipi_wK0_n->GetYaxis()->SetRangeUser(0,1.0);
-  q_IMnpipi_wK0_n->Draw("colz");
-  fkp->Draw("same");
-  */
 
   TCanvas *cq_IMnpipi_wK0_n_px = new TCanvas("cq_IMnpipi_wK0_n_px","q_IMnpipi_wK0_n_px");
   cq_IMnpipi_wK0_n_px->cd();
@@ -7185,36 +7142,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   //  q_IMnpipi_woK0_wSid_n_Sm->SetMaximum(q_IMnpipi_wK0_wSid_n_Sp->GetMaximum());
   q_IMnpipi_wK0_wSid_n_Sm->Draw("colz");
   fkp->Draw("same");
-
-  //TCanvas *cq_IMnpipi_wSid_n_Sp_side_low = new TCanvas("cq_IMnpipi_wSid_n_Sp_side_low","q_IMnpipi_wSid_n_Sp_side_low");
-  //cq_IMnpipi_wSid_n_Sp_side_low->cd();
-  //q_IMnpipi_wSid_n_Sp_side[sidebandtype][LOWside][0]->Draw("colz");
-  //TCanvas *cq_IMnpipi_woK0_wSid_n_Sp_side_low = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp_side_low","q_IMnpipi_woK0_wSid_n_Sp_side_low");
-  //cq_IMnpipi_woK0_wSid_n_Sp_side_low->cd();
-  //q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][LOWside][0]->Draw("colz");
-
-  //TCanvas *cq_IMnpipi_wSid_n_Sp_side_high = new TCanvas("cq_IMnpipi_wSid_n_Sp_side_high","q_IMnpipi_wSid_n_Sp_side_high");
-  //cq_IMnpipi_wSid_n_Sp_side_high->cd();
-  //q_IMnpipi_wSid_n_Sp_side[sidebandtype][HIGHside][0]->Draw("colz");
-  //TCanvas *cq_IMnpipi_woK0_wSid_n_Sp_side_high = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp_side_high","q_IMnpipi_woK0_wSid_n_Sp_side_high");
-  //cq_IMnpipi_woK0_wSid_n_Sp_side_high->cd();
-  //q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][HIGHside][0]->Draw("colz");
-
-
-
-  //TCanvas *cq_IMnpipi_wSid_n_Sm_side_low = new TCanvas("cq_IMnpipi_wSid_n_Sm_side_low","q_IMnpipi_wSid_n_Sm_side_low");
-  //cq_IMnpipi_wSid_n_Sm_side_low->cd();
-  //q_IMnpipi_wSid_n_Sm_side[sidebandtype][LOWside][0]->Draw("colz");
-  //TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_side_low = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sm_side_low","q_IMnpipi_woK0_wSid_n_Sm_side_low");
-  //cq_IMnpipi_woK0_wSid_n_Sm_side_low->cd();
-  //q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][LOWside][0]->Draw("colz");
-
-  //TCanvas *cq_IMnpipi_wSid_n_Sm_side_high = new TCanvas("cq_IMnpipi_wSid_n_Sm_side_high","q_IMnpipi_wSid_n_Sm_side_high");
-  //cq_IMnpipi_wSid_n_Sm_side_high->cd();
-  //q_IMnpipi_wSid_n_Sm_side[sidebandtype][HIGHside][0]->Draw("colz");
-  //TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_side_high = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sm_side_high","q_IMnpipi_woK0_wSid_n_Sm_side_high");
-  //cq_IMnpipi_woK0_wSid_n_Sm_side_high->cd();
-  //q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][HIGHside][0]->Draw("colz");
 
   TCanvas *cq_IMnpipi_wSid_n_px_SpSm = new TCanvas("cq_IMnpipi_wSid_n_px_SpSm","q_IMnpipi_wSid_n_px_SpSm");
   cq_IMnpipi_wSid_n_px_SpSm->cd();
@@ -7366,157 +7293,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   //q_IMnpipi_woK0_wSid_n_Sp_side_px_2->Draw("HEsame");
   */
 
-  /*
-  //sideband subtracted spectra for Sp mode
-  TCanvas *cq_IMnpipi_woK0_wSid_n_Sp_sub = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp_sub","q_IMnpipi_woK0_wSid_n_Sp_sub");
-  cq_IMnpipi_woK0_wSid_n_Sp_sub->cd();
-  TH2F* q_IMnpipi_woK0_wSid_n_Sp_sub = (TH2F*)q_IMnpipi_woK0_wSid_n_Sp->Clone("Sp_sub");
-  q_IMnpipi_woK0_wSid_n_Sp_sub->Add(q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][LOWside][0],-1);
-  q_IMnpipi_woK0_wSid_n_Sp_sub->Add(q_IMnpipi_woK0_wSid_n_Sp_side[sidebandtype][HIGHside][0],-1);
-  q_IMnpipi_woK0_wSid_n_Sp_sub->SetMinimum(0);
-  q_IMnpipi_woK0_wSid_n_Sp_sub->Draw("colz");
-  */ 
-
-  /*
-  TCanvas *cq_IMnpipi_wSid_n_Sm_px[ngap];
-  TH1D* q_IMnpipi_wSid_n_Sm_side_low_px[ngap];
-  TH1D* q_IMnpipi_wSid_n_Sm_side_high_px[ngap];
-  TH1D* q_IMnpipi_wSid_n_Sm_side_px_sum[ngap];
-  for(int igap=0; igap<ngap; igap++) {
-    cq_IMnpipi_wSid_n_Sm_px[igap] = new TCanvas(Form("cq_IMnpipi_wSid_n_Sm_px_%d",igap),Form("q_IMnpipi_wSid_n_Sm_px_%d",igap));
-    cq_IMnpipi_wSid_n_Sm_px[igap]->Divide(2,2);
-    cq_IMnpipi_wSid_n_Sm_px[igap]->cd(1);
-    IMnpim_IMnpip_dE_n_Sm->SetMaximum(IMnpim_IMnpip_dE_n->GetMaximum());
-    IMnpim_IMnpip_dE_n_Sm->GetXaxis()->SetRangeUser(0,1.7);
-    IMnpim_IMnpip_dE_n_Sm->GetYaxis()->SetRangeUser(0,1.7);
-    IMnpim_IMnpip_dE_n_Sm->Draw("colz");
-    //IMnpim_IMnpip_dE_n_Sm_side[LOWside][igap]->Draw("colsame");
-    //IMnpim_IMnpip_dE_n_Sm_side[HIGHside][igap]->Draw("colsame");
-
-    cq_IMnpipi_wSid_n_Sm_px[igap]->cd(2);
-    //q_IMnpipi_woK0_wSid_n_Sm_px->SetMaximum(q_IMnpipi_woK0_wSid_n_px->GetMaximum());
-    if(qvalcutflag==1) q_IMnpipi_wSid_n_Sm_px->SetMaximum(160);
-    if(qvalcutflag==2) q_IMnpipi_wSid_n_Sm_px->SetMaximum(260);
-    q_IMnpipi_wSid_n_Sm_px->Draw("EH");
-    //q_IMnpipi_wSid_n_Sm_side_low_px[igap] = (TH1D*) q_IMnpipi_wSid_n_Sm_side[sidebandtype][LOWside][igap]->ProjectionX();
-    //q_IMnpipi_wSid_n_Sm_side_low_px[igap]->SetLineColor(kPink+1);
-    //q_IMnpipi_wSid_n_Sm_side_low_px[igap]->SetMarkerStyle(20);
-    //q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->Draw("Esame");
-
-    q_IMnpipi_wSid_n_Sm_side_high_px[igap] = (TH1D*) q_IMnpipi_wSid_n_Sm_side[sidebandtype][HIGHside][igap]->ProjectionX();
-    q_IMnpipi_wSid_n_Sm_side_high_px[igap]->SetLineColor(kPink+3);
-    q_IMnpipi_wSid_n_Sm_side_high_px[igap]->SetMarkerStyle(21);
-    q_IMnpipi_wSid_n_Sm_side_high_px[igap]->SetMarkerColor(kPink+3);
-    //q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->Draw("Esame");
-
-    q_IMnpipi_wSid_n_Sm_side_px_sum[igap] = (TH1D*) q_IMnpipi_wSid_n_Sm_side_low_px[igap]->Clone();
-    q_IMnpipi_wSid_n_Sm_side_px_sum[igap]->Add(q_IMnpipi_wSid_n_Sm_side_high_px[igap]);
-    q_IMnpipi_wSid_n_Sm_side_px_sum[igap]->SetLineColor(kPink+10);
-    q_IMnpipi_wSid_n_Sm_side_px_sum[igap]->SetMarkerStyle(22);
-    q_IMnpipi_wSid_n_Sm_side_px_sum[igap]->SetMarkerColor(kPink+10);
-    q_IMnpipi_wSid_n_Sm_side_px_sum[igap]->Draw("Esame");
-    cq_IMnpipi_wSid_n_Sm_px[igap]->cd(3);
-    q_IMnpipi_wSid_n_Sm_side_px_sum[igap]->Draw("E");
-    q_IMnpipi_wSid_n_Sm_side_low_px[igap]->Draw("Esame");
-    q_IMnpipi_wSid_n_Sm_side_high_px[igap]->Draw("Esame");
-    if(SimSpmode || SimSmmode) break;
-  }*/
-  
-  /*
-  //overlay signal and sideband projected 1d histo to IM
-  TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_px[ngap];
-  TH1D* q_IMnpipi_woK0_wSid_n_Sm_side_low_px[ngap];
-  TH1D* q_IMnpipi_woK0_wSid_n_Sm_side_high_px[ngap];
-  TH1D* q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[ngap];
-  for(int igap=0; igap<ngap; igap++) {
-    cq_IMnpipi_woK0_wSid_n_Sm_px[igap] = new TCanvas(Form("cq_IMnpipi_woK0_wSid_n_Sm_px_%d",igap),Form("q_IMnpipi_woK0_wSid_n_Sm_px_%d",igap));
-    cq_IMnpipi_woK0_wSid_n_Sm_px[igap]->Divide(2,2);
-    cq_IMnpipi_woK0_wSid_n_Sm_px[igap]->cd(1);
-    IMnpim_IMnpip_dE_woK0_n_Sm->SetMaximum(IMnpim_IMnpip_dE_woK0_n->GetMaximum());
-    IMnpim_IMnpip_dE_woK0_n_Sm->GetXaxis()->SetRangeUser(0,1.7);
-    IMnpim_IMnpip_dE_woK0_n_Sm->GetYaxis()->SetRangeUser(0,1.7);
-    IMnpim_IMnpip_dE_woK0_n_Sm->Draw("colz");
-    //IMnpim_IMnpip_dE_woK0_n_Sm_side[LOWside][igap]->Draw("colsame");
-    //IMnpim_IMnpip_dE_woK0_n_Sm_side[HIGHside][igap]->Draw("colsame");
-
-    cq_IMnpipi_woK0_wSid_n_Sm_px[igap]->cd(2);
-    //q_IMnpipi_woK0_wSid_n_Sm_px->SetMaximum(q_IMnpipi_woK0_wSid_n_px->GetMaximum());
-    if(qvalcutflag==1) q_IMnpipi_woK0_wSid_n_Sm_px->SetMaximum(160);
-    if(qvalcutflag==2) q_IMnpipi_woK0_wSid_n_Sm_px->SetMaximum(260);
-    q_IMnpipi_woK0_wSid_n_Sm_px->Draw("EH");
-    q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][LOWside][igap]->ProjectionX();
-    q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->SetLineColor(kPink+1);
-    q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->SetMarkerStyle(20);
-    //q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->Draw("Esame");
-
-    q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][HIGHside][igap]->ProjectionX();
-    q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->SetLineColor(kPink+3);
-    q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->SetMarkerStyle(21);
-    q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->SetMarkerColor(kPink+3);
-    //q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->Draw("Esame");
-
-    q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap] = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->Clone();
-    q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->Add(q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]);
-    q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->SetLineColor(kPink+10);
-    q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->SetMarkerStyle(22);
-    q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->SetMarkerColor(kPink+10);
-    q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->Draw("Esame");
-    cq_IMnpipi_woK0_wSid_n_Sm_px[igap]->cd(3);
-    q_IMnpipi_woK0_wSid_n_Sm_side_px_sum[igap]->Draw("E");
-    q_IMnpipi_woK0_wSid_n_Sm_side_low_px[igap]->Draw("Esame");
-    q_IMnpipi_woK0_wSid_n_Sm_side_high_px[igap]->Draw("Esame");
-    if(SimSpmode || SimSmmode) break;
-  }
-  //TH1D* q_IMnpipi_woK0_wSid_n_Sm_side_px_1 = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side[1]->ProjectionX();
-  //q_IMnpipi_woK0_wSid_n_Sm_side_px_1->SetLineColor(kPink+3);
-  //q_IMnpipi_woK0_wSid_n_Sm_side_px_1->Draw("HEsame");
-  //TH1D* q_IMnpipi_woK0_wSid_n_Sm_side_px_2 = (TH1D*) q_IMnpipi_woK0_wSid_n_Sm_side[2]->ProjectionX();
-  //q_IMnpipi_woK0_wSid_n_Sm_side_px_2->SetLineColor(kPink+5);
-  //q_IMnpipi_woK0_wSid_n_Sm_side_px_2->Draw("HEsame");
-  */
-
-  /*
-  //sideband subtracted spectra for Sm mode
-  TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_sub = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sm_sub","q_IMnpipi_woK0_wSid_n_Sm_sub");
-  cq_IMnpipi_woK0_wSid_n_Sm_sub->cd();
-  TH2F* q_IMnpipi_woK0_wSid_n_Sm_sub = (TH2F*)q_IMnpipi_woK0_wSid_n_Sm->Clone("Sm_sub");
-  q_IMnpipi_woK0_wSid_n_Sm_sub->Add(q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][LOWside][0],-1);
-  q_IMnpipi_woK0_wSid_n_Sm_sub->Add(q_IMnpipi_woK0_wSid_n_Sm_side[sidebandtype][HIGHside][0],-1);
-  q_IMnpipi_woK0_wSid_n_Sm_sub->SetMinimum(0);
-  q_IMnpipi_woK0_wSid_n_Sm_sub->Draw("colz");
-
-
-  TCanvas *cq_IMnpipi_woK0_wSid_n_SpSm_sub_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_SpSm_sub_px","q_IMnpipi_woK0_wSid_n_SpSm_sub_px");
-  cq_IMnpipi_woK0_wSid_n_SpSm_sub_px->cd();
-  TH1D* q_IMnpipi_woK0_wSid_n_Sp_sub_px = q_IMnpipi_woK0_wSid_n_Sp_sub->ProjectionX();
-  q_IMnpipi_woK0_wSid_n_Sp_sub_px->SetLineColor(2);
-  q_IMnpipi_woK0_wSid_n_Sp_sub_px->SetMinimum(0);
-  q_IMnpipi_woK0_wSid_n_Sp_sub_px->Draw("HE");
-
-  TH1D* q_IMnpipi_woK0_wSid_n_Sm_sub_px = q_IMnpipi_woK0_wSid_n_Sm_sub->ProjectionX();
-  q_IMnpipi_woK0_wSid_n_Sm_sub_px->SetLineColor(3);
-  q_IMnpipi_woK0_wSid_n_Sm_sub_px->Draw("HEsame");
-
-  TH1D* SpSm_sub_sum_px = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_sub_px->Clone("SpSm_sub_px");
-  SpSm_sub_sum_px->Add(q_IMnpipi_woK0_wSid_n_Sm_sub_px);
-  SpSm_sub_sum_px->SetLineColor(4);
-  SpSm_sub_sum_px->Draw("HEsame");
-  */
-
   //w/ K0
   TCanvas *cq_IMnpipi_wSid_n = new TCanvas("cq_IMnpipi_wSid_n","q_IMnpipi_wSid_n");
   cq_IMnpipi_wSid_n->cd();
   q_IMnpipi_wSid_n->Draw("colz");
   
-  /*
-  TCanvas *cq_IMnpipi_wSid_n_side[ngap];
-  for(int igap=0; igap<ngap; igap++) {
-    cq_IMnpipi_wSid_n_side[igap] = new TCanvas(Form("cq_IMnpipi_wSid_n_side_%d",igap),Form("q_IMnpipi_wSid_n_side_%d",igap));
-    cq_IMnpipi_wSid_n_side[igap]->cd();
-    q_IMnpipi_wSid_n_side[igap]->SetMaximum(q_IMnpipi_wSid_n->GetMaximum());
-    q_IMnpipi_wSid_n_side[igap]->Draw("colz");
-  }
-  */
 
   TCanvas *cq_IMnpipi_woK0_wSid_n = new TCanvas("cq_IMnpipi_woK0_wSid_n","q_IMnpipi_woK0_wSid_n");
   cq_IMnpipi_woK0_wSid_n->cd();
@@ -7528,30 +7309,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   //mg->Draw("c");
   f->cd();
 
-  //TCanvas *cq_IMnpipi_woK0_wSid_n_side = new TCanvas("cq_IMnpipi_woK0_wSid_n_side","q_IMnpipi_woK0_wSid_n_side");
-  //cq_IMnpipi_woK0_wSid_n_side->cd();
-  //cq_IMnpipi_woK0_wSid_n->cd(2);
-  //q_IMnpipi_woK0_wSid_n_side->SetMaximum(q_IMnpipi_woK0_wSid_n->GetMaximum());
-  //q_IMnpipi_woK0_wSid_n_side->Draw("colz");
-
-
-
-  //TCanvas *cqsub2 = new TCanvas("cqsub2","cqsub2");
-  //cqsub2->cd();
-  //TH2F *q_IMnpipi_woK0_wSid_n_sub = (TH2F*) q_IMnpipi_woK0_wSid_n->Clone("sub");
-  //q_IMnpipi_woK0_wSid_n_sub->Add(q_IMnpipi_woK0_wSid_n_side,-1);
-  //q_IMnpipi_woK0_wSid_n_sub->SetMinimum(0);
-  //q_IMnpipi_woK0_wSid_n_sub->Draw("colz");
-  //fkp->Draw("same");
-  //TFile *fnu = new TFile("NumericalRootFinder.root");
-  //fnu->cd();
-  //TMultiGraph *mg = (TMultiGraph*)fnu->Get("mg");
-  //mg->Draw("c");
-  //f->cd();
-  //fnu->cd();
-  //TMultiGraph *mg = (TMultiGraph*)fnu->Get("mg");
-  //mg->Draw("c");
-  //f->cd();
 
   TCanvas *cdE_betainv_fid = new TCanvas(Form("cdE_betainv_fid"), "dE_betainv_fid");
   cdE_betainv_fid->cd();
@@ -8382,127 +8139,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     if(SimSpmode || SimSmmode) break;
   }*/
 
-
-  TCanvas *ccs_sum = new TCanvas("ccs_sum","ccs_sum");
-  ccs_sum->cd();
-  TH1D* cs_sum = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_cs_px->Clone();
-  cs_sum->Add(q_IMnpipi_woK0_wSid_n_Sm_cs_px);
-  cs_sum->SetLineColor(4);
-  cs_sum->SetYTitle("#mu b");
-  cs_sum->GetYaxis()->CenterTitle();
-  cs_sum->Draw("HE");
-  q_IMnpipi_woK0_wSid_n_Sm_cs_px->Draw("HEsame");
-  q_IMnpipi_woK0_wSid_n_Sp_cs_px->Draw("HEsame");
-
-  /*
-     TCanvas *cq_IMnpipi_woK0_wSid_n_Sp_sub_cs = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp_sub_cs","q_IMnpipi_woK0_wSid_n_Sp_sub_cs");
-     cq_IMnpipi_woK0_wSid_n_Sp_sub_cs->cd();
-     TH2F *q_IMnpipi_woK0_wSid_n_Sp_sub_cs = (TH2F*)q_IMnpipi_woK0_wSid_n_Sp_sub->Clone("Sp_cs_sub");
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs->Sumw2();
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs->Divide(acc_Sp);
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs->SetMaximum(30000);
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs->Draw("colz");
-
-     TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_sub_cs = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sm_sub_cs","q_IMnpipi_woK0_wSid_n_Sm_sub_cs");
-     cq_IMnpipi_woK0_wSid_n_Sm_sub_cs->cd();
-     TH2F *q_IMnpipi_woK0_wSid_n_Sm_sub_cs = (TH2F*)q_IMnpipi_woK0_wSid_n_Sm_sub->Clone("Sm_cs_sub");
-     q_IMnpipi_woK0_wSid_n_Sm_sub_cs->Sumw2();
-     q_IMnpipi_woK0_wSid_n_Sm_sub_cs->Divide(acc_Sm);
-     q_IMnpipi_woK0_wSid_n_Sm_sub_cs->SetMaximum(30000);
-     q_IMnpipi_woK0_wSid_n_Sm_sub_cs->Draw("colz");
-
-     TCanvas *cq_IMnpipi_woK0_wSid_n_SpSm_sub_cs = new TCanvas("cq_IMnpipi_woK0_wSid_n_SpSm_sub_cs","q_IMnpipi_woK0_wSid_n_SpSm_sub_cs");
-     cq_IMnpipi_woK0_wSid_n_SpSm_sub_cs->cd();
-     TH2F* q_IMnpipi_woK0_wSid_n_SpSm_sub_cs = (TH2F*)q_IMnpipi_woK0_wSid_n_Sp_sub_cs->Clone("SpSm_cs_sub");
-     q_IMnpipi_woK0_wSid_n_SpSm_sub_cs->Add(q_IMnpipi_woK0_wSid_n_Sm_sub_cs);
-     q_IMnpipi_woK0_wSid_n_SpSm_sub_cs->SetMinimum(0);
-     q_IMnpipi_woK0_wSid_n_SpSm_sub_cs->SetMaximum(30000);
-     q_IMnpipi_woK0_wSid_n_SpSm_sub_cs->SetTitle("q_IMnpipi_woK0_wSid_n_SpSm_sub_cs");
-     q_IMnpipi_woK0_wSid_n_SpSm_sub_cs->Draw("colz");
-
-     gStyle->SetErrorX(0) ;
-     TCanvas *cq_IMnpipi_woK0_wSid_n_Sp_sub_cs_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp_sub_cs_px","q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px");
-     TH1D *q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_sub_cs->ProjectionX();
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->SetLineColor(2);
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->SetMinimum(0);
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->GetYaxis()->SetTitle("C.S. (a.u.)");
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->GetYaxis()->CenterTitle();
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->SetMarkerStyle(20);
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->SetMarkerSize(1);
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->SetMarkerColor(2);
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->Draw("PE");
-
-  //TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_cs_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sm_cs_px","q_IMnpipi_woK0_wSid_n_Sm_cs_px");
-  TH1D *q_IMnpipi_woK0_wSid_n_Sm_sub_cs_px = (TH1D*)q_IMnpipi_woK0_wSid_n_Sm_sub_cs->ProjectionX();
-  q_IMnpipi_woK0_wSid_n_Sm_sub_cs_px->SetLineColor(3);
-  q_IMnpipi_woK0_wSid_n_Sm_sub_cs_px->Draw("PEsame");
-
-  TH1D* cs_sub_sum = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->Clone();
-  cs_sub_sum->Add(q_IMnpipi_woK0_wSid_n_Sm_sub_cs_px);
-  cs_sub_sum->SetLineColor(4);
-  cs_sub_sum->Draw("PEsame");
-  */
-  /*
-     TCanvas *c1 = new TCanvas("c1","c1");
-     c1->cd();
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->SetMarkerStyle(20);
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->SetMarkerSize(1);
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->SetMarkerColor(2);
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->SetMaximum(q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->GetMaximum()+50000.);
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->Draw("PE");
-
-
-     TCanvas *c2 = new TCanvas("c2","c2");
-     c2->cd();
-     q_IMnpipi_woK0_wSid_n_Sm_sub_cs_px->SetMarkerStyle(20);
-     q_IMnpipi_woK0_wSid_n_Sm_sub_cs_px->SetMarkerSize(1);
-     q_IMnpipi_woK0_wSid_n_Sm_sub_cs_px->SetMinimum(0);
-     q_IMnpipi_woK0_wSid_n_Sm_sub_cs_px->SetMaximum(q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->GetMaximum());
-     q_IMnpipi_woK0_wSid_n_Sm_sub_cs_px->SetMarkerColor(3);
-     q_IMnpipi_woK0_wSid_n_Sm_sub_cs_px->Draw("PE");
-
-     TCanvas *c3 = new TCanvas("c3","c3");
-     c3->cd();
-     cs_sub_sum->SetMarkerStyle(20);
-     cs_sub_sum->SetMarkerSize(1);
-     cs_sub_sum->SetMarkerColor(4);
-     cs_sub_sum->SetMinimum(0);
-     cs_sub_sum->SetMaximum(q_IMnpipi_woK0_wSid_n_Sp_sub_cs_px->GetMaximum());
-     cs_sub_sum->Draw("PE");
-     */
-
-  /*
-     TCanvas *cq_IMnpipi_woK0_wSid_n_Sp_sub_cs_py = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sp_sub_cs_py","q_IMnpipi_woK0_wSid_n_Sp_sub_cs_py");
-     TH1D *q_IMnpipi_woK0_wSid_n_Sp_sub_cs_py = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_sub_cs->ProjectionY();
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_py->SetLineColor(2);
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_py->SetMinimum(0);
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_py->GetYaxis()->SetTitle("C.S. (a.u.)");
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_py->GetYaxis()->CenterTitle();
-     q_IMnpipi_woK0_wSid_n_Sp_sub_cs_py->Draw("E");
-
-  //TCanvas *cq_IMnpipi_woK0_wSid_n_Sm_cs_px = new TCanvas("cq_IMnpipi_woK0_wSid_n_Sm_cs_px","q_IMnpipi_woK0_wSid_n_Sm_cs_px");
-  TH1D *q_IMnpipi_woK0_wSid_n_Sm_sub_cs_py = (TH1D*)q_IMnpipi_woK0_wSid_n_Sm_sub_cs->ProjectionY();
-  q_IMnpipi_woK0_wSid_n_Sm_sub_cs_py->SetLineColor(3);
-  q_IMnpipi_woK0_wSid_n_Sm_sub_cs_py->Draw("Esame");
-
-  TH1D* cs_sub_sum_py = (TH1D*)q_IMnpipi_woK0_wSid_n_Sp_sub_cs_py->Clone();
-  cs_sub_sum_py->Add(q_IMnpipi_woK0_wSid_n_Sm_sub_cs_py);
-  cs_sub_sum_py->SetLineColor(4);
-  cs_sub_sum_py->Draw("Esame");
-
-
-
-  TCanvas *cq_IMnpipi_woK0_wSid_n_SpSm_side_cs = new TCanvas("cq_IMnpipi_woK0_wSid_n_SpSm_side_cs","q_IMnpipi_woK0_wSid_n_SpSm_side_cs");
-  cq_IMnpipi_woK0_wSid_n_SpSm_side_cs->cd();
-  TH2F* q_IMnpipi_woK0_wSid_n_SpSm_side_cs = (TH2F*)q_IMnpipi_woK0_wSid_n_Sp_side_cs->Clone("SpSm_cs_side");
-  q_IMnpipi_woK0_wSid_n_SpSm_side_cs->Scale(0.48);
-  q_IMnpipi_woK0_wSid_n_SpSm_side_cs->Add(q_IMnpipi_woK0_wSid_n_Sm_side_cs);
-  q_IMnpipi_woK0_wSid_n_SpSm_side_cs->Scale(1.48);
-  q_IMnpipi_woK0_wSid_n_SpSm_side_cs->SetMinimum(0);
-  q_IMnpipi_woK0_wSid_n_SpSm_side_cs->SetTitle("q_IMnpipi_woK0_wSid_n_SpSm_side_cs");
-  q_IMnpipi_woK0_wSid_n_SpSm_side_cs->SetMaximum(60000);
-  q_IMnpipi_woK0_wSid_n_SpSm_side_cs->Draw("colz");
-  */
 
   TCanvas *cIMnpip_IMnpipi_wK0_n = new TCanvas("cIMnpip_IMnpipi_wK0_n","IMnpip_IMnpipi_wK0_n");
   cIMnpip_IMnpipi_wK0_n->cd();
