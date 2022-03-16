@@ -530,6 +530,9 @@ void comp_pastDataH2()
   gCS_Sm->GetYaxis()->CenterTitle();
   gCS_Sm->SetTitle("#Sigma^{-}#pi^{+}");
   gCS_Sm->Draw("AP");
+  //remove 0 consistent data
+  gCS_Sm->RemovePoint(6);
+  gCS_Smsys->RemovePoint(6);
   gCS_Smsys->SetLineColor(1);
   gCS_Smsys->Draw("5");
       p7071_d60x1y1->Draw("same PZ");

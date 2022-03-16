@@ -929,16 +929,34 @@ int main( int argc, char** argv )
         if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
         else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
       
+        bool IsIsolated=true;
         if((charge_pi==0)) {
-          //round cut
-          if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ) nCDH--;
-          else if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) nCDH--;
-          else Ncanhitseg= NeutralCDHseg.at(iNeutralCDHseg);
+          if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut_left,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ){
+            IsIsolated=false;
+            Tools::Fill2D(Form("diff2d_CDC_CDH_pim_veto"),diffPhinpim,diffpim.z());
+            nCDH--;
+          }else{
+            if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut_right,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ){
+              IsIsolated=false;
+              Tools::Fill2D(Form("diff2d_CDC_CDH_pim_veto"),diffPhinpim,diffpim.z());
+              nCDH--;
+            }
+          }
+          if(IsIsolated) Ncanhitseg= NeutralCDHseg.at(iNeutralCDHseg);
         }else if(charge_pi==1) {
           //round cut
-          if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) nCDH--;
-          else if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) nCDH--;
-          else Ncanhitseg= NeutralCDHseg.at(iNeutralCDHseg);
+          if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_left,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ){
+            IsIsolated=false;
+            Tools::Fill2D(Form("diff2d_CDC_CDH_pip_veto"),diffPhinpip,diffpip.z());
+            nCDH--;
+          }else{
+            if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_right,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ){
+              IsIsolated=false;
+              Tools::Fill2D(Form("diff2d_CDC_CDH_pip_veto"),diffPhinpip,diffpip.z());
+              nCDH--;
+            }
+          }
+          if(IsIsolated) Ncanhitseg= NeutralCDHseg.at(iNeutralCDHseg);
         }
       }//for iNeutralCDHseg
       

@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="10"
+set Version="11"
 set DATADIR="/group/had/knucl/e15/data/Run62/"
 set OUTDIR="/group/had/knucl/e15/asano/Run62/"
 set CDSTRACKDIR="/group/had/knucl/e15/asano/Run62/"
@@ -23,7 +23,9 @@ else
  exit 0
 endif
 
+cd ../
 set SRCDIR="/gpfs/home/had/hiasano/ana/k18ana/src/"
+set CSHDIR="/gpfs/home/had/hiasano/ana/k18ana/jobscripts/"
 cp $SRCDIR/EventAnalysisIMSigma_H2.cpp $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaAnaPar.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaHist.h $OUTDIRSUB/
@@ -31,8 +33,8 @@ cp $SRCDIR/IMPiSigmaUtil.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaUtil.cpp $OUTDIRSUB/
 cp conf/Run78/analyzer_run62_20211019.conf $OUTDIRSUB/
 
-cp hadd_IMhist_h2.csh $OUTDIRSUB/
-cp hadd_IMnpi_h2.csh $OUTDIRSUB/
+cp $CSHDIR/hadd_IMhist_h2.csh $OUTDIRSUB/
+cp $CSHDIR/hadd_IMnpi_h2.csh $OUTDIRSUB/
 ln -s $OUTDIRSUB/evanaIMsigma_all.root post/evanaIMsigma_h2_v${Version}.root
 ln -s $OUTDIRSUB/evanaIMsigma_all_npi.root post/evanaIMsigma_npi_h2_v${Version}.root
 
