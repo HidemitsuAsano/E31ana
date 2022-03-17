@@ -1,4 +1,5 @@
 //fit macro to decompose K0/S+/S- final states
+//TODO : decompose K0 & S+ & S- three states overlap
 #include <TF2.h>
 #include <TH2.h>
 #include <TMath.h>
