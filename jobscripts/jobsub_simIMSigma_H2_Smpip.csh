@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="12"
+set Version="13"
 set DSTVersion="2"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simSmpip${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
@@ -21,15 +21,17 @@ if( ! -d $OUTDIRSUB) then
  mkdir -p $OUTDIRSUB
 endif
 
+cd ../
 set SRCDIR="/gpfs/home/had/hiasano/ana/k18ana/src/"
+set CSHDIR="/gpfs/home/had/hiasano/ana/k18ana/jobscripts/"
 cp $SRCDIR/UserSimIMSigma_H2.cpp $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaAnaPar.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaHist.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaUtil.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaUtil.cpp $OUTDIRSUB/
 
-cp hadd_simhist_h2_Smpip.csh $OUTDIRSUB/
-cp hadd_sim_h2_Smpip_npi.csh $OUTDIRSUB/
+cp $CSHDIR/hadd_simhist_h2_Smpip.csh $OUTDIRSUB/
+cp $CSHDIR/hadd_sim_h2_Smpip_npi.csh $OUTDIRSUB/
 ln -s $OUTDIRSUB/simIMsigma_H2_Smpip_all.root simpost/simIMsigma_H2_Smpip_v${Version}.root
 ln -s $OUTDIRSUB/simIMsigma_H2_Smpip_npi_all.root simpost/simIMsigma_H2_Smpip_npi_v${Version}.root
 

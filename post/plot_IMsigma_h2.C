@@ -1336,6 +1336,7 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
     if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
     else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
     
+    /*
     if(IsolationFlag==1 && (chargepi==0)) {
       //round cut
       if( pow((diffPhinpim-anacuts::dIsonpim_shift)/anacuts::dIsonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::dIsonpim_zcut,2.0) <1 ) continue;
@@ -1363,6 +1364,24 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
       if( pow((diffPhinpip-anacuts::dIsonpip_shift)/anacuts::dIsonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::dIsonpip_zcut,2.0)>=1 ) continue;
       //for mixed events, avoid sharing same CDH segments
       if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) continue;
+    }*/
+    if((chargepi==0)) {
+      if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut_left,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ){
+        continue;
+      }else{
+        if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut_right,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ){
+          continue;
+        }
+      }
+    }else if(chargepi==1) {
+      //round cut
+      if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_left,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ){
+        continue;
+      }else{
+        if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_right,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ){
+          continue;
+        }
+      }
     }
 
     EventCheck->Fill(4);
@@ -1422,8 +1441,8 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
     double RatioPimOverPip= 1.0; 
     double sysupdown = 1.0+0.1*(double)sysud;
     if(MIXmode){
-      weight = 0.0505*1.296*0.98485*sysupdown;
-      RatioPimOverPip = 6.84495070252263376e-01*1.05*1.17792*sysupdown;   
+      weight = 0.0505*1.296*0.98485*1.1013*sysupdown;
+      RatioPimOverPip = 6.84495070252263376e-01*1.05*1.17792*0.97592*sysupdown;   
     }
     static bool isState = false;
     if(!isState){

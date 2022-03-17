@@ -31,7 +31,7 @@ TVector3 *CDH_Pos2 = NULL;
 TVector3 *CDH_Pos_pi2 = NULL;
 
 
-void GenEventMixTree_h2(const char* filename = "evanaIMsigma_npi_h2_v9.root")
+void GenEventMixTree_h2(const char* filename = "evanaIMsigma_npi_h2_v11.root")
 {
   if(gROOT->GetVersionInt() < 60000){
     std::cout << "Use ROOT6 " << std::endl;
@@ -120,20 +120,44 @@ void GenEventMixTree_h2(const char* filename = "evanaIMsigma_npi_h2_v9.root")
     double diffPhinpim = (*CDH_Pos).Phi()-(*CDH_Pos_pi).Phi();
     if(diffPhinpim<-1.0*TMath::Pi()) diffPhinpim += 2.0*TMath::Pi();
     else if(diffPhinpim>1.0*TMath::Pi()) diffPhinpim -= 2.0*TMath::Pi();
+    
+    /*
     if(chargepi==0){
       if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ) continue;
     //for mixed events, avoid sharing same CDH segments
       if( -anacuts::CDHwidthphi< diffPhinpim  && diffPhinpim < anacuts::CDHwidthphi ) continue;
-    }
+    }*/
 
     TVector3 diffpip = (*CDH_Pos)-(*CDH_Pos_pi);
     double diffPhinpip = (*CDH_Pos).Phi()-(*CDH_Pos_pi).Phi();
     if(diffPhinpip<-1.0*TMath::Pi()) diffPhinpip += 2.0*TMath::Pi();
     else if(diffPhinpip>1.0*TMath::Pi()) diffPhinpip -= 2.0*TMath::Pi();
+    /*
     if(chargepi==1){
       if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ) continue;
       if( -anacuts::CDHwidthphi< diffPhinpip  && diffPhinpip < anacuts::CDHwidthphi ) continue;
+    }*/
+
+    if((chargepi==0)) {
+      if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut_left,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ){
+        continue;
+      }else{
+        if( pow((diffPhinpim-anacuts::Isonpim_shift)/anacuts::Isonpim_phicut_right,2.0)+pow(diffpim.Z()/anacuts::Isonpim_zcut,2.0) <1 ){
+          continue;
+        }
+      }
+    }else if(chargepi==1) {
+      //round cut
+      if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_left,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ){
+        continue;
+      }else{
+        if( pow((diffPhinpip-anacuts::Isonpip_shift)/anacuts::Isonpip_phicut_right,2.0)+pow(diffpip.Z()/anacuts::Isonpip_zcut,2.0) <1 ){
+          continue;
+        }
+      }
     }
+   
+
     if(NBetaOK && NdEOK){
       vec_LVec_n.push_back(*LVec_n);
       vec_NeutralBetaCDH.push_back(NeutralBetaCDH);
