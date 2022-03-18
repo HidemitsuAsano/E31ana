@@ -6104,7 +6104,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       double xx = 1./sqrt(2.0)*(LVec_pip_n.M()-LVec_pim_n.M());
       double yy = 1./sqrt(2.0)*(LVec_pip_n.M()+LVec_pim_n.M());
       //double yy2 = yy-(cosh(1.96*xx)-1.0);
-      double yy2 = yy-(sqrt(6.76*xx*xx+2.725)-1.0);
+      //double yy2 = yy-(sqrt(6.76*xx*xx+2.725)-1.0);
+      double yy2 = yy-(sqrt(6.76*xx*xx+2.765)-1.0);
       IMnpim_IMnpip_dE_wK0_n_45rot3->Fill(xx,yy2,weight);
       
       if(!SigmawidePFlag && !SigmawideMFlag) {
