@@ -524,6 +524,8 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   cinter_3->cd(3);
   //result of before rebin
   TH2D* h2K0inter_3fine = (TH2D*)h2K0inter_3->Clone("h2K0inter_3fine");
+  TH2D* h2K0inter_3fine_sysup = (TH2D*)h2K0inter_3_sysup->Clone("h2K0inter_3fine_sysup");
+  TH2D* h2K0inter_3fine_sysdown = (TH2D*)h2K0inter_3_sysdown->Clone("h2K0inter_3fine_sysdown");
   IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Rebin2D(4,4);//+/- 2sigma binning
   h2K0inter_3->Rebin2D(4,4);
   h2K0inter_3_sysup->Rebin2D(4,4);
@@ -648,26 +650,6 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
     IMnpim_K0sub_woSm->SetBinError(ibin,0);
   }
 
-  /*
-  for(int ibin=0;ibin<IMnpip_K0sub_woSp->GetNbinsX();ibin++){
-    double bincen = IMnpip_K0sub_woSp->GetBinCenter(ibin);
-    if(anacuts::Sigmap_MIN_wide < bincen && bincen < anacuts::Sigmap_MAX_wide){
-       IMnpip_K0sub_woSp->SetBinContent(ibin,0);
-       IMnpip_K0sub_woSp->SetBinError(ibin,0);
-       std::cout << "Sp" << std::endl;
-    }
-  }
-  
-
-  for(int ibin=0;ibin<IMnpim_K0sub_woSm->GetNbinsX();ibin++){
-    double bincen = IMnpim_K0sub_woSm->GetBinCenter(ibin);
-    if(anacuts::Sigmam_MIN_wide < bincen && bincen < anacuts::Sigmam_MAX_wide){
-       IMnpim_K0sub_woSm->SetBinContent(ibin,0);
-       IMnpim_K0sub_woSm->SetBinError(ibin,0);
-       std::cout << "Sm" << std::endl;
-    }
-  }*/
-
 
   TCanvas *cwSid_n_K0sub_wo = new TCanvas("cwSid_n_K0sub_wo","cwK0orwSid_n_K0sub_wo",1600,800);
   cwSid_n_K0sub_wo->Divide(2,1);
@@ -711,6 +693,106 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   std::cout << "Sm estimated:" << sIMnpim_K0sub_woSm->Eval(anacuts::Sigmam_center) << std::endl;
   
 
+  TCanvas *cwSid_n_K0sub_wo_fit = new TCanvas("cwSid_n_K0sub_wo_fit","cwSid_n_K0sub_wo_fit",1600,800);
+  cwSid_n_K0sub_wo_fit->Divide(2,1);
+  cwSid_n_K0sub_wo_fit->cd(1);
+  IMnpip_K0sub_woSp->Draw("HE");
+  IMnpip_K0sub_woSp->Fit("pol1","","",anacuts::Sigmap_MIN_wide-anacuts::Sigmap_sigma,anacuts::Sigmap_MAX_wide+anacuts::Sigmap_sigma);
+  TF1* pol1_npip = (TF1*)IMnpip_K0sub_woSp->GetFunction("pol1");
+  pol1_npip->Print();
+
+  cwSid_n_K0sub_wo_fit->cd(2);
+  IMnpim_K0sub_woSm->Draw("HE");
+  IMnpim_K0sub_woSm->Fit("pol1","","",anacuts::Sigmam_MIN_wide-anacuts::Sigmam_sigma,anacuts::Sigmam_MAX_wide+anacuts::Sigmam_sigma);
+  TF1* pol1_npim = (TF1*)IMnpim_K0sub_woSm->GetFunction("pol1");
+  double par_npim[2];
+  double *par_npimerr;
+  pol1_npim->GetParameters(par_npim);
+  par_npimerr = pol1_npim->GetParErrors();
+
+  TGraphErrors *gr_SmONnpip_fin_pol1 = new TGraphErrors(IMnpip_K0sub_woSp);
+  TGraphErrors *gr_SpONnpim_fin_pol1 = new TGraphErrors(IMnpim_K0sub_woSm);
+  gr_SmONnpip_fin_pol1->SetName("gr_SmONnpip_fin_pol1");
+  gr_SpONnpim_fin_pol1->SetName("gr_SpONnpim_fin_pol1");
+  gr_SmONnpip_fin_pol1->RemovePoint(6);
+  gr_SpONnpim_fin_pol1->RemovePoint(7);
+   
+  //confirm removal bins avove are correct or not
+  cwSid_n_K0sub_wo_fit->cd(1);
+  gr_SmONnpip_fin_pol1->SetLineColor(3);
+  gr_SmONnpip_fin_pol1->Draw("c");
+  cwSid_n_K0sub_wo_fit->cd(2);
+  gr_SpONnpim_fin_pol1->SetLineColor(3);
+  gr_SpONnpim_fin_pol1->Draw("c");
+
+  TGraphErrors *gr_SmONnpip_fin_pol1_inter = (TGraphErrors*)gr_SmONnpip_fin_pol1->Clone("gr_SmONnpip_fin_pol1_inter");
+  gr_SmONnpip_fin_pol1_inter->SetName("gr_SmONnpip_fin_pol1_inter");
+  TGraphErrors *gr_SpONnpim_fin_pol1_inter = (TGraphErrors*)gr_SpONnpim_fin_pol1->Clone("gr_SpONnpim_fin_pol1_inter");
+  gr_SpONnpim_fin_pol1_inter->SetName("gr_SpONnpim_fin_pol1_inter");
+
+  TCanvas *cwSid_n_K0sub_wo_fit2 = new TCanvas("cwSid_n_K0sub_wo_fit2","cwSid_n_K0sub_wo_fit2",1600,800);
+  cwSid_n_K0sub_wo_fit2->Divide(2,1);
+  cwSid_n_K0sub_wo_fit2->cd(1);
+  IMnpip_K0sub->Draw("HE");
+  //gr_SmONnpip_fin_pol1->Draw("c");
+  double SmEstimate_onnpipcross = pol1_npip->Eval(anacuts::Sigmap_center);
+  double SmEstimate_err_low = IMnpim_K0sub_woSm->GetBinError(IMnpim_K0sub_woSm->FindBin(anacuts::Sigmam_MIN_wide-anacuts::Sigmam_sigma));
+  double SmEstimate_err_high = IMnpim_K0sub_woSm->GetBinError(IMnpim_K0sub_woSm->FindBin(anacuts::Sigmam_MIN_wide+anacuts::Sigmam_sigma));
+  double SmEstimate_err = sqrt(SmEstimate_err_low*SmEstimate_err_low+SmEstimate_err_high*SmEstimate_err_high)/2.0;
+
+  gr_SmONnpip_fin_pol1_inter->SetPoint(gr_SmONnpip_fin_pol1->GetN(),anacuts::Sigmap_center,SmEstimate_onnpipcross);
+  gr_SmONnpip_fin_pol1_inter->SetPointError(gr_SmONnpip_fin_pol1->GetN(),0,SmEstimate_err);
+  gr_SmONnpip_fin_pol1_inter->SetMarkerStyle(20);
+  gr_SmONnpip_fin_pol1_inter->SetMarkerColor(3);
+  gr_SmONnpip_fin_pol1_inter->Draw("p");
+  
+  cwSid_n_K0sub_wo_fit2->cd(2);
+  IMnpim_K0sub->Draw("HE");
+  gr_SpONnpim_fin_pol1->Draw("p");
+  double SpEstimate_onnpimcross = pol1_npim->Eval(anacuts::Sigmam_center);
+  double SpEstimate_err_low = IMnpip_K0sub_woSp->GetBinError(IMnpip_K0sub_woSp->FindBin(anacuts::Sigmap_MIN_wide-anacuts::Sigmap_sigma));
+  double SpEstimate_err_high = IMnpip_K0sub_woSp->GetBinError(IMnpip_K0sub_woSp->FindBin(anacuts::Sigmap_MIN_wide+anacuts::Sigmap_sigma));
+  double SpEstimate_err = sqrt(SpEstimate_err_low*SpEstimate_err_low+SpEstimate_err_high*SpEstimate_err_high)/2.0;
+  gr_SpONnpim_fin_pol1_inter->SetPoint(gr_SpONnpim_fin_pol1->GetN(),anacuts::Sigmam_center,SpEstimate_onnpimcross);
+  gr_SpONnpim_fin_pol1_inter->SetPointError(gr_SpONnpim_fin_pol1->GetN(),0,SpEstimate_err);
+  gr_SpONnpim_fin_pol1_inter->SetMarkerStyle(20);
+  gr_SpONnpim_fin_pol1_inter->SetMarkerColor(3);
+  gr_SpONnpim_fin_pol1_inter->Draw("p");
+
+  TCanvas *cwSid_n_K0sub_wo_fit3 = new TCanvas("cwSid_n_K0sub_wo_fit3","cwSid_n_K0sub_wo_fit3",1600,800);
+  cwSid_n_K0sub_wo_fit3->Divide(2,1);
+  cwSid_n_K0sub_wo_fit3->cd(1);
+  IMnpip_K0sub->Draw("HE");
+  cwSid_n_K0sub_wo_fit3->cd(2);
+  IMnpim_K0sub->Draw("HE");
+  double crossCount = IMnpip_K0sub->GetBinContent(IMnpip_K0sub->FindBin(anacuts::Sigmap_center));
+  double SpEstimate_final = (SpEstimate_onnpimcross*SpEstimate_err+(crossCount-SmEstimate_onnpipcross)*SmEstimate_err)/(SpEstimate_err+SmEstimate_err);
+  // 
+  //double SpEstimate_devi = (SpEstimate_onnpimcross*SpEstimate_err-(crossCount-SmEstimate_onnpipcross)*SmEstimate_err)/(SpEstimate_err+SmEstimate_err);
+  double SpEstimate_devi = fabs(SpEstimate_onnpimcross-(crossCount-SmEstimate_onnpipcross));
+  double SpEstimate_err_final = sqrt(SpEstimate_err*SpEstimate_err+SmEstimate_err*SmEstimate_err);
+  //this is overesitmate, but To be conservative.
+  //double SpEstimate_err_final = sqrt(SpEstimate_err*SpEstimate_err+SmEstimate_err*SmEstimate_err+SpEstimate_devi*SpEstimate_devi);
+
+  std::cout << "Sp on pim " << SpEstimate_onnpimcross << std::endl;
+  std::cout << "cross - Sm " << crossCount - SmEstimate_onnpipcross << std::endl;
+  std::cout << "Sp on pim final " << SpEstimate_final << std::endl;
+  std::cout << "SpEstimate_final devi." <<  SpEstimate_devi  <<   std::endl;
+  std::cout << "SpEstimate_final err" <<  SpEstimate_err_final  <<   std::endl;
+
+  TGraphErrors *gr_SmONnpip_fin_pol1_final = (TGraphErrors*)gr_SmONnpip_fin_pol1->Clone("gr_SmONnpip_fin_pol1_final");
+  gr_SmONnpip_fin_pol1_final->SetName("gr_SmONnpip_fin_pol1_final");
+  gr_SmONnpip_fin_pol1_final->SetPoint(gr_SmONnpip_fin_pol1->GetN(),anacuts::Sigmap_center,crossCount-SpEstimate_final);
+  gr_SmONnpip_fin_pol1_final->SetPointError(gr_SmONnpip_fin_pol1->GetN(),0,SpEstimate_err_final);
+  
+  TGraphErrors *gr_SpONnpim_fin_pol1_final = (TGraphErrors*)gr_SpONnpim_fin_pol1->Clone("gr_SpONnpim_fin_pol1_final");
+  gr_SpONnpim_fin_pol1_final->SetName("gr_SpONnpim_fin_pol1_final");
+  gr_SpONnpim_fin_pol1_final->SetPoint(gr_SpONnpim_fin_pol1->GetN(),anacuts::Sigmam_center,SpEstimate_final);
+  gr_SpONnpim_fin_pol1_final->SetPointError(gr_SpONnpim_fin_pol1->GetN(),0,SpEstimate_err_final);
+  cwSid_n_K0sub_wo_fit3->cd(1);
+  gr_SmONnpip_fin_pol1_final->Draw("p");
+  cwSid_n_K0sub_wo_fit3->cd(2);
+  gr_SpONnpim_fin_pol1_final->Draw("p");
   TH2F* q_IMnpipi_wK0_wSid_n_SpSm = (TH2F*)fr->Get("q_IMnpipi_wK0_wSid_n_SpSm");
   TH2F* IMnpim_IMnpip_wK0_wSid_n_SpSm = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_SpSm");
   
@@ -722,21 +804,23 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   IMnpim_IMnpip_wK0_wSid_n_SpSm->Draw("colz");
 
 
-
-
   TFile *fout = NULL;
   if(qcut==1){
      fout = TFile::Open(Form("fout_qlo_v%d_dE%d_sys%d.root",Version,dEcut,sysud),"RECREATE");
   }else if(qcut==2){
      fout = TFile::Open(Form("fout_qhi_v%d_dE%d_sys%d.root",Version,dEcut,sysud),"RECREATE");
   }
-  IMnpip_K0sub->Write();
-  IMnpim_K0sub->Write();
-  IMnpip_K0sub_woSp->Write();
-  IMnpim_K0sub_woSm->Write();
-  IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Write();
-  IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Write();
+  //IMnpip_K0sub->Write();
+  //IMnpim_K0sub->Write();
+  //IMnpip_K0sub_woSp->Write();
+  //IMnpim_K0sub_woSm->Write();
+  //IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Write();
+  //IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Write();
+  gr_SmONnpip_fin_pol1_final->Write();
+  gr_SpONnpim_fin_pol1_final->Write();
   h2K0inter_3fine->Write(); 
+  h2K0inter_3fine_sysup->Write(); 
+  h2K0inter_3fine_sysdown->Write(); 
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
