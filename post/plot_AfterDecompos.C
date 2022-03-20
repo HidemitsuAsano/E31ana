@@ -33,18 +33,25 @@ bool RebinMode = true;
 bool Sidefar=false;
 bool FitNoWeight=true;
 
-void plot_AfterDecompos()
+const int Version = 239;
+
+void plot_AfterDecompos(const int qcut=2,const int dEcut=2,const int sysud=0)
 {
-  TFile *fr[4]={nullptr};
+  gStyle->SetOptStat(0);
+  gStyle->SetOptFit(0);
+  TFile *fr = NULL;
+  //Because the statistics is limited, we just divide data into q<0.35 and q>0.35.
+  if(qcut==1){//qlo
+    //fr = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qlo_sub.root","READ");
+    fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_qlo_nostop_sys%d_sub.root",Version,dEcut,sysud),"READ");
+  }else if(qcut==2){//qhi
+    //fr = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qhi_sub.root","READ");
+    fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_qhi_nostop_sys%d_sub.root",Version,dEcut,sysud),"READ");
+  }else{
+    std::cout << "no file" << std::endl;
+    return;
+  }
   
-  fr[0] = TFile::Open("evanaIMpisigma_npippim_v229_out_iso_nostop_sub.root");
-  fr[1] = TFile::Open("evanaIMpisigma_npippim_v229_out_iso_qlo_nostop_sub.root");
-  fr[2] = TFile::Open("evanaIMpisigma_npippim_v229_out_iso_qhi_nostop_sub.root");
-  fr[3] = TFile::Open("evanaIMpisigma_npippim_v229_out_iso_theta15_nostop_sub.root");
-  fr[0]->Print();
-  fr[1]->Print();
-  fr[2]->Print();
-  fr[3]->Print();
   TFile *fdeco[2]={nullptr};
   fdeco[0] = TFile::Open("deco_qlo.root","READ");
   fdeco[1] = TFile::Open("deco_qhi.root","READ");
