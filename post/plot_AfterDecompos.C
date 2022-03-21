@@ -1,3 +1,6 @@
+//input : output files of the macro Fit2DK0.C
+//output : decoposed spectra q vs IM(npi+pi-) which is ready to acceptance correction
+
 const bool showBG = true;
 const double UncertCut = 0.25;
 #include "anacuts.h"
@@ -42,19 +45,17 @@ void plot_AfterDecompos(const int qcut=2,const int dEcut=2,const int sysud=0)
   TFile *fr = NULL;
   //Because the statistics is limited, we just divide data into q<0.35 and q>0.35.
   if(qcut==1){//qlo
-    //fr = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qlo_sub.root","READ");
     fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_qlo_nostop_sys%d_sub.root",Version,dEcut,sysud),"READ");
   }else if(qcut==2){//qhi
-    //fr = TFile::Open("evanaIMpisigma_npippim_v206_out_iso_qhi_sub.root","READ");
     fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_qhi_nostop_sys%d_sub.root",Version,dEcut,sysud),"READ");
   }else{
     std::cout << "no file" << std::endl;
     return;
   }
   
-  TFile *fdeco[2]={nullptr};
-  fdeco[0] = TFile::Open("deco_qlo.root","READ");
-  fdeco[1] = TFile::Open("deco_qhi.root","READ");
+  TFile *fdeco[2]={NULL,NULL};
+  fdeco[0] = TFile::Open(Form("fout_qlo_v%d_dE%d_sys%d.root",Version,2,0),"READ");
+  fdeco[1] = TFile::Open(Form("fout_qhi_v%d_dE%d_sys%d.root",Version,2,0),"READ");
   fdeco[0]->Print();
   fdeco[1]->Print();
 
@@ -75,7 +76,7 @@ void plot_AfterDecompos(const int qcut=2,const int dEcut=2,const int sysud=0)
   gStyle->SetErrorX(0.);  
 
   const unsigned int nbinIMnpipi = 80;
-  const int nqcut=4;
+  const int nqcut=2;
   const int qstart=1;
 
   //for the overlap of S+ & S- & K0 counting 
