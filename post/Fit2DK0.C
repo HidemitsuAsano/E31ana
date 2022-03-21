@@ -59,7 +59,7 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
 
 const int Version = 239;
 
-void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
+void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
 {
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
@@ -155,18 +155,20 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   //f2->SetParameters(8.0e9,0.005,0.16,-15.2);
   f2->SetParameters(3.0e5,0.005,0.20,1.9);
   if(qcut==2)f2->SetParLimits(0,150,5.5e12);
-  else if(qcut==1)f2->SetParLimits(0,3.57224e+04*1.8,3.57224e+04*2.0);
+  //else if(qcut==1)f2->SetParLimits(0,3.57224e+04*1.8,3.57224e+04*2.0);
+  else if(qcut==1)f2->SetParLimits(0,2.19399e+04*1.85,2.19399e+04*2.55 );
   //f2->FixParameter(0,2.0e5);
-  f2->SetParLimits(1,-0.005,0.0.005);
+  if(qcut==2)f2->SetParLimits(1,-0.005,0.0.005);
+  else if(qcut==1)f2->SetParLimits(1,-0.005,0.0.005);
   //f2->FixParameter(1,0.005);
   //f2->SetParLimits(2,0.20,0.25);
-  f2->FixParameter(2,0.20);
+  if(qcut==2)f2->FixParameter(2,0.20);
   //f2->SetParameter(3,0.5);
   //f2->SetParLimits(3,1.66,3.00);
   //f2->SetNpx(100);//=NbinsX of rot3 histogram
   //f2->SetNpy(120);//=NbinsY of rot3 histogram
   if(qcut==2)f2->FixParameter(3,1.9);
-  else if(qcut==1)f2->FixParameter(3,3.0);
+  else if(qcut==1)f2->FixParameter(3,2.9);
   //Log likehoog is to be used when the histogram represents counts,
   //however this data is not the case because the BG is subtracted by event. 
   //Ignoring this because statistic is not enough and chi2 fitting is not stable.
@@ -827,8 +829,13 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   int size = SCol->GetSize();
   TIter next(SCol);
   TString pdfname;
-  pdfname= Form("Fit2DK0_datav%d_dE%d_sys%d.pdf",Version,dEcut,sysud);
-   
+  if(qcut==1){
+    pdfname= Form("Fit2DK0_qlo_datav%d_dE%d_sys%d.pdf",Version,dEcut,sysud);
+  }else if(qcut==2){
+    pdfname= Form("Fit2DK0_qhi_datav%d_dE%d_sys%d.pdf",Version,dEcut,sysud);
+  }
+
+
   for(int i=0;i<size;i++){
     //pdf->NewPage();
     c= (TCanvas*)next();
