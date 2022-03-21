@@ -76,7 +76,7 @@ void plot_AfterDecompos(const int qcut=2,const int dEcut=2,const int sysud=0)
   gStyle->SetErrorX(0.);  
 
   const unsigned int nbinIMnpipi = 80;
-  const int nqcut=2;
+  const int nqcut=4;
   const int qstart=1;
 
   //for the overlap of S+ & S- & K0 counting 
@@ -225,18 +225,18 @@ void plot_AfterDecompos(const int qcut=2,const int dEcut=2,const int sysud=0)
 
   //You have only qlo(=0) and qhi(1) decomposition results so far.
   TH2D* IMnpim_IMnpip_K0inter[2];
+  TH2D* IMnpim_IMnpip_K0inter_sysup[2];
+  TH2D* IMnpim_IMnpip_K0inter_syddown[2];
   TGraphErrors *gr_SpONnpim_fin_pol1[2];
   TGraphErrors *gr_SmONnpip_fin_pol1[2];
-  TGraphErrors *gr_SpONnpim_fin_3rd[2];
-  TGraphErrors *gr_SmONnpip_fin_3rd[2];
 
   //only qlo(=0) and qhi(1) decomposition results so far
   for(int iq=0;iq<2;iq++){
     IMnpim_IMnpip_K0inter[iq] = (TH2D*)fdeco[iq]->Get("h2K0inter_3fine");
-    gr_SpONnpim_fin_pol1[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SpONnpim_fin_pol1");
-    gr_SmONnpip_fin_pol1[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SmONnpip_fin_pol1");
-    gr_SpONnpim_fin_3rd[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SpONnpim_fin_3rd");
-    gr_SmONnpip_fin_3rd[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SmONnpip_fin_3rd");
+    IMnpim_IMnpip_K0inter_sysup[iq] = (TH2D*)fdeco[iq]->Get("h2K0inter_3fine_sysup");
+    IMnpim_IMnpip_K0inter_sysdown[iq] = (TH2D*)fdeco[iq]->Get("h2K0inter_3fine_sysdown");
+    gr_SpONnpim_fin_pol1[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SpONnpim_fin_pol1_final");
+    gr_SmONnpip_fin_pol1[iq] = (TGraphErrors*)fdeco[iq]->Get("gr_SmONnpip_fin_pol1_final");
   }
   
   //has data only in Sigma+/- region
@@ -246,6 +246,20 @@ void plot_AfterDecompos(const int qcut=2,const int dEcut=2,const int sysud=0)
   IMnpim_IMnpip_K0inter[0]->Draw("colz");
   cK0inter->cd(2);
   IMnpim_IMnpip_K0inter[1]->Draw("colz");
+  
+  TCanvas *cK0inter_sysup = new TCanvas("cK0inter_sysup","cK0inter_sysup",1600,800);
+  cK0inter_sysup->Divide(2,1);
+  cK0inter_sysup->cd(1);
+  IMnpim_IMnpip_K0inter_sysup[0]->Draw("colz");
+  cK0inter_sysup->cd(2);
+  IMnpim_IMnpip_K0inter_sysup[1]->Draw("colz");
+  
+  TCanvas *cK0inter_sysdown = new TCanvas("cK0inter_sysdown","cK0inter_sysdown",1600,800);
+  cK0inter_sysdown->Divide(2,1);
+  cK0inter_sysdown->cd(1);
+  IMnpim_IMnpip_K0inter_sysdown[0]->Draw("colz");
+  cK0inter_sysdown->cd(2);
+  IMnpim_IMnpip_K0inter_sysdown[1]->Draw("colz");
   
    
   //check overlap btw wide-binning IMnpip or IMnpim
@@ -283,35 +297,70 @@ void plot_AfterDecompos(const int qcut=2,const int dEcut=2,const int sysud=0)
   //Index 0 : qlow
   //Index 1 : qhigh
   //Index 2 : theta_n small
-  TH2D* q_IMnpipi_K0orSp_ToSp[3];
-  TH2D* q_IMnpipi_K0orSp_ToK0[3];
-  TH1D* IMnpipi_K0orSp_ToSp[3];
-  TH1D* IMnpipi_K0orSp_ToK0[3];
+  //0 sysdown
+  //1 normal
+  //2 sysup
+  TH2D* q_IMnpipi_K0orSp_ToSp[3][3];
+  TH2D* q_IMnpipi_K0orSp_ToK0[3][3];
+  TH1D* IMnpipi_K0orSp_ToSp[3][3];
+  TH1D* IMnpipi_K0orSp_ToK0[3][3];
   double nSp_SporK0[2][nwbin];//q-region (low or hi), wbin
   double nK0_SporK0[2][nwbin];//q-region (low or hi), wbin
+  double nSp_SporK0_sysup[2][nwbin];//q-region (low or hi), wbin
+  double nK0_SporK0_sysup[2][nwbin];//q-region (low or hi), wbin
+  double nSp_SporK0_sysdown[2][nwbin];//q-region (low or hi), wbin
+  double nK0_SporK0_sysdown[2][nwbin];//q-region (low or hi), wbin
   
+  //nwbin:0 no overlap
+  //nwbin:1 K0 overlap
+  //nwbin:2 
   const float wbinlow[nwbin] = {1.0,1.40,1.52};
   const float wbinhigh[nwbin] = {1.40,1.52,2.00};
-  const int spbinlow[2][2]={{21,39},
-                            {21,38}};
-  const int spbinhi[2][2]={{40,87},
-                           {42,114}};
+  
+  //hard coded cut to avoid negative bins
+  //qlow wbin1 21-40 wbin 39-82
+  //qhi  wbin1 21-40 wbin 39-114
+  const int spbinlow[2][2]={{21,39},              
+                            {21,39}};
+  const int spbinhi[2][2]={{40,82},
+                           {40,114}};
+  
   //get Sp/K0 ratio in overlap region
   for(int iqlowhigh=0;iqlowhigh<2;iqlowhigh++){
     for(int iwbin=1;iwbin<3;iwbin++){//wbin=0 : no overlap region,so start from 1
       double nK0orSp = IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iqlowhigh+1]->Integral();
       double nSp = 0.0;
       double nK0 = 0.0;
+      double nSp_sysup = 0.0;
+      double nK0_sysup = 0.0;
+      double nSp_sysdown = 0.0;
+      double nK0_sysdown = 0.0;
       if(nK0orSp>0){
         for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iqlowhigh+1]->GetNbinsX();ix++){
           for(int iy=spbinlow[iwbin-1][iqlowhigh];iy<=spbinhi[iwbin-1][iqlowhigh];iy++){
             double cont = IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iqlowhigh+1]->GetBinContent(ix,iy);
             double nK0_bin = IMnpim_IMnpip_K0inter[iqlowhigh]->GetBinContent(ix,iy);     
-            if(cont<0.) nK0_bin = 0.0;
+            double nK0_bin_sysup = IMnpim_IMnpip_K0inter_sysup[iqlowhigh]->GetBinContent(ix,iy);     
+            double nK0_bin_sysdown = IMnpim_IMnpip_K0inter_sysdown[iqlowhigh]->GetBinContent(ix,iy);     
+            if(cont<0.){
+              nK0_bin = 0.0;
+              nK0_bin_sysup = 0.0;
+              nK0_bin_sysdown = 0.0;
+            }
             double nSp_bin = cont-nK0_bin;
-            if(nSp_bin<0.) nSp_bin=0.0;
+            double nSp_bin_sysup = cont-nK0_bin_sysup;
+            double nSp_bin_sysdown = cont-nK0_bin_sysdown;
+            if(nSp_bin<0.){
+              nSp_bin=0.0;
+              nSp_bin_sysup=0.0;
+              nSp_bin_sysdown=0.0;
+            }
             nSp += nSp_bin;
             nK0 += nK0_bin;
+            nSp_sysup += nSp_bin_sysup;
+            nK0_sysup += nK0_bin_sysup;
+            nSp_sysdown += nSp_bin_sysdown;
+            nK0_sysdown += nK0_bin_sysdown;
             if(cont>0.0 && iqlowhigh==0){
               //std::cout << "cont " << cont << std::endl;
               //std::cout << "nK0_bin " << nK0_bin << std::endl;
@@ -322,119 +371,198 @@ void plot_AfterDecompos(const int qcut=2,const int dEcut=2,const int sysud=0)
       }//if nK0orSp
       nSp_SporK0[iqlowhigh][iwbin] = nSp;
       nK0_SporK0[iqlowhigh][iwbin] = nK0;
+      nSp_SporK0_sysup[iqlowhigh][iwbin] = nSp_sysup;
+      nK0_SporK0_sysup[iqlowhigh][iwbin] = nK0_sysup;
+      nSp_SporK0_sysdown[iqlowhigh][iwbin] = nSp_sysdown;
+      nK0_SporK0_sysdown[iqlowhigh][iwbin] = nK0_sysdown;
     }//iwbin
   }//iqlowhigh
   
   //q-low,q-hi,ntheta_small
   for(int iq=0;iq<3;iq++){
-    q_IMnpipi_K0orSp_ToSp[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("q_IMnpipi_K0orSp_ToSp%d",iq));
-    q_IMnpipi_K0orSp_ToK0[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("q_IMnpipi_K0orSp_ToK0%d",iq));
-    q_IMnpipi_K0orSp_ToSp[iq]->Reset();
-    q_IMnpipi_K0orSp_ToK0[iq]->Reset();
-    //std::cout << "bin low "  << spbinlow[iwbin-1][iq] << std::endl;
-    //std::cout << "bin high " <<  spbinhi[iwbin-1][iq] << std::endl;
-     
-    double NevtWide=0.0;
-    const int q350bin = q_IMnpipi_wK0_wSid_n_Sp[iq+1]->FindBin(0.35);
-    for(int iwbin=1;iwbin<nwbin;iwbin++){
-      int wbinl = q_IMnpipi_K0orSp_ToSp[iq]->GetXaxis()->FindBin(wbinlow[iwbin]);
-      int wbinh = q_IMnpipi_K0orSp_ToSp[iq]->GetXaxis()->FindBin(wbinhigh[iwbin]);
-      for(int ix=wbinl;ix<=wbinh;ix++){
-        for(int iqbin=0;iqbin<q_IMnpipi_wK0_wSid_n_Sp[iq+1]->GetNbinsY();iqbin++){
-          int qlowhigh = 0;
-          if(q350bin <= iqbin ) qlowhigh=1;
-          double nevt = q_IMnpipi_wK0_wSid_n_Sp[iq+1]->GetBinContent(ix,iqbin);
-          double ToSp = nevt*nSp_SporK0[qlowhigh][iwbin]/(nSp_SporK0[qlowhigh][iwbin]+nK0_SporK0[qlowhigh][iwbin]);
-          double ToK0 = nevt*nK0_SporK0[qlowhigh][iwbin]/(nSp_SporK0[qlowhigh][iwbin]+nK0_SporK0[qlowhigh][iwbin]);
-          //  std::cout << "iq: "   << iq << std::endl;
-          //  std::cout << "ix:"  << ix << std::endl;
-          //  std::cout << "iqbin:"  << iqbin << std::endl;
-          //  std::cout << "nevt: " << nevt << std::endl;
-          //  std::cout << "nK0orSp " << nK0orSp << std::endl;
-          //  std::cout << "ToK0: " << nK0 << std::endl;
-          q_IMnpipi_K0orSp_ToSp[iq]->SetBinContent(ix,iqbin,ToSp);
-          q_IMnpipi_K0orSp_ToSp[iq]->SetBinError(ix,iqbin,0);
-          q_IMnpipi_K0orSp_ToK0[iq]->SetBinContent(ix,iqbin,ToK0);
-          q_IMnpipi_K0orSp_ToK0[iq]->SetBinError(ix,iqbin,0);
-          // q_IMnpipi_K0orSp_ToSp[iq]->SetBinContent(ix,iqbin,0);
-          // q_IMnpipi_K0orSp_ToSp[iq]->SetBinError(ix,iqbin,0);
-          // q_IMnpipi_K0orSp_ToK0[iq]->SetBinContent(ix,iqbin,0);
-          // q_IMnpipi_K0orSp_ToK0[iq]->SetBinError(ix,iqbin,0);
-        }//iqbin
-      }//ix
-    }//iwbin
-    IMnpipi_K0orSp_ToSp[iq] = (TH1D*)q_IMnpipi_K0orSp_ToSp[iq]->ProjectionX(Form("IMnpipi_K0orSp_ToSp%d",iq));
-    IMnpipi_K0orSp_ToK0[iq] = (TH1D*)q_IMnpipi_K0orSp_ToK0[iq]->ProjectionX(Form("IMnpipi_K0orSp_ToK0%d",iq));
+    for(int isys=0;isys<3;isys++){
+      q_IMnpipi_K0orSp_ToSp[iq][isys] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("q_IMnpipi_K0orSp_ToSp%d_sys%d",iq,isys-1));
+      q_IMnpipi_K0orSp_ToK0[iq][isys] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sp[iq+1]->Clone(Form("q_IMnpipi_K0orSp_ToK0%d_sys%d",iq,isys-1));
+      q_IMnpipi_K0orSp_ToSp[iq][isys]->Reset();
+      q_IMnpipi_K0orSp_ToK0[iq][isys]->Reset();
+      //std::cout << "bin low "  << spbinlow[iwbin-1][iq] << std::endl;
+      //std::cout << "bin high " <<  spbinhi[iwbin-1][iq] << std::endl;
+
+      double NevtWide=0.0;
+      const int q350bin = q_IMnpipi_wK0_wSid_n_Sp[iq+1]->FindBin(0.35);
+      for(int iwbin=1;iwbin<nwbin;iwbin++){
+        int wbinl = q_IMnpipi_K0orSp_ToSp[iq][isys]->GetXaxis()->FindBin(wbinlow[iwbin]);
+        int wbinh = q_IMnpipi_K0orSp_ToSp[iq][isys]->GetXaxis()->FindBin(wbinhigh[iwbin]);
+        for(int ix=wbinl;ix<=wbinh;ix++){
+          for(int iqbin=0;iqbin<q_IMnpipi_wK0_wSid_n_Sp[iq+1]->GetNbinsY();iqbin++){
+            int qlowhigh = 0;
+            if(q350bin <= iqbin ) qlowhigh=1;
+            double nevt = q_IMnpipi_wK0_wSid_n_Sp[iq+1]->GetBinContent(ix,iqbin);
+            double err = q_IMnpipi_wK0_wSid_n_Sp[iq+1]->GetBinError(ix,iqbin);
+            double ToSp =0.0;
+            double ToK0 =0.0;
+            double ToSperr =0.0;
+            double ToK0err =0.0;
+            if(isys==0){
+              ToSp = nevt*nSp_SporK0_sysdown[qlowhigh][iwbin]/(nSp_SporK0_sysdown[qlowhigh][iwbin]+nK0_SporK0_sysdown[qlowhigh][iwbin]);
+              ToK0 = nevt*nK0_SporK0_sysdown[qlowhigh][iwbin]/(nSp_SporK0_sysdown[qlowhigh][iwbin]+nK0_SporK0_sysdown[qlowhigh][iwbin]);
+              ToSperr = err*nSp_SporK0_sysdown[qlowhigh][iwbin]/(nSp_SporK0_sysdown[qlowhigh][iwbin]+nK0_SporK0_sysdown[qlowhigh][iwbin]);
+              ToK0err = err*nK0_SporK0_sysdown[qlowhigh][iwbin]/(nSp_SporK0_sysdown[qlowhigh][iwbin]+nK0_SporK0_sysdown[qlowhigh][iwbin]);
+            }
+            else if(isys==1){
+              ToSp = nevt*nSp_SporK0[qlowhigh][iwbin]/(nSp_SporK0[qlowhigh][iwbin]+nK0_SporK0[qlowhigh][iwbin]);
+              ToK0 = nevt*nK0_SporK0[qlowhigh][iwbin]/(nSp_SporK0[qlowhigh][iwbin]+nK0_SporK0[qlowhigh][iwbin]);
+              ToSperr = err*nSp_SporK0[qlowhigh][iwbin]/(nSp_SporK0[qlowhigh][iwbin]+nK0_SporK0[qlowhigh][iwbin]);
+              ToK0err = err*nK0_SporK0[qlowhigh][iwbin]/(nSp_SporK0[qlowhigh][iwbin]+nK0_SporK0[qlowhigh][iwbin]);
+            }
+            else if(isys==2){
+              ToSp = nevt*nSp_SporK0_sysup[qlowhigh][iwbin]/(nSp_SporK0_sysup[qlowhigh][iwbin]+nK0_SporK0_sysup[qlowhigh][iwbin]);
+              ToK0 = nevt*nK0_SporK0_sysup[qlowhigh][iwbin]/(nSp_SporK0_sysup[qlowhigh][iwbin]+nK0_SporK0_sysup[qlowhigh][iwbin]);
+              ToSperr = err*nSp_SporK0_sysup[qlowhigh][iwbin]/(nSp_SporK0_sysup[qlowhigh][iwbin]+nK0_SporK0_sysup[qlowhigh][iwbin]);
+              ToK0err = err*nK0_SporK0_sysup[qlowhigh][iwbin]/(nSp_SporK0_sysup[qlowhigh][iwbin]+nK0_SporK0_sysup[qlowhigh][iwbin]);
+            }
+
+
+            //  std::cout << "iq: "   << iq << std::endl;
+            //  std::cout << "ix:"  << ix << std::endl;
+            //  std::cout << "iqbin:"  << iqbin << std::endl;
+            //  std::cout << "nevt: " << nevt << std::endl;
+            //  std::cout << "nK0orSp " << nK0orSp << std::endl;
+            //  std::cout << "ToK0: " << nK0 << std::endl;
+            q_IMnpipi_K0orSp_ToSp[iq][isys]->SetBinContent(ix,iqbin,ToSp);
+            q_IMnpipi_K0orSp_ToSp[iq][isys]->SetBinError(ix,iqbin,ToSperr);
+            q_IMnpipi_K0orSp_ToK0[iq][isys]->SetBinContent(ix,iqbin,ToK0);
+            q_IMnpipi_K0orSp_ToK0[iq][isys]->SetBinError(ix,iqbin,ToK0err);
+          }//iqbin
+        }//ix
+      }//iwbin
+      IMnpipi_K0orSp_ToSp[iq][isys] = (TH1D*)q_IMnpipi_K0orSp_ToSp[iq][isys]->ProjectionX(Form("IMnpipi_K0orSp_ToSp%d_sys%d",iq,isys-1));
+      IMnpipi_K0orSp_ToK0[iq][isys] = (TH1D*)q_IMnpipi_K0orSp_ToK0[iq][isys]->ProjectionX(Form("IMnpipi_K0orSp_ToK0%d_sys%d",iq,isys-1));
+    }//isys
   }//iq
-  
 
   //Index 0 : qlow
   //Index 1 : qhigh
   //Index 2 : theta_n small
-  TH2D* q_IMnpipi_K0orSm_ToSm[3];
-  TH2D* q_IMnpipi_K0orSm_ToK0[3];
-  TH1D* IMnpipi_K0orSm_ToSm[3];
-  TH1D* IMnpipi_K0orSm_ToK0[3];
+  TH2D* q_IMnpipi_K0orSm_ToSm[3][3];
+  TH2D* q_IMnpipi_K0orSm_ToK0[3][3];
+  TH1D* IMnpipi_K0orSm_ToSm[3][3];
+  TH1D* IMnpipi_K0orSm_ToK0[3][3];
   double nSm_SmorK0[2][nwbin];//q-region (low or hi), wbin
   double nK0_SmorK0[2][nwbin];//q-region (low or hi), wbin
-  const int smbinlow[2][2]={{16,34},
-                            {17,34}};
-  const int smbinhi[2][2]={{39,98},
-                           {40,116}};
+  double nSm_SmorK0_sysup[2][nwbin];//q-region (low or hi), wbin
+  double nK0_SmorK0_sysup[2][nwbin];//q-region (low or hi), wbin
+  double nSm_SmorK0_sysdown[2][nwbin];//q-region (low or hi), wbin
+  double nK0_SmorK0_sysdown[2][nwbin];//q-region (low or hi), wbin
+  //hard coded cut to avoid negative bins
+  //qlow wbin1 16-39 wbin 35-97
+  //qhi  wbin1 16-39 wbin 36-112
+  const int smbinlow[2][2]={{16,35},
+                            {16,36}};
+  const int smbinhi[2][2]={{39,97},
+                           {39,112}};
   
   for(int iqlowhigh=0;iqlowhigh<2;iqlowhigh++){
     for(int iwbin=1;iwbin<3;iwbin++){//wbin=0 : no overlap region, so start from 1
       double nK0orSm = IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin][iqlowhigh+1]->Integral();
       double nSm = 0.0;
       double nK0 = 0.0;
+      double nSm_sysup = 0.0;
+      double nK0_sysup = 0.0;
+      double nSm_sysdown = 0.0;
+      double nK0_sysdown = 0.0;
       if(nK0orSm>0){
         for(int ix=smbinlow[iwbin-1][iqlowhigh];ix<=smbinhi[iwbin-1][iqlowhigh];ix++){
           for(int iy=0;iy<IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin][iqlowhigh+1]->GetNbinsY();iy++){
             double cont = IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin[iwbin][iqlowhigh+1]->GetBinContent(ix,iy);
             double nK0_bin = IMnpim_IMnpip_K0inter[iqlowhigh]->GetBinContent(ix,iy);     
-            if(cont<0.00001) nK0_bin = 0.0;
+            double nK0_bin_sysup = IMnpim_IMnpip_K0inter_sysup[iqlowhigh]->GetBinContent(ix,iy);     
+            double nK0_bin_sysdown = IMnpim_IMnpip_K0inter_sysdown[iqlowhigh]->GetBinContent(ix,iy);     
+            if(cont<0.00001){
+              nK0_bin = 0.0;
+              nK0_bin_sysup = 0.0;
+              nK0_bin_sysdown = 0.0;
+            }
             double nSm_bin = cont-nK0_bin;
-            if(nSm_bin<0.) nSm_bin=0.0;
+            double nSm_bin_sysup = cont-nK0_bin_sysup;
+            double nSm_bin_syddown = cont-nK0_bin_sysdown;
+            if(nSm_bin<0.){
+              nSm_bin=0.0;
+              nSm_bin_sysup=0.0;
+              nSm_bin_sysdown=0.0;
+            }
             nSm += nSm_bin;
             nK0 += nK0_bin;
+            nSm_sysup += nSm_bin_sysup;
+            nK0_sysup += nK0_bin_sysup;
+            nSm_sysdown += nSm_bin_sysdown;
+            nK0_sysdown += nK0_bin_sysdown;
           }
         }
       }//if nK0orSm
       nSm_SmorK0[iqlowhigh][iwbin] = nSm;
       nK0_SmorK0[iqlowhigh][iwbin] = nK0;
+      nSm_SmorK0_sysup[iqlowhigh][iwbin] = nSm_sysup;
+      nSm_SmorK0_sysup[iqlowhigh][iwbin] = nSm_sysup;
+      nK0_SmorK0_sysdown[iqlowhigh][iwbin] = nK0_sysdown;
+      nK0_SmorK0_sysdown[iqlowhigh][iwbin] = nK0_sysdown;
     }//iwbin
   }//iqlowhigh
 
   for(int iq=0;iq<3;iq++){
-    q_IMnpipi_K0orSm_ToSm[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sm[iq+1]->Clone(Form("q_IMnpipi_K0orSm_ToSm%d",iq));
-    q_IMnpipi_K0orSm_ToK0[iq] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sm[iq+1]->Clone(Form("q_IMnpipi_K0orSm_ToK0%d",iq));
-    q_IMnpipi_K0orSm_ToSm[iq]->Reset();
-    q_IMnpipi_K0orSm_ToK0[iq]->Reset();
-    for(int iwbin=1;iwbin<nwbin;iwbin++){
-      int wbinl = q_IMnpipi_K0orSm_ToSm[iq]->GetXaxis()->FindBin(wbinlow[iwbin]);
-      int wbinh = q_IMnpipi_K0orSm_ToSm[iq]->GetXaxis()->FindBin(wbinhigh[iwbin]);
-      double NevtWide=0.0;
-      const int q350bin = q_IMnpipi_wK0_wSid_n_Sm[iq+1]->FindBin(0.35);
-      for(int ix=wbinl;ix<=wbinh;ix++){
-        for(int iqbin=0;iqbin<q_IMnpipi_wK0_wSid_n_Sm[iq+1]->GetNbinsY();iqbin++){
-          double nevt = q_IMnpipi_wK0_wSid_n_Sm[iq+1]->GetBinContent(ix,iqbin);
-          int qlowhigh = 0;
-          if(q350bin <= iqbin ) qlowhigh=1;
-          double ToSm = nevt*nSm_SmorK0[qlowhigh][iwbin]/(nSm_SmorK0[qlowhigh][iwbin]+nK0_SmorK0[qlowhigh][iwbin]);
-          double ToK0 = nevt*nK0_SmorK0[qlowhigh][iwbin]/(nSm_SmorK0[qlowhigh][iwbin]+nK0_SmorK0[qlowhigh][iwbin]);
-          q_IMnpipi_K0orSm_ToSm[iq]->SetBinContent(ix,iqbin,ToSm);
-          q_IMnpipi_K0orSm_ToSm[iq]->SetBinError(ix,iqbin,0);
-          q_IMnpipi_K0orSm_ToK0[iq]->SetBinContent(ix,iqbin,ToK0);
-          q_IMnpipi_K0orSm_ToK0[iq]->SetBinError(ix,iqbin,0);
-          //  q_IMnpipi_K0orSm_ToSm[iq]->SetBinContent(ix,iqbin,0);
-          //  q_IMnpipi_K0orSm_ToSm[iq]->SetBinError(ix,iqbin,0);
+    for(int isys=0;isys<3;isys++){
+      q_IMnpipi_K0orSm_ToSm[iq][isys] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sm[iq+1]->Clone(Form("q_IMnpipi_K0orSm_ToSm%d_sys%d",iq,isys-1));
+      q_IMnpipi_K0orSm_ToK0[iq][isys] = (TH2D*)q_IMnpipi_wK0_wSid_n_Sm[iq+1]->Clone(Form("q_IMnpipi_K0orSm_ToK0%d_sys%d",iq,isys-1));
+      q_IMnpipi_K0orSm_ToSm[iq][isys]->Reset();
+      q_IMnpipi_K0orSm_ToK0[iq][isys]->Reset();
+      for(int iwbin=1;iwbin<nwbin;iwbin++){
+        int wbinl = q_IMnpipi_K0orSm_ToSm[iq][isys]->GetXaxis()->FindBin(wbinlow[iwbin]);
+        int wbinh = q_IMnpipi_K0orSm_ToSm[iq][isys]->GetXaxis()->FindBin(wbinhigh[iwbin]);
+        double NevtWide=0.0;
+        const int q350bin = q_IMnpipi_wK0_wSid_n_Sm[iq+1]->FindBin(0.35);
+        for(int ix=wbinl;ix<=wbinh;ix++){
+          for(int iqbin=0;iqbin<q_IMnpipi_wK0_wSid_n_Sm[iq+1]->GetNbinsY();iqbin++){
+            double nevt = q_IMnpipi_wK0_wSid_n_Sm[iq+1]->GetBinContent(ix,iqbin);
+            double err = q_IMnpipi_wK0_wSid_n_Sm[iq+1]->GetBinError(ix,iqbin);
+            int qlowhigh = 0;
+            if(q350bin <= iqbin ) qlowhigh=1;
+            double ToSm = 0.0;
+            double ToK0 = 0.0;
+            double ToSmerr = 0.0;
+            double ToK0err = 0.0;
+            if(isys==0){
+              ToSm = nevt*nSm_SmorK0_sysdown[qlowhigh][iwbin]/(nSm_SmorK0_sysdown[qlowhigh][iwbin]+nK0_SmorK0_sysdown[qlowhigh][iwbin]);
+              ToK0 = nevt*nK0_SmorK0_sysdown[qlowhigh][iwbin]/(nSm_SmorK0_sysdown[qlowhigh][iwbin]+nK0_SmorK0_sysdown[qlowhigh][iwbin]);
+              ToSmerr = nerr*nSm_SmorK0_sysdown[qlowhigh][iwbin]/(nSm_SmorK0_sysdown[qlowhigh][iwbin]+nK0_SmorK0_sysdown[qlowhigh][iwbin]);
+              ToK0err = nerr*nK0_SmorK0_sysdown[qlowhigh][iwbin]/(nSm_SmorK0_sysdown[qlowhigh][iwbin]+nK0_SmorK0_sysdown[qlowhigh][iwbin]);
+            }
+            else if(isys==1){
+              ToSm = nevt*nSm_SmorK0[qlowhigh][iwbin]/(nSm_SmorK0[qlowhigh][iwbin]+nK0_SmorK0[qlowhigh][iwbin]);
+              ToK0 = nevt*nK0_SmorK0[qlowhigh][iwbin]/(nSm_SmorK0[qlowhigh][iwbin]+nK0_SmorK0[qlowhigh][iwbin]);
+              ToSmerr = nerr*nSm_SmorK0[qlowhigh][iwbin]/(nSm_SmorK0[qlowhigh][iwbin]+nK0_SmorK0[qlowhigh][iwbin]);
+              ToK0err = nerr*nK0_SmorK0[qlowhigh][iwbin]/(nSm_SmorK0[qlowhigh][iwbin]+nK0_SmorK0[qlowhigh][iwbin]);
+            }
+            else if(isys==2){
+              ToSm = nevt*nSm_SmorK0_sysup[qlowhigh][iwbin]/(nSm_SmorK0_sysup[qlowhigh][iwbin]+nK0_SmorK0_sysup[qlowhigh][iwbin]);
+              ToK0 = nevt*nK0_SmorK0_sysup[qlowhigh][iwbin]/(nSm_SmorK0_sysup[qlowhigh][iwbin]+nK0_SmorK0_sysup[qlowhigh][iwbin]);
+              ToSmerr = nerr*nSm_SmorK0_sysup[qlowhigh][iwbin]/(nSm_SmorK0_sysup[qlowhigh][iwbin]+nK0_SmorK0_sysup[qlowhigh][iwbin]);
+              ToK0err = nerr*nK0_SmorK0_sysup[qlowhigh][iwbin]/(nSm_SmorK0_sysup[qlowhigh][iwbin]+nK0_SmorK0_sysup[qlowhigh][iwbin]);
+            }
+              
+            q_IMnpipi_K0orSm_ToSm[iq][isys]->SetBinContent(ix,iqbin,ToSm);
+            q_IMnpipi_K0orSm_ToSm[iq][isys]->SetBinError(ix,iqbin,ToSmerr);
+            q_IMnpipi_K0orSm_ToK0[iq][isys]->SetBinContent(ix,iqbin,ToK0);
+            q_IMnpipi_K0orSm_ToK0[iq][isys]->SetBinError(ix,iqbin,ToK0err);
+            //  q_IMnpipi_K0orSm_ToSm[iq]->SetBinContent(ix,iqbin,0);
+            //  q_IMnpipi_K0orSm_ToSm[iq]->SetBinError(ix,iqbin,0);
           //  q_IMnpipi_K0orSm_ToK0[iq]->SetBinContent(ix,iqbin,0);
           //  q_IMnpipi_K0orSm_ToK0[iq]->SetBinError(ix,iqbin,0);
-        }//iqbin
-      }//ix
-    }//iwbin
-    IMnpipi_K0orSm_ToSm[iq] = (TH1D*)q_IMnpipi_K0orSm_ToSm[iq]->ProjectionX(Form("IMnpipi_K0orSm_ToSm%d",iq));
-    IMnpipi_K0orSm_ToK0[iq] = (TH1D*)q_IMnpipi_K0orSm_ToK0[iq]->ProjectionX(Form("IMnpipi_K0orSm_ToK0%d",iq));
+          }//iqbin
+        }//ix
+      }//iwbin
+      IMnpipi_K0orSm_ToSm[iq][isys] = (TH1D*)q_IMnpipi_K0orSm_ToSm[iq][isys]->ProjectionX(Form("IMnpipi_K0orSm_ToSm%d_sys%d",iq,isys-1));
+      IMnpipi_K0orSm_ToK0[iq][isys] = (TH1D*)q_IMnpipi_K0orSm_ToK0[iq][isys]->ProjectionX(Form("IMnpipi_K0orSm_ToK0%d_sys%d",iq,isys-1));
+    }//isys
   }//iq
 
 
