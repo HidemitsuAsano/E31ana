@@ -1,5 +1,7 @@
-//input : output files of the macro Fit2DK0.C
-//output : decoposed spectra q vs IM(npi+pi-) which is ready to acceptance correction
+//input : output files of the macro Fit2DK0.C 
+//      : acceptance map
+//
+//output : decoposed spectra q vs IM(npi+pi-) and acceptance corrected spectra
 
 const bool showBG = true;
 const double UncertCut = 0.25;
@@ -574,6 +576,12 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     IMnpipi_K0orSp_ToSp[iq][1]->Draw("HEsame");
     IMnpipi_K0orSp_ToK0[iq][1]->SetLineColor(4);
     IMnpipi_K0orSp_ToK0[iq][1]->Draw("HEsame");
+
+    TLegend *l = new TLegend(0.6,0.7,0.9,0.9);
+    l->AddEntry(IMnpipi_wK0_wSid_n_Sp[iq+1],"overlap","l");
+    l->AddEntry(IMnpipi_K0orSp_ToSp[iq][1],"ToSp","l");
+    l->AddEntry(IMnpipi_K0orSp_ToK0[iq][1],"ToK0","l");
+    l->Draw();
   }
 
   TCanvas *cIMnpipi_wK0_Sm_afterDeco[3];
@@ -584,6 +592,11 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     IMnpipi_K0orSm_ToSm[iq][1]->Draw("HEsame");
     IMnpipi_K0orSm_ToK0[iq][1]->SetLineColor(4);
     IMnpipi_K0orSm_ToK0[iq][1]->Draw("HEsame");
+    TLegend *l = new TLegend(0.6,0.7,0.9,0.9);
+    l->AddEntry(IMnpipi_wK0_wSid_n_Sm[iq+1],"overlap","l");
+    l->AddEntry(IMnpipi_K0orSm_ToSm[iq][1],"ToSm","l");
+    l->AddEntry(IMnpipi_K0orSm_ToK0[iq][1],"ToK0","l");
+    l->Draw();
   }
   
 
@@ -655,6 +668,22 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     }//iq
   }//isys
   
+  TCanvas *cIMnpipi_SpSm_afterDeco[3];
+  for(int iq=0;iq<3;iq++){
+    cIMnpipi_SpSm_afterDeco[iq] = new TCanvas(Form("cIMnpipi_SpSm_Deco_%s",cqcut[iq+1]),Form("cIMnpipi_SpSm_Deco_%s",cqcut[iq+1]),1000,800);
+    IMnpipi_wSid_n_SpSm[iq+1]->SetYTitle("Counts/ 15 MeV");
+    IMnpipi_wSid_n_SpSm[iq+1]->GetYaxis()->CenterTitle();
+    IMnpipi_wSid_n_SpSm[iq+1]->Draw("HE");
+    IMnpipi_SporSm_ToSp[iq][1]->SetLineColor(4);
+    IMnpipi_SporSm_ToSp[iq][1]->Draw("HEsame");
+    IMnpipi_SporSm_ToSm[iq][1]->SetLineColor(5);
+    IMnpipi_SporSm_ToSm[iq][1]->Draw("HEsame");
+    TLegend *l = new TLegend(0.6,0.7,0.9,0.9);
+    l->AddEntry(IMnpipi_wSid_n_SpSm[iq+1],"overlap","l");
+    l->AddEntry(IMnpipi_SporSm_ToSp[iq][1],"ToSp","l");
+    l->AddEntry(IMnpipi_SporSm_ToSm[iq][1],"ToSm","l");
+  }
+
   TCanvas *cq_IMnpipi_Sp_afterDeco[3];
   TH2D* q_IMnpipi_Sp_sum[3];
   for(int iq=0;iq<3;iq++){
@@ -693,17 +722,6 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   }
 
 
-  TCanvas *cIMnpipi_SpSm_afterDeco[3];
-  for(int iq=0;iq<3;iq++){
-    cIMnpipi_SpSm_afterDeco[iq] = new TCanvas(Form("cIMnpipi_SpSm_Deco_%s",cqcut[iq+1]),Form("cIMnpipi_SpSm_Deco_%s",cqcut[iq+1]),1000,800);
-    IMnpipi_wSid_n_SpSm[iq+1]->SetYTitle("Counts/ 15 MeV");
-    IMnpipi_wSid_n_SpSm[iq+1]->GetYaxis()->CenterTitle();
-    IMnpipi_wSid_n_SpSm[iq+1]->Draw("HE");
-    IMnpipi_SporSm_ToSp[iq][1]->SetLineColor(4);
-    IMnpipi_SporSm_ToSp[iq][1]->Draw("HEsame");
-    IMnpipi_SporSm_ToSm[iq][1]->SetLineColor(5);
-    IMnpipi_SporSm_ToSm[iq][1]->Draw("HEsame");
-  }
 
   TCanvas *cIMnpipi_Summary_Sp[3];
   TH1D* IMnpipi_Sp_noK0_noSm[3];
