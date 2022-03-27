@@ -59,7 +59,7 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
 
 const int Version = 239;
 
-void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
+void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
 {
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);

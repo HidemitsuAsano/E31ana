@@ -15,25 +15,28 @@ void GetAccMap()
   TFile *fSpgen=NULL;
   TFile *fSmgen=NULL;
   TFile *fK0gen=NULL;
+  const int versionSigma = 152;
+  const int versionK0 = 27;
+  const int dEcut=2;
 
-  fSp[0] = TFile::Open("simIMpisigma_nSppim_pippimn_v145_out_iso_rej_nostop.root");
-  fSp[1] = TFile::Open("simIMpisigma_nSppim_pippimn_v145_out_iso_qlo_rej_nostop.root");
-  fSp[2] = TFile::Open("simIMpisigma_nSppim_pippimn_v145_out_iso_qhi_rej_nostop.root");
-  fSp[3] = TFile::Open("simIMpisigma_nSppim_pippimn_v145_out_iso_theta15_rej_nostop.root");
+  fSp[0] = TFile::Open(Form("simIMpisigma_nSppim_pippimn_v%d_out_dE%d_iso_rej_nostop.root",versionSigma,dEcut));
+  fSp[1] = TFile::Open(Form("simIMpisigma_nSppim_pippimn_v%d_out_dE%d_iso_qlo_rej_nostop.root",versionSigma,dEcut));
+  fSp[2] = TFile::Open(Form("simIMpisigma_nSppim_pippimn_v%d_out_dE%d_iso_qhi_rej_nostop.root",versionSigma,dEcut));
+  fSp[3] = TFile::Open(Form("simIMpisigma_nSppim_pippimn_v%d_out_dE%d_iso_theta15_rej_nostop.root",versionSigma,dEcut));
 
-  fSm[0] = TFile::Open("simIMpisigma_nSmpip_pippimn_v145_out_iso_rej_nostop.root");
-  fSm[1] = TFile::Open("simIMpisigma_nSmpip_pippimn_v145_out_iso_qlo_rej_nostop.root");
-  fSm[2] = TFile::Open("simIMpisigma_nSmpip_pippimn_v145_out_iso_qhi_rej_nostop.root");
-  fSm[3] = TFile::Open("simIMpisigma_nSmpip_pippimn_v145_out_iso_theta15_rej_nostop.root");
+  fSm[0] = TFile::Open(Form("simIMpisigma_nSmpip_pippimn_v%d_out_dE%d_iso_rej_nostop.root",versionSigma,dEcut));
+  fSm[1] = TFile::Open(Form("simIMpisigma_nSmpip_pippimn_v%d_out_dE%d_iso_qlo_rej_nostop.root",versionSigma,dEcut));
+  fSm[2] = TFile::Open(Form("simIMpisigma_nSmpip_pippimn_v%d_out_dE%d_iso_qhi_rej_nostop.root",versionSigma,dEcut));
+  fSm[3] = TFile::Open(Form("simIMpisigma_nSmpip_pippimn_v%d_out_dE%d_iso_theta15_rej_nostop.root",versionSigma,dEcut));
 
-  fK0[0] = TFile::Open("simIMpisigma_K0nn_pippimn_v21_out_iso_rej_nostop.root");
-  fK0[1] = TFile::Open("simIMpisigma_K0nn_pippimn_v21_out_iso_qlo_rej_nostop.root");
-  fK0[2] = TFile::Open("simIMpisigma_K0nn_pippimn_v21_out_iso_qhi_rej_nostop.root");
-  fK0[3] = TFile::Open("simIMpisigma_K0nn_pippimn_v21_out_iso_theta15_rej_nostop.root");
+  fK0[0] = TFile::Open(Form("simIMpisigma_K0nn_pippimn_v%d_out_dE%d_iso_rej_nostop.root",versionK0,dEcut));
+  fK0[1] = TFile::Open(Form("simIMpisigma_K0nn_pippimn_v%d_out_dE%d_iso_qlo_rej_nostop.root",versionK0,dEcut));
+  fK0[2] = TFile::Open(Form("simIMpisigma_K0nn_pippimn_v%d_out_dE%d_iso_qhi_rej_nostop.root",versionK0,dEcut));
+  fK0[3] = TFile::Open(Form("simIMpisigma_K0nn_pippimn_v%d_out_dE%d_iso_theta15_rej_nostop.root",versionK0,dEcut));
   
-  fSpgen = TFile::Open("simIMpisigma_nSppim_v145.root");
-  fSmgen = TFile::Open("simIMpisigma_nSmpip_v145.root");
-  fK0gen = TFile::Open("simIMpisigma_K0nn_v21.root");
+  fSpgen = TFile::Open(Form("simIMpisigma_nSppim_v%d.root",versionSigma));
+  fSmgen = TFile::Open(Form("simIMpisigma_nSmpip_v%d.root",versionSigma));
+  fK0gen = TFile::Open(Form("simIMpisigma_K0nn_v%d.root",versionK0));
   
   const int nqcut=1;
   TH2F* q_IMnpipi_gen_Sp[nqcut];
@@ -63,14 +66,14 @@ void GetAccMap()
   }
   //for some reason, Rebin iq = 0-4 histograms
   q_IMnpipi_gen_Sp[0]->RebinX(15);
-  q_IMnpipi_gen_Sp[0]->RebinY(3);
+  q_IMnpipi_gen_Sp[0]->RebinY(10);
   //q_IMnpipi_gen_Sp[0]->GetXaxis()->SetRangeUser(1.2,2.0);
   
   q_IMnpipi_gen_Sm[0]->RebinX(15);
-  q_IMnpipi_gen_Sm[0]->RebinY(3);
+  q_IMnpipi_gen_Sm[0]->RebinY(10);
   //q_IMnpipi_gen_Sm[0]->GetXaxis()->SetRangeUser(1.2,2.0);
   q_IMnpipi_gen_K0[0]->RebinX(15);
-  q_IMnpipi_gen_K0[0]->RebinY(3);
+  q_IMnpipi_gen_K0[0]->RebinY(10);
   //q_IMnpipi_gen_K0[0]->GetXaxis()->SetRangeUser(1.2,2.0);
    
   TH2F* q_IMnpipi_wSid_n_Sp_reco[nqcut];
@@ -236,7 +239,7 @@ void GetAccMap()
     q_IMnpipi_K0_accerr[iq]->Draw("colz");
   }
  
-  TFile *fout = new TFile("accmap.root","RECREATE");
+  TFile *fout = new TFile(Form("accmapv%d_%d.root",versionSigma,versionK0), "RECREATE");
   for(int iq=0;iq<nqcut;iq++){
     q_IMnpipi_Sp_acc[iq]->Write();
     q_IMnpipi_Sp_accerr[iq]->Write();

@@ -338,6 +338,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
       double nK0_sysup = 0.0;
       double nSp_sysdown = 0.0;
       double nK0_sysdown = 0.0;
+      std::cout << __LINE__ << " iy range for SpK0 deco. " <<  spbinlow[iwbin-1][iqlowhigh] 
+      << "  " <<   spbinhi[iwbin-1][iqlowhigh]  << std::endl;
       if(nK0orSp>0){
         for(int ix=0;ix<IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin[iwbin][iqlowhigh+1]->GetNbinsX();ix++){
           for(int iy=spbinlow[iwbin-1][iqlowhigh];iy<=spbinhi[iwbin-1][iqlowhigh];iy++){
@@ -364,13 +366,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
             nK0_sysup += nK0_bin_sysup;
             nSp_sysdown += nSp_bin_sysdown;
             nK0_sysdown += nK0_bin_sysdown;
-            if(cont>0.0 && iqlowhigh==0){
-              //std::cout << "cont " << cont << std::endl;
-              //std::cout << "nK0_bin " << nK0_bin << std::endl;
-              //std::cout << "nSp_bin " << nSp_bin << std::endl;
-            }
-          }
-        }
+          }//iy
+        }//ix
       }//if nK0orSp
       nSp_SporK0[iqlowhigh][iwbin] = nSp;
       nK0_SporK0[iqlowhigh][iwbin] = nK0;
@@ -381,6 +378,15 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     }//iwbin
   }//iqlowhigh
   
+  std::cout << "qlo iwbin 1 Sp  " << nSp_SporK0[0][1] << std::endl;
+  std::cout << "qlo iwbin 2 Sp  " << nSp_SporK0[0][2] << std::endl;
+  std::cout << "qhi iwbin 1 Sp  " << nSp_SporK0[1][1] << std::endl;
+  std::cout << "qhi iwbin 2 Sp  " << nSp_SporK0[1][2] << std::endl;
+  std::cout << "qlo iwbin 1 K0  " << nK0_SporK0[0][1] << std::endl;
+  std::cout << "qlo iwbin 2 K0  " << nK0_SporK0[0][2] << std::endl;
+  std::cout << "qhi iwbin 1 K0  " << nK0_SporK0[1][1] << std::endl;
+  std::cout << "qhi iwbin 2 K0  " << nK0_SporK0[1][2] << std::endl;
+
   //q-low,q-hi,ntheta_small
   for(int iq=0;iq<3;iq++){
     for(int isys=0;isys<3;isys++){

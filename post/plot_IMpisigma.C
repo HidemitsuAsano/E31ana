@@ -379,7 +379,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   const int nbinIMnpipi = 180;//1.2-2 GeV/c^2
   const float IMnpipilow = 1.2;
   const float IMnpipihi = 2.1;
-  const int nbinq = 100;// 25;//0-1.5 GeV/c
+  const int nbinq = 30;// 25;//0-1.5 GeV/c
   const int nbinIMnpi = 500; //1-2 GeV/c^2
   const int nbinnmiss = 150; //0-1.5 GeV/c
   const double nmisslow = 0.0;
@@ -4882,7 +4882,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     //diff2d_Zpippim_Znpim->Fill(diffpim.Z(),diffpippim.Z());
 
     //momentum update
-    if(K0Flag){
+    if( (K0Flag && RealDatamode) || SimK0nnmode){
       *LVec_n = *LVec_n_K0;
       LVec_pip_n = *LVec_n_K0+*LVec_pip;
       LVec_pim_n = *LVec_n_K0+*LVec_pim;
@@ -4895,7 +4895,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       nmissthetalab = acos(cos_nmisslab);  
       MassNPip = LVec_pip_n.M();
       MassNPim = LVec_pim_n.M();
-    }else if(SigmaPFlag){
+    }else if((SigmaPFlag && RealDatamode) || SimSpmode){
       *LVec_n = *LVec_n_Sp;
       LVec_pip_n = *LVec_n_Sp+*LVec_pip;
       LVec_pim_n = *LVec_n_Sp+*LVec_pim;
@@ -4908,7 +4908,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       nmissthetalab = acos(cos_nmisslab);  
       MassNPip = LVec_pip_n.M();
       MassNPim = LVec_pim_n.M();
-    }else if(SigmaMFlag){
+    }else if((SigmaMFlag && RealDatamode) || SimSmmode){
       *LVec_n = *LVec_n_Sm;
       LVec_pip_n = *LVec_n_Sm+*LVec_pip;
       LVec_pim_n = *LVec_n_Sm+*LVec_pim;
