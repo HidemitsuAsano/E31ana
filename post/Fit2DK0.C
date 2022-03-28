@@ -59,7 +59,7 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
 
 const int Version = 239;
 
-void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
+void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
 {
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
@@ -75,6 +75,7 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
     std::cout << "no file" << std::endl;
     return;
   }
+  fr->Print();
   //
   TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_1 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_woSid_n");
   //45 degeree rotation of IMnpi- vs IMnpi+
@@ -551,12 +552,200 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   h2K0inter_3_sysup->ProjectionY()->Draw("HEsame");
   h2K0inter_3_sysdown->ProjectionY()->Draw("HEsame");
    
+  TH2F* IMnpim_IMnpip_dE_wK0orwSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
+  TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sp = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_Sp");
+  TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin1 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin1");
+  TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin2 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin2");
+  TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sm = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_Sm");
+  TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin1 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin1");
+  TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin2 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin2");
+  TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_rebin = (TH2F*)IMnpim_IMnpip_dE_wK0orwSid_n->Clone("IMnpim_IMnpip_dE_wK0orwSid_n_rebin");
+  IMnpim_IMnpip_dE_wK0orwSid_n_rebin->Rebin2D(4,4);
+  TCanvas *ccomp = new TCanvas("ccomp","ccomp",1600,800);
+  ccomp->Divide(2,1);
+  ccomp->cd(1);
+  h2K0inter_3->Draw("colz");
+  ccomp->cd(2);
+  IMnpim_IMnpip_dE_wK0orwSid_n_rebin->Draw("colz");
+  TCanvas *ccomp2 = new TCanvas("ccomp2","ccomp2",1600,800);
+  ccomp2->Divide(2,1);
+  ccomp2->cd(1);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sp->Rebin2D(4,4);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin1->Rebin2D(4,4);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin2->Rebin2D(4,4);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sp->Draw("colz");
+  ccomp2->cd(2);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sm->Rebin2D(4,4);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin1->Rebin2D(4,4);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin2->Rebin2D(4,4);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sm->Draw("colz");
+ 
+  //projection in Sigma+ region to IM(npi-)
+  TCanvas *ccomp_Spregion = new TCanvas("ccomp_Spregion");
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sp->ProjectionY()->Draw();
+  const int Spbinlow = h2K0inter_3->GetXaxis()->FindBin(anacuts::Sigmap_MIN);
+  const int Spbinhi = h2K0inter_3->GetXaxis()->FindBin(anacuts::Sigmap_MAX);
+  TH1D* IMnpimK0inter_Sp = (TH1D*)h2K0inter_3->ProjectionY("IMnpim_K0inter_Sp",Spbinlow,Spbinhi);
+  TH1D* IMnpimK0inter_Sp_sysup = (TH1D*)h2K0inter_3_sysup->ProjectionY("IMnpim_K0inter_Sp_sysup",Spbinlow,Spbinhi);
+  TH1D* IMnpimK0inter_Sp_sysdown = (TH1D*)h2K0inter_3_sysdown->ProjectionY("IMnpim_K0inter_Sp_sysdown",Spbinlow,Spbinhi);
+  IMnpimK0inter_Sp->SetLineColor(2);
+  IMnpimK0inter_Sp->Draw("Hsame");
+  TH1D* wbin1_Sp = (TH1D*)IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin1->ProjectionY();
+  wbin1_Sp->SetLineColor(3);
+  wbin1_Sp->Draw("same");
+  TH1D* wbin2_Sp = (TH1D*)IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin2->ProjectionY();
+  wbin2_Sp->SetLineColor(4);
+  wbin2_Sp->Draw("same");
+
+  int spbinlow[2];  
+  if(qcut==2){
+    spbinlow[0]=6;
+    spbinlow[1]=11;
+  }else if(qcut==1){
+    spbinlow[0]=6;
+    spbinlow[1]=11;
+  }
+  int spbinhigh[2];
+  if(qcut==2){
+    spbinhigh[0]=10;
+    spbinhigh[1]=28;
+  }else if(qcut==1){
+    spbinhigh[0]=10;
+    spbinhigh[1]=21;
+  }
+  
+  double nSporK0[2]={0.0,0.0};
+  double nK0[2][3];
+  
+  nSporK0[0]=wbin1_Sp->Integral(spbinlow[0],spbinhigh[0]);
+  nSporK0[1]=wbin2_Sp->Integral(spbinlow[1],spbinhigh[1]);
+  nK0[0][0]=IMnpimK0inter_Sp_sysdown->Integral(spbinlow[0],spbinhigh[0]);
+  nK0[1][0]=IMnpimK0inter_Sp_sysdown->Integral(spbinlow[1],spbinhigh[1]);
+  nK0[0][1]=IMnpimK0inter_Sp->Integral(spbinlow[0],spbinhigh[0]);
+  nK0[1][1]=IMnpimK0inter_Sp->Integral(spbinlow[1],spbinhigh[1]);
+  nK0[0][2]=IMnpimK0inter_Sp_sysup->Integral(spbinlow[0],spbinhigh[0]);
+  nK0[1][2]=IMnpimK0inter_Sp_sysup->Integral(spbinlow[1],spbinhigh[1]);
+
+
+  std::cout << "total_wbin1: " <<  nSporK0[0] << std::endl;
+  std::cout << "nK0_wbin1: " <<  nK0[0][1] << std::endl;
+  std::cout << "nK0_wbin1 sysdown: " <<  nK0[0][0] << std::endl;
+  std::cout << "nK0_wbin1 sysup: " <<  nK0[0][2] << std::endl;
+  std::cout << "total_wbin2: " <<  nSporK0[1] << std::endl;
+  std::cout << "nK0_wbin2: " <<  nK0[1][1] << std::endl;
+  std::cout << "nK0_wbin2 sysdown: " <<  nK0[1][0] << std::endl;
+  std::cout << "nK0_wbin2 sysup: " <<  nK0[1][2] << std::endl;
+  TGraphErrors *gr_SpK0ratio[3]; 
+  for(int isys=0;isys<3;isys++){
+    gr_SpK0ratio[isys] = new TGraphErrors();
+    gr_SpK0ratio[isys]->SetName(Form("gr_SpK0ratio_sys%d",isys-1));
+    gr_SpK0ratio[isys]->SetTitle(Form("gr_SpK0ratio_sys%d",isys-1));
+    gr_SpK0ratio[isys]->SetPoint(0,1,(nSporK0[0]-nK0[0][isys])/nSporK0[0]);
+    gr_SpK0ratio[isys]->SetPoint(1,2,(nSporK0[1]-nK0[1][isys])/nSporK0[1]);
+  }
+   
+  TCanvas *cratioSp = new TCanvas("cratioSp","cratioSp");
+  for(int isys=0;isys<3;isys++){
+    gr_SpK0ratio[isys]->SetMarkerStyle(20);
+  }
+  gr_SpK0ratio[1]->GetYaxis()->SetRangeUser(0.1,0.6);
+  gr_SpK0ratio[1]->Draw("ap");
+  gr_SpK0ratio[0]->Draw("p");
+  gr_SpK0ratio[2]->Draw("p");
+  gr_SpK0ratio[1]->Print();
+  gr_SpK0ratio[0]->Print();
+  gr_SpK0ratio[2]->Print();
+  
+
+
+  TCanvas *ccomp_Smregion = new TCanvas("ccomp_Smregion");
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sm->ProjectionX()->Draw();
+  const int Smbinlow = h2K0inter_3->GetYaxis()->FindBin(anacuts::Sigmam_MIN);
+  const int Smbinhi = h2K0inter_3->GetYaxis()->FindBin(anacuts::Sigmam_MAX);
+  TH1D* IMnpipK0inter_Sm = (TH1D*)h2K0inter_3->ProjectionX("IMnpip_K0inter_Sm",Smbinlow,Smbinhi);
+  TH1D* IMnpipK0inter_Sm_sysdown = (TH1D*)h2K0inter_3_sysdown->ProjectionX("IMnpip_K0inter_Sm_sysdown",Smbinlow,Smbinhi);
+  TH1D* IMnpipK0inter_Sm_sysup = (TH1D*)h2K0inter_3_sysup->ProjectionX("IMnpip_K0inter_Sm_sysup",Smbinlow,Smbinhi);
+  IMnpipK0inter_Sm->SetLineColor(2);
+  IMnpipK0inter_Sm->Draw("Hsame");
+  TH1D* wbin1_Sm = (TH1D*)IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin1->ProjectionX();
+  wbin1_Sm->SetLineColor(3);
+  wbin1_Sm->Draw("same");
+  TH1D* wbin2_Sm = (TH1D*)IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin2->ProjectionX();
+  wbin2_Sm->SetLineColor(4);
+  wbin2_Sm->Draw("same");
+
+  int smbinlow[2];  
+  if(qcut==2){
+    smbinlow[0]=5;
+    smbinlow[1]=12;
+  }else if(qcut==1){
+    smbinlow[0]=5;
+    smbinlow[1]=10;
+  }
+  int smbinhigh[2];
+  if(qcut==2){
+    smbinhigh[0]=11;
+    smbinhigh[1]=28;
+  }else if(qcut==1){
+    smbinhigh[0]=9;
+    smbinhigh[1]=25;
+  }
+  
+  
+  double nSmorK0[2]={0.0,0.0};
+  double nK0_SmorK0[2][3];
+  
+  nSmorK0[0]=wbin1_Sm->Integral(smbinlow[0],smbinhigh[0]);
+  nSmorK0[1]=wbin2_Sm->Integral(smbinlow[1],smbinhigh[1]);
+  nK0_SmorK0[0][0]=IMnpipK0inter_Sm_sysdown->Integral(smbinlow[0],smbinhigh[0]);
+  nK0_SmorK0[1][0]=IMnpipK0inter_Sm_sysdown->Integral(smbinlow[1],smbinhigh[1]);
+  nK0_SmorK0[0][1]=IMnpipK0inter_Sm->Integral(smbinlow[0],smbinhigh[0]);
+  nK0_SmorK0[1][1]=IMnpipK0inter_Sm->Integral(smbinlow[1],smbinhigh[1]);
+  nK0_SmorK0[0][2]=IMnpipK0inter_Sm_sysup->Integral(smbinlow[0],smbinhigh[0]);
+  nK0_SmorK0[1][2]=IMnpipK0inter_Sm_sysup->Integral(smbinlow[1],smbinhigh[1]);
+  
+  double ratioSm_SmorK0[3][2];
+  
+
+  TGraphErrors *gr_SmK0ratio[3]; 
+  for(int isys=0;isys<3;isys++){
+    gr_SmK0ratio[isys] = new TGraphErrors();
+    gr_SmK0ratio[isys]->SetName(Form("gr_SmK0ratio_sys%d",isys-1));
+    gr_SmK0ratio[isys]->SetTitle(Form("gr_SmK0ratio_sys%d",isys-1));
+    ratioSm_SmorK0[isys][0] = (nSmorK0[0]-nK0_SmorK0[0][isys])/nSmorK0[0];
+    if(ratioSm_SmorK0[isys][0]<0) ratioSm_SmorK0[isys][0]=0.0;
+    ratioSm_SmorK0[isys][1] = (nSmorK0[1]-nK0_SmorK0[1][isys])/nSmorK0[1];
+    if(ratioSm_SmorK0[isys][1]<0) ratioSm_SmorK0[isys][1]=0.0;
+    gr_SmK0ratio[isys]->SetPoint(0,1,ratioSm_SmorK0[isys][0]);
+    gr_SmK0ratio[isys]->SetPoint(1,2,ratioSm_SmorK0[isys][1]);
+  }
+   
+  TCanvas *cratioSm = new TCanvas("cratioSm","cratioSm");
+  for(int isys=0;isys<3;isys++){
+    gr_SmK0ratio[isys]->SetMarkerStyle(20);
+  }
+  gr_SmK0ratio[1]->GetYaxis()->SetRangeUser(0.0,0.6);
+  gr_SmK0ratio[1]->Draw("ap");
+  gr_SmK0ratio[0]->Draw("p");
+  gr_SmK0ratio[2]->Draw("p");
+  std::cout << "total_wbin1: " <<  nSmorK0[0] << std::endl;
+  std::cout << "nK0_wbin1: " <<  nK0_SmorK0[0][1] << std::endl;
+  std::cout << "nK0_wbin1 sysdown: " <<  nK0_SmorK0[0][0] << std::endl;
+  std::cout << "nK0_wbin1 sysup: " <<  nK0_SmorK0[0][2] << std::endl;
+  std::cout << "total_wbin2: " <<  nSmorK0[1] << std::endl;
+  std::cout << "nK0_wbin2: " <<  nK0_SmorK0[1][1] << std::endl;
+  std::cout << "nK0_wbin2 sysdown: " <<  nK0_SmorK0[1][0] << std::endl;
+  std::cout << "nK0_wbin2 sysup: " <<  nK0_SmorK0[1][2] << std::endl;
+  gr_SmK0ratio[1]->Print();
+  gr_SmK0ratio[0]->Print();
+  gr_SmK0ratio[2]->Print();
+
+
 
   //
   /////next step/////
   //
   //subtract K0 and solve Sp/Sm overlap region
-  TH2F* IMnpim_IMnpip_dE_wK0orwSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
   TCanvas *cwK0orwSid_n = new TCanvas("cwK0orwSid_n","cwK0orwSid_n",1600,800);
   cwK0orwSid_n->Divide(2,1);
   cwK0orwSid_n->cd(1);
@@ -823,6 +1012,10 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   h2K0inter_3fine->Write(); 
   h2K0inter_3fine_sysup->Write(); 
   h2K0inter_3fine_sysdown->Write(); 
+  for(int isys=0;isys<3;isys++){
+    gr_SpK0ratio[isys]->Write();
+    gr_SmK0ratio[isys]->Write();
+  }
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
