@@ -635,26 +635,26 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   std::cout << "nK0_wbin2: " <<  nK0[1][1] << std::endl;
   std::cout << "nK0_wbin2 sysdown: " <<  nK0[1][0] << std::endl;
   std::cout << "nK0_wbin2 sysup: " <<  nK0[1][2] << std::endl;
-  TGraphErrors *gr_SpK0ratio[3]; 
+  TGraphErrors *gr_Spratio_SporK0[3]; 
   for(int isys=0;isys<3;isys++){
-    gr_SpK0ratio[isys] = new TGraphErrors();
-    gr_SpK0ratio[isys]->SetName(Form("gr_SpK0ratio_sys%d",isys-1));
-    gr_SpK0ratio[isys]->SetTitle(Form("gr_SpK0ratio_sys%d",isys-1));
-    gr_SpK0ratio[isys]->SetPoint(0,1,(nSporK0[0]-nK0[0][isys])/nSporK0[0]);
-    gr_SpK0ratio[isys]->SetPoint(1,2,(nSporK0[1]-nK0[1][isys])/nSporK0[1]);
+    gr_Spratio_SporK0[isys] = new TGraphErrors();
+    gr_Spratio_SporK0[isys]->SetName(Form("gr_Spratio_SporK0_sys%d",isys-1));
+    gr_Spratio_SporK0[isys]->SetTitle(Form("gr_Spratio_SporK0_sys%d",isys-1));
+    gr_Spratio_SporK0[isys]->SetPoint(0,1,(nSporK0[0]-nK0[0][isys])/nSporK0[0]);
+    gr_Spratio_SporK0[isys]->SetPoint(1,2,(nSporK0[1]-nK0[1][isys])/nSporK0[1]);
   }
    
   TCanvas *cratioSp = new TCanvas("cratioSp","cratioSp");
   for(int isys=0;isys<3;isys++){
-    gr_SpK0ratio[isys]->SetMarkerStyle(20);
+    gr_Spratio_SporK0[isys]->SetMarkerStyle(20);
   }
-  gr_SpK0ratio[1]->GetYaxis()->SetRangeUser(0.1,0.6);
-  gr_SpK0ratio[1]->Draw("ap");
-  gr_SpK0ratio[0]->Draw("p");
-  gr_SpK0ratio[2]->Draw("p");
-  gr_SpK0ratio[1]->Print();
-  gr_SpK0ratio[0]->Print();
-  gr_SpK0ratio[2]->Print();
+  gr_Spratio_SporK0[1]->GetYaxis()->SetRangeUser(0.1,0.6);
+  gr_Spratio_SporK0[1]->Draw("ap");
+  gr_Spratio_SporK0[0]->Draw("p");
+  gr_Spratio_SporK0[2]->Draw("p");
+  gr_Spratio_SporK0[1]->Print();
+  gr_Spratio_SporK0[0]->Print();
+  gr_Spratio_SporK0[2]->Print();
   
 
 
@@ -707,27 +707,27 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   double ratioSm_SmorK0[3][2];
   
 
-  TGraphErrors *gr_SmK0ratio[3]; 
+  TGraphErrors *gr_Smratio_SmorK0[3]; 
   for(int isys=0;isys<3;isys++){
-    gr_SmK0ratio[isys] = new TGraphErrors();
-    gr_SmK0ratio[isys]->SetName(Form("gr_SmK0ratio_sys%d",isys-1));
-    gr_SmK0ratio[isys]->SetTitle(Form("gr_SmK0ratio_sys%d",isys-1));
+    gr_Smratio_SmorK0[isys] = new TGraphErrors();
+    gr_Smratio_SmorK0[isys]->SetName(Form("gr_Smratio_SmorK0_sys%d",isys-1));
+    gr_Smratio_SmorK0[isys]->SetTitle(Form("gr_Smratio_SmorK0_sys%d",isys-1));
     ratioSm_SmorK0[isys][0] = (nSmorK0[0]-nK0_SmorK0[0][isys])/nSmorK0[0];
     if(ratioSm_SmorK0[isys][0]<0) ratioSm_SmorK0[isys][0]=0.0;
     ratioSm_SmorK0[isys][1] = (nSmorK0[1]-nK0_SmorK0[1][isys])/nSmorK0[1];
     if(ratioSm_SmorK0[isys][1]<0) ratioSm_SmorK0[isys][1]=0.0;
-    gr_SmK0ratio[isys]->SetPoint(0,1,ratioSm_SmorK0[isys][0]);
-    gr_SmK0ratio[isys]->SetPoint(1,2,ratioSm_SmorK0[isys][1]);
+    gr_Smratio_SmorK0[isys]->SetPoint(0,1,ratioSm_SmorK0[isys][0]);
+    gr_Smratio_SmorK0[isys]->SetPoint(1,2,ratioSm_SmorK0[isys][1]);
   }
    
   TCanvas *cratioSm = new TCanvas("cratioSm","cratioSm");
   for(int isys=0;isys<3;isys++){
-    gr_SmK0ratio[isys]->SetMarkerStyle(20);
+    gr_Smratio_SmorK0[isys]->SetMarkerStyle(20);
   }
-  gr_SmK0ratio[1]->GetYaxis()->SetRangeUser(0.0,0.6);
-  gr_SmK0ratio[1]->Draw("ap");
-  gr_SmK0ratio[0]->Draw("p");
-  gr_SmK0ratio[2]->Draw("p");
+  gr_Smratio_SmorK0[1]->GetYaxis()->SetRangeUser(0.0,0.6);
+  gr_Smratio_SmorK0[1]->Draw("ap");
+  gr_Smratio_SmorK0[0]->Draw("p");
+  gr_Smratio_SmorK0[2]->Draw("p");
   std::cout << "total_wbin1: " <<  nSmorK0[0] << std::endl;
   std::cout << "nK0_wbin1: " <<  nK0_SmorK0[0][1] << std::endl;
   std::cout << "nK0_wbin1 sysdown: " <<  nK0_SmorK0[0][0] << std::endl;
@@ -736,9 +736,9 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   std::cout << "nK0_wbin2: " <<  nK0_SmorK0[1][1] << std::endl;
   std::cout << "nK0_wbin2 sysdown: " <<  nK0_SmorK0[1][0] << std::endl;
   std::cout << "nK0_wbin2 sysup: " <<  nK0_SmorK0[1][2] << std::endl;
-  gr_SmK0ratio[1]->Print();
-  gr_SmK0ratio[0]->Print();
-  gr_SmK0ratio[2]->Print();
+  gr_Smratio_SmorK0[1]->Print();
+  gr_Smratio_SmorK0[0]->Print();
+  gr_Smratio_SmorK0[2]->Print();
 
 
 
@@ -1013,8 +1013,8 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   h2K0inter_3fine_sysup->Write(); 
   h2K0inter_3fine_sysdown->Write(); 
   for(int isys=0;isys<3;isys++){
-    gr_SpK0ratio[isys]->Write();
-    gr_SmK0ratio[isys]->Write();
+    gr_Spratio_SporK0[isys]->Write();
+    gr_Smratio_SmorK0[isys]->Write();
   }
 
   TCanvas *c = NULL;
