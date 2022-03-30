@@ -646,7 +646,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     lSp->AddEntry(IMnpipi_Sp_noK0_noSm[iq],"Sigma+ after deco. ","l");
     lSp->Draw();
   }
-
+  
+  //summary plot with the systematic error of 
   TCanvas *cIMnpipi_Summary_Sp_re[4];
   for(int iq=0;iq<4;iq++){
     cIMnpipi_Summary_Sp_re[iq] = new TCanvas(Form("cIMnpipi_Summary_Sp_re%s",cqcut[iq]),Form("cIMnpipi_Summary_Sp_re%s",cqcut[iq]),1000,800);
@@ -716,9 +717,9 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   }
 
 
-
-
-
+  //
+  //Acceptance correction
+  //
 
   std::cout << __LINE__ << std::endl;
   //TFile *facc = TFile::Open("../simpost/accmap.root");
