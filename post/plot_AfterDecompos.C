@@ -44,6 +44,10 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
 {
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
+  gStyle->SetMarkerStyle(20); 
+  gStyle->SetMarkerSize(1.2); 
+  gROOT->ForceStyle();
+
   TFile *fr[4] = {NULL};
   //Because the statistics is limited, we just divide data into q<0.35 and q>0.35.
   fr[0] = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop_sys%d_sub.root",Version,dEcut,sysud),"READ");
@@ -510,6 +514,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   
   for(int iqlowhi=0;iqlowhi<2;iqlowhi++){
     for(int isys=0;isys<3;isys++){
+      int wbinl = IMnpipi_SporSm_ToSp[iqlowhi+1][isys]->GetXaxis()->FindBin(wbinlow[1]);//1.40
+      int wbinh = IMnpipi_K0orSp_ToSp[iqlowhi+1][isys]->GetXaxis()->FindBin(wbinhigh[1]);//1.52
       OverlapToSp[iqlowhi][isys] = IMnpipi_SporSm_ToSp[iqlowhi+1][isys]->Integral(wbinl,wbinh);
       OverlapToSp[iqlowhi][isys] += IMnpipi_K0orSp_ToSp[iqlowhi+1][isys]->Integral(wbinl,wbinh);
 
