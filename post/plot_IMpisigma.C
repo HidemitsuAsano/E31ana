@@ -4795,7 +4795,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       if(LVec_pip_n.P()<anacuts::SigmaPMomCut) continue;
       if(LVec_pim_n.P()<anacuts::SigmaMMomCut) continue;
     }
-    if(qvalcutflag==3 && (nmissthetalab>15.0/180.0*TMath::Pi())) continue;
+    if(qvalcutflag==3 && (nmissthetalab>5.0/180.0*TMath::Pi())) continue;
     
     //Sigma+ production in CDS
     //band cut for signal

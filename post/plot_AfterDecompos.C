@@ -49,7 +49,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   gROOT->ForceStyle();
 
   TFile *fr[4] = {NULL};
-  //Because the statistics is limited, we just divide data into q<0.35 and q>0.35.
+  //Because the statistics is limited, we divide data into q<0.35 and q>0.35 and decompose K0 & Sigma+ & Simga- 
   fr[0] = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop_sys%d_sub.root",Version,dEcut,sysud),"READ");
   fr[1] = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_qlo_nostop_sys%d_sub.root",Version,dEcut,sysud),"READ");
   fr[2] = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_qhi_nostop_sys%d_sub.root",Version,dEcut,sysud),"READ");
