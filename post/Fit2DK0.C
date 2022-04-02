@@ -57,7 +57,7 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
 }
 
 
-const int Version = 239;
+const int Version = 241;
 
 void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
 {

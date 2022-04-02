@@ -1143,6 +1143,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     else nlen = (Pos_CDH-vtx_react).Mag();
 
     Tools::Fill2D(Form("ntof_nlen"),ntof,nlen);
+    Tools::Fill2D(Form("CDHtime_nlen"),ncdhhit->ctmean(),nlen);
 
     //subtract T0-target beam tof
     tofpim -=beamtof;
@@ -1165,6 +1166,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
       NeutralBetaCDH_vtx[ivtx] = nlen_vtx[ivtx]/ntof_vtx[ivtx]/(Const*100.);
     }
     double tmp_mom = NeutralBetaCDH<1. ? nMass*NeutralBetaCDH/sqrt(1.-NeutralBetaCDH*NeutralBetaCDH) : 0;
+    
     double tmp_mom_beam = NeutralBetaCDH_beam<1. ? nMass*NeutralBetaCDH_beam/sqrt(1.-NeutralBetaCDH_beam*NeutralBetaCDH_beam) : 0;
     double tmp_mom_vtx[3];
     for(int ivtx=0;ivtx<3;ivtx++){
@@ -1191,6 +1193,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     }else{
       P_n = tmp_mom*((Pos_CDH-vtx_react).Unit());
     }
+    Tools::Fill2D(Form("CDHtime_nmom"),ncdhhit->ctmean(),P_n.Mag());
     TVector3 P_n_beam = tmp_mom_beam*((Pos_CDH-vtx_beam).Unit());
     TVector3 P_n_vtx[3];
     P_n_vtx[0] = tmp_mom_vtx[0]*((Pos_CDH-vtx_pip).Unit());

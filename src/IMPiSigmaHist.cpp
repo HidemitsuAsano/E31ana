@@ -155,6 +155,8 @@ void InitIMPiSigmaHist()
   }
   
   Tools::newTH2F( Form("ntof_nlen"),1000,0,100,1000,0,100);
+  Tools::newTH2F( Form("CDHtime_nlen"),1000,0,100,1000,0,100);
+  Tools::newTH2F( Form("CDHtime_nmom"),1000,0,100,100,0,1);
 
   Tools::newTH1F( Form("diff_CDH"), 73, -36.5, 36.5 );
   Tools::newTH1F( Form("diff_CDH_pippim"), 73, -36.5, 36.5 );

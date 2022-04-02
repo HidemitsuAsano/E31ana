@@ -15,8 +15,8 @@ void GetAccMap()
   TFile *fSpgen=NULL;
   TFile *fSmgen=NULL;
   TFile *fK0gen=NULL;
-  const int versionSigma = 152;
-  const int versionK0 = 27;
+  const int versionSigma = 153;
+  const int versionK0 = 28;
   const int dEcut=2;
 
   fSp[0] = TFile::Open(Form("simIMpisigma_nSppim_pippimn_v%d_out_dE%d_iso_rej_nostop.root",versionSigma,dEcut));

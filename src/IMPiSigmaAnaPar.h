@@ -74,7 +74,10 @@ namespace cdscuts {
   //const double tdc_cdh_max = 200;// ns v160-
   //const double tdc_cdh_max = 200;// ns v160-
   //const double tdc_cdh_max = 100;// ns v229-235
-  const double tdc_cdh_max = 200;// ns v236
+  //const double tdc_cdh_max = 200;// ns v236-v239
+  //const double tdc_cdh_max = 200;// ns v236-v239
+  //const double tdc_cdh_max = 50;// ns v40
+  const double tdc_cdh_max = 40;// ns v40
   const double tdc_simoffset = -17;
   const double cds_chi2_max = 30;
   const bool useclosestpi = false;
@@ -158,7 +161,7 @@ namespace anacuts {
   const double Isonpim_zcut = 27.0;//cm
   */
    
-
+  /*v239-v241
   const double Isonpip_phicut_left = 0.56;//radian
   const double Isonpip_phicut_right = 0.75;//radian
   const double Isonpip_shift = 0;//cm 
@@ -170,6 +173,7 @@ namespace anacuts {
   const double Isonpim_zcut = 27.0;//cm
 
   const double CDHwidthphi = 0.12;//radian
+  */
 
   /*
   //v237
@@ -196,6 +200,20 @@ namespace anacuts {
   const double Isonpim_shift = 0;//cm 
   const double Isonpim_zcut = 25.0;//cm
   */
+
+  //v242
+  const double Isonpip_phicut_left = 0.51;//radian
+  const double Isonpip_phicut_right = 0.70;//radian
+  const double Isonpip_shift = 0;//cm 
+  const double Isonpip_zcut = 24.0;//cm
+
+  const double Isonpim_phicut_left = 0.85;//radian
+  const double Isonpim_phicut_right = 0.85;//radian
+  const double Isonpim_shift = 0;//cm 
+  const double Isonpim_zcut = 27.0;//cm
+
+  const double CDHwidthphi = 0.12;//radian
+
 
 
 }

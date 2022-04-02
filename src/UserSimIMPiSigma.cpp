@@ -1433,6 +1433,7 @@ int main( int argc, char** argv )
       }
 
       TVector3 P_n = tmp_mom*((Pos_CDH-vtx_dis).Unit());
+      Tools::Fill2D(Form("CDHtime_nmom"),ncdhhit->ctmean(),P_n.Mag());
       TVector3 P_n_beam = tmp_mom_beam*((Pos_CDH-vtx_beam).Unit());
 	
       if(Verbosity_) std::cout << tmp_mom<<" ("<<P_n.CosTheta()<<" , "<<P_n.Phi()*360./TwoPi<<")"<<std::endl;
