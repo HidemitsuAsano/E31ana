@@ -38,7 +38,9 @@ bool RebinMode = true;
 bool Sidefar=false;
 bool FitNoWeight=true;
 
-const int Version = 239;
+const int Version = 241;
+const int versionSigma = 153;//SIM version
+const int versionK0 = 28;//SIM version
 
 void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
 {
@@ -669,15 +671,15 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     lSp->AddEntry(IMnpipi_Sp_noK0_noSm[iq][1],"Sigma+ after deco. ","l");
     lSp->Draw();
   }
-
+  std::cout << __LINE__ << std::endl;
   //Systematic graph
   TGraphAsymmErrors *gDecoErrorSp[4];
   for(int iq=0;iq<4;iq++){
     gDecoErrorSp[iq] = new TGraphAsymmErrors(IMnpipi_Sp_noK0_noSm[iq][1]);
     for(int ip=0;ip<(gDecoErrorSp[iq]->GetN());ip++){
-      double valdown = IMnpipi_Sp_noK0_noSm[iq][0]->GetBinContent(ip);
-      double valdef = IMnpipi_Sp_noK0_noSm[iq][1]->GetBinContent(ip);
-      double valup = IMnpipi_Sp_noK0_noSm[iq][2]->GetBinContent(ip);
+      double valdown = IMnpipi_Sp_noK0_noSm[iq][0]->GetBinContent(ip+1);
+      double valdef = IMnpipi_Sp_noK0_noSm[iq][1]->GetBinContent(ip+1);
+      double valup = IMnpipi_Sp_noK0_noSm[iq][2]->GetBinContent(ip+1);
 
       double yeh = fabs(valdown-valdef);
       double yel = fabs(valup-valdef);
@@ -737,9 +739,9 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   for(int iq=0;iq<4;iq++){
     gDecoErrorSm[iq] = new TGraphAsymmErrors(IMnpipi_Sm_noK0_noSp[iq][1]);
     for(int ip=0;ip<(gDecoErrorSm[iq]->GetN());ip++){
-      double valdown = IMnpipi_Sm_noK0_noSp[iq][0]->GetBinContent(ip);
-      double valdef = IMnpipi_Sm_noK0_noSp[iq][1]->GetBinContent(ip);
-      double valup = IMnpipi_Sm_noK0_noSp[iq][2]->GetBinContent(ip);
+      double valdown = IMnpipi_Sm_noK0_noSp[iq][0]->GetBinContent(ip+1);
+      double valdef = IMnpipi_Sm_noK0_noSp[iq][1]->GetBinContent(ip+1);
+      double valup = IMnpipi_Sm_noK0_noSp[iq][2]->GetBinContent(ip+1);
 
       double yeh = fabs(valdown-valdef);
       double yel = fabs(valup-valdef);
@@ -795,9 +797,9 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   for(int iq=0;iq<4;iq++){
     gDecoErrorK0[iq] = new TGraphAsymmErrors(IMnpipi_K0_noSp_noSm[iq][1]);
     for(int ip=0;ip<(gDecoErrorK0[iq]->GetN());ip++){
-      double valdown = IMnpipi_K0_noSp_noSm[iq][0]->GetBinContent(ip);
-      double valdef = IMnpipi_K0_noSp_noSm[iq][1]->GetBinContent(ip);
-      double valup = IMnpipi_K0_noSp_noSm[iq][2]->GetBinContent(ip);
+      double valdown = IMnpipi_K0_noSp_noSm[iq][0]->GetBinContent(ip+1);
+      double valdef = IMnpipi_K0_noSp_noSm[iq][1]->GetBinContent(ip+1);
+      double valup = IMnpipi_K0_noSp_noSm[iq][2]->GetBinContent(ip+1);
 
       double yeh = fabs(valdown-valdef);
       double yel = fabs(valup-valdef);
@@ -826,14 +828,13 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     gDecoErrorK0[iq]->Draw("5");
   }
 
-
   //
   //Acceptance correction
   //
 
   std::cout << __LINE__ << std::endl;
   //TFile *facc = TFile::Open("../simpost/accmap.root");
-  TFile *facc = TFile::Open("../simpost/accmapv152_27.root");
+  TFile *facc = TFile::Open(Form("../simpost/accmapv%d_%d_dE%d.root",versionSigma,versionK0,dEcut));
   TH2D *q_IMnpipi_Sp_accp= (TH2D*)facc->Get("q_IMnpipi_Sp_accp_0");
   TH2D *q_IMnpipi_Sm_accp= (TH2D*)facc->Get("q_IMnpipi_Sm_accp_0");
   TH2D *q_IMnpipi_K0_accp= (TH2D*)facc->Get("q_IMnpipi_K0_accp_0");
@@ -894,6 +895,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
         double csSperr = 0.0; 
         double binwidthM = q_IMnpipi_Sp_cs[iq]->ProjectionX()->GetBinWidth(1)*1000.0;
         double binwidthq = q_IMnpipi_Sp_cs[iq]->ProjectionY()->GetBinWidth(1)*1000.0;
+     
         if(accSp>0.0){
           csSp = contSp/accSp/binwidthM/binwidthq/trigScale/lumi ;
           csSperr = contSperr/accSp/binwidthM/binwidthq/trigScale/lumi;
@@ -1135,7 +1137,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
   int size = SCol->GetSize();
   TIter next(SCol);
-  TString pdfname = "AfterDecompos.pdf";
+  TString pdfname = Form("AfterDecompos_v%d_dE%d_sysud%d.pdf",Version,dEcut,sysud);
   for(int i=0;i<size;i++){
     //pdf->NewPage();
     c= (TCanvas*)next();
@@ -1156,7 +1158,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
   }
   
-  TFile* fout = new TFile("cs_pisigma.root","RECREATE");
+  TFile* fout = new TFile(Form("cs_pisigma_v%d_dE%d_sys%d.root",Version,dEcut,sysud),"RECREATE");
   fout->Print();
   fout->cd();
   for(int iq=0;iq<3;iq++){
