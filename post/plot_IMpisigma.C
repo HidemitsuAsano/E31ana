@@ -4807,8 +4807,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
         (SimSpmode || SimSmmode) && (mcpattern==7) && (mcpattern!=2) ){
       if(!SigmawideMFlag) MMnmiss_IMnpip_dE_woK0_woSm_initn->Fill(LVec_pip_n.M(),nmiss_mass);
       if(!SigmawidePFlag) MMnmiss_IMnpim_dE_woK0_woSp_initn->Fill(LVec_pim_n.M(),nmiss_mass);
-    
-    
     }
     
 
@@ -4916,25 +4914,26 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     }
     //recal flags
 
-    //K0 rejection using original momentum
-    if( (LVec_pip_pim.M()<anacuts::pipi_MIN || anacuts::pipi_MAX<LVec_pip_pim.M())) K0rejectFlag=true;
-    //if( (LVec_pip_pim.M()<anacuts::pipi_MIN_narrow || anacuts::pipi_MAX_narrow<LVec_pip_pim.M())) K0rejectFlag=true;
-    if( (anacuts::pipi_MIN_narrow < LVec_pip_pim.M())  && (LVec_pip_pim.M() < anacuts::pipi_MAX_narrow)) K0Flag=true;
     //Sigma+ production in CDS
     //band cut for signal
     if( (anacuts::Sigmap_MIN<MassNPip && MassNPip<anacuts::Sigmap_MAX)) SigmaPFlag=true;
-
+    else SigmaPFlag=false;
     //Sigma- production in CDS
     //band cut for signal
     if( (anacuts::Sigmam_MIN<MassNPim && MassNPim<anacuts::Sigmam_MAX)) SigmaMFlag=true;
+    else SigmaMFlag=false; 
 
     //Sigma+ production in CDS
     //
     if( (anacuts::Sigmap_MIN_wide<MassNPip && MassNPip<anacuts::Sigmap_MAX_wide)) SigmawidePFlag=true;
+    else SigmawidePFlag=false;
 
     //Sigma- production in CDS
     if( (anacuts::Sigmam_MIN_wide<MassNPim && MassNPim<anacuts::Sigmam_MAX_wide)) SigmawideMFlag=true;
-
+    else SigmawideMFlag=false;
+    //
+    //recal flags end
+    //
 
     if( (qkn.P()>=anacuts::qvalcut) && (qvalcutflag==1) ) continue;
     if( (qkn.P()<anacuts::qvalcut) && (qvalcutflag==2) ) continue;
@@ -4945,7 +4944,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       if(LVec_pip_n.P()<anacuts::SigmaPMomCut) continue;
       if(LVec_pim_n.P()<anacuts::SigmaMMomCut) continue;
     }
-    if(qvalcutflag==3 && (nmissthetalab>5.0/180.0*TMath::Pi())) continue;
+    if(qvalcutflag==3 && (nmissthetalab>10.0/180.0*TMath::Pi())) continue;
 
     //vicinity of Sigma+ & NMiss events
     if(pow(((MassNPip - anacuts::Sigmap_center)/5.0/anacuts::Sigmap_sigma),2.0) +
@@ -5205,6 +5204,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     if(MIXmode){
       //v239
       //weight = 4.24608060240400029e-02*0.858179*0.967316*1.02354*1.04191*sysupdown;
+      //v241
       weight = 4.24608060240400029e-02*0.858179*0.967316*1.02354*1.04191*1.108*sysupdown;
       if(SimSpmode){
         weight *=0.72;

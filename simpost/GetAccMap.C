@@ -91,6 +91,10 @@ void GetAccMap()
   double SimBeamSurvivalOKK0 = BLAnaPassedK0->GetBinContent(2);//passed
   double SimBeamSurvivalFailK0 = BLAnaPassedK0->GetBinContent(1);//not passed
   double SimBeamSurvivalRateK0 = SimBeamSurvivalOKK0 / (SimBeamSurvivalOKK0+SimBeamSurvivalFailK0);
+  std::cout << "Beam Survival Sp " << SimBeamSurvivalRateSp << std::endl;
+  std::cout << "Beam Survival Sm " << SimBeamSurvivalRateSm << std::endl;
+  std::cout << "Beam Survival K0 " << SimBeamSurvivalRateK0 << std::endl;
+  
   for(int iq=0;iq<nqcut;iq++){
     q_IMnpipi_wSid_n_Sp_reco[iq] = (TH2F*)fSp[iq]->Get("q_IMnpipi_wSid_n_Sp");
     q_IMnpipi_wSid_n_Sp_reco[iq]->SetTitle("reco. evt. Sp");
@@ -239,7 +243,7 @@ void GetAccMap()
     q_IMnpipi_K0_accerr[iq]->Draw("colz");
   }
  
-  TFile *fout = new TFile(Form("accmapv%d_%d.root",versionSigma,versionK0), "RECREATE");
+  TFile *fout = new TFile(Form("accmapv%d_%d_dE%d.root",versionSigma,versionK0,dEcut), "RECREATE");
   for(int iq=0;iq<nqcut;iq++){
     q_IMnpipi_Sp_acc[iq]->Write();
     q_IMnpipi_Sp_accerr[iq]->Write();
