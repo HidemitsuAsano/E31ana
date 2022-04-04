@@ -2634,11 +2634,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   Cosnlab_IMnpipi_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   Cosnlab_IMnpipi_wSid_n->SetYTitle("cos#theta_{n} (Lab.)");
 
-  Cosn_IMnpipi_woK0_wSid_n = new TH2F(Form("Cosn_IMnpipi_woK0_wSid_n"),Form("dE_Cosn_IMnpipi_woK0_wSid_n"),100, 1, 2, 50, -1, 1);
+  Cosn_IMnpipi_woK0_wSid_n = new TH2F(Form("Cosn_IMnpipi_woK0_wSid_n"),Form("dE_Cosn_IMnpipi_woK0_wSid_n"),100, 1, 2, 2000, -1, 1);
   Cosn_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   Cosn_IMnpipi_woK0_wSid_n->SetYTitle("cos#theta_{n} (CM)");
   
-  Cosnlab_IMnpipi_woK0_wSid_n = new TH2F("Cosnlab_IMnpipi_woK0_wSid_n","dE_Cosn_IMnpipi_woK0_wSid_n",100, 1, 2, 50, -1, 1);
+  Cosnlab_IMnpipi_woK0_wSid_n = new TH2F("Cosnlab_IMnpipi_woK0_wSid_n","dE_Cosn_IMnpipi_woK0_wSid_n",100, 1, 2, 2000, -1, 1);
   Cosnlab_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   Cosnlab_IMnpipi_woK0_wSid_n->SetYTitle("cos#theta_{n} (Lab)");
 
