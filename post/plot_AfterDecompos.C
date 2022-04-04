@@ -1119,10 +1119,12 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   //Sigma+ Sigma- charge sum
   TCanvas *csum[4];
   TH2D* q_IMnpipi_SpSmSum[4][3];//iq,isys
+  TH1D* IMnpipi_SpSmSum[4][3];//iq,isys
   for(int iq=0;iq<4;iq++){
     for(int isys=0;isys<3;isys++){
       q_IMnpipi_SpSmSum[iq][isys] = (TH2D*)q_IMnpipi_Sp_cs[iq][isys]->Clone(Form("q_IMnpipi_SpSmSum%d_sys%d",iq,isys-1));
       q_IMnpipi_SpSmSum[iq][isys]->Add(q_IMnpipi_Sm_cs[iq][isys],1.0);
+      IMnpipi_SpSmSum[iq][isys] = (TH1D*)q_IMnpipi_SpSmSum[iq][isys]->ProjectionX(Form("IMnpipi_SpSmSum%d_sys%d",iq,isys-1));
     }
     csum[iq]  = new TCanvas(Form("csum%d",iq),Form("csum%d",iq),1600,800);
     csum[iq]->Divide(2,1);
@@ -1131,9 +1133,9 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     q_IMnpipi_SpSmSum[iq][1]->SetMinimum(0);
     q_IMnpipi_SpSmSum[iq][1]->Draw("colz");
     csum[iq]->cd(2);
-    q_IMnpipi_SpSmSum[iq][1]->SetTitle("#Sigma^{+} #Sigma^{-} charge Sum");
-    q_IMnpipi_SpSmSum[iq][1]->SetMinimum(0);
-    q_IMnpipi_SpSmSum[iq][1]->ProjectionX()->Draw("E");
+    IMnpipi_SpSmSum[iq][1]->SetTitle("#Sigma^{+} #Sigma^{-} charge Sum");
+    IMnpipi_SpSmSum[iq][1]->SetMinimum(-0.01);
+    IMnpipi_SpSmSum[iq][1]->Draw("E");
   }
 
   TCanvas *csum2D = new TCanvas("csum2D","csum2D");
