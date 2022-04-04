@@ -687,15 +687,15 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
       double valdef = IMnpipi_Sp_noK0_noSm[iq][1]->GetBinContent(ip+1);
       double valup = IMnpipi_Sp_noK0_noSm[iq][2]->GetBinContent(ip+1);
 
-      double yeh = fabs(valdown-valdef);
-      double yel = fabs(valup-valdef);
+      double yeh = (valdown-valdef);
+      double yel = (valup-valdef);
       //std::cout << ip << "  " << yeh  << " "  <<  yel << std::endl;
       if(yeh>yel){
-        gDecoErrorSp[iq]->SetPointEYhigh(ip,yeh);
-        gDecoErrorSp[iq]->SetPointEYlow(ip,yel);
+        gDecoErrorSp[iq]->SetPointEYhigh(ip,fabs(yeh));
+        gDecoErrorSp[iq]->SetPointEYlow(ip,fabs(yel));
       }else{
-        gDecoErrorSp[iq]->SetPointEYhigh(ip,yel);
-        gDecoErrorSp[iq]->SetPointEYlow(ip,yeh);
+        gDecoErrorSp[iq]->SetPointEYhigh(ip,fabs(yel));
+        gDecoErrorSp[iq]->SetPointEYlow(ip,fabs(yeh));
       }
     }
     cIMnpipi_Summary_Sp[iq]->cd();
@@ -749,15 +749,15 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
       double valdef = IMnpipi_Sm_noK0_noSp[iq][1]->GetBinContent(ip+1);
       double valup = IMnpipi_Sm_noK0_noSp[iq][2]->GetBinContent(ip+1);
 
-      double yeh = fabs(valdown-valdef);
-      double yel = fabs(valup-valdef);
+      double yeh = (valdown-valdef);
+      double yel = (valup-valdef);
       //std::cout << ip << "  " << yeh  << " "  <<  yel << std::endl;
       if(yeh>yel){
-        gDecoErrorSm[iq]->SetPointEYhigh(ip,yeh);
-        gDecoErrorSm[iq]->SetPointEYlow(ip,yel);
+        gDecoErrorSm[iq]->SetPointEYhigh(ip,fabs(yeh));
+        gDecoErrorSm[iq]->SetPointEYlow(ip,fabs(yel));
       }else{
-        gDecoErrorSm[iq]->SetPointEYhigh(ip,yel);
-        gDecoErrorSm[iq]->SetPointEYlow(ip,yeh);
+        gDecoErrorSm[iq]->SetPointEYhigh(ip,fabs(yel));
+        gDecoErrorSm[iq]->SetPointEYlow(ip,fabs(yeh));
       }
     }
     cIMnpipi_Summary_Sm[iq]->cd();
@@ -807,15 +807,15 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
       double valdef = IMnpipi_K0_noSp_noSm[iq][1]->GetBinContent(ip+1);
       double valup = IMnpipi_K0_noSp_noSm[iq][2]->GetBinContent(ip+1);
 
-      double yeh = fabs(valdown-valdef);
-      double yel = fabs(valup-valdef);
+      double yeh = (valdown-valdef);
+      double yel = (valup-valdef);
       //std::cout << ip << "  " << yeh  << " "  <<  yel << std::endl;
       if(yeh>yel){
-        gDecoErrorK0[iq]->SetPointEYhigh(ip,yeh);
-        gDecoErrorK0[iq]->SetPointEYlow(ip,yel);
+        gDecoErrorK0[iq]->SetPointEYhigh(ip,fabs(yeh));
+        gDecoErrorK0[iq]->SetPointEYlow(ip,fabs(yel));
       }else{
-        gDecoErrorK0[iq]->SetPointEYhigh(ip,yel);
-        gDecoErrorK0[iq]->SetPointEYlow(ip,yeh);
+        gDecoErrorK0[iq]->SetPointEYhigh(ip,fabs(yel));
+        gDecoErrorK0[iq]->SetPointEYlow(ip,fabs(yeh));
       }
     }
     cIMnpipi_Summary_K0[iq]->cd();
@@ -974,6 +974,10 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
       }//ix
     }//isys
   }//iq
+  
+
+
+
 
   TCanvas *ccsSp[4];
   TCanvas *ccsSppro[4];
@@ -1042,6 +1046,78 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     IMnpipi_K0_cs_single[iq][1]->Draw("E");
   }
   
+  //systematic error of decomposition
+  TGraphAsymmErrors *gDecoErrorSp_CS[4];
+  TGraphAsymmErrors *gDecoErrorSm_CS[4];
+  TGraphAsymmErrors *gDecoErrorK0_CS[4];
+  for(int iq=0;iq<4;iq++){
+    gDecoErrorSp_CS[iq] = new TGraphAsymmErrors(IMnpipi_Sp_cs_single[iq][1]);
+    gDecoErrorSm_CS[iq] = new TGraphAsymmErrors(IMnpipi_Sm_cs_single[iq][1]);
+    gDecoErrorK0_CS[iq] = new TGraphAsymmErrors(IMnpipi_K0_cs_single[iq][1]);
+    for(int ip=0;ip<( gDecoErrorSp_CS[iq]->GetN());ip++){
+      double valdown = IMnpipi_Sp_cs_single[iq][0]->GetBinContent(ip+1);
+      double valdef = IMnpipi_Sp_cs_single[iq][1]->GetBinContent(ip+1);
+      double valup = IMnpipi_Sp_cs_single[iq][2]->GetBinContent(ip+1);
+
+      double yeh = valdown-valdef;
+      double yel = valup-valdef;
+     
+      if(yeh>yel){ 
+        gDecoErrorSp_CS[iq]->SetPointEYhigh(ip,fabs(yeh));
+        gDecoErrorSp_CS[iq]->SetPointEYlow(ip,fabs(yel));
+      }else{
+        gDecoErrorSp_CS[iq]->SetPointEYhigh(ip,fabs(yel));
+        gDecoErrorSp_CS[iq]->SetPointEYlow(ip,fabs(yeh));
+      }
+    }
+    for(int ip=0;ip<( gDecoErrorSm_CS[iq]->GetN());ip++){
+      double valdown = IMnpipi_Sm_cs_single[iq][0]->GetBinContent(ip+1);
+      double valdef = IMnpipi_Sm_cs_single[iq][1]->GetBinContent(ip+1);
+      double valup = IMnpipi_Sm_cs_single[iq][2]->GetBinContent(ip+1);
+
+      double yeh = valdown-valdef;
+      double yel = valup-valdef;
+     
+      if(yeh>yel){ 
+        gDecoErrorSm_CS[iq]->SetPointEYhigh(ip,fabs(yeh));
+        gDecoErrorSm_CS[iq]->SetPointEYlow(ip,fabs(yel));
+      }else{
+        gDecoErrorSm_CS[iq]->SetPointEYhigh(ip,fabs(yel));
+        gDecoErrorSm_CS[iq]->SetPointEYlow(ip,fabs(yeh));
+      }
+    }
+    for(int ip=0;ip<( gDecoErrorK0_CS[iq]->GetN());ip++){
+      double valdown = IMnpipi_K0_cs_single[iq][0]->GetBinContent(ip+1);
+      double valdef = IMnpipi_K0_cs_single[iq][1]->GetBinContent(ip+1);
+      double valup = IMnpipi_K0_cs_single[iq][2]->GetBinContent(ip+1);
+
+      double yeh = valdown-valdef;
+      double yel = valup-valdef;
+     
+      if(yeh>yel){ 
+        gDecoErrorK0_CS[iq]->SetPointEYhigh(ip,fabs(yeh));
+        gDecoErrorK0_CS[iq]->SetPointEYlow(ip,fabs(yel));
+      }else{
+        gDecoErrorK0_CS[iq]->SetPointEYhigh(ip,fabs(yel));
+        gDecoErrorK0_CS[iq]->SetPointEYlow(ip,fabs(yeh));
+      }
+    }
+    ccsSppro[iq]->cd();
+    gDecoErrorSp_CS[iq]->SetFillStyle(0);
+    gDecoErrorSp_CS[iq]->SetLineColor(3);
+    gDecoErrorSp_CS[iq]->Draw("5");
+    ccsSmpro[iq]->cd();
+    gDecoErrorSm_CS[iq]->SetFillStyle(0);
+    gDecoErrorSm_CS[iq]->SetLineColor(3);
+    gDecoErrorSm_CS[iq]->Draw("5");
+    ccsK0pro[iq]->cd();
+    gDecoErrorK0_CS[iq]->SetFillStyle(0);
+    gDecoErrorK0_CS[iq]->SetLineColor(3);
+    gDecoErrorK0_CS[iq]->Draw("5");
+  }
+
+
+
   //Sigma+ Sigma- charge sum
   TCanvas *csum[4];
   TH2D* q_IMnpipi_SpSmSum[4][3];//iq,isys
