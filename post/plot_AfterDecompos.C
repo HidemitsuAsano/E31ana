@@ -606,44 +606,50 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
 
 
   TCanvas *cq_IMnpipi_Sp_afterDeco[4];
-  TH2D* q_IMnpipi_Sp_sum[4];
+  TH2D* q_IMnpipi_Sp_sum[4][3];
   for(int iq=0;iq<4;iq++){
-    q_IMnpipi_Sp_sum[iq] = (TH2D*)q_IMnpipi_wSid_n_Sp[iq]->Clone(Form("q_IMnpipi_Sp_sum%d",iq));
-    q_IMnpipi_Sp_sum[iq]->Add(q_IMnpipi_K0orSp_ToK0[iq][1],-1.0);
-    q_IMnpipi_Sp_sum[iq]->Add(q_IMnpipi_SporSm_ToSm[iq][1],-1.0);
-    q_IMnpipi_Sp_sum[iq]->Add(q_IMnpipi_K0SpSm_ToSp[iq][1],1.0);//added over-subtraction component
+    for(int isys=0;isys<3;isys++){
+      q_IMnpipi_Sp_sum[iq][isys] = (TH2D*)q_IMnpipi_wSid_n_Sp[iq]->Clone(Form("q_IMnpipi_Sp_sum%d_sys%d",iq,isys-1));
+      q_IMnpipi_Sp_sum[iq][isys]->Add(q_IMnpipi_K0orSp_ToK0[iq][isys],-1.0);
+      q_IMnpipi_Sp_sum[iq][isys]->Add(q_IMnpipi_SporSm_ToSm[iq][isys],-1.0);
+      q_IMnpipi_Sp_sum[iq][isys]->Add(q_IMnpipi_K0SpSm_ToSp[iq][isys],1.0);//added over-subtraction component
+    }//isys
     cq_IMnpipi_Sp_afterDeco[iq] = new TCanvas(Form("cq_IMnpipi_Sp_afterDeco%d",iq),Form("cq_IMnpipi_Sp_afterDeco%d",iq));
     cq_IMnpipi_Sp_afterDeco[iq]->cd();
-    q_IMnpipi_Sp_sum[iq]->SetMinimum(0);
-    q_IMnpipi_Sp_sum[iq]->Draw("colz");
+    q_IMnpipi_Sp_sum[iq][1]->SetMinimum(0);
+    q_IMnpipi_Sp_sum[iq][1]->Draw("colz");
   }
 
   TCanvas *cq_IMnpipi_Sm_afterDeco[4];
-  TH2D* q_IMnpipi_Sm_sum[4];
+  TH2D* q_IMnpipi_Sm_sum[4][3];
   for(int iq=0;iq<4;iq++){
-    q_IMnpipi_Sm_sum[iq] = (TH2D*)q_IMnpipi_wSid_n_Sm[iq]->Clone(Form("q_IMnpipi_Sm_sum%d",iq));
-    q_IMnpipi_Sm_sum[iq]->Add(q_IMnpipi_K0orSm_ToK0[iq][1],-1.0);
-    q_IMnpipi_Sm_sum[iq]->Add(q_IMnpipi_SporSm_ToSp[iq][1],-1.0);
-    q_IMnpipi_Sm_sum[iq]->Add(q_IMnpipi_K0SpSm_ToSm[iq][1],1.0);//added over-subtraction component
+    for(int isys=0;isys<3;isys++){
+      q_IMnpipi_Sm_sum[iq][isys] = (TH2D*)q_IMnpipi_wSid_n_Sm[iq]->Clone(Form("q_IMnpipi_Sm_sum%d_sys%d",iq,isys-1));
+      q_IMnpipi_Sm_sum[iq][isys]->Add(q_IMnpipi_K0orSm_ToK0[iq][isys],-1.0);
+      q_IMnpipi_Sm_sum[iq][isys]->Add(q_IMnpipi_SporSm_ToSp[iq][isys],-1.0);
+      q_IMnpipi_Sm_sum[iq][isys]->Add(q_IMnpipi_K0SpSm_ToSm[iq][isys],1.0);//added over-subtraction component
+    }//isys
     cq_IMnpipi_Sm_afterDeco[iq] = new TCanvas(Form("cq_IMnpipi_Sm_afterDeco%d",iq),Form("cq_IMnpipi_Sm_afterDeco%d",iq));
     cq_IMnpipi_Sm_afterDeco[iq]->cd();
-    q_IMnpipi_Sm_sum[iq]->SetMinimum(0);
-    q_IMnpipi_Sm_sum[iq]->Draw("colz");
+    q_IMnpipi_Sm_sum[iq][1]->SetMinimum(0);
+    q_IMnpipi_Sm_sum[iq][1]->Draw("colz");
   }
 
   std::cout << __LINE__ << std::endl;
 
   TCanvas *cq_IMnpipi_K0_afterDeco[4];
-  TH2D* q_IMnpipi_K0_sum[4];
+  TH2D* q_IMnpipi_K0_sum[4][3];
   for(int iq=0;iq<4;iq++){
-    q_IMnpipi_K0_sum[iq] = (TH2D*)q_IMnpipi_wK0_n[iq]->Clone(Form("q_IMnpipi_K0_sum%d",iq));
-    q_IMnpipi_K0_sum[iq]->Add(q_IMnpipi_K0orSp_ToSp[iq][1],-1.0);
-    q_IMnpipi_K0_sum[iq]->Add(q_IMnpipi_K0orSm_ToSm[iq][1],-1.0);
-    q_IMnpipi_K0_sum[iq]->Add(q_IMnpipi_K0SpSm_ToK0[iq][1],1.0);//added over-subtraction component
+    for(int isys=0;isys<3;isys++){
+      q_IMnpipi_K0_sum[iq][isys] = (TH2D*)q_IMnpipi_wK0_n[iq]->Clone(Form("q_IMnpipi_K0_sum%d_sys%d",iq,isys-1));
+      q_IMnpipi_K0_sum[iq][isys]->Add(q_IMnpipi_K0orSp_ToSp[iq][isys],-1.0);
+      q_IMnpipi_K0_sum[iq][isys]->Add(q_IMnpipi_K0orSm_ToSm[iq][isys],-1.0);
+      q_IMnpipi_K0_sum[iq][isys]->Add(q_IMnpipi_K0SpSm_ToK0[iq][isys],1.0);//added over-subtraction component
+    }
     cq_IMnpipi_K0_afterDeco[iq] = new TCanvas(Form("cq_IMnpipi_K0_afterDeco%d",iq),Form("cq_IMnpipi_K0_afterDeco%d",iq));
     cq_IMnpipi_K0_afterDeco[iq]->cd();
-    q_IMnpipi_K0_sum[iq]->SetMinimum(0);
-    q_IMnpipi_K0_sum[iq]->Draw("colz");
+    q_IMnpipi_K0_sum[iq][1]->SetMinimum(0);
+    q_IMnpipi_K0_sum[iq][1]->Draw("colz");
   }
   std::cout << __LINE__ << std::endl;
 
@@ -1053,8 +1059,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
 
   TCanvas *csub = new TCanvas("csub","csub",1600,800);
   csub->Divide(2,1);
-  TH2D* q_IMnpipi_SpSmSub[3];
-  for(int iq=0;iq<3;iq++){
+  TH2D* q_IMnpipi_SpSmSub[4];
+  for(int iq=0;iq<4;iq++){
     q_IMnpipi_SpSmSub[iq] = (TH2D*)q_IMnpipi_Sp_cs[iq]->Clone(Form("q_IMnpipi_SpSmSub%d",iq));
     q_IMnpipi_SpSmSub[iq]->Add(q_IMnpipi_Sm_cs[iq],-1.0);
   }
@@ -1161,7 +1167,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   TFile* fout = new TFile(Form("cs_pisigma_v%d_dE%d_sys%d.root",Version,dEcut,sysud),"RECREATE");
   fout->Print();
   fout->cd();
-  for(int iq=0;iq<3;iq++){
+  for(int iq=0;iq<4;iq++){
     q_IMnpipi_Sp_cs[iq]->Write();
     q_IMnpipi_Sm_cs[iq]->Write();
     q_IMnpipi_K0_cs[iq]->Write();
