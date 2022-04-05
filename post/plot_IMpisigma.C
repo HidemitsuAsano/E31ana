@@ -700,6 +700,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   TH2F* q_IMnpipi_woK0_wSid_n;
   TH2F* q_IMnpipi_woK0_wSid_n_woSp;
   TH2F* q_IMnpipi_woK0_wSid_n_woSm;
+  TH2F* Cosnlab_IMnpipi_woK0_wSid_n_woSp;
+  TH2F* Cosnlab_IMnpipi_woK0_wSid_n_woSm;
+  TH2F* Cosnlab_IMnpipi_woK0_wSid_n_SpSm;
   TH2F* q_IMnpipi_wK0_wSid_n;
   TH2F* q_IMnpipi_wK0orwSid_n;
   TH2F* q_IMnpipi_wK0_woSid_n;
@@ -2634,13 +2637,25 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   Cosnlab_IMnpipi_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   Cosnlab_IMnpipi_wSid_n->SetYTitle("cos#theta_{n} (Lab.)");
 
-  Cosn_IMnpipi_woK0_wSid_n = new TH2F(Form("Cosn_IMnpipi_woK0_wSid_n"),Form("dE_Cosn_IMnpipi_woK0_wSid_n"),100, 1, 2, 2000, -1, 1);
+  Cosn_IMnpipi_woK0_wSid_n = new TH2F(Form("Cosn_IMnpipi_woK0_wSid_n"),Form("Cosn_IMnpipi_woK0_wSid_n"),100, 1, 2, 2000, -1, 1);
   Cosn_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   Cosn_IMnpipi_woK0_wSid_n->SetYTitle("cos#theta_{n} (CM)");
   
-  Cosnlab_IMnpipi_woK0_wSid_n = new TH2F("Cosnlab_IMnpipi_woK0_wSid_n","dE_Cosn_IMnpipi_woK0_wSid_n",100, 1, 2, 2000, -1, 1);
+  Cosnlab_IMnpipi_woK0_wSid_n = new TH2F("Cosnlab_IMnpipi_woK0_wSid_n","Cosn_IMnpipi_woK0_wSid_n",100, 1, 2, 2000, -1, 1);
   Cosnlab_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   Cosnlab_IMnpipi_woK0_wSid_n->SetYTitle("cos#theta_{n} (Lab)");
+  
+  Cosnlab_IMnpipi_woK0_wSid_n_woSp = new TH2F("Cosnlab_IMnpipi_woK0_wSid_n_woSp","Cosnlab_IMnpipi_woK0_wSid_n_woSp",100, 1, 2, 2000, -1, 1);
+  Cosnlab_IMnpipi_woK0_wSid_n_woSp->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  Cosnlab_IMnpipi_woK0_wSid_n_woSp->SetYTitle("cos#theta_{n} (Lab)");
+  
+  Cosnlab_IMnpipi_woK0_wSid_n_SpSm = new TH2F("Cosnlab_IMnpipi_woK0_wSid_n_SpSm","Cosnlab_IMnpipi_woK0_wSid_n_SpSm",100, 1, 2, 2000, -1, 1);
+  Cosnlab_IMnpipi_woK0_wSid_n_SpSm->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  Cosnlab_IMnpipi_woK0_wSid_n_SpSm->SetYTitle("cos#theta_{n} (Lab)");
+  
+  Cosnlab_IMnpipi_woK0_wSid_n_woSm = new TH2F("Cosnlab_IMnpipi_woK0_wSid_n_woSm","Cosnlab_IMnpipi_woK0_wSid_n_woSm",100, 1, 2, 2000, -1, 1);
+  Cosnlab_IMnpipi_woK0_wSid_n_woSm->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  Cosnlab_IMnpipi_woK0_wSid_n_woSm->SetYTitle("cos#theta_{n} (Lab)");
 
   MMnmiss_IMnpipi_wSid = new TH2F("MMnmiss_IMnpipi_wSid","MMnmiss_IMnpipi_wSid",nbinIMnpipi,IMnpipilow,IMnpipihi,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMnpipi_wSid->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -6573,6 +6588,17 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
           diff_q_woK0_wSid_n_Sm->Fill(qkn.P(),qkn.P()-qkn_mc.P());
         }
       }
+
+      if(SigmaMFlag && !SigmaPFlag){
+        Cosnlab_IMnpipi_woK0_wSid_n_woSp->Fill(LVec_pip_pim_n.M(),cos_nmisslab,weight);
+      }
+      if(SigmaPFlag && !SigmaMFlag){
+        Cosnlab_IMnpipi_woK0_wSid_n_woSm->Fill(LVec_pip_pim_n.M(),cos_nmisslab,weight);
+      }
+      if(SigmaMFlag && SigmaPFlag){
+        Cosnlab_IMnpipi_woK0_wSid_n_SpSm->Fill(LVec_pip_pim_n.M(),cos_nmisslab,weight);
+      }
+
       //if(SigmaMcutFlag[sigmacuttype] || (!SigmaMFlag)) {
       //  IMnpim_IMnpip_dE_woK0_n_Sm_bg->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
       //}

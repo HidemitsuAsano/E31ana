@@ -1,8 +1,16 @@
 void CS_finals()
 {
+  const int Version = 241;
+  const int dEcut={2,4,6};
 
   gStyle->SetErrorX(0.);  
-  TFile *fpisigma = TFile::Open("cs_pisigma.root","READ");
+  TFile *fpisigma[3][3];//dEcut, sysud
+  for(int iEcut=0;iEcut<3;iEcut++){
+    for(int iud=0;iud<3;iud++){
+      fpisigma[iEcut][iud] = TFile::Open(Form("cs_pisigma_v%d_dE%d_sys%d.root",Version,dEcut[iEcut],iud-1),"READ");
+    }
+  }
+
   TFile *flpim    = TFile::Open("cs_lpim_killcombi.root","READ");
 
   const double br_s1385ToLambdapi = 0.87;
@@ -40,12 +48,12 @@ void CS_finals()
   TCanvas *c1 = new TCanvas("c1","c1",1000,800);
   c1->cd();
   IMnpipi_Sp_cs[1]->SetMarkerStyle(20);
-  IMnpipi_Sp_cs[1]->SetMarkerColor(3);
+  Mnpipi_Sp_cs[1]->SetMarkerColor(3);
   IMnpipi_Sp_cs[1]->SetXTitle("IM(#pi^{-}#Sigma^{+}) [GeV/c^{2}]");
   IMnpipi_Sm_cs[1]->SetTitle("#pi^{-}#Sigma^{+} mode");
   IMnpipi_Sp_cs[1]->Draw("E");
   TH1D* CS_IMppipi_p_wL_sum_350_ToSp = (TH1D*)CS_IMppipi_p_wL_sum_350->Clone("CS_IMppipi_p_wL_sum_350_ToSp");
-  CS_IMppipi_p_wL_sum_350_ToSp->Scale(br_s1385TopiSigma/3.0/br_s1385ToLambdapi); 
+  CS_IMppipi_p_wL_sum_350_ToSp->Scale(br_s1385TopiSigma/2.0/br_s1385ToLambdapi); 
   CS_IMppipi_p_wL_sum_350_ToSp->SetMarkerStyle(20); 
   CS_IMppipi_p_wL_sum_350_ToSp->SetMarkerColor(6); 
   CS_IMppipi_p_wL_sum_350_ToSp->SetMarkerColor(6); 
@@ -60,7 +68,7 @@ void CS_finals()
   IMnpipi_Sm_cs[1]->SetTitle("#pi^{+}#Sigma^{-} mode");
   IMnpipi_Sm_cs[1]->Draw("E");
   TH1D* CS_IMppipi_p_wL_sum_350_ToSm = (TH1D*)CS_IMppipi_p_wL_sum_350->Clone("CS_IMppipi_p_wL_sum_350_ToSm");
-  CS_IMppipi_p_wL_sum_350_ToSm->Scale(br_s1385TopiSigma/3.0/br_s1385ToLambdapi); 
+  CS_IMppipi_p_wL_sum_350_ToSm->Scale(br_s1385TopiSigma/2.0/br_s1385ToLambdapi); 
   CS_IMppipi_p_wL_sum_350_ToSm->SetMarkerStyle(20); 
   CS_IMppipi_p_wL_sum_350_ToSm->SetMarkerColor(6); 
   CS_IMppipi_p_wL_sum_350_ToSm->Draw("Esame"); 

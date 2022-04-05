@@ -42,7 +42,7 @@ const int Version = 241;
 const int versionSigma = 153;//SIM version
 const int versionK0 = 28;//SIM version
 
-void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
+void plot_AfterDecompos(const int dEcut=6,const int sysud=0)
 {
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
@@ -942,6 +942,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
           if(iy>qcut650){
             q_IMnpipi_Sp_cs[iq][isys]->SetBinContent(ix,iy,0.);
             q_IMnpipi_Sp_cs[iq][isys]->SetBinError(ix,iy,0.);
+            q_IMnpipi_Sp_cserr[iq][isys]->SetBinContent(ix,iy,0.);
+            q_IMnpipi_Sp_cserr[iq][isys]->SetBinError(ix,iy,0.);
           }
           if(accerrSm<UncertCut){
             q_IMnpipi_Sm_cs[iq][isys]->SetBinContent(ix,iy,csSm);
@@ -955,6 +957,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
           if(iy>qcut650){
             q_IMnpipi_Sm_cs[iq][isys]->SetBinContent(ix,iy,0.);
             q_IMnpipi_Sm_cs[iq][isys]->SetBinError(ix,iy,0.);
+            q_IMnpipi_Sm_cserr[iq][isys]->SetBinContent(ix,iy,0.);
+            q_IMnpipi_Sm_cserr[iq][isys]->SetBinError(ix,iy,0.);
           }
         
           if(accerrK0<UncertCut){
@@ -969,6 +973,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
           if(iy>qcut650){
             q_IMnpipi_K0_cs[iq][isys]->SetBinContent(ix,iy,0.);
             q_IMnpipi_K0_cs[iq][isys]->SetBinError(ix,iy,0.);
+            q_IMnpipi_K0_cserr[iq][isys]->SetBinContent(ix,iy,0.);
+            q_IMnpipi_K0_cserr[iq][isys]->SetBinError(ix,iy,0.);
           }
         }//iy
       }//ix
@@ -1124,17 +1130,17 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     for(int isys=0;isys<3;isys++){
       q_IMnpipi_SpSmSum[iq][isys] = (TH2D*)q_IMnpipi_Sp_cs[iq][isys]->Clone(Form("q_IMnpipi_SpSmSum%d_sys%d",iq,isys-1));
       q_IMnpipi_SpSmSum[iq][isys]->Add(q_IMnpipi_Sm_cs[iq][isys],1.0);
+      q_IMnpipi_SpSmSum[iq][isys]->SetTitle(Form("q_IMnpipi_SpSmSum_%s_sys%d",cqcut[iq],isys-1));
       IMnpipi_SpSmSum[iq][isys] = (TH1D*)q_IMnpipi_SpSmSum[iq][isys]->ProjectionX(Form("IMnpipi_SpSmSum%d_sys%d",iq,isys-1));
     }
     csum[iq]  = new TCanvas(Form("csum%d",iq),Form("csum%d",iq),1600,800);
     csum[iq]->Divide(2,1);
     csum[iq]->cd(1);
-    q_IMnpipi_SpSmSum[iq][1]->SetTitle(Form("q_IMnpipi_SpSmSum_%d",iq));
     q_IMnpipi_SpSmSum[iq][1]->SetMinimum(0);
     q_IMnpipi_SpSmSum[iq][1]->Draw("colz");
     csum[iq]->cd(2);
     IMnpipi_SpSmSum[iq][1]->SetTitle("#Sigma^{+} #Sigma^{-} charge Sum");
-    IMnpipi_SpSmSum[iq][1]->SetMinimum(-0.01);
+    IMnpipi_SpSmSum[iq][1]->SetMinimum(-0.005);
     IMnpipi_SpSmSum[iq][1]->Draw("E");
   }
 
@@ -1266,10 +1272,15 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
       q_IMnpipi_Sp_cs[iq][isys]->Write();
       q_IMnpipi_Sm_cs[iq][isys]->Write();
       q_IMnpipi_K0_cs[iq][isys]->Write();
+      q_IMnpipi_SpSmSum[iq][isys]->Write();
       IMnpipi_Sp_cs[iq][isys]->Write();
       IMnpipi_Sm_cs[iq][isys]->Write();
       IMnpipi_K0_cs[iq][isys]->Write();
+      IMnpipi_SpSmSum[iq][isys]->Write();
     }
+    gDecoErrorSp_CS[iq]->Write();
+    gDecoErrorSm_CS[iq]->Write();
+    gDecoErrorK0_CS[iq]->Write();
   }
   fout->Close();
 

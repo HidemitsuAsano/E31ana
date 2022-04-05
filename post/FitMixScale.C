@@ -8,7 +8,7 @@ TH1D* MMnmiss_woK0_woSp_mix;
 TH1D* IMnpim_woK0_woSp_mix;
 
 double sysScale=0.1;
-const int dEcut=4;
+const int dEcut=2;
 const int Version=241;
 const bool Scale=false;
 
