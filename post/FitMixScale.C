@@ -8,9 +8,9 @@ TH1D* MMnmiss_woK0_woSp_mix;
 TH1D* IMnpim_woK0_woSp_mix;
 
 double sysScale=0.1;
-const int dEcut=2;
+const int dEcut=4;
 const int Version=241;
-const bool Scale=true;
+const bool Scale=false;
 
 void FitMixScale()
 {
@@ -176,12 +176,15 @@ void FitMixScale()
   TH2D* MMnmiss_IMpippim_woSid_mix = (TH2D*)fmix->Get("MMnmiss_IMpippim_dE_woSid");
   TH2D* q_IMnpipi_wSid_n_data = (TH2D*)fr->Get("q_IMnpipi_wSid_n");
   TH2D* q_IMnpipi_wSid_n_mix = (TH2D*)fmix->Get("q_IMnpipi_wSid_n");
-  
+   
   if(Scale){
+    std::cout << "Scaling mixed events ..... " << std::endl;
     MMnmiss_IMnpip_woK0_woSm_mix->Scale(avg);
     MMnmiss_IMnpim_woK0_woSp_mix->Scale(avg);
     MMnmiss_IMpippim_woSid_mix->Scale(avg);
     q_IMnpipi_wSid_n_mix->Scale(avg); 
+  }else{
+    std::cout << "mixed events are not scaled " << std::endl;
   }
 
   TCanvas *c8_1 = new TCanvas("c8_1","c8_1");
