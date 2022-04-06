@@ -1,15 +1,15 @@
 void CS_finals()
 {
   const int Version = 241;
-  const int dEcut={2,4,6};
+  const int dEcut[3]={2,4,6};
 
   gStyle->SetErrorX(0.);  
   TFile *fpisigma[3][3];//dEcut, sysud
   for(int iEcut=0;iEcut<3;iEcut++){
-    for(int iud=0;iud<3;iud++){
-      fpisigma[iEcut][iud] = TFile::Open(Form("cs_pisigma_v%d_dE%d_sys%d.root",Version,dEcut[iEcut],iud-1),"READ");
-    }
+    fpisigma[iEcut][1] = TFile::Open(Form("cs_pisigma_v%d_dE%d_sys0.root",Version,dEcut[iEcut]),"READ");
   }
+  fpisigma[0][0] = TFile::Open(Form("cs_pisigma_v%d_dE2_sys-1.root",Version),"READ");
+  fpisigma[0][2] = TFile::Open(Form("cs_pisigma_v%d_dE2_sys1.root",Version),"READ");
 
   TFile *flpim    = TFile::Open("cs_lpim_killcombi.root","READ");
 
@@ -21,27 +21,155 @@ void CS_finals()
   const double br_SmToNpi = 0.99848;
   const double br_SmToNpi_err = 0.00005;
   
-  TH2D* q_IMnpipi_Sp_cs[2];
-  TH2D* q_IMnpipi_Sm_cs[2];
-  TH2D* q_IMnpipi_K0_cs[2];
-  TH1D* IMnpipi_Sp_cs[2];
-  TH1D* IMnpipi_Sm_cs[2];
-  TH1D* IMnpipi_K0_cs[2];
+
+  TH2D* q_IMnpipi_Sp_cs[4][3][3];//iq,dEcut,sysud
+  TH2D* q_IMnpipi_Sm_cs[4][3][3];
+  TH2D* q_IMnpipi_K0_cs[4][3][3];
+  TH2D* q_IMnpipi_SpSmSum[4][3][3];
+  TH1D* IMnpipi_Sp_cs[4][3][3];
+  TH1D* IMnpipi_Sm_cs[4][3][3];
+  TH1D* IMnpipi_K0_cs[4][3][3];
+  TH1D* IMnpipi_SpSmSum[4][3][3];
+  TGraphAsymmErrors  *gDecoErrorSp_CS[4];
+  TGraphAsymmErrors  *gDecoErrorSm_CS[4];
+  TGraphAsymmErrors  *gDecoErrorK0_CS[4];  
+  
+  for(int iq=0;iq<4;iq++){
+    for(int iEcut=0;iEcut<3;iEcut++){
+      q_IMnpipi_Sp_cs[iq][iEcut][1] = (TH2D*)fpisigma[iEcut][1]->Get(Form("q_IMnpipi_Sp_cs%d_sys0",iq));
+      q_IMnpipi_Sm_cs[iq][iEcut][1] = (TH2D*)fpisigma[iEcut][1]->Get(Form("q_IMnpipi_Sm_cs%d_sys0",iq));
+      q_IMnpipi_K0_cs[iq][iEcut][1] = (TH2D*)fpisigma[iEcut][1]->Get(Form("q_IMnpipi_K0_cs%d_sys0",iq));
+      q_IMnpipi_SpSmSum[iq][iEcut][1] = (TH2D*)fpisigma[iEcut][1]->Get(Form("q_IMnpipi_SpSmSum%d_sys0",iq));
+      IMnpipi_Sp_cs[iq][iEcut][1] = (TH1D*)fpisigma[iEcut][1]->Get(Form("IMnpipi_Sp_cs%d_sys0",iq));
+      IMnpipi_Sm_cs[iq][iEcut][1] = (TH1D*)fpisigma[iEcut][1]->Get(Form("IMnpipi_Sm_cs%d_sys0",iq));
+      IMnpipi_K0_cs[iq][iEcut][1] = (TH1D*)fpisigma[iEcut][1]->Get(Form("IMnpipi_K0_cs%d_sys0",iq));
+      IMnpipi_SpSmSum[iq][iEcut][1] = (TH1D*)fpisigma[iEcut][1]->Get(Form("IMnpipi_SpSmSum%d_sys0",iq));
+    }
+    q_IMnpipi_Sp_cs[iq][0][0] = (TH2D*)fpisigma[0][0]->Get(Form("q_IMnpipi_Sp_cs%d_sys0",iq));
+    q_IMnpipi_Sm_cs[iq][0][0] = (TH2D*)fpisigma[0][0]->Get(Form("q_IMnpipi_Sm_cs%d_sys0",iq));
+    q_IMnpipi_K0_cs[iq][0][0] = (TH2D*)fpisigma[0][0]->Get(Form("q_IMnpipi_K0_cs%d_sys0",iq));
+    q_IMnpipi_SpSmSum[iq][0][0] = (TH2D*)fpisigma[0][0]->Get(Form("q_IMnpipi_SpSmSum%d_sys0",iq));
+    IMnpipi_Sp_cs[iq][0][0] = (TH1D*)fpisigma[0][0]->Get(Form("IMnpipi_Sp_cs%d_sys0",iq));
+    IMnpipi_Sm_cs[iq][0][0] = (TH1D*)fpisigma[0][0]->Get(Form("IMnpipi_Sm_cs%d_sys0",iq));
+    IMnpipi_K0_cs[iq][0][0] = (TH1D*)fpisigma[0][0]->Get(Form("IMnpipi_K0_cs%d_sys0",iq));
+    IMnpipi_SpSmSum[iq][0][0] = (TH1D*)fpisigma[0][0]->Get(Form("IMnpipi_SpSmSum%d_sys0",iq));
+    
+    q_IMnpipi_Sp_cs[iq][0][2] = (TH2D*)fpisigma[0][2]->Get(Form("q_IMnpipi_Sp_cs%d_sys0",iq));
+    q_IMnpipi_Sm_cs[iq][0][2] = (TH2D*)fpisigma[0][2]->Get(Form("q_IMnpipi_Sm_cs%d_sys0",iq));
+    q_IMnpipi_K0_cs[iq][0][2] = (TH2D*)fpisigma[0][2]->Get(Form("q_IMnpipi_K0_cs%d_sys0",iq));
+    q_IMnpipi_SpSmSum[iq][0][2] = (TH2D*)fpisigma[0][2]->Get(Form("q_IMnpipi_SpSmSum%d_sys0",iq));
+    IMnpipi_Sp_cs[iq][0][2] = (TH1D*)fpisigma[0][2]->Get(Form("IMnpipi_Sp_cs%d_sys0",iq));
+    IMnpipi_Sm_cs[iq][0][2] = (TH1D*)fpisigma[0][2]->Get(Form("IMnpipi_Sm_cs%d_sys0",iq));
+    IMnpipi_K0_cs[iq][0][2] = (TH1D*)fpisigma[0][2]->Get(Form("IMnpipi_K0_cs%d_sys0",iq));
+    IMnpipi_SpSmSum[iq][0][2] = (TH1D*)fpisigma[0][2]->Get(Form("IMnpipi_SpSmSum%d_sys0",iq));
+    
+    gDecoErrorSp_CS[iq] = (TGraphAsymmErrors*)fpisigma[0][1]->Get(Form("Graph_from_IMnpipi_Sp_cs_single%d_sys0",iq));
+    gDecoErrorSm_CS[iq] = (TGraphAsymmErrors*)fpisigma[0][1]->Get(Form("Graph_from_IMnpipi_Sm_cs_single%d_sys0",iq));
+    gDecoErrorK0_CS[iq] = (TGraphAsymmErrors*)fpisigma[0][1]->Get(Form("Graph_from_IMnpipi_K0_cs_single%d_sys0",iq));
+  }
+  std::cout << "FILE GET " << std::endl;
+
   TH2D* CS_q_IMppipi_p_wL_sum;
   TH1D* CS_IMppipi_p_wL_sum_0;
   TH1D* CS_IMppipi_p_wL_sum_350;
-
-  for(int iq=0;iq<2;iq++){
-    q_IMnpipi_Sp_cs[iq] = (TH2D*)fpisigma->Get(Form("q_IMnpipi_Sp_cs%d",iq));
-    q_IMnpipi_Sm_cs[iq] = (TH2D*)fpisigma->Get(Form("q_IMnpipi_Sm_cs%d",iq));
-    q_IMnpipi_K0_cs[iq] = (TH2D*)fpisigma->Get(Form("q_IMnpipi_K0_cs%d",iq));
-    IMnpipi_Sp_cs[iq] = (TH1D*)fpisigma->Get(Form("IMnpipi_Sp_cs%d",iq));
-    IMnpipi_Sm_cs[iq] = (TH1D*)fpisigma->Get(Form("IMnpipi_Sm_cs%d",iq));
-    IMnpipi_K0_cs[iq] = (TH1D*)fpisigma->Get(Form("IMnpipi_K0_cs%d",iq));
-  }
   CS_q_IMppipi_p_wL_sum = (TH2D*)flpim->Get("CS_q_IMppipi_p_wL_sum");
   CS_IMppipi_p_wL_sum_0 = (TH1D*)flpim->Get("CS_IMppipi_p_wL_sum_0");
   CS_IMppipi_p_wL_sum_350 = (TH1D*)flpim->Get("CS_IMppipi_p_wL_sum_350");
+
+  
+  //Syserror calculation
+  TGraphAsymmErrors *gMIXErrorSp_CS[4];
+  TGraphAsymmErrors *gMIXErrorSm_CS[4];
+  TGraphAsymmErrors *gMIXErrorK0_CS[4];
+  TGraphAsymmErrors *gdEErrorSp_CS[4];
+  TGraphAsymmErrors *gdEErrorSm_CS[4];
+  TGraphAsymmErrors *gdEErrorK0_CS[4];
+  
+  for(int iq=0;iq<4;iq++){
+    gMIXErrorSp_CS[iq] = new TGraphAsymmErrors(IMnpipi_Sp_cs[iq][0][1]);
+    gMIXErrorSm_CS[iq] = new TGraphAsymmErrors(IMnpipi_Sm_cs[iq][0][1]);
+    gMIXErrorK0_CS[iq] = new TGraphAsymmErrors(IMnpipi_K0_cs[iq][0][1]);
+    gdEErrorSp_CS[iq] = new TGraphAsymmErrors(IMnpipi_Sp_cs[iq][0][1]);
+    gdEErrorSm_CS[iq] = new TGraphAsymmErrors(IMnpipi_Sm_cs[iq][0][1]);
+    gdEErrorK0_CS[iq] = new TGraphAsymmErrors(IMnpipi_K0_cs[iq][0][1]);
+    
+    //shift MIX scale and evaluate systematics
+    for(int ip=0;ip<( gMIXErrorSp_CS[iq]->GetN());ip++){
+      double  valdown = IMnpipi_Sp_cs[iq][0][0]->GetBinContent(ip+1);
+      double  valdef = IMnpipi_Sp_cs[iq][0][1]->GetBinContent(ip+1);
+      double  valup  = IMnpipi_Sp_cs[iq][0][2]->GetBinContent(ip+1);
+      
+      double yeh = valup-valdef;
+      double yel = valdown-valdef;
+         
+      gMIXErrorSp_CS[iq]->SetPointEYhigh(ip,fabs(yeh));
+      gMIXErrorSp_CS[iq]->SetPointEYlow(ip,fabs(yel));
+    }
+    for(int ip=0;ip<( gMIXErrorSm_CS[iq]->GetN());ip++){
+      double  valdown = IMnpipi_Sm_cs[iq][0][0]->GetBinContent(ip+1);
+      double  valdef = IMnpipi_Sm_cs[iq][0][1]->GetBinContent(ip+1);
+      double  valup  = IMnpipi_Sm_cs[iq][0][2]->GetBinContent(ip+1);
+      
+      double yeh = valup-valdef;
+      double yel = valdown-valdef;
+         
+      gMIXErrorSm_CS[iq]->SetPointEYhigh(ip,fabs(yeh));
+      gMIXErrorSm_CS[iq]->SetPointEYlow(ip,fabs(yel));
+    }
+    for(int ip=0;ip<( gMIXErrorK0_CS[iq]->GetN());ip++){
+      double  valdown = IMnpipi_K0_cs[iq][0][0]->GetBinContent(ip+1);
+      double  valdef = IMnpipi_K0_cs[iq][0][1]->GetBinContent(ip+1);
+      double  valup  = IMnpipi_K0_cs[iq][0][2]->GetBinContent(ip+1);
+      
+      double yeh = valup-valdef;
+      double yel = valdown-valdef;
+         
+      gMIXErrorK0_CS[iq]->SetPointEYhigh(ip,fabs(yeh));
+      gMIXErrorK0_CS[iq]->SetPointEYlow(ip,fabs(yel));
+    }
+
+    //shift dE cut and estimate systematics
+    for(int ip=0;ip<( gdEErrorSp_CS[iq]->GetN());ip++){
+      double  valdE6 = IMnpipi_Sp_cs[iq][2][1]->GetBinContent(ip+1);
+      double  valdE4 = IMnpipi_Sp_cs[iq][1][1]->GetBinContent(ip+1);
+      double  valdef = IMnpipi_Sp_cs[iq][0][1]->GetBinContent(ip+1);
+      
+      double ye6 = valdE6-valdef;
+      double ye4 = valdE4-valdef;
+      
+      if(ye6
+      gMIXErrorSp_CS[iq]->SetPointEYhigh(ip,fabs(yeh));
+      gMIXErrorSp_CS[iq]->SetPointEYlow(ip,fabs(yel));
+    }
+    for(int ip=0;ip<( gMIXErrorSm_CS[iq]->GetN());ip++){
+      double  valdown = IMnpipi_Sm_cs[iq][0][0]->GetBinContent(ip+1);
+      double  valdef = IMnpipi_Sm_cs[iq][0][1]->GetBinContent(ip+1);
+      double  valup  = IMnpipi_Sm_cs[iq][0][2]->GetBinContent(ip+1);
+      
+      double yeh = valup-valdef;
+      double yel = valdown-valdef;
+         
+      gMIXErrorSm_CS[iq]->SetPointEYhigh(ip,fabs(yeh));
+      gMIXErrorSm_CS[iq]->SetPointEYlow(ip,fabs(yel));
+    }
+    for(int ip=0;ip<( gMIXErrorK0_CS[iq]->GetN());ip++){
+      double  valdown = IMnpipi_K0_cs[iq][0][0]->GetBinContent(ip+1);
+      double  valdef = IMnpipi_K0_cs[iq][0][1]->GetBinContent(ip+1);
+      double  valup  = IMnpipi_K0_cs[iq][0][2]->GetBinContent(ip+1);
+      
+      double yeh = valup-valdef;
+      double yel = valdown-valdef;
+         
+      gMIXErrorK0_CS[iq]->SetPointEYhigh(ip,fabs(yeh));
+      gMIXErrorK0_CS[iq]->SetPointEYlow(ip,fabs(yel));
+    }
+
+
+
+
+  }
+
+
 
 
 
