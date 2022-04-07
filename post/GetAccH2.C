@@ -1,12 +1,12 @@
 #include "anacuts.h"
 
-void GetAccH2(const int dEcut=2)
+void GetAccH2(const int Version=15,const int dEcut=2)
 {
   TH1::SetDefaultSumw2();
-  TFile *fSp = TFile::Open(Form("../simpost/simIMsigma_H2_Sppim_npi_v14_out_dE%d_iso_rej_nostop.root",dEcut));
-  TFile *fSm = TFile::Open(Form("../simpost/simIMsigma_H2_Smpip_npi_v14_out_dE%d_iso_rej_nostop.root",dEcut));
-  TFile *fGenSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_v14.root");
-  TFile *fGenSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_v14.root");
+  TFile *fSp = TFile::Open(Form("../simpost/simIMsigma_H2_Sppim_npi_v%d_out_dE%d_iso_rej_nostop.root",Version,dEcut));
+  TFile *fSm = TFile::Open(Form("../simpost/simIMsigma_H2_Smpip_npi_v%d_out_dE%d_iso_rej_nostop.root",Version,dEcut));
+  TFile *fGenSp = TFile::Open(Form("../simpost/simIMsigma_H2_Sppim_v%d.root",Version));
+  TFile *fGenSm = TFile::Open(Form("../simpost/simIMsigma_H2_Smpip_v%d.root",Version));
   //TFile *fSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_npi_v3_out_iso_rej_nostop.root");
   //TFile *fSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_npi_v3_out_iso_rej_nostop.root");
   //TFile *fGenSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_v3.root");

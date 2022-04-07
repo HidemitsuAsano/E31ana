@@ -641,12 +641,6 @@ int main( int argc, char** argv )
     }
 
 
-
-
-
-
-
-
     //actually not used ?
     int nCDHhit[kinpLpim::npart] = {0, 0, 0, 0, 0, 0};
     if( flagG4Decay ) { // L -> p pim decay

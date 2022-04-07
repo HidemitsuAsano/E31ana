@@ -77,11 +77,11 @@ namespace cdscuts {
   //const double tdc_cdh_max = 200;// ns v236-v239
   //const double tdc_cdh_max = 200;// ns v236-v239
   //const double tdc_cdh_max = 50;// ns v40
-  //const double tdc_cdh_max = 40;// for D2 v241
-  const double tdc_cdh_max = 25;// for H2 cut
+  const double tdc_cdh_max = 40;// for D2 v241
+  //const double tdc_cdh_max = 25;// for H2 cut
   //const double tdc_simoffset = -17;//for D2 //v241
-  //const double tdc_simoffset = -18;//for D2 //tuned
-  const double tdc_simoffset = -6;//for H2
+  const double tdc_simoffset = -18;//for D2 //tuned
+  //const double tdc_simoffset = -6;//for H2
   const double cds_chi2_max = 30;
   const bool useclosestpi = false;
   const double chargevetoangle = 15.0;
