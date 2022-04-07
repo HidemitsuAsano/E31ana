@@ -4,7 +4,7 @@ void SubtractMix_H2(const int dEcut=2,const int sysud=0)
   //mode1 Sp
   //mode2 Sm
   //mode3 K0
-  const int version = 11;
+  const int version = 14;
 
   TFile *fr;
   TFile *fmix;

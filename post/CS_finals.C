@@ -3,7 +3,7 @@ void CS_finals()
   const int Version = 241;
   const int dEcut[3]={2,4,6};
 
-  gStyle->SetErrorX(0.);  
+  //gStyle->SetErrorX(0.);  
   TFile *fpisigma[3][3];//dEcut, sysud
   for(int iEcut=0;iEcut<3;iEcut++){
     fpisigma[iEcut][1] = TFile::Open(Form("cs_pisigma_v%d_dE%d_sys0.root",Version,dEcut[iEcut]),"READ");
@@ -89,10 +89,18 @@ void CS_finals()
     gMIXErrorSp_CS[iq] = new TGraphAsymmErrors(IMnpipi_Sp_cs[iq][0][1]);
     gMIXErrorSm_CS[iq] = new TGraphAsymmErrors(IMnpipi_Sm_cs[iq][0][1]);
     gMIXErrorK0_CS[iq] = new TGraphAsymmErrors(IMnpipi_K0_cs[iq][0][1]);
+    gMIXErrorSp_CS[iq]->SetName(Form("gMIXErrorSp_CS%d",iq));
+    gMIXErrorSm_CS[iq]->SetName(Form("gMIXErrorSm_CS%d",iq));
+    gMIXErrorK0_CS[iq]->SetName(Form("gMIXErrorK0_CS%d",iq));
+
     gdEErrorSp_CS[iq] = new TGraphAsymmErrors(IMnpipi_Sp_cs[iq][0][1]);
     gdEErrorSm_CS[iq] = new TGraphAsymmErrors(IMnpipi_Sm_cs[iq][0][1]);
     gdEErrorK0_CS[iq] = new TGraphAsymmErrors(IMnpipi_K0_cs[iq][0][1]);
-    
+    gdEErrorSp_CS[iq]->SetName(Form("gdEErrorSp_CS%d",iq)); 
+    gdEErrorSm_CS[iq]->SetName(Form("gdEErrorSm_CS%d",iq)); 
+    gdEErrorK0_CS[iq]->SetName(Form("gdEErrorK0_CS%d",iq)); 
+
+
     //shift MIX scale and evaluate systematics
     for(int ip=0;ip<( gMIXErrorSp_CS[iq]->GetN());ip++){
       double  valdown = IMnpipi_Sp_cs[iq][0][0]->GetBinContent(ip+1);
@@ -137,42 +145,78 @@ void CS_finals()
       double ye6 = valdE6-valdef;
       double ye4 = valdE4-valdef;
       
-      if(ye6
-      gMIXErrorSp_CS[iq]->SetPointEYhigh(ip,fabs(yeh));
-      gMIXErrorSp_CS[iq]->SetPointEYlow(ip,fabs(yel));
+      if(fabs(ye6)>fabs(ye4) && ye6>0){
+        gdEErrorSp_CS[iq]->SetPointEYhigh(ip,fabs(ye6));
+        gdEErrorSp_CS[iq]->SetPointEYlow(ip,0);
+      }
+      if(fabs(ye6)>fabs(ye4) && ye6<0){
+        gdEErrorSp_CS[iq]->SetPointEYhigh(ip,0);
+        gdEErrorSp_CS[iq]->SetPointEYlow(ip,fabs(ye6));
+      }
+      
+      if(fabs(ye6)<fabs(ye4) && ye4>0){
+        gdEErrorSp_CS[iq]->SetPointEYhigh(ip,fabs(ye4));
+        gdEErrorSp_CS[iq]->SetPointEYlow(ip,0);
+      }
+
+      if(fabs(ye6)<fabs(ye4) && ye4<0){
+        gdEErrorSp_CS[iq]->SetPointEYhigh(ip,0);
+        gdEErrorSp_CS[iq]->SetPointEYlow(ip,fabs(ye4));
+      
+      }
     }
-    for(int ip=0;ip<( gMIXErrorSm_CS[iq]->GetN());ip++){
-      double  valdown = IMnpipi_Sm_cs[iq][0][0]->GetBinContent(ip+1);
+
+    for(int ip=0;ip<( gdEErrorSm_CS[iq]->GetN());ip++){
+      double  valdE6 = IMnpipi_Sm_cs[iq][2][1]->GetBinContent(ip+1);
+      double  valdE4 = IMnpipi_Sm_cs[iq][1][1]->GetBinContent(ip+1);
       double  valdef = IMnpipi_Sm_cs[iq][0][1]->GetBinContent(ip+1);
-      double  valup  = IMnpipi_Sm_cs[iq][0][2]->GetBinContent(ip+1);
       
-      double yeh = valup-valdef;
-      double yel = valdown-valdef;
-         
-      gMIXErrorSm_CS[iq]->SetPointEYhigh(ip,fabs(yeh));
-      gMIXErrorSm_CS[iq]->SetPointEYlow(ip,fabs(yel));
+      double ye6 = valdE6-valdef;
+      double ye4 = valdE4-valdef;
+      
+      if(fabs(ye6)>fabs(ye4) && ye6>0) gdEErrorSm_CS[iq]->SetPointEYhigh(ip,fabs(ye6));
+      if(fabs(ye6)>fabs(ye4) && ye6<0) gdEErrorSm_CS[iq]->SetPointEYlow(ip,fabs(ye6));
+      if(fabs(ye6)<fabs(ye4) && ye4>0) gdEErrorSm_CS[iq]->SetPointEYhigh(ip,fabs(ye4));
+      if(fabs(ye6)<fabs(ye4) && ye4<0) gdEErrorSm_CS[iq]->SetPointEYlow(ip,fabs(ye4));
     }
-    for(int ip=0;ip<( gMIXErrorK0_CS[iq]->GetN());ip++){
-      double  valdown = IMnpipi_K0_cs[iq][0][0]->GetBinContent(ip+1);
+    for(int ip=0;ip<( gdEErrorK0_CS[iq]->GetN());ip++){
+      double  valdE6 = IMnpipi_K0_cs[iq][2][1]->GetBinContent(ip+1);
+      double  valdE4 = IMnpipi_K0_cs[iq][1][1]->GetBinContent(ip+1);
       double  valdef = IMnpipi_K0_cs[iq][0][1]->GetBinContent(ip+1);
-      double  valup  = IMnpipi_K0_cs[iq][0][2]->GetBinContent(ip+1);
       
-      double yeh = valup-valdef;
-      double yel = valdown-valdef;
-         
-      gMIXErrorK0_CS[iq]->SetPointEYhigh(ip,fabs(yeh));
-      gMIXErrorK0_CS[iq]->SetPointEYlow(ip,fabs(yel));
+      double ye6 = valdE6-valdef;
+      double ye4 = valdE4-valdef;
+      
+      if(fabs(ye6)>fabs(ye4) && ye6>0) gdEErrorK0_CS[iq]->SetPointEYhigh(ip,fabs(ye6));
+      if(fabs(ye6)>fabs(ye4) && ye6<0) gdEErrorK0_CS[iq]->SetPointEYlow(ip,fabs(ye6));
+      if(fabs(ye6)<fabs(ye4) && ye4>0) gdEErrorK0_CS[iq]->SetPointEYhigh(ip,fabs(ye4));
+      if(fabs(ye6)<fabs(ye4) && ye4<0) gdEErrorK0_CS[iq]->SetPointEYlow(ip,fabs(ye4));
     }
-
-
-
-
+  }
+  std::cout << __LINE__ << std::endl;
+  TCanvas *cSysSp[4];
+  for(int iq=0;iq<4;iq++){  
+    cSysSp[iq] = new TCanvas(Form("cSysSp%d",iq),Form("cSysSp%d",iq),1000,800);
+    IMnpipi_Sp_cs[iq][0][1]->SetLineColor(1);
+    IMnpipi_Sp_cs[iq][0][1]->SetMarkerColor(1);
+    IMnpipi_Sp_cs[iq][0][1]->Draw("E");
+    //gDecoErrorSp_CS[iq]->Draw("5");
+    gdEErrorSp_CS[iq]->SetFillStyle(0);
+    gdEErrorSp_CS[iq]->SetMarkerColor(2);
+    gdEErrorSp_CS[iq]->SetLineColor(2);
+    gdEErrorSp_CS[iq]->Draw("5");
+    gMIXErrorSp_CS[iq]->SetFillStyle(3002);
+    gMIXErrorSp_CS[iq]->SetFillColor(4);
+    gMIXErrorSp_CS[iq]->SetMarkerColor(4);
+    gMIXErrorSp_CS[iq]->SetLineColor(4);
+    gMIXErrorSp_CS[iq]->Draw("3");
   }
 
 
 
-
-
+  return;
+  
+  /*
   TCanvas *c1 = new TCanvas("c1","c1",1000,800);
   c1->cd();
   IMnpipi_Sp_cs[1]->SetMarkerStyle(20);
@@ -218,5 +262,5 @@ void CS_finals()
   //IMLpim_sum_350->GetXaxis()->SetRangeUser(1.35,1.5);
   IMLpim_sum_350->Scale(10.);
   IMLpim_sum_350->Draw("Esame");
-
+  */
 }

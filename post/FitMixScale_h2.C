@@ -5,7 +5,7 @@ TH1D* MM2npi_fmix_pim;
 TH1D* IMnpim_fmix;
 
 const int dEcut=2;
-const int Version=11;
+const int Version=14;
 
 void FitMixScale_h2()
 {

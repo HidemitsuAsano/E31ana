@@ -679,7 +679,7 @@ void plot_AfterDecompos(const int dEcut=6,const int sysud=0)
   }
   std::cout << __LINE__ << std::endl;
   //Systematic graph
-  TGraphAsymmErrors *gDecoErrorSp[4];
+  TGraphAsymmErrors *gDecoErrorSm[4];
   for(int iq=0;iq<4;iq++){
     gDecoErrorSp[iq] = new TGraphAsymmErrors(IMnpipi_Sp_noK0_noSm[iq][1]);
     for(int ip=0;ip<(gDecoErrorSp[iq]->GetN());ip++){

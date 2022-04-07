@@ -1,5 +1,6 @@
 const bool RemoveNotEnough = true;
 const double UncertCut = 0.25;
+const double GenCut = 120e3;
 
 void GetAccMap()
 {
@@ -175,6 +176,15 @@ void GetAccMap()
       if( RemoveNotEnough && (err>UncertCut)){
         q_IMnpipi_Sp_acc[0]->SetBinContent(ix,iy,0);
         q_IMnpipi_Sp_acc[0]->SetBinError(ix,iy,0);
+        q_IMnpipi_Sp_accerr[0]->SetBinContent(ix,iy,0);
+        q_IMnpipi_Sp_accerr[0]->SetBinError(ix,iy,0);
+      }
+      double gencont = q_IMnpipi_gen_Sp[0]->GetBinContent(ix,iy);
+      if(gencont<GenCut){
+        q_IMnpipi_Sp_acc[0]->SetBinContent(ix,iy,0);
+        q_IMnpipi_Sp_acc[0]->SetBinError(ix,iy,0);
+        q_IMnpipi_Sp_accerr[0]->SetBinContent(ix,iy,0);
+        q_IMnpipi_Sp_accerr[0]->SetBinError(ix,iy,0);
       }
     }
   }
@@ -185,6 +195,15 @@ void GetAccMap()
       if(RemoveNotEnough && err>UncertCut){
         q_IMnpipi_Sm_acc[0]->SetBinContent(ix,iy,0);
         q_IMnpipi_Sm_acc[0]->SetBinError(ix,iy,0);
+        q_IMnpipi_Sm_accerr[0]->SetBinContent(ix,iy,0);
+        q_IMnpipi_Sm_accerr[0]->SetBinError(ix,iy,0);
+      }
+      double gencont = q_IMnpipi_gen_Sm[0]->GetBinContent(ix,iy);
+      if(gencont<GenCut){
+        q_IMnpipi_Sm_acc[0]->SetBinContent(ix,iy,0);
+        q_IMnpipi_Sm_acc[0]->SetBinError(ix,iy,0);
+        q_IMnpipi_Sm_accerr[0]->SetBinContent(ix,iy,0);
+        q_IMnpipi_Sm_accerr[0]->SetBinError(ix,iy,0);
       }
     }
   }
@@ -195,6 +214,15 @@ void GetAccMap()
       if(RemoveNotEnough && err>UncertCut){
         q_IMnpipi_K0_acc[0]->SetBinContent(ix,iy,0);
         q_IMnpipi_K0_acc[0]->SetBinError(ix,iy,0);
+        q_IMnpipi_K0_accerr[0]->SetBinContent(ix,iy,0);
+        q_IMnpipi_K0_accerr[0]->SetBinError(ix,iy,0);
+      }
+      double gencont = q_IMnpipi_gen_K0[0]->GetBinContent(ix,iy);
+      if(gencont<GenCut){
+        q_IMnpipi_K0_acc[0]->SetBinContent(ix,iy,0);
+        q_IMnpipi_K0_acc[0]->SetBinError(ix,iy,0);
+        q_IMnpipi_K0_accerr[0]->SetBinContent(ix,iy,0);
+        q_IMnpipi_K0_accerr[0]->SetBinError(ix,iy,0);
       }
     }
   }

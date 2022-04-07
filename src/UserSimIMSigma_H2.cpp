@@ -1062,6 +1062,7 @@ int main( int argc, char** argv )
         LVec_pi.SetVectM( P_pi, piMass );
         LVec_n.SetVectM( P_n, nMass );//CDS n
 
+        Tools::Fill2D(Form("CDHtime_nmom"),ncdhhit->ctmean(),P_n.Mag());
         const double mm_mass   = (LVec_target+LVec_beam-LVec_pi-LVec_n).M();
         const TVector3 P_misspi = (LVec_target+LVec_beam-LVec_pi-LVec_n).Vect();
 

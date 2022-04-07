@@ -3,10 +3,10 @@
 void GetAccH2(const int dEcut=2)
 {
   TH1::SetDefaultSumw2();
-  TFile *fSp = TFile::Open(Form("../simpost/simIMsigma_H2_Sppim_npi_v11_out_dE%d_iso_rej_nostop.root",dEcut));
-  TFile *fSm = TFile::Open(Form("../simpost/simIMsigma_H2_Smpip_npi_v11_out_dE%d_iso_rej_nostop.root",dEcut));
-  TFile *fGenSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_v11.root");
-  TFile *fGenSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_v11.root");
+  TFile *fSp = TFile::Open(Form("../simpost/simIMsigma_H2_Sppim_npi_v14_out_dE%d_iso_rej_nostop.root",dEcut));
+  TFile *fSm = TFile::Open(Form("../simpost/simIMsigma_H2_Smpip_npi_v14_out_dE%d_iso_rej_nostop.root",dEcut));
+  TFile *fGenSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_v14.root");
+  TFile *fGenSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_v14.root");
   //TFile *fSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_npi_v3_out_iso_rej_nostop.root");
   //TFile *fSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_npi_v3_out_iso_rej_nostop.root");
   //TFile *fGenSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_v3.root");

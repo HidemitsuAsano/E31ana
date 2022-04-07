@@ -600,7 +600,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
   
   //CDH-hits cut
 
-  int nCDH = Util::GetCDHMul(cdsMan,nGoodTrack,true,true);
+  int nCDH = Util::GetCDHMul(cdsMan,nGoodTrack,true,false);
   //if( Util::GetCDHMul(cdsMan,nGoodTrack,IsTrigKCDH2,false)!=2){
   //  Clear( nAbort_nCDH );
   //  return true;
@@ -1028,6 +1028,7 @@ bool EventAnalysis::UAna( TKOHitCollection *tko )
     LVec_pi.SetVectM( P_pi, piMass );
     LVec_n.SetVectM( P_n, nMass );//CDS n
       
+    Tools::Fill2D(Form("CDHtime_nmom"),ncdhhit->ctmean(),P_n.Mag());
     /*
        std::cout << "NeutralBetaCDH " << NeutralBetaCDH << std::endl;
        std::cout << "NeutralBetaCDH_vtx[0] " << NeutralBetaCDH_vtx[0] << std::endl;

@@ -1429,7 +1429,7 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
 
     //momentum update
 
-    //if( (*LVec_n).P()<anacuts::nmomcut) continue;
+    if( (*LVec_n).P()<anacuts::nmomcut) continue;
     if(RejectStoppedSigma){
       if(LVec_pip_n.P()<anacuts::SigmaPMomCut && chargepi==1) continue;
       if(LVec_pim_n.P()<anacuts::SigmaMMomCut && chargepi==0) continue;
@@ -1442,7 +1442,7 @@ void plot_IMsigma_h2(const char* filename="", const int dEcut=2,const int sysud=
     double sysupdown = 1.0+0.1*(double)sysud;
     if(MIXmode){
       weight = 0.0505*1.296*0.98485*1.1013*sysupdown;
-      RatioPimOverPip = 6.84495070252263376e-01*1.05*1.17792*0.97592*sysupdown;   
+      RatioPimOverPip = 6.84495070252263376e-01*1.05*1.17792*0.97592*0.945487*sysupdown;   
     }
     static bool isState = false;
     if(!isState){
