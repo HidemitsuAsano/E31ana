@@ -58,8 +58,8 @@ void SubtractMix(const int mode=0)
         nexthistr = new TIter(fr[iq][iEcut]->GetListOfKeys());
         nexthistm = new TIter(fmix[iq][iEcut][isys]->GetListOfKeys());
 
-        while(  (keyr= (TKey*)nexthistr())
-            && (keym= (TKey*)nexthistm())
+        while(  (keyr= (TKey*)(*nexthistr)())
+            && (keym= (TKey*)(*nexthistm)())
             ){
           TClass *clr = gROOT->GetClass(keyr->GetClassName());
           TClass *clm = gROOT->GetClass(keym->GetClassName());

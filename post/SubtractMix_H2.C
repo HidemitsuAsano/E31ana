@@ -8,7 +8,7 @@ void SubtractMix_H2(const int dEcut=2,const int sysud=0)
 
   TFile *fr;
   TFile *fmix;
-  TFile *fs;
+  TFile *fsub;
   TString fnamer;
   TString fnamem;
   TString fnames;
@@ -40,8 +40,8 @@ void SubtractMix_H2(const int dEcut=2,const int sysud=0)
   nexthistr = new TIter(fr->GetListOfKeys());
   nexthistm = new TIter(fmix->GetListOfKeys());
 
-  while(  (keyr= (TKey*)nexthistr())
-      && (keym= (TKey*)nexthistm())
+  while(  (keyr= (TKey*)(*nexthistr)())
+      && (keym= (TKey*)(*nexthistm)())
       ){
     TClass *clr = gROOT->GetClass(keyr->GetClassName());
     TClass *clm = gROOT->GetClass(keym->GetClassName());
