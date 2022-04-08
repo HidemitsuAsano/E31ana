@@ -1,14 +1,18 @@
 const bool RemoveNotEnough = true;
 const double UncertCut = 0.25;
-const double GenCut = 120e3;
+const double GenCutSp = 120e3;
+const double GenCutSm = 120e3;
+const double GenCutK0 = 200e3;
 
-void GetAccMap()
+void GetAccMap(const int dEcut=2)
 {
-   
+  
   gStyle->SetPalette(1);
-  gStyle->SetOptStat("ei");
-  gStyle->SetStatX(0.9);
+  gStyle->SetOptStat("e");
+  gStyle->SetStatX(0.8);
   gStyle->SetStatY(0.9);
+  gStyle->SetPadRightMargin(0.18);
+  gROOT->ForceStyle();
   TH1::SetDefaultSumw2(true);
   TFile *fSp[4]={NULL};
   TFile *fSm[4]={NULL};
@@ -16,9 +20,8 @@ void GetAccMap()
   TFile *fSpgen=NULL;
   TFile *fSmgen=NULL;
   TFile *fK0gen=NULL;
-  const int versionSigma = 153;
-  const int versionK0 = 28;
-  const int dEcut=2;
+  const int versionSigma = 155;
+  const int versionK0 = 29;
 
   fSp[0] = TFile::Open(Form("simIMpisigma_nSppim_pippimn_v%d_out_dE%d_iso_rej_nostop.root",versionSigma,dEcut));
   fSp[1] = TFile::Open(Form("simIMpisigma_nSppim_pippimn_v%d_out_dE%d_iso_qlo_rej_nostop.root",versionSigma,dEcut));
@@ -180,7 +183,7 @@ void GetAccMap()
         q_IMnpipi_Sp_accerr[0]->SetBinError(ix,iy,0);
       }
       double gencont = q_IMnpipi_gen_Sp[0]->GetBinContent(ix,iy);
-      if(gencont<GenCut){
+      if(gencont<GenCutSp){
         q_IMnpipi_Sp_acc[0]->SetBinContent(ix,iy,0);
         q_IMnpipi_Sp_acc[0]->SetBinError(ix,iy,0);
         q_IMnpipi_Sp_accerr[0]->SetBinContent(ix,iy,0);
@@ -199,7 +202,7 @@ void GetAccMap()
         q_IMnpipi_Sm_accerr[0]->SetBinError(ix,iy,0);
       }
       double gencont = q_IMnpipi_gen_Sm[0]->GetBinContent(ix,iy);
-      if(gencont<GenCut){
+      if(gencont<GenCutSm){
         q_IMnpipi_Sm_acc[0]->SetBinContent(ix,iy,0);
         q_IMnpipi_Sm_acc[0]->SetBinError(ix,iy,0);
         q_IMnpipi_Sm_accerr[0]->SetBinContent(ix,iy,0);
@@ -218,7 +221,7 @@ void GetAccMap()
         q_IMnpipi_K0_accerr[0]->SetBinError(ix,iy,0);
       }
       double gencont = q_IMnpipi_gen_K0[0]->GetBinContent(ix,iy);
-      if(gencont<GenCut){
+      if(gencont<GenCutK0){
         q_IMnpipi_K0_acc[0]->SetBinContent(ix,iy,0);
         q_IMnpipi_K0_acc[0]->SetBinError(ix,iy,0);
         q_IMnpipi_K0_accerr[0]->SetBinContent(ix,iy,0);
@@ -231,7 +234,7 @@ void GetAccMap()
   TCanvas *cSm[nqcut];
   TCanvas *cK0[nqcut];
   for(int iq=0;iq<1;iq++){
-    cSp[iq] = new TCanvas(Form("cSp%d",iq),Form("cSp%d",iq),1300,1000);
+    cSp[iq] = new TCanvas(Form("cSp%d",iq),Form("cSp%d",iq),1600,1000);
     cSp[iq]->Divide(2,2);
     cSp[iq]->cd(1);
     q_IMnpipi_gen_Sp[iq]->Draw("colz");
@@ -244,7 +247,7 @@ void GetAccMap()
     q_IMnpipi_Sp_accerr[iq]->SetMaximum(0.5);
     q_IMnpipi_Sp_accerr[iq]->Draw("colz");
     
-    cSm[iq] = new TCanvas(Form("cSm%d",iq),Form("cSm%d",iq),1300,1000);
+    cSm[iq] = new TCanvas(Form("cSm%d",iq),Form("cSm%d",iq),1600,1000);
     cSm[iq]->Divide(2,2);
     cSm[iq]->cd(1);
     q_IMnpipi_gen_Sm[iq]->Draw("colz");
@@ -257,15 +260,16 @@ void GetAccMap()
     q_IMnpipi_Sm_accerr[iq]->SetMaximum(0.5);
     q_IMnpipi_Sm_accerr[iq]->Draw("colz");
     
-    cK0[iq] = new TCanvas(Form("cK0%d",iq),Form("cK0%d",iq),1300,1000);
+    cK0[iq] = new TCanvas(Form("cK0%d",iq),Form("cK0%d",iq),1600,1000);
     cK0[iq]->Divide(2,2);
     cK0[iq]->cd(1);
     q_IMnpipi_gen_K0[iq]->Draw("colz");
     cK0[iq]->cd(2);
     q_IMnpipi_wK0_n_K0_reco[iq]->Draw("colz");
     cK0[iq]->cd(3);
-    q_IMnpipi_K0_acc[iq]->SetMaximum(0.005);
+    q_IMnpipi_K0_acc[iq]->SetMaximum(0.004);
     q_IMnpipi_K0_acc[iq]->Draw("colz");
+
     cK0[iq]->cd(4);
     q_IMnpipi_K0_accerr[iq]->SetMaximum(0.5);
     q_IMnpipi_K0_accerr[iq]->Draw("colz");
