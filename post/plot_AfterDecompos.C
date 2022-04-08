@@ -39,16 +39,17 @@ bool Sidefar=false;
 bool FitNoWeight=true;
 
 const int Version = 241;
-const int versionSigma = 153;//SIM version
-const int versionK0 = 28;//SIM version
+const int versionSigma = 155;//SIM version
+const int versionK0 = 29;//SIM version
 
-void plot_AfterDecompos(const int dEcut=6,const int sysud=0)
+void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
 {
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
   gStyle->SetMarkerStyle(20); 
   gStyle->SetMarkerSize(1.2); 
   gROOT->ForceStyle();
+  gROOT->SetBatch();
 
   TFile *fr[4] = {NULL};
   //Because the statistics is limited, we divide data into q<0.35 and q>0.35 and decompose K0 & Sigma+ & Simga- 
@@ -679,7 +680,7 @@ void plot_AfterDecompos(const int dEcut=6,const int sysud=0)
   }
   std::cout << __LINE__ << std::endl;
   //Systematic graph
-  TGraphAsymmErrors *gDecoErrorSm[4];
+  TGraphAsymmErrors *gDecoErrorSp[4];
   for(int iq=0;iq<4;iq++){
     gDecoErrorSp[iq] = new TGraphAsymmErrors(IMnpipi_Sp_noK0_noSm[iq][1]);
     for(int ip=0;ip<(gDecoErrorSp[iq]->GetN());ip++){
