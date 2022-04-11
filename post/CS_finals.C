@@ -200,16 +200,120 @@ void CS_finals()
     IMnpipi_Sp_cs[iq][0][1]->SetLineColor(1);
     IMnpipi_Sp_cs[iq][0][1]->SetMarkerColor(1);
     IMnpipi_Sp_cs[iq][0][1]->Draw("E");
-    //gDecoErrorSp_CS[iq]->Draw("5");
-    gdEErrorSp_CS[iq]->SetFillStyle(0);
-    gdEErrorSp_CS[iq]->SetMarkerColor(2);
-    gdEErrorSp_CS[iq]->SetLineColor(2);
-    gdEErrorSp_CS[iq]->Draw("5");
+    gDecoErrorSp_CS[iq]->Draw("5");
+    //gdEErrorSp_CS[iq]->SetFillStyle(0);
+    //gdEErrorSp_CS[iq]->SetMarkerColor(2);
+    //gdEErrorSp_CS[iq]->SetLineColor(2);
+    //gdEErrorSp_CS[iq]->Draw("5");
     gMIXErrorSp_CS[iq]->SetFillStyle(3002);
     gMIXErrorSp_CS[iq]->SetFillColor(4);
     gMIXErrorSp_CS[iq]->SetMarkerColor(4);
     gMIXErrorSp_CS[iq]->SetLineColor(4);
     gMIXErrorSp_CS[iq]->Draw("3");
+  }
+
+  TCanvas *cSysSm[4];
+  for(int iq=0;iq<4;iq++){  
+    cSysSm[iq] = new TCanvas(Form("cSysSm%d",iq),Form("cSysSm%d",iq),1000,800);
+    IMnpipi_Sm_cs[iq][0][1]->SetLineColor(1);
+    IMnpipi_Sm_cs[iq][0][1]->SetMarkerColor(1);
+    IMnpipi_Sm_cs[iq][0][1]->Draw("E");
+    gDecoErrorSm_CS[iq]->Draw("5");
+    //gdEErrorSm_CS[iq]->SetFillStyle(0);
+    //gdEErrorSm_CS[iq]->SetMarkerColor(2);
+    //gdEErrorSm_CS[iq]->SetLineColor(2);
+    //gdEErrorSm_CS[iq]->Draw("5");
+    gMIXErrorSm_CS[iq]->SetFillStyle(3002);
+    gMIXErrorSm_CS[iq]->SetFillColor(4);
+    gMIXErrorSm_CS[iq]->SetMarkerColor(4);
+    gMIXErrorSm_CS[iq]->SetLineColor(4);
+    gMIXErrorSm_CS[iq]->Draw("3");
+  }
+
+  TCanvas *cSysK0[4];
+  for(int iq=0;iq<4;iq++){  
+    cSysK0[iq] = new TCanvas(Form("cSysK0%d",iq),Form("cSysK0%d",iq),1000,800);
+    IMnpipi_K0_cs[iq][0][1]->SetLineColor(1);
+    IMnpipi_K0_cs[iq][0][1]->SetMarkerColor(1);
+    IMnpipi_K0_cs[iq][0][1]->Draw("E");
+    gDecoErrorK0_CS[iq]->Draw("5");
+    //gdEErrorSm_CS[iq]->SetFillStyle(0);
+    //gdEErrorSm_CS[iq]->SetMarkerColor(2);
+    //gdEErrorSm_CS[iq]->SetLineColor(2);
+    //gdEErrorSm_CS[iq]->Draw("5");
+    gMIXErrorK0_CS[iq]->SetFillStyle(3002);
+    gMIXErrorK0_CS[iq]->SetFillColor(4);
+    gMIXErrorK0_CS[iq]->SetMarkerColor(4);
+    gMIXErrorK0_CS[iq]->SetLineColor(4);
+    gMIXErrorK0_CS[iq]->Draw("3");
+  }
+  
+  TCanvas *cSysdESp[4];
+  for(int iq=0;iq<4;iq++){
+    cSysdESp[iq] = new TCanvas(Form("cSysdESp%d",iq),Form("cSysdESp%d",iq),1000,800);
+    IMnpipi_Sp_cs[iq][0][1]->SetLineColor(1);
+    IMnpipi_Sp_cs[iq][0][1]->SetMarkerColor(1);
+    IMnpipi_Sp_cs[iq][0][1]->Draw();
+    IMnpipi_Sp_cs[iq][1][1]->SetLineColor(2);
+    IMnpipi_Sp_cs[iq][1][1]->SetMarkerColor(2);
+    IMnpipi_Sp_cs[iq][1][1]->Draw("same");
+    IMnpipi_Sp_cs[iq][2][1]->SetLineColor(3);
+    IMnpipi_Sp_cs[iq][2][1]->SetMarkerColor(3);
+    IMnpipi_Sp_cs[iq][2][1]->Draw("same");
+  }
+
+  TCanvas *cSysdESm[4];
+  for(int iq=0;iq<4;iq++){
+    cSysdESm[iq] = new TCanvas(Form("cSysdESm%d",iq),Form("cSysdESm%d",iq),1000,800);
+    IMnpipi_Sm_cs[iq][0][1]->SetLineColor(1);
+    IMnpipi_Sm_cs[iq][0][1]->SetMarkerColor(1);
+    IMnpipi_Sm_cs[iq][0][1]->Draw();
+    IMnpipi_Sm_cs[iq][1][1]->SetLineColor(2);
+    IMnpipi_Sm_cs[iq][1][1]->SetMarkerColor(2);
+    IMnpipi_Sm_cs[iq][1][1]->Draw("same");
+    IMnpipi_Sm_cs[iq][2][1]->SetLineColor(3);
+    IMnpipi_Sm_cs[iq][2][1]->SetMarkerColor(3);
+    IMnpipi_Sm_cs[iq][2][1]->Draw("same");
+  }          
+
+
+  TCanvas *cSysdEK0[4];
+  for(int iq=0;iq<4;iq++){
+    cSysdEK0[iq] = new TCanvas(Form("cSysdEK0%d",iq),Form("cSysdEK0%d",iq),1000,800);
+    IMnpipi_K0_cs[iq][0][1]->SetLineColor(1);
+    IMnpipi_K0_cs[iq][0][1]->SetMarkerColor(1);
+    IMnpipi_K0_cs[iq][0][1]->Draw();
+    IMnpipi_K0_cs[iq][1][1]->SetLineColor(2);
+    IMnpipi_K0_cs[iq][1][1]->SetMarkerColor(2);
+    IMnpipi_K0_cs[iq][1][1]->Draw("same");
+    IMnpipi_K0_cs[iq][2][1]->SetLineColor(3);
+    IMnpipi_K0_cs[iq][2][1]->SetMarkerColor(3);
+    IMnpipi_K0_cs[iq][2][1]->Draw("same");
+  }          
+
+  TCanvas *c = NULL;
+  TSeqCollection *SCol = gROOT->GetListOfCanvases();
+  int size = SCol->GetSize();
+  TIter next(SCol);
+  TString pdfname = Form("csfinal.pdf");
+  for(int i=0;i<size;i++){
+    //pdf->NewPage();
+    c= (TCanvas*)next();
+    c->Modified();
+    c->Update();
+    c->Draw();
+    c->cd();
+    //inside the canvas
+    //TPaveText *pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
+    c->Modified();
+    c->Update();
+    //std::cout << c->GetName() << std::endl;
+    //make 1 pdf file
+    if(i==0) c->Print(pdfname+"(",Form("pdf Title:%s",c->GetTitle()));
+    else if(i==size-1)c->Print(pdfname+")",Form("pdf Title:%s",c->GetTitle())); 
+    else c->Print(pdfname,Form("pdf Title:%s",c->GetTitle())); 
+    //make separated pdf files
+    //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
   }
 
 

@@ -1,6 +1,7 @@
 #include "IMPiSigmaHist.h"
 #include "Tools.h"
 #include <TMath.h>
+#include <TGraph.h>
 
 void InitBasicHist(const bool MCFlag)
 {

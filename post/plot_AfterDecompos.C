@@ -877,7 +877,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   TH2D* q_IMnpipi_Sp_cserr[4][3];//iq,isys
   TH2D* q_IMnpipi_Sm_cserr[4][3];//iq,isys
   TH2D* q_IMnpipi_K0_cserr[4][3];//iq,isys
-  const int qcut650 =q_IMnpipi_Sp_sum[0][1]->GetYaxis()->FindBin(0.6);
+  const int qcut350 =q_IMnpipi_Sp_sum[0][1]->GetYaxis()->FindBin(0.35);
+  const int qcut600 =q_IMnpipi_Sp_sum[0][1]->GetYaxis()->FindBin(0.60);
   for(int iq=0;iq<4;iq++){
     for(int isys=0;isys<3;isys++){
       q_IMnpipi_Sp_cs[iq][isys] = (TH2D*)q_IMnpipi_Sp_sum[iq][isys]->Clone(Form("q_IMnpipi_Sp_cs%d_sys%d",iq,isys-1));
@@ -893,8 +894,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
       q_IMnpipi_Sm_cserr[iq][isys]->SetTitle(Form("q_IMnpipi_Sm_cserr_%s_sys%d",cqcut[iq],isys-1));
       q_IMnpipi_K0_cserr[iq][isys]->SetTitle(Form("q_IMnpipi_K0_cserr_%s_sts%d",cqcut[iq],isys-1));
 
-      for(int ix=0;ix<q_IMnpipi_Sp_cs[iq][isys]->GetNbinsX();ix++){
-        for(int iy=0;iy<q_IMnpipi_Sp_cs[iq][isys]->GetNbinsY();iy++){
+      for(int ix=0;ix<=q_IMnpipi_Sp_cs[iq][isys]->GetNbinsX();ix++){
+        for(int iy=0;iy<=q_IMnpipi_Sp_cs[iq][isys]->GetNbinsY();iy++){
           double contSp =q_IMnpipi_Sp_cs[iq][isys]->GetBinContent(ix,iy);
           double contSperr =q_IMnpipi_Sp_cs[iq][isys]->GetBinError(ix,iy);
           double accSp =q_IMnpipi_Sp_accp->GetBinContent(ix,iy);
@@ -940,7 +941,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
             q_IMnpipi_Sp_cserr[iq][isys]->SetBinError(ix,iy,0.);
           }
         
-          if(iy>qcut650){
+          if(iy>qcut600){
             q_IMnpipi_Sp_cs[iq][isys]->SetBinContent(ix,iy,0.);
             q_IMnpipi_Sp_cs[iq][isys]->SetBinError(ix,iy,0.);
             q_IMnpipi_Sp_cserr[iq][isys]->SetBinContent(ix,iy,0.);
@@ -955,7 +956,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
             q_IMnpipi_Sm_cs[iq][isys]->SetBinError(ix,iy,0.);
           }
         
-          if(iy>qcut650){
+          if(iy>qcut600){
             q_IMnpipi_Sm_cs[iq][isys]->SetBinContent(ix,iy,0.);
             q_IMnpipi_Sm_cs[iq][isys]->SetBinError(ix,iy,0.);
             q_IMnpipi_Sm_cserr[iq][isys]->SetBinContent(ix,iy,0.);
@@ -971,7 +972,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
             q_IMnpipi_K0_cs[iq][isys]->SetBinError(ix,iy,0.);
           }
         
-          if(iy>qcut650){
+          if(iy>qcut600){
             q_IMnpipi_K0_cs[iq][isys]->SetBinContent(ix,iy,0.);
             q_IMnpipi_K0_cs[iq][isys]->SetBinError(ix,iy,0.);
             q_IMnpipi_K0_cserr[iq][isys]->SetBinContent(ix,iy,0.);
@@ -1005,7 +1006,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     
     double binwidthq = q_IMnpipi_Sp_cs[iq][1]->ProjectionY()->GetBinWidth(1)*1000.0;
     for(int isys=0;isys<3;isys++){
-      IMnpipi_Sp_cs_single[iq][isys]= (TH1D*)q_IMnpipi_Sp_cs[iq][isys]->ProjectionX(Form("IMnpipi_Sp_cs_single%d_sys%d",iq,isys-1));
+      IMnpipi_Sp_cs_single[iq][isys]= (TH1D*)q_IMnpipi_Sp_cs[iq][isys]->ProjectionX(Form("IMnpipi_Sp_cs_single%d_sys%d",iq,isys-1),1,qcut600);
       IMnpipi_Sp_cs_single[iq][isys]->SetYTitle("d#sigma/dM [#mu b (MeV/c^{2})]");
       IMnpipi_Sp_cs_single[iq][isys]->GetYaxis()->CenterTitle();
       IMnpipi_Sp_cs_single[iq][isys]->Scale(binwidthq);
@@ -1023,7 +1024,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     q_IMnpipi_Sm_cserr[iq][1]->Draw("colz");
     
     for(int isys=0;isys<3;isys++){
-      IMnpipi_Sm_cs_single[iq][isys]= (TH1D*)q_IMnpipi_Sm_cs[iq][isys]->ProjectionX(Form("IMnpipi_Sm_cs_single%d_sys%d",iq,isys-1));
+      IMnpipi_Sm_cs_single[iq][isys]= (TH1D*)q_IMnpipi_Sm_cs[iq][isys]->ProjectionX(Form("IMnpipi_Sm_cs_single%d_sys%d",iq,isys-1),1,qcut600);
       IMnpipi_Sm_cs_single[iq][isys]->SetYTitle("d#sigma/dM [#mu b (MeV/c^{2})]");
       IMnpipi_Sm_cs_single[iq][isys]->GetYaxis()->CenterTitle();
       IMnpipi_Sm_cs_single[iq][isys]->Scale(binwidthq);
@@ -1041,7 +1042,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     q_IMnpipi_K0_cserr[iq][1]->Draw("colz");
 
     for(int isys=0;isys<3;isys++){
-      IMnpipi_K0_cs_single[iq][isys]= (TH1D*)q_IMnpipi_K0_cs[iq][isys]->ProjectionX(Form("IMnpipi_K0_cs_single%d_sys%d",iq,isys-1));
+      IMnpipi_K0_cs_single[iq][isys]= (TH1D*)q_IMnpipi_K0_cs[iq][isys]->ProjectionX(Form("IMnpipi_K0_cs_single%d_sys%d",iq,isys-1),1,qcut600);
       IMnpipi_K0_cs_single[iq][isys]->SetYTitle("d#sigma/dM [#mu b (MeV/c^{2})]");
       IMnpipi_K0_cs_single[iq][isys]->GetYaxis()->CenterTitle();
       IMnpipi_K0_cs_single[iq][isys]->Scale(binwidthq);
@@ -1132,7 +1133,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
       q_IMnpipi_SpSmSum[iq][isys] = (TH2D*)q_IMnpipi_Sp_cs[iq][isys]->Clone(Form("q_IMnpipi_SpSmSum%d_sys%d",iq,isys-1));
       q_IMnpipi_SpSmSum[iq][isys]->Add(q_IMnpipi_Sm_cs[iq][isys],1.0);
       q_IMnpipi_SpSmSum[iq][isys]->SetTitle(Form("q_IMnpipi_SpSmSum_%s_sys%d",cqcut[iq],isys-1));
-      IMnpipi_SpSmSum[iq][isys] = (TH1D*)q_IMnpipi_SpSmSum[iq][isys]->ProjectionX(Form("IMnpipi_SpSmSum%d_sys%d",iq,isys-1));
+      IMnpipi_SpSmSum[iq][isys] = (TH1D*)q_IMnpipi_SpSmSum[iq][isys]->ProjectionX(Form("IMnpipi_SpSmSum%d_sys%d",iq,isys-1),1,qcut600);
     }
     csum[iq]  = new TCanvas(Form("csum%d",iq),Form("csum%d",iq),1600,800);
     csum[iq]->Divide(2,1);
@@ -1165,7 +1166,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   q_IMnpipi_SpSmSub[1][1]->SetTitle("q_IMnpipi_SpSmSub");
   q_IMnpipi_SpSmSub[1][1]->Draw("colz");
   csub->cd(2);
-  q_IMnpipi_SpSmSub[1][1]->ProjectionX()->Draw("E");
+  q_IMnpipi_SpSmSub[1][1]->ProjectionX("sum_px",1,qcut600)->Draw("E");
    
   TCanvas *ccomp[4];//iq,isys
   TH1D* IMnpipi_Sp_cs[4][3];

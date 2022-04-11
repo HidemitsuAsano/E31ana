@@ -24,6 +24,7 @@ namespace Util
   int GetCDHMul(CDSHitMan *cdsman,const int ntrack=0,const bool CDH3trgfired=true, const bool MCFlag=false);
   
   bool IsForwardCharge(BeamLineHitMan *blman);
+  bool IsNCHit(BeamLineHitMan *blman);
   int GetCDHNeighboringNHits(const std::vector <int> &seg, const std::vector <int> &allhit, 
   const std::vector <int> &pippimseg,CDSHitMan *cdsman, bool MCFlag=false);
   

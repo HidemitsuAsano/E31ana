@@ -1,6 +1,6 @@
 void calc_purity_H2()
 {
-  const int version = 9;
+  const int version = 14;
   const int sysud=0;
   int dEcut[3]={2,4,6};
   TFile *f[3];

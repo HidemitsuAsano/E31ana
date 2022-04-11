@@ -92,6 +92,28 @@ bool Util::IsForwardCharge(BeamLineHitMan *blman)
   else return false;
 }
 
+bool Util::IsNCHit(BeamLineHitMan *blman)
+{
+  int nBVC = 0;
+  int nCVC = 0;
+  int nNC  = 0;
+
+  for( int i=0; i<blman->nBVC(); i++ ) {
+    if( blman->BVC(i)->CheckRange() ) nBVC++;
+  }
+  for( int i=0; i<blman->nTOF(); i++ ) {
+    if( blman->TOF(i)->CheckRange() ) nCVC++;
+  }
+  for( int i=0; i<blman->nNC(); i++ ) {
+    if( blman->NC(i)->CheckRange() ) nNC++;
+  }
+
+  
+
+}
+
+
+
 
 //inputs
 //1. seg, vector of CDH segment IDs to check # of neigboring hits
@@ -989,6 +1011,13 @@ void Util::AnaReactionData( ReactionData *reactionData){
     double mass = TL_piSigma.M()/1000.;
     Tools::H2(Form("React_q_IMPiSigma"),mass,q,900,1.2,2.1,300,0,1.5);
     Tools::H2(Form("React_costhetan_IMPiSigma"),mass,costhetan,900,1.2,2.1,2000,-1.,1.0);
+    
+    /*
+    for(int i=0;i<101;i++){
+      if(-1.0 + (double)i*0.02  <  costhetan && costhetan< -1.0 +(double)i*0.02+0.0001){
+        gr[i]->SetPoint(gr[i]->GetN(),mass,q);
+      }
+    }*/
   }
   if(reactionID == gen::reactionID_pLpim || reactionID == gen::reactionID_pLpimpi0){
     TLorentzVector TL_pmiss = reactionData->GetParticle(2);

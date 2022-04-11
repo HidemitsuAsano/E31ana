@@ -31,6 +31,7 @@
 //#include "weightfuncGSm.h"
 
 const double pvalcut = 0.005;
+const double thetacutlab = 5.0/180.*TMath::Pi();
 const bool gridon=true;
 const bool staton=true;
 const bool UseKinFit = false;
@@ -2641,7 +2642,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   Cosn_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   Cosn_IMnpipi_woK0_wSid_n->SetYTitle("cos#theta_{n} (CM)");
   
-  Cosnlab_IMnpipi_woK0_wSid_n = new TH2F("Cosnlab_IMnpipi_woK0_wSid_n","Cosn_IMnpipi_woK0_wSid_n",100, 1, 2, 2000, -1, 1);
+  Cosnlab_IMnpipi_woK0_wSid_n = new TH2F("Cosnlab_IMnpipi_woK0_wSid_n","Cosnlab_IMnpipi_woK0_wSid_n",100, 1, 2, 2000, -1, 1);
   Cosnlab_IMnpipi_woK0_wSid_n->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   Cosnlab_IMnpipi_woK0_wSid_n->SetYTitle("cos#theta_{n} (Lab)");
   
@@ -4320,7 +4321,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   TH2F* ntof_nmom = new TH2F("ntof_nmom","ntof_nmom",100,0,1,500,0,200);
  
 
-
   std::cout << __LINE__ << std::endl;
 
 
@@ -4969,7 +4969,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       if(LVec_pip_n.P()<anacuts::SigmaPMomCut) continue;
       if(LVec_pim_n.P()<anacuts::SigmaMMomCut) continue;
     }
-    if(qvalcutflag==3 && (nmissthetalab>10.0/180.0*TMath::Pi())) continue;
+    if(qvalcutflag==3 && (nmissthetalab>thetacutlab )) continue;
 
     //vicinity of Sigma+ & NMiss events
     if(pow(((MassNPip - anacuts::Sigmap_center)/5.0/anacuts::Sigmap_sigma),2.0) +

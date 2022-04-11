@@ -363,6 +363,13 @@ int main( int argc, char** argv )
     //return 0;
   }
 
+  //test
+  /*
+  TGraph *gr[101];
+  for(int i=0;i<101;i++){
+    gr[i] = new TGraph();
+    gr[i]->SetName(Form("gr%d",i));
+  }*/
   InitializeHistogram();
 
 
@@ -435,6 +442,7 @@ int main( int argc, char** argv )
   int nTrack_CDHshare = 0;
 
   int ev_cdc = 0;
+  
 
   //=== event loop ===//
   for( int iev=0; iev<exen; iev++ ){
@@ -543,6 +551,21 @@ int main( int argc, char** argv )
     react_nmiss = reacData->GetParticle(0);
     react_Sigma = reacData->GetParticle(1);
     react_pi = reacData->GetParticle(2);
+    
+    /*
+    //tst
+    TLorentzVector TL_beamtmp = reacData->GetInitParticle(0);
+    double q = (TL_beamtmp.Vect()-react_nmiss.Vect()).Mag()/1000.;
+    TLorentzVector TL_piSigmatmp = react_Sigma + react_pi;
+    double mass = TL_piSigmatmp.M()/1000.;
+    double costhetan = react_nmiss.CosTheta();//lab frame
+
+    for(int i=0;i<101;i++){
+      if(-1.0 + (double)i*0.02  <  costhetan && costhetan< -1.0 +(double)i*0.02+0.0001){
+        gr[i]->SetPoint(gr[i]->GetN(),mass,q);
+      }
+    }*/
+
 
     const int reactionID = reacData->ReactionID();
     //These partcile IDs are defined in pythia6
@@ -1028,10 +1051,10 @@ int main( int argc, char** argv )
     LVec_beam_unit.SetPy(py*1000.0);
     LVec_beam_unit.SetPz(pz*1000.0);
     LVec_beam_unit.SetE(E*1000.0);
-    double q = (LVec_beam_unit.Vect()-react_nmiss.Vect()).Mag()/1000.;
+    double qtrue = (LVec_beam_unit.Vect()-react_nmiss.Vect()).Mag()/1000.;
     TLorentzVector TL_piSigma = react_Sigma + react_pi;
-    double mass = TL_piSigma.M()/1000.;
-    Tools::H2("q_IMpiSigma_gen",mass,q,500,1,2,300,0,1.5);
+    double masstrue = TL_piSigma.M()/1000.;
+    Tools::H2("q_IMpiSigma_gen",masstrue,qtrue,500,1,2,300,0,1.5);
 
     //** + + + + + + + + + + + + **//
     //**  PID in CDS             **//
