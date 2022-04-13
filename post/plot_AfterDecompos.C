@@ -39,8 +39,8 @@ bool Sidefar=false;
 bool FitNoWeight=true;
 
 const int Version = 241;
-const int versionSigma = 155;//SIM version
-const int versionK0 = 29;//SIM version
+const int versionSigma = 156;//SIM version
+const int versionK0 = 30;//SIM version
 
 void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
 {
@@ -452,12 +452,13 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     }//if nSporSm
     double nSp_bin_err = gr_SpONnpim_fin_pol1[iqlowhigh]->GetErrorY(29);
     double nSm_bin_err = gr_SmONnpip_fin_pol1[iqlowhigh]->GetErrorY(29);
-    nSp_SporSm[iqlowhigh][0] = nSp-nSp_bin_err;
-    nSm_SporSm[iqlowhigh][0] = nSm-nSm_bin_err;
+    nSp_SporSm[iqlowhigh][0] = nSp-nSp_bin_err;//down Sp num
+    nSm_SporSm[iqlowhigh][0] = nSm+nSm_bin_err;//up Sm num
     nSp_SporSm[iqlowhigh][1] = nSp;
     nSm_SporSm[iqlowhigh][1] = nSm;
-    nSp_SporSm[iqlowhigh][2] = nSp+nSp_bin_err;
-    nSm_SporSm[iqlowhigh][2] = nSm+nSm_bin_err;
+    nSp_SporSm[iqlowhigh][2] = nSp+nSp_bin_err;//up Sp num
+    nSm_SporSm[iqlowhigh][2] = nSm-nSm_bin_err;//down Sm num
+  
   }
 
   for(int isys=0;isys<3;isys++){
@@ -493,6 +494,17 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     }//iq
   }//isys
   
+  TCanvas *cIMnpipi_SpSm_decosys[4];
+  for(int iq=0;iq<4;iq++){
+    cIMnpipi_SpSm_decosys[iq] = new TCanvas(Form("cIMnpipi_SpSm_decosys_%d",iq),Form("cIMnpipi_SpSm_decosys_%d",iq),1000,800);
+    IMnpipi_SporSm_ToSp[iq][1]->Draw();
+    IMnpipi_SporSm_ToSp[iq][0]->SetLineColor(2);
+    IMnpipi_SporSm_ToSp[iq][0]->Draw("same");
+    IMnpipi_SporSm_ToSp[iq][2]->SetLineColor(3);
+    IMnpipi_SporSm_ToSp[iq][2]->Draw("same");
+  }
+
+
   std::cout << __LINE__ << std::endl;
   TCanvas *cIMnpipi_SpSm_afterDeco[4];
   for(int iq=0;iq<4;iq++){

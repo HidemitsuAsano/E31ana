@@ -961,9 +961,9 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   // 
   //double SpEstimate_devi = (SpEstimate_onnpimcross*SpEstimate_err-(crossCount-SmEstimate_onnpipcross)*SmEstimate_err)/(SpEstimate_err+SmEstimate_err);
   double SpEstimate_devi = fabs(SpEstimate_onnpimcross-(crossCount-SmEstimate_onnpipcross));
-  double SpEstimate_err_final = sqrt(SpEstimate_err*SpEstimate_err+SmEstimate_err*SmEstimate_err);
+  //double SpEstimate_err_final = sqrt(SpEstimate_err*SpEstimate_err+SmEstimate_err*SmEstimate_err);
   //this is overesitmate, but To be conservative.
-  //double SpEstimate_err_final = sqrt(SpEstimate_err*SpEstimate_err+SmEstimate_err*SmEstimate_err+SpEstimate_devi*SpEstimate_devi);
+  double SpEstimate_err_final = sqrt(SpEstimate_err*SpEstimate_err+SmEstimate_err*SmEstimate_err+SpEstimate_devi*SpEstimate_devi);
 
   std::cout << "Sp on pim " << SpEstimate_onnpimcross << std::endl;
   std::cout << "cross - Sm " << crossCount - SmEstimate_onnpipcross << std::endl;

@@ -1,4 +1,4 @@
-void Resolution(const char* filename="../simpost/simIMpisigma_nSmpip_pippimn_v136_out_iso_qlo_rej_nostop.root")
+void Resolution(const char* filename="../simpost/simIMpisigma_nSppim_pippimn_v156_out_dE2_iso_rej_nostop.root")
 {
   
   std::cout << "infile " << filename <<std::endl;
@@ -144,6 +144,55 @@ void Resolution(const char* filename="../simpost/simIMpisigma_nSmpip_pippimn_v13
     grsigma_q->GetYaxis()->SetRangeUser(0.0,0.05);
     grsigma_q->SetMarkerStyle(20);
     grsigma_q->Draw("APE");
+  
+    TCanvas *c1 = new TCanvas("c1","c1",1200,800);
+    TH2D* diffncos_ncos = (TH2D*)f->Get("diffncos_ncos");
+    diffncos_ncos->Draw("colz");
+    diffncos_ncos->RebinY(2);
+    TProfile *diffcos_ncos_pfx = (TProfile*)diffncos_ncos->ProfileX();
+    diffcos_ncos_pfx->SetLineColor(2);
+    diffcos_ncos_pfx->Draw("same");
+  
+    const int nbinsx = diffncos_ncos->GetNbinsX();
+    std::cout << nbinsx << std::endl;
+    TH1D* cospx[1000];
+    double ncos[1000];
+    double rms[1000];
+    double gaussigma[1000];
+    double gaussigmaerr[1000];
+    double rmserror[1000];
+    for(int i=0;i<nbinsx;i++){
+      cospx[i] = (TH1D*)diffncos_ncos->ProjectionY(Form("cospx%d",i),i+1,i+2);
+      ncos[i] = diffncos_ncos->GetXaxis()->GetBinCenter(i+1);
+      if(cospx[i]->GetEntries()>10){
+        //cospx[i]->Fit("gaus","q","",-0.005,0.005);
+        //gaussigma[i] = cospx[i]->GetFunction("gaus")->GetParameter(2);
+        //gaussigmaerr[i] = cospx[i]->GetFunction("gaus")->GetParError(2);
+        rms[i] = cospx[i]->GetRMS();
+        rmserror[i] = cospx[i]->GetRMSError();
+      }else{
+        rms[i] = 0;
+        rmserror[i] = 0;
+      }
+    }
+
+    TCanvas *c2 = new TCanvas("c2","c2");
+    //TGraphErrors *gr = new TGraphErrors(1000,pcos,gaussigma,0,gaussigmaerr);
+    TGraphErrors *gr = new TGraphErrors(1000,ncos,rms,0,rmserror);
+    gr->SetName("ncosreso");
+    gr->SetTitle("nmisscos resolution");
+    gr->SetMarkerColor(2);
+    gr->SetMarkerStyle(20);
+    gr->GetYaxis()->SetTitle("cos#theta_n Resolution");
+    gr->GetXaxis()->SetTitle("miss. n cos#theta_{lab}");
+    gr->GetXaxis()->CenterTitle();
+    gr->GetYaxis()->CenterTitle();
+    gr->Print();
+    gr->Draw("AP");
+  
+  
+  
+  
   }//if Spmode
 
   if(SimSmmode) {
@@ -274,6 +323,9 @@ void Resolution(const char* filename="../simpost/simIMpisigma_nSmpip_pippimn_v13
     grsigma_q->SetMarkerStyle(20);
     grsigma_q->Draw("APE");
   }//if SimSmmode
+  
+
+
 
 
 }

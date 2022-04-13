@@ -26,6 +26,7 @@ double func_cq(double *x, double *par);
 double func_C(double *x, double *par);
 double func_S2(double *x, double *par);
 double func(double *x, double *par);
+double funclab(double *x, double *par);
 
 int NumericalRootFinder()
 {
@@ -63,6 +64,7 @@ int NumericalRootFinder()
 
       // Create the function and wrap it
       TF1 f( "func", func, 0, 2, 2 );
+      //TF1 f( "funclab", funclab, 0, 2, 2 );
       f.SetParameter( 0, m ); // m
       f.SetParameter( 1, cos ); // cos
       ROOT::Math::WrappedTF1 wf1( f );
@@ -72,7 +74,7 @@ int NumericalRootFinder()
       ROOT::Math::Roots::Brent brf;
       
       // Set parameters of the method
-      brf.SetFunction( wf1, 0.00000001, 2 );
+      brf.SetFunction( wf1, 0.0000001, 2 );
       brf.Solve();
 
       value[0][i][j] = m;
@@ -173,3 +175,13 @@ double func(double *x, double *par)
   //cerr<<q<<" "<<f<<endl;
   return f;
 }
+
+double funclab(double *x, double *par)
+{
+  double q = x[0];
+  double f = func_cq(x,par);
+
+  return f;
+}
+
+

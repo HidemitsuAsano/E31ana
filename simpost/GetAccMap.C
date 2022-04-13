@@ -20,8 +20,8 @@ void GetAccMap(const int dEcut=2)
   TFile *fSpgen=NULL;
   TFile *fSmgen=NULL;
   TFile *fK0gen=NULL;
-  const int versionSigma = 155;
-  const int versionK0 = 29;
+  const int versionSigma = 156;
+  const int versionK0 = 30;
 
   fSp[0] = TFile::Open(Form("simIMpisigma_nSppim_pippimn_v%d_out_dE%d_iso_rej_nostop.root",versionSigma,dEcut));
   fSp[1] = TFile::Open(Form("simIMpisigma_nSppim_pippimn_v%d_out_dE%d_iso_qlo_rej_nostop.root",versionSigma,dEcut));

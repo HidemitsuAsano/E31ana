@@ -289,7 +289,117 @@ void CS_finals()
     IMnpipi_K0_cs[iq][2][1]->SetLineColor(3);
     IMnpipi_K0_cs[iq][2][1]->SetMarkerColor(3);
     IMnpipi_K0_cs[iq][2][1]->Draw("same");
-  }          
+  }
+
+
+  const double solidAngleCoscut = 2.0*3.1415926535*(1.00-0.99657);//theta 0.5 = 
+  std::cout << "solid Angle. Coscut " << solidAngleCoscut << std::endl;
+  TCanvas *cthetacomp = new TCanvas("cthetacomp","cthetacomp",1000,800);
+  cthetacomp->cd();
+  TH1D *CS_Spcomp = (TH1D*)IMnpipi_Sp_cs[3][0][1]->Clone("CS_Spcomp");
+  TH1D *CS_Smcomp = (TH1D*)IMnpipi_Sm_cs[3][0][1]->Clone("CS_Smcomp");
+  CS_Spcomp->Scale(1.0/solidAngleCoscut);
+  CS_Smcomp->Scale(1.0/solidAngleCoscut);
+  CS_Spcomp->GetXaxis()->SetRangeUser(1.3,1.6);
+  CS_Smcomp->GetXaxis()->SetRangeUser(1.3,1.6);
+  TGraphAsymmErrors *CS_SpcompMIX = (TGraphAsymmErrors*)gMIXErrorSp_CS[3]->Clone("CS_SpcompMIX");
+  TGraphAsymmErrors *CS_SpcompDeco = (TGraphAsymmErrors*)gDecoErrorSp_CS[3]->Clone("CS_SpcompDeco");
+  for(int i=0;i<CS_SpcompMIX->GetN();i++){
+    double x = CS_SpcompMIX->GetPointX(i);
+    double y = CS_SpcompMIX->GetPointY(i);
+    y = y/solidAngleCoscut;
+    double ex = CS_SpcompMIX->GetErrorX(i);
+    double eyh = CS_SpcompMIX->GetErrorYhigh(i);
+    double eyl = CS_SpcompMIX->GetErrorYlow(i);
+    eyh = eyh/solidAngleCoscut;
+    eyl = eyl/solidAngleCoscut;
+
+    CS_SpcompMIX->SetPoint(i,x,y);
+    CS_SpcompMIX->SetPointEYhigh(i,eyh);
+    CS_SpcompMIX->SetPointEYlow(i,eyl);
+  }
+  for(int i=0;i<CS_SpcompDeco->GetN();i++){
+    double x = CS_SpcompDeco->GetPointX(i);
+    double y = CS_SpcompDeco->GetPointY(i);
+    y = y/solidAngleCoscut;
+    double ex = CS_SpcompDeco->GetErrorX(i);
+    double eyh = CS_SpcompDeco->GetErrorYhigh(i);
+    double eyl = CS_SpcompDeco->GetErrorYlow(i);
+    eyh = eyh/solidAngleCoscut;
+    eyl = eyl/solidAngleCoscut;
+
+    CS_SpcompDeco->SetPoint(i,x,y);
+    CS_SpcompDeco->SetPointEYhigh(i,eyh);
+    CS_SpcompDeco->SetPointEYlow(i,eyl);
+  }
+  //CS_Spcomp->Draw();
+  //CS_Smcomp->SetLineColor(3);
+  //CS_Smcomp->Draw("same");
+
+  TFile *finouepS = TFile::Open("pSinoue_CS.root","READ");
+  TGraphErrors *grinoueSp = (TGraphErrors*)finouepS->Get("gr_inoueSp");
+  TGraphErrors *grinoueSpcs = (TGraphErrors*)finouepS->Get("gr_inoueSpcs");
+  TGraphErrors *grinoueSm = (TGraphErrors*)finouepS->Get("gr_inoueSm");
+  TGraphErrors *grinoueSmcs = (TGraphErrors*)finouepS->Get("gr_inoueSmcs");
+  
+  TCanvas *cthetacompSp = new TCanvas("cthetacompSp","cthetacompSp",1000,800);
+  cthetacompSp->cd();
+  //CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
+  CS_Spcomp->SetMaximum(35);
+  CS_Spcomp->Draw();
+  CS_SpcompMIX->Draw("3");
+  CS_SpcompDeco->SetLineColor(3);
+  CS_SpcompDeco->Draw("5");
+  grinoueSp->Draw("P");
+  grinoueSpcs->Draw("5");
+  
+  TGraphAsymmErrors *CS_SmcompMIX = (TGraphAsymmErrors*)gMIXErrorSm_CS[3]->Clone("CS_SmcompMIX");
+  TGraphAsymmErrors *CS_SmcompDeco = (TGraphAsymmErrors*)gDecoErrorSm_CS[3]->Clone("CS_SmcompDeco");
+  for(int i=0;i<CS_SmcompMIX->GetN();i++){
+    double x = CS_SmcompMIX->GetPointX(i);
+    double y = CS_SmcompMIX->GetPointY(i);
+    y = y/solidAngleCoscut;
+    double ex = CS_SmcompMIX->GetErrorX(i);
+    double eyh = CS_SmcompMIX->GetErrorYhigh(i);
+    double eyl = CS_SmcompMIX->GetErrorYlow(i);
+    eyh = eyh/solidAngleCoscut;
+    eyl = eyl/solidAngleCoscut;
+
+    CS_SmcompMIX->SetPoint(i,x,y);
+    CS_SmcompMIX->SetPointEYhigh(i,eyh);
+    CS_SmcompMIX->SetPointEYlow(i,eyl);
+  }
+  for(int i=0;i<CS_SmcompDeco->GetN();i++){
+    double x = CS_SmcompDeco->GetPointX(i);
+    double y = CS_SmcompDeco->GetPointY(i);
+    y = y/solidAngleCoscut;
+    double ex = CS_SmcompDeco->GetErrorX(i);
+    double eyh = CS_SmcompDeco->GetErrorYhigh(i);
+    double eyl = CS_SmcompDeco->GetErrorYlow(i);
+    eyh = eyh/solidAngleCoscut;
+    eyl = eyl/solidAngleCoscut;
+
+    CS_SmcompDeco->SetPoint(i,x,y);
+    CS_SmcompDeco->SetPointEYhigh(i,eyh);
+    CS_SmcompDeco->SetPointEYlow(i,eyl);
+  }
+  //CS_Smcomp->Draw();
+ 
+  TCanvas *cthetacompSm = new TCanvas("cthetacompSm","cthetacompSm",1000,800);
+  cthetacompSm->cd();
+  //CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
+  CS_Smcomp->SetMaximum(10);
+  CS_Smcomp->Draw();
+  CS_SmcompDeco->Draw("5");
+  CS_SmcompMIX->Draw("3");
+  grinoueSm->Draw("P");
+  grinoueSmcs->Draw("5");
+
+
+
+
+
+
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
@@ -317,6 +427,8 @@ void CS_finals()
   }
 
   
+
+
 
 
 
