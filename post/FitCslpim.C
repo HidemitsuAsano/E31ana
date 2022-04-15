@@ -53,16 +53,18 @@ Double_t VGandLandau(Double_t *x,Double_t *par)
 
 void FitCslpim()
 {
+  gROOT->ForceStyle();
+  //gROOT->SetBatch();
   TFile *file = TFile::Open("cs_lpim_killcombi.root");
   file->cd();
   gStyle->SetOptStat(0);
   TH2F* CS_q_IMppipi_p_wL_nop2 = (TH2F*)file->Get(Form("CS_q_IMppipi_p_wL_nop2_acc%d",0));
   TH2F* CS_q_IMppipi_p_wL_wp2 = (TH2F*)file->Get(Form("CS_q_IMppipi_p_wL_wp2_acc%d",0));
   
-  TCanvas *cCS_q_IMppipi_p_wL_nop2 = new TCanvas("cCS_q_IMppipi_p_wL_nop2","cCS_q_IMppipi_p_wL_nop2",1000,800);
+  TCanvas *cCS_q_IMppipi_p_wL_nop2 = new TCanvas("cCS_q_IMppipi_p_wL_nop2","cCS_q_IMppipi_p_wL_nop2",1000,1000);
   CS_q_IMppipi_p_wL_nop2->Draw("colz");
 
-  TCanvas *cCS_q_IMppipi_p_wL_wp2 = new TCanvas("cCS_q_IMppipi_p_wL_wp2","cCS_q_IMppipi_p_wL_wp2",1000,800);
+  TCanvas *cCS_q_IMppipi_p_wL_wp2 = new TCanvas("cCS_q_IMppipi_p_wL_wp2","cCS_q_IMppipi_p_wL_wp2",1000,1000);
   CS_q_IMppipi_p_wL_wp2->Draw("colz");
  
   TCanvas *cCS_sum = new TCanvas("cCS_sum","cCS_sum",1000,800);
@@ -132,7 +134,7 @@ void FitCslpim()
   */
 
   TF2 *f2 = new TF2("f2",VGandLandau,1.32,1.44,0.39,0.75,6);
-  f2->SetParLimits(0,0,10000);
+  f2->SetParLimits(0,0,10000000);
   f2->SetParameter(0,0.00025);
   f2->SetParameter(1,0.045);
   f2->FixParameter(2,1.3872);//PDG mass
@@ -141,7 +143,7 @@ void FitCslpim()
   f2->SetParameter(4,0.09);
   f2->SetParLimits(4,0.01,0.1);//landau sigma
   f2->FixParameter(5,0.001);
-  f2->SetNpx(8);
+  f2->SetNpx(24);
   f2->SetNpy(12);
   f2->Print("base");
   CS_sum_fit->Fit("f2","R","");
@@ -217,7 +219,8 @@ void FitCslpim()
   std::cout << f3hist_py2->Integral(binq350,binq650)  << std::endl;
   std::cout << f3hist_py2->Integral(1,binq350) << std::endl;
 
-
+  //forget about fitting 2d fitting, just 
+  //get B.W. cross section in 
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
@@ -245,8 +248,9 @@ void FitCslpim()
     //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
   }
 
-
-
+  
+  TFile *fout = new TFile("CSLpimFit.root","RECREATE");
+  fout->cd();
 
 
 

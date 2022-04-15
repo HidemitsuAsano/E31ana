@@ -71,12 +71,14 @@ void CS_IMLambdaPim()
   TH1D* CS_IMppipi_p_wL_sum_0 = (TH1D*)CS_q_IMppipi_p_wL_sum->ProjectionX("CS_IMppipi_p_wL_sum_0",1,bin350-1);
   //CS_IMppipi_p_wL_sum_0->GetXaxis()->SetRangeUser(1.2,1.6);
   CS_IMppipi_p_wL_sum_0->SetYTitle("d#rho/dM [#mu b /(MeV/c^{2})]");
+  CS_IMppipi_p_wL_sum_0->Scale(binwidthq);
   CS_IMppipi_p_wL_sum_0->Draw("HE");
 
   TCanvas *cCS_px_350 = new TCanvas("cCS_px_350","cCS_px_350",1000,800);
   TH1D* CS_IMppipi_p_wL_sum_350 = (TH1D*)CS_q_IMppipi_p_wL_sum->ProjectionX("CS_IMppipi_p_wL_sum_350",bin350,600);
   //CS_IMppipi_p_wL_sum_350->GetXaxis()->SetRangeUser(1.2,1.6);
   CS_IMppipi_p_wL_sum_350->SetYTitle("d#rho/dM [#mu b /(MeV/c^{2})]");
+  CS_IMppipi_p_wL_sum_350->Scale(binwidthq);
   CS_IMppipi_p_wL_sum_350->Draw("HE");
   
   /*
@@ -101,6 +103,7 @@ void CS_IMLambdaPim()
   std::cout << CS_q_IMppipi_p_wL_sum->GetXaxis()->GetBinLowEdge(bin1360) << std::endl;
   std::cout << CS_q_IMppipi_p_wL_sum->GetXaxis()->GetBinLowEdge(bin1410+1) << std::endl;
   TH1D* CS_q = (TH1D*)CS_q_IMppipi_p_wL_sum->ProjectionY("CS_q",bin1360,bin1410);
+  CS_q->Scale(binwidth);
   CS_q->SetMarkerStyle(20);
   CS_q->SetYTitle("d#rho/dM [#mu b /(MeV/c^{2})]");
   CS_q->GetYaxis()->CenterTitle();
@@ -148,10 +151,14 @@ void CS_IMLambdaPim()
   TH2F* CS_q_IMppipi_p_wL_wp2_mc_acc[ncut];//with true val.
 
   for(int icut=0;icut<ncut;icut++){
-    CS_q_IMppipi_p_wL_nop2_acc[icut] = (TH2F*) q_IMppipi_p_wL_sum_nop2[icut]->Clone(Form("CS_q_IMppipi_p_wL_nop2_acc%d",icut));
+    CS_q_IMppipi_p_wL_nop2_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_nop2[icut]->Clone(Form("CS_q_IMppipi_p_wL_nop2_acc%d",icut));
+    CS_q_IMppipi_p_wL_nop2_acc[icut]->SetTitle(Form("CS_q_IMppipi_p_wL_nop2_acc%d",icut));
     CS_q_IMppipi_p_wL_wp2_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_wp2[icut]->Clone(Form("CS_q_IMppipi_p_wL_wp2_acc%d",icut));
+    CS_q_IMppipi_p_wL_wp2_acc[icut]->SetTitle(Form("CS_q_IMppipi_p_wL_wp2_acc%d",icut));
     CS_q_IMppipi_p_wL_nop2_mc_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_nop2[icut]->Clone(Form("CS_q_IMppipi_p_wL_nop2_mc_acc%d",icut));
+    CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->SetTitle(Form("CS_q_IMppipi_p_wL_nop2_mc_acc%d",icut));
     CS_q_IMppipi_p_wL_wp2_mc_acc[icut] = (TH2F*)q_IMppipi_p_wL_sum_wp2[icut]->Clone(Form("CS_q_IMppipi_p_wL_wp2_mc_acc%d",icut));
+    CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->SetTitle(Form("CS_q_IMppipi_p_wL_wp2_mc_acc%d",icut));
   
     CS_q_IMppipi_p_wL_nop2_acc[icut]->Divide(q_IMppipi_p_wL_nop2_acc[icut]);
     CS_q_IMppipi_p_wL_wp2_acc[icut]->Divide(q_IMppipi_p_wL_wp2_acc[icut]);
@@ -199,12 +206,18 @@ void CS_IMLambdaPim()
   TH1D* CS_q_wp2[ncut];
   TH1D* CS_q_nop2_mc[ncut];
   TH1D* CS_q_wp2_mc[ncut];
+  TH1D* CS_q_sum[ncut];
+  TH1D* CS_q_sum_mc[ncut];
   for(int icut=0;icut<ncut;icut++){
     cCS_q_sum[icut]  = new TCanvas(Form("cCS_q_sum%d",icut),Form("cCS_q_sum%d",icut),1000,800);
     CS_q_nop2[icut] = (TH1D*)CS_q_IMppipi_p_wL_nop2_acc[icut]->ProjectionY(Form("CS_q_nop2%d",icut),bin1360,bin1410);
+    CS_q_nop2[icut]->Scale(binwidth);
     CS_q_nop2_mc[icut] = (TH1D*)CS_q_IMppipi_p_wL_nop2_mc_acc[icut]->ProjectionY(Form("CS_q_nop2_mc%d",icut),bin1360,bin1410);
+    CS_q_nop2_mc[icut]->Scale(binwidth);
     CS_q_wp2[icut] = (TH1D*)CS_q_IMppipi_p_wL_wp2_acc[icut]->ProjectionY(Form("CS_q_wp2%d",icut),bin1360,bin1410);
+    CS_q_wp2[icut]->Scale(binwidth);
     CS_q_wp2_mc[icut] = (TH1D*)CS_q_IMppipi_p_wL_wp2_mc_acc[icut]->ProjectionY(Form("CS_q_wp2_mc%d",icut),bin1360,bin1410);
+    CS_q_wp2_mc[icut]->Scale(binwidth);
     CS_q_nop2[icut]->SetMarkerStyle(21);
     CS_q_nop2[icut]->Draw("E");
     CS_q_wp2[icut]->SetMarkerStyle(20);
@@ -212,6 +225,12 @@ void CS_IMLambdaPim()
     CS_q_wp2[icut]->SetLineColor(2);
     //CS_q_wp2[icut]->SetMaximum(CS_q_nop2[icut]->GetMaximum());
     CS_q_wp2[icut]->Draw("Esame");
+    CS_q_sum[icut] = (TH1D*)CS_q_nop2[icut]->Clone(Form("CS_q_sum%d",icut));
+    CS_q_sum[icut]->Add(CS_q_wp2[icut]);
+    CS_q_sum[icut]->SetLineColor(3);
+    CS_q_sum[icut]->SetMarkerStyle(20);
+    CS_q_sum[icut]->SetMarkerColor(20);
+    CS_q_sum[icut]->Draw("same");
     /*
     CS_q_nop2_mc[icut]->SetMarkerStyle(22);
     CS_q_nop2_mc[icut]->SetMarkerColor(2);
