@@ -11,7 +11,8 @@ void CS_finals()
   fpisigma[0][0] = TFile::Open(Form("cs_pisigma_v%d_dE2_sys-1.root",Version),"READ");
   fpisigma[0][2] = TFile::Open(Form("cs_pisigma_v%d_dE2_sys1.root",Version),"READ");
 
-  TFile *flpim    = TFile::Open("cs_lpim_killcombi.root","READ");
+  //TFile *flpim    = TFile::Open("cs_lpim_killcombi.root","READ");
+  TFile *flpim = TFile::Open("CSLpimFit.root","READ");
 
   const double br_s1385ToLambdapi = 0.87;
   const double br_s1385TopiSigma = 0.117;
@@ -69,15 +70,33 @@ void CS_finals()
   }
   std::cout << "FILE GET " << std::endl;
 
-  TH2D* CS_q_IMppipi_p_wL_sum;
-  TH1D* CS_IMppipi_p_wL_sum_0;
-  TH1D* CS_IMppipi_p_wL_sum_350;
-  CS_q_IMppipi_p_wL_sum = (TH2D*)flpim->Get("CS_q_IMppipi_p_wL_sum");
-  CS_IMppipi_p_wL_sum_0 = (TH1D*)flpim->Get("CS_IMppipi_p_wL_sum_0");
-  CS_IMppipi_p_wL_sum_350 = (TH1D*)flpim->Get("CS_IMppipi_p_wL_sum_350");
+  //TH2D* CS_q_IMppipi_p_wL_sum;
+  //TH1D* CS_IMppipi_p_wL_sum_0;
+  //TH1D* CS_IMppipi_p_wL_sum_350;
+  //CS_q_IMppipi_p_wL_sum = (TH2D*)flpim->Get("CS_q_IMppipi_p_wL_sum");
+  //CS_IMppipi_p_wL_sum_0 = (TH1D*)flpim->Get("CS_IMppipi_p_wL_sum_0");
+  //CS_IMppipi_p_wL_sum_350 = (TH1D*)flpim->Get("CS_IMppipi_p_wL_sum_350");
+  
+  //get Lpim
+  TH2F* CS_lpim_sum = (TH2F*)flpim->Get("CS_sum");
+  TH2F* CS_lpim_fit = (TH2F*)flpim->Get("Func");
+
+  TCanvas *clpim = new TCanvas("clpim","clpim",1000,800);
+  clpim->cd();
+  CS_lpim_sum->Draw("colz");
+  CS_lpim_fit->Draw("boxsame");
+  
+  TH2F* CS_lpim_qcut[3];//iq
+  for(int iq=0;iq<3;iq++){
+    CS_lpim_qcut[iq] = (TH2F*) CS_lpim_fit->Clone(Form("CS_lpim_qcut%d",iq));
+  }
+  CS_lpim_qcut[0]->GetYaxis()->SetRangeUser(0,0.6);
+  CS_lpim_qcut[1]->GetYaxis()->SetRangeUser(0,0.35);
+  CS_lpim_qcut[2]->GetYaxis()->SetRangeUser(0.35,0.6);
+
 
   
-  //Syserror calculation
+  //Sys Error summary
   TGraphAsymmErrors *gMIXErrorSp_CS[4];
   TGraphAsymmErrors *gMIXErrorSm_CS[4];
   TGraphAsymmErrors *gMIXErrorK0_CS[4];
