@@ -143,7 +143,7 @@ void FitCslpim()
   f2->SetParameter(4,0.09);
   f2->SetParLimits(4,0.01,0.1);//landau sigma
   f2->FixParameter(5,0.001);
-  f2->SetNpx(24);
+  f2->SetNpx(8);
   f2->SetNpy(12);
   f2->Print("base");
   CS_sum_fit->Fit("f2","R","");
@@ -251,8 +251,8 @@ void FitCslpim()
   
   TFile *fout = new TFile("CSLpimFit.root","RECREATE");
   fout->cd();
-
-
+  f3hist->Write();
+  CS_sum->Write();
 
   return;
 

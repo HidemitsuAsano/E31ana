@@ -2,7 +2,7 @@
 void eval_ResolutionLpim()
 {
 
-  TFile *f = TFile::Open("../simpost/simIMLpim_ppimpim_v21_out.root");
+  TFile *f = TFile::Open("../simpost/simIMLpim_ppimpim_v28_out.root");
   TCanvas *c1 = new TCanvas("c1","c1",1200,800);
   TH2D* diffpcos_pcos = (TH2D*)f->Get("diffpcos_pcos");
   diffpcos_pcos->Draw("colz");
