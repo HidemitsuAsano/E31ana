@@ -22,7 +22,10 @@ void CS_finals()
   const double br_SmToNpi = 0.99848;
   const double br_SmToNpi_err = 0.00005;
   
-
+  gStyle->SetOptStat(0);
+  gStyle->SetPadGridX(0);
+  gStyle->SetPadGridY(0);
+  //gROOT->ForceStyle();
   TH2D* q_IMnpipi_Sp_cs[4][3][3];//iq,dEcut,sysud
   TH2D* q_IMnpipi_Sm_cs[4][3][3];
   TH2D* q_IMnpipi_K0_cs[4][3][3];
@@ -69,6 +72,50 @@ void CS_finals()
     gDecoErrorK0_CS[iq] = (TGraphAsymmErrors*)fpisigma[0][1]->Get(Form("Graph_from_IMnpipi_K0_cs_single%d_sys0",iq));
   }
   std::cout << "FILE GET " << std::endl;
+  TCanvas *cqM_Sp[4];
+  TCanvas *cqM_Sm[4];
+  TCanvas *cqM_K0[4];
+  for(int iq=0;iq<4;iq++){
+    cqM_Sp[iq] = new TCanvas(Form("cqM_Sp%d",iq),Form("cqM_Sp%d",iq),1000,800);
+    q_IMnpipi_Sp_cs[iq][0][0]->SetMinimum(0);
+    q_IMnpipi_Sp_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.8);
+    q_IMnpipi_Sp_cs[iq][0][0]->Draw("colz");
+    cqM_Sm[iq] = new TCanvas(Form("cqM_Sm%d",iq),Form("cqM_Sm%d",iq),1000,800);
+    q_IMnpipi_Sm_cs[iq][0][0]->SetMinimum(0);
+    q_IMnpipi_Sm_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.8);
+    q_IMnpipi_Sm_cs[iq][0][0]->Draw("colz");
+    cqM_K0[iq] = new TCanvas(Form("cqM_K0%d",iq),Form("cqM_K0%d",iq),1000,800);
+    q_IMnpipi_K0_cs[iq][0][0]->SetMinimum(0);
+    q_IMnpipi_K0_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.8);
+    q_IMnpipi_K0_cs[iq][0][0]->Draw("colz");
+  }
+
+
+  //zero suppresion of gDecoError
+  for(int iq=0;iq<4;iq++){
+    double n = gDecoErrorSp_CS[iq]->GetN();
+    double *yval = gDecoErrorSp_CS[iq]->GetEYlow();
+    for(int ip=n;ip>=0;ip--){
+      if(yval[ip]<=0.00001 ) gDecoErrorSp_CS[iq]->RemovePoint(ip);
+    }
+  }
+  for(int iq=0;iq<4;iq++){
+    double n = gDecoErrorSm_CS[iq]->GetN();
+    double *yval = gDecoErrorSm_CS[iq]->GetEYlow();
+    for(int ip=n;ip>=0;ip--){
+      if(yval[ip]<=0.00001) gDecoErrorSm_CS[iq]->RemovePoint(ip);
+    }
+  }
+  for(int iq=0;iq<4;iq++){
+    double n = gDecoErrorK0_CS[iq]->GetN();
+    double *yval = gDecoErrorK0_CS[iq]->GetEYlow();
+    for(int ip=n;ip>=0;ip--){
+      if(yval[ip]<=0.00001) gDecoErrorK0_CS[iq]->RemovePoint(ip);
+    }
+  }
+  
+
+
 
   //TH2D* CS_q_IMppipi_p_wL_sum;
   //TH1D* CS_IMppipi_p_wL_sum_0;
@@ -89,13 +136,24 @@ void CS_finals()
   TH2F* CS_lpim_qcut[3];//iq
   for(int iq=0;iq<3;iq++){
     CS_lpim_qcut[iq] = (TH2F*) CS_lpim_fit->Clone(Form("CS_lpim_qcut%d",iq));
+    CS_lpim_qcut[iq]->SetMinimum(0);
+    CS_lpim_qcut[iq]->SetFillColor(0);
   }
   CS_lpim_qcut[0]->GetYaxis()->SetRangeUser(0,0.6);
   CS_lpim_qcut[1]->GetYaxis()->SetRangeUser(0,0.35);
   CS_lpim_qcut[2]->GetYaxis()->SetRangeUser(0.35,0.6);
+  double binwidthq = CS_lpim_qcut[0]->GetYaxis()->GetBinWidth(1)*1000.0; 
+  std::cout << "binq width " << binwidthq  << std::endl;
+  TH1D* CS_S1385_ToSp[3]; 
+  TH1D* CS_S1385_ToSm[3]; 
+   
+  //assume C.S. Sigma(1385)- ~ Sigma(1385)0
+  for(int iq=0;iq<3;iq++){
+    CS_lpim_qcut[iq]->Scale(br_s1385TopiSigma/2.0/br_s1385ToLambdapi*binwidthq);
+    CS_S1385_ToSp[iq] = (TH1D*)CS_lpim_qcut[iq]->ProjectionX(Form("CS_S1385_ToSp%d",iq));
+    CS_S1385_ToSm[iq] = (TH1D*)CS_lpim_qcut[iq]->ProjectionX(Form("CS_S1385_ToSm%d",iq));
+  }
 
-
-  
   //Sys Error summary
   TGraphAsymmErrors *gMIXErrorSp_CS[4];
   TGraphAsymmErrors *gMIXErrorSm_CS[4];
@@ -218,6 +276,7 @@ void CS_finals()
     cSysSp[iq] = new TCanvas(Form("cSysSp%d",iq),Form("cSysSp%d",iq),1000,800);
     IMnpipi_Sp_cs[iq][0][1]->SetLineColor(1);
     IMnpipi_Sp_cs[iq][0][1]->SetMarkerColor(1);
+    IMnpipi_Sp_cs[iq][0][1]->GetXaxis()->SetRangeUser(1.3,1.6);
     IMnpipi_Sp_cs[iq][0][1]->Draw("E");
     gDecoErrorSp_CS[iq]->Draw("5");
     //gdEErrorSp_CS[iq]->SetFillStyle(0);
@@ -229,6 +288,10 @@ void CS_finals()
     gMIXErrorSp_CS[iq]->SetMarkerColor(4);
     gMIXErrorSp_CS[iq]->SetLineColor(4);
     gMIXErrorSp_CS[iq]->Draw("3");
+    if(iq<3){
+      CS_S1385_ToSp[iq]->SetLineColor(6);
+      CS_S1385_ToSp[iq]->Draw("same");
+    }
   }
 
   TCanvas *cSysSm[4];
@@ -236,6 +299,7 @@ void CS_finals()
     cSysSm[iq] = new TCanvas(Form("cSysSm%d",iq),Form("cSysSm%d",iq),1000,800);
     IMnpipi_Sm_cs[iq][0][1]->SetLineColor(1);
     IMnpipi_Sm_cs[iq][0][1]->SetMarkerColor(1);
+    IMnpipi_Sm_cs[iq][0][1]->GetXaxis()->SetRangeUser(1.3,1.6);
     IMnpipi_Sm_cs[iq][0][1]->Draw("E");
     gDecoErrorSm_CS[iq]->Draw("5");
     //gdEErrorSm_CS[iq]->SetFillStyle(0);
@@ -247,6 +311,10 @@ void CS_finals()
     gMIXErrorSm_CS[iq]->SetMarkerColor(4);
     gMIXErrorSm_CS[iq]->SetLineColor(4);
     gMIXErrorSm_CS[iq]->Draw("3");
+    if(iq<3){
+      CS_S1385_ToSm[iq]->SetLineColor(6);
+      CS_S1385_ToSm[iq]->Draw("same");
+    }
   }
 
   TCanvas *cSysK0[4];
@@ -254,6 +322,7 @@ void CS_finals()
     cSysK0[iq] = new TCanvas(Form("cSysK0%d",iq),Form("cSysK0%d",iq),1000,800);
     IMnpipi_K0_cs[iq][0][1]->SetLineColor(1);
     IMnpipi_K0_cs[iq][0][1]->SetMarkerColor(1);
+    IMnpipi_K0_cs[iq][0][1]->GetXaxis()->SetRangeUser(1.3,1.6);
     IMnpipi_K0_cs[iq][0][1]->Draw("E");
     gDecoErrorK0_CS[iq]->Draw("5");
     //gdEErrorSm_CS[iq]->SetFillStyle(0);
@@ -313,8 +382,6 @@ void CS_finals()
 
   const double solidAngleCoscut = 2.0*3.1415926535*(1.00-0.99657);//theta 0.5 = 
   std::cout << "solid Angle. Coscut " << solidAngleCoscut << std::endl;
-  TCanvas *cthetacomp = new TCanvas("cthetacomp","cthetacomp",1000,800);
-  cthetacomp->cd();
   TH1D *CS_Spcomp = (TH1D*)IMnpipi_Sp_cs[3][0][1]->Clone("CS_Spcomp");
   TH1D *CS_Smcomp = (TH1D*)IMnpipi_Sm_cs[3][0][1]->Clone("CS_Smcomp");
   CS_Spcomp->Scale(1.0/solidAngleCoscut);
@@ -365,12 +432,13 @@ void CS_finals()
   cthetacompSp->cd();
   //CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
   CS_Spcomp->SetMaximum(35);
+  CS_Spcomp->SetYTitle("d^{2}#rho/dM d#Omega [#mu b/MeVsr]");
   CS_Spcomp->Draw();
   CS_SpcompMIX->Draw("3");
   CS_SpcompDeco->SetLineColor(3);
   CS_SpcompDeco->Draw("5");
-  grinoueSp->Draw("P");
-  grinoueSpcs->Draw("5");
+  //grinoueSp->Draw("P");
+  grinoueSpcs->Draw("p");
   
   TGraphAsymmErrors *CS_SmcompMIX = (TGraphAsymmErrors*)gMIXErrorSm_CS[3]->Clone("CS_SmcompMIX");
   TGraphAsymmErrors *CS_SmcompDeco = (TGraphAsymmErrors*)gDecoErrorSm_CS[3]->Clone("CS_SmcompDeco");
@@ -408,11 +476,12 @@ void CS_finals()
   cthetacompSm->cd();
   //CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
   CS_Smcomp->SetMaximum(10);
+  CS_Smcomp->SetYTitle("d^{2}#rho/dMd#Omega [#mu b/MeVsr]");
   CS_Smcomp->Draw();
   CS_SmcompDeco->Draw("5");
   CS_SmcompMIX->Draw("3");
-  grinoueSm->Draw("P");
-  grinoueSmcs->Draw("5");
+  //grinoueSm->Draw("P");
+  grinoueSmcs->Draw("p");
 
 
 
