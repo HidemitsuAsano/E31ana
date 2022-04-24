@@ -321,7 +321,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   const int nbinIMppipicos = 90;//1.2-2 GeV/c^2
   const double IMppipilow = 1.2;//1.2-2 GeV/c^2
   const double IMppipihigh = 2.1;//1.2-2 GeV/c^2
-  const int nbinq = 50;//0-1.5 GeV/c :TODO use 50 because q-resolution is ~25 MeV
+  const int nbinq = 30;//0-1.5 GeV/c 
   //const int nbinq = 100;//0-1.5 GeV/c
   const int nbinIMppi = 2000; //1-2 GeV/c^2
   const int nbinpmiss = 150; //0-1.5 GeV/c

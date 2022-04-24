@@ -78,17 +78,15 @@ void plot_InouepS()
   grSpstat->SetName("gr_inoueSpstat");
   grSpshape->SetName("gr_inoueSpshape");
   grSpcs->SetName("gr_inoueSpcs");
-  grSp->SetMarkerColor(2);
-  grSp->SetLineColor(2);
-  grSp->SetMarkerStyle(20);
-  grSp->Print();
-  grSp->GetXaxis()->SetRangeUser(1.35,1.5);
-  //grSp->RemovePoint(26);
-  //grSp->RemovePoint(0);
-  grSpcs->SetFillColor(0);
-  grSpcs->SetFillStyle(0);
-  grSp->Draw("AP");
-  grSpcs->Draw("5");
+  grSpcs->SetMarkerColor(2);
+  grSpcs->SetLineColor(2);
+  grSpcs->SetMarkerStyle(20);
+  grSpcs->Print();
+  grSpcs->GetXaxis()->SetRangeUser(1.35,1.5);
+  //grSpcs->SetFillColor(0);
+  //grSpcs->SetFillStyle(0);
+  //grSp->Draw("AP");
+  grSpcs->Draw("ap");
    
 
   ifstream ifsSm("../CS_pipSm_after.txt");
@@ -138,16 +136,16 @@ void plot_InouepS()
   grSmstat->SetName("gr_inoueSmstat");
   grSmshape->SetName("gr_inoueSmshape");
   grSmcs->SetName("gr_inoueSmcs");
-  grSm->SetMarkerColor(4);
-  grSm->SetLineColor(4);
-  grSm->SetMarkerStyle(20);
-  grSm->Print();
+  grSmcs->SetMarkerColor(4);
+  grSmcs->SetLineColor(4);
+  grSmcs->SetMarkerStyle(20);
+  grSmcs->Print();
   //grSp->RemovePoint(26);
   //grSp->RemovePoint(0);
-  grSm->Draw("P");
-  grSmcs->SetFillColor(0);
-  grSmcs->SetFillStyle(0);
-  grSmcs->Draw("5");
+  grSmcs->Draw("P");
+  //grSmcs->SetFillColor(0);
+  //grSmcs->SetFillStyle(0);
+  //grSmcs->Draw("5");
    
 
   TFile *f = new TFile("pSinoue_CS.root","RECREATE");

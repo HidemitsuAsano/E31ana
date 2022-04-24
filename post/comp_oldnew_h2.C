@@ -3,8 +3,8 @@
 void comp_oldnew_h2()
 {
   gStyle->SetOptStat(0);
-  TFile *_file0 = TFile::Open("evanaIMsigma_npi_h2_v4_out_iso_nostop_sub.root");
-  TFile *_file1 = TFile::Open("evanaIMsigma_npi_h2_v9_out_dE2_iso_nostop_sub_sys0.root");
+  TFile *_file0 = TFile::Open("oldversion/evanaIMsigma_npi_h2_v4_out_iso_nostop_sub.root");
+  TFile *_file1 = TFile::Open("evanaIMsigma_npi_h2_v14_out_dE2_iso_nostop_sub_sys0.root");
 
   TH2F* Cospicm_IMnpip_pi_old = (TH2F*)_file0->Get("Cospicm_IMnpip_pi");
   TH2F* Cospicm_IMnpip_pi_new = (TH2F*)_file1->Get("Cospicm_IMnpip_pi");
@@ -37,10 +37,10 @@ void comp_oldnew_h2()
   hcosold_Sm->Draw("same");
 
   const int dEcut=2;
-  TFile *fSp = TFile::Open(Form("../simpost/simIMsigma_H2_Sppim_npi_v11_out_dE%d_iso_rej_nostop.root",dEcut));
-  TFile *fSm = TFile::Open(Form("../simpost/simIMsigma_H2_Smpip_npi_v11_out_dE%d_iso_rej_nostop.root",dEcut));
-  TFile *fGenSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_v11.root");
-  TFile *fGenSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_v11.root");
+  TFile *fSp = TFile::Open(Form("../simpost/simIMsigma_H2_Sppim_npi_v15_out_dE%d_iso_rej_nostop.root",dEcut));
+  TFile *fSm = TFile::Open(Form("../simpost/simIMsigma_H2_Smpip_npi_v15_out_dE%d_iso_rej_nostop.root",dEcut));
+  TFile *fGenSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_v15.root");
+  TFile *fGenSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_v15.root");
   //TFile *fSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_npi_v3_out_iso_rej_nostop.root");
   //TFile *fSm = TFile::Open("../simpost/simIMsigma_H2_Smpip_npi_v3_out_iso_rej_nostop.root");
   //TFile *fGenSp = TFile::Open("../simpost/simIMsigma_H2_Sppim_v3.root");

@@ -30,7 +30,7 @@ void GetAccMapLpim()
   q_IMLPim_gen->GetYaxis()->CenterTitle();
   q_IMLPim_gen->Print("base");
   q_IMLPim_gen->RebinX(15);
-  q_IMLPim_gen->RebinY(6);
+  q_IMLPim_gen->RebinY(10);
   q_IMLPim_gen->Print("base");
    
 

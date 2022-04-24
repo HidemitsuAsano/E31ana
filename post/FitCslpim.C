@@ -183,6 +183,11 @@ void FitCslpim()
 
   TH2D* f3hist = (TH2D*)f3->GetHistogram();
   cfittest->cd(1);
+  for(int ix=0;ix<=f3hist->GetNbinsX();ix++){
+    for(int iy=0;iy<=f3hist->GetNbinsY();iy++){
+      f3hist->SetBinError(ix,iy,0);
+    }
+  }
   TH1D* f3hist_px = (TH1D*)f3hist->ProjectionX("f3hist_px");
   f3hist_px->SetLineColor(4);
   f3hist_px->SetFillColor(0);

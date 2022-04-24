@@ -14,7 +14,6 @@ void CS_sigma_h2()
   }
   //TFile *f = TFile::Open("evanaIMsigma_npi_h2_v7_out_iso_nostop_sub.root");
   
-  
   TH2F* Cospicm_IMnpip_pi[3][3];
   TH2F* Cospicm_IMnpim_pi[3][3];  
    
