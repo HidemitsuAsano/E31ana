@@ -430,7 +430,15 @@ void CS_finals()
 
 
   const double solidAngleCoscut = 2.0*3.1415926535*(1.00-0.99657);//theta 0.5 = 
+  const double solidAngleReso = 0.0015;//
   std::cout << "solid Angle. Coscut " << solidAngleCoscut << std::endl;
+  std::cout << "solid Angle. Err   " << solidAngleReso << std::endl;
+  std::cout << "1/Sr          " << 1./solidAngleCoscut << std::endl;
+  const double SrErrup = 1./(2.0*3.1415926535*(1.00-0.99657+solidAngleReso));
+  const double SrErrdown = 1./(2.0*3.1415926535*(1.00-0.99657-solidAngleReso));
+  std::cout << "1/Sr Err up " << SrErrup  << std::endl;
+  std::cout << "1/Sr Err down" << SrErrdown << std::endl;
+   
   TH1D *CS_Spcomp = (TH1D*)IMnpipi_Sp_cs[3][0][1]->Clone("CS_Spcomp");
   TH1D *CS_Smcomp = (TH1D*)IMnpipi_Sm_cs[3][0][1]->Clone("CS_Smcomp");
   CS_Spcomp->Scale(1.0/solidAngleCoscut);
@@ -439,6 +447,11 @@ void CS_finals()
   CS_Smcomp->GetXaxis()->SetRangeUser(1.3,1.6);
   TGraphAsymmErrors *CS_SpcompMIX = (TGraphAsymmErrors*)gMIXErrorSp_CS[3]->Clone("CS_SpcompMIX");
   TGraphAsymmErrors *CS_SpcompDeco = (TGraphAsymmErrors*)gDecoErrorSp_CS[3]->Clone("CS_SpcompDeco");
+  TGraphAsymmErrors *CS_SpcompSrErr = new TGraphAsymmErrors(IMnpipi_Sp_cs[3][0][1]);
+  CS_SpcompSrErr->SetName("CS_SpcompSrErr");
+  TGraphAsymmErrors *CS_SmcompSrErr = new TGraphAsymmErrors(IMnpipi_Sm_cs[3][0][1]);
+  CS_SmcompSrErr->SetName("CS_SmcompSrErr");
+  
   for(int i=0;i<CS_SpcompMIX->GetN();i++){
     double x = CS_SpcompMIX->GetPointX(i);
     double y = CS_SpcompMIX->GetPointY(i);
@@ -467,6 +480,21 @@ void CS_finals()
     CS_SpcompDeco->SetPointEYhigh(i,eyh);
     CS_SpcompDeco->SetPointEYlow(i,eyl);
   }
+  
+  for(int i=0;i<CS_SpcompSrErr->GetN();i++){
+    double x = CS_SpcompSrErr->GetPointX(i);
+    double y = CS_SpcompSrErr->GetPointY(i);
+    y = y/solidAngleCoscut;
+    double ex = CS_SpcompSrErr->GetErrorX(i);
+    double eyh = CS_SpcompSrErr->GetPointY(i);
+    double eyl = CS_SpcompSrErr->GetPointY(i);
+    eyh = eyh*SrErrdown-y;
+    eyl = y-eyl*SrErrup;
+
+    CS_SpcompSrErr->SetPoint(i,x,y);
+    CS_SpcompSrErr->SetPointEYhigh(i,eyh);
+    CS_SpcompSrErr->SetPointEYlow(i,eyl);
+  }
   //CS_Spcomp->Draw();
   //CS_Smcomp->SetLineColor(3);
   //CS_Smcomp->Draw("same");
@@ -484,6 +512,10 @@ void CS_finals()
   CS_Spcomp->SetYTitle("d^{2}#rho/dM d#Omega [#mu b/MeVsr]");
   CS_Spcomp->Draw();
   CS_SpcompMIX->Draw("3");
+  CS_SpcompSrErr->SetFillStyle(3002);
+  CS_SpcompSrErr->SetFillColor(5);
+  CS_SpcompSrErr->GetXaxis()->SetRangeUser(1.3,1.6);
+  CS_SpcompSrErr->Draw("3");
   CS_SpcompDeco->SetLineColor(3);
   CS_SpcompDeco->Draw("5");
   //grinoueSp->Draw("P");
@@ -519,6 +551,20 @@ void CS_finals()
     CS_SmcompDeco->SetPointEYhigh(i,eyh);
     CS_SmcompDeco->SetPointEYlow(i,eyl);
   }
+  for(int i=0;i<CS_SmcompSrErr->GetN();i++){
+    double x = CS_SmcompSrErr->GetPointX(i);
+    double y = CS_SmcompSrErr->GetPointY(i);
+    y = y/solidAngleCoscut;
+    double ex = CS_SmcompSrErr->GetErrorX(i);
+    double eyh = CS_SmcompSrErr->GetPointY(i);
+    double eyl = CS_SmcompSrErr->GetPointY(i);
+    eyh = eyh*SrErrdown-y;
+    eyl = y-eyl*SrErrup;
+
+    CS_SmcompSrErr->SetPoint(i,x,y);
+    CS_SmcompSrErr->SetPointEYhigh(i,eyh);
+    CS_SmcompSrErr->SetPointEYlow(i,eyl);
+  }
   //CS_Smcomp->Draw();
  
   TCanvas *cthetacompSm = new TCanvas("cthetacompSm","cthetacompSm",1000,800);
@@ -528,10 +574,13 @@ void CS_finals()
   CS_Smcomp->SetYTitle("d^{2}#rho/dMd#Omega [#mu b/MeVsr]");
   CS_Smcomp->Draw();
   CS_SmcompDeco->Draw("5");
+  CS_SmcompSrErr->SetFillStyle(3002);
+  CS_SmcompSrErr->SetFillColor(5);
+  CS_SmcompSrErr->GetXaxis()->SetRangeUser(1.3,1.6);
+  CS_SmcompSrErr->Draw("3");
   CS_SmcompMIX->Draw("3");
   //grinoueSm->Draw("P");
   grinoueSmcs->Draw("p");
-
 
 
 

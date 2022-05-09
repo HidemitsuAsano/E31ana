@@ -335,6 +335,49 @@ void Resolution()
   grsigma_qSm->SetMarkerStyle(20);
   grsigma_qSm->Draw("APE");
 
+  TCanvas *ccosSm = new TCanvas("ccosSm","ccosSm",1200,800);
+  TH2D* diffncos_IMnpipiSm = (TH2D*)fSmtheta15->Get("diffncos_IMnpipi");
+  diffncos_IMnpipiSm->GetYaxis()->SetRangeUser(-0.01,0.02);
+  diffncos_IMnpipiSm->GetYaxis()->SetMaxDigits(2);
+  diffncos_IMnpipiSm->Draw("colz");
+  TProfile *diffcos_IMnpipi_pfxSm = (TProfile*)diffncos_IMnpipiSm->ProfileX("pfxcosSm",1,-1,"s");
+  diffcos_IMnpipi_pfxSm->SetLineColor(2);
+  diffcos_IMnpipi_pfxSm->Draw("same");
+
+  TH1D* cospxSm[1000];
+  double ncosSm[1000];
+  double rmsSm[1000];
+  double gaussigmaSm[1000];
+  double gaussigmaerrSm[1000];
+  double rmserrorSm[1000];
+  for(int i=0;i<nbinsx;i++){
+    cospxSm[i] = (TH1D*)diffncos_IMnpipiSm->ProjectionY(Form("cospxSm%d",i),i+1,i+2);
+    ncosSm[i] = diffncos_IMnpipiSm->GetXaxis()->GetBinCenter(i+1);
+    if(cospx[i]->GetEntries()>10){
+      //cospx[i]->Fit("gaus","q","",-0.005,0.005);
+      //gaussigma[i] = cospx[i]->GetFunction("gaus")->GetParameter(2);
+      //gaussigmaerr[i] = cospx[i]->GetFunction("gaus")->GetParError(2);
+      rmsSm[i] = cospxSm[i]->GetRMS();
+      rmserrorSm[i] = cospxSm[i]->GetRMSError();
+    }else{
+      rmsSm[i] = 0.0;
+      rmserrorSm[i] = 0.0;
+    }
+  }
+
+  TCanvas *ccosresSm = new TCanvas("ccosresSm","ccosresSm");
+  TGraphErrors *grSm = new TGraphErrors(180,ncosSm,rmsSm,0,rmserrorSm);
+  grSm->SetName("ncosreso");
+  grSm->SetTitle("nmisscos resolution #pi^{+}#Sigma^{-}");
+  grSm->SetMarkerColor(2);
+  grSm->SetMarkerStyle(20);
+  grSm->GetYaxis()->SetTitle("cos#theta_n Resolution");
+  grSm->GetXaxis()->SetTitle("miss. n cos#theta_{lab}");
+  grSm->GetXaxis()->CenterTitle();
+  grSm->GetYaxis()->CenterTitle();
+  grSm->GetYaxis()->SetMaxDigits(2);
+  //gr->Print();
+  grSm->Draw("AP");
 
 
 }
