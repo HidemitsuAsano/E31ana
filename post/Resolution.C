@@ -12,8 +12,8 @@ void Resolution(const char* filename="../simpost/simIMpisigma_nSppim_pippimn_v15
 
   TFile *f = new TFile(filename);
   
-  const int nbinIMnpipi = 80;//1.2-2 GeV/c^2
-  const int nbinq = 100;// 25;//0-1.5 GeV/c
+  const int nbinIMnpipi = 180;//1.2-2 GeV/c^2
+  const int nbinq = 30;// 25;//0-1.5 GeV/c
   if(SimSpmode) {
     TCanvas *cq_IMnpipi_wSid_n_Sp = new TCanvas("cq_IMnpipi_wSid_n_Sp","cq_IMnpipi_wSid_n_Sp",800,800);
     cq_IMnpipi_wSid_n_Sp->cd();
@@ -145,15 +145,17 @@ void Resolution(const char* filename="../simpost/simIMpisigma_nSppim_pippimn_v15
     grsigma_q->SetMarkerStyle(20);
     grsigma_q->Draw("APE");
   
-    TCanvas *c1 = new TCanvas("c1","c1",1200,800);
-    TH2D* diffncos_ncos = (TH2D*)f->Get("diffncos_ncos");
-    diffncos_ncos->Draw("colz");
-    diffncos_ncos->RebinY(2);
-    TProfile *diffcos_ncos_pfx = (TProfile*)diffncos_ncos->ProfileX();
-    diffcos_ncos_pfx->SetLineColor(2);
-    diffcos_ncos_pfx->Draw("same");
+    TCanvas *ccos = new TCanvas("ccos","ccos",1200,800);
+    //TH2D* diffncos_ncos = (TH2D*)f->Get("diffncos_ncos");
+    //diffncos_ncos->Draw("colz");
+    TH2D* diffncos_IMnpipi = (TH2D*)f->Get("diffncos_IMnpipi");
+    diffncos_IMnpipi->Draw("colz");
+    //diffncos_ncos->RebinY(2);
+    TProfile *diffcos_IMnpipi_pfx = (TProfile*)diffncos_IMnpipi->ProfileX();
+    diffcos_IMnpipi_pfx->SetLineColor(2);
+    diffcos_IMnpipi_pfx->Draw("same");
   
-    const int nbinsx = diffncos_ncos->GetNbinsX();
+    const int nbinsx = diffncos_IMnpipi->GetNbinsX();
     std::cout << nbinsx << std::endl;
     TH1D* cospx[1000];
     double ncos[1000];
@@ -162,8 +164,8 @@ void Resolution(const char* filename="../simpost/simIMpisigma_nSppim_pippimn_v15
     double gaussigmaerr[1000];
     double rmserror[1000];
     for(int i=0;i<nbinsx;i++){
-      cospx[i] = (TH1D*)diffncos_ncos->ProjectionY(Form("cospx%d",i),i+1,i+2);
-      ncos[i] = diffncos_ncos->GetXaxis()->GetBinCenter(i+1);
+      cospx[i] = (TH1D*)diffncos_IMnpipi->ProjectionY(Form("cospx%d",i),i+1,i+2);
+      ncos[i] = diffncos_IMnpipi->GetXaxis()->GetBinCenter(i+1);
       if(cospx[i]->GetEntries()>10){
         //cospx[i]->Fit("gaus","q","",-0.005,0.005);
         //gaussigma[i] = cospx[i]->GetFunction("gaus")->GetParameter(2);
@@ -189,10 +191,6 @@ void Resolution(const char* filename="../simpost/simIMpisigma_nSppim_pippimn_v15
     gr->GetYaxis()->CenterTitle();
     gr->Print();
     gr->Draw("AP");
-  
-  
-  
-  
   }//if Spmode
 
   if(SimSmmode) {

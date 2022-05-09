@@ -29,7 +29,7 @@ void QACDS(TFile *f);
 void QAForward(TFile *f);
 void PhysicsPlots(TFile *f);
 
-void plothists(const char *filename="evanaIMpisigma_v202.root")
+void plothists(const char *filename="evanaIMpisigma_v241.root")
 {
   std::cout << "filename " << filename << std::endl;
   gStyle->SetPadGridX(gridon);
@@ -71,7 +71,7 @@ void plothists(const char *filename="evanaIMpisigma_v202.root")
   QAbeamline(f);
    
   //CDS QA 
-  //QACDS(f);
+  QACDS(f);
 
   //Forward QA
   //QAForward(f);
@@ -387,11 +387,23 @@ void QACDS(TFile *f){
   TH1F* h1_mul_CDH = (TH1F*)f->Get("mul_CDH");
   h1_mul_CDH->SetTitle("CDH multiplicity");
   h1_mul_CDH->SetXTitle("# of CDH segment");
-  h1_mul_CDH->Draw();
-  TH1F* h1_mul_CDH_clone = (TH1F*)h1_mul_CDH->Clone();
-  h1_mul_CDH_clone->GetXaxis()->SetRangeUser(2.5,3.5);
-  h1_mul_CDH_clone->SetFillColor(2);
-  h1_mul_CDH_clone->Draw("same");
+  //remove mul =0,1,2, this is because time window is applied to CDH hit selection.
+  for(int ibin=0;ibin<4;ibin++){
+    h1_mul_CDH->SetBinContent(ibin,0);
+    h1_mul_CDH->SetBinError(ibin,0);
+  }
+  h1_mul_CDH->Draw("HE");
+  TH1F* h1_mul_CDH_iso = (TH1F*)f->Get("mul_CDH_iso");
+  //h1_mul_CDH_iso->Scale(50);
+  h1_mul_CDH_iso->SetLineColor(2);
+  h1_mul_CDH_iso->Draw("HEsame");
+  cmul_CDH->SetLogy();
+  //TH1F* h1_mul_CDH_clone = (TH1F*)h1_mul_CDH->Clone();
+  //h1_mul_CDH_clone->GetXaxis()->SetRangeUser(2.5,3.5);
+  //h1_mul_CDH_clone->SetFillColor(2);
+  //h1_mul_CDH_clone->Draw("same");
+
+
 
   TCanvas *cmul_CDH_assoc = new TCanvas("cmul_CDH_assoc","mul_CDH_assoc");
   TH1F* h1_mul_CDH_assoc = (TH1F*)f->Get("mul_CDH_assoc");
@@ -466,12 +478,14 @@ void QACDS(TFile *f){
   TH1F* h1_DCA_pippim = (TH1F*)f->Get("DCA_pippim");
   h1_DCA_pippim->Draw();
 
+  /*
   TCanvas *cCDH_diffpos_z_pi_z = new TCanvas("CDH_diffpos_z_pi_z","CDH_diffpos_z_pi_z");
   TH2F* CDH_diffpos_z_pi_z = (TH2F*)f->Get("CDH_diffpos_z_pi_z");
   CDH_diffpos_z_pi_z->SetXTitle("CDC.z [cm]");
   CDH_diffpos_z_pi_z->SetYTitle("CDH.z - CDC.z [cm]");
   CDH_diffpos_z_pi_z->Draw("colz");
-  
+  */
+
   TCanvas *cCDH_mom_diffpos_pi_phi = new TCanvas("CDH_mom_diffpos_pi_phi","CDH_mom_diffpos_pi_phi");
   TH2F* CDH_mom_diffpos_pi_phi = (TH2F*)f->Get("CDH_mom_diffpos_pi_phi");
   CDH_mom_diffpos_pi_phi->SetXTitle("CDH.phi - CDC.phi [cm]");

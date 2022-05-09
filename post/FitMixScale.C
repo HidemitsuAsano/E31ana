@@ -190,14 +190,14 @@ void FitMixScale()
   TCanvas *c8_1 = new TCanvas("c8_1","c8_1");
   TH2D* MMnmiss_IMnpip_woK0_woSm_sub = (TH2D*)MMnmiss_IMnpip_woK0_woSm_data->Clone("MMnmiss_IMnpip_woK0_woSm_sub");
   MMnmiss_IMnpip_woK0_woSm_sub->Add(MMnmiss_IMnpip_woK0_woSm_mix,-1.0);
-  MMnmiss_IMnpip_woK0_woSm_sub->Rebin2D(2,2);
+  MMnmiss_IMnpip_woK0_woSm_sub->Rebin2D(4,2);
   MMnmiss_IMnpip_woK0_woSm_sub->GetXaxis()->SetRangeUser(1.0,1.7);
   MMnmiss_IMnpip_woK0_woSm_sub->Draw("colz");
   
   TCanvas *c8_2 = new TCanvas("c8_2","c8_2");
   TH2D* MMnmiss_IMnpim_woK0_woSp_sub = (TH2D*)MMnmiss_IMnpim_woK0_woSp_data->Clone("MMnmiss_IMnpim_woK0_woSp_sub");
   MMnmiss_IMnpim_woK0_woSp_sub->Add(MMnmiss_IMnpim_woK0_woSp_mix,-1.0);
-  MMnmiss_IMnpim_woK0_woSp_sub->Rebin2D(2,2);
+  MMnmiss_IMnpim_woK0_woSp_sub->Rebin2D(4,2);
   MMnmiss_IMnpim_woK0_woSp_sub->GetXaxis()->SetRangeUser(1.0,1.7);
   MMnmiss_IMnpim_woK0_woSp_sub->Draw("colz");
   

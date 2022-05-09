@@ -475,7 +475,7 @@ int main( int argc, char** argv )
     ev_cdc++;
 
     //### CDH ADC cut ###//
-    //cut values is determined segement by segment, because the hardware threshold for each is different 
+    //cut values are determined on a segement by segment basis, because each segment has a different hardware threshold 
     double discri[36]={
       2.65-0.4,//0
       2.25-0.2,//1

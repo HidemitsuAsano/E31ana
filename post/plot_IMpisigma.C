@@ -4311,6 +4311,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   diffncos_ncos->SetXTitle("Miss. N cos#theta");
   diffncos_ncos->SetYTitle("reco. - true  Miss. N cos#theta");
 
+  TH2D* diffncos_IMnpipi = new TH2D("diffncos_IMnpipi","diffncos_IMnpipi",nbinIMnpipi,IMnpipilow,IMnpipihi,2000,-0.1,0.1);
+  diffncos_IMnpipi->SetXTitle("IM (#pi#Sigma) [GeV/c^{2}]");
+  diffncos_IMnpipi->SetYTitle("reco. - true  Miss. N cos#theta");
   std::cout << __LINE__ << std::endl;
 
 
@@ -5664,6 +5667,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
           if(LVec_pip_pim_n.M()<1.6) {
             diffncos_ncos->Fill((*react_nmiss).CosTheta(),diffncos);
           }
+          diffncos_IMnpipi->Fill(LVec_pip_pim_n.M(),diffncos);
         }
       }//SimPGlag
 
@@ -5702,6 +5706,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
           q_IMnpipi_wSid_n_Sm_mc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
           diff_IMnpipi_wSid_n_Sm->Fill(LVec_pip_pim_n.M(),LVec_pip_pim_n.M()-LVec_pip_pim_n_mc.M(),weight);
           diff_q_wSid_n_Sm->Fill(qkn.P(),qkn.P()-qkn_mc.P(),weight);
+          double diffncos = cos_nmisslab - (*react_nmiss).CosTheta();
+          if(LVec_pip_pim_n.M()<1.6) {
+            diffncos_ncos->Fill((*react_nmiss).CosTheta(),diffncos);
+          }
+          diffncos_IMnpipi->Fill(LVec_pip_pim_n.M(),diffncos);
         }
       }
       
