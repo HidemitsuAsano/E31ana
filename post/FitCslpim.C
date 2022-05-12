@@ -93,7 +93,7 @@ void FitCslpim()
   for(int ix=0;ix<CS_sum_fit->GetNbinsX();ix++){
     for(int iy=0;iy<CS_sum_fit->GetNbinsY();iy++){
       double acccont = acc_sum->GetBinContent(ix,iy);
-      if(acccont<0.01){
+      if(acccont<0.01){//remove small acceptance bin
         CS_sum_fit->SetBinContent(ix,iy,0);
         CS_sum_fit->SetBinError(ix,iy,0);
       }
@@ -133,7 +133,7 @@ void FitCslpim()
   f2hist->Draw("colz");
   */
 
-  TF2 *f2 = new TF2("f2",VGandLandau,1.32,1.44,0.39,0.75,6);
+  TF2 *f2 = new TF2("f2",VGandLandau,1.32,1.44,0.40,0.80,6);
   f2->SetParLimits(0,0,10000000);
   f2->SetParameter(0,0.00025);
   f2->SetParameter(1,0.045);
@@ -142,9 +142,9 @@ void FitCslpim()
   f2->SetParLimits(3,0.51,0.55);
   f2->SetParameter(4,0.09);
   f2->SetParLimits(4,0.01,0.1);//landau sigma
-  f2->FixParameter(5,0.001);
+  f2->FixParameter(5,0.0005);
   f2->SetNpx(8);
-  f2->SetNpy(12);
+  f2->SetNpy(8);
   f2->Print("base");
   CS_sum_fit->Fit("f2","R","");
   //f2->Draw("cont1 ");
@@ -160,7 +160,9 @@ void FitCslpim()
   const int binx1440 = CS_sum_fit->GetXaxis()->FindBin(1.44);
   const int biny400 = CS_sum_fit->GetYaxis()->FindBin(0.39);
   const int biny750 = CS_sum_fit->GetYaxis()->FindBin(0.75);
-  CS_sum_fit->ProjectionX("CS_sum_fit_px",biny400,biny750)->Draw("HE");
+  TH1D* CS_sum_fit_px = (TH1D*)CS_sum_fit->ProjectionX("CS_sum_fit_cut_px",biny400,biny750);
+  CS_sum_fit_px->SetTitle("q: 400-750");
+  CS_sum_fit_px->Draw("HE");
   f2hist->SetFillColor(0);
   TH1D* f2hist_px = (TH1D*)f2hist->ProjectionX("f2hist_px");
   std::cout << "width x " << f2hist_px->GetBinWidth(1) << std::endl;
@@ -168,16 +170,18 @@ void FitCslpim()
   f2hist_px->Draw("same");
 
   cfittest->cd(4);
-  CS_sum_fit->ProjectionY("CS_sum_fit_py",binx1320,binx1440)->Draw("HE");
-  TH1D* f2hist_py = (TH1D*)f2hist->ProjectionY();
+  TH1D* CS_sum_fit_py = (TH1D*)CS_sum_fit->ProjectionY("CS_sum_fit_cut_py",binx1320,binx1440);
+  CS_sum_fit_py->SetTitle("M: 1320-1440");
+  CS_sum_fit_py->Draw("HE");
+  TH1D* f2hist_py = (TH1D*)f2hist->ProjectionY("f2hist_py");
   f2hist_py->Draw("same");
   std::cout << "width y " << f2hist_py->GetBinWidth(1) << std::endl;
   
   
-  TF2 *f3 = new TF2("f3",VGandLandau,1.32,1.44,0.21,0.99,6);
+  TF2 *f3 = new TF2("f3",VGandLandau,1.32,1.44,0.20,1.00,6);
   f3->SetParameters(f2->GetParameters());
   f3->SetNpx(8);
-  f3->SetNpy(26);
+  f3->SetNpy(16);
   f3->Print();
   
 
@@ -198,6 +202,26 @@ void FitCslpim()
   f3hist_py->SetLineColor(4);
   f3hist_py->SetFillColor(0);
   f3hist_py->Draw("same");
+
+  
+  TCanvas *callrangecheck = new TCanvas("callrangecheck","callrangecheck");
+  callrangecheck->Divide(2,2);
+  callrangecheck->cd(3);
+  CS_sum_fit->Draw("colz");
+  
+  callrangecheck->cd(1);
+  CS_sum_fit->ProjectionX()->Draw("HE");
+
+
+  callrangecheck->cd(4);
+  CS_sum_fit->ProjectionY()->Draw("HE");
+
+
+
+
+
+
+
 
   TCanvas *cCS_q_fit = new TCanvas("cCS_q_fit","cCS_q_fit",1000,800);
   const int bin1360 = CS_sum_fit->GetXaxis()->FindBin(1.35);
