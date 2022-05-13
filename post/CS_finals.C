@@ -1,5 +1,10 @@
 void CS_finals()
 {
+  if(gROOT->GetVersionInt() < 60000){
+    std::cout << "Use ROOT6 !!" << std::endl;
+    return;
+  }
+
   const int Version = 241;
   const int dEcut[3]={2,4,6};
 

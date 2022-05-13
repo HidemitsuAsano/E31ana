@@ -378,7 +378,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   
 
   const unsigned int nwbin = 3;
-  const int nbinIMnpipi = 180;//1.2-2 GeV/c^2
+  const int nbinIMnpipi = 180;//1.2-2.1 GeV/c^2
   const float IMnpipilow = 1.2;
   const float IMnpipihi = 2.1;
   const int nbinq = 30;// 25;//0-1.5 GeV/c
