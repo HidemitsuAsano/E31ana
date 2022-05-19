@@ -127,8 +127,6 @@ void CS_finals()
       if(yval[ip]<=0.00001) gDecoErrorSpSm_CS[iq]->RemovePoint(ip);
     }
   }
-  
-
 
 
   //TH2D* CS_q_IMppipi_p_wL_sum;
@@ -153,9 +151,9 @@ void CS_finals()
     CS_lpim_qcut[iq]->SetMinimum(0);
     CS_lpim_qcut[iq]->SetFillColor(0);
   }
-  CS_lpim_qcut[0]->GetYaxis()->SetRangeUser(0,0.6);
-  CS_lpim_qcut[1]->GetYaxis()->SetRangeUser(0,0.35);
-  CS_lpim_qcut[2]->GetYaxis()->SetRangeUser(0.35,0.6);
+  CS_lpim_qcut[0]->GetYaxis()->SetRangeUser(0,0.65);//total
+  CS_lpim_qcut[1]->GetYaxis()->SetRangeUser(0,0.35);//
+  CS_lpim_qcut[2]->GetYaxis()->SetRangeUser(0.35,0.65);
   double binwidthq = CS_lpim_qcut[0]->GetYaxis()->GetBinWidth(1)*1000.0; 
   std::cout << "binq width " << binwidthq  << std::endl;
   TH1D* CS_S1385_ToSp[3]; 
