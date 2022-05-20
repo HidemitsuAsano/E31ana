@@ -341,13 +341,51 @@ void CS_finals()
       if(fabs(ye6)<fabs(ye4) && ye4<0) gdEErrorK0_CS[iq]->SetPointEYlow(ip,fabs(ye4));
     }
   }
+
   TGraphAsymmErrors *gS1385ErrorSp[3];//
   TGraphAsymmErrors *gS1385ErrorSm[3];//
   TGraphAsymmErrors *gS1385ErrorSpSm[3];//
   
   for(int iq=0;iq<3;iq++){
+    gS1385ErrorSp[iq] = new TGraphAsymmErrors(CS_S1385_ToSp[iq][1]);
+    gS1385ErrorSm[iq] = new TGraphAsymmErrors(CS_S1385_ToSm[iq][1]);
+    gS1385ErrorSpSm[iq] = new TGraphAsymmErrors(CS_S1385_ToSpSm[iq][1]);
+ 
+    for(int ip=0;ip<(gS1385ErrorSp[iq]->GetN());ip++){
+      double valup = CS_S1385_ToSp[iq][2]->GetBinContent(ip+1); 
+      double valdown = CS_S1385_ToSp[iq][0]->GetBinContent(ip+1);
+      double valdef = CS_S1385_ToSp[iq][1]->GetBinContent(ip+1);
 
+      double yeup = valup - valdef;
+      double yedown = valdef - yedown;
 
+      gS1385ErrorSp[iq]->SetPointEYhigh(ip,yeup);
+      gS1385ErrorSp[iq]->SetPointEYlow(ip,yedown);
+    }
+    
+    for(int ip=0;ip<(gS1385ErrorSm[iq]->GetN());ip++){
+      double valup = CS_S1385_ToSm[iq][2]->GetBinContent(ip+1); 
+      double valdown = CS_S1385_ToSm[iq][0]->GetBinContent(ip+1);
+      double valdef = CS_S1385_ToSm[iq][1]->GetBinContent(ip+1);
+
+      double yeup = valup - valdef;
+      double yedown = valdef - yedown;
+
+      gS1385ErrorSm[iq]->SetPointEYhigh(ip,yeup);
+      gS1385ErrorSm[iq]->SetPointEYlow(ip,yedown);
+    }
+
+    for(int ip=0;ip<(gS1385ErrorSpSm[iq]->GetN());ip++){
+      double valup = CS_S1385_ToSpSm[iq][2]->GetBinContent(ip+1); 
+      double valdown = CS_S1385_ToSpSm[iq][0]->GetBinContent(ip+1);
+      double valdef = CS_S1385_ToSpSm[iq][1]->GetBinContent(ip+1);
+
+      double yeup = valup - valdef;
+      double yedown = valdef - yedown;
+
+      gS1385ErrorSpSm[iq]->SetPointEYhigh(ip,yeup);
+      gS1385ErrorSpSm[iq]->SetPointEYlow(ip,yedown);
+    }
 
   }//iq
   
@@ -373,8 +411,12 @@ void CS_finals()
     gMIXErrorSp_CS[iq]->SetLineColor(4);
     gMIXErrorSp_CS[iq]->Draw("3");
     if(iq<3){
-      CS_S1385_ToSp[iq][1]->SetLineColor(6);
-      CS_S1385_ToSp[iq][1]->Draw("same");
+      gS1385ErrorSp[iq]->SetFillStyle(3001);
+      gS1385ErrorSp[iq]->SetFillColor(6);
+      gS1385ErrorSp[iq]->SetMarkerColor(6);
+      gS1385ErrorSp[iq]->SetLineColor(6);
+      //CS_S1385_ToSp[iq][1]->SetLineColor(6);
+      gS1385ErrorSp[iq]->Draw("3");
     }
   }
 
@@ -398,8 +440,12 @@ void CS_finals()
     gMIXErrorSm_CS[iq]->SetLineColor(4);
     gMIXErrorSm_CS[iq]->Draw("3");
     if(iq<3){
-      CS_S1385_ToSm[iq][1]->SetLineColor(6);
-      CS_S1385_ToSm[iq][1]->Draw("same");
+      gS1385ErrorSm[iq]->SetFillStyle(3001);
+      gS1385ErrorSm[iq]->SetFillColor(6);
+      gS1385ErrorSm[iq]->SetMarkerColor(6);
+      gS1385ErrorSm[iq]->SetLineColor(6);
+      //CS_S1385_ToSm[iq][1]->SetLineColor(6);
+      gS1385ErrorSm[iq]->Draw("3");
     }
   }
 
@@ -436,10 +482,12 @@ void CS_finals()
     gMIXErrorSpSm_CS[iq]->SetLineColor(4);
     gMIXErrorSpSm_CS[iq]->Draw("3");
     if(iq<3){
-      CS_S1385_ToSpSm[iq][1]->SetFillStyle(0);
-      CS_S1385_ToSpSm[iq][1]->SetFillColor(0);
-      CS_S1385_ToSpSm[iq][1]->SetLineColor(6);
-      CS_S1385_ToSpSm[iq][1]->Draw("same");
+      gS1385ErrorSpSm[iq]->SetFillStyle(3001);
+      gS1385ErrorSpSm[iq]->SetFillColor(6);
+      gS1385ErrorSpSm[iq]->SetMarkerColor(6);
+      gS1385ErrorSpSm[iq]->SetLineColor(6);
+      //CS_S1385_ToSm[iq][1]->SetLineColor(6);
+      gS1385ErrorSpSm[iq]->Draw("3");
     }
   }
 
