@@ -7,10 +7,11 @@ TH1D* IMnpip_woK0_woSm_mix;
 TH1D* MMnmiss_woK0_woSp_mix;
 TH1D* IMnpim_woK0_woSp_mix;
 
-double sysScale=0.1;
+double sysScale=0.05;
 const int dEcut=2;
 const int Version=241;
 const bool Scale=false;
+const int qcut = 0;
 
 void FitMixScale()
 {
@@ -214,66 +215,125 @@ void FitMixScale()
   int nlow = MMnmiss_IMnpip_woK0_woSm_data->GetYaxis()->FindBin(anacuts::neutron_MIN);
   int nhi = MMnmiss_IMnpip_woK0_woSm_data->GetYaxis()->FindBin(anacuts::neutron_MAX);
   int q350 = q_IMnpipi_wSid_n_data->GetYaxis()->FindBin(0.35);
+  int q650 = q_IMnpipi_wSid_n_data->GetYaxis()->FindBin(0.65);
   TH1D* MMnmiss_Sp_data = (TH1D*)MMnmiss_IMnpip_woK0_woSm_data->ProjectionY("MMnmiss_Sp_data",Spbinlow,Spbinhi);
-  TH1D* MMnmiss_Sp_mix = (TH1D*)MMnmiss_IMnpip_woK0_woSm_mix->ProjectionY("MMnmiss_Sp_mix",Spbinlow,Spbinhi);
+  TH1D* MMnmiss_Sp_mix[3];
+  for(int isys=0;isys<3;isys++){  
+    MMnmiss_Sp_mix[isys] = (TH1D*)MMnmiss_IMnpip_woK0_woSm_mix->ProjectionY(Form("MMnmiss_Sp_mix_%d",isys),Spbinlow,Spbinhi);
+    MMnmiss_Sp_mix[isys]->Scale(1+(isys-1)*sysScale);
+  }
   TH1D* IMnpip_n_data = (TH1D*)MMnmiss_IMnpip_woK0_woSm_data->ProjectionX("IMnpip_n_data",nlow,nhi);
-  TH1D* IMnpip_n_mix  = (TH1D*)MMnmiss_IMnpip_woK0_woSm_mix->ProjectionX("IMnpip_n_mix",nlow,nhi);
+  TH1D* IMnpip_n_mix[3];
+  for(int isys=0;isys<3;isys++){  
+    IMnpip_n_mix[isys] = (TH1D*)MMnmiss_IMnpip_woK0_woSm_mix->ProjectionX(Form("IMnpip_n_mix_%d",isys),nlow,nhi);
+    IMnpip_n_mix[isys]->Scale(1+(isys-1)*sysScale);
+  }
   TH1D* MMnmiss_Sm_data = (TH1D*)MMnmiss_IMnpim_woK0_woSp_data->ProjectionY("MMnmiss_Sm_data",Smbinlow,Smbinhi);
-  TH1D* MMnmiss_Sm_mix = (TH1D*)MMnmiss_IMnpim_woK0_woSp_mix->ProjectionY("MMnmiss_Sm_mix",Smbinlow,Smbinhi);
+  TH1D* MMnmiss_Sm_mix[3];
+  for(int isys=0;isys<3;isys++){
+    MMnmiss_Sm_mix[isys] = (TH1D*)MMnmiss_IMnpim_woK0_woSp_mix->ProjectionY(Form("MMnmiss_Sm_mix_%d",isys),Smbinlow,Smbinhi);
+    MMnmiss_Sm_mix[isys]->Scale(1+(isys-1)*sysScale);
+  }
   TH1D* IMnpim_n_data = (TH1D*)MMnmiss_IMnpim_woK0_woSp_data->ProjectionX("IMnpim_n_data",nlow,nhi);
-  TH1D* IMnpim_n_mix  = (TH1D*)MMnmiss_IMnpim_woK0_woSp_mix->ProjectionX("IMnpim_n_mix",nlow,nhi);
+  TH1D* IMnpim_n_mix[3]; 
+  for(int isys=0;isys<3;isys++){
+    IMnpim_n_mix[isys] = (TH1D*)MMnmiss_IMnpim_woK0_woSp_mix->ProjectionX(Form("IMnpim_n_mix_%d",isys),nlow,nhi);
+    IMnpim_n_mix[isys]->Scale(1+(isys-1)*sysScale);
+  }
+  
   TH1D* IMpippim_woSid_data = (TH1D*)MMnmiss_IMpippim_woSid_data->ProjectionX("IMpippim_data",nlow,nhi);
-  TH1D* IMpippim_woSid_mix = (TH1D*)MMnmiss_IMpippim_woSid_mix->ProjectionX("IMpippim_mix",nlow,nhi);
-  TH1D* IMnpipi_wSid_n_data_qhi = (TH1D*)q_IMnpipi_wSid_n_data->ProjectionX("IMnpipi_wSid_n_data_qhi",q350,1000);
-  TH1D* IMnpipi_wSid_n_mix_qhi = (TH1D*)q_IMnpipi_wSid_n_mix->ProjectionX("IMnpipi_wSid_n_mix_qhi",q350,1000);
+  TH1D* IMpippim_woSid_mix[3];
+  for(int isys=0;isys<3;isys++){
+    IMpippim_woSid_mix[isys] = (TH1D*)MMnmiss_IMpippim_woSid_mix->ProjectionX(Form("IMpippim_mix_%d",isys),nlow,nhi);
+    IMpippim_woSid_mix[isys]->Scale(1+(isys-1)*sysScale);
+  }
+  TH1D* IMnpipi_wSid_n_data_qhi = (TH1D*)q_IMnpipi_wSid_n_data->ProjectionX("IMnpipi_wSid_n_data_qhi",q350,q650);
+  TH1D* IMnpipi_wSid_n_mix_qhi[3]; 
+  for(int isys=0;isys<3;isys++){
+    IMnpipi_wSid_n_mix_qhi[isys] = (TH1D*)q_IMnpipi_wSid_n_mix->ProjectionX(Form("IMnpipi_wSid_n_mix_qhi_%d",isys),q350,q650);   
+    IMnpipi_wSid_n_mix_qhi[isys]->Scale(1+(isys-1)*sysScale);
+  }
   TH1D* IMnpipi_wSid_n_data_qlo = (TH1D*)q_IMnpipi_wSid_n_data->ProjectionX("IMnpipi_wSid_n_data_qlo",0,q350);
-  TH1D* IMnpipi_wSid_n_mix_qlo = (TH1D*)q_IMnpipi_wSid_n_mix->ProjectionX("IMnpipi_wSid_n_mix_qlo",0,q350);
+  TH1D* IMnpipi_wSid_n_mix_qlo[3];
+  for(int isys=0;isys<3;isys++){
+    IMnpipi_wSid_n_mix_qlo[isys] = (TH1D*)q_IMnpipi_wSid_n_mix->ProjectionX(Form("IMnpipi_wSid_n_mix_qlo_%d",isys),0,q350);
+    IMnpipi_wSid_n_mix_qlo[isys]->Scale(1+(isys-1)*sysScale);
+  }
+  
 
   TCanvas *c9 = new TCanvas("c9","c9");
   MMnmiss_Sp_data->Draw();
-  MMnmiss_Sp_mix->SetLineColor(2);
-  MMnmiss_Sp_mix->Draw("same");
+  MMnmiss_Sp_mix[1]->SetLineColor(2);
+  MMnmiss_Sp_mix[0]->SetLineColor(4);
+  MMnmiss_Sp_mix[2]->SetLineColor(4);
+  MMnmiss_Sp_mix[1]->Draw("same");
+  MMnmiss_Sp_mix[0]->Draw("same");
+  MMnmiss_Sp_mix[2]->Draw("same");
 
   TCanvas *c10 = new TCanvas("c10","c10");
   IMnpip_n_data->RebinX(2);
-  IMnpip_n_mix->RebinX(2);
   IMnpip_n_data->Draw();
-  IMnpip_n_mix->SetLineColor(2);
-  IMnpip_n_mix->Draw("same");
+  IMnpip_n_mix[1]->SetLineColor(2);
+  IMnpip_n_mix[0]->SetLineColor(4);
+  IMnpip_n_mix[2]->SetLineColor(4);
+  for(int isys=0;isys<3;isys++){
+    IMnpip_n_mix[isys]->RebinX(2);
+    IMnpip_n_mix[isys]->Draw("same");
+  }
 
 
   TCanvas *c11 = new TCanvas("c11","c11");
   MMnmiss_Sm_data->Draw();
-  MMnmiss_Sm_mix->SetLineColor(2);
-  MMnmiss_Sm_mix->Draw("same");
+  MMnmiss_Sm_mix[1]->SetLineColor(2);
+  MMnmiss_Sm_mix[0]->SetLineColor(4);
+  MMnmiss_Sm_mix[2]->SetLineColor(4);
+  for(int isys=0;isys<3;isys++){
+    MMnmiss_Sm_mix[isys]->Draw("same");
+  }
 
   TCanvas *c12 = new TCanvas("c12","c12");
   IMnpim_n_data->RebinX(2);
-  IMnpim_n_mix->RebinX(2);
   IMnpim_n_data->Draw();
-  IMnpim_n_mix->SetLineColor(2);
-  IMnpim_n_mix->Draw("same");
+  IMnpim_n_mix[1]->SetLineColor(2);
+  IMnpim_n_mix[0]->SetLineColor(4);
+  IMnpim_n_mix[2]->SetLineColor(4);
+  for(int isys=0;isys<3;isys++){
+    IMnpim_n_mix[isys]->RebinX(2);
+    IMnpim_n_mix[isys]->Draw("same");
+  }
   
   TCanvas *c13 = new TCanvas("c13","c13");
   IMpippim_woSid_data->RebinX(2);
-  IMpippim_woSid_mix->RebinX(2);
   IMpippim_woSid_data->Draw();
-  IMpippim_woSid_mix->SetLineColor(2);
-  IMpippim_woSid_mix->Draw("same");
+  IMpippim_woSid_mix[1]->SetLineColor(2);
+  IMpippim_woSid_mix[0]->SetLineColor(4);
+  IMpippim_woSid_mix[2]->SetLineColor(4);
+  for(int isys=0;isys<3;isys++){
+    IMpippim_woSid_mix[isys]->RebinX(2);
+    IMpippim_woSid_mix[isys]->Draw("same");
+  }
 
   TCanvas *c14 = new TCanvas("c14","c14");
   IMnpipi_wSid_n_data_qhi->RebinX(3);
-  IMnpipi_wSid_n_mix_qhi->RebinX(3);
   IMnpipi_wSid_n_data_qhi->Draw();
-  IMnpipi_wSid_n_mix_qhi->SetLineColor(2);
-  IMnpipi_wSid_n_mix_qhi->Draw("same");
-  
+  IMnpipi_wSid_n_mix_qhi[1]->SetLineColor(2);
+  IMnpipi_wSid_n_mix_qhi[0]->SetLineColor(4);
+  IMnpipi_wSid_n_mix_qhi[2]->SetLineColor(4);
+  for(int isys=0;isys<3;isys++){
+    IMnpipi_wSid_n_mix_qhi[isys]->RebinX(3);
+    IMnpipi_wSid_n_mix_qhi[isys]->Draw("same");
+  }
+
   TCanvas *c15 = new TCanvas("c15","c15");
   IMnpipi_wSid_n_data_qlo->RebinX(3);
-  IMnpipi_wSid_n_mix_qlo->RebinX(3);
   IMnpipi_wSid_n_data_qlo->Draw();
-  IMnpipi_wSid_n_mix_qlo->SetLineColor(2);
-  IMnpipi_wSid_n_mix_qlo->Draw("same");
+  IMnpipi_wSid_n_mix_qlo[1]->SetLineColor(2);
+  IMnpipi_wSid_n_mix_qlo[0]->SetLineColor(4);
+  IMnpipi_wSid_n_mix_qlo[2]->SetLineColor(4);
+  for(int isys=0;isys<3;isys++){
+    IMnpipi_wSid_n_mix_qlo[isys]->RebinX(3);
+    IMnpipi_wSid_n_mix_qlo[isys]->Draw("same");
+  }
 
   TCanvas *c16 = new TCanvas("c16","c16");
   q_IMnpipi_wSid_n_data->Draw("colz");
