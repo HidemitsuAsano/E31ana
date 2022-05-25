@@ -147,6 +147,7 @@ double func_cq(double *x, double *par)
   return f;
 }
 
+
 double func_C(double *x, double *par)
 // x      = q
 // par[0] = m
@@ -176,12 +177,24 @@ double func(double *x, double *par)
   return f;
 }
 
-double funclab(double *x, double *par)
+double functheta(double q, double M)
 {
-  double q = x[0];
-  double f = func_cq(x,par);
-
-  return f;
+  double x[1];
+  x[0]=q;
+  double par[1];
+  par[0]=M;
+  double costhetaCM = func_C(x,par)/TMath::Sqrt(func_C(x,par)*func_C(x,par)+func_S2(x,par));
+  return acos(costhetaCM)*180./3.1415926535;
 }
 
+double funcos(double q, double M)
+{
+  double x[1];
+  x[0]=q;
+  double par[1];
+  par[0]=M;
+  double costhetaCM = func_C(x,par)/TMath::Sqrt(func_C(x,par)*func_C(x,par)+func_S2(x,par));
+  return costhetaCM;
+
+}
 

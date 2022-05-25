@@ -178,9 +178,9 @@ void FitCslpim()
   std::cout << "width y " << f2hist_py->GetBinWidth(1) << std::endl;
   
   
-  TF2 *f3 = new TF2("f3",VGandLandau,1.32,1.44,0.20,1.00,6);
+  TF2 *f3 = new TF2("f3",VGandLandau,1.32,1.47,0.20,1.00,6);
   f3->SetParameters(f2->GetParameters());
-  f3->SetNpx(8);
+  f3->SetNpx(10);
   f3->SetNpy(16);
   f3->Print();
   
@@ -198,7 +198,9 @@ void FitCslpim()
   f3hist_px->Draw("same");
 
   cfittest->cd(4);
-  TH1D* f3hist_py = (TH1D*)f3hist->ProjectionY("f3hist_py");
+  const int bin1320_f3 = f3hist->GetXaxis()->FindBin(1.32);
+  const int bin1440_f3 = f3hist->GetXaxis()->FindBin(1.44);
+  TH1D* f3hist_py = (TH1D*)f3hist->ProjectionY("f3hist_py",bin1320_f3,bin1440_f3);
   f3hist_py->SetLineColor(4);
   f3hist_py->SetFillColor(0);
   f3hist_py->Draw("same");

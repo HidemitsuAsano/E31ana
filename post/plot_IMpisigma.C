@@ -46,6 +46,7 @@ const int ngap=1;
 const int nzone=2;//for wide range side band study
 const unsigned int LOWside=0;
 const unsigned int HIGHside=1;
+const double mixsysError = 0.05;
 
 //0: diagonal cut for S+/S- separation
 //1: 3 sigma cut
@@ -5219,7 +5220,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
 
     //std::cout << __LINE__ << std::endl;
     double weight = 1.0;
-    double sysupdown = 1.0+0.1*(double)sysud;
+    double sysupdown = 1.0+mixsysError*(double)sysud;
     if(MIXmode){
       //v239
       //weight = 4.24608060240400029e-02*0.858179*0.967316*1.02354*1.04191*sysupdown;

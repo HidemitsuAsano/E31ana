@@ -270,6 +270,13 @@ void FitMixScale()
   MMnmiss_Sp_mix[0]->Draw("same");
   MMnmiss_Sp_mix[2]->Draw("same");
 
+  TCanvas *c9_1 = new TCanvas("c9_1","c9_1");
+  TH1D* MMnmiss_Sp_sub = (TH1D*)MMnmiss_Sp_data->Clone("MMnmiss_Sp_sub");
+  MMnmiss_Sp_sub->Add(MMnmiss_Sp_mix[1],-1);
+  MMnmiss_Sp_sub->Draw("HE");
+  TF1* fMMSp = new TF1("fMMSp","gaus",0,1.5);
+  MMnmiss_Sp_sub->Fit("fMMSp","","",0.85,1.0);
+ 
   TCanvas *c10 = new TCanvas("c10","c10");
   IMnpip_n_data->RebinX(2);
   IMnpip_n_data->Draw();
@@ -280,6 +287,14 @@ void FitMixScale()
     IMnpip_n_mix[isys]->RebinX(2);
     IMnpip_n_mix[isys]->Draw("same");
   }
+  
+  TCanvas *c10_1 = new TCanvas("c10_1","c10_1");
+  TH1D* IMnpip_n_sub = (TH1D*)IMnpip_n_data->Clone("IMnpip_n_sub");
+  IMnpip_n_sub->Add(IMnpip_n_mix[1],-1);
+  IMnpip_n_sub->GetXaxis()->SetRangeUser(1.1,1.3);
+  IMnpip_n_sub->Draw("HE");
+  TF1* fIMSp = new TF1("fIMSp","gaus");
+  IMnpip_n_sub->Fit("fIMSp","","",1.16,1.22);
 
 
   TCanvas *c11 = new TCanvas("c11","c11");
@@ -290,6 +305,12 @@ void FitMixScale()
   for(int isys=0;isys<3;isys++){
     MMnmiss_Sm_mix[isys]->Draw("same");
   }
+  TCanvas *c11_1 = new TCanvas("c11_1","c11_1");
+  TH1D* MMnmiss_Sm_sub = (TH1D*)MMnmiss_Sm_data->Clone("MMnmiss_Sm_sub");
+  MMnmiss_Sm_sub->Add(MMnmiss_Sm_mix[1],-1);
+  MMnmiss_Sm_sub->Draw("HE");
+  TF1* fMMSm = new TF1("fMMSm","gaus");
+  MMnmiss_Sm_sub->Fit("fMMSm","","",0.85,1.0);
 
   TCanvas *c12 = new TCanvas("c12","c12");
   IMnpim_n_data->RebinX(2);
@@ -301,6 +322,13 @@ void FitMixScale()
     IMnpim_n_mix[isys]->RebinX(2);
     IMnpim_n_mix[isys]->Draw("same");
   }
+  TCanvas *c12_1 = new TCanvas("c12_1","c12_1");
+  TH1D* IMnpim_n_sub = (TH1D*)IMnpim_n_data->Clone("IMnpim_n_sub");
+  IMnpim_n_sub->Add(IMnpim_n_mix[1],-1);
+  IMnpim_n_sub->GetXaxis()->SetRangeUser(1.1,1.3);
+  IMnpim_n_sub->Draw("HE");
+  TF1* fIMSm = new TF1("fIMSm","gaus");
+  IMnpim_n_sub->Fit("fIMSm","","",1.17,1.22);
   
   TCanvas *c13 = new TCanvas("c13","c13");
   IMpippim_woSid_data->RebinX(2);
@@ -340,6 +368,66 @@ void FitMixScale()
   
   TCanvas *c17 = new TCanvas("c17","c17");
   q_IMnpipi_wSid_n_mix->Draw("colz");
+
+  TCanvas *c18 = new TCanvas("c18","c18");
+  TH2D* MMnmiss_IMnpipi_wSid_data = (TH2D*)fr->Get("MMnmiss_IMnpipi_wSid");
+  TH2D* MMnmiss_IMnpipi_wSid_mix = (TH2D*)fmix->Get("MMnmiss_IMnpipi_wSid");
+  TH1D* MMnmiss_wSid_data = (TH1D*)MMnmiss_IMnpipi_wSid_data->ProjectionY("MMnmiss_wSid_data");
+  TH1D* MMnmiss_wSid_mix[3];
+  for(int isys=0;isys<3;isys++){
+    MMnmiss_wSid_mix[isys] = (TH1D*)MMnmiss_IMnpipi_wSid_mix->ProjectionY(Form("MMnmiss_wSid_mix_%d",isys));
+  }
+  MMnmiss_wSid_data->Draw("E");
+  MMnmiss_wSid_mix[1]->SetLineColor(2);
+  MMnmiss_wSid_mix[0]->SetLineColor(4);
+  MMnmiss_wSid_mix[2]->SetLineColor(4);
+  for(int isys=0;isys<3;isys++){
+    MMnmiss_wSid_mix[isys]->Scale(1+(isys-1)*sysScale);
+    MMnmiss_wSid_mix[isys]->Draw("same");
+  }
+  TCanvas *c19 = new TCanvas("c19","c19");
+  TH1D* MMnmiss_wSid_sub = (TH1D*)MMnmiss_wSid_data->Clone("MMnmiss_wSid_sub");
+  MMnmiss_wSid_sub->Add(MMnmiss_wSid_mix[1],-1.0);
+  MMnmiss_wSid_sub->Draw();
+
+  TF1* fMM = new TF1("fMM","gaus",0.85,1.05);
+  MMnmiss_wSid_sub->Fit("fMM","","",0.85,1.05);
+  
+  TF1* fMMLam = new TF1("fMMLam","gaus",1.05,1.15);
+  MMnmiss_wSid_sub->Fit("fMMLam","","",1.05,1.15);
+
+  MMnmiss_wSid_sub->Draw();
+  fMM->Draw("same");
+  fMMLam->Draw("same");
+
+  TCanvas *c = NULL;
+  TSeqCollection *SCol = gROOT->GetListOfCanvases();
+  int size = SCol->GetSize();
+  TIter next(SCol);
+  TString pdfname = Form("fitmixscale.pdf");
+  for(int i=0;i<size;i++){
+    //pdf->NewPage();
+    c= (TCanvas*)next();
+    c->Modified();
+    c->Update();
+    c->Draw();
+    c->cd();
+    //inside the canvas
+    //TPaveText *pt = new TPaveText(.74,.81,0.9,0.90,"NDC");
+    c->Modified();
+    c->Update();
+    //std::cout << c->GetName() << std::endl;
+    //make 1 pdf file
+    if(i==0) c->Print(pdfname+"(",Form("pdf Title:%s",c->GetTitle()));
+    else if(i==size-1)c->Print(pdfname+")",Form("pdf Title:%s",c->GetTitle())); 
+    else c->Print(pdfname,Form("pdf Title:%s",c->GetTitle())); 
+    //make separated pdf files
+    //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
+  }
+
+
+  
+
 
 }
 
@@ -394,3 +482,5 @@ Double_t fit_MMnmiss_Sm(Double_t *x,Double_t *par)
    
   return br;
 }
+
+
