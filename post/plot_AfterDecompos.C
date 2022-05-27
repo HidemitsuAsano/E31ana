@@ -618,6 +618,9 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   }
 
 
+  TFile *fnuSp = new TFile("NumericalRootFinder_Spmode.root");
+  TMultiGraph *mg = (TMultiGraph*)fnuSp->Get("mg");
+  
   TCanvas *cq_IMnpipi_Sp_afterDeco[4];
   TH2D* q_IMnpipi_Sp_sum[4][3];
   for(int iq=0;iq<4;iq++){
@@ -629,10 +632,15 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     }//isys
     cq_IMnpipi_Sp_afterDeco[iq] = new TCanvas(Form("cq_IMnpipi_Sp_afterDeco%d",iq),Form("cq_IMnpipi_Sp_afterDeco%d",iq));
     cq_IMnpipi_Sp_afterDeco[iq]->cd();
+    q_IMnpipi_Sp_sum[iq][1]->GetXaxis()->SetTitle("IM(#pi^{-}#Sigma^{+}) [GeV/c^{2}]");
     //q_IMnpipi_Sp_sum[iq][1]->SetMinimum(0);
     q_IMnpipi_Sp_sum[iq][1]->Draw("colz");
+    mg->Draw("c");
   }
 
+  TFile *fnuSm = new TFile("NumericalRootFinder_Smmode.root");
+  fnuSm->cd();
+  TMultiGraph *mg2 = (TMultiGraph*)fnuSm->Get("mg");
   TCanvas *cq_IMnpipi_Sm_afterDeco[4];
   TH2D* q_IMnpipi_Sm_sum[4][3];
   for(int iq=0;iq<4;iq++){
@@ -644,8 +652,10 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     }//isys
     cq_IMnpipi_Sm_afterDeco[iq] = new TCanvas(Form("cq_IMnpipi_Sm_afterDeco%d",iq),Form("cq_IMnpipi_Sm_afterDeco%d",iq));
     cq_IMnpipi_Sm_afterDeco[iq]->cd();
+    q_IMnpipi_Sm_sum[iq][1]->GetXaxis()->SetTitle("IM(#pi^{+}#Sigma^{-}) [GeV/c^{2}]");
     //q_IMnpipi_Sm_sum[iq][1]->SetMinimum(0);
     q_IMnpipi_Sm_sum[iq][1]->Draw("colz");
+    mg2->Draw("c");
   }
 
   std::cout << __LINE__ << std::endl;
@@ -1046,7 +1056,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     }
 
     ccsSmpro[iq] = new TCanvas(Form("ccsSmpro%d",iq),Form("ccsSmpro%d",iq),800,800);
-    IMnpipi_Sm_cs_single[iq][1]->SetMinimum(0);
+    //IMnpipi_Sm_cs_single[iq][1]->SetMinimum(0);
     IMnpipi_Sm_cs_single[iq][1]->Draw("E");
 
     ccsK0[iq] = new TCanvas(Form("ccsK0%d",iq),Form("ccsK0%d",iq),1600,800);
@@ -1063,7 +1073,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
       IMnpipi_K0_cs_single[iq][isys]->Scale(binwidthq);
     }
     ccsK0pro[iq] = new TCanvas(Form("ccsK0pro%d",iq),Form("ccsK0pro%d",iq),800,800);
-    IMnpipi_K0_cs_single[iq][1]->SetMinimum(0);
+    //IMnpipi_K0_cs_single[iq][1]->SetMinimum(0);
     IMnpipi_K0_cs_single[iq][1]->Draw("E");
   }
   
@@ -1155,11 +1165,11 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     csum[iq]  = new TCanvas(Form("csum%d",iq),Form("csum%d",iq),1600,800);
     csum[iq]->Divide(2,1);
     csum[iq]->cd(1);
-    q_IMnpipi_SpSmSum[iq][1]->SetMinimum(0);
+    //q_IMnpipi_SpSmSum[iq][1]->SetMinimum(0);
     q_IMnpipi_SpSmSum[iq][1]->Draw("colz");
     csum[iq]->cd(2);
     IMnpipi_SpSmSum[iq][1]->SetTitle(Form("#Sigma^{+} #Sigma^{-} charge Sum %s",cqcut[iq]));
-    IMnpipi_SpSmSum[iq][1]->SetMinimum(-0.005);
+    //IMnpipi_SpSmSum[iq][1]->SetMinimum(-0.005);
     IMnpipi_SpSmSum[iq][1]->Draw("E");
   }
   TGraphAsymmErrors *gDecoErrorSpSmSum_CS[4];
@@ -1231,7 +1241,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     //IMnpipi_K0_cs[iq]->Draw("E");
     //IMnpipi_Sp_cs[iq]->Draw("Esame");
     IMnpipi_Sp_cs[iq][1]->SetMarkerStyle(20);
-    IMnpipi_Sp_cs[iq][1]->SetMinimum(-0.1);
+    //IMnpipi_Sp_cs[iq][1]->SetMinimum(-0.1);
     IMnpipi_Sp_cs[iq][1]->Draw("E");
     IMnpipi_Sp_cs[iq][1]->SetYTitle("d#sigma/dM [#mu b /(MeV/c^{2})]");
     IMnpipi_Sp_cs[iq][1]->GetYaxis()->CenterTitle();

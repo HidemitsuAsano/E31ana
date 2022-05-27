@@ -369,6 +369,16 @@ void FitMixScale()
   TCanvas *c17 = new TCanvas("c17","c17");
   q_IMnpipi_wSid_n_mix->Draw("colz");
 
+
+  TCanvas *c17_1 = new TCanvas("c17_1","c17_1");
+  TH2D* q_IMnpipi_wSid_n_sub = (TH2D*) q_IMnpipi_wSid_n_data->Clone("q_IMnpipi_wSid_n_sub");
+  q_IMnpipi_wSid_n_sub->Add(q_IMnpipi_wSid_n_mix,-1);
+  q_IMnpipi_wSid_n_sub->SetMinimum(0);
+  q_IMnpipi_wSid_n_sub->RebinX(3);
+  q_IMnpipi_wSid_n_sub->Draw("colz");
+
+
+
   TCanvas *c18 = new TCanvas("c18","c18");
   TH2D* MMnmiss_IMnpipi_wSid_data = (TH2D*)fr->Get("MMnmiss_IMnpipi_wSid");
   TH2D* MMnmiss_IMnpipi_wSid_mix = (TH2D*)fmix->Get("MMnmiss_IMnpipi_wSid");
