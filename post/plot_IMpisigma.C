@@ -678,10 +678,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   //TH2F* dE_IMnpip_woK0_n;
   //TH2F* dE_IMnpipi_wSid_n;
   //TH2F* dE_IMnpipi_woK0_wSid_n;
-  TH2F* Cosn_IMnpipi_wSid_n;
-  TH2F* Cosnlab_IMnpipi_wSid_n;
-  TH2F* Cosn_IMnpipi_woK0_wSid_n;
-  TH2F* Cosnlab_IMnpipi_woK0_wSid_n;
+  TH2F* Cosn_IMnpipi_wSid_n;//CM
+  TH2F* Cosnlab_IMnpipi_wSid_n;//lab
+  TH2F* Cosn_IMnpipi_woK0_wSid_n;//CM;
+  TH2F* Cosnlab_IMnpipi_woK0_wSid_n;//lab
   TH2F* MMnmiss_IMnpipi_wSid;//MM= missing Mass
   TH2F* MMnmiss_IMnpipi_wK0_wSid;
   TH2F* MMnmiss_IMnpipi_woK0_wSid;
@@ -4309,14 +4309,22 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   TH2F* ntof_nmom = new TH2F("ntof_nmom","ntof_nmom",100,0,1,500,0,200);
  
   TH2D* diffncos_ncos = new TH2D("diffncos_ncos","diffncos_ncos",1000,0,1,2000,-0.1,0.1);
-  diffncos_ncos->SetXTitle("Miss. N cos#theta");
-  diffncos_ncos->SetYTitle("reco. - true  Miss. N cos#theta");
+  diffncos_ncos->SetXTitle("reco. Miss. N cos#theta_{LAB}");
+  diffncos_ncos->SetYTitle("reco. - true  Miss. N cos#theta_{LAB}");
+  
+  TH2D* diffncos_ncosCM = new TH2D("diffncos_ncosCM","diffncos_ncosCM",1000,0,1,2000,-0.1,0.1);
+  diffncos_ncosCM->SetXTitle("reco. Miss. N cos#theta_{CM}");
+  diffncos_ncosCM->SetYTitle("reco. - true  Miss. N cos#theta_{CM}");
 
   TH2D* diffncos_IMnpipi = new TH2D("diffncos_IMnpipi","diffncos_IMnpipi",nbinIMnpipi,IMnpipilow,IMnpipihi,2000,-0.1,0.1);
   diffncos_IMnpipi->SetXTitle("IM (#pi#Sigma) [GeV/c^{2}]");
-  diffncos_IMnpipi->SetYTitle("reco. - true  Miss. N cos#theta");
+  diffncos_IMnpipi->SetYTitle("reco. - true  Miss. N cos#theta_{lab}");
   std::cout << __LINE__ << std::endl;
 
+  TH2D* diffncosCM_IMnpipi = new TH2D("diffncosCM_IMnpipi","diffncosCM_IMnpipi",nbinIMnpipi,IMnpipilow,IMnpipihi,2000,-0.1,0.1);
+  diffncosCM_IMnpipi->SetXTitle("IM (#pi#Sigma) [GeV/c^{2}]");
+  diffncosCM_IMnpipi->SetYTitle("reco. - true  Miss. N cos#theta_{CM}");
+  std::cout << __LINE__ << std::endl;
 
   //reading TTree
   Int_t nevent = tree->GetEntries();
@@ -4398,10 +4406,15 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     TLorentzVector LVec_pip_CM = *LVec_pip;
     LVec_pip_CM.Boost(-boost);
     double cos_pipCM = LVec_pip_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pip_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
-
+    
+    TVector3 boost_mc;
+    TLorentzVector mcmom_nmiss_CM;
     if(SimSpmode || SimSmmode || SimK0nnmode) {
-      TVector3 boost_mc =  (*LVec_target+*mcmom_beam).BoostVector();
+      boost_mc =  (*LVec_target+*mcmom_beam).BoostVector();
+      mcmom_nmiss_CM = *mcmom_nmiss;
+      mcmom_nmiss_CM.Boost(-boost_mc);
     }
+
     TLorentzVector qkn_mc;
     TLorentzVector mcmom_nmiss_calc;
     if(SimSpmode || SimSmmode || SimK0nnmode) {
@@ -4444,7 +4457,6 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
 
     if(phi_npip<-1.0*TMath::Pi()) phi_npip += 2.0*TMath::Pi();
     else if(phi_npip>1.0*TMath::Pi()) phi_npip -= 2.0*TMath::Pi();
-
 
     TLorentzVector LVec_pip_n_mc;
     if(SimSpmode || SimSmmode || SimK0nnmode) {
@@ -4557,6 +4569,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     LVec_pip_pim_n_CM.Boost(-boost);
     //double cos_X = LVec_pip_pim_n_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_pip_pim_n_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
     
+
     //double chi2 = kfSpmode_chi2<kfSmmode_chi2 ? kfSpmode_chi2:kfSmmode_chi2;
     //Filling generated info.
 
@@ -5664,11 +5677,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
           q_IMnpipi_wSid_n_Sp_mc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
           diff_IMnpipi_wSid_n_Sp->Fill(LVec_pip_pim_n.M(),LVec_pip_pim_n.M()-LVec_pip_pim_n_mc.M(),weight);
           diff_q_wSid_n_Sp->Fill(qkn.P(),qkn.P()-qkn_mc.P(),weight);
-          double diffncos = cos_nmisslab - (*react_nmiss).CosTheta();
+          double diffncos = cos_nmisslab - (*mcmom_nmiss).CosTheta();//lab
+          double diffncosCM = cos_nmissCM - (mcmom_nmiss_CM).CosTheta();//CM
           if(LVec_pip_pim_n.M()<1.6) {
-            diffncos_ncos->Fill((*react_nmiss).CosTheta(),diffncos);
+            diffncos_ncos->Fill(cos_nmisslab,diffncos);
+            diffncos_ncosCM->Fill(cos_nmissCM,diffncosCM);
           }
           diffncos_IMnpipi->Fill(LVec_pip_pim_n.M(),diffncos);
+          diffncosCM_IMnpipi->Fill(LVec_pip_pim_n.M(),diffncosCM);
         }
       }//SimPGlag
 
@@ -5707,11 +5723,14 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
           q_IMnpipi_wSid_n_Sm_mc->Fill(LVec_pip_pim_n_mc.M(),qkn_mc.P());
           diff_IMnpipi_wSid_n_Sm->Fill(LVec_pip_pim_n.M(),LVec_pip_pim_n.M()-LVec_pip_pim_n_mc.M(),weight);
           diff_q_wSid_n_Sm->Fill(qkn.P(),qkn.P()-qkn_mc.P(),weight);
-          double diffncos = cos_nmisslab - (*react_nmiss).CosTheta();
+          double diffncos = cos_nmisslab - (*mcmom_nmiss).CosTheta();//lab
+          double diffncosCM = cos_nmissCM - (mcmom_nmiss_CM).CosTheta();//CM
           if(LVec_pip_pim_n.M()<1.6) {
-            diffncos_ncos->Fill((*react_nmiss).CosTheta(),diffncos);
+            diffncos_ncos->Fill(cos_nmisslab,diffncos);
+            diffncos_ncosCM->Fill(cos_nmissCM,diffncosCM);
           }
           diffncos_IMnpipi->Fill(LVec_pip_pim_n.M(),diffncos);
+          diffncosCM_IMnpipi->Fill(LVec_pip_pim_n.M(),diffncosCM);
         }
       }
       

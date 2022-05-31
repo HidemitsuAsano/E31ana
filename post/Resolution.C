@@ -158,7 +158,7 @@ void Resolution()
   TCanvas *ccos = new TCanvas("ccos","ccos",1200,800);
   //TH2D* diffncos_ncos = (TH2D*)f->Get("diffncos_ncos");
   //diffncos_ncos->Draw("colz");
-  TH2D* diffncos_IMnpipi = (TH2D*)fSptheta15->Get("diffncos_IMnpipi");
+  TH2D* diffncos_IMnpipi = (TH2D*)fSp->Get("diffncos_IMnpipi");
   diffncos_IMnpipi->GetYaxis()->SetRangeUser(-0.01,0.02);
   diffncos_IMnpipi->GetYaxis()->SetMaxDigits(2);
   diffncos_IMnpipi->Draw("colz");
@@ -197,14 +197,67 @@ void Resolution()
   gr->SetTitle("nmisscos resolution #pi^{-}#Sigma^{+}");
   gr->SetMarkerColor(2);
   gr->SetMarkerStyle(20);
-  gr->GetYaxis()->SetTitle("cos#theta_n Resolution");
-  gr->GetXaxis()->SetTitle("miss. n cos#theta_{lab}");
+  gr->GetYaxis()->SetTitle("cos#theta_n_{lab} Resolution");
+  gr->GetXaxis()->SetTitle("IM(#pi^{-}#Sigma^{+}) [GeV/c^{2}]");
   gr->GetXaxis()->CenterTitle();
   gr->GetYaxis()->CenterTitle();
   gr->GetYaxis()->SetMaxDigits(2);
   //gr->Print();
   gr->Draw("AP");
 
+
+
+  TCanvas *cdiffncos_ncosCM = new TCanvas("cdiffncos_ncosCM","cdiffncos_ncosCM",1200,800);
+  //TH2D* diffncos_ncos = (TH2D*)f->Get("diffncos_ncos");
+  //diffncos_ncos->Draw("colz");
+  TH2D* diffncos_ncosCM = (TH2D*)fSp->Get("diffncos_ncosCM");
+  diffncos_ncosCM->GetYaxis()->SetRangeUser(-0.01,0.02);
+  diffncos_ncosCM->GetYaxis()->SetMaxDigits(2);
+  diffncos_ncosCM->Draw("colz");
+  //diffncos_ncos->RebinY(2);
+  TProfile *diffncos_ncosCM_pfx = (TProfile*)diffncos_ncosCM->ProfileX("pfxSpncos",1,-1,"s");
+  diffncos_ncosCM_pfx->SetLineColor(2);
+  diffncos_ncosCM_pfx->Draw("same");
+
+  const int nbinsx_ncos = diffncos_ncosCM->GetNbinsX();
+  TH1D* cospx_ncos[1000];
+  double ncos2[1000];
+  double rms2[1000];
+  double gaussigma2[1000];
+  double gaussigmaerr2[1000];
+  double rmserror2[1000];
+  for(int i=0;i<nbinsx_ncos;i++){
+    cospx_ncos[i] = (TH1D*)diffncos_ncosCM->ProjectionY(Form("cospx_ncos%d",i),i+1,i+2);
+    ncos2[i] = diffncos_ncosCM->GetXaxis()->GetBinCenter(i+1);
+    if(cospx_ncos[i]->GetEntries()>10){
+      //cospx[i]->Fit("gaus","q","",-0.005,0.005);
+      //gaussigma[i] = cospx[i]->GetFunction("gaus")->GetParameter(2);
+      //gaussigmaerr[i] = cospx[i]->GetFunction("gaus")->GetParError(2);
+      rms2[i] = cospx_ncos[i]->GetRMS();
+      rmserror2[i] = cospx_ncos[i]->GetRMSError();
+    }else{
+      rms2[i] = 0.0;
+      rmserror2[i] = 0.0;
+    }
+  }
+
+  TCanvas *ccosres_ncos = new TCanvas("ccosres_ncos","ccosres_ncos");
+  TGraphErrors *gr_ncos = new TGraphErrors(1000,ncos2,rms2,0,rmserror2);
+  gr_ncos->SetName("ncosreso_ncos");
+  gr_ncos->SetTitle("nmisscos resolution #pi^{-}#Sigma^{+}");
+  gr_ncos->SetMarkerColor(2);
+  gr_ncos->SetMarkerStyle(20);
+  gr_ncos->GetYaxis()->SetTitle("cos#theta_n Resolution");
+  gr_ncos->GetXaxis()->SetTitle("miss. n cos#theta_{CM}");
+  gr_ncos->GetXaxis()->CenterTitle();
+  gr_ncos->GetYaxis()->CenterTitle();
+  gr_ncos->GetYaxis()->SetMaxDigits(2);
+  //gr->Print();
+  gr_ncos->Draw("AP");
+
+
+
+  //Sigma- mode
   TCanvas *cq_IMnpipi_wSid_n_Sm = new TCanvas("cq_IMnpipi_wSid_n_Sm","cq_IMnpipi_wSid_n_Sm",800,800);
   cq_IMnpipi_wSid_n_Sm->cd();
   TH2D* q_IMnpipi_wSid_n_Sm = (TH2D*)fSm->Get("q_IMnpipi_wSid_n_Sm");
@@ -336,7 +389,7 @@ void Resolution()
   grsigma_qSm->Draw("APE");
 
   TCanvas *ccosSm = new TCanvas("ccosSm","ccosSm",1200,800);
-  TH2D* diffncos_IMnpipiSm = (TH2D*)fSmtheta15->Get("diffncos_IMnpipi");
+  TH2D* diffncos_IMnpipiSm = (TH2D*)fSm->Get("diffncos_IMnpipi");
   diffncos_IMnpipiSm->GetYaxis()->SetRangeUser(-0.01,0.02);
   diffncos_IMnpipiSm->GetYaxis()->SetMaxDigits(2);
   diffncos_IMnpipiSm->Draw("colz");
