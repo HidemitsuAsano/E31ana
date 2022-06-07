@@ -615,7 +615,7 @@ void CS_finals()
   TCanvas *cthetacompSp = new TCanvas("cthetacompSp","cthetacompSp",1000,800);
   cthetacompSp->cd();
   //CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
-  CS_Spcomp->SetMaximum(35);
+  //CS_Spcomp->SetMaximum(35);
   CS_Spcomp->SetYTitle("d^{2}#rho/dM d#Omega [#mu b/MeVsr]");
   CS_Spcomp->Draw();
   CS_SpcompMIX->Draw("3");
@@ -677,7 +677,7 @@ void CS_finals()
   TCanvas *cthetacompSm = new TCanvas("cthetacompSm","cthetacompSm",1000,800);
   cthetacompSm->cd();
   //CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
-  CS_Smcomp->SetMaximum(10);
+  //CS_Smcomp->SetMaximum(10);
   CS_Smcomp->SetYTitle("d^{2}#rho/dMd#Omega [#mu b/MeVsr]");
   CS_Smcomp->Draw();
   CS_SmcompDeco->Draw("5");

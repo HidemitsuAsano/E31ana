@@ -31,8 +31,9 @@
 //#include "weightfuncGSm.h"
 
 const double pvalcut = 0.005;
-const double thetacutlab = 4.0/180.*TMath::Pi();//
-const double costhetacutlab = 0.99657;//4.75 degree
+const double costhetacutlab = 0.99657;//4.75 degree // for inoue check
+const double costhetacutCMhi = 0.96; 
+const double costhetacutCMlo = 0.94; 
 const bool gridon=true;
 const bool staton=true;
 const bool UseKinFit = false;
@@ -4918,6 +4919,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       nmissthetalab = acos(cos_nmisslab);  
       MassNPip = LVec_pip_n.M();
       MassNPim = LVec_pim_n.M();
+      LVec_npipimiss_CM = LVec_npipimiss;
+      LVec_npipimiss_CM.Boost(-boost);
+      cos_nmissCM = LVec_npipimiss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_npipimiss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
     }else if((SigmaPFlag && RealDatamode) || SimSpmode){
       *LVec_n = *LVec_n_Sp;
       LVec_pip_n = *LVec_n_Sp+*LVec_pip;
@@ -4931,6 +4935,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       nmissthetalab = acos(cos_nmisslab);  
       MassNPip = LVec_pip_n.M();
       MassNPim = LVec_pim_n.M();
+      LVec_npipimiss_CM = LVec_npipimiss;
+      LVec_npipimiss_CM.Boost(-boost);
+      cos_nmissCM = LVec_npipimiss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_npipimiss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
     }else if((SigmaMFlag && RealDatamode) || SimSmmode){
       *LVec_n = *LVec_n_Sm;
       LVec_pip_n = *LVec_n_Sm+*LVec_pip;
@@ -4944,6 +4951,9 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       nmissthetalab = acos(cos_nmisslab);  
       MassNPip = LVec_pip_n.M();
       MassNPim = LVec_pim_n.M();
+      LVec_npipimiss_CM = LVec_npipimiss;
+      LVec_npipimiss_CM.Boost(-boost);
+      cos_nmissCM = LVec_npipimiss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_npipimiss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
     }
     //recal flags
 
@@ -4977,7 +4987,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       if(SigmaPFlag && (LVec_pip_n.P()<anacuts::SigmaPMomCut)) continue;
       if(SigmaMFlag && (LVec_pim_n.P()<anacuts::SigmaMMomCut)) continue;
     }
-    if(qvalcutflag==3 && (cos_nmisslab<costhetacutlab )) continue;
+    //if(qvalcutflag==3 && (cos_nmisslab<costhetacutlab )) continue;
+    if(qvalcutflag==3 && (  (cos_nmissCM<costhetacutCMlo ) ||  (costhetacutCMhi<cos_nmissCM) ) ) continue;
 
     //vicinity of Sigma+ & NMiss events
     if(pow(((MassNPip - anacuts::Sigmap_center)/5.0/anacuts::Sigmap_sigma),2.0) +
