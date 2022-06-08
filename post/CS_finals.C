@@ -1,3 +1,16 @@
+const double d_mass  = 1.87561;
+const double K_mass    = 0.493677;
+const double pK = 1.00; //default value of simulation
+const double EK = sqrt(K_mass*K_mass+pK*pK);
+double func_EM(double *x, double *par);
+double func_cq(double *x, double *par);
+double func_C(double *x, double *par);
+double func_S2(double *x, double *par);
+double funcos(double q, double M)
+
+
+
+
 void CS_finals()
 {
   if(gROOT->GetVersionInt() < 60000){
@@ -207,6 +220,25 @@ void CS_finals()
   CS_S1385_ToSm[0][2]->Add(CS_S1385_ToSm[2][2]);
   CS_S1385_ToSpSm[0][2]->Add(CS_S1385_ToSpSm[1][2]);
   CS_S1385_ToSpSm[0][2]->Add(CS_S1385_ToSpSm[2][2]);
+
+  TH2F* *CS_S1385_ToSp_coscut;
+  TH2F* *CS_S1385_ToSm_coscut;
+  TH2F* *CS_S1385_ToSpSm_coscut;
+  
+  const int nrand = 100000;
+  for(int i=0;i<nrand;i++){
+    double m,q;
+    CS_S1385_ToSp[1][1]->GetRandom2(m,q);
+    double cosCM_ToSp = funcos(q,m);
+    
+    CS_S1385_ToSm[1][1]->GetRandom2(m,q);
+    CS_S1385_ToSpSm[1][1]->GetRandom2(m,q);
+
+
+
+  }
+
+
 
 
   //Sys Error summary
@@ -775,4 +807,53 @@ void CS_finals()
   IMLpim_sum_350->Scale(10.);
   IMLpim_sum_350->Draw("Esame");
   */
+}
+
+
+double funcos(double q, double M)
+{
+  double x[1];
+  x[0]=q;
+  double par[1];
+  par[0]=M;
+  double costhetaCM = func_C(x,par)/TMath::Sqrt(func_C(x,par)*func_C(x,par)+func_S2(x,par));
+  return costhetaCM;
+
+}
+
+double func_EM(double *x, double *par)
+// x      = q
+// par[0] = m
+{
+  double q = x[0];
+  double f = TMath::Sqrt(par[0]*par[0]+q*q);
+  return f;
+}
+
+double func_cq(double *x, double *par)
+// x      = q
+// par[0] = m
+{
+  double q = x[0];
+  double f = (n_mass*n_mass+pK*pK+q*q-TMath::Power(EK+d_mass-func_EM(x,par),2))/(2*q*pK);
+  return f;
+}
+
+double func_C(double *x, double *par)
+// x      = q
+// par[0] = m
+{
+  double q = x[0];
+  double f = (EK+d_mass)*(pK-q*func_cq(x,par))-pK*(EK+d_mass-func_EM(x,par));
+  return f;
+}
+
+
+double func_S2(double *x, double *par)
+// x      = q
+// par[0] = m
+{
+  double q = x[0];
+  double f = q*q*(1-func_cq(x,par)*func_cq(x,par))*(d_mass*d_mass+2*d_mass*EK+K_mass*K_mass);
+  return f;
 }
