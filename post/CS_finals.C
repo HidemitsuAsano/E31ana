@@ -9,6 +9,8 @@ double func_S2(double *x, double *par);
 double funcos(double q, double M)
 
 
+const double costhetacutCMhi = 1.0; 
+const double costhetacutCMlo = 0.98; 
 
 
 void CS_finals()
@@ -221,18 +223,19 @@ void CS_finals()
   CS_S1385_ToSpSm[0][2]->Add(CS_S1385_ToSpSm[1][2]);
   CS_S1385_ToSpSm[0][2]->Add(CS_S1385_ToSpSm[2][2]);
 
-  TH2F* *CS_S1385_ToSp_coscut;
-  TH2F* *CS_S1385_ToSm_coscut;
-  TH2F* *CS_S1385_ToSpSm_coscut;
+  TH1F *CS_S1385_ToSp_coscut = new TH1F("CS_S1385_ToSp_coscut","CS_S1385_ToSp_coscut",
+  TH1F *CS_S1385_ToSm_coscut = new TH1F("CS_S1385_ToSm_coscut","CS_S1385_ToSm_coscut",
+  TH1F *CS_S1385_ToSpSm_coscut = new TH1F("CS_S1385_ToSpSm_coscut","CS_S1385_ToSpSm_coscut",
   
   const int nrand = 100000;
   for(int i=0;i<nrand;i++){
     double m,q;
-    CS_S1385_ToSp[1][1]->GetRandom2(m,q);
+    CS_S1385_ToSp[0][1]->GetRandom2(m,q);//qall,sys def
     double cosCM_ToSp = funcos(q,m);
+    CS_S1385_ToSp_coscut
     
-    CS_S1385_ToSm[1][1]->GetRandom2(m,q);
-    CS_S1385_ToSpSm[1][1]->GetRandom2(m,q);
+    CS_S1385_ToSm[1][1]->GetRandom2(m,q);//qall,sys def
+    CS_S1385_ToSpSm[1][1]->GetRandom2(m,q);//qall, sys def
 
 
 
