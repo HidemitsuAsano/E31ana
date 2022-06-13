@@ -17,7 +17,6 @@ const double costhetacutCMlo = 0.98;
 
 void CalcLpimCSFromFit()
 {
-
   TFile *flpim = TFile::Open("CSLpimFit.root","READ");
 
   const double br_s1385ToLambdapi = 0.87;
@@ -100,11 +99,28 @@ void CalcLpimCSFromFit()
   CS_S1385_ToSpSm[0][2]->Add(CS_S1385_ToSpSm[1][2]);
   CS_S1385_ToSpSm[0][2]->Add(CS_S1385_ToSpSm[2][2]);
 
-  TH2F *CS_S1385_ToSp_coscut = new TH2F("CS_S1385_ToSp_coscut","CS_S1385_ToSp_coscut",60,1.2,2.1,30,0,1.5);
+  TH2F *CS_S1385_ToSp_coscut[3][3];//q-cut,isys
+  for(int iq=0;iq<3;iq++){
+    for(int isys=0;isys<3;isys++){
+      CS_S1385_ToSp_coscut[iq][isys] = new TH2F(Form("CS_S1385_ToSp_coscut%d_%d",iq,isys),Form("CS_S1385_ToSp_coscut%d_%d",iq,isys),60,1.2,2.1,30,0,1.5);
+    }
+  }
   TH2F *CS_S1385_ToSp_coscut_ref = new TH2F("CS_S1385_ToSp_coscut_ref","CS_S1385_ToSp_coscut_ref",60,1.2,2.1,30,0,1.5);
-  TH2F *CS_S1385_ToSm_coscut = new TH2F("CS_S1385_ToSm_coscut","CS_S1385_ToSm_coscut",60,1.2,2.1,30,0,1.5);
+  
+  TH2F *CS_S1385_ToSm_coscut[3][3];//q,isys
+  for(int iq=0;iq<3;iq++){
+    for(int isys=0;isys<3;isys++){
+      CS_S1385_ToSm_coscut[iq][isys] = new TH2F(Form("CS_S1385_ToSm_coscut%d_%d",iq,isys),Form("CS_S1385_ToSm_coscut%d_%d",iq,isys),60,1.2,2.1,30,0,1.5);
+    }
+  }
   TH2F *CS_S1385_ToSm_coscut_ref = new TH2F("CS_S1385_ToSm_coscut_ref","CS_S1385_ToSm_coscut_ref",60,1.2,2.1,30,0,1.5);
-  TH2F *CS_S1385_ToSpSm_coscut = new TH2F("CS_S1385_ToSpSm_coscut","CS_S1385_ToSpSm_coscut",60,1.2,2.1,30,0,1.5);
+  
+  TH2F *CS_S1385_ToSpSm_coscut[3][3];//q,isys
+  for(int iq=0;iq<3;iq++){
+    for(int isys=0;isys<3;isys++){  
+      CS_S1385_ToSpSm_coscut[iq][isys] = new TH2F(Form("CS_S1385_ToSpSm_coscut%d_%d",iq,isys),Form("CS_S1385_ToSpSm_coscut%d_%d",iq,isys),60,1.2,2.1,30,0,1.5);
+    }
+  }
   TH2F *CS_S1385_ToSpSm_coscut_ref = new TH2F("CS_S1385_ToSpSm_coscut_ref","CS_S1385_ToSpSm_coscut_ref",60,1.2,2.1,30,0,1.5);
   
   const int nrand = 100000;
@@ -113,17 +129,50 @@ void CalcLpimCSFromFit()
     CS_lpim_qcut[0]->GetRandom2(m,q);//qall
     double cosCM_ToSp = funcos(q,m);
     if(costhetacutCMlo < cosCM_ToSp && cosCM_ToSp <costhetacutCMhi){ 
-      CS_S1385_ToSp_coscut->Fill(m,q);
+      if(q<=0.35){
+        CS_S1385_ToSp_coscut[1][1]->Fill(m,q);//qlow, sysded
+      }else if(0.35<q && q<0.65){
+        CS_S1385_ToSp_coscut[2][1]->Fill(m,q);//qhi, sysdef
+      }
     }
     CS_S1385_ToSp_coscut_ref->Fill(m,q);
   }
   double scaleF = CS_S1385_ToSp_coscut_ref->Integral();
   double scaleR = CS_lpim_qcut[0]->Integral();
-  CS_S1385_ToSp_coscut->Scale(scaleR/scaleF);
-
+  CS_S1385_ToSp_coscut[1][1]->Scale(scaleR/scaleF);
+  CS_S1385_ToSp_coscut[2][1]->Scale(scaleR/scaleF);
 
   TCanvas *ctestcoscutSp = new TCanvas("ctestcoscutSp","ctestcoscutSp");
-  CS_S1385_ToSp_coscut->Draw("colz");
+  CS_S1385_ToSp_coscut[0][1]->Add(CS_S1385_ToSp_coscut[1][1]);
+  CS_S1385_ToSp_coscut[0][1]->Add(CS_S1385_ToSp_coscut[2][1]);
+  CS_S1385_ToSp_coscut[0][1]->Draw("colz");
+
+  TCanvas *ctestcoscutSp_d = new TCanvas("ctestcoscutSp_d","ctestcoscutSp_d");
+  //sys down
+  CS_S1385_ToSp_coscut[0][0]->Add(CS_S1385_ToSp_coscut[1][1]);
+  CS_S1385_ToSp_coscut[0][0]->Scale(0.5);
+  CS_S1385_ToSp_coscut[0][0]->Add(CS_S1385_ToSp_coscut[2][1]);
+  CS_S1385_ToSp_coscut[0][0]->Draw("colz");
+
+  TCanvas *ctestcoscutSp_u = new TCanvas("ctestcoscutSp_u","ctestcoscutSp_u");
+  //sys up
+  CS_S1385_ToSp_coscut[2][0]->Add(CS_S1385_ToSp_coscut[1][1]);
+  CS_S1385_ToSp_coscut[2][0]->Scale(2.0);
+  CS_S1385_ToSp_coscut[2][0]->Add(CS_S1385_ToSp_coscut[2][1]);
+  CS_S1385_ToSp_coscut[2][0]->Draw("colz");
+
+
+
+  TCanvas *ctestcoscutSp_qlo = new TCanvas("ctestcoscutSp_qlo","ctestcoscutSp_qlo");
+  CS_S1385_ToSp_coscut[1][1]->Draw("colz");
+  
+  TCanvas *ctestcoscutSp_qhi = new TCanvas("ctestcoscutSp_qhi","ctestcoscutSp_qhi");
+  CS_S1385_ToSp_coscut[2][1]->Draw("colz");
+
+  TCanvas *ctestcoscutSp_ref = new TCanvas("ctestcoscutSp_ref","ctestcoscutSp_ref");
+  CS_S1385_ToSp_coscut_ref->Draw("colz");
+
+
 
 }
 
