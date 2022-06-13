@@ -221,10 +221,6 @@ void FitCslpim()
 
 
 
-
-
-
-
   TCanvas *cCS_q_fit = new TCanvas("cCS_q_fit","cCS_q_fit",1000,800);
   const int bin1360 = CS_sum_fit->GetXaxis()->FindBin(1.35);
   const int bin1400 = CS_sum_fit->GetXaxis()->FindBin(1.395);

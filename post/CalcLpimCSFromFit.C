@@ -148,20 +148,18 @@ void CalcLpimCSFromFit()
   CS_S1385_ToSp_coscut[0][1]->Draw("colz");
 
   TCanvas *ctestcoscutSp_d = new TCanvas("ctestcoscutSp_d","ctestcoscutSp_d");
-  //sys down
+  //sys down,qall sysdown
   CS_S1385_ToSp_coscut[0][0]->Add(CS_S1385_ToSp_coscut[1][1]);
   CS_S1385_ToSp_coscut[0][0]->Scale(0.5);
   CS_S1385_ToSp_coscut[0][0]->Add(CS_S1385_ToSp_coscut[2][1]);
   CS_S1385_ToSp_coscut[0][0]->Draw("colz");
 
   TCanvas *ctestcoscutSp_u = new TCanvas("ctestcoscutSp_u","ctestcoscutSp_u");
-  //sys up
-  CS_S1385_ToSp_coscut[2][0]->Add(CS_S1385_ToSp_coscut[1][1]);
-  CS_S1385_ToSp_coscut[2][0]->Scale(2.0);
-  CS_S1385_ToSp_coscut[2][0]->Add(CS_S1385_ToSp_coscut[2][1]);
-  CS_S1385_ToSp_coscut[2][0]->Draw("colz");
-
-
+  //sys up, qall sysup
+  CS_S1385_ToSp_coscut[0][2]->Add(CS_S1385_ToSp_coscut[1][1]);
+  CS_S1385_ToSp_coscut[0][2]->Scale(2.0);
+  CS_S1385_ToSp_coscut[0][2]->Add(CS_S1385_ToSp_coscut[2][1]);
+  CS_S1385_ToSp_coscut[0][2]->Draw("colz");
 
   TCanvas *ctestcoscutSp_qlo = new TCanvas("ctestcoscutSp_qlo","ctestcoscutSp_qlo");
   CS_S1385_ToSp_coscut[1][1]->Draw("colz");
