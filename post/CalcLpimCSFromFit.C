@@ -57,9 +57,9 @@ void CalcLpimCSFromFit()
   for(int iq=0;iq<3;iq++){
     CS_lpim_qcut[iq]->Scale(br_s1385TopiSigma/2.0/br_s1385ToLambdapi*binwidthq);
     for(int isys=0;isys<3;isys++){
-      CS_S1385_ToSp[iq][isys] = (TH1D*)CS_lpim_qcut[iq]->ProjectionX(Form("CS_S1385_ToSp%d",iq));
-      CS_S1385_ToSm[iq][isys] = (TH1D*)CS_lpim_qcut[iq]->ProjectionX(Form("CS_S1385_ToSm%d",iq));
-      CS_S1385_ToSpSm[iq][isys] = (TH1D*)CS_lpim_qcut[iq]->ProjectionX(Form("CS_S1385_ToSpSm%d",iq));
+      CS_S1385_ToSp[iq][isys] = (TH1D*)CS_lpim_qcut[iq]->ProjectionX(Form("CS_S1385_ToSp%d_sys%d",iq,isys));
+      CS_S1385_ToSm[iq][isys] = (TH1D*)CS_lpim_qcut[iq]->ProjectionX(Form("CS_S1385_ToSm%d_sys%d",iq,isys));
+      CS_S1385_ToSpSm[iq][isys] = (TH1D*)CS_lpim_qcut[iq]->ProjectionX(Form("CS_S1385_ToSpSm%d_sys%d",iq,isys));
       CS_S1385_ToSpSm[iq][isys]->Scale(2.0);
     }
   }
@@ -217,10 +217,6 @@ void CalcLpimCSFromFit()
   CS_S1385_ToSpSm_coscut[0][sysup]->Add(CS_S1385_ToSm_coscut[2][sysup]);
 
 
-
-
-
-
   TCanvas *ctestcoscutSp_qlo = new TCanvas("ctestcoscutSp_qlo","ctestcoscutSp_qlo");
   CS_S1385_ToSp_coscut[1][1]->Draw("colz");
   
@@ -230,7 +226,6 @@ void CalcLpimCSFromFit()
   TCanvas *ctestcoscutSp_ref = new TCanvas("ctestcoscutSp_ref","ctestcoscutSp_ref");
   CS_S1385_coscut_ref->Draw("colz");
 
-  
 
   TFile *flpim_calc = new TFile("CSLpimFit_calc.root","RECREATE");
   flpim_calc->cd();
@@ -241,6 +236,9 @@ void CalcLpimCSFromFit()
       CS_S1385_ToSp_coscut[iq][isys]->Write();
       CS_S1385_ToSm_coscut[iq][isys]->Write();
       CS_S1385_ToSpSm_coscut[iq][isys]->Write();
+      CS_S1385_ToSp[iq][isys]->Write();
+      CS_S1385_ToSm[iq][isys]->Write();
+      CS_S1385_ToSpSm[iq][isys]->Write();
     }
   }
 

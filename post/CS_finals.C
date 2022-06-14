@@ -16,9 +16,6 @@ void CS_finals()
   fpisigma[0][0] = TFile::Open(Form("cs_pisigma_v%d_dE2_sys-1.root",Version),"READ");
   fpisigma[0][2] = TFile::Open(Form("cs_pisigma_v%d_dE2_sys1.root",Version),"READ");
 
-  //TFile *flpim    = TFile::Open("cs_lpim_killcombi.root","READ");
-
-  
   gStyle->SetOptStat(0);
   gStyle->SetPadGridX(0);
   gStyle->SetPadGridY(0);
@@ -88,7 +85,6 @@ void CS_finals()
     q_IMnpipi_K0_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.8);
     q_IMnpipi_K0_cs[iq][0][0]->Draw("colz");
   }
-
 
   //zero suppresion of gDecoError
   for(int iq=0;iq<4;iq++){
@@ -258,6 +254,20 @@ void CS_finals()
   TGraphAsymmErrors *gS1385ErrorSm[3];//
   TGraphAsymmErrors *gS1385ErrorSpSm[3];//
   
+  TFile *flpim = TFile::Open("CSLpimFit_calc.root","READ");
+  TH1D* CS_S1385_ToSp[3][3];
+  TH1D* CS_S1385_ToSm[3][3];
+  TH1D* CS_S1385_ToSpSm[3][3];
+
+  for(int iq=0;iq<3;iq++){
+    for(int isys=0;isys<3;isys++){
+      CS_S1385_ToSp[iq][isys] = (TH1D*)flpim->Get(Form("CS_S1385_ToSp%d_sys%d",iq,isys));
+      CS_S1385_ToSm[iq][isys] = (TH1D*)flpim->Get(Form("CS_S1385_ToSm%d_sys%d",iq,isys));
+      CS_S1385_ToSpSm[iq][isys] = (TH1D*)flpim->Get(Form("CS_S1385_ToSpSm%d_sys%d",iq,isys));
+    }
+  }
+
+
   for(int iq=0;iq<3;iq++){
     gS1385ErrorSp[iq] = new TGraphAsymmErrors(CS_S1385_ToSp[iq][1]);
     gS1385ErrorSm[iq] = new TGraphAsymmErrors(CS_S1385_ToSm[iq][1]);
