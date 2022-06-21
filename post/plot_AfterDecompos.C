@@ -619,7 +619,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
 
 
   //TFile *fnuSp = new TFile("NumericalRootFinder_Spmode.root");
-  TFile *fnuSp = new TFile("../simpost/NumericalRootFinder_fine.root");
+  //TFile *fnuSp = new TFile("../simpost/NumericalRootFinder_fine.root");
+  TFile *fnuSp = new TFile("../simpost/NumericalRootFinder_fine20.root");
   TMultiGraph *mg = (TMultiGraph*)fnuSp->Get("mg");
   
   TCanvas *cq_IMnpipi_Sp_afterDeco[4];
@@ -656,7 +657,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     q_IMnpipi_Sm_sum[iq][1]->GetXaxis()->SetTitle("IM(#pi^{+}#Sigma^{-}) [GeV/c^{2}]");
     //q_IMnpipi_Sm_sum[iq][1]->SetMinimum(0);
     q_IMnpipi_Sm_sum[iq][1]->Draw("colz");
-    mg2->Draw("c");
+    //mg2->Draw("c");
+    mg->Draw("c");
   }
 
   std::cout << __LINE__ << std::endl;

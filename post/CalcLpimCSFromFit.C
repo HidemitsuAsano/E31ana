@@ -11,9 +11,7 @@ double funcos(double q, double M);
 
 
 const double costhetacutCMhi = 1.0; 
-const double costhetacutCMlo = 0.98; 
-
-
+const double costhetacutCMlo = -1.0; 
 
 void CalcLpimCSFromFit()
 {
@@ -31,10 +29,6 @@ void CalcLpimCSFromFit()
   TH2F* CS_lpim_sum = (TH2F*)flpim->Get("CS_sum");
   TH2F* CS_lpim_fit = (TH2F*)flpim->Get("Func");
 
-  TCanvas *clpim = new TCanvas("clpim","clpim",1000,800);
-  clpim->cd();
-  CS_lpim_sum->Draw("colz");
-  CS_lpim_fit->Draw("boxsame");
   
   TH2F* CS_lpim_qcut[3];//iq
   for(int iq=0;iq<3;iq++){
@@ -52,6 +46,7 @@ void CalcLpimCSFromFit()
   TH1D* CS_S1385_ToSm[3][3];//0:sysdown,1:center,2:sysup
   TH1D* CS_S1385_ToSpSm[3][3];//0:sysdown,1:center,2:sysup
  
+  const int sysdef=1;
    
   //assume C.S. Sigma(1385)- ~ Sigma(1385)0
   for(int iq=0;iq<3;iq++){
@@ -122,7 +117,7 @@ void CalcLpimCSFromFit()
   }
   
 
-  const int nrand = 100000;
+  const int nrand = 1000000;
   for(int i=0;i<nrand;i++){
     double m,q;
     CS_lpim_qcut[0]->GetRandom2(m,q);//qall
@@ -151,11 +146,6 @@ void CalcLpimCSFromFit()
     CS_S1385_ToSm_coscut[2][isys]->Scale(scaleR/scaleF);
   }
 
-  TCanvas *ctestcoscutSp = new TCanvas("ctestcoscutSp","ctestcoscutSp");
-  const int sysdef=1;
-  CS_S1385_ToSp_coscut[0][sysdef]->Add(CS_S1385_ToSp_coscut[1][sysdef]);
-  CS_S1385_ToSp_coscut[0][sysdef]->Add(CS_S1385_ToSp_coscut[2][sysdef]);
-  CS_S1385_ToSp_coscut[0][sysdef]->Draw("colz");
   
   CS_S1385_ToSm_coscut[0][sysdef]->Add(CS_S1385_ToSm_coscut[1][sysdef]);
   CS_S1385_ToSm_coscut[0][sysdef]->Add(CS_S1385_ToSm_coscut[2][sysdef]);
@@ -225,6 +215,20 @@ void CalcLpimCSFromFit()
 
   TCanvas *ctestcoscutSp_ref = new TCanvas("ctestcoscutSp_ref","ctestcoscutSp_ref");
   CS_S1385_coscut_ref->Draw("colz");
+
+  TCanvas *ctestcoscutSp = new TCanvas("ctestcoscutSp","ctestcoscutSp");
+  CS_S1385_ToSp_coscut[0][sysdef]->Add(CS_S1385_ToSp_coscut[1][sysdef]);
+  CS_S1385_ToSp_coscut[0][sysdef]->Add(CS_S1385_ToSp_coscut[2][sysdef]);
+  double maxref = CS_S1385_coscut_ref->GetMaximum();
+  //CS_S1385_ToSp_coscut[0][sysdef]->SetMaximum(maxref);
+  CS_S1385_ToSp_coscut[0][sysdef]->Draw("colz");
+
+  TCanvas *clpim = new TCanvas("clpim","clpim",1000,800);
+  clpim->cd();
+  //CS_lpim_sum->SetMaximum(maxref);
+  CS_lpim_sum->Draw("colz");
+  //CS_lpim_fit->Draw("boxsame");
+
 
 
   TFile *flpim_calc = new TFile("CSLpimFit_calc.root","RECREATE");

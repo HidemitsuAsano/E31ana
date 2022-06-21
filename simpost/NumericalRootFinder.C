@@ -42,7 +42,7 @@ int NumericalRootFinder()
 
   const double COS_MIN = -1;
   const double COS_MAX = 1;
-  const int    COS_BIN = 100;
+  const int    COS_BIN = 20;
 
   const double M_MIN = piSp_mass;
   //const double M_MIN = K0n_mass;

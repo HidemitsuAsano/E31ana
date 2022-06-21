@@ -32,8 +32,8 @@
 
 const double pvalcut = 0.005;
 const double costhetacutlab = 0.99657;//4.75 degree // for inoue check
-const double costhetacutCMhi = 1.0; 
-const double costhetacutCMlo = 0.98; 
+const double costhetacutCMhi = 0.90; 
+const double costhetacutCMlo = 0.60; 
 const bool gridon=true;
 const bool staton=true;
 const bool UseKinFit = false;
