@@ -998,6 +998,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   //TH2F* diff2d_Zpippim_Znpim;
   //TH2F* diff2d_Phipippim_Phinpim_woSid_won;
   TH2F* diff2d_Zpippim_Znpim_woSid_won;
+  TH2F* diff2d_CDC_CDH_pim_nocut;//neutral hit - pim track projected position
+  TH2F* diff2d_CDC_CDH_pip_nocut;//neutral hit - pip track projected position
   TH2F* diff2d_CDC_CDH_pim;//neutral hit - pim track projected position
   TH2F* diff2d_CDC_CDH_pip;//neutral hit - pip track projected position
   TH2F* diff2d_CDC_CDH_pim_Sp;//neutral hit - pim track projected position
@@ -3984,6 +3986,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   diff2d_Zpippim_Znpim_woSid_won->SetXTitle("n_{fake} - #pi^{-} hit (z) [cm]");
   diff2d_Zpippim_Znpim_woSid_won->SetYTitle("#pi^{+} - #pi^{-} hit (z) [cm]");
 
+  diff2d_CDC_CDH_pim_nocut = new TH2F("diff2d_CDC_CDH_pim_nocut","diff2d_CDC_CDH_pim_nocut",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
+  diff2d_CDC_CDH_pim_nocut->SetXTitle("CDH hit - #pi^{-} track (phi) [radian]");
+  diff2d_CDC_CDH_pim_nocut->SetYTitle("CDH hit - #pi^{-} track (z) [cm]");
+  
   diff2d_CDC_CDH_pim = new TH2F("diff2d_CDC_CDH_pim","diff2d_CDC_CDH_pim",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
   diff2d_CDC_CDH_pim->SetXTitle("CDH hit - #pi^{-} track (phi) [radian]");
   diff2d_CDC_CDH_pim->SetYTitle("CDH hit - #pi^{-} track (z) [cm]");
@@ -4004,6 +4010,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   diff2d_CDC_CDH_pim_z_tof->SetXTitle("CDH hit - #pi^{-} track (z) [cm]");
   diff2d_CDC_CDH_pim_z_tof->SetYTitle("CDH hit - #pi^{-} TOF [nsec]");
 
+  diff2d_CDC_CDH_pip_nocut = new TH2F("diff2d_CDC_CDH_pip_nocut","diff2d_CDC_CDH_pip_nocut",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
+  diff2d_CDC_CDH_pip_nocut->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
+  diff2d_CDC_CDH_pip_nocut->SetYTitle("CDH hit - #pi^{+} track (z) [cm]");
+  
   diff2d_CDC_CDH_pip = new TH2F("diff2d_CDC_CDH_pip","diff2d_CDC_CDH_pip",100,-1.*TMath::Pi(),TMath::Pi(),100,-100,100);
   diff2d_CDC_CDH_pip->SetXTitle("CDH hit - #pi^{+} track (phi) [radian]");
   diff2d_CDC_CDH_pip->SetYTitle("CDH hit - #pi^{+} track (z) [cm]");
@@ -4972,6 +4982,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     //
     //recal flags end
     //
+    diff2d_CDC_CDH_pim_nocut->Fill(diffPhinpim,diffpim.z());
+    diff2d_CDC_CDH_pip_nocut->Fill(diffPhinpip,diffpip.z());
 
     if( (qkn.P()>=anacuts::qvalcut) && (qvalcutflag==1) ) continue;
     if( (qkn.P()<anacuts::qvalcut) && (qvalcutflag==2) ) continue;

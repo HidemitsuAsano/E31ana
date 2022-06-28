@@ -13,11 +13,22 @@ const int Version=241;
 const bool Scale=false;
 const int qcut = 0;
 
+const bool gridon=false;
+Double_t fit_IMnpip(Double_t *x,Double_t *par);
+Double_t fit_MMnmiss_Sp(Double_t *x,Double_t *par);
+Double_t fit_IMnpim(Double_t *x,Double_t *par);
+Double_t fit_MMnmiss_Sm(Double_t *x,Double_t *par);
+
+
 void FitMixScale()
 {
+  gStyle->SetPadGridX(gridon);
+  gStyle->SetPadGridY(gridon);
+  gStyle->SetTitleYOffset(1.6);
   gStyle->SetOptStat(0);
-  fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop.root",Version,dEcut));
-  fmix = TFile::Open(Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_dE%d_iso_nostop_sys0.root",Version,dEcut));
+  gStyle->SetOptFit(0);
+  TFile *fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop.root",Version,dEcut));
+  TFile *fmix = TFile::Open(Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_dE%d_iso_nostop_sys0.root",Version,dEcut));
   fr->Print();
   fmix->Print();
 
@@ -395,17 +406,24 @@ void FitMixScale()
     MMnmiss_wSid_mix[isys]->Scale(1+(isys-1)*sysScale);
     MMnmiss_wSid_mix[isys]->Draw("same");
   }
+
   TCanvas *c19 = new TCanvas("c19","c19");
   TH1D* MMnmiss_wSid_sub = (TH1D*)MMnmiss_wSid_data->Clone("MMnmiss_wSid_sub");
   MMnmiss_wSid_sub->Add(MMnmiss_wSid_mix[1],-1.0);
+  
   MMnmiss_wSid_sub->Draw();
 
   TF1* fMM = new TF1("fMM","gaus",0.85,1.05);
+  //Int_t trans_red = GetColorTransparent(kRed, 0.3);
+  //fMM->SetLineAlpha(8,0.464);
+  fMM->SetLineWidth(1);
+  fMM->SetLineColor(2);
   MMnmiss_wSid_sub->Fit("fMM","","",0.85,1.05);
   
-  TF1* fMMLam = new TF1("fMMLam","gaus",1.05,1.15);
-  MMnmiss_wSid_sub->Fit("fMMLam","","",1.05,1.15);
-
+  TF1* fMMLam = new TF1("fMMLam","gaus",1.05,1.14);
+  fMMLam->SetLineWidth(1);
+  MMnmiss_wSid_sub->Fit("fMMLam","","",1.05,1.14);
+  MMnmiss_wSid_sub->SetTitle("");
   MMnmiss_wSid_sub->Draw();
   fMM->Draw("same");
   fMMLam->Draw("same");
@@ -432,7 +450,7 @@ void FitMixScale()
     else if(i==size-1)c->Print(pdfname+")",Form("pdf Title:%s",c->GetTitle())); 
     else c->Print(pdfname,Form("pdf Title:%s",c->GetTitle())); 
     //make separated pdf files
-    //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
+    c->Print(Form("pdf/%s.pdf",c->GetTitle()));
   }
 
 

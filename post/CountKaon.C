@@ -24,10 +24,12 @@ void CountKaon()
 
   TH1D* hnK = new TH1D("hnK","Scaler Kaon #",1000,0,1000);
   for(int irun=0;irun<iline;irun++){
-    TFile *_file = TFile::Open(Form("/gpfs/group/had/knucl/e15/asano/Run78/IMpisigmav225/evanaIMpisigma_0%03d.root",runnum[irun]),"READ");
+    //TFile *_file = TFile::Open(Form("/gpfs/group/had/knucl/e15/asano/Run78/IMpisigmav225/evanaIMpisigma_0%03d.root",runnum[irun]),"READ");
+    TFile *_file = TFile::Open(Form("/gpfs/group/had/knucl/e15/asano/Run78/IMpisigmav244/evanaIMpisigma_0%03d.root",runnum[irun]),"READ");
     TH1D* hscaler = (TH1D*)_file->Get("Scaler");
     double nK = hscaler->GetBinContent(ScCH_K);
     if(runnum[irun]>=233) nK*=10;
+    //if(runnum[irun]>=217) nK*=10;
     hnK->SetBinContent(runnum[irun],nK);
     hnK->SetBinError(runnum[irun],sqrt(nK));
 

@@ -1,4 +1,4 @@
-const bool gridon=true;
+const bool gridon=false;
 const bool staton=false;
 const bool labelon=true;
 
@@ -132,7 +132,7 @@ void plothists(const char *filename="evanaIMpisigma_v241.root")
     }
     pt->SetFillColor(kCyan-9);
     pt->SetBorderSize(1);
-    pt->Draw();
+    //pt->Draw();
     c->Modified();
     c->Update();
     
@@ -458,7 +458,12 @@ void QACDS(TFile *f){
   TH1D* h1_2mevcut = h2_dE_betainv->ProjectionX("px1",bin2mev,-1);
   TH1D* h1_4mevcut = h2_dE_betainv->ProjectionX("px2",bin4mev,-1);
   TH1D* h1_6mevcut = h2_dE_betainv->ProjectionX("px3",bin6mev,-1);
-  
+  h1_2mevcut->GetXaxis()->SetRangeUser(0,15);
+  h1_2mevcut->GetYaxis()->SetMaxDigits(4);
+  h1_2mevcut->GetYaxis()->SetNdivisions(5,5,0,kTRUE);
+  h1_2mevcut->SetTitle("");
+  h1_2mevcut->Draw("HE");
+  /*
   h1_nocut->Draw();
   h1_2mevcut->SetLineColor(2);
   h1_2mevcut->Draw("same");
@@ -466,7 +471,7 @@ void QACDS(TFile *f){
   h1_4mevcut->Draw("same");
   h1_6mevcut->SetLineColor(4);
   h1_6mevcut->Draw("same");
-
+  */
   
   
   TCanvas *c_dE_fiducial = new TCanvas("c_dE_fiducial","dE_betainv_fid_beta");
