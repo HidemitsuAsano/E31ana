@@ -9,7 +9,7 @@ TH1D* IMnpim_woK0_woSp_mix;
 
 double sysScale=0.05;
 const int dEcut=2;
-const int Version=241;
+const int Version=245;
 const bool Scale=false;
 const int qcut = 0;
 
@@ -22,6 +22,44 @@ Double_t fit_MMnmiss_Sm(Double_t *x,Double_t *par);
 
 void FitMixScale()
 {
+
+const Int_t NRGBs = 5;
+const Int_t NCont = 255;
+Double_t stops[NRGBs] = { 0.00, 0.34, 0.61, 0.84, 1.00 };
+Double_t red[NRGBs]   = { 0.00, 0.00, 0.87, 1.00, 0.51 };
+Double_t green[NRGBs] = { 0.00, 0.81, 1.00, 0.20, 0.00 };
+Double_t blue[NRGBs]  = { 0.51, 1.00, 0.12, 0.00, 0.00 };
+TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
+gStyle->SetNumberContours(NCont);
+
+gROOT->GetColor(3)->SetRGB(0., 0.7, 0.);   // Green
+gROOT->GetColor(5)->SetRGB(1., 0.5, 0.);   // Yellow
+gROOT->GetColor(7)->SetRGB(0.6, 0.3, 0.6); // Cyan
+ Double_t stops[NRGBs] = { 0.00, 0.02, 0.25, 0.625, 1.00 }; // for (-2.5,7.5)
+  Double_t red[NRGBs]   = { 0.00, 0.00, 1.00, 1.00, 0.51 };
+  Double_t green[NRGBs] = { 0.00, 0.81, 1.00, 0.20, 0.00 };
+  Double_t blue[NRGBs]  = { 0.51, 1.00, 1.00, 0.00, 0.00 };
+#endif
+#endif
+  TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
+  gStyle->SetNumberContours(NCont);
+  //--- color style ---//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   gStyle->SetPadGridX(gridon);
   gStyle->SetPadGridY(gridon);
   gStyle->SetTitleYOffset(1.6);
@@ -204,6 +242,7 @@ void FitMixScale()
   MMnmiss_IMnpip_woK0_woSm_sub->Add(MMnmiss_IMnpip_woK0_woSm_mix,-1.0);
   MMnmiss_IMnpip_woK0_woSm_sub->Rebin2D(4,2);
   MMnmiss_IMnpip_woK0_woSm_sub->GetXaxis()->SetRangeUser(1.0,1.7);
+  MMnmiss_IMnpip_woK0_woSm_sub->GetZaxis()->SetNdivisions(505);
   MMnmiss_IMnpip_woK0_woSm_sub->Draw("colz");
   
   TCanvas *c8_2 = new TCanvas("c8_2","c8_2");

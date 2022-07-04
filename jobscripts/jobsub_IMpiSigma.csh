@@ -1,8 +1,8 @@
 #!/bin/tcsh -f
-set Version="244"
+set Version="245"
 set DATADIR="/group/had/knucl/e15/data/Run78/"
 set OUTDIR="/group/had/knucl/e15/asano/Run78/"
-set KWSKDIR="/group/had/knucl/e15/shinngo/Run78/evtracking/"
+set KWSKDIR="/group/had/knucl/e15/shinngo/Run78/evtracking/v9/"
 
 set starttime=`date '+%y/%m/%d %H:%M:%S'`
 set logbasedir="/home/had/hiasano/logs/"

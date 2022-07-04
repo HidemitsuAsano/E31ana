@@ -38,8 +38,8 @@ void CountKaonv2()
     
     if(runnum[irun]>=233) nK*=10;
     //if(runnum[irun]>=217) nK*=10;
-    hnK->SetBinContent(runnum[irun],nK);
-    hnK->SetBinError(runnum[irun],sqrt(nK));
+    hnK->SetBinContent(runnum[irun]+1,nK);
+    hnK->SetBinError(runnum[irun]+1,sqrt(nK));
 
     _file->Close();
   }

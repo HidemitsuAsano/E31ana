@@ -38,7 +38,7 @@ bool RebinMode = true;
 bool Sidefar=false;
 bool FitNoWeight=true;
 
-const int Version = 241;
+const int Version = 245;
 const int versionSigma = 156;//SIM version
 const int versionK0 = 30;//SIM version
 
