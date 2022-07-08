@@ -16,7 +16,7 @@ const double Lpim_mass = 1.115683+0.13957;
 #endif
 
 //const double pK = 1.05; //GeV/c = maximum ~ 1.018*1.025
-const double pK = 1.0; //default value of simulation
+const double pK = 1.00; //default value of simulation
 const double EK = sqrt(K_mass*K_mass+pK*pK);
 
 double func_EM(double *x, double *par);
@@ -39,7 +39,7 @@ int NumericalRootFinderLPim()
 
   const double COS_MIN = -1;
   const double COS_MAX = 1;
-  const int    COS_BIN = 100;
+  const int    COS_BIN = 1;
 
   const double M_MIN = Lpim_mass;
   const double M_MAX = sys.M()-p_mass+0.00000001;

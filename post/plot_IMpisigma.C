@@ -114,8 +114,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   gStyle->SetStatBorderSize(1);
   gStyle->SetCanvasDefH(800);
   gStyle->SetCanvasDefW(1000);
-  gStyle->SetPadRightMargin(0.15);
-  gStyle->SetPadLeftMargin(0.12);
+  //gStyle->SetPadRightMargin(0.15);
+  //gStyle->SetPadLeftMargin(0.12);
 
   TH1::SetDefaultSumw2();
 
@@ -681,6 +681,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   TH2F* MMnmiss_IMnpipi_wSid;//MM= missing Mass
   TH2F* MMnmiss_IMnpipi_wK0_wSid;
   TH2F* MMnmiss_IMnpipi_woK0_wSid;
+  TH2F* MMnmiss_IMnpipi_wK0orwSid;
   TH2F* MMnmiss_IMnpipi_woK0_wSid_Sp;
   TH2F* MMnmiss_IMnpipi_woK0_wSid_Sm;
   TH2F* MMnmiss_IMnpipi_wK0_woSid_won;
@@ -2672,6 +2673,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   MMnmiss_IMnpipi_woK0_wSid = new TH2F("MMnmiss_IMnpipi_woK0_wSid","MMnmiss_IMnpipi_woK0_wSid",nbinIMnpipi,IMnpipilow,IMnpipihi,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMnpipi_woK0_wSid->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   MMnmiss_IMnpipi_woK0_wSid->SetYTitle("Miss. Mass. [GeV/c^{2}]");
+  
+  MMnmiss_IMnpipi_wK0orwSid = new TH2F("MMnmiss_IMnpipi_wK0orwSid","MMnmiss_IMnpipi_wK0orwSid",nbinIMnpipi,IMnpipilow,IMnpipihi,nbinnmiss, nmisslow, nmisshigh);
+  MMnmiss_IMnpipi_wK0orwSid->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
+  MMnmiss_IMnpipi_wK0orwSid->SetYTitle("Miss. Mass. [GeV/c^{2}]");
 
   MMnmiss_IMnpipi_woK0_wSid_Sp = new TH2F("MMnmiss_IMnpipi_woK0_wSid_Sp","MMnmiss_IMnpipi_woK0_wSid_Sp",nbinIMnpipi,IMnpipilow,IMnpipihi,nbinnmiss, nmisslow, nmisshigh);
   MMnmiss_IMnpipi_woK0_wSid_Sp->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
@@ -5505,7 +5510,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
         pimmom_diffphi_CDC_CDH_pim_woSid_won->Fill(diffPhinpim,(*LVec_pim).P());
         pipmom_diffphi_CDC_CDH_pip_woSid_won->Fill(diffPhinpip,(*LVec_pip).P());
       }
-
+      
+      if(K0Flag || SigmaPFlag || SigmaMFlag ){
+        MMnmiss_IMnpipi_wK0orwSid->Fill(LVec_pip_pim_n.M(), nmiss_mass,weight);
+      }
 
       if(K0Flag) {
         IMnpim_IMnpip_dE_wK0->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
@@ -6067,6 +6075,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
           IMnpim_IMnpip_dE_wK0orwSid_n_bin[binnum]->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
           IMnpim_IMnpip_dE_wK0orwSid_n_wbin[wbinnum]->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
           q_IMnpipi_wK0orwSid_n->Fill(LVec_pip_pim_n.M(),qkn.P(),weight);
+          
+          
           if(!SigmawidePFlag){
             IMnpim_IMnpip_dE_wK0orwSid_n_woSp->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
           }

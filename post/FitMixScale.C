@@ -22,49 +22,13 @@ Double_t fit_MMnmiss_Sm(Double_t *x,Double_t *par);
 
 void FitMixScale()
 {
-
-const Int_t NRGBs = 5;
-const Int_t NCont = 255;
-Double_t stops[NRGBs] = { 0.00, 0.34, 0.61, 0.84, 1.00 };
-Double_t red[NRGBs]   = { 0.00, 0.00, 0.87, 1.00, 0.51 };
-Double_t green[NRGBs] = { 0.00, 0.81, 1.00, 0.20, 0.00 };
-Double_t blue[NRGBs]  = { 0.51, 1.00, 0.12, 0.00, 0.00 };
-TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
-gStyle->SetNumberContours(NCont);
-
-gROOT->GetColor(3)->SetRGB(0., 0.7, 0.);   // Green
-gROOT->GetColor(5)->SetRGB(1., 0.5, 0.);   // Yellow
-gROOT->GetColor(7)->SetRGB(0.6, 0.3, 0.6); // Cyan
- Double_t stops[NRGBs] = { 0.00, 0.02, 0.25, 0.625, 1.00 }; // for (-2.5,7.5)
-  Double_t red[NRGBs]   = { 0.00, 0.00, 1.00, 1.00, 0.51 };
-  Double_t green[NRGBs] = { 0.00, 0.81, 1.00, 0.20, 0.00 };
-  Double_t blue[NRGBs]  = { 0.51, 1.00, 1.00, 0.00, 0.00 };
-#endif
-#endif
-  TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
-  gStyle->SetNumberContours(NCont);
-  //--- color style ---//
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   gStyle->SetPadGridX(gridon);
   gStyle->SetPadGridY(gridon);
   gStyle->SetTitleYOffset(1.6);
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
+  gStyle->SetPadRightMargin(0.15);
+  gStyle->SetPadLeftMargin(0.12);
   TFile *fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop.root",Version,dEcut));
   TFile *fmix = TFile::Open(Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_dE%d_iso_nostop_sys0.root",Version,dEcut));
   fr->Print();
@@ -240,8 +204,22 @@ gROOT->GetColor(7)->SetRGB(0.6, 0.3, 0.6); // Cyan
   TCanvas *c8_1 = new TCanvas("c8_1","c8_1");
   TH2D* MMnmiss_IMnpip_woK0_woSm_sub = (TH2D*)MMnmiss_IMnpip_woK0_woSm_data->Clone("MMnmiss_IMnpip_woK0_woSm_sub");
   MMnmiss_IMnpip_woK0_woSm_sub->Add(MMnmiss_IMnpip_woK0_woSm_mix,-1.0);
-  MMnmiss_IMnpip_woK0_woSm_sub->Rebin2D(4,2);
+  MMnmiss_IMnpip_woK0_woSm_sub->Rebin2D(2,2);
   MMnmiss_IMnpip_woK0_woSm_sub->GetXaxis()->SetRangeUser(1.0,1.7);
+  double c8_1zmax = MMnmiss_IMnpip_woK0_woSm_sub->GetMaximum();
+  double c8_1zmin = MMnmiss_IMnpip_woK0_woSm_sub->GetMinimum();
+   
+
+  const Int_t NRGBs = 5;
+  const Int_t NCont = 255;
+  Double_t stops[NRGBs] = { 0.00, 0.02, 0.25, 0.625, 1.00 }; // for (-2.5,7.5)
+  Double_t red[NRGBs]   = { 0.00, 0.00, 1.00, 1.00, 0.51 };
+  Double_t green[NRGBs] = { 0.00, 0.81, 1.00, 0.20, 0.00 };
+  Double_t blue[NRGBs]  = { 0.51, 1.00, 1.00, 0.00, 0.00 };
+  TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
+  gStyle->SetNumberContours(NCont);
+
+
   MMnmiss_IMnpip_woK0_woSm_sub->GetZaxis()->SetNdivisions(505);
   MMnmiss_IMnpip_woK0_woSm_sub->Draw("colz");
   
@@ -328,21 +306,25 @@ gROOT->GetColor(7)->SetRGB(0.6, 0.3, 0.6); // Cyan
   MMnmiss_Sp_sub->Fit("fMMSp","","",0.85,1.0);
  
   TCanvas *c10 = new TCanvas("c10","c10");
-  IMnpip_n_data->RebinX(2);
+  //IMnpip_n_data->RebinX(2);
   IMnpip_n_data->Draw();
   IMnpip_n_mix[1]->SetLineColor(2);
   IMnpip_n_mix[0]->SetLineColor(4);
   IMnpip_n_mix[2]->SetLineColor(4);
   for(int isys=0;isys<3;isys++){
-    IMnpip_n_mix[isys]->RebinX(2);
+    //IMnpip_n_mix[isys]->RebinX(2);
     IMnpip_n_mix[isys]->Draw("same");
   }
   
   TCanvas *c10_1 = new TCanvas("c10_1","c10_1");
   TH1D* IMnpip_n_sub = (TH1D*)IMnpip_n_data->Clone("IMnpip_n_sub");
   IMnpip_n_sub->Add(IMnpip_n_mix[1],-1);
-  IMnpip_n_sub->GetXaxis()->SetRangeUser(1.1,1.3);
-  IMnpip_n_sub->Draw("HE");
+  IMnpip_n_sub->GetXaxis()->SetRangeUser(1.15,1.23);
+  IMnpip_n_sub->GetYaxis()->SetTitle("counts/(0.002 GeV/c^{2})");
+  IMnpip_n_sub->GetYaxis()->CenterTitle();
+  IMnpip_n_sub->SetTitle("");
+  IMnpip_n_sub->SetMarkerStyle(20);
+  IMnpip_n_sub->Draw("E");
   TF1* fIMSp = new TF1("fIMSp","gaus");
   IMnpip_n_sub->Fit("fIMSp","","",1.16,1.22);
 
@@ -363,20 +345,25 @@ gROOT->GetColor(7)->SetRGB(0.6, 0.3, 0.6); // Cyan
   MMnmiss_Sm_sub->Fit("fMMSm","","",0.85,1.0);
 
   TCanvas *c12 = new TCanvas("c12","c12");
-  IMnpim_n_data->RebinX(2);
+  //IMnpim_n_data->RebinX(2);
   IMnpim_n_data->Draw();
   IMnpim_n_mix[1]->SetLineColor(2);
   IMnpim_n_mix[0]->SetLineColor(4);
   IMnpim_n_mix[2]->SetLineColor(4);
   for(int isys=0;isys<3;isys++){
-    IMnpim_n_mix[isys]->RebinX(2);
+    //IMnpim_n_mix[isys]->RebinX(2);
     IMnpim_n_mix[isys]->Draw("same");
   }
+
   TCanvas *c12_1 = new TCanvas("c12_1","c12_1");
   TH1D* IMnpim_n_sub = (TH1D*)IMnpim_n_data->Clone("IMnpim_n_sub");
   IMnpim_n_sub->Add(IMnpim_n_mix[1],-1);
-  IMnpim_n_sub->GetXaxis()->SetRangeUser(1.1,1.3);
-  IMnpim_n_sub->Draw("HE");
+  IMnpim_n_sub->GetXaxis()->SetRangeUser(1.15,1.23);
+  IMnpim_n_sub->SetTitle("");
+  IMnpim_n_sub->GetYaxis()->SetTitle("counts/(0.002 GeV/c^{2})");
+  IMnpim_n_sub->GetYaxis()->CenterTitle();
+  IMnpim_n_sub->SetMarkerStyle(20);
+  IMnpim_n_sub->Draw("E");
   TF1* fIMSm = new TF1("fIMSm","gaus");
   IMnpim_n_sub->Fit("fIMSm","","",1.17,1.22);
   
@@ -451,7 +438,7 @@ gROOT->GetColor(7)->SetRGB(0.6, 0.3, 0.6); // Cyan
   MMnmiss_wSid_sub->Add(MMnmiss_wSid_mix[1],-1.0);
   
   MMnmiss_wSid_sub->Draw();
-
+  
   TF1* fMM = new TF1("fMM","gaus",0.85,1.05);
   //Int_t trans_red = GetColorTransparent(kRed, 0.3);
   //fMM->SetLineAlpha(8,0.464);
@@ -466,6 +453,86 @@ gROOT->GetColor(7)->SetRGB(0.6, 0.3, 0.6); // Cyan
   MMnmiss_wSid_sub->Draw();
   fMM->Draw("same");
   fMMLam->Draw("same");
+  
+  TCanvas *c20 = new TCanvas("c20","c20");
+  TH2D* MMnmiss_IMnpipi_woK0_wSid_data = (TH2D*)fr->Get("MMnmiss_IMnpipi_woK0_wSid");
+  TH2D* MMnmiss_IMnpipi_woK0_wSid_mix = (TH2D*)fmix->Get("MMnmiss_IMnpipi_woK0_wSid");
+  TH1D* MMnmiss_woK0_wSid_data = (TH1D*)MMnmiss_IMnpipi_woK0_wSid_data->ProjectionY("MMnmiss_woK0_wSid_data");
+  TH1D* MMnmiss_woK0_wSid_mix[3];
+  for(int isys=0;isys<3;isys++){
+    MMnmiss_woK0_wSid_mix[isys] = (TH1D*)MMnmiss_IMnpipi_woK0_wSid_mix->ProjectionY(Form("MMnmiss_woK0_wSid_mix_%d",isys));
+  }
+  MMnmiss_woK0_wSid_data->Draw("E");
+  MMnmiss_woK0_wSid_mix[1]->SetLineColor(2);
+  MMnmiss_woK0_wSid_mix[0]->SetLineColor(4);
+  MMnmiss_woK0_wSid_mix[2]->SetLineColor(4);
+  for(int isys=0;isys<3;isys++){
+    MMnmiss_woK0_wSid_mix[isys]->Scale(1+(isys-1)*sysScale);
+    MMnmiss_woK0_wSid_mix[isys]->Draw("same");
+  }
+
+  TCanvas *c21 = new TCanvas("c21","c21");
+  TH1D* MMnmiss_woK0_wSid_sub = (TH1D*)MMnmiss_woK0_wSid_data->Clone("MMnmiss_woK0_wSid_sub");
+  MMnmiss_woK0_wSid_sub->Add(MMnmiss_woK0_wSid_mix[1],-1.0);
+  MMnmiss_woK0_wSid_sub->Draw();
+  
+  TF1* fMM_woK0 = new TF1("fMM_woK0","gaus",0.85,1.05);
+  //Int_t trans_red = GetColorTransparent(kRed, 0.3);
+  //fMM->SetLineAlpha(8,0.464);
+  fMM_woK0->SetLineWidth(1);
+  fMM_woK0->SetLineColor(2);
+  MMnmiss_woK0_wSid_sub->Fit("fMM_woK0","","",0.85,1.05);
+  
+  TF1* fMMLam_woK0 = new TF1("fMMLam_woK0","gaus",1.05,1.14);
+  fMMLam_woK0->SetLineWidth(1);
+  MMnmiss_woK0_wSid_sub->Fit("fMMLam_woK0","","",1.05,1.14);
+  MMnmiss_woK0_wSid_sub->SetTitle("");
+  MMnmiss_woK0_wSid_sub->Draw();
+  fMM_woK0->Draw("same");
+  fMMLam_woK0->Draw("same");
+
+  TCanvas *c22 = new TCanvas("c22","c22");
+  TH2D* MMnmiss_IMnpipi_wK0orwSid_data = (TH2D*)fr->Get("MMnmiss_IMnpipi_wK0orwSid");
+  TH2D* MMnmiss_IMnpipi_wK0orwSid_mix = (TH2D*)fmix->Get("MMnmiss_IMnpipi_wK0orwSid");
+  TH1D* MMnmiss_wK0orwSid_data = (TH1D*)MMnmiss_IMnpipi_wK0orwSid_data->ProjectionY("MMnmiss_wK0orwSid_data");
+  TH1D* MMnmiss_wK0orwSid_mix[3];
+  for(int isys=0;isys<3;isys++){
+    MMnmiss_wK0orwSid_mix[isys] = (TH1D*)MMnmiss_IMnpipi_wK0orwSid_mix->ProjectionY(Form("MMnmiss_wK0orwSid_mix_%d",isys));
+  }
+  MMnmiss_wK0orwSid_data->Draw("E");
+  MMnmiss_wK0orwSid_mix[1]->SetLineColor(2);
+  MMnmiss_wK0orwSid_mix[0]->SetLineColor(4);
+  MMnmiss_wK0orwSid_mix[2]->SetLineColor(4);
+  for(int isys=0;isys<3;isys++){
+    MMnmiss_wK0orwSid_mix[isys]->Scale(1+(isys-1)*sysScale);
+    MMnmiss_wK0orwSid_mix[isys]->Draw("same");
+  }
+
+  gStyle->SetPadRightMargin(0.15);
+  gStyle->SetPadLeftMargin(0.12);
+  TCanvas *c23 = new TCanvas("c23","c23",1000,800);
+  TH1D* MMnmiss_wK0orwSid_sub = (TH1D*)MMnmiss_wK0orwSid_data->Clone("MMnmiss_wK0orwSid_sub");
+  MMnmiss_wK0orwSid_sub->Add(MMnmiss_wK0orwSid_mix[1],-1.0);
+  MMnmiss_wK0orwSid_sub->SetXTitle("MM(#pi^{+}#pi^{-}n) [GeV/c^{2}]");
+  MMnmiss_wK0orwSid_sub->SetYTitle("counts/(0.01 GeV/c^{2})");
+  MMnmiss_wK0orwSid_sub->GetYaxis()->CenterTitle();
+  MMnmiss_wK0orwSid_sub->Draw();
+  
+  TF1* fMM_wK0orwSid = new TF1("fMM_wK0orwSid","gaus",0.85,1.05);
+  //Int_t trans_red = GetColorTransparent(kRed, 0.3);
+  //fMM->SetLineAlpha(8,0.464);
+  fMM_wK0orwSid->SetLineWidth(1);
+  fMM_wK0orwSid->SetLineColor(2);
+  MMnmiss_wK0orwSid_sub->Fit("fMM_wK0orwSid","","",0.85,1.05);
+  
+  TF1* fMMLam_wK0orwSid = new TF1("fMMLam_wK0orwSid","gaus",1.05,1.14);
+  fMMLam_wK0orwSid->SetLineWidth(1);
+  MMnmiss_wK0orwSid_sub->Fit("fMMLam_wK0orwSid","","",1.05,1.14);
+  MMnmiss_wK0orwSid_sub->SetTitle("");
+  MMnmiss_wK0orwSid_sub->Draw();
+  fMM_wK0orwSid->Draw("same");
+  fMMLam_wK0orwSid->Draw("same");
+
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
