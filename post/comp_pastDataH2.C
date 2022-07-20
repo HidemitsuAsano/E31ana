@@ -1,3 +1,9 @@
+
+//0:for internal, more detail
+//1:for paper, 
+const int legendflag = 0;
+
+
 void comp_pastDataH2()
 {
   gStyle->SetPadGridX(0);
@@ -487,22 +493,29 @@ void comp_pastDataH2()
   TGraphAsymmErrors *gCS_Smsys = (TGraphAsymmErrors*) fcs->Get("gCS_Sm_syssum_K0sub");
   TGraphErrors *gCSK0_Sp = (TGraphErrors*)fK0->Get("gCSK0_Sp");
   TGraphErrors *gCSK0_Sm = (TGraphErrors*)fK0->Get("gCSK0_Sm");
-  TCanvas *cCS_Sp = new TCanvas("cCS_Sp","cCS_Sp",1000,800);
+  //TCanvas *cCS_Sp = new TCanvas("cCS_Sp","cCS_Sp",1000,800);
+  gStyle->SetTitleYOffset(2);
+
+  TCanvas *cCS_wide = new TCanvas("cCS_wide","cCS_wide",2000,800);
+  cCS_wide->Divide(2,1);
   TLegend *leg = new TLegend(0.3, 0.6, 0.6, 0.9);
-  leg->AddEntry(gCS_Sp, "This analysis", "LP");
+  leg->AddEntry(gCS_Sp, "Present Results", "LP");
   //  if(x==0){ // K- P --> PI- SIGMA+
-  cCS_Sp->cd();
+  //cCS_Sp->cd();
+  cCS_wide->cd(1);
   gCS_Sp->GetXaxis()->SetRangeUser(0.5,1);
   gCS_Sp->GetYaxis()->SetRangeUser(0,600);
   gCS_Sp->SetMarkerStyle(20);
   //gCS_Sp->SetFillColor(0);
   gCS_Sp->SetMarkerColor(1);
   gCS_Sp->SetLineColor(1);
-  gCS_Sp->GetXaxis()->SetTitle("Cos#theta_{CM} miss-#pi^{-}");
+  gCS_Sp->GetXaxis()->SetTitle("Cos#theta_{CM} of #pi^{-}");
   gCS_Sp->GetYaxis()->SetTitle("d#sigma/d#Omega [#mub/sr]");
   gCS_Sp->GetXaxis()->CenterTitle();
   gCS_Sp->GetYaxis()->CenterTitle();
-  gCS_Sp->SetTitle("#Sigma^{+}#pi^{-}");
+  gCS_Sp->GetXaxis()->SetTitleOffset(1.2);
+  gCS_Sp->GetYaxis()->SetTitleOffset(1.3);
+  gCS_Sp->SetTitle("K^{-}p #rightarrow #Sigma^{+}#pi^{-}");
   gCS_Sp->Draw("AP");
   gCS_Spsys->SetLineColor(1);
   gCS_Spsys->Draw("5");
@@ -511,28 +524,41 @@ void comp_pastDataH2()
   past_data1->Draw(" PZ same");
   past_data2->Draw(" PZ same");
   p7266_d12x1y8->Draw(" PZ same");
-      leg->AddEntry(p7266_d12x1y8, "NPB193(1981)21   0.99 GeV/c", "LP");
-      leg->AddEntry(past_data1,    "NPB8(1968)233,   0.991 GeV/c", "LP");
-      leg->AddEntry(p7071_d40x1y1, "NPB90(1975)349,  1.001 GeV/c", "LP");
-      leg->AddEntry(p7006_d21x1y2, "NPB105(1976)189, 1.005 GeV/c", "LP");
-      leg->AddEntry(past_data2,    "NPB8(1968)233,   1.022 GeV/c", "LP");
-  //  }
-   //   leg->Draw();
+  if(legendflag == 0 ){
+    leg->AddEntry(p7266_d12x1y8, "NPB193(1981)21   0.99 GeV/c", "LP");
+    leg->AddEntry(past_data1,    "NPB8(1968)233,   0.991 GeV/c", "LP");
+    leg->AddEntry(p7071_d40x1y1, "NPB90(1975)349,  1.001 GeV/c", "LP");
+    leg->AddEntry(p7006_d21x1y2, "NPB105(1976)189, 1.005 GeV/c", "LP");
+    leg->AddEntry(past_data2,    "NPB8(1968)233,   1.022 GeV/c", "LP");
+  }else{
+    leg->AddEntry(p7266_d12x1y8, "NPB193(1981)21   ", "LP");
+    leg->AddEntry(past_data1,    "NPB8(1968)233   ", "LP");
+    leg->AddEntry(p7071_d40x1y1, "NPB90(1975)349  ", "LP");
+    leg->AddEntry(p7006_d21x1y2, "NPB105(1976)189 ", "LP");
+    leg->AddEntry(past_data2,    "NPB8(1968)233   ", "LP");
+  }
+        //  }
+      //leg->Draw();
    // else if(x==1){ // K- P --> PI+ SIGMA-
-  TCanvas *cCS_Sm = new TCanvas("cCS_Sm","cCS_Sm",1000,800);
-  cCS_Sm->cd();
+  //TCanvas *cCS_Sm = new TCanvas("cCS_Sm","cCS_Sm",1000,800);
+  //cCS_Sm->cd();
+  cCS_wide->cd(2);
   gCS_Sm->GetXaxis()->SetRangeUser(0.5,1);
   gCS_Sm->GetYaxis()->SetRangeUser(0,300);
   gCS_Sm->SetMarkerStyle(20);
-  gCS_Sm->GetXaxis()->SetTitle("Cos#theta_{CM} miss-#pi^{+}");
+  gCS_Sm->GetXaxis()->SetTitle("Cos#theta_{CM} of #pi^{+}");
   gCS_Sm->GetYaxis()->SetTitle("d#sigma/d#Omega [#mub/sr]");
   gCS_Sm->GetXaxis()->CenterTitle();
   gCS_Sm->GetYaxis()->CenterTitle();
-  gCS_Sm->SetTitle("#Sigma^{-}#pi^{+}");
+  gCS_Sm->GetXaxis()->SetTitleOffset(1.2);
+  gCS_Sm->GetYaxis()->SetTitleOffset(1.3);
+  gCS_Sm->SetTitle("K^{-}p #rightarrow #Sigma^{-}#pi^{+}");
   gCS_Sm->Draw("AP");
-  //remove 0 consistent data
-  gCS_Sm->RemovePoint(6);
-  gCS_Smsys->RemovePoint(6);
+  //remove 0 consistent data (2 points)
+  gCS_Sm->RemovePoint(5);
+  gCS_Sm->RemovePoint(5);
+  gCS_Smsys->RemovePoint(5);
+  gCS_Smsys->RemovePoint(5);
   gCS_Smsys->SetLineColor(1);
   gCS_Smsys->Draw("5");
       p7071_d60x1y1->Draw("same PZ");
@@ -541,16 +567,25 @@ void comp_pastDataH2()
       past_data4->Draw("same PZ");
       p7266_d17x1y8->Draw("same PZ");
       TLegend *leg2 = new TLegend(0.3, 0.6, 0.6, 0.9);
-      leg2->AddEntry(gCS_Sm, "This Analysis ", "LP");
-      leg2->AddEntry(p7266_d17x1y8, "NPB193(1981)21   0.99 GeV/c", "LP");
-      leg2->AddEntry(past_data3,    "NPB8(1968)233,   0.991 GeV/c", "LP");
-      leg2->AddEntry(p7071_d60x1y1, "NPB90(1975)349,  1.001 GeV/c", "LP");
-      leg2->AddEntry(p7006_d20x1y2, "NPB105(1976)189, 1.005 GeV/c", "LP");
-      leg2->AddEntry(past_data4,    "NPB8(1968)233,   1.022 GeV/c", "LP");
+      leg2->AddEntry(gCS_Sm, "Present Results ", "LP");
+      if(legendflag==0){
+        leg2->AddEntry(p7266_d17x1y8, "NPB193(1981)21   0.99 GeV/c", "LP");
+        leg2->AddEntry(past_data3,    "NPB8(1968)233,   0.991 GeV/c", "LP");
+        leg2->AddEntry(p7071_d60x1y1, "NPB90(1975)349,  1.001 GeV/c", "LP");
+        leg2->AddEntry(p7006_d20x1y2, "NPB105(1976)189, 1.005 GeV/c", "LP");
+        leg2->AddEntry(past_data4,    "NPB8(1968)233,   1.022 GeV/c", "LP");
+      }else{
+        leg2->AddEntry(p7266_d17x1y8, "NPB193(1981)21  ", "LP");
+        leg2->AddEntry(past_data3,    "NPB8(1968)233  ", "LP");
+        leg2->AddEntry(p7071_d60x1y1, "NPB90(1975)349 ", "LP");
+        leg2->AddEntry(p7006_d20x1y2, "NPB105(1976)189", "LP");
+        leg2->AddEntry(past_data4,    "NPB8(1968)233  ", "LP");
+      }
     //}
     leg2->Draw();
     //his->Draw("same");
  // }
+  cCS_wide->SaveAs("h2comp.pdf","PDF");
  // w1->Print("tmp.pdf");
   return;
   // CS obtained by MM & IM fits [bg_piS.C] 20191113

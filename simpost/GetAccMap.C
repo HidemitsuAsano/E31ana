@@ -241,7 +241,7 @@ void GetAccMap(const int dEcut=2)
     cSp[iq]->cd(2);
     q_IMnpipi_wSid_n_Sp_reco[iq]->Draw("colz");
     cSp[iq]->cd(3);
-    q_IMnpipi_Sp_acc[iq]->SetMaximum(0.005);
+    //q_IMnpipi_Sp_acc[iq]->SetMaximum(0.005);
     q_IMnpipi_Sp_acc[iq]->Draw("colz");
     cSp[iq]->cd(4);
     q_IMnpipi_Sp_accerr[iq]->SetMaximum(0.5);
@@ -254,7 +254,7 @@ void GetAccMap(const int dEcut=2)
     cSm[iq]->cd(2);
     q_IMnpipi_wSid_n_Sm_reco[iq]->Draw("colz");
     cSm[iq]->cd(3);
-    q_IMnpipi_Sm_acc[iq]->SetMaximum(0.010);
+    //q_IMnpipi_Sm_acc[iq]->SetMaximum(0.010);
     q_IMnpipi_Sm_acc[iq]->Draw("colz");
     cSm[iq]->cd(4);
     q_IMnpipi_Sm_accerr[iq]->SetMaximum(0.5);
@@ -274,7 +274,55 @@ void GetAccMap(const int dEcut=2)
     q_IMnpipi_K0_accerr[iq]->SetMaximum(0.5);
     q_IMnpipi_K0_accerr[iq]->Draw("colz");
   }
- 
+  
+  //for paper
+  const Int_t NRGBs = 5;
+  const Int_t NCont = 255;
+    //*** blue -> green -> yellow -> red ***//
+  //Double_t stops[NRGBs] = { 0.00, 0.34, 0.61, 0.84, 1.00 };
+  Double_t stops[NRGBs] = { 0.00, 0.25, 0.5, 0.75, 1.00 };
+  Double_t red[NRGBs]   = { 0.00, 0.00, 0.87, 1.00, 0.51 };
+  Double_t green[NRGBs] = { 0.00, 0.81, 1.00, 0.20, 0.00 };
+  Double_t blue[NRGBs]  = { 0.51, 1.00, 0.12, 0.00, 0.00 };
+
+  TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
+  gStyle->SetNumberContours(NCont);
+  
+  gStyle->SetPadGridX(0);
+  gStyle->SetPadGridY(0);
+  gStyle->SetTitleYOffset(1.6);
+  gStyle->SetOptStat(0);
+  gStyle->SetOptFit(0);
+  gStyle->SetPadRightMargin(0.15);
+  gStyle->SetPadLeftMargin(0.12);
+  TCanvas *caccSpp = new TCanvas("caccSpp","caccSpp",1000,800);
+  q_IMnpipi_Sp_acc[0]->SetTitle("");
+  q_IMnpipi_Sp_acc[0]->SetXTitle("IM(#pi^{-}#Sigma^{+}) [GeV/c^{2}]");
+  q_IMnpipi_Sp_acc[0]->SetYTitle("q [GeV/c]");
+  q_IMnpipi_Sp_acc[0]->GetZaxis()->SetMaxDigits(2);
+  q_IMnpipi_Sp_acc[0]->Draw("colz");
+  TFile *fnuSp = new TFile("NumericalRootFinder_Spmodebin1.root");
+  //TGraph *thSp = (TGraph*)fnuSp->Get("th");
+  //thSp->Draw("pc");
+  TMultiGraph *mgSp = (TMultiGraph*)fnuSp->Get("mg");
+  mgSp->Draw("c"); 
+
+  TCanvas *caccSmp = new TCanvas("caccSmp","caccSmp",1000,800);
+  q_IMnpipi_Sm_acc[0]->SetTitle("");
+  q_IMnpipi_Sm_acc[0]->SetXTitle("IM(#pi^{+}#Sigma^{-}) [GeV/c^{2}]");
+  q_IMnpipi_Sm_acc[0]->SetYTitle("q [GeV/c]");
+  q_IMnpipi_Sm_acc[0]->GetZaxis()->SetMaxDigits(2);
+  q_IMnpipi_Sm_acc[0]->Draw("colz");
+  TFile *fnuSm = new TFile("NumericalRootFinder_Smmodebin1.root");
+  //TGraph *thSm = (TGraph*)fnuSm->Get("th");
+  //thSm->Draw("pc");
+  TMultiGraph *mgSm = (TMultiGraph*)fnuSm->Get("mg");
+  mgSm->Draw("c"); 
+
+  caccSpp->SaveAs("accSp.pdf","PDF");
+  caccSmp->SaveAs("accSm.pdf","PDF");
+
+
   TFile *fout = new TFile(Form("accmapv%d_%d_dE%d.root",versionSigma,versionK0,dEcut), "RECREATE");
   for(int iq=0;iq<nqcut;iq++){
     q_IMnpipi_Sp_acc[iq]->Write();

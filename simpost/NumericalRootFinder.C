@@ -42,12 +42,13 @@ int NumericalRootFinder()
 
   const double COS_MIN = -1;
   const double COS_MAX = 1;
-  const int    COS_BIN = 20;
+  const int    COS_BIN = 1;
 
-  const double M_MIN = piSp_mass;
+  //const double M_MIN = piSp_mass;
+  const double M_MIN = piSm_mass;
   //const double M_MIN = K0n_mass;
   const double M_MAX = sys.M()-n_mass+0.00001;
-  const int    M_BIN = 200;
+  const int    M_BIN = 1000;
   cerr<<M_MIN<<" "<<M_MAX<<endl;
   
   double value[2][COS_BIN+1][M_BIN]; //[m,q][][]
@@ -97,7 +98,7 @@ int NumericalRootFinder()
     sprintf(com, "gr_%d", i);
     gr[i]->SetName(com);
     gr[i]->SetLineColor(1);
-    gr[i]->SetLineWidth(2);
+    gr[i]->SetLineWidth(4);
     gr[i]->SetLineStyle(10);
     mg->Add(gr[i]);
   }
@@ -105,7 +106,7 @@ int NumericalRootFinder()
   TGraph *gr_th;
   gr_th = new TGraph(2, value_th[0], value_th[1]);
   gr_th->SetName("th");
-  gr_th->SetLineColor(2);
+  gr_th->SetLineColor(1);
   gr_th->SetLineWidth(4);
   gr_th->SetLineStyle(10);
   mg->Add(gr_th);

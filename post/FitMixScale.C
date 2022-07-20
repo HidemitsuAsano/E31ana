@@ -326,8 +326,19 @@ void FitMixScale()
   IMnpip_n_sub->SetMarkerStyle(20);
   IMnpip_n_sub->Draw("E");
   TF1* fIMSp = new TF1("fIMSp","gaus");
-  IMnpip_n_sub->Fit("fIMSp","","",1.16,1.22);
+  //IMnpip_n_sub->Fit("fIMSp","","",1.16,1.22);
 
+  TCanvas *c10_2 = new TCanvas("c10_2","c10_2");
+  IMnpip_n_data->SetTitle("");
+  IMnpip_n_data->GetYaxis()->SetTitle("counts/(0.002 GeV/c^{2})");
+  IMnpip_n_data->GetYaxis()->CenterTitle();
+  IMnpip_n_data->GetXaxis()->SetRangeUser(1.15,1.23);
+  IMnpip_n_data->SetMinimum(IMnpip_n_sub->GetMinimum());
+  IMnpip_n_data->Draw();
+  IMnpip_n_sub->SetFillStyle(3004);
+  IMnpip_n_sub->SetFillColor(4);
+  IMnpip_n_sub->SetLineColor(4);
+  IMnpip_n_sub->Draw("HEsame");
 
   TCanvas *c11 = new TCanvas("c11","c11");
   MMnmiss_Sm_data->Draw();
@@ -365,8 +376,22 @@ void FitMixScale()
   IMnpim_n_sub->SetMarkerStyle(20);
   IMnpim_n_sub->Draw("E");
   TF1* fIMSm = new TF1("fIMSm","gaus");
-  IMnpim_n_sub->Fit("fIMSm","","",1.17,1.22);
+  //IMnpim_n_sub->Fit("fIMSm","","",1.17,1.22);
   
+  TCanvas *c12_2 = new TCanvas("c12_2","c12_2");
+  IMnpim_n_data->SetTitle("");
+  IMnpim_n_data->GetYaxis()->SetTitle("counts/(0.002 GeV/c^{2})");
+  IMnpim_n_data->GetYaxis()->CenterTitle();
+  IMnpim_n_data->GetXaxis()->SetRangeUser(1.15,1.23);
+  IMnpim_n_data->SetMinimum(IMnpim_n_sub->GetMinimum());
+  IMnpim_n_data->Draw();
+  IMnpim_n_sub->SetFillStyle(3004);
+  IMnpim_n_sub->SetFillColor(4);
+  IMnpim_n_sub->SetLineColor(4);
+  IMnpim_n_sub->Draw("HEsame");
+
+
+
   TCanvas *c13 = new TCanvas("c13","c13");
   IMpippim_woSid_data->RebinX(2);
   IMpippim_woSid_data->Draw();
@@ -377,6 +402,36 @@ void FitMixScale()
     IMpippim_woSid_mix[isys]->RebinX(2);
     IMpippim_woSid_mix[isys]->Draw("same");
   }
+
+
+  TCanvas *c13_1 = new TCanvas("c13_1","c13_1"); 
+  TH1D* IMpippim_woSid_sub = (TH1D*)IMpippim_woSid_data->Clone("IMpippim_woSid_sub");
+  IMpippim_woSid_sub->Add(IMpippim_woSid_mix[1],-1);
+  IMpippim_woSid_sub->GetXaxis()->SetRangeUser(0.4,0.6);
+  IMpippim_woSid_sub->GetYaxis()->SetTitle("counts/(0.002 GeV/c^{2})");
+  IMpippim_woSid_sub->GetYaxis()->CenterTitle();
+  IMpippim_woSid_sub->SetTitle("");
+  IMpippim_woSid_sub->Draw("E");
+ 
+  //TF1* fIMK0 = new TF1("fIMK0","gaus");
+  //IMpippim_woSid_sub->Fit("fIMK0","","",0.47,0.53);
+
+    
+
+  TCanvas *c13_2 = new TCanvas("c13_2","c13_2");
+  IMpippim_woSid_data->GetXaxis()->SetRangeUser(0.4,0.6);
+  IMpippim_woSid_data->GetYaxis()->SetTitle("counts/(0.002 GeV/c^{2})");
+  IMpippim_woSid_data->GetYaxis()->CenterTitle();
+  IMpippim_woSid_data->SetTitle("");
+  IMpippim_woSid_data->SetMinimum(IMpippim_woSid_sub->GetMinimum());
+  IMpippim_woSid_data->Draw();
+  IMpippim_woSid_sub->SetFillColor(3);
+  IMpippim_woSid_sub->SetLineColor(3);
+  IMpippim_woSid_sub->SetFillStyle(3004);
+  IMpippim_woSid_sub->Draw("HEsame");
+
+
+
 
   TCanvas *c14 = new TCanvas("c14","c14");
   IMnpipi_wSid_n_data_qhi->RebinX(3);
@@ -518,6 +573,7 @@ void FitMixScale()
   MMnmiss_wK0orwSid_sub->GetYaxis()->CenterTitle();
   MMnmiss_wK0orwSid_sub->Draw();
   
+  /*
   TF1* fMM_wK0orwSid = new TF1("fMM_wK0orwSid","gaus",0.85,1.05);
   //Int_t trans_red = GetColorTransparent(kRed, 0.3);
   //fMM->SetLineAlpha(8,0.464);
@@ -530,8 +586,21 @@ void FitMixScale()
   MMnmiss_wK0orwSid_sub->Fit("fMMLam_wK0orwSid","","",1.05,1.14);
   MMnmiss_wK0orwSid_sub->SetTitle("");
   MMnmiss_wK0orwSid_sub->Draw();
-  fMM_wK0orwSid->Draw("same");
-  fMMLam_wK0orwSid->Draw("same");
+  //fMM_wK0orwSid->Draw("same");
+  //fMMLam_wK0orwSid->Draw("same");
+  */
+
+  TCanvas *c23_1 = new TCanvas("c23_1","c23_1",1000,800);
+  MMnmiss_wK0orwSid_data->SetMinimum(-100);
+  MMnmiss_wK0orwSid_data->SetTitle("");
+  MMnmiss_wK0orwSid_data->SetYTitle("counts/(0.01 GeV/c^{2})");
+  MMnmiss_wK0orwSid_data->GetYaxis()->CenterTitle();
+  MMnmiss_wK0orwSid_data->Draw("E");
+  MMnmiss_wK0orwSid_sub->SetFillStyle(3004);
+  MMnmiss_wK0orwSid_sub->SetFillColor(2);
+  MMnmiss_wK0orwSid_sub->SetLineColor(2);
+  MMnmiss_wK0orwSid_sub->Draw("HEsame");
+
 
 
   TCanvas *c = NULL;

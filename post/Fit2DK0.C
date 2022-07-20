@@ -174,8 +174,8 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   //else if(qcut==1)f2->SetParLimits(0,3.57224e+04*1.8,3.57224e+04*2.0);
   else if(qcut==1)f2->SetParLimits(0,2.19399e+04*1.85,2.19399e+04*2.55 );
   //f2->FixParameter(0,2.0e5);
-  if(qcut==2)f2->SetParLimits(1,-0.005,0.0.005);
-  else if(qcut==1)f2->SetParLimits(1,-0.005,0.0.005);
+  if(qcut==2)f2->SetParLimits(1,-0.005,0.005);
+  else if(qcut==1)f2->SetParLimits(1,-0.005,0.005);
   //f2->FixParameter(1,0.005);
   //f2->SetParLimits(2,0.20,0.25);
   if(qcut==2)f2->FixParameter(2,0.20);
@@ -915,9 +915,9 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   IMnpim_K0sub_woSm->Fit("pol1","","",anacuts::Sigmam_MIN_wide-anacuts::Sigmam_sigma,anacuts::Sigmam_MAX_wide+anacuts::Sigmam_sigma);
   TF1* pol1_npim = (TF1*)IMnpim_K0sub_woSm->GetFunction("pol1");
   double par_npim[2];
-  double *par_npimerr;
+  //double *par_npimerr;
   pol1_npim->GetParameters(par_npim);
-  par_npimerr = pol1_npim->GetParErrors();
+  //par_npimerr = pol1_npim->GetParErrors();
 
   TGraphErrors *gr_SmONnpip_fin_pol1 = new TGraphErrors(IMnpip_K0sub_woSp);
   TGraphErrors *gr_SpONnpim_fin_pol1 = new TGraphErrors(IMnpim_K0sub_woSm);
