@@ -50,7 +50,6 @@ Double_t VGandLandau(Double_t *x,Double_t *par)
 }
 
 
-
 void FitCslpim()
 {
   gROOT->ForceStyle();
@@ -133,18 +132,19 @@ void FitCslpim()
   f2hist->Draw("colz");
   */
 
-  TF2 *f2 = new TF2("f2",VGandLandau,1.32,1.44,0.40,0.80,6);
-  f2->SetParLimits(0,0,10000000);
-  f2->SetParameter(0,0.00025);
-  f2->SetParameter(1,0.045);
+  TF2 *f2 = new TF2("f2",VGandLandau,1.32,1.44,0.35,0.65,6);
+  f2->SetParLimits(0,0,0.00085);//0: normalization
+  f2->SetParameter(0,0.00025);//
+  f2->FixParameter(1,0.040);//Lorenz half width (FWHM/2 ) 39.4 is full width of S(1385)- 
   f2->FixParameter(2,1.3872);//PDG mass
   f2->SetParameter(3,0.51);//landau mpv
-  f2->SetParLimits(3,0.51,0.55);
-  f2->SetParameter(4,0.09);
-  f2->SetParLimits(4,0.01,0.1);//landau sigma
-  f2->FixParameter(5,0.0005);
-  f2->SetNpx(8);
-  f2->SetNpy(8);
+  f2->SetParLimits(3,0.47,0.55);
+  f2->SetParameter(4,0.09);//Landau sigma
+  f2->SetParLimits(4,0.02,0.11);//landau sigma
+  //f2->FixParameter(5,0.0006);//Voigt sigma = resolution
+  f2->SetParLimits(5,0.0005,0.0015);//Voigt sigma = resolution
+  f2->SetNpx(8);//0.12/8 = 0.015 
+  f2->SetNpy(6);//0.3/6 = 0.05
   f2->Print("base");
   CS_sum_fit->Fit("f2","R","");
   //f2->Draw("cont1 ");
@@ -158,10 +158,11 @@ void FitCslpim()
   cfittest->cd(1);
   const int binx1320 = CS_sum_fit->GetXaxis()->FindBin(1.32);
   const int binx1440 = CS_sum_fit->GetXaxis()->FindBin(1.44);
-  const int biny400 = CS_sum_fit->GetYaxis()->FindBin(0.39);
-  const int biny750 = CS_sum_fit->GetYaxis()->FindBin(0.75);
-  TH1D* CS_sum_fit_px = (TH1D*)CS_sum_fit->ProjectionX("CS_sum_fit_cut_px",biny400,biny750);
-  CS_sum_fit_px->SetTitle("q: 400-750");
+  const int biny350 = CS_sum_fit->GetYaxis()->FindBin(0.35);
+  const int biny650 = CS_sum_fit->GetYaxis()->FindBin(0.65);
+  TH1D* CS_sum_fit_px = (TH1D*)CS_sum_fit->ProjectionX("CS_sum_fit_cut_px",biny350,biny650-1);
+  CS_sum_fit_px->SetTitle("projection q: 350-650");
+  CS_sum_fit_px->GetXaxis()->SetRangeUser(1.2,1.6);
   CS_sum_fit_px->Draw("HE");
   f2hist->SetFillColor(0);
   TH1D* f2hist_px = (TH1D*)f2hist->ProjectionX("f2hist_px");
@@ -169,19 +170,23 @@ void FitCslpim()
   //f2hist_px->Rebin(5);
   f2hist_px->Draw("same");
 
+
+  //q distribution
   cfittest->cd(4);
-  TH1D* CS_sum_fit_py = (TH1D*)CS_sum_fit->ProjectionY("CS_sum_fit_cut_py",binx1320,binx1440);
+  TH1D* CS_sum_fit_py = (TH1D*)CS_sum_fit->ProjectionY("CS_sum_fit_cut_py",binx1320,binx1440-1);
   CS_sum_fit_py->SetTitle("M: 1320-1440");
+  CS_sum_fit_py->GetXaxis()->SetRangeUser(0,0.75);
   CS_sum_fit_py->Draw("HE");
   TH1D* f2hist_py = (TH1D*)f2hist->ProjectionY("f2hist_py");
   f2hist_py->Draw("same");
   std::cout << "width y " << f2hist_py->GetBinWidth(1) << std::endl;
   
-  
-  TF2 *f3 = new TF2("f3",VGandLandau,1.32,1.47,0.20,1.00,6);
+   
+  //all range of region of intereset
+  TF2 *f3 = new TF2("f3",VGandLandau,1.32,1.44,0.20,0.65,6);
   f3->SetParameters(f2->GetParameters());
-  f3->SetNpx(10);
-  f3->SetNpy(16);
+  f3->SetNpx(8);//12/8 = 15 MeV bin
+  f3->SetNpy(9);//0.45/9 = 50 MeV/c bin
   f3->Print();
   
 
@@ -195,7 +200,7 @@ void FitCslpim()
   TH1D* f3hist_px = (TH1D*)f3hist->ProjectionX("f3hist_px");
   f3hist_px->SetLineColor(4);
   f3hist_px->SetFillColor(0);
-  f3hist_px->Draw("same");
+  //f3hist_px->Draw("same");
 
   cfittest->cd(4);
   const int bin1320_f3 = f3hist->GetXaxis()->FindBin(1.32);
@@ -203,7 +208,7 @@ void FitCslpim()
   TH1D* f3hist_py = (TH1D*)f3hist->ProjectionY("f3hist_py",bin1320_f3,bin1440_f3);
   f3hist_py->SetLineColor(4);
   f3hist_py->SetFillColor(0);
-  f3hist_py->Draw("same");
+  //f3hist_py->Draw("same");
 
   
   TCanvas *callrangecheck = new TCanvas("callrangecheck","callrangecheck");

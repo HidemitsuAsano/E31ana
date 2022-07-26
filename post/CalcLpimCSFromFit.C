@@ -60,19 +60,19 @@ void CalcLpimCSFromFit()
   }
 
   //qlow
-  CS_S1385_ToSp[1][0]->Scale(0.5);//sys down
-  CS_S1385_ToSp[1][2]->Scale(2);//sys up
-  CS_S1385_ToSm[1][0]->Scale(0.5);//sys down
-  CS_S1385_ToSm[1][2]->Scale(2);//sys up
-  CS_S1385_ToSpSm[1][0]->Scale(0.5);//sys down
-  CS_S1385_ToSpSm[1][2]->Scale(2);//sys up
+  CS_S1385_ToSp[1][0]->Scale(0.0);//sys down
+  CS_S1385_ToSp[1][2]->Scale(3);//sys up
+  CS_S1385_ToSm[1][0]->Scale(0.0);//sys down
+  CS_S1385_ToSm[1][2]->Scale(3);//sys up
+  CS_S1385_ToSpSm[1][0]->Scale(0.0);//sys down
+  CS_S1385_ToSpSm[1][2]->Scale(3);//sys up
   //qhi 
-  CS_S1385_ToSp[2][0]->Scale(0.9);//sys down
-  CS_S1385_ToSp[2][2]->Scale(1.1);//sys up
-  CS_S1385_ToSm[2][0]->Scale(0.9);//sys down
-  CS_S1385_ToSm[2][2]->Scale(1.1);//sys up
-  CS_S1385_ToSpSm[2][0]->Scale(0.9);//sys down
-  CS_S1385_ToSpSm[2][2]->Scale(1.1);//sys up
+  CS_S1385_ToSp[2][0]->Scale(0.7);//sys down
+  CS_S1385_ToSp[2][2]->Scale(1.3);//sys up
+  CS_S1385_ToSm[2][0]->Scale(0.7);//sys down
+  CS_S1385_ToSm[2][2]->Scale(1.3);//sys up
+  CS_S1385_ToSpSm[2][0]->Scale(0.7);//sys down
+  CS_S1385_ToSpSm[2][2]->Scale(1.3);//sys up
   
   //reset qall hist, because sys. err. are different btw qlow and qhi
   CS_S1385_ToSp[0][0]->Reset();

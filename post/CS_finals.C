@@ -251,9 +251,6 @@ void CS_finals()
     }
   }
 
-  TGraphAsymmErrors *gS1385ErrorSp[3];//
-  TGraphAsymmErrors *gS1385ErrorSm[3];//
-  TGraphAsymmErrors *gS1385ErrorSpSm[3];//
   
   TFile *flpim = TFile::Open("CSLpimFit_calc.root","READ");
   TH1D* CS_S1385_ToSp[3][3];
@@ -268,31 +265,35 @@ void CS_finals()
     }
   }
 
+  TGraphAsymmErrors *gS1385ErrorSp[3];//S1385 -> pi-Sigma+  with syserror 
+  TGraphAsymmErrors *gS1385ErrorSm[3];//S1385 -> pi+Sigma-
+  TGraphAsymmErrors *gS1385ErrorSpSm[3];//S1385 -> Sigma+ Sigma-
 
   for(int iq=0;iq<3;iq++){
-    gS1385ErrorSp[iq] = new TGraphAsymmErrors(CS_S1385_ToSp[iq][1]);
-    gS1385ErrorSm[iq] = new TGraphAsymmErrors(CS_S1385_ToSm[iq][1]);
-    gS1385ErrorSpSm[iq] = new TGraphAsymmErrors(CS_S1385_ToSpSm[iq][1]);
- 
+    gS1385ErrorSp[iq] = new TGraphAsymmErrors(CS_S1385_ToSp[iq][1]);//def
+    gS1385ErrorSm[iq] = new TGraphAsymmErrors(CS_S1385_ToSm[iq][1]);//def
+    gS1385ErrorSpSm[iq] = new TGraphAsymmErrors(CS_S1385_ToSpSm[iq][1]);//def
+    
+    
     for(int ip=0;ip<(gS1385ErrorSp[iq]->GetN());ip++){
       double valup = CS_S1385_ToSp[iq][2]->GetBinContent(ip+1); 
       double valdown = CS_S1385_ToSp[iq][0]->GetBinContent(ip+1);
       double valdef = CS_S1385_ToSp[iq][1]->GetBinContent(ip+1);
 
       double yeup = valup - valdef;
-      double yedown = valdef - yedown;
-
+      double yedown = valdef - valdown;
+   
       gS1385ErrorSp[iq]->SetPointEYhigh(ip,yeup);
       gS1385ErrorSp[iq]->SetPointEYlow(ip,yedown);
     }
-    
+
     for(int ip=0;ip<(gS1385ErrorSm[iq]->GetN());ip++){
       double valup = CS_S1385_ToSm[iq][2]->GetBinContent(ip+1); 
       double valdown = CS_S1385_ToSm[iq][0]->GetBinContent(ip+1);
       double valdef = CS_S1385_ToSm[iq][1]->GetBinContent(ip+1);
 
       double yeup = valup - valdef;
-      double yedown = valdef - yedown;
+      double yedown = valdef - valdown;
 
       gS1385ErrorSm[iq]->SetPointEYhigh(ip,yeup);
       gS1385ErrorSm[iq]->SetPointEYlow(ip,yedown);
@@ -304,21 +305,31 @@ void CS_finals()
       double valdef = CS_S1385_ToSpSm[iq][1]->GetBinContent(ip+1);
 
       double yeup = valup - valdef;
-      double yedown = valdef - yedown;
+      double yedown = valdef - valdown;
 
       gS1385ErrorSpSm[iq]->SetPointEYhigh(ip,yeup);
       gS1385ErrorSpSm[iq]->SetPointEYlow(ip,yedown);
     }
+    
   }//iq
   
+  std::cout << "Nbin " << gS1385ErrorSp[0]->GetN() << std::endl;
+
+  gS1385ErrorSp[1]->Print();
+  CS_S1385_ToSp[1][1]->Print("all");
+  CS_S1385_ToSp[1][0]->Print("all");
+  CS_S1385_ToSp[1][2]->Print("all");
   
   std::cout << __LINE__ << std::endl;
+  
+  
   TCanvas *cSysSp[4];
   for(int iq=0;iq<4;iq++){  
     cSysSp[iq] = new TCanvas(Form("cSysSp%d",iq),Form("cSysSp%d",iq),1000,800);
     IMnpipi_Sp_cs[iq][0][1]->SetLineColor(1);
     IMnpipi_Sp_cs[iq][0][1]->SetMarkerColor(1);
     IMnpipi_Sp_cs[iq][0][1]->GetXaxis()->SetRangeUser(1.3,1.6);
+    IMnpipi_Sp_cs[iq][0][1]->SetTitle("");
     IMnpipi_Sp_cs[iq][0][1]->Draw("E");
     gDecoErrorSp_CS[iq]->Draw("5");
     //gdEErrorSp_CS[iq]->SetFillStyle(0);
@@ -332,12 +343,18 @@ void CS_finals()
     gMIXErrorSp_CS[iq]->Draw("3");
     if(iq<3){
       gS1385ErrorSp[iq]->SetFillStyle(3001);
-      gS1385ErrorSp[iq]->SetFillColor(6);
+      gS1385ErrorSp[iq]->SetFillColor(0);
       gS1385ErrorSp[iq]->SetMarkerColor(6);
       gS1385ErrorSp[iq]->SetLineColor(6);
       //CS_S1385_ToSp[iq][1]->SetLineColor(6);
-      gS1385ErrorSp[iq]->Draw("3");
+      //gS1385ErrorSp[iq]->Draw("3");
+      gS1385ErrorSp[iq]->Draw("5");
     }
+    TLine *p = new TLine(1.29,0,1.605,0);
+    p->SetLineColor(1);
+    //p->SetLineWidth(2.0);
+    p->SetLineStyle(2);
+    p->Draw();
   }
 
 
@@ -348,6 +365,10 @@ void CS_finals()
     IMnpipi_Sm_cs[iq][0][1]->SetLineColor(1);
     IMnpipi_Sm_cs[iq][0][1]->SetMarkerColor(1);
     IMnpipi_Sm_cs[iq][0][1]->GetXaxis()->SetRangeUser(1.3,1.6);
+    //IMnpipi_Sm_cs[iq][0][1]->GetYaxis()->SetRangeUser(0,IMnpipi_Sm_cs[iq][0][1]->GetMaximum()*1.2 );
+    //gDecoErrorSm_CS[iq]->GetXaxis()->SetRangeUser(1.3,1.6);
+    //gDecoErrorSm_CS[iq]->GetYaxis()->SetRangeUser(0,IMnpipi_Sm_cs[iq][0][1]->GetMaximum()*1.2 );
+    IMnpipi_Sm_cs[iq][0][1]->SetTitle("");
     IMnpipi_Sm_cs[iq][0][1]->Draw("E");
     gDecoErrorSm_CS[iq]->Draw("5");
     //gdEErrorSm_CS[iq]->SetFillStyle(0);
@@ -361,12 +382,17 @@ void CS_finals()
     gMIXErrorSm_CS[iq]->Draw("3");
     if(iq<3){
       gS1385ErrorSm[iq]->SetFillStyle(3001);
-      gS1385ErrorSm[iq]->SetFillColor(6);
+      gS1385ErrorSm[iq]->SetFillColor(0);
       gS1385ErrorSm[iq]->SetMarkerColor(6);
       gS1385ErrorSm[iq]->SetLineColor(6);
       //CS_S1385_ToSm[iq][1]->SetLineColor(6);
-      gS1385ErrorSm[iq]->Draw("3");
+      gS1385ErrorSm[iq]->Draw("5");
     }
+    TLine *p = new TLine(1.29,0,1.605,0);
+    p->SetLineColor(1);
+    //p->SetLineWidth(2.0);
+    p->SetLineStyle(2);
+    p->Draw();
   }
 
   TCanvas *cSysK0[4];
@@ -394,6 +420,8 @@ void CS_finals()
     IMnpipi_SpSmSum[iq][0][1]->SetLineColor(1);
     IMnpipi_SpSmSum[iq][0][1]->SetMarkerColor(1);
     IMnpipi_SpSmSum[iq][0][1]->GetXaxis()->SetRangeUser(1.3,1.6);
+    IMnpipi_SpSmSum[iq][0][1]->GetXaxis()->SetTitle("IM(#pi#Sigma) [GeV/c^{2}]");
+    IMnpipi_SpSmSum[iq][0][1]->SetTitle("");
     IMnpipi_SpSmSum[iq][0][1]->Draw("E");
     gDecoErrorSpSm_CS[iq]->Draw("5");
     gMIXErrorSpSm_CS[iq]->SetFillStyle(3002);
@@ -403,12 +431,17 @@ void CS_finals()
     gMIXErrorSpSm_CS[iq]->Draw("3");
     if(iq<3){
       gS1385ErrorSpSm[iq]->SetFillStyle(3001);
-      gS1385ErrorSpSm[iq]->SetFillColor(6);
+      gS1385ErrorSpSm[iq]->SetFillColor(0);
       gS1385ErrorSpSm[iq]->SetMarkerColor(6);
       gS1385ErrorSpSm[iq]->SetLineColor(6);
       //CS_S1385_ToSm[iq][1]->SetLineColor(6);
-      gS1385ErrorSpSm[iq]->Draw("3");
+      gS1385ErrorSpSm[iq]->Draw("5");
     }
+    TLine *p = new TLine(1.29,0,1.605,0);
+    p->SetLineColor(1);
+    //p->SetLineWidth(2.0);
+    p->SetLineStyle(2);
+    p->Draw();
   }
 
   
@@ -567,7 +600,6 @@ void CS_finals()
   }
 
 
-
   for(int i=0;i<CS_SpcompMIX->GetN();i++){
     double x = CS_SpcompMIX->GetPointX(i);
     double y = CS_SpcompMIX->GetPointY(i);
@@ -709,7 +741,16 @@ void CS_finals()
   gCS_coscutSm[0]->GetXaxis()->SetRangeUser(1.3,1.6);
   gCS_coscutSm[0]->Draw("3");
 
-
+  
+  cSysSp[0]->SaveAs("csSp0.pdf","PDF");
+  cSysSp[1]->SaveAs("csSp1.pdf","PDF");
+  cSysSp[2]->SaveAs("csSp2.pdf","PDF");
+  cSysSm[0]->SaveAs("csSm0.pdf","PDF");
+  cSysSm[1]->SaveAs("csSm1.pdf","PDF");
+  cSysSm[2]->SaveAs("csSm2.pdf","PDF");
+  cSysSpSmSum[0]->SaveAs("csSpSm0.pdf","PDF");
+  cSysSpSmSum[1]->SaveAs("csSpSm1.pdf","PDF");
+  cSysSpSmSum[2]->SaveAs("csSpSm2.pdf","PDF");
 
 
   TCanvas *c = NULL;
@@ -737,8 +778,18 @@ void CS_finals()
     //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
   }
 
-  
+  TFile *fout = new TFile("csfinal.root","RECREATE");
+  fout->cd();
+  for(int iq=0;iq<3;iq++){
+    gS1385ErrorSp[iq]->Write();
+    gS1385ErrorSm[iq]->Write();
+    gS1385ErrorSpSm[iq]->Write();
+    gCS_coscutSp[iq]->Write();
+    gCS_coscutSm[iq]->Write();
+    gCS_coscutSpSm[iq]->Write();
+  }
 
+  
 
 
 
