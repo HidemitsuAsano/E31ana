@@ -92,7 +92,7 @@ void FitCslpim()
   for(int ix=0;ix<CS_sum_fit->GetNbinsX();ix++){
     for(int iy=0;iy<CS_sum_fit->GetNbinsY();iy++){
       double acccont = acc_sum->GetBinContent(ix,iy);
-      if(acccont<0.01){//remove small acceptance bin
+      if(acccont<0.005){//remove small acceptance bin
         CS_sum_fit->SetBinContent(ix,iy,0);
         CS_sum_fit->SetBinError(ix,iy,0);
       }
@@ -133,7 +133,7 @@ void FitCslpim()
   */
 
   TF2 *f2 = new TF2("f2",VGandLandau,1.32,1.44,0.35,0.65,6);
-  f2->SetParLimits(0,0,0.00085);//0: normalization
+  f2->SetParLimits(0,0,0.00095);//0: normalization
   f2->SetParameter(0,0.00025);//
   f2->FixParameter(1,0.040);//Lorenz half width (FWHM/2 ) 39.4 is full width of S(1385)- 
   f2->FixParameter(2,1.3872);//PDG mass
@@ -142,11 +142,12 @@ void FitCslpim()
   f2->SetParameter(4,0.09);//Landau sigma
   f2->SetParLimits(4,0.02,0.11);//landau sigma
   //f2->FixParameter(5,0.0006);//Voigt sigma = resolution
-  f2->SetParLimits(5,0.0005,0.0015);//Voigt sigma = resolution
+  f2->SetParLimits(5,0.005,0.01);//Voigt sigma = resolution
   f2->SetNpx(8);//0.12/8 = 0.015 
   f2->SetNpy(6);//0.3/6 = 0.05
   f2->Print("base");
   CS_sum_fit->Fit("f2","R","");
+  std::cout << "Chi2/ndf:  " <<   f2->GetChisquare() << " / " <<  f2->GetNDF() << std::endl;
   //f2->Draw("cont1 ");
 
   TH2D* f2hist = (TH2D*)f2->GetHistogram();
@@ -227,14 +228,14 @@ void FitCslpim()
 
 
   TCanvas *cCS_q_fit = new TCanvas("cCS_q_fit","cCS_q_fit",1000,800);
-  const int bin1360 = CS_sum_fit->GetXaxis()->FindBin(1.35);
-  const int bin1400 = CS_sum_fit->GetXaxis()->FindBin(1.395);
-  TH1D* CS_q_fit = (TH1D*)CS_sum_fit->ProjectionY("CS_q_fit",bin1360,bin1400);
+  const int bin1360 = CS_sum_fit->GetXaxis()->FindBin(1.320);
+  const int bin1400 = CS_sum_fit->GetXaxis()->FindBin(1.44);
+  TH1D* CS_q_fit = (TH1D*)CS_sum_fit->ProjectionY("CS_q_fit",bin1360,bin1400-1);
   CS_q_fit->SetMarkerStyle(20);
   CS_q_fit->Draw("E");
-  const int bin1360fit = f3hist->GetXaxis()->FindBin(1.35);
-  const int bin1400fit = f3hist->GetXaxis()->FindBin(1.395);
-  TH1D* f3hist_py2 = (TH1D*)f3hist->ProjectionY("f3hist_py2",bin1360fit,bin1400fit);
+  const int bin1360fit = f3hist->GetXaxis()->FindBin(1.32);
+  const int bin1400fit = f3hist->GetXaxis()->FindBin(1.44);
+  TH1D* f3hist_py2 = (TH1D*)f3hist->ProjectionY("f3hist_py2",bin1360fit,bin1400fit-1);
   f3hist_py2->SetLineColor(4);
   f3hist_py2->SetFillColor(0);
   f3hist_py2->Draw("same");
@@ -242,7 +243,7 @@ void FitCslpim()
   //CS_q_fit->Fit("f1","","",0.4,0.75);
   std::cout << __LINE__ << std::endl;
   TCanvas *cCS_q_all = new TCanvas("cCS_q_all","cCS_q_all",1000,800);
-  TH1D* CS_q_all = (TH1D*)CS_sum->ProjectionY("CS_q_all",bin1360,bin1400);
+  TH1D* CS_q_all = (TH1D*)CS_sum->ProjectionY("CS_q_all",bin1360,bin1400-1);
   CS_q_all->SetMarkerStyle(20);
   CS_q_all->Draw("E");
   f3hist_py2->Draw("same");
