@@ -39,7 +39,7 @@ int NumericalRootFinderLPim()
 
   const double COS_MIN = -1;
   const double COS_MAX = 1;
-  const int    COS_BIN = 1;
+  const int    COS_BIN = 200;
 
   const double M_MIN = Lpim_mass;
   const double M_MAX = sys.M()-p_mass+0.00000001;

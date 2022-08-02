@@ -27,10 +27,12 @@ void CS_IMLambdaPim()
   gth->Draw("pc");
   TGraph *gr_0 = (TGraph*)fkin->Get("gr_0");
   gr_0->Draw("pc");
+  /*
   TGraph *gr_100 = (TGraph*)fkin->Get("gr_100");
   gr_100->Draw("pc");
   TGraph *gr_65 = (TGraph*)fkin->Get("gr_65");
   gr_65->Draw("pc");
+  */
 
   TCanvas *cq_IMppipi_p_wL_sum_f  = new TCanvas("cq_IMppipi_p_wL_sum_f","cq_IMppipi_p_wL_sum_f",1000,800);
   TH2F* q_IMppipi_p_wL_sum_f = (TH2F*)file->Get("q_IMppipi_p_wL_sum_forward");
@@ -46,9 +48,9 @@ void CS_IMLambdaPim()
   //TGraph *gr_0 = (TGraph*)fkin->Get("gr_0");
   gr_0->Draw("pc");
   //TGraph *gr_100 = (TGraph*)fkin->Get("gr_100");
-  gr_100->Draw("pc");
+  //gr_100->Draw("pc");
   //TGraph *gr_65 = (TGraph*)fkin->Get("gr_65");
-  gr_65->Draw("pc");
+  //gr_65->Draw("pc");
 
 
   TH2F* CS_q_IMppipi_p_wL_sum = (TH2F*)q_IMppipi_p_wL_sum->Clone("CS_q_IMppipi_p_wL_sum");

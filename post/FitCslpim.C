@@ -253,7 +253,36 @@ void FitCslpim()
   std::cout << f3hist_py2->Integral(1,binq350) << std::endl;
 
   //forget about fitting 2d fitting, just 
-  //get B.W. cross section in 
+ 
+  TH2F* CS_sum_nofit = (TH2F*)CS_sum->Clone("CS_sum_nofit");
+  CS_sum_nofit->SetName("CS_sum_nofit");
+  const int binq200nofit = CS_sum_nofit->GetYaxis()->FindBin(0.20);
+  const int binq350nofit = CS_sum_nofit->GetYaxis()->FindBin(0.35);
+  const int binq650nofit = CS_sum_nofit->GetYaxis()->FindBin(0.65);
+  const int binM1440  = CS_sum_nofit->GetXaxis()->FindBin(1.440);
+  const double br_s1385ToLambdapi = 0.87;
+  const double br_s1385TopiSigma = 0.117;
+  const double br_s1385TopiSigma_err = 0.015;
+  const double br_SpToNpi = 0.4831;
+  const double br_SpToNpi_err = 0.003;
+  const double br_SmToNpi = 0.99848;
+  const double br_SmToNpi_err = 0.00005;
+  double binwidthq = CS_sum_nofit->GetYaxis()->GetBinWidth(1)*1000.0; 
+  CS_sum_nofit->Scale(br_s1385TopiSigma/2.0/br_s1385ToLambdapi*binwidthq);
+
+  TH1D* CS_sum_nofit_qlow = CS_sum_nofit->ProjectionX("CS_sum_nofit_qlow",binq200nofit,binq350nofit-1);
+  TH1D* CS_sum_nofit_qhi = CS_sum_nofit->ProjectionX("CS_sum_nofit_qhi",binq350nofit,binq650nofit);
+
+  TCanvas *cnofit = new TCanvas("cnofit","cnofit",1000,800);
+  cnofit->Divide(2,1);
+  cnofit->cd(1);
+  CS_sum_nofit_qlow->GetXaxis()->SetRangeUser(1.3,1.6);
+  CS_sum_nofit_qlow->Draw("HE");
+
+  cnofit->cd(2);
+  CS_sum_nofit_qhi->GetXaxis()->SetRangeUser(1.3,1.6);
+  CS_sum_nofit_qhi->Draw("HE");
+
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
