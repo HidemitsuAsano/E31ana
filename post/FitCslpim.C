@@ -1,3 +1,4 @@
+#include <cmath>
 
 Double_t BWandFormS(Double_t *x,Double_t *par)
 {
@@ -9,20 +10,21 @@ Double_t BWandFormS(Double_t *x,Double_t *par)
 Double_t FormP(Double_t *x,Double_t *par)
 {
 
-  return par[1]*pow(x[0]/par[0],2.0)*exp(-1.0*pow(x[0]/par[0],2.0));
+  return par[1]*std::pow(x[0]/par[0],2.0)*std::exp(-1.0*std::pow(x[0]/par[0],2.0));
 
 }
 
-
+/*
 Double_t BWandFormP(Double_t *x,Double_t *par)
 {
-  Double_t r1 = par[0]*pow(par[1]/2.0,2.0)/((pow(x[0]-par[2]),2.0)+pow(par[1]/2.0,2.0));
+  Double_t r1 = par[0]*std::pow(par[1]/2.0,2.0)/((std::pow((x[0]-par[2]),2.0)+std::pow(par[1]/2.0,2.0));
  
-  Double_t r2 = pow(x[1]/par[4],2.0)*exp(-1.0*pow(x[1]/par[4],2.0));
+  Double_t r2 = std::pow(x[1]/par[4],2.0)*std::exp(-1.0*std::pow(x[1]/par[4],2.0));
 
   return r1*r2;
 
 }
+*/
 
 //Fit with BW and some phenomenological model
 Double_t BWandLandau(Double_t *x,Double_t *par)
