@@ -588,6 +588,7 @@ void comp_pastDataH2()
   cCS_wide->SaveAs("h2comp.pdf","PDF");
  // w1->Print("tmp.pdf");
   return;
+  /*
   // CS obtained by MM & IM fits [bg_piS.C] 20191113
   // mean CS from 2/4/6 MeVee cut
   double val[2][6] = {{ 0, 485.9, 487.9, 328.6, 273.4, 165.8 },
@@ -605,6 +606,7 @@ void comp_pastDataH2()
   TCanvas *w2;
   w2 = new TCanvas("w2", "", 600, 300);
   w2->Divide(2,1);
+  TH1F* his;
   for( int x=0; x<2; x++ ){
     w2->cd(x+1);
     his = (TH1F*)Corr_Cospi[x]->Clone("his");
@@ -660,7 +662,7 @@ void comp_pastDataH2()
 
   }
   w2->Print("tmp.pdf)");
-
+  */
 
 
 }

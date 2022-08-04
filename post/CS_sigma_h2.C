@@ -293,8 +293,10 @@ void CS_sigma_h2()
   double *yehSpadd = gCS_SpdEsys->GetEYhigh();
   double *yelSpadd = gCS_SpdEsys->GetEYlow();
   for(int ip=0;ip<gCS_Sp_syssum->GetN();ip++){
-    double eh = sqrt(yehSp[ip]*yehSp[ip]+yehSpadd[ip]*yehSpadd[ip]);
-    double el = sqrt(yelSp[ip]*yelSp[ip]+yelSpadd[ip]*yelSpadd[ip]);
+    //double eh = sqrt(yehSp[ip]*yehSp[ip]+yehSpadd[ip]*yehSpadd[ip]);
+    //double el = sqrt(yelSp[ip]*yelSp[ip]+yelSpadd[ip]*yelSpadd[ip]);
+    double eh = sqrt(yehSp[ip]*yehSp[ip]);
+    double el = sqrt(yelSp[ip]*yelSp[ip]);
     gCS_Sp_syssum->SetPointEYhigh(ip,eh);
     gCS_Sp_syssum->SetPointEYlow(ip,el);
   }
@@ -317,8 +319,10 @@ void CS_sigma_h2()
   double *yehSmadd = gCS_SmdEsys->GetEYhigh();
   double *yelSmadd = gCS_SmdEsys->GetEYlow();
   for(int ip=0;ip<gCS_Sm_syssum->GetN();ip++){
-    double eh = sqrt(yehSm[ip]*yehSm[ip]+yehSmadd[ip]*yehSmadd[ip]);
-    double el = sqrt(yelSm[ip]*yelSm[ip]+yelSmadd[ip]*yelSmadd[ip]);
+    //double eh = sqrt(yehSm[ip]*yehSm[ip]+yehSmadd[ip]*yehSmadd[ip]);
+    //double el = sqrt(yelSm[ip]*yelSm[ip]+yelSmadd[ip]*yelSmadd[ip]);
+    double eh = sqrt(yehSm[ip]*yehSm[ip]);
+    double el = sqrt(yelSm[ip]*yelSm[ip]);
     gCS_Sm_syssum->SetPointEYhigh(ip,eh);
     gCS_Sm_syssum->SetPointEYlow(ip,el);
   }
