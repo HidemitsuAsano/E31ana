@@ -1,11 +1,5 @@
 #include <cmath>
-
-Double_t BWandFormS(Double_t *x,Double_t *par)
-{
-
-
-  return 0;
-}
+#include <iostream>
 
 Double_t FormP(Double_t *x,Double_t *par)
 {
@@ -14,17 +8,17 @@ Double_t FormP(Double_t *x,Double_t *par)
 
 }
 
-/*
+
 Double_t BWandFormP(Double_t *x,Double_t *par)
 {
-  Double_t r1 = par[0]*std::pow(par[1]/2.0,2.0)/((std::pow((x[0]-par[2]),2.0)+std::pow(par[1]/2.0,2.0));
+  Double_t r1 = par[0]*std::pow(par[1]/2.0,2.0)/(std::pow((x[0]-par[2]),2.0)+std::pow(par[1]/2.0,2.0));
  
   Double_t r2 = std::pow(x[1]/par[4],2.0)*std::exp(-1.0*std::pow(x[1]/par[4],2.0));
 
   return r1*r2;
 
 }
-*/
+
 
 //Fit with BW and some phenomenological model
 Double_t BWandLandau(Double_t *x,Double_t *par)
@@ -230,14 +224,14 @@ void FitCslpim()
 
 
   TCanvas *cCS_q_fit = new TCanvas("cCS_q_fit","cCS_q_fit",1000,800);
-  const int bin1360 = CS_sum_fit->GetXaxis()->FindBin(1.320);
-  const int bin1400 = CS_sum_fit->GetXaxis()->FindBin(1.44);
-  TH1D* CS_q_fit = (TH1D*)CS_sum_fit->ProjectionY("CS_q_fit",bin1360,bin1400-1);
+  const int bin1320 = CS_sum_fit->GetXaxis()->FindBin(1.320);
+  const int bin1440 = CS_sum_fit->GetXaxis()->FindBin(1.44);
+  TH1D* CS_q_fit = (TH1D*)CS_sum_fit->ProjectionY("CS_q_fit",bin1320,bin1440-1);
   CS_q_fit->SetMarkerStyle(20);
   CS_q_fit->Draw("E");
-  const int bin1360fit = f3hist->GetXaxis()->FindBin(1.32);
-  const int bin1400fit = f3hist->GetXaxis()->FindBin(1.44);
-  TH1D* f3hist_py2 = (TH1D*)f3hist->ProjectionY("f3hist_py2",bin1360fit,bin1400fit-1);
+  const int bin1320fit = f3hist->GetXaxis()->FindBin(1.32);
+  const int bin1440fit = f3hist->GetXaxis()->FindBin(1.44);
+  TH1D* f3hist_py2 = (TH1D*)f3hist->ProjectionY("f3hist_py2",bin1320fit,bin1440fit-1);
   f3hist_py2->SetLineColor(4);
   f3hist_py2->SetFillColor(0);
   f3hist_py2->Draw("same");
@@ -245,14 +239,60 @@ void FitCslpim()
   //CS_q_fit->Fit("f1","","",0.4,0.75);
   std::cout << __LINE__ << std::endl;
   TCanvas *cCS_q_all = new TCanvas("cCS_q_all","cCS_q_all",1000,800);
-  TH1D* CS_q_all = (TH1D*)CS_sum->ProjectionY("CS_q_all",bin1360,bin1400-1);
+  TH1D* CS_q_all = (TH1D*)CS_sum->ProjectionY("CS_q_all",bin1320,bin1440-1);
   CS_q_all->SetMarkerStyle(20);
+  CS_q_all->GetXaxis()->SetRangeUser(0,0.65);
+  double binwidth_q = CS_q_all->GetXaxis()->GetBinWidth(1)*1000.0; 
+  CS_q_all->Scale(binwidth_q);
+  f3hist_py2->Scale(binwidth_q);
   CS_q_all->Draw("E");
   f3hist_py2->Draw("same");
   const int binq350 = f3hist_py2->FindBin(0.35);
   const int binq650 = f3hist_py2->FindBin(0.65);
   std::cout << f3hist_py2->Integral(binq350,binq650)  << std::endl;
   std::cout << f3hist_py2->Integral(1,binq350) << std::endl;
+  
+  //q-dep systematic error
+  TCanvas *cCS_q_allsys = new TCanvas("cCS_q_allsys","cCS_q_allsys",1000,800);
+  TGraphAsymmErrors *gCS_qdep = new TGraphAsymmErrors();
+  //new TGraphAsymmErrors(CS_q_all);
+   
+  f3hist_py2->Print("all");
+  CS_q_all->Print("all");
+  gCS_qdep->Print();
+  int n  = CS_q_all->GetNbinsX();
+  for(int ip=1;ip<9;ip++){
+    double valfit = f3hist_py2->GetBinContent(ip+1);
+    double valmeasured = CS_q_all->GetBinContent(ip+5);
+    double bincen = CS_q_all->GetBinCenter(ip+5);
+    double err = valmeasured - valfit;
+    if(err>0){
+      gCS_qdep->SetPoint(ip,bincen,valmeasured);
+      gCS_qdep->SetPointEXlow(ip,0.025);
+      gCS_qdep->SetPointEXhigh(ip,0.025);
+      gCS_qdep->SetPointEYhigh(ip,fabs(valmeasured*0.1));
+      gCS_qdep->SetPointEYlow(ip,fabs(err));
+    }else{
+      gCS_qdep->SetPoint(ip,bincen,valmeasured);
+      gCS_qdep->SetPointEXlow(ip,0.025);
+      gCS_qdep->SetPointEXhigh(ip,0.025);
+      gCS_qdep->SetPointEYhigh(ip,fabs(err));
+      gCS_qdep->SetPointEYlow(ip,valmeasured*0.1);
+    }
+  }
+  
+  CS_q_all->Draw("E");
+  gCS_qdep->GetXaxis()->SetRangeUser(0,0.65);
+  gCS_qdep->SetFillStyle(3002);
+  gCS_qdep->SetFillColor(3);
+  gCS_qdep->SetMarkerColor(3);
+  gCS_qdep->SetLineColor(3);
+  gCS_qdep->Draw("5");
+  gCS_qdep->Print();
+  //gCS_qdep->Draw("ap");
+  
+
+
 
   //forget about fitting 2d fitting, just 
  
@@ -272,8 +312,19 @@ void FitCslpim()
   double binwidthq = CS_sum_nofit->GetYaxis()->GetBinWidth(1)*1000.0; 
   CS_sum_nofit->Scale(br_s1385TopiSigma/2.0/br_s1385ToLambdapi*binwidthq);
 
-  TH1D* CS_sum_nofit_qlow = CS_sum_nofit->ProjectionX("CS_sum_nofit_qlow",binq200nofit,binq350nofit-1);
-  TH1D* CS_sum_nofit_qhi = CS_sum_nofit->ProjectionX("CS_sum_nofit_qhi",binq350nofit,binq650nofit);
+  TH1D* CS_sum_nofit_qlow = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qlow",binq200nofit,binq350nofit-1);
+  TH1D* CS_sum_nofit_qhi = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qhi",binq350nofit,binq650nofit);
+  TH1D* CS_sum_nofit_qall = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qall",binq200nofit,binq650nofit);
+   
+  gStyle->SetPadGridX(0);
+  gStyle->SetPadGridY(0);
+  TCanvas *cnofitqall = new TCanvas("cnofitall","cnofitall",1000,800);
+  CS_sum_nofit_qall->GetXaxis()->SetRangeUser(1.3,1.6);
+  CS_sum_nofit_qall->Draw();
+  CS_sum_nofit_qlow->SetLineColor(2);
+  CS_sum_nofit_qlow->Draw("HEsame");
+  CS_sum_nofit_qhi->SetLineColor(3);
+  CS_sum_nofit_qhi->Draw("HEsame");
 
   TCanvas *cnofit = new TCanvas("cnofit","cnofit",1000,800);
   cnofit->Divide(2,1);
@@ -284,6 +335,9 @@ void FitCslpim()
   cnofit->cd(2);
   CS_sum_nofit_qhi->GetXaxis()->SetRangeUser(1.3,1.6);
   CS_sum_nofit_qhi->Draw("HE");
+  
+  
+
 
 
   TCanvas *c = NULL;
