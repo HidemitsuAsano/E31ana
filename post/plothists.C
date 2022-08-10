@@ -29,7 +29,7 @@ void QACDS(TFile *f);
 void QAForward(TFile *f);
 void PhysicsPlots(TFile *f);
 
-void plothists(const char *filename="evanaIMpisigma_v241.root")
+void plothists(const char *filename="evanaIMpisigma_v245.root")
 {
   std::cout << "filename " << filename << std::endl;
   gStyle->SetPadGridX(gridon);
@@ -462,7 +462,11 @@ void QACDS(TFile *f){
   h1_2mevcut->GetYaxis()->SetMaxDigits(4);
   h1_2mevcut->GetYaxis()->SetNdivisions(5,5,0,kTRUE);
   h1_2mevcut->SetTitle("");
-  h1_2mevcut->Draw("HE");
+  h1_2mevcut->Draw("E");
+   
+  double maxbeta =  h1_2mevcut->GetMaximum();
+  TLine *tbetacut = new TLine(1.37,0,6.79,maxbeta);
+  tbetacut->Draw();
   /*
   h1_nocut->Draw();
   h1_2mevcut->SetLineColor(2);

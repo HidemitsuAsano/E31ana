@@ -12,6 +12,7 @@ const int dEcut=2;
 const int Version=245;
 const bool Scale=false;
 const int qcut = 0;
+const double mixsysError = 0.05;
 
 const bool gridon=false;
 Double_t fit_IMnpip(Double_t *x,Double_t *par);
@@ -318,15 +319,23 @@ void FitMixScale()
   
   TCanvas *c10_1 = new TCanvas("c10_1","c10_1");
   TH1D* IMnpip_n_sub = (TH1D*)IMnpip_n_data->Clone("IMnpip_n_sub");
+  TH1D* IMnpip_n_sub_sysup = (TH1D*)IMnpip_n_data->Clone("IMnpip_n_sub_sysup");
+  TH1D* IMnpip_n_sub_sysdown = (TH1D*)IMnpip_n_data->Clone("IMnpip_n_sub_sysdown");
   IMnpip_n_sub->Add(IMnpip_n_mix[1],-1);
+  IMnpip_n_sub_sysup->Add(IMnpip_n_mix[1],-1.0-mixsysError);
+  IMnpip_n_sub_sysdown->Add(IMnpip_n_mix[1],-1.0+mixsysError);
   IMnpip_n_sub->GetXaxis()->SetRangeUser(1.15,1.23);
   IMnpip_n_sub->GetYaxis()->SetTitle("counts/(0.002 GeV/c^{2})");
   IMnpip_n_sub->GetYaxis()->CenterTitle();
   IMnpip_n_sub->SetTitle("");
   IMnpip_n_sub->SetMarkerStyle(20);
+  IMnpip_n_sub->SetMarkerColor(4);
   IMnpip_n_sub->Draw("E");
   TF1* fIMSp = new TF1("fIMSp","gaus");
   //IMnpip_n_sub->Fit("fIMSp","","",1.16,1.22);
+  
+  //for paper 
+  
 
   TCanvas *c10_2 = new TCanvas("c10_2","c10_2");
   IMnpip_n_data->SetTitle("");
@@ -334,11 +343,44 @@ void FitMixScale()
   IMnpip_n_data->GetYaxis()->CenterTitle();
   IMnpip_n_data->GetXaxis()->SetRangeUser(1.15,1.23);
   IMnpip_n_data->SetMinimum(IMnpip_n_sub->GetMinimum());
+  IMnpip_n_data->SetMarkerStyle(20);
   IMnpip_n_data->Draw();
-  IMnpip_n_sub->SetFillStyle(3004);
-  IMnpip_n_sub->SetFillColor(4);
+  //IMnpip_n_sub->SetFillStyle(3004);
+  //IMnpip_n_sub->SetFillColor(4);
   IMnpip_n_sub->SetLineColor(4);
-  IMnpip_n_sub->Draw("HEsame");
+   
+  TLatex *texnpip = new TLatex();
+  double texnpip_ymax = IMnpip_n_data->GetMaximum();
+  texnpip->SetTextSize(0.05);
+  texnpip->SetTextColor(1);
+  texnpip->DrawLatex( 1.155, texnpip_ymax, "(a)" );
+
+  //add systematic
+  TGraphAsymmErrors *gnpip_sys = new TGraphAsymmErrors(IMnpip_n_sub);
+  double *ynpip_sys = gnpip_sys->GetY();
+  for(int ip=0;ip<gnpip_sys->GetN();ip++){
+    double yh = IMnpip_n_sub_sysup->GetBinContent(ip+1) ;
+    double yl = IMnpip_n_sub_sysdown->GetBinContent(ip+1);
+    double yeh = yh - IMnpip_n_sub->GetBinContent(ip+1);
+    double yel = IMnpip_n_sub->GetBinContent(ip+1)-yl;
+    gnpip_sys->SetPointEYhigh(ip,yeh);
+    gnpip_sys->SetPointEYlow(ip,yel);
+    gnpip_sys->SetPointEXhigh(ip,0.0005);
+    gnpip_sys->SetPointEXlow(ip,0.0005);
+  }
+  //gnpip_sys->SetFillStyle(3002);
+  //gnpip_sys->SetFillColor(4);
+  gnpip_sys->SetMarkerColor(4);
+  //gnpip_sys->SetMarkerStyle(4);
+  gnpip_sys->SetLineColor(4);
+  gnpip_sys->Draw("5");
+  IMnpip_n_sub->Draw("Esame");
+
+  TLine *psp = new TLine(1.15,0,1.23,0);
+  psp->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  psp->SetLineStyle(2);
+  psp->Draw();
 
   TCanvas *c11 = new TCanvas("c11","c11");
   MMnmiss_Sm_data->Draw();
@@ -368,7 +410,11 @@ void FitMixScale()
 
   TCanvas *c12_1 = new TCanvas("c12_1","c12_1");
   TH1D* IMnpim_n_sub = (TH1D*)IMnpim_n_data->Clone("IMnpim_n_sub");
+  TH1D* IMnpim_n_sub_sysup = (TH1D*)IMnpim_n_data->Clone("IMnpim_n_sub_sysup");
+  TH1D* IMnpim_n_sub_sysdown = (TH1D*)IMnpim_n_data->Clone("IMnpim_n_sub_sysdown");
   IMnpim_n_sub->Add(IMnpim_n_mix[1],-1);
+  IMnpim_n_sub_sysup->Add(IMnpim_n_mix[1],-1.0-mixsysError);
+  IMnpim_n_sub_sysdown->Add(IMnpim_n_mix[1],-1.0+mixsysError);
   IMnpim_n_sub->GetXaxis()->SetRangeUser(1.15,1.23);
   IMnpim_n_sub->SetTitle("");
   IMnpim_n_sub->GetYaxis()->SetTitle("counts/(0.002 GeV/c^{2})");
@@ -384,11 +430,43 @@ void FitMixScale()
   IMnpim_n_data->GetYaxis()->CenterTitle();
   IMnpim_n_data->GetXaxis()->SetRangeUser(1.15,1.23);
   IMnpim_n_data->SetMinimum(IMnpim_n_sub->GetMinimum());
+  IMnpim_n_data->SetMarkerStyle(20);
   IMnpim_n_data->Draw();
-  IMnpim_n_sub->SetFillStyle(3004);
-  IMnpim_n_sub->SetFillColor(4);
+  //IMnpim_n_sub->SetFillStyle(3004);
+  //IMnpim_n_sub->SetFillColor(4);
   IMnpim_n_sub->SetLineColor(4);
-  IMnpim_n_sub->Draw("HEsame");
+  IMnpim_n_sub->SetMarkerColor(4);
+  
+  TLatex *texnpim = new TLatex();
+  double texnpim_ymax = IMnpim_n_data->GetMaximum();
+  texnpim->SetTextSize(0.05);
+  texnpim->SetTextColor(1);
+  texnpim->DrawLatex( 1.155,texnpim_ymax , "(b)" );
+  //add systematic
+  TGraphAsymmErrors *gnpim_sys = new TGraphAsymmErrors(IMnpim_n_sub);
+  double *ynpim_sys = gnpim_sys->GetY();
+  for(int ip=0;ip<gnpim_sys->GetN();ip++){
+    double yh = IMnpim_n_sub_sysup->GetBinContent(ip+1) ;
+    double yl = IMnpim_n_sub_sysdown->GetBinContent(ip+1);
+    double yeh = yh - IMnpim_n_sub->GetBinContent(ip+1);
+    double yel = IMnpim_n_sub->GetBinContent(ip+1)-yl;
+    gnpim_sys->SetPointEYhigh(ip,yeh);
+    gnpim_sys->SetPointEYlow(ip,yel);
+    gnpim_sys->SetPointEXhigh(ip,0.0005);
+    gnpim_sys->SetPointEXlow(ip,0.0005);
+  }
+  //gnpim_sys->SetFillStyle(3002);
+  //gnpim_sys->SetFillColor(4);
+  gnpim_sys->SetMarkerColor(4);
+  //gnpim_sys->SetMarkerStyle(4);
+  gnpim_sys->SetLineColor(4);
+  gnpim_sys->Draw("5");
+  IMnpim_n_sub->Draw("Esame");
+  TLine *psm = new TLine(1.15,0,1.23,0);
+  psm->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  psm->SetLineStyle(2);
+  psm->Draw();
 
 
 
@@ -406,7 +484,11 @@ void FitMixScale()
 
   TCanvas *c13_1 = new TCanvas("c13_1","c13_1"); 
   TH1D* IMpippim_woSid_sub = (TH1D*)IMpippim_woSid_data->Clone("IMpippim_woSid_sub");
+  TH1D* IMpippim_woSid_sub_sysup = (TH1D*)IMpippim_woSid_data->Clone("IMpippim_woSid_sub_sysup");
+  TH1D* IMpippim_woSid_sub_sysdown = (TH1D*)IMpippim_woSid_data->Clone("IMpippim_woSid_sub_sysdown");
   IMpippim_woSid_sub->Add(IMpippim_woSid_mix[1],-1);
+  IMpippim_woSid_sub_sysup->Add(IMpippim_woSid_mix[1],-1.0-mixsysError);
+  IMpippim_woSid_sub_sysdown->Add(IMpippim_woSid_mix[1],-1.0+mixsysError);
   IMpippim_woSid_sub->GetXaxis()->SetRangeUser(0.4,0.6);
   IMpippim_woSid_sub->GetYaxis()->SetTitle("counts/(0.002 GeV/c^{2})");
   IMpippim_woSid_sub->GetYaxis()->CenterTitle();
@@ -422,15 +504,45 @@ void FitMixScale()
   IMpippim_woSid_data->GetXaxis()->SetRangeUser(0.4,0.6);
   IMpippim_woSid_data->GetYaxis()->SetTitle("counts/(0.002 GeV/c^{2})");
   IMpippim_woSid_data->GetYaxis()->CenterTitle();
+  IMpippim_woSid_data->SetMarkerStyle(20);
   IMpippim_woSid_data->SetTitle("");
   IMpippim_woSid_data->SetMinimum(IMpippim_woSid_sub->GetMinimum());
+  IMpippim_woSid_data->GetXaxis()->SetRangeUser(0.45,0.55);
   IMpippim_woSid_data->Draw();
-  IMpippim_woSid_sub->SetFillColor(3);
+  //IMpippim_woSid_sub->SetFillColor(3);
   IMpippim_woSid_sub->SetLineColor(3);
-  IMpippim_woSid_sub->SetFillStyle(3004);
-  IMpippim_woSid_sub->Draw("HEsame");
-
-
+  //IMpippim_woSid_sub->SetFillStyle(3004);
+  IMpippim_woSid_sub->SetMarkerStyle(20);
+  IMpippim_woSid_sub->SetMarkerColor(3);
+  TLatex *texpippim = new TLatex();
+  double texpippim_ymax = IMpippim_woSid_data->GetMaximum();
+  texpippim->SetTextSize(0.05);
+  texpippim->SetTextColor(1);
+  texpippim->DrawLatex( 0.455, texpippim_ymax, "(c)" );
+  
+  TGraphAsymmErrors *gpippim_sys = new TGraphAsymmErrors(IMpippim_woSid_sub);
+  double *ypippim_sys = gpippim_sys->GetY();
+  for(int ip=0;ip<gpippim_sys->GetN();ip++){
+    double yh = IMpippim_woSid_sub_sysup->GetBinContent(ip+1) ;
+    double yl = IMpippim_woSid_sub_sysdown->GetBinContent(ip+1);
+    double yeh = yh - IMpippim_woSid_sub->GetBinContent(ip+1);
+    double yel = IMpippim_woSid_sub->GetBinContent(ip+1)-yl;
+    gpippim_sys->SetPointEYhigh(ip,yeh);
+    gpippim_sys->SetPointEYlow(ip,yel);
+    gpippim_sys->SetPointEXhigh(ip,0.0005);
+    gpippim_sys->SetPointEXlow(ip,0.0005);
+  }
+  //gpippim_sys->SetFillStyle(3002);
+  //gpippim_sys->SetFillColor(3);
+  gpippim_sys->SetMarkerColor(3);
+  gpippim_sys->SetLineColor(3);
+  gpippim_sys->Draw("5");
+  IMpippim_woSid_sub->Draw("Esame");
+  TLine *pk0 = new TLine(0.45,0,0.55,0);
+  pk0->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  pk0->SetLineStyle(2);
+  pk0->Draw();
 
 
   TCanvas *c14 = new TCanvas("c14","c14");
@@ -567,7 +679,11 @@ void FitMixScale()
   gStyle->SetPadLeftMargin(0.12);
   TCanvas *c23 = new TCanvas("c23","c23",1000,800);
   TH1D* MMnmiss_wK0orwSid_sub = (TH1D*)MMnmiss_wK0orwSid_data->Clone("MMnmiss_wK0orwSid_sub");
+  TH1D* MMnmiss_wK0orwSid_sub_sysup = (TH1D*)MMnmiss_wK0orwSid_data->Clone("MMnmiss_wK0orwSid_sub_sysup");
+  TH1D* MMnmiss_wK0orwSid_sub_sysdown = (TH1D*)MMnmiss_wK0orwSid_data->Clone("MMnmiss_wK0orwSid_sub_sysdown");
   MMnmiss_wK0orwSid_sub->Add(MMnmiss_wK0orwSid_mix[1],-1.0);
+  MMnmiss_wK0orwSid_sub_sysup->Add(MMnmiss_wK0orwSid_mix[1],-1.0-mixsysError);
+  MMnmiss_wK0orwSid_sub_sysdown->Add(MMnmiss_wK0orwSid_mix[1],-1.0+mixsysError);
   MMnmiss_wK0orwSid_sub->SetXTitle("MM(#pi^{+}#pi^{-}n) [GeV/c^{2}]");
   MMnmiss_wK0orwSid_sub->SetYTitle("counts/(0.01 GeV/c^{2})");
   MMnmiss_wK0orwSid_sub->GetYaxis()->CenterTitle();
@@ -595,11 +711,43 @@ void FitMixScale()
   MMnmiss_wK0orwSid_data->SetTitle("");
   MMnmiss_wK0orwSid_data->SetYTitle("counts/(0.01 GeV/c^{2})");
   MMnmiss_wK0orwSid_data->GetYaxis()->CenterTitle();
+  MMnmiss_wK0orwSid_data->SetMarkerStyle(20);
+  MMnmiss_wK0orwSid_data->GetXaxis()->SetRangeUser(0.5,1.5);
   MMnmiss_wK0orwSid_data->Draw("E");
-  MMnmiss_wK0orwSid_sub->SetFillStyle(3004);
-  MMnmiss_wK0orwSid_sub->SetFillColor(2);
+  //MMnmiss_wK0orwSid_sub->SetFillStyle(3004);
+  //MMnmiss_wK0orwSid_sub->SetFillColor(2);
   MMnmiss_wK0orwSid_sub->SetLineColor(2);
-  MMnmiss_wK0orwSid_sub->Draw("HEsame");
+  MMnmiss_wK0orwSid_sub->SetMarkerStyle(20);
+  MMnmiss_wK0orwSid_sub->SetMarkerColor(2);
+
+  TGraphAsymmErrors *gmiss_sys = new TGraphAsymmErrors(MMnmiss_wK0orwSid_sub);
+  double *ymiss_sys = gmiss_sys->GetY();
+  for(int ip=0;ip<gmiss_sys->GetN();ip++){
+    double yh = MMnmiss_wK0orwSid_sub_sysup->GetBinContent(ip+1) ;
+    double yl = MMnmiss_wK0orwSid_sub_sysdown->GetBinContent(ip+1);
+    double yeh = yh - MMnmiss_wK0orwSid_sub->GetBinContent(ip+1);
+    double yel = MMnmiss_wK0orwSid_sub->GetBinContent(ip+1)-yl;
+    gmiss_sys->SetPointEYhigh(ip,yeh);
+    gmiss_sys->SetPointEYlow(ip,yel);
+    gmiss_sys->SetPointEXhigh(ip,0.003);
+    gmiss_sys->SetPointEXlow(ip,0.003);
+  }
+  //gmiss_sys->SetFillStyle(3002);
+  //gmiss_sys->SetFillColor(2);
+  //gmiss_sys->SetMarkerColor(2);
+  //gnpip_sys->SetMarkerStyle(4);
+  gmiss_sys->SetLineColor(2);
+  gmiss_sys->SetLineWidth(1);
+  gmiss_sys->Draw("5");
+
+  MMnmiss_wK0orwSid_sub->Draw("Esame");
+
+
+  TLine *p = new TLine(0.5,0,1.5,0);
+  p->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  p->SetLineStyle(2);
+  p->Draw();
 
 
 
