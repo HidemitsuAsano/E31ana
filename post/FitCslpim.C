@@ -232,6 +232,7 @@ void FitCslpim()
   const int bin1320fit = f3hist->GetXaxis()->FindBin(1.32);
   const int bin1440fit = f3hist->GetXaxis()->FindBin(1.44);
   TH1D* f3hist_py2 = (TH1D*)f3hist->ProjectionY("f3hist_py2",bin1320fit,bin1440fit-1);
+  
   f3hist_py2->SetLineColor(4);
   f3hist_py2->SetFillColor(0);
   f3hist_py2->Draw("same");
@@ -303,12 +304,11 @@ void FitCslpim()
   const double br_s1385ToLambdapi = 0.87;
   const double br_s1385TopiSigma = 0.117;
   const double br_s1385TopiSigma_err = 0.015;
-  const double br_SpToNpi = 0.4831;
-  const double br_SpToNpi_err = 0.003;
-  const double br_SmToNpi = 0.99848;
-  const double br_SmToNpi_err = 0.00005;
+  const double IsospinCGFactor = 2.0;  
+
+  double binwidthM = CS_sum_nofit->GetXaxis()->GetBinWidth(1)*1000.0; 
   double binwidthq = CS_sum_nofit->GetYaxis()->GetBinWidth(1)*1000.0; 
-  CS_sum_nofit->Scale(br_s1385TopiSigma/2.0/br_s1385ToLambdapi*binwidthq);
+  CS_sum_nofit->Scale(br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor);
 
   TH1D* CS_sum_nofit_qlow = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qlow",binq200nofit,binq350nofit-1);
   TH1D* CS_sum_nofit_qhi = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qhi",binq350nofit,binq650nofit);
@@ -318,10 +318,14 @@ void FitCslpim()
   gStyle->SetPadGridY(0);
   TCanvas *cnofitqall = new TCanvas("cnofitall","cnofitall",1000,800);
   CS_sum_nofit_qall->GetXaxis()->SetRangeUser(1.3,1.6);
+  CS_sum_nofit_qall->Scale(binwidthq);
   CS_sum_nofit_qall->Draw();
+  
   CS_sum_nofit_qlow->SetLineColor(2);
+  CS_sum_nofit_qlow->Scale(binwidthq);
   CS_sum_nofit_qlow->Draw("HEsame");
   CS_sum_nofit_qhi->SetLineColor(3);
+  CS_sum_nofit_qhi->Scale(binwidthq);
   CS_sum_nofit_qhi->Draw("HEsame");
 
   TCanvas *cnofit = new TCanvas("cnofit","cnofit",1000,800);
@@ -334,10 +338,51 @@ void FitCslpim()
   CS_sum_nofit_qhi->GetXaxis()->SetRangeUser(1.3,1.6);
   CS_sum_nofit_qhi->Draw("HE");
   
+
+  TH1D* CS_M_measured[8];
+  TH1D* CS_M_fit[8];
+  
+  TCanvas *cM = new TCanvas("cM","cM",1200,800);
+  cM->Divide(4,2);
+   
+  //Note CS_sum and f3hist is divided by binwidth of M and q 
+  //must be multiply by bin width after projection
+  double binwidth_M = f3hist->GetXaxis()->GetBinWidth(1)*1000.0; 
+  for(int iqbin=0;iqbin<8;iqbin++){
+    CS_M_measured[iqbin] = (TH1D*)CS_sum->ProjectionX(Form("CS_M_measured_bin%d",iqbin+6),iqbin+6,iqbin+6); 
+    std::cout << CS_sum->GetYaxis()->GetBinLowEdge(iqbin+6) << "  " << f3hist->GetYaxis()->GetBinLowEdge(iqbin+2) << std::endl;
+    CS_M_fit[iqbin] = (TH1D*)f3hist->ProjectionX(Form("CS_M_fit_bin%d",iqbin+1),iqbin+2,iqbin+2); 
+    cM->cd(iqbin+1);
+    CS_M_measured[iqbin]->GetXaxis()->SetRangeUser(1.2,1.6);
+    CS_M_measured[iqbin]->Scale(binwidthq);
+    CS_M_fit[iqbin]->Scale(binwidthq);
+    CS_M_measured[iqbin]->SetMaximum(CS_M_measured[iqbin]->GetMaximum()*1.5);
+    CS_M_measured[iqbin]->Draw("HE");
+    CS_M_fit[iqbin]->SetFillColor(0);
+    CS_M_fit[iqbin]->Draw("Esame");
+    std::cout << CS_M_fit[iqbin]->Integral() << std::endl;
+  }  
   
 
+  TGraphAsymmErrors *gr_M_qlow = new TGraphAsymmErrors(CS_sum_nofit_qlow);
+  TGraphAsymmErrors *gr_M_qhi = new TGraphAsymmErrors(CS_sum_nofit_qhi);
 
+  TCanvas *cMerr = new TCanvas("cMerr","cMerr",1200,800); 
+  cMerr->Divide(2,1); 
+  cMerr->cd(1);
+  gr_M_qlow->GetXaxis()->SetRangeUser(1.2,1.6);
+  gr_M_qlow->Draw("AP");  
+  
+  TH1D* CS_M_qlowErr = (TH1D*) CS_M_fit[0]->Clone("CS_M_qlowerr");
+  for(int iq=1;iq<=3;iq++){
+    CS_M_qlowErr->Add(CS_M_fit[iq]);
+  }
 
+  CS_M_qlowErr->Draw("same");
+  
+  cMerr->cd(2);
+  gr_M_qhi->GetXaxis()->SetRangeUser(1.2,1.6);
+  gr_M_qhi->Draw("AP");  
 
 
   TCanvas *c = NULL;

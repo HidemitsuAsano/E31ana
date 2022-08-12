@@ -20,10 +20,7 @@ void CalcLpimCSFromFit()
   const double br_s1385ToLambdapi = 0.87;
   const double br_s1385TopiSigma = 0.117;
   const double br_s1385TopiSigma_err = 0.015;
-  const double br_SpToNpi = 0.4831;
-  const double br_SpToNpi_err = 0.003;
-  const double br_SmToNpi = 0.99848;
-  const double br_SmToNpi_err = 0.00005;
+  const double IsospinCGFactor = 2.0;  
 
   //get Lpim
   TH2F* CS_lpim_sum = (TH2F*)flpim->Get("CS_sum");
@@ -42,7 +39,7 @@ void CalcLpimCSFromFit()
   double binwidthq = CS_lpim_qcut[0]->GetYaxis()->GetBinWidth(1)*1000.0; 
   std::cout << "binq width " << binwidthq  << std::endl;
   
-  TH1D* CS_S1385_ToSp[3][3];//   [0:sysdown,1:center,2:sysup]
+  TH1D* CS_S1385_ToSp[3][3];//0:sysdown,1:center,2:sysup
   TH1D* CS_S1385_ToSm[3][3];//0:sysdown,1:center,2:sysup
   TH1D* CS_S1385_ToSpSm[3][3];//0:sysdown,1:center,2:sysup
  
@@ -50,7 +47,7 @@ void CalcLpimCSFromFit()
    
   //assume C.S. Sigma(1385)- ~ Sigma(1385)0
   for(int iq=0;iq<3;iq++){
-    CS_lpim_qcut[iq]->Scale(br_s1385TopiSigma/2.0/br_s1385ToLambdapi*binwidthq);
+    CS_lpim_qcut[iq]->Scale(br_s1385TopiSigma/2.0/br_s1385ToLambdapi*binwidthq/IsospinCGFactor);
     for(int isys=0;isys<3;isys++){
       CS_S1385_ToSp[iq][isys] = (TH1D*)CS_lpim_qcut[iq]->ProjectionX(Form("CS_S1385_ToSp%d_sys%d",iq,isys));
       CS_S1385_ToSm[iq][isys] = (TH1D*)CS_lpim_qcut[iq]->ProjectionX(Form("CS_S1385_ToSm%d_sys%d",iq,isys));
