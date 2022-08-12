@@ -72,7 +72,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   TParameter<double>*Err = (TParameter<double>*)flumi->Get("Err");
   double lumi = IntegLumi->GetVal();// ub-1
   double lumierr = Err->GetVal();
-  const double trigScale = 0.5;
+  const double trigScale = 1.0;//trig scale is included in acc map
   std::cout << "Lumi:  " << lumi << std::endl;
   std::cout << "Err:   " << lumierr << std::endl;
   

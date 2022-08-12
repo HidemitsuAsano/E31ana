@@ -34,7 +34,7 @@ void plothists(const char *filename="evanaIMpisigma_v245.root")
   std::cout << "filename " << filename << std::endl;
   gStyle->SetPadGridX(gridon);
   gStyle->SetPadGridY(gridon);
-  gStyle->SetTitleYOffset(1.6);
+  //gStyle->SetTitleYOffset(1.6);
   if(staton)gStyle->SetOptStat("emruo");
   else      gStyle->SetOptStat(0);
   gStyle->SetStatX(0.98);
@@ -168,7 +168,7 @@ void SimGenInfo(TFile *f){
 
 void QAForward(TFile *f){
   
-  gStyle->SetTitleYOffset(1.6);
+  //gStyle->SetTitleYOffset(1.6);
   gStyle->SetOptStat(0);
   gStyle->SetStatX(0.98);
   gStyle->SetStatY(0.9);
@@ -199,7 +199,7 @@ void QAForward(TFile *f){
 
 void QACDS(TFile *f){
 
-  gStyle->SetTitleYOffset(1.6);
+  //gStyle->SetTitleYOffset(1.6);
   gStyle->SetStatX(0.98);
   gStyle->SetStatY(0.9);
   gStyle->SetStatBorderSize(1);
@@ -462,11 +462,20 @@ void QACDS(TFile *f){
   h1_2mevcut->GetYaxis()->SetMaxDigits(4);
   h1_2mevcut->GetYaxis()->SetNdivisions(5,5,0,kTRUE);
   h1_2mevcut->SetTitle("");
+  h1_2mevcut->GetXaxis()->SetRangeUser(0,10);
+  h1_2mevcut->SetMarkerStyle(20);
+  h1_2mevcut->SetYTitle("counts");
+  h1_2mevcut->GetYaxis()->CenterTitle();
   h1_2mevcut->Draw("E");
    
   double maxbeta =  h1_2mevcut->GetMaximum();
-  TLine *tbetacut = new TLine(1.37,0,6.79,maxbeta);
+  TLine *tbetacut = new TLine(1.372,0,1.372,maxbeta*1.05);
+  tbetacut->SetLineStyle(2);
   tbetacut->Draw();
+  
+  TLine *tbetacut2 = new TLine(6.79,0,6.79,maxbeta*1.05);
+  tbetacut2->SetLineStyle(2);
+  tbetacut2->Draw();
   /*
   h1_nocut->Draw();
   h1_2mevcut->SetLineColor(2);
@@ -746,7 +755,7 @@ void PhysicsPlots(TFile *f){
 
 void QAbeamline(TFile *f){
   
-  gStyle->SetTitleYOffset(1.6);
+  //gStyle->SetTitleYOffset(1.6);
   gStyle->SetOptStat("emruo");
   gStyle->SetStatX(0.98);
   gStyle->SetStatY(0.9);

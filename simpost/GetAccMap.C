@@ -3,6 +3,7 @@ const double UncertCut = 0.25;
 const double GenCutSp = 120e3;
 const double GenCutSm = 120e3;
 const double GenCutK0 = 200e3;
+const double PreScale = 2.0;
 
 void GetAccMap(const int dEcut=2)
 {
@@ -131,12 +132,15 @@ void GetAccMap(const int dEcut=2)
     q_IMnpipi_Sp_acc[iq]->Print("base");
     q_IMnpipi_gen_Sp[iq]->Print("base");
     q_IMnpipi_Sp_acc[iq]->Divide(q_IMnpipi_Sp_acc[iq],q_IMnpipi_gen_Sp[iq],1.0,1.0,"b");
+    q_IMnpipi_Sp_acc[iq]->Scale(1./PreScale);
     q_IMnpipi_Sm_acc[iq]->Print("base");
     q_IMnpipi_gen_Sm[iq]->Print("base");
     q_IMnpipi_Sm_acc[iq]->Divide(q_IMnpipi_Sm_acc[iq],q_IMnpipi_gen_Sm[iq],1.0,1.0,"b");
+    q_IMnpipi_Sm_acc[iq]->Scale(1./PreScale);
     q_IMnpipi_K0_acc[iq]->Print("base");
     q_IMnpipi_gen_K0[iq]->Print("base");
     q_IMnpipi_K0_acc[iq]->Divide(q_IMnpipi_K0_acc[iq],q_IMnpipi_gen_K0[iq],1.0,1.0,"b");
+    q_IMnpipi_K0_acc[iq]->Scale(1./PreScale);
   }
 
   TH2F* q_IMnpipi_Sp_accerr[nqcut];
