@@ -53,8 +53,8 @@ void FitCslpim()
   TFile *file = TFile::Open("cs_lpim_killcombi.root");
   file->cd();
   gStyle->SetOptStat(0);
-  TH2F* CS_q_IMppipi_p_wL_nop2 = (TH2F*)file->Get(Form("CS_q_IMppipi_p_wL_nop2_acc%d",0));
-  TH2F* CS_q_IMppipi_p_wL_wp2 = (TH2F*)file->Get(Form("CS_q_IMppipi_p_wL_wp2_acc%d",0));
+  TH2F* CS_q_IMppipi_p_wL_nop2 = (TH2F*)file->Get(Form("CS_q_IMppipi_p_wL_nop2_acc%d",0));//divided by q and M bin width
+  TH2F* CS_q_IMppipi_p_wL_wp2 = (TH2F*)file->Get(Form("CS_q_IMppipi_p_wL_wp2_acc%d",0));//divided by q and M bin width
   
   TCanvas *cCS_q_IMppipi_p_wL_nop2 = new TCanvas("cCS_q_IMppipi_p_wL_nop2","cCS_q_IMppipi_p_wL_nop2",1000,1000);
   CS_q_IMppipi_p_wL_nop2->Draw("colz");
@@ -70,7 +70,7 @@ void FitCslpim()
   TH2F* CS_sum = (TH2F*)CS_q_IMppipi_p_wL_nop2->Clone("CS_sum");
   CS_sum->SetTitle("CS_sum");
   CS_sum->Add(CS_q_IMppipi_p_wL_wp2);
-  CS_sum->Draw("colz");
+  CS_sum->Draw("colz");//divided by q and M bin width
 
   TCanvas *cCS_acc_sum = new TCanvas("cCS_acc_sum","cCS_acc_sum",1000,800);
   TH2F* acc_nop2 = (TH2F*)file->Get("q_IMppipi_p_wL_nop2_acc_clean0");
@@ -308,7 +308,7 @@ void FitCslpim()
 
   double binwidthM = CS_sum_nofit->GetXaxis()->GetBinWidth(1)*1000.0; 
   double binwidthq = CS_sum_nofit->GetYaxis()->GetBinWidth(1)*1000.0; 
-  CS_sum_nofit->Scale(br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor);
+  //CS_sum_nofit->Scale(br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor);
 
   TH1D* CS_sum_nofit_qlow = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qlow",binq200nofit,binq350nofit-1);
   TH1D* CS_sum_nofit_qhi = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qhi",binq350nofit,binq650nofit);
@@ -318,14 +318,14 @@ void FitCslpim()
   gStyle->SetPadGridY(0);
   TCanvas *cnofitqall = new TCanvas("cnofitall","cnofitall",1000,800);
   CS_sum_nofit_qall->GetXaxis()->SetRangeUser(1.3,1.6);
-  CS_sum_nofit_qall->Scale(binwidthq);
+  CS_sum_nofit_qall->Scale(binwidthq);//multiply by q bin width
   CS_sum_nofit_qall->Draw();
   
   CS_sum_nofit_qlow->SetLineColor(2);
-  CS_sum_nofit_qlow->Scale(binwidthq);
+  CS_sum_nofit_qlow->Scale(binwidthq);//multiply by q bin width
   CS_sum_nofit_qlow->Draw("HEsame");
   CS_sum_nofit_qhi->SetLineColor(3);
-  CS_sum_nofit_qhi->Scale(binwidthq);
+  CS_sum_nofit_qhi->Scale(binwidthq);//multiply by q bin width
   CS_sum_nofit_qhi->Draw("HEsame");
 
   TCanvas *cnofit = new TCanvas("cnofit","cnofit",1000,800);
@@ -364,8 +364,8 @@ void FitCslpim()
   }  
   
 
-  TGraphAsymmErrors *gr_M_qlow = new TGraphAsymmErrors(CS_sum_nofit_qlow);
-  TGraphAsymmErrors *gr_M_qhi = new TGraphAsymmErrors(CS_sum_nofit_qhi);
+  TGraphAsymmErrors *gr_M_qlow = new TGraphAsymmErrors(CS_sum_nofit_qlow);//divided by M
+  TGraphAsymmErrors *gr_M_qhi = new TGraphAsymmErrors(CS_sum_nofit_qhi);//divided by M
 
   TCanvas *cMerr = new TCanvas("cMerr","cMerr",1200,800); 
   cMerr->Divide(2,1); 
