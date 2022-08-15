@@ -357,6 +357,7 @@ void FitCslpim()
     CS_M_measured[iqbin]->Scale(binwidthq);
     CS_M_fit[iqbin]->Scale(binwidthq);
     CS_M_measured[iqbin]->SetMaximum(CS_M_measured[iqbin]->GetMaximum()*1.5);
+    CS_M_measured[iqbin]->SetTitle(Form("q %0.2f-%0.2f",0.25+0.05*iqbin,0.30+0.05*iqbin));
     CS_M_measured[iqbin]->Draw("HE");
     CS_M_fit[iqbin]->SetFillColor(0);
     CS_M_fit[iqbin]->Draw("Esame");
@@ -366,23 +367,61 @@ void FitCslpim()
 
   TGraphAsymmErrors *gr_M_qlow = new TGraphAsymmErrors(CS_sum_nofit_qlow);//divided by M
   TGraphAsymmErrors *gr_M_qhi = new TGraphAsymmErrors(CS_sum_nofit_qhi);//divided by M
+  gr_M_qlow->SetName("gr_M_qlow");  
+  gr_M_qhi->SetName("gr_M_qhi");  
+
 
   TCanvas *cMerr = new TCanvas("cMerr","cMerr",1200,800); 
   cMerr->Divide(2,1); 
   cMerr->cd(1);
   gr_M_qlow->GetXaxis()->SetRangeUser(1.2,1.6);
+  gr_M_qlow->SetLineColor(1);  
+  gr_M_qlow->SetMarkerColor(1);  
+  gr_M_qlow->SetMarkerStyle(20);  
+  for(int ip=0;ip<8;ip++){
+    gr_M_qlow->RemovePoint(0); 
+  }
   gr_M_qlow->Draw("AP");  
+
+  
   
   TH1D* CS_M_qlowErr = (TH1D*) CS_M_fit[0]->Clone("CS_M_qlowerr");
-  for(int iq=1;iq<=3;iq++){
-    CS_M_qlowErr->Add(CS_M_fit[iq]);
-  }
+  CS_M_qlowErr->Add(CS_M_fit[1]);
+  //CS_M_qlowErr->Draw("same");
+  
+  TGraphAsymmErrors *gr_M_qlowErr = new TGraphAsymmErrors(CS_M_qlowErr);//divided by M
+  gr_M_qlowErr->SetName("gr_M_qlowErr");
 
-  CS_M_qlowErr->Draw("same");
+  for(int ip=0;ip<gr_M_qlowErr->GetN();ip++){
+    double yfit = CS_M_qlowErr->GetBinContent(ip+1);
+    double xval = CS_M_qlowErr->GetBinCenter(ip+1);
+    int fitbin = CS_M_qlowErr->FindBin(xval);
+    double ymes = CS_sum_nofit_qlow->GetBinContent(fitbin);
+     
+    if(ymes<yfit){
+      gr_M_qlowErr->SetPointEYhigh(ip,yfit-ymes);
+    }else{
+      gr_M_qlowErr->SetPointEYlow(ip,ymes-yfit);
+    }
+  }
+  gr_M_qlowErr->Draw("5P");
+  gr_M_qlow->Draw("P");  
   
   cMerr->cd(2);
   gr_M_qhi->GetXaxis()->SetRangeUser(1.2,1.6);
+  gr_M_qhi->SetLineColor(1);  
+  gr_M_qhi->SetMarkerColor(1);  
+  gr_M_qhi->SetMarkerStyle(20);  
   gr_M_qhi->Draw("AP");  
+  
+  TH1D* CS_M_qhiErr = (TH1D*) CS_M_fit[2]->Clone("CS_M_qhierr");
+  for(int iq=2;iq<8;iq++){
+    CS_M_qhiErr->Add(CS_M_fit[iq]);
+  }
+  CS_M_qhiErr->Draw("same");
+  
+  TGraphAsymmErrors *gr_M_qhiErr = new TGraphAsymmErrors(CS_sum_nofit_qhi);//divided by M
+  gr_M_qhiErr->SetName("gr_M_qhiErr");
 
 
   TCanvas *c = NULL;
