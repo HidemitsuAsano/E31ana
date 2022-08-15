@@ -387,7 +387,7 @@ void FitCslpim()
   
   TH1D* CS_M_qlowErr = (TH1D*) CS_M_fit[0]->Clone("CS_M_qlowerr");
   CS_M_qlowErr->Add(CS_M_fit[1]);
-  //CS_M_qlowErr->Draw("same");
+  CS_M_qlowErr->Draw("same");
   
   TGraphAsymmErrors *gr_M_qlowErr = new TGraphAsymmErrors(CS_M_qlowErr);//divided by M
   gr_M_qlowErr->SetName("gr_M_qlowErr");
@@ -395,16 +395,18 @@ void FitCslpim()
   for(int ip=0;ip<gr_M_qlowErr->GetN();ip++){
     double yfit = CS_M_qlowErr->GetBinContent(ip+1);
     double xval = CS_M_qlowErr->GetBinCenter(ip+1);
-    int fitbin = CS_M_qlowErr->FindBin(xval);
+    int fitbin = CS_sum_nofit_qlow->GetXaxis()->FindBin(xval);
     double ymes = CS_sum_nofit_qlow->GetBinContent(fitbin);
      
-    if(ymes<yfit){
-      gr_M_qlowErr->SetPointEYhigh(ip,yfit-ymes);
+    std::cout << ip  << " fit: " << yfit << " mes:  " << ymes << std::endl;
+    if(ymes>yfit){
+      gr_M_qlowErr->SetPointEYhigh(ip,ymes-yfit);
+      gr_M_qlowErr->SetPointEYlow(ip,0);
     }else{
-      gr_M_qlowErr->SetPointEYlow(ip,ymes-yfit);
+      gr_M_qlowErr->SetPointEYlow(ip,yfit-ymes);
     }
   }
-  gr_M_qlowErr->Draw("5P");
+  gr_M_qlowErr->Draw("5");
   gr_M_qlow->Draw("P");  
   
   cMerr->cd(2);
