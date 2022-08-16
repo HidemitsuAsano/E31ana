@@ -56,12 +56,43 @@ void CalcLpimCSFromFit()
       CS_S1385_ToSpSm[iq][isys]->Scale(2.0);
     }
   }
-
+  
+  TGraphAsymmErrors *gr_S1385_ToSqlow = new TGraphAsymmErrors();
+  gr_S1385_ToSqlow->SetName("gr_S1385_ToSqlow");
   for(int ip=0;ip<gr_M_qlowErr->GetN();ip++){
-
-
-
-
+    double yval = gr_M_qlowErr->GetPointY(ip);
+    yval = yval/br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
+    gr_S1385_ToSqlow->SetPointY(ip,yval);
+    double yeh = gr_M_qlowErr->GetErrorYhigh(ip);
+    yeh = yeh/br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
+    gr_S1385_ToSqlow->SetPointEYhigh(ip,yeh);
+    double yel = gr_M_qlowErr->GetErrorYlow(ip);
+    yel = yel/br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
+    gr_S1385_ToSqlow->SetPointEYlow(ip,yel);
+    double x = gr_M_qlowErr->GetPointX(ip);
+    gr_S1385_ToSqlow->SetPointX(ip,x);
+    double xe = gr_M_qlowErr->GetErrorXlow(ip);
+    gr_S1385_ToSqlow->SetPointEXlow(ip,xe);
+    gr_S1385_ToSqlow->SetPointEXhigh(ip,xe);
+  }   
+  
+  TGraphAsymmErrors *gr_S1385_ToSqhi = new TGraphAsymmErrors();
+  gr_S1385_ToSqhi->SetName("gr_S1385_ToSqhi");
+  for(int ip=0;ip<gr_M_qhiErr->GetN();ip++){
+    double yval = gr_M_qhiErr->GetPointY(ip);
+    yval = yval/br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
+    gr_S1385_ToSqhi->SetPointY(ip,yval);
+    double yeh = gr_M_qhiErr->GetErrorYhigh(ip);
+    yeh = yeh/br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
+    gr_S1385_ToSqhi->SetPointEYhigh(ip,yeh);
+    double yel = gr_M_qhiErr->GetErrorYlow(ip);
+    yel = yel/br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
+    gr_S1385_ToSqhi->SetPointEYlow(ip,yel);
+    double x = gr_M_qhiErr->GetPointX(ip);
+    gr_S1385_ToSqhi->SetPointX(ip,x);
+    double xe = gr_M_qhiErr->GetErrorXlow(ip);
+    gr_S1385_ToSqhi->SetPointEXlow(ip,xe);
+    gr_S1385_ToSqhi->SetPointEXhigh(ip,xe);
   }   
 
 
@@ -236,7 +267,12 @@ void CalcLpimCSFromFit()
   CS_lpim_sum->Draw("colz");
   //CS_lpim_fit->Draw("boxsame");
 
-
+  TCanvas *ctest = new TCanvas("ctest","ctest",1200,800);
+  ctest->Divide(2,1);
+  ctest->cd(1);
+  gr_S1385_ToSqlow->Draw("ap");
+  ctest->cd(2);
+  gr_S1385_ToSqhi->Draw("ap");
 
   TFile *flpim_calc = new TFile("CSLpimFit_calc.root","RECREATE");
   flpim_calc->cd();
@@ -250,6 +286,7 @@ void CalcLpimCSFromFit()
       CS_S1385_ToSp[iq][isys]->Write();
       CS_S1385_ToSm[iq][isys]->Write();
       CS_S1385_ToSpSm[iq][isys]->Write();
+      gr_S1385_ToSqlow->Write();
     }
   }
 

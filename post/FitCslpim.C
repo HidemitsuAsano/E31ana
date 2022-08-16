@@ -381,10 +381,12 @@ void FitCslpim()
   for(int ip=0;ip<8;ip++){
     gr_M_qlow->RemovePoint(0); 
   }
+  //addional error for scaling
   for(int ip=0;ip<gr_M_qlow->GetN();ip++){
     double yh = gr_M_qlow->GetErrorYhigh(ip);
     double yl = gr_M_qlow->GetErrorYlow(ip);
     double y = gr_M_qlow->GetPointY(ip);
+    
     gr_M_qlow->SetPointEYhigh(ip,sqrt(yh*yh+y*y*0.0025));
     gr_M_qlow->SetPointEYlow(ip,sqrt(yl*yl+y*y*0.0025));
   }
@@ -409,15 +411,16 @@ void FitCslpim()
     double xval = CS_M_qlowErr->GetBinCenter(ip+1);
     int fitbin = CS_sum_nofit_qlow->GetXaxis()->FindBin(xval);
     double ymes = CS_sum_nofit_qlow->GetBinContent(fitbin);
+    double ymeserr = CS_sum_nofit_qlow->GetBinError(fitbin);
      
     std::cout << ip  << " fit: " << yfit << " mes:  " << ymes << std::endl;
     if(ymes>yfit){
-      gr_M_qlowErr->SetPointEYhigh(ip,ymes-yfit);
+      gr_M_qlowErr->SetPointEYhigh(ip,ymes-yfit+ymeserr);
       //gr_M_qlowErr->SetPointEYlow(ip,yfit*0.2);
       gr_M_qlowErr->SetPointEYlow(ip,yfit);
     }else{
       gr_M_qlowErr->SetPointEYlow(ip,yfit-ymes);
-      gr_M_qlowErr->SetPointEYhigh(ip,yfit*0.2);
+      gr_M_qlowErr->SetPointEYhigh(ip,yfit*0.2+ymeserr);
     }
   }
   //after burner for symmetry
