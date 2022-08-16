@@ -25,7 +25,8 @@ void CalcLpimCSFromFit()
   //get Lpim
   TH2F* CS_lpim_sum = (TH2F*)flpim->Get("CS_sum");
   TH2F* CS_lpim_fit = (TH2F*)flpim->Get("Func");
-
+  TGraphAsymmErrors *gr_M_qlowErr = (TGraphAsymmErrors*)flpim->Get("gr_M_qlowErr");
+  TGraphAsymmErrors *gr_M_qhiErr = (TGraphAsymmErrors*)flpim->Get("gr_M_qhiErr");
   
   TH2F* CS_lpim_qcut[3];//iq
   for(int iq=0;iq<3;iq++){
@@ -44,7 +45,7 @@ void CalcLpimCSFromFit()
   TH1D* CS_S1385_ToSpSm[3][3];//0:sysdown,1:center,2:sysup
  
   const int sysdef=1;
-   
+
   //assume C.S. Sigma(1385)- ~ Sigma(1385)0
   for(int iq=0;iq<3;iq++){
     CS_lpim_qcut[iq]->Scale(br_s1385TopiSigma/2.0/br_s1385ToLambdapi*binwidthq/IsospinCGFactor);
@@ -55,6 +56,15 @@ void CalcLpimCSFromFit()
       CS_S1385_ToSpSm[iq][isys]->Scale(2.0);
     }
   }
+
+  for(int ip=0;ip<gr_M_qlowErr->GetN();ip++){
+
+
+
+
+  }   
+
+
 
   //qlow
   CS_S1385_ToSp[1][0]->Scale(0.0);//sys down

@@ -371,9 +371,9 @@ void FitCslpim()
   gr_M_qhi->SetName("gr_M_qhi");  
 
 
-  TCanvas *cMerr = new TCanvas("cMerr","cMerr",1200,800); 
-  cMerr->Divide(2,1); 
-  cMerr->cd(1);
+  TCanvas *cMerr_qlow = new TCanvas("cMerr_qlow","cMerr_qlow",1000,800); 
+  //cMerr->Divide(2,1); 
+  //cMerr->cd(1);
   gr_M_qlow->GetXaxis()->SetRangeUser(1.2,1.6);
   gr_M_qlow->SetLineColor(1);  
   gr_M_qlow->SetMarkerColor(1);  
@@ -381,13 +381,25 @@ void FitCslpim()
   for(int ip=0;ip<8;ip++){
     gr_M_qlow->RemovePoint(0); 
   }
+  for(int ip=0;ip<gr_M_qlow->GetN();ip++){
+    double yh = gr_M_qlow->GetErrorYhigh(ip);
+    double yl = gr_M_qlow->GetErrorYlow(ip);
+    double y = gr_M_qlow->GetPointY(ip);
+    gr_M_qlow->SetPointEYhigh(ip,sqrt(yh*yh+y*y*0.0025));
+    gr_M_qlow->SetPointEYlow(ip,sqrt(yl*yl+y*y*0.0025));
+  }
+  gr_M_qlow->SetTitle("");
+  gr_M_qlow->GetXaxis()->SetTitle("IM(#Lambda #pi^{-}) [GeV/c^{2}]");
+  gr_M_qlow->GetXaxis()->CenterTitle();
+  gr_M_qlow->GetYaxis()->SetTitle("d^{2}#rho/dM d#Omega [#mu b/MeVsr]");
+  gr_M_qlow->GetYaxis()->CenterTitle();
   gr_M_qlow->Draw("AP");  
 
   
   
   TH1D* CS_M_qlowErr = (TH1D*) CS_M_fit[0]->Clone("CS_M_qlowerr");
   CS_M_qlowErr->Add(CS_M_fit[1]);
-  CS_M_qlowErr->Draw("same");
+  //CS_M_qlowErr->Draw("same");
   
   TGraphAsymmErrors *gr_M_qlowErr = new TGraphAsymmErrors(CS_M_qlowErr);//divided by M
   gr_M_qlowErr->SetName("gr_M_qlowErr");
@@ -401,30 +413,91 @@ void FitCslpim()
     std::cout << ip  << " fit: " << yfit << " mes:  " << ymes << std::endl;
     if(ymes>yfit){
       gr_M_qlowErr->SetPointEYhigh(ip,ymes-yfit);
-      gr_M_qlowErr->SetPointEYlow(ip,0);
+      //gr_M_qlowErr->SetPointEYlow(ip,yfit*0.2);
+      gr_M_qlowErr->SetPointEYlow(ip,yfit);
     }else{
       gr_M_qlowErr->SetPointEYlow(ip,yfit-ymes);
+      gr_M_qlowErr->SetPointEYhigh(ip,yfit*0.2);
     }
   }
+  //after burner for symmetry
+  gr_M_qlowErr->Print();
+  double y0l = gr_M_qlowErr->GetPointY(0);
+  double ye0l = gr_M_qlowErr->GetErrorYlow(0);
+  //gr_M_qlowErr->SetPointEYlow(7,ye0l);
+  gr_M_qlowErr->SetPointEYhigh(7,y0l);
+  double y1l = gr_M_qlowErr->GetPointY(1);
+  double ye1l = gr_M_qlowErr->GetErrorYlow(1);
+  //gr_M_qlowErr->SetPointEYlow(6,ye1l);
+  gr_M_qlowErr->SetPointEYhigh(6,y1l);
+  double y2l = gr_M_qlowErr->GetPointY(2);
+  double ye2l = gr_M_qlowErr->GetErrorYhigh(2);
+  gr_M_qlowErr->SetPointEYhigh(5,ye2l);
+  //gr_M_qlowErr->SetPointEYlow(5,y2l);
+  
   gr_M_qlowErr->Draw("5");
   gr_M_qlow->Draw("P");  
   
-  cMerr->cd(2);
+  TCanvas *cMerr_qhi = new TCanvas("cMerr_qhi","cMerr_qhi",1000,800); 
+  //cMerr->cd(2);
   gr_M_qhi->GetXaxis()->SetRangeUser(1.2,1.6);
   gr_M_qhi->SetLineColor(1);  
   gr_M_qhi->SetMarkerColor(1);  
   gr_M_qhi->SetMarkerStyle(20);  
+  for(int ip=0;ip<gr_M_qhi->GetN();ip++){
+    double yh = gr_M_qhi->GetErrorYhigh(ip);
+    double yl = gr_M_qhi->GetErrorYlow(ip);
+    double y = gr_M_qhi->GetPointY(ip);
+    gr_M_qhi->SetPointEYhigh(ip,sqrt(yh*yh+y*y*0.0025));
+    gr_M_qhi->SetPointEYlow(ip,sqrt(yl*yl+y*y*0.0025));
+  }
+  gr_M_qhi->RemovePoint(0);
+  gr_M_qhi->RemovePoint(0);
+  gr_M_qhi->RemovePoint(0);
+  gr_M_qhi->RemovePoint(0);
+  gr_M_qhi->SetTitle("");
+  gr_M_qhi->GetXaxis()->SetTitle("IM(#Lambda #pi^{-}) [GeV/c^{2}]");
+  gr_M_qhi->GetXaxis()->CenterTitle();
+  gr_M_qhi->GetYaxis()->SetTitle("d^{2}#rho/dM d#Omega [#mu b/MeVsr]");
+  gr_M_qhi->GetYaxis()->CenterTitle();
   gr_M_qhi->Draw("AP");  
   
   TH1D* CS_M_qhiErr = (TH1D*) CS_M_fit[2]->Clone("CS_M_qhierr");
   for(int iq=2;iq<8;iq++){
     CS_M_qhiErr->Add(CS_M_fit[iq]);
   }
-  CS_M_qhiErr->Draw("same");
+  //CS_M_qhiErr->Draw("same");
   
-  TGraphAsymmErrors *gr_M_qhiErr = new TGraphAsymmErrors(CS_sum_nofit_qhi);//divided by M
+  TGraphAsymmErrors *gr_M_qhiErr = new TGraphAsymmErrors(CS_M_qhiErr);//divided by M
   gr_M_qhiErr->SetName("gr_M_qhiErr");
+  
+  
+  for(int ip=0;ip<gr_M_qhiErr->GetN();ip++){
+    //double yfit = CS_M_qhiErr->GetBinContent(ip+1);
+    //double xval = CS_M_qhiErr->GetBinCenter(ip+1);
+    //int fitbin = CS_sum_nofit_qhi->GetXaxis()->FindBin(xval);
+    //double ymes = CS_sum_nofit_qhi->GetBinContent(fitbin);
+     
+    //std::cout << ip  << " fit: " << yfit << " mes:  " << ymes << std::endl;
+    //if(ymes>yfit){
+    //  gr_M_qhiErr->SetPointEYhigh(ip,(ymes-yfit));
+    //  gr_M_qhiErr->SetPointEYlow(ip,yfit*0.3);
+    //}else{
+    //  gr_M_qhiErr->SetPointEYlow(ip,(yfit-ymes)*4.0);
+    //  gr_M_qhiErr->SetPointEYhigh(ip,yfit*0.0);
+    //}
+    double yfit = gr_M_qhiErr->GetPointY(ip);
+    gr_M_qhiErr->SetPointEYlow(ip,yfit*0.3);
+   
+  }
+  
+  gr_M_qhiErr->SetMarkerStyle(20);
+  gr_M_qhiErr->SetMarkerColor(2);
+  gr_M_qhiErr->Draw("5");
+  gr_M_qhi->Draw("P");  
 
+  cMerr_qlow->SaveAs("Lpimqlow.pdf","PDF");
+  cMerr_qhi->SaveAs("Lpimqhi.pdf","PDF");
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
@@ -457,7 +530,10 @@ void FitCslpim()
   fout->cd();
   f3hist->Write();
   CS_sum->Write();
-
+  gr_M_qlow->Write();
+  gr_M_qlowErr->Write();
+  gr_M_qhi->Write();
+  gr_M_qhiErr->Write();
 
   return;
 
