@@ -61,13 +61,13 @@ void CalcLpimCSFromFit()
   gr_S1385_ToSqlow->SetName("gr_S1385_ToSqlow");
   for(int ip=0;ip<gr_M_qlowErr->GetN();ip++){
     double yval = gr_M_qlowErr->GetPointY(ip);
-    yval = yval/br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
+    yval = yval*br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
     gr_S1385_ToSqlow->SetPointY(ip,yval);
     double yeh = gr_M_qlowErr->GetErrorYhigh(ip);
-    yeh = yeh/br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
+    yeh = yeh*br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
     gr_S1385_ToSqlow->SetPointEYhigh(ip,yeh);
     double yel = gr_M_qlowErr->GetErrorYlow(ip);
-    yel = yel/br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
+    yel = yel*br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
     gr_S1385_ToSqlow->SetPointEYlow(ip,yel);
     double x = gr_M_qlowErr->GetPointX(ip);
     gr_S1385_ToSqlow->SetPointX(ip,x);
@@ -80,13 +80,13 @@ void CalcLpimCSFromFit()
   gr_S1385_ToSqhi->SetName("gr_S1385_ToSqhi");
   for(int ip=0;ip<gr_M_qhiErr->GetN();ip++){
     double yval = gr_M_qhiErr->GetPointY(ip);
-    yval = yval/br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
+    yval = yval*br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
     gr_S1385_ToSqhi->SetPointY(ip,yval);
     double yeh = gr_M_qhiErr->GetErrorYhigh(ip);
-    yeh = yeh/br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
+    yeh = yeh*br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
     gr_S1385_ToSqhi->SetPointEYhigh(ip,yeh);
     double yel = gr_M_qhiErr->GetErrorYlow(ip);
-    yel = yel/br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
+    yel = yel*br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
     gr_S1385_ToSqhi->SetPointEYlow(ip,yel);
     double x = gr_M_qhiErr->GetPointX(ip);
     gr_S1385_ToSqhi->SetPointX(ip,x);
@@ -287,6 +287,7 @@ void CalcLpimCSFromFit()
       CS_S1385_ToSm[iq][isys]->Write();
       CS_S1385_ToSpSm[iq][isys]->Write();
       gr_S1385_ToSqlow->Write();
+      gr_S1385_ToSqhi->Write();
     }
   }
 

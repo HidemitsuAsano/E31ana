@@ -256,6 +256,9 @@ void CS_finals()
   TH1D* CS_S1385_ToSp[3][3];
   TH1D* CS_S1385_ToSm[3][3];
   TH1D* CS_S1385_ToSpSm[3][3];
+  TGraphAsymmErrors *gr_S1385_ToSqlow  = (TGraphAsymmErrors*)flpim->Get("gr_S1385_ToSqlow");
+  TGraphAsymmErrors *gr_S1385_ToSqhi  = (TGraphAsymmErrors*)flpim->Get("gr_S1385_ToSqhi");
+  
 
   for(int iq=0;iq<3;iq++){
     for(int isys=0;isys<3;isys++){
@@ -313,12 +316,12 @@ void CS_finals()
     
   }//iq
   
-  std::cout << "Nbin " << gS1385ErrorSp[0]->GetN() << std::endl;
+  //std::cout << "Nbin " << gS1385ErrorSp[0]->GetN() << std::endl;
 
-  gS1385ErrorSp[1]->Print();
-  CS_S1385_ToSp[1][1]->Print("all");
-  CS_S1385_ToSp[1][0]->Print("all");
-  CS_S1385_ToSp[1][2]->Print("all");
+  //gS1385ErrorSp[1]->Print();
+  //  CS_S1385_ToSp[1][1]->Print("all");
+  //  CS_S1385_ToSp[1][0]->Print("all");
+  //  CS_S1385_ToSp[1][2]->Print("all");
   
   std::cout << __LINE__ << std::endl;
   
@@ -348,7 +351,15 @@ void CS_finals()
       gS1385ErrorSp[iq]->SetLineColor(6);
       //CS_S1385_ToSp[iq][1]->SetLineColor(6);
       //gS1385ErrorSp[iq]->Draw("3");
-      gS1385ErrorSp[iq]->Draw("5");
+      //gS1385ErrorSp[iq]->Draw("5");
+    }
+    if(iq==1){
+      gr_S1385_ToSqlow->SetLineColor(5);
+      gr_S1385_ToSqlow->Draw("5");
+    }
+    if(iq==2){
+      gr_S1385_ToSqhi->SetLineColor(5);
+      gr_S1385_ToSqhi->Draw("5");
     }
     TLine *p = new TLine(1.29,0,1.605,0);
     p->SetLineColor(1);
@@ -380,6 +391,16 @@ void CS_finals()
     gMIXErrorSm_CS[iq]->SetMarkerColor(4);
     gMIXErrorSm_CS[iq]->SetLineColor(4);
     gMIXErrorSm_CS[iq]->Draw("3");
+    if(iq==1){
+      gr_S1385_ToSqlow->SetLineColor(5);
+      gr_S1385_ToSqlow->SetFillColor(0);
+      gr_S1385_ToSqlow->Draw("5");
+    }
+    if(iq==2){
+      gr_S1385_ToSqhi->SetLineColor(5);
+      gr_S1385_ToSqhi->Draw("5");
+    }
+    /*
     if(iq<3){
       gS1385ErrorSm[iq]->SetFillStyle(3001);
       gS1385ErrorSm[iq]->SetFillColor(0);
@@ -387,7 +408,8 @@ void CS_finals()
       gS1385ErrorSm[iq]->SetLineColor(6);
       //CS_S1385_ToSm[iq][1]->SetLineColor(6);
       gS1385ErrorSm[iq]->Draw("5");
-    }
+    }*/
+
     TLine *p = new TLine(1.29,0,1.605,0);
     p->SetLineColor(1);
     //p->SetLineWidth(2.0);
