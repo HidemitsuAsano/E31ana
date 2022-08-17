@@ -58,41 +58,57 @@ void CalcLpimCSFromFit()
   }
   
   TGraphAsymmErrors *gr_S1385_ToSqlow = new TGraphAsymmErrors();
+  TGraphAsymmErrors *gr_S1385_ToSqlowSum = new TGraphAsymmErrors();
   gr_S1385_ToSqlow->SetName("gr_S1385_ToSqlow");
+  gr_S1385_ToSqlowSum->SetName("gr_S1385_ToSqlowSum");
   for(int ip=0;ip<gr_M_qlowErr->GetN();ip++){
     double yval = gr_M_qlowErr->GetPointY(ip);
     yval = yval*br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
     gr_S1385_ToSqlow->SetPointY(ip,yval);
+    gr_S1385_ToSqlowSum->SetPointY(ip,yval*2);
     double yeh = gr_M_qlowErr->GetErrorYhigh(ip);
     yeh = yeh*br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
     gr_S1385_ToSqlow->SetPointEYhigh(ip,yeh);
+    gr_S1385_ToSqlowSum->SetPointEYhigh(ip,yeh*2);
     double yel = gr_M_qlowErr->GetErrorYlow(ip);
     yel = yel*br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
     gr_S1385_ToSqlow->SetPointEYlow(ip,yel);
+    gr_S1385_ToSqlowSum->SetPointEYlow(ip,yel*2);
     double x = gr_M_qlowErr->GetPointX(ip);
     gr_S1385_ToSqlow->SetPointX(ip,x);
+    gr_S1385_ToSqlowSum->SetPointX(ip,x);
     double xe = gr_M_qlowErr->GetErrorXlow(ip);
     gr_S1385_ToSqlow->SetPointEXlow(ip,xe);
     gr_S1385_ToSqlow->SetPointEXhigh(ip,xe);
+    gr_S1385_ToSqlowSum->SetPointEXlow(ip,xe);
+    gr_S1385_ToSqlowSum->SetPointEXhigh(ip,xe);
   }   
   
   TGraphAsymmErrors *gr_S1385_ToSqhi = new TGraphAsymmErrors();
+  TGraphAsymmErrors *gr_S1385_ToSqhiSum = new TGraphAsymmErrors();
   gr_S1385_ToSqhi->SetName("gr_S1385_ToSqhi");
+  gr_S1385_ToSqhiSum->SetName("gr_S1385_ToSqhiSum");
   for(int ip=0;ip<gr_M_qhiErr->GetN();ip++){
     double yval = gr_M_qhiErr->GetPointY(ip);
     yval = yval*br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
     gr_S1385_ToSqhi->SetPointY(ip,yval);
+    gr_S1385_ToSqhiSum->SetPointY(ip,yval*2.0);
     double yeh = gr_M_qhiErr->GetErrorYhigh(ip);
     yeh = yeh*br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
     gr_S1385_ToSqhi->SetPointEYhigh(ip,yeh);
+    gr_S1385_ToSqhiSum->SetPointEYhigh(ip,yeh*2.0);
     double yel = gr_M_qhiErr->GetErrorYlow(ip);
     yel = yel*br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor;
     gr_S1385_ToSqhi->SetPointEYlow(ip,yel);
+    gr_S1385_ToSqhiSum->SetPointEYlow(ip,yel*2.0);
     double x = gr_M_qhiErr->GetPointX(ip);
     gr_S1385_ToSqhi->SetPointX(ip,x);
+    gr_S1385_ToSqhiSum->SetPointX(ip,x);
     double xe = gr_M_qhiErr->GetErrorXlow(ip);
     gr_S1385_ToSqhi->SetPointEXlow(ip,xe);
     gr_S1385_ToSqhi->SetPointEXhigh(ip,xe);
+    gr_S1385_ToSqhiSum->SetPointEXlow(ip,xe);
+    gr_S1385_ToSqhiSum->SetPointEXhigh(ip,xe);
   }   
 
 
@@ -273,6 +289,7 @@ void CalcLpimCSFromFit()
   gr_S1385_ToSqlow->Draw("ap");
   ctest->cd(2);
   gr_S1385_ToSqhi->Draw("ap");
+  
 
   TFile *flpim_calc = new TFile("CSLpimFit_calc.root","RECREATE");
   flpim_calc->cd();
@@ -287,7 +304,9 @@ void CalcLpimCSFromFit()
       CS_S1385_ToSm[iq][isys]->Write();
       CS_S1385_ToSpSm[iq][isys]->Write();
       gr_S1385_ToSqlow->Write();
+      gr_S1385_ToSqlowSum->Write();
       gr_S1385_ToSqhi->Write();
+      gr_S1385_ToSqhiSum->Write();
     }
   }
 
