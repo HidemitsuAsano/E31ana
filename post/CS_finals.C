@@ -454,7 +454,7 @@ void CS_finals()
     IMnpipi_SpSmSum[iq][0][1]->GetXaxis()->SetRangeUser(1.3,1.6);
     IMnpipi_SpSmSum[iq][0][1]->GetXaxis()->SetTitle("IM(#pi#Sigma) [GeV/c^{2}]");
     IMnpipi_SpSmSum[iq][0][1]->SetTitle("");
-    IMnpipi_SpSmSum[iq][0][1]->SetYTitle("d^{2}#rho/dM d#Omega [#mu b/MeVsr]");
+    IMnpipi_SpSmSum[iq][0][1]->SetYTitle("d#sigma/dM  [#mub/MeV^{2}]");
     IMnpipi_SpSmSum[iq][0][1]->GetYaxis()->CenterTitle();
     IMnpipi_SpSmSum[iq][0][1]->Draw("E");
     gDecoErrorSpSm_CS[iq]->Draw("5");
@@ -704,7 +704,7 @@ void CS_finals()
   cthetacompSp->cd();
   //CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
   //CS_Spcomp->SetMaximum(35);
-  CS_Spcomp->SetYTitle("d^{2}#rho/dM d#Omega [#mu b/MeVsr]");
+  CS_Spcomp->SetYTitle("d^{2}#rho/dM d#Omega [#mub/MeVsr]");
   //CS_Spcomp->GetYaxis()->SetRangeUser(-1,30);
   CS_Spcomp->Draw();
   //grinoueSpcs->Draw("p");
@@ -772,7 +772,7 @@ void CS_finals()
   cthetacompSm->cd();
   //CS_IMppipi_p_wL_mc_coscut->Draw("HEsame");
   //CS_Smcomp->SetMaximum(10);
-  CS_Smcomp->SetYTitle("d^{2}#rho/dMd#Omega [#mu b/MeVsr]");
+  CS_Smcomp->SetYTitle("d^{2}#rho/dMd#Omega [#mub/MeVsr]");
   //CS_Smcomp->GetYaxis()->SetRangeUser(-1,10);
   CS_Smcomp->Draw();
   CS_SmcompDeco->Draw("5");

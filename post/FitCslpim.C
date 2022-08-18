@@ -393,7 +393,7 @@ void FitCslpim()
   gr_M_qlow->SetTitle("");
   gr_M_qlow->GetXaxis()->SetTitle("IM(#Lambda #pi^{-}) [GeV/c^{2}]");
   gr_M_qlow->GetXaxis()->CenterTitle();
-  gr_M_qlow->GetYaxis()->SetTitle("d^{2}#rho/dM d#Omega [#mu b/MeVsr]");
+  gr_M_qlow->GetYaxis()->SetTitle("d#sigma/dM [#mub/MeV^{2}]");
   gr_M_qlow->GetYaxis()->CenterTitle();
   gr_M_qlow->Draw("AP");  
 
@@ -461,7 +461,7 @@ void FitCslpim()
   gr_M_qhi->SetTitle("");
   gr_M_qhi->GetXaxis()->SetTitle("IM(#Lambda #pi^{-}) [GeV/c^{2}]");
   gr_M_qhi->GetXaxis()->CenterTitle();
-  gr_M_qhi->GetYaxis()->SetTitle("d^{2}#rho/dM d#Omega [#mu b/MeVsr]");
+  gr_M_qhi->GetYaxis()->SetTitle("d#sigma/dM [#mub/MeV^{2}]");
   gr_M_qhi->GetYaxis()->CenterTitle();
   gr_M_qhi->Draw("AP");  
   

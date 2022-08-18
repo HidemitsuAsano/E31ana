@@ -1035,7 +1035,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     double binwidthq = q_IMnpipi_Sp_cs[iq][1]->ProjectionY()->GetBinWidth(1)*1000.0;
     for(int isys=0;isys<3;isys++){
       IMnpipi_Sp_cs_single[iq][isys]= (TH1D*)q_IMnpipi_Sp_cs[iq][isys]->ProjectionX(Form("IMnpipi_Sp_cs_single%d_sys%d",iq,isys-1),1,qcut600);
-      IMnpipi_Sp_cs_single[iq][isys]->SetYTitle("d#sigma/dM [#mu b /(MeV/c^{2})]");
+      IMnpipi_Sp_cs_single[iq][isys]->SetYTitle("d#sigma/dM [#mub /(MeV/c^{2})]");
       IMnpipi_Sp_cs_single[iq][isys]->GetYaxis()->CenterTitle();
       IMnpipi_Sp_cs_single[iq][isys]->Scale(binwidthq);
     }
@@ -1053,7 +1053,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     
     for(int isys=0;isys<3;isys++){
       IMnpipi_Sm_cs_single[iq][isys]= (TH1D*)q_IMnpipi_Sm_cs[iq][isys]->ProjectionX(Form("IMnpipi_Sm_cs_single%d_sys%d",iq,isys-1),1,qcut600);
-      IMnpipi_Sm_cs_single[iq][isys]->SetYTitle("d#sigma/dM [#mu b /(MeV/c^{2})]");
+      IMnpipi_Sm_cs_single[iq][isys]->SetYTitle("d#sigma/dM [#mub /(MeV/c^{2})]");
       IMnpipi_Sm_cs_single[iq][isys]->GetYaxis()->CenterTitle();
       IMnpipi_Sm_cs_single[iq][isys]->Scale(binwidthq);
     }
@@ -1071,7 +1071,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
 
     for(int isys=0;isys<3;isys++){
       IMnpipi_K0_cs_single[iq][isys]= (TH1D*)q_IMnpipi_K0_cs[iq][isys]->ProjectionX(Form("IMnpipi_K0_cs_single%d_sys%d",iq,isys-1),1,qcut600);
-      IMnpipi_K0_cs_single[iq][isys]->SetYTitle("d#sigma/dM [#mu b /(MeV/c^{2})]");
+      IMnpipi_K0_cs_single[iq][isys]->SetYTitle("d#sigma/dM [#mub /(MeV/c^{2})]");
       IMnpipi_K0_cs_single[iq][isys]->GetYaxis()->CenterTitle();
       IMnpipi_K0_cs_single[iq][isys]->Scale(binwidthq);
     }
@@ -1246,7 +1246,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     IMnpipi_Sp_cs[iq][1]->SetMarkerStyle(20);
     //IMnpipi_Sp_cs[iq][1]->SetMinimum(-0.1);
     IMnpipi_Sp_cs[iq][1]->Draw("E");
-    IMnpipi_Sp_cs[iq][1]->SetYTitle("d#sigma/dM [#mu b /(MeV/c^{2})]");
+    IMnpipi_Sp_cs[iq][1]->SetYTitle("d#sigma/dM [#mub /(MeV/c^{2})]");
     IMnpipi_Sp_cs[iq][1]->GetYaxis()->CenterTitle();
     IMnpipi_Sm_cs[iq][1]->Draw("Esame");
     //IMnpipi_K0_cs[iq]->Draw("Esame");
