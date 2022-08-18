@@ -258,6 +258,8 @@ void CS_finals()
   TH1D* CS_S1385_ToSpSm[3][3];
   TGraphAsymmErrors *gr_S1385_ToSqlow  = (TGraphAsymmErrors*)flpim->Get("gr_S1385_ToSqlow");
   TGraphAsymmErrors *gr_S1385_ToSqhi  = (TGraphAsymmErrors*)flpim->Get("gr_S1385_ToSqhi");
+  TGraphAsymmErrors *gr_S1385_ToSqlowSum  = (TGraphAsymmErrors*)flpim->Get("gr_S1385_ToSqlowSum");
+  TGraphAsymmErrors *gr_S1385_ToSqhiSum  = (TGraphAsymmErrors*)flpim->Get("gr_S1385_ToSqhiSum");
   
 
   for(int iq=0;iq<3;iq++){
@@ -328,7 +330,7 @@ void CS_finals()
   
   TCanvas *cSysSp[4];
   for(int iq=0;iq<4;iq++){  
-    cSysSp[iq] = new TCanvas(Form("cSysSp%d",iq),Form("cSysSp%d",iq),1000,800);
+    cSysSp[iq] = new TCanvas(Form("cSysSp%d",iq),Form("cSysSp%d",iq),1100,800);
     IMnpipi_Sp_cs[iq][0][1]->SetLineColor(1);
     IMnpipi_Sp_cs[iq][0][1]->SetMarkerColor(1);
     IMnpipi_Sp_cs[iq][0][1]->GetXaxis()->SetRangeUser(1.3,1.6);
@@ -355,10 +357,14 @@ void CS_finals()
     }
     if(iq==1){
       gr_S1385_ToSqlow->SetLineColor(5);
+      gr_S1385_ToSqlow->SetFillStyle(3002);
+      gr_S1385_ToSqlow->SetFillColor(0);
       gr_S1385_ToSqlow->Draw("5");
     }
     if(iq==2){
       gr_S1385_ToSqhi->SetLineColor(5);
+      gr_S1385_ToSqhi->SetFillStyle(3002);
+      gr_S1385_ToSqhi->SetFillColor(0);
       gr_S1385_ToSqhi->Draw("5");
     }
     TLine *p = new TLine(1.29,0,1.605,0);
@@ -372,7 +378,7 @@ void CS_finals()
 
   TCanvas *cSysSm[4];
   for(int iq=0;iq<4;iq++){  
-    cSysSm[iq] = new TCanvas(Form("cSysSm%d",iq),Form("cSysSm%d",iq),1000,800);
+    cSysSm[iq] = new TCanvas(Form("cSysSm%d",iq),Form("cSysSm%d",iq),1100,800);
     IMnpipi_Sm_cs[iq][0][1]->SetLineColor(1);
     IMnpipi_Sm_cs[iq][0][1]->SetMarkerColor(1);
     IMnpipi_Sm_cs[iq][0][1]->GetXaxis()->SetRangeUser(1.3,1.6);
@@ -393,11 +399,14 @@ void CS_finals()
     gMIXErrorSm_CS[iq]->Draw("3");
     if(iq==1){
       gr_S1385_ToSqlow->SetLineColor(5);
+      gr_S1385_ToSqlow->SetFillStyle(3002);
       gr_S1385_ToSqlow->SetFillColor(0);
       gr_S1385_ToSqlow->Draw("5");
     }
     if(iq==2){
       gr_S1385_ToSqhi->SetLineColor(5);
+      gr_S1385_ToSqhi->SetFillStyle(3002);
+      gr_S1385_ToSqhi->SetFillColor(0);
       gr_S1385_ToSqhi->Draw("5");
     }
     /*
@@ -419,7 +428,7 @@ void CS_finals()
 
   TCanvas *cSysK0[4];
   for(int iq=0;iq<4;iq++){  
-    cSysK0[iq] = new TCanvas(Form("cSysK0%d",iq),Form("cSysK0%d",iq),1000,800);
+    cSysK0[iq] = new TCanvas(Form("cSysK0%d",iq),Form("cSysK0%d",iq),1100,800);
     IMnpipi_K0_cs[iq][0][1]->SetLineColor(1);
     IMnpipi_K0_cs[iq][0][1]->SetMarkerColor(1);
     IMnpipi_K0_cs[iq][0][1]->GetXaxis()->SetRangeUser(1.3,1.6);
@@ -436,14 +445,17 @@ void CS_finals()
     gMIXErrorK0_CS[iq]->Draw("3");
   }
 
+  //gStyle->SetTitleYOffset(0.6);
   TCanvas *cSysSpSmSum[4];
   for(int iq=0;iq<4;iq++){  
-    cSysSpSmSum[iq] = new TCanvas(Form("cSysSpSmSum%d",iq),Form("cSysSpSmSum%d",iq),1000,800);
+    cSysSpSmSum[iq] = new TCanvas(Form("cSysSpSmSum%d",iq),Form("cSysSpSmSum%d",iq),1100,800);
     IMnpipi_SpSmSum[iq][0][1]->SetLineColor(1);
     IMnpipi_SpSmSum[iq][0][1]->SetMarkerColor(1);
     IMnpipi_SpSmSum[iq][0][1]->GetXaxis()->SetRangeUser(1.3,1.6);
     IMnpipi_SpSmSum[iq][0][1]->GetXaxis()->SetTitle("IM(#pi#Sigma) [GeV/c^{2}]");
     IMnpipi_SpSmSum[iq][0][1]->SetTitle("");
+    IMnpipi_SpSmSum[iq][0][1]->SetYTitle("d^{2}#rho/dM d#Omega [#mu b/MeVsr]");
+    IMnpipi_SpSmSum[iq][0][1]->GetYaxis()->CenterTitle();
     IMnpipi_SpSmSum[iq][0][1]->Draw("E");
     gDecoErrorSpSm_CS[iq]->Draw("5");
     gMIXErrorSpSm_CS[iq]->SetFillStyle(3002);
@@ -451,6 +463,19 @@ void CS_finals()
     gMIXErrorSpSm_CS[iq]->SetMarkerColor(4);
     gMIXErrorSpSm_CS[iq]->SetLineColor(4);
     gMIXErrorSpSm_CS[iq]->Draw("3");
+    if(iq==1){
+      gr_S1385_ToSqlowSum->SetLineColor(5);
+      gr_S1385_ToSqlowSum->SetFillStyle(3002);
+      gr_S1385_ToSqlowSum->SetFillColor(0);
+      gr_S1385_ToSqlowSum->Draw("5");
+    }
+    if(iq==2){
+      gr_S1385_ToSqhiSum->SetLineColor(5);
+      gr_S1385_ToSqhiSum->SetFillStyle(3002);
+      gr_S1385_ToSqhiSum->SetFillColor(0);
+      gr_S1385_ToSqhiSum->Draw("5");
+    }
+    /*
     if(iq<3){
       gS1385ErrorSpSm[iq]->SetFillStyle(3001);
       gS1385ErrorSpSm[iq]->SetFillColor(0);
@@ -458,7 +483,7 @@ void CS_finals()
       gS1385ErrorSpSm[iq]->SetLineColor(6);
       //CS_S1385_ToSm[iq][1]->SetLineColor(6);
       gS1385ErrorSpSm[iq]->Draw("5");
-    }
+    }*/
     TLine *p = new TLine(1.29,0,1.605,0);
     p->SetLineColor(1);
     //p->SetLineWidth(2.0);
