@@ -28,6 +28,10 @@ void CS_finals()
   TH1D* IMnpipi_Sm_cs[4][3][3];
   TH1D* IMnpipi_K0_cs[4][3][3];
   TH1D* IMnpipi_SpSmSum[4][3][3];
+  TGraphAsymmErrors* gIMnpimi_Sp_cs_Etotal[4];//CS with bin by bin total error
+  TGraphAsymmErrors* gIMnpipi_Sm_cs_Etotal[4];//CS with bin by bin total error
+  TGraphAsymmErrors* gIMnpipi_K0_cs_Etotal[4];//CS with bin by bin total error
+  TGraphAsymmErrors* gIMnpipi_SpSmSum[4][3][3];//CS with bin by bin total error
   TGraphAsymmErrors  *gDecoErrorSp_CS[4];
   TGraphAsymmErrors  *gDecoErrorSm_CS[4];
   TGraphAsymmErrors  *gDecoErrorK0_CS[4];  
@@ -798,6 +802,57 @@ void CS_finals()
   cSysSpSmSum[0]->SaveAs("csSpSm0.pdf","PDF");
   cSysSpSmSum[1]->SaveAs("csSpSm1.pdf","PDF");
   cSysSpSmSum[2]->SaveAs("csSpSm2.pdf","PDF");
+  
+  
+  TCanvas *cSysSpEtotal[4];
+  for(int iq=0;iq<4;iq++){  
+    cSysSpEtotal[iq] = new TCanvas(Form("cSysSpEtotal%d",iq),Form("cSysSpEtotal%d",iq),1100,800);
+    gIMnpimi_Sp_cs_Etotal[iq] = new TGraphAsymmErrors(IMnpipi_Sp_cs[iq][0][1]);
+    gIMnpimi_Sp_cs_Etotal[iq]->SetName(Form("gIMnpimi_Sp_cs_Etotal%d"),iq);
+    gIMnpipi_Sp_cs_Etotal[iq]->SetMarkerColor(1);
+    gIMnpipi_Sp_cs_Etotal[iq]->GetXaxis()->SetRangeUser(1.3,1.6);
+    gIMnpipi_Sp_cs_Etotal[iq]->SetTitle("");
+    for(int ip=0;ip<gIMnpipi_Sp_cs_Etotal[iq]->GetN();ip++){
+      double statE = gIMnpipi_Sp_cs_Etotal[iq]->GetBinError(ibin);
+        
+      gDecoErrorSp_CS[iq]->Draw("5");
+    }    
+
+    IMnpipi_Sp_cs_Etotal[iq]->Draw("E");
+    //gDecoErrorSp_CS[iq]->Draw("5");
+    gMIXErrorSp_CS[iq]->SetFillStyle(3002);
+    gMIXErrorSp_CS[iq]->SetFillColor(4);
+    gMIXErrorSp_CS[iq]->SetMarkerColor(4);
+    gMIXErrorSp_CS[iq]->SetLineColor(4);
+    gMIXErrorSp_CS[iq]->Draw("3");
+    if(iq<3){
+      gS1385ErrorSp[iq]->SetFillStyle(3001);
+      gS1385ErrorSp[iq]->SetFillColor(0);
+      gS1385ErrorSp[iq]->SetMarkerColor(6);
+      gS1385ErrorSp[iq]->SetLineColor(6);
+      //CS_S1385_ToSp[iq][1]->SetLineColor(6);
+      //gS1385ErrorSp[iq]->Draw("3");
+      //gS1385ErrorSp[iq]->Draw("5");
+    }
+    if(iq==1){
+      gr_S1385_ToSqlow->SetLineColor(5);
+      gr_S1385_ToSqlow->SetFillStyle(3002);
+      gr_S1385_ToSqlow->SetFillColor(0);
+      gr_S1385_ToSqlow->Draw("5");
+    }
+    if(iq==2){
+      gr_S1385_ToSqhi->SetLineColor(5);
+      gr_S1385_ToSqhi->SetFillStyle(3002);
+      gr_S1385_ToSqhi->SetFillColor(0);
+      gr_S1385_ToSqhi->Draw("5");
+    }
+    TLine *p = new TLine(1.29,0,1.605,0);
+    p->SetLineColor(1);
+    //p->SetLineWidth(2.0);
+    p->SetLineStyle(2);
+    p->Draw();
+  }
+
 
 
   TCanvas *c = NULL;
