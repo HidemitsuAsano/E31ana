@@ -1029,6 +1029,9 @@ void CS_finals()
     p->SetLineStyle(2);
     p->Draw();
   }
+  cSysSpSmSumEtotal[1]->SaveAs("Sumqlow.pdf");
+  cSysSpSmSumEtotal[2]->SaveAs("Sumqhi.pdf");
+
   
   TCanvas *cboth[4];
   for(int iq=1;iq<3;iq++){
@@ -1053,6 +1056,7 @@ void CS_finals()
     gIMnpipi_Sm_cs_Etotal[iq]->SetLineColor(4);
     gIMnpipi_Sm_cs_Etotal[iq]->SetFillColor(0);
     gIMnpipi_Sm_cs_Etotal[iq]->SetMarkerColor(4);
+    gIMnpipi_Sm_cs_Etotal[iq]->SetMarkerStyle(21);
     gMIXErrorSm_CS[iq]->SetLineColor(4);
     gMIXErrorSm_CS[iq]->SetFillColor(0);
     gMIXErrorSm_CS[iq]->SetFillStyle(0);
@@ -1077,7 +1081,8 @@ void CS_finals()
     p->SetLineStyle(2);
     p->Draw();
   }
-
+  cboth[1]->SaveAs("cbothqlow.pdf");
+  cboth[2]->SaveAs("cbothqhi.pdf");
 
   TCanvas *csumqboth = new TCanvas("csumqboth","csumqboth",1100,1100);
   csumqboth->SetBottomMargin(0.12);
@@ -1086,6 +1091,11 @@ void CS_finals()
   gIMnpipi_SpSmSum_cs_Etotal[1]->Draw("ap");
   gIMnpipi_SpSmSum_cs_Etotal[2]->Draw("p");
 
+  TLine *p = new TLine(1.29,0,1.605,0);
+  p->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  p->SetLineStyle(2);
+  p->Draw();
 
 
 
