@@ -371,13 +371,22 @@ void FitCslpim()
   gr_M_qhi->SetName("gr_M_qhi");  
 
 
-  TCanvas *cMerr_qlow = new TCanvas("cMerr_qlow","cMerr_qlow",1000,800); 
+  TCanvas *cMerr_qlow = new TCanvas("cMerr_qlow","cMerr_qlow",1100,1100); 
+  cMerr_qlow->SetBottomMargin(0.12);
+  cMerr_qlow->SetLeftMargin(0.14);
+  cMerr_qlow->SetRightMargin(0.08);
+
+
   //cMerr->Divide(2,1); 
   //cMerr->cd(1);
-  gr_M_qlow->GetXaxis()->SetRangeUser(1.2,1.6);
+  gr_M_qlow->GetXaxis()->SetRangeUser(1.3,1.6);
   gr_M_qlow->SetLineColor(1);  
   gr_M_qlow->SetMarkerColor(1);  
   gr_M_qlow->SetMarkerStyle(20);  
+  gr_M_qlow->GetXaxis()->SetTitleSize(0.04);
+  gr_M_qlow->GetYaxis()->SetTitleSize(0.04);
+  gr_M_qlow->GetXaxis()->SetTitleOffset(1.4);
+  gr_M_qlow->GetYaxis()->SetTitleOffset(1.6);
   for(int ip=0;ip<8;ip++){
     gr_M_qlow->RemovePoint(0); 
   }
@@ -391,7 +400,7 @@ void FitCslpim()
     gr_M_qlow->SetPointEYlow(ip,sqrt(yl*yl+y*y*0.0025));
   }
   gr_M_qlow->SetTitle("");
-  gr_M_qlow->GetXaxis()->SetTitle("IM(#Lambda #pi^{-}) [GeV/c^{2}]");
+  gr_M_qlow->GetXaxis()->SetTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
   gr_M_qlow->GetXaxis()->CenterTitle();
   gr_M_qlow->GetYaxis()->SetTitle("d#sigma/dM [#mub/MeV^{2}]");
   gr_M_qlow->GetYaxis()->CenterTitle();
@@ -441,9 +450,19 @@ void FitCslpim()
   gr_M_qlowErr->Draw("5");
   gr_M_qlow->Draw("P");  
   
-  TCanvas *cMerr_qhi = new TCanvas("cMerr_qhi","cMerr_qhi",1000,800); 
+  TCanvas *cMerr_qhi = new TCanvas("cMerr_qhi","cMerr_qhi",1100,1100); 
+  cMerr_qhi->SetBottomMargin(0.12);
+  cMerr_qhi->SetLeftMargin(0.14);
+  cMerr_qhi->SetRightMargin(0.08);
   //cMerr->cd(2);
-  gr_M_qhi->GetXaxis()->SetRangeUser(1.2,1.6);
+  gr_M_qhi->GetXaxis()->SetRangeUser(1.3,1.6);
+  gr_M_qhi->SetLineColor(1);  
+  gr_M_qhi->SetMarkerColor(1);  
+  gr_M_qhi->SetMarkerStyle(20);  
+  gr_M_qhi->GetXaxis()->SetTitleSize(0.04);
+  gr_M_qhi->GetYaxis()->SetTitleSize(0.04);
+  gr_M_qhi->GetXaxis()->SetTitleOffset(1.4);
+  gr_M_qhi->GetYaxis()->SetTitleOffset(1.6);
   gr_M_qhi->SetLineColor(1);  
   gr_M_qhi->SetMarkerColor(1);  
   gr_M_qhi->SetMarkerStyle(20);  
@@ -459,7 +478,7 @@ void FitCslpim()
   gr_M_qhi->RemovePoint(0);
   gr_M_qhi->RemovePoint(0);
   gr_M_qhi->SetTitle("");
-  gr_M_qhi->GetXaxis()->SetTitle("IM(#Lambda #pi^{-}) [GeV/c^{2}]");
+  gr_M_qhi->GetXaxis()->SetTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
   gr_M_qhi->GetXaxis()->CenterTitle();
   gr_M_qhi->GetYaxis()->SetTitle("d#sigma/dM [#mub/MeV^{2}]");
   gr_M_qhi->GetYaxis()->CenterTitle();
