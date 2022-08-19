@@ -28,10 +28,10 @@ void CS_finals()
   TH1D* IMnpipi_Sm_cs[4][3][3];
   TH1D* IMnpipi_K0_cs[4][3][3];
   TH1D* IMnpipi_SpSmSum[4][3][3];
-  TGraphAsymmErrors* gIMnpimi_Sp_cs_Etotal[4];//CS with bin by bin total error
+  TGraphAsymmErrors* gIMnpipi_Sp_cs_Etotal[4];//CS with bin by bin total error
   TGraphAsymmErrors* gIMnpipi_Sm_cs_Etotal[4];//CS with bin by bin total error
   TGraphAsymmErrors* gIMnpipi_K0_cs_Etotal[4];//CS with bin by bin total error
-  TGraphAsymmErrors* gIMnpipi_SpSmSum[4][3][3];//CS with bin by bin total error
+  TGraphAsymmErrors* gIMnpipi_SpSmSum_cs_Etotal[4];//CS with bin by bin total error
   TGraphAsymmErrors  *gDecoErrorSp_CS[4];
   TGraphAsymmErrors  *gDecoErrorSm_CS[4];
   TGraphAsymmErrors  *gDecoErrorK0_CS[4];  
@@ -152,6 +152,11 @@ void CS_finals()
 
     //shift MIX scale and evaluate systematics
     for(int ip=0;ip<( gMIXErrorSp_CS[iq]->GetN());ip++){
+       
+      double xe = IMnpipi_Sp_cs[iq][0][0]->GetBinWidth(ip+1);
+      gMIXErrorSp_CS[iq]->SetPointEXhigh(ip,xe/4);
+      gMIXErrorSp_CS[iq]->SetPointEXlow(ip,xe/4);
+  
       double  valdown = IMnpipi_Sp_cs[iq][0][0]->GetBinContent(ip+1);
       double  valdef = IMnpipi_Sp_cs[iq][0][1]->GetBinContent(ip+1);
       double  valup  = IMnpipi_Sp_cs[iq][0][2]->GetBinContent(ip+1);
@@ -163,6 +168,11 @@ void CS_finals()
       gMIXErrorSp_CS[iq]->SetPointEYlow(ip,fabs(yel));
     }
     for(int ip=0;ip<( gMIXErrorSm_CS[iq]->GetN());ip++){
+      
+      double xe = IMnpipi_Sm_cs[iq][0][0]->GetBinWidth(ip+1);
+      gMIXErrorSm_CS[iq]->SetPointEXhigh(ip,xe/4);
+      gMIXErrorSm_CS[iq]->SetPointEXlow(ip,xe/4);
+      
       double  valdown = IMnpipi_Sm_cs[iq][0][0]->GetBinContent(ip+1);
       double  valdef = IMnpipi_Sm_cs[iq][0][1]->GetBinContent(ip+1);
       double  valup  = IMnpipi_Sm_cs[iq][0][2]->GetBinContent(ip+1);
@@ -186,6 +196,10 @@ void CS_finals()
     }
     
     for(int ip=0;ip<( gMIXErrorSpSm_CS[iq]->GetN());ip++){
+      double xe = IMnpipi_SpSmSum[iq][0][0]->GetBinWidth(ip+1);
+      gMIXErrorSpSm_CS[iq]->SetPointEXhigh(ip,xe/4);
+      gMIXErrorSpSm_CS[iq]->SetPointEXlow(ip,xe/4);
+      
       double  valdown = IMnpipi_SpSmSum[iq][0][0]->GetBinContent(ip+1);
       double  valdef = IMnpipi_SpSmSum[iq][0][1]->GetBinContent(ip+1);
       double  valup  = IMnpipi_SpSmSum[iq][0][2]->GetBinContent(ip+1);
@@ -805,35 +819,246 @@ void CS_finals()
   
   
   TCanvas *cSysSpEtotal[4];
-  for(int iq=0;iq<4;iq++){  
+  for(int iq=1;iq<3;iq++){  
     cSysSpEtotal[iq] = new TCanvas(Form("cSysSpEtotal%d",iq),Form("cSysSpEtotal%d",iq),1100,800);
-    gIMnpimi_Sp_cs_Etotal[iq] = new TGraphAsymmErrors(IMnpipi_Sp_cs[iq][0][1]);
-    gIMnpimi_Sp_cs_Etotal[iq]->SetName(Form("gIMnpimi_Sp_cs_Etotal%d"),iq);
+    gIMnpipi_Sp_cs_Etotal[iq] = new TGraphAsymmErrors(IMnpipi_Sp_cs[iq][0][1]);
+    gIMnpipi_Sp_cs_Etotal[iq]->SetName(Form("gIMnpipi_Sp_cs_Etotal%d",iq));
     gIMnpipi_Sp_cs_Etotal[iq]->SetMarkerColor(1);
     gIMnpipi_Sp_cs_Etotal[iq]->GetXaxis()->SetRangeUser(1.3,1.6);
     gIMnpipi_Sp_cs_Etotal[iq]->SetTitle("");
-    for(int ip=0;ip<gIMnpipi_Sp_cs_Etotal[iq]->GetN();ip++){
-      double statE = gIMnpipi_Sp_cs_Etotal[iq]->GetBinError(ibin);
-        
-      gDecoErrorSp_CS[iq]->Draw("5");
-    }    
-
-    IMnpipi_Sp_cs_Etotal[iq]->Draw("E");
-    //gDecoErrorSp_CS[iq]->Draw("5");
-    gMIXErrorSp_CS[iq]->SetFillStyle(3002);
-    gMIXErrorSp_CS[iq]->SetFillColor(4);
-    gMIXErrorSp_CS[iq]->SetMarkerColor(4);
-    gMIXErrorSp_CS[iq]->SetLineColor(4);
-    gMIXErrorSp_CS[iq]->Draw("3");
-    if(iq<3){
-      gS1385ErrorSp[iq]->SetFillStyle(3001);
-      gS1385ErrorSp[iq]->SetFillColor(0);
-      gS1385ErrorSp[iq]->SetMarkerColor(6);
-      gS1385ErrorSp[iq]->SetLineColor(6);
-      //CS_S1385_ToSp[iq][1]->SetLineColor(6);
-      //gS1385ErrorSp[iq]->Draw("3");
-      //gS1385ErrorSp[iq]->Draw("5");
+    gIMnpipi_Sp_cs_Etotal[iq]->GetXaxis()->SetTitle("IM(#pi^{-}#Sigma^{+}) [GeV/c^{2}]");
+    gIMnpipi_Sp_cs_Etotal[iq]->GetXaxis()->CenterTitle();
+    gIMnpipi_Sp_cs_Etotal[iq]->GetYaxis()->SetTitle("d#sigma/dM  [#mub/(MeV/c^{2})]");
+    gIMnpipi_Sp_cs_Etotal[iq]->GetYaxis()->CenterTitle();
+    if(iq==1){
+      for(int ip=0;ip<10;ip++){
+        gIMnpipi_Sp_cs_Etotal[iq]->RemovePoint(0);
+        gMIXErrorSp_CS[iq]->RemovePoint(0);
+      }
     }
+    if(iq==2){
+      for(int ip=0;ip<8;ip++){
+        gIMnpipi_Sp_cs_Etotal[iq]->RemovePoint(0);
+        gMIXErrorSp_CS[iq]->RemovePoint(0);
+      }
+    }
+   
+    double start1 = gIMnpipi_Sp_cs_Etotal[iq]->GetPointX(0);
+    double start2 = gDecoErrorSp_CS[iq]->GetPointX(0);
+    int diffstart = (start2-start1)/0.015 + 1 ;
+    std::cout << diffstart << std::endl;
+
+    for(int ip=0;ip<gIMnpipi_Sp_cs_Etotal[iq]->GetN()-diffstart;ip++){
+      double statElow  = gIMnpipi_Sp_cs_Etotal[iq]->GetErrorYlow(ip+diffstart);
+      double statEhigh = gIMnpipi_Sp_cs_Etotal[iq]->GetErrorYhigh(ip+diffstart);
+      double decoElow  = gDecoErrorSp_CS[iq]->GetErrorYlow(ip);
+      double decoEhigh = gDecoErrorSp_CS[iq]->GetErrorYhigh(ip);
+      double Elow = sqrt(pow(statElow,2.0)+pow(decoElow,2.0));  
+      double Ehigh = sqrt(pow(statEhigh,2.0)+pow(decoEhigh,2.0));  
+      gIMnpipi_Sp_cs_Etotal[iq]->SetPointEYlow(ip+diffstart,Elow);
+      gIMnpipi_Sp_cs_Etotal[iq]->SetPointEYhigh(ip+diffstart,Ehigh);
+    }    
+    gIMnpipi_Sp_cs_Etotal[iq]->Draw("ap");
+    gMIXErrorSp_CS[iq]->SetFillStyle(3001);
+    gMIXErrorSp_CS[iq]->SetFillColor(12);
+    gMIXErrorSp_CS[iq]->SetMarkerColor(12);
+    gMIXErrorSp_CS[iq]->SetLineColor(12);
+    gMIXErrorSp_CS[iq]->Draw("5");
+    if(iq==1){
+      gr_S1385_ToSqlow->SetLineColor(3);
+      gr_S1385_ToSqlow->SetFillStyle(3002);
+      gr_S1385_ToSqlow->SetFillColor(0);
+      gr_S1385_ToSqlow->Draw("5");
+    }
+    if(iq==2){
+      gr_S1385_ToSqhi->SetLineColor(3);
+      gr_S1385_ToSqhi->SetFillStyle(3002);
+      gr_S1385_ToSqhi->SetFillColor(0);
+      gr_S1385_ToSqhi->Draw("5");
+    }
+    TLine *p = new TLine(1.29,0,1.605,0);
+    p->SetLineColor(1);
+    //p->SetLineWidth(2.0);
+    p->SetLineStyle(2);
+    p->Draw();
+  }
+  
+  TCanvas *cSysSmEtotal[4];
+  for(int iq=1;iq<3;iq++){  
+    cSysSmEtotal[iq] = new TCanvas(Form("cSysSmEtotal%d",iq),Form("cSysSmEtotal%d",iq),1100,800);
+    gIMnpipi_Sm_cs_Etotal[iq] = new TGraphAsymmErrors(IMnpipi_Sm_cs[iq][0][1]);
+    gIMnpipi_Sm_cs_Etotal[iq]->SetName(Form("gIMnpipi_Sm_cs_Etotal%d",iq));
+    gIMnpipi_Sm_cs_Etotal[iq]->SetMarkerColor(1);
+    gIMnpipi_Sm_cs_Etotal[iq]->GetXaxis()->SetRangeUser(1.3,1.6);
+    gIMnpipi_Sm_cs_Etotal[iq]->SetTitle("");
+    gIMnpipi_Sm_cs_Etotal[iq]->GetXaxis()->SetTitle("IM(#pi^{+}#Sigma^{-}) [GeV/c^{2}]");
+    gIMnpipi_Sm_cs_Etotal[iq]->GetXaxis()->CenterTitle();
+    gIMnpipi_Sm_cs_Etotal[iq]->GetYaxis()->SetTitle("d#sigma/dM  [#mub/(MeV/c^{2})]");
+    gIMnpipi_Sm_cs_Etotal[iq]->GetYaxis()->CenterTitle();
+    if(iq==1){
+      for(int ip=0;ip<10;ip++){
+        gIMnpipi_Sm_cs_Etotal[iq]->RemovePoint(0);
+        gMIXErrorSm_CS[iq]->RemovePoint(0);
+      }
+    }
+    if(iq==2){
+      for(int ip=0;ip<8;ip++){
+        gIMnpipi_Sm_cs_Etotal[iq]->RemovePoint(0);
+        gMIXErrorSm_CS[iq]->RemovePoint(0);
+      }
+    }
+   
+    double start1 = gIMnpipi_Sm_cs_Etotal[iq]->GetPointX(0);
+    double start2 = gDecoErrorSm_CS[iq]->GetPointX(0);
+    int diffstart = (start2-start1)/0.015 + 1 ;
+    std::cout << diffstart << std::endl;
+
+    for(int ip=0;ip<gIMnpipi_Sm_cs_Etotal[iq]->GetN()-diffstart;ip++){
+      double statElow  = gIMnpipi_Sm_cs_Etotal[iq]->GetErrorYlow(ip+diffstart);
+      double statEhigh = gIMnpipi_Sm_cs_Etotal[iq]->GetErrorYhigh(ip+diffstart);
+      double decoElow  = gDecoErrorSm_CS[iq]->GetErrorYlow(ip);
+      double decoEhigh = gDecoErrorSm_CS[iq]->GetErrorYhigh(ip);
+      double Elow = sqrt(pow(statElow,2.0)+pow(decoElow,2.0));  
+      double Ehigh = sqrt(pow(statEhigh,2.0)+pow(decoEhigh,2.0));  
+      gIMnpipi_Sm_cs_Etotal[iq]->SetPointEYlow(ip+diffstart,Elow);
+      gIMnpipi_Sm_cs_Etotal[iq]->SetPointEYhigh(ip+diffstart,Ehigh);
+    }    
+    gIMnpipi_Sm_cs_Etotal[iq]->Draw("ap");
+    gMIXErrorSm_CS[iq]->SetFillStyle(3001);
+    gMIXErrorSm_CS[iq]->SetFillColor(12);
+    gMIXErrorSm_CS[iq]->SetMarkerColor(12);
+    gMIXErrorSm_CS[iq]->SetLineColor(12);
+    gMIXErrorSm_CS[iq]->Draw("5");
+    if(iq==1){
+      gr_S1385_ToSqlow->SetLineColor(3);
+      gr_S1385_ToSqlow->SetFillStyle(3002);
+      gr_S1385_ToSqlow->SetFillColor(0);
+      gr_S1385_ToSqlow->Draw("5");
+    }
+    if(iq==2){
+      gr_S1385_ToSqhi->SetLineColor(3);
+      gr_S1385_ToSqhi->SetFillStyle(3002);
+      gr_S1385_ToSqhi->SetFillColor(0);
+      gr_S1385_ToSqhi->Draw("5");
+    }
+    TLine *p = new TLine(1.29,0,1.605,0);
+    p->SetLineColor(1);
+    //p->SetLineWidth(2.0);
+    p->SetLineStyle(2);
+    p->Draw();
+  }
+
+  IMnpipi_Sp_cs[1][0][1]->Print("all");
+  gIMnpipi_Sp_cs_Etotal[1]->Print();
+  gDecoErrorSp_CS[1]->Print();
+  gMIXErrorSp_CS[1]->Print();
+
+  TCanvas *cSysSpSmSumEtotal[4];
+  for(int iq=1;iq<3;iq++){  
+    cSysSpSmSumEtotal[iq] = new TCanvas(Form("cSysSpSmSumEtotal%d",iq),Form("cSysSpSmSumEtotal%d",iq),1100,1100);
+    
+    cSysSpSmSumEtotal[iq]->SetBottomMargin(0.12);
+    cSysSpSmSumEtotal[iq]->SetLeftMargin(0.14);
+    cSysSpSmSumEtotal[iq]->SetRightMargin(0.08);
+
+
+    gIMnpipi_SpSmSum_cs_Etotal[iq] = new TGraphAsymmErrors(IMnpipi_SpSmSum[iq][0][1]);
+    gIMnpipi_SpSmSum_cs_Etotal[iq]->SetName(Form("gIMnpipi_SpSmSum_cs_Etotal%d",iq));
+    gIMnpipi_SpSmSum_cs_Etotal[iq]->SetMarkerColor(1);
+    gIMnpipi_SpSmSum_cs_Etotal[iq]->GetXaxis()->SetRangeUser(1.3,1.6);
+    gIMnpipi_SpSmSum_cs_Etotal[iq]->SetTitle("");
+    gIMnpipi_SpSmSum_cs_Etotal[iq]->GetXaxis()->SetTitle("IM(#pi#Sigma) [GeV/c^{2}]");
+    gIMnpipi_SpSmSum_cs_Etotal[iq]->GetXaxis()->CenterTitle();
+    gIMnpipi_SpSmSum_cs_Etotal[iq]->GetYaxis()->SetTitle("d#sigma/dM  [#mub/(MeV/c^{2})]");
+    gIMnpipi_SpSmSum_cs_Etotal[iq]->GetYaxis()->CenterTitle();
+
+    gIMnpipi_SpSmSum_cs_Etotal[iq]->GetXaxis()->SetTitleSize(0.04);
+    gIMnpipi_SpSmSum_cs_Etotal[iq]->GetYaxis()->SetTitleSize(0.04);
+    gIMnpipi_SpSmSum_cs_Etotal[iq]->GetXaxis()->SetTitleOffset(1.4);
+    gIMnpipi_SpSmSum_cs_Etotal[iq]->GetYaxis()->SetTitleOffset(1.6);
+   if(iq==1){
+      for(int ip=0;ip<10;ip++){
+        gIMnpipi_SpSmSum_cs_Etotal[iq]->RemovePoint(0);
+        gMIXErrorSpSm_CS[iq]->RemovePoint(0);
+      }
+    }
+    if(iq==2){
+      for(int ip=0;ip<8;ip++){
+        gIMnpipi_SpSmSum_cs_Etotal[iq]->RemovePoint(0);
+        gMIXErrorSpSm_CS[iq]->RemovePoint(0);
+      }
+    }
+   
+    double start1 = gIMnpipi_SpSmSum_cs_Etotal[iq]->GetPointX(0);
+    double start2 = gDecoErrorSpSm_CS[iq]->GetPointX(0);
+    int diffstart = (start2-start1)/0.015 + 1 ;
+    std::cout << diffstart << std::endl;
+
+    for(int ip=0;ip<gIMnpipi_SpSmSum_cs_Etotal[iq]->GetN()-diffstart;ip++){
+      double statElow  = gIMnpipi_SpSmSum_cs_Etotal[iq]->GetErrorYlow(ip+diffstart);
+      double statEhigh = gIMnpipi_SpSmSum_cs_Etotal[iq]->GetErrorYhigh(ip+diffstart);
+      double decoElow  = gDecoErrorSpSm_CS[iq]->GetErrorYlow(ip);
+      double decoEhigh = gDecoErrorSpSm_CS[iq]->GetErrorYhigh(ip);
+      double Elow = sqrt(pow(statElow,2.0)+pow(decoElow,2.0));  
+      double Ehigh = sqrt(pow(statEhigh,2.0)+pow(decoEhigh,2.0));  
+      gIMnpipi_SpSmSum_cs_Etotal[iq]->SetPointEYlow(ip+diffstart,Elow);
+      gIMnpipi_SpSmSum_cs_Etotal[iq]->SetPointEYhigh(ip+diffstart,Ehigh);
+    }    
+    gIMnpipi_SpSmSum_cs_Etotal[iq]->Draw("ap");
+    gMIXErrorSpSm_CS[iq]->SetFillStyle(3001);
+    //gMIXErrorSpSm_CS[iq]->SetFillColor(4);
+    gMIXErrorSpSm_CS[iq]->SetFillColor(12);
+    gMIXErrorSpSm_CS[iq]->SetMarkerColor(4);
+    gMIXErrorSpSm_CS[iq]->SetLineColor(12);
+    gMIXErrorSpSm_CS[iq]->Draw("5");
+    if(iq==1){
+      gr_S1385_ToSqlowSum->SetLineColor(5);
+      gr_S1385_ToSqlowSum->SetFillStyle(3002);
+      gr_S1385_ToSqlowSum->SetFillColor(0);
+      gr_S1385_ToSqlowSum->Draw("5");
+    }
+    if(iq==2){
+      gr_S1385_ToSqhiSum->SetLineColor(5);
+      gr_S1385_ToSqhiSum->SetFillStyle(3002);
+      gr_S1385_ToSqhiSum->SetFillColor(0);
+      gr_S1385_ToSqhiSum->Draw("5");
+    }
+    TLine *p = new TLine(1.29,0,1.605,0);
+    p->SetLineColor(1);
+    //p->SetLineWidth(2.0);
+    p->SetLineStyle(2);
+    p->Draw();
+  }
+  
+  TCanvas *cboth[4];
+  for(int iq=1;iq<3;iq++){
+    cboth[iq] = new TCanvas(Form("cboth%d",iq),Form("cboth%d",iq),1100,1100);
+    cboth[iq]->SetBottomMargin(0.12);
+    cboth[iq]->SetLeftMargin(0.14);
+    cboth[iq]->SetRightMargin(0.08);
+    gIMnpipi_Sp_cs_Etotal[iq]->SetLineColor(kGreen+2);
+    gIMnpipi_Sp_cs_Etotal[iq]->SetFillColor(0);
+    gIMnpipi_Sp_cs_Etotal[iq]->GetXaxis()->SetTitle("IM(#pi^{#pm}#Sigma^{#mp}) [GeV/c^{2}]");
+    gIMnpipi_Sp_cs_Etotal[iq]->GetXaxis()->SetTitleSize(0.04);
+    gIMnpipi_Sp_cs_Etotal[iq]->GetYaxis()->SetTitleSize(0.04);
+    gIMnpipi_Sp_cs_Etotal[iq]->GetXaxis()->SetTitleOffset(1.4);
+    gIMnpipi_Sp_cs_Etotal[iq]->GetYaxis()->SetTitleOffset(1.6);
+    gIMnpipi_Sp_cs_Etotal[iq]->SetMarkerColor(kGreen+2);
+    gMIXErrorSp_CS[iq]->SetLineColor(kGreen+2);
+    gMIXErrorSp_CS[iq]->SetFillColor(0);
+    gMIXErrorSp_CS[iq]->SetFillStyle(0);
+    gMIXErrorSp_CS[iq]->SetMarkerColor(kGreen+2);
+    gIMnpipi_Sp_cs_Etotal[iq]->Draw("ap");
+    gMIXErrorSp_CS[iq]->Draw("5");
+    gIMnpipi_Sm_cs_Etotal[iq]->SetLineColor(4);
+    gIMnpipi_Sm_cs_Etotal[iq]->SetFillColor(0);
+    gIMnpipi_Sm_cs_Etotal[iq]->SetMarkerColor(4);
+    gMIXErrorSm_CS[iq]->SetLineColor(4);
+    gMIXErrorSm_CS[iq]->SetFillColor(0);
+    gMIXErrorSm_CS[iq]->SetFillStyle(0);
+    gMIXErrorSm_CS[iq]->SetMarkerColor(4);
+    gIMnpipi_Sm_cs_Etotal[iq]->Draw("p");
+    gMIXErrorSm_CS[iq]->Draw("5");
     if(iq==1){
       gr_S1385_ToSqlow->SetLineColor(5);
       gr_S1385_ToSqlow->SetFillStyle(3002);
@@ -852,6 +1077,17 @@ void CS_finals()
     p->SetLineStyle(2);
     p->Draw();
   }
+
+
+  TCanvas *csumqboth = new TCanvas("csumqboth","csumqboth",1100,1100);
+  csumqboth->SetBottomMargin(0.12);
+  csumqboth->SetLeftMargin(0.14);
+  csumqboth->SetRightMargin(0.08);
+  gIMnpipi_SpSmSum_cs_Etotal[1]->Draw("ap");
+  gIMnpipi_SpSmSum_cs_Etotal[2]->Draw("p");
+
+
+
 
 
 
