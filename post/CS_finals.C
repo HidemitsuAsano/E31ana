@@ -8,7 +8,8 @@ void CS_finals()
   const int Version = 245;
   const int dEcut[3]={2,4,6};
 
-  //gStyle->SetErrorX(0.);  
+  //gStyle->SetErrorX(1.);  
+  //gStyle->SetEndErrorSize(10);  
   TFile *fpisigma[3][3];//dEcut, sysud
   for(int iEcut=0;iEcut<3;iEcut++){
     fpisigma[iEcut][1] = TFile::Open(Form("cs_pisigma_v%d_dE%d_sys0.root",Version,dEcut[iEcut]),"READ");
@@ -912,6 +913,22 @@ void CS_finals()
     double start2 = gDecoErrorSm_CS[iq]->GetPointX(0);
     int diffstart = (start2-start1)/0.015 + 1 ;
     std::cout << diffstart << std::endl;
+    
+    const double dx=0.0015;
+    for(int ip=0;ip<gIMnpipi_Sm_cs_Etotal[iq]->GetN()-diffstart;ip++){
+      double x = gIMnpipi_Sm_cs_Etotal[iq]->GetPointX(ip);
+      gIMnpipi_Sm_cs_Etotal[iq]->SetPointX(ip,x+dx);
+      double xe = gIMnpipi_Sm_cs_Etotal[iq]->GetErrorXlow(ip);
+      gIMnpipi_Sm_cs_Etotal[iq]->SetPointEXlow(ip,xe+dx);
+      gIMnpipi_Sm_cs_Etotal[iq]->SetPointEXhigh(ip,xe-dx);
+    }
+    for(int ip=0;ip<gMIXErrorSm_CS[iq]->GetN();ip++){
+      double x = gMIXErrorSm_CS[iq]->GetPointX(ip);
+      gMIXErrorSm_CS[iq]->SetPointX(ip,x+dx);
+      double xe = gMIXErrorSm_CS[iq]->GetErrorXlow(ip);
+      gMIXErrorSm_CS[iq]->SetPointEXlow(ip,xe+dx);
+      gMIXErrorSm_CS[iq]->SetPointEXhigh(ip,xe-dx);
+    }
 
     for(int ip=0;ip<gIMnpipi_Sm_cs_Etotal[iq]->GetN()-diffstart;ip++){
       double statElow  = gIMnpipi_Sm_cs_Etotal[iq]->GetErrorYlow(ip+diffstart);
@@ -1056,7 +1073,7 @@ void CS_finals()
     gIMnpipi_Sm_cs_Etotal[iq]->SetLineColor(4);
     gIMnpipi_Sm_cs_Etotal[iq]->SetFillColor(0);
     gIMnpipi_Sm_cs_Etotal[iq]->SetMarkerColor(4);
-    gIMnpipi_Sm_cs_Etotal[iq]->SetMarkerStyle(21);
+    gIMnpipi_Sm_cs_Etotal[iq]->SetMarkerStyle(24);
     gMIXErrorSm_CS[iq]->SetLineColor(4);
     gMIXErrorSm_CS[iq]->SetFillColor(0);
     gMIXErrorSm_CS[iq]->SetFillStyle(0);
@@ -1080,6 +1097,7 @@ void CS_finals()
     //p->SetLineWidth(2.0);
     p->SetLineStyle(2);
     p->Draw();
+    //gIMnpipi_Sp_cs_Etotal[iq]->Draw("p");
   }
   cboth[1]->SaveAs("cbothqlow.pdf");
   cboth[2]->SaveAs("cbothqhi.pdf");
