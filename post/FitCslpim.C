@@ -310,9 +310,9 @@ void FitCslpim()
   double binwidthq = CS_sum_nofit->GetYaxis()->GetBinWidth(1)*1000.0; 
   //CS_sum_nofit->Scale(br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor);
 
-  TH1D* CS_sum_nofit_qlow = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qlow",binq200nofit,binq350nofit-1);
-  TH1D* CS_sum_nofit_qhi = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qhi",binq350nofit,binq650nofit);
-  TH1D* CS_sum_nofit_qall = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qall",binq200nofit,binq650nofit);
+  TH1D* CS_sum_nofit_qlow = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qlow",1,binq350nofit-1);
+  TH1D* CS_sum_nofit_qhi = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qhi",binq350nofit,binq650nofit-1);
+  TH1D* CS_sum_nofit_qall = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qall",binq200nofit,binq650nofit-1);
    
   gStyle->SetPadGridX(0);
   gStyle->SetPadGridY(0);
@@ -339,37 +339,110 @@ void FitCslpim()
   CS_sum_nofit_qhi->Draw("HE");
   
 
-  TH1D* CS_M_measured[8];
-  TH1D* CS_M_fit[8];
+  TH1D* CS_M_measured[13];
+  TH1D* CS_M_fit[13];
+  TH1D* accpro[13];
   
-  TCanvas *cM = new TCanvas("cM","cM",1200,800);
-  cM->Divide(4,2);
+  TCanvas *cMeachq = new TCanvas("cMeachq","cMeachq",1200,800);
+  cMeachq->Divide(5,3);
    
   //Note CS_sum and f3hist is divided by binwidth of M and q 
   //must be multiply by bin width after projection
   double binwidth_M = f3hist->GetXaxis()->GetBinWidth(1)*1000.0; 
-  for(int iqbin=0;iqbin<8;iqbin++){
-    CS_M_measured[iqbin] = (TH1D*)CS_sum->ProjectionX(Form("CS_M_measured_bin%d",iqbin+6),iqbin+6,iqbin+6); 
-    std::cout << CS_sum->GetYaxis()->GetBinLowEdge(iqbin+6) << "  " << f3hist->GetYaxis()->GetBinLowEdge(iqbin+2) << std::endl;
-    CS_M_fit[iqbin] = (TH1D*)f3hist->ProjectionX(Form("CS_M_fit_bin%d",iqbin+1),iqbin+2,iqbin+2); 
-    cM->cd(iqbin+1);
+  for(int iqbin=0;iqbin<13;iqbin++){
+    CS_M_measured[iqbin] = (TH1D*)CS_sum->ProjectionX(Form("CS_M_measured_bin%d",iqbin+1),iqbin+1,iqbin+1); 
+    //std::cout << CS_sum->GetYaxis()->GetBinLowEdge(iqbin+1) << "  " << f3hist->GetYaxis()->GetBinLowEdge(iqbin+2) << std::endl;
+    CS_M_fit[iqbin] = (TH1D*)f3hist->ProjectionX(Form("CS_M_fit_bin%d",iqbin+1),iqbin-3,iqbin-3); 
+    accpro[iqbin] = (TH1D*)acc_sum->ProjectionX(Form("accpro_bin%d",iqbin+1),iqbin+1,iqbin+1);
+
+    cMeachq->cd(iqbin+1);
     CS_M_measured[iqbin]->GetXaxis()->SetRangeUser(1.2,1.6);
     CS_M_measured[iqbin]->Scale(binwidthq);
     CS_M_fit[iqbin]->Scale(binwidthq);
     CS_M_measured[iqbin]->SetMaximum(CS_M_measured[iqbin]->GetMaximum()*1.5);
-    CS_M_measured[iqbin]->SetTitle(Form("q %0.2f-%0.2f",0.25+0.05*iqbin,0.30+0.05*iqbin));
+    CS_M_measured[iqbin]->SetTitle(Form("q %0.2f-%0.2f",0.05*iqbin,0.05+0.05*iqbin));
+    //CS_M_measured[iqbin]->SetMinimum(0.001);
     CS_M_measured[iqbin]->Draw("HE");
     CS_M_fit[iqbin]->SetFillColor(0);
     CS_M_fit[iqbin]->Draw("Esame");
+    //accpro[iqbin]->Scale();
+    accpro[iqbin]->SetLineColor(5);
+    accpro[iqbin]->Draw("Esame");
+    //gPad->SetLogy();
     std::cout << CS_M_fit[iqbin]->Integral() << std::endl;
   }  
+  std::cout << __LINE__ << std::endl;
   
+  //TGraphAsymmErrors *gr_M_qlow = new TGraphAsymmErrors(CS_sum_nofit_qlow);//divided by M
+  //TGraphAsymmErrors *gr_M_qhi = new TGraphAsymmErrors(CS_sum_nofit_qhi);//divided by M
+   TGraphAsymmErrors *gr_CS_M_measured[13];
+   TGraphAsymmErrors *gr_accpro[13];
 
-  TGraphAsymmErrors *gr_M_qlow = new TGraphAsymmErrors(CS_sum_nofit_qlow);//divided by M
-  TGraphAsymmErrors *gr_M_qhi = new TGraphAsymmErrors(CS_sum_nofit_qhi);//divided by M
+  for(int iqbin=0;iqbin<13;iqbin++){
+    gr_CS_M_measured[iqbin] = new TGraphAsymmErrors(CS_M_measured[iqbin]);
+    gr_accpro[iqbin] = new TGraphAsymmErrors(accpro[iqbin]);
+  }
+  
+  
+  //add point-to-point systematic errors 
+  for(int iqbin=0;iqbin<13;iqbin++){
+    for(int ip=0;ip<gr_CS_M_measured[iqbin]->GetN();ip++){
+      double yh = gr_CS_M_measured[iqbin]->GetErrorYhigh(ip);
+      double yl = gr_CS_M_measured[iqbin]->GetErrorYlow(ip);
+      double y = gr_CS_M_measured[iqbin]->GetPointY(ip);
+      double acc = gr_accpro[iqbin]->GetPointY(ip);
+     
+      if(acc<0.015 && y>0.0){
+        gr_CS_M_measured[iqbin]->SetPointEYlow(ip,yl*2.0);
+      }
+    } 
+  } 
+
+  TCanvas *cMeachqcorr = new TCanvas("cMeachqcorr","cMeachqcorr",1200,800);
+  cMeachqcorr->Divide(5,3);
+  for(int iqbin=0;iqbin<13;iqbin++){
+    cMeachqcorr->cd(iqbin+1);
+    gr_CS_M_measured[iqbin]->Draw("ap");
+  }
+
+  std::cout << __LINE__ << std::endl;
+  gr_accpro[0]->Print();gr_CS_M_measured[0]->Print();
+  TGraphAsymmErrors *gr_M_qlow = new TGraphAsymmErrors(CS_M_measured[0]);//divided by M
+  TGraphAsymmErrors *gr_M_qhi = new TGraphAsymmErrors(CS_M_measured[7]);//divided by M
   gr_M_qlow->SetName("gr_M_qlow");  
   gr_M_qhi->SetName("gr_M_qhi");  
+  
+  for(int ip=0;ip<gr_M_qlow->GetN();ip++){
+    for(int iqbin=1;iqbin<7;iqbin++){
+      double yh = gr_M_qlow->GetErrorYhigh(ip);
+      double yl = gr_M_qlow->GetErrorYlow(ip);
+      double y = gr_M_qlow->GetPointY(ip);
+      double yh1 = gr_CS_M_measured[iqbin]->GetErrorYhigh(ip);
+      double yl1 = gr_CS_M_measured[iqbin]->GetErrorYlow(ip);
+      double y1 = gr_CS_M_measured[iqbin]->GetPointY(ip);
+      gr_M_qlow->SetPointY(ip,y+y1);
+      gr_M_qlow->SetPointEYlow(ip,sqrt(yl*yl+yl1*yl1));
+      gr_M_qlow->SetPointEYhigh(ip,sqrt(yh*yh+yh1*yh1));
+    }
+  }
 
+  
+  for(int ip=0;ip<gr_M_qhi->GetN();ip++){
+    for(int iqbin=8;iqbin<13;iqbin++){
+      double yh = gr_M_qhi->GetErrorYhigh(ip);
+      double yl = gr_M_qhi->GetErrorYlow(ip);
+      double y = gr_M_qhi->GetPointY(ip);
+      double yh1 = gr_CS_M_measured[iqbin]->GetErrorYhigh(ip);
+      double yl1 = gr_CS_M_measured[iqbin]->GetErrorYlow(ip);
+      double y1 = gr_CS_M_measured[iqbin]->GetPointY(ip);
+      gr_M_qhi->SetPointY(ip,y+y1);
+      gr_M_qhi->SetPointEYlow(ip,sqrt(yl*yl+yl1*yl1));
+      gr_M_qhi->SetPointEYhigh(ip,sqrt(yh*yh+yh1*yh1));
+    }
+  }
+   
+
+  std::cout << __LINE__ << std::endl;
 
   TCanvas *cMerr_qlow = new TCanvas("cMerr_qlow","cMerr_qlow",1100,1100); 
   cMerr_qlow->SetBottomMargin(0.12);
@@ -404,12 +477,13 @@ void FitCslpim()
   gr_M_qlow->GetXaxis()->CenterTitle();
   gr_M_qlow->GetYaxis()->SetTitle("d#sigma/dM [#mub/MeV^{2}]");
   gr_M_qlow->GetYaxis()->CenterTitle();
+  
   gr_M_qlow->Draw("AP");  
 
   
   
-  TH1D* CS_M_qlowErr = (TH1D*) CS_M_fit[0]->Clone("CS_M_qlowerr");
-  CS_M_qlowErr->Add(CS_M_fit[1]);
+  TH1D* CS_M_qlowErr = (TH1D*) CS_M_fit[5]->Clone("CS_M_qlowerr");
+  CS_M_qlowErr->Add(CS_M_fit[6]);
   //CS_M_qlowErr->Draw("same");
   
   TGraphAsymmErrors *gr_M_qlowErr = new TGraphAsymmErrors(CS_M_qlowErr);//divided by M
@@ -484,8 +558,8 @@ void FitCslpim()
   gr_M_qhi->GetYaxis()->CenterTitle();
   gr_M_qhi->Draw("AP");  
   
-  TH1D* CS_M_qhiErr = (TH1D*) CS_M_fit[2]->Clone("CS_M_qhierr");
-  for(int iq=2;iq<8;iq++){
+  TH1D* CS_M_qhiErr = (TH1D*) CS_M_fit[7]->Clone("CS_M_qhierr");
+  for(int iq=8;iq<13;iq++){
     CS_M_qhiErr->Add(CS_M_fit[iq]);
   }
   //CS_M_qhiErr->Draw("same");
