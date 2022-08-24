@@ -136,6 +136,12 @@ void FitMixScale()
   double avgSm = (ret3*ret4err+ret4*ret3err)/(ret3err+ret4err);
   double avg = (avgSp+avgSm)/2.0;
   std::cout << "Sp mode scale avgSp: " << avgSp << std::endl;
+  double deviation = reterr*pow(avg-ret,2)+ret2err*pow(avg-ret2,2)+ret3err*pow(avg-ret3,2)+ret4err*pow(avg-ret4,2);
+  deviation = deviation/(3.*(reterr+ret2err+ret3err+ret4err));
+  std::cout << "devi " << sqrt(deviation) << std::endl;
+  double deviation2 = reterr*pow(avg-ret,2)+ret2err*pow(avg-ret2,2)+ret3err*pow(avg-ret3,2);
+  deviation2 = deviation2/(2.*(reterr+ret2err+ret3err));
+  std::cout << "devi2 " << sqrt(deviation2) << std::endl;
   fIMnpip->SetParameter(0,avg);
   fIMnpip_up->SetParameter(0,avg*(1.0+sysScale));
   fIMnpip_down->SetParameter(0,avg*(1.0-sysScale));
