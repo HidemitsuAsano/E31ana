@@ -305,11 +305,32 @@ void GetAccMap(const int dEcut=2)
   q_IMnpipi_Sp_acc[0]->SetYTitle("q [GeV/c]");
   q_IMnpipi_Sp_acc[0]->GetZaxis()->SetMaxDigits(2);
   q_IMnpipi_Sp_acc[0]->Draw("colz");
-  TFile *fnuSp = new TFile("NumericalRootFinder_Spmodebin1.root");
-  //TGraph *thSp = (TGraph*)fnuSp->Get("th");
-  //thSp->Draw("pc");
-  TMultiGraph *mgSp = (TMultiGraph*)fnuSp->Get("mg");
-  mgSp->Draw("c"); 
+  //TFile *fnuSp = new TFile("NumericalRootFinder_Spmodebin1.root");
+  TFile *fnuSp = new TFile("NumericalRootFinder_fine_Sp.root");
+  TGraph *thSp = (TGraph*)fnuSp->Get("th");
+  thSp->SetLineColor(1);
+  thSp->SetLineStyle(2);
+  thSp->Draw("pc");
+  TGraph *gr_0 = (TGraph*)fnuSp->Get("gr_0");
+  gr_0->SetLineColor(1);
+  gr_0->SetLineStyle(2);
+  gr_0->Draw("pc");
+  TGraph *gr_100 = (TGraph*)fnuSp->Get("gr_100");
+  gr_100->SetLineColor(1);
+  gr_100->SetLineStyle(2);
+  gr_100->Draw("pc");
+  TGraph *gr_50 = (TGraph*)fnuSp->Get("gr_50");
+  gr_50->SetLineColor(1);
+  gr_50->SetLineStyle(10);
+  gr_50->Draw("pc");
+  TLatex *texSp1 = new TLatex();
+  texSp1->SetTextSize(0.04);
+  texSp1->SetTextColor(1);
+  texSp1->DrawLatex( 1.3, 0.2, "cos#theta^{CM}_{n}=0" );
+
+ 
+  //TMultiGraph *mgSp = (TMultiGraph*)fnuSp->Get("mg");
+  //mgSp->Draw("c"); 
 
   TCanvas *caccSmp = new TCanvas("caccSmp","caccSmp",1000,800);
   q_IMnpipi_Sm_acc[0]->SetTitle("");
@@ -317,7 +338,8 @@ void GetAccMap(const int dEcut=2)
   q_IMnpipi_Sm_acc[0]->SetYTitle("q [GeV/c]");
   q_IMnpipi_Sm_acc[0]->GetZaxis()->SetMaxDigits(2);
   q_IMnpipi_Sm_acc[0]->Draw("colz");
-  TFile *fnuSm = new TFile("NumericalRootFinder_Smmodebin1.root");
+  //TFile *fnuSm = new TFile("NumericalRootFinder_Smmodebin1.root");
+  TFile *fnuSm = new TFile("NumericalRootFinder_fine_Sm.root");
   //TGraph *thSm = (TGraph*)fnuSm->Get("th");
   //thSm->Draw("pc");
   TMultiGraph *mgSm = (TMultiGraph*)fnuSm->Get("mg");

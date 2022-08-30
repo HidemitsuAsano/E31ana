@@ -216,7 +216,8 @@ void FitMixScale()
   double c8_1zmax = MMnmiss_IMnpip_woK0_woSm_sub->GetMaximum();
   double c8_1zmin = MMnmiss_IMnpip_woK0_woSm_sub->GetMinimum();
    
-
+  
+  /*
   const Int_t NRGBs = 5;
   const Int_t NCont = 255;
   Double_t stops[NRGBs] = { 0.00, 0.02, 0.25, 0.625, 1.00 }; // for (-2.5,7.5)
@@ -225,8 +226,8 @@ void FitMixScale()
   Double_t blue[NRGBs]  = { 0.51, 1.00, 1.00, 0.00, 0.00 };
   TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
   gStyle->SetNumberContours(NCont);
-
-
+  */
+ 
   MMnmiss_IMnpip_woK0_woSm_sub->GetZaxis()->SetNdivisions(505);
   MMnmiss_IMnpip_woK0_woSm_sub->Draw("colz");
   
@@ -330,6 +331,7 @@ void FitMixScale()
   IMnpip_n_sub->Add(IMnpip_n_mix[1],-1);
   IMnpip_n_sub_sysup->Add(IMnpip_n_mix[1],-1.0-mixsysError);
   IMnpip_n_sub_sysdown->Add(IMnpip_n_mix[1],-1.0+mixsysError);
+  TH1D* IMnpip_n_sub_wide = (TH1D*)IMnpip_n_sub->Clone("IMnpip_n_sub_wide");
   IMnpip_n_sub->GetXaxis()->SetRangeUser(1.15,1.23);
   IMnpip_n_sub->GetYaxis()->SetTitle("counts/(0.002 GeV/c^{2})");
   IMnpip_n_sub->GetYaxis()->CenterTitle();
@@ -347,12 +349,17 @@ void FitMixScale()
   IMnpip_n_data->SetTitle("");
   IMnpip_n_data->GetYaxis()->SetTitle("counts/(0.002 GeV/c^{2})");
   IMnpip_n_data->GetYaxis()->CenterTitle();
+  //IMnpip_n_data->RebinX(2);
   IMnpip_n_data->GetXaxis()->SetRangeUser(1.15,1.23);
+  //IMnpip_n_data->GetXaxis()->SetRangeUser(1.0,1.6);
   IMnpip_n_data->SetMinimum(IMnpip_n_sub->GetMinimum());
   IMnpip_n_data->SetMarkerStyle(20);
   IMnpip_n_data->Draw();
   //IMnpip_n_sub->SetFillStyle(3004);
   //IMnpip_n_sub->SetFillColor(4);
+  //IMnpip_n_sub->RebinX(2);
+  //IMnpip_n_sub_sysup->RebinX(2);
+  //IMnpip_n_sub_sysdown->RebinX(2);
   IMnpip_n_sub->SetLineColor(4);
    
   TLatex *texnpip = new TLatex();
@@ -388,6 +395,12 @@ void FitMixScale()
   psp->SetLineStyle(2);
   psp->Draw();
 
+  TCanvas *c10_3 = new TCanvas("c10_3","c10_3");
+  IMnpip_n_sub_wide->SetMinimum(0); 
+  IMnpip_n_sub_wide->RebinX(2); 
+  IMnpip_n_sub_wide->GetXaxis()->SetRangeUser(1.0,1.8); 
+  IMnpip_n_sub_wide->Draw(); 
+
   TCanvas *c11 = new TCanvas("c11","c11");
   MMnmiss_Sm_data->Draw();
   MMnmiss_Sm_mix[1]->SetLineColor(2);
@@ -421,6 +434,7 @@ void FitMixScale()
   IMnpim_n_sub->Add(IMnpim_n_mix[1],-1);
   IMnpim_n_sub_sysup->Add(IMnpim_n_mix[1],-1.0-mixsysError);
   IMnpim_n_sub_sysdown->Add(IMnpim_n_mix[1],-1.0+mixsysError);
+  TH1D* IMnpim_n_sub_wide = (TH1D*)IMnpim_n_sub->Clone("IMnpim_n_sub_wide");
   IMnpim_n_sub->GetXaxis()->SetRangeUser(1.15,1.23);
   IMnpim_n_sub->SetTitle("");
   IMnpim_n_sub->GetYaxis()->SetTitle("counts/(0.002 GeV/c^{2})");
@@ -474,7 +488,11 @@ void FitMixScale()
   psm->SetLineStyle(2);
   psm->Draw();
 
-
+  TCanvas *c12_3 = new TCanvas("c12_3","c12_3");
+  IMnpim_n_sub_wide->RebinX(4);
+  IMnpim_n_sub_wide->GetXaxis()->SetRangeUser(1,1.8);
+  IMnpim_n_sub_wide->SetMinimum(0);
+  IMnpim_n_sub_wide->Draw();
 
   TCanvas *c13 = new TCanvas("c13","c13");
   IMpippim_woSid_data->RebinX(2);
