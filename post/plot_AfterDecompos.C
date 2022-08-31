@@ -33,10 +33,7 @@ const double UncertCut = 0.25;
 
 #include "../src/GlobalVariables.h"
 
-bool RemoveNegative = true;
-bool RebinMode = true;
-bool Sidefar=false;
-bool FitNoWeight=true;
+bool SetMinimum0=true;
 
 const int Version = 245;
 const int versionSigma = 156;//SIM version
@@ -144,8 +141,11 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
 
     //Draw plots for comfirmation
     cq_IMnpipi_wSid_n_Sp[iq] = new TCanvas(Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]),Form("cq_IMnpipi_wSid_n_Sp_%s",cqcut[iq]));
+    if(SetMinimum0)q_IMnpipi_wSid_n_Sp[iq]->SetMinimum(0);
     q_IMnpipi_wSid_n_Sp[iq]->Draw("colz");
+
     cq_IMnpipi_wK0_wSid_n_Sp[iq] = new TCanvas(Form("cq_IMnpipi_wK0_wSid_n_Sp_%s",cqcut[iq]),Form("cq_IMnpipi_wK0_wSid_n_Sp_%s",cqcut[iq]));
+    if(SetMinimum0)q_IMnpipi_wK0_wSid_n_Sp[iq]->SetMinimum(0);
     q_IMnpipi_wK0_wSid_n_Sp[iq]->Draw("colz");
     
     cIMnpipi_Sp[iq] = new TCanvas(Form("IMnpipi_Sp_%s",cqcut[iq]),Form("IMnpipi_Sp_%s",cqcut[iq]),1000,800);
@@ -170,8 +170,10 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     lSpoverlap->Draw();
 
     cq_IMnpipi_wSid_n_Sm[iq] = new TCanvas(Form("cq_IMnpipi_wSid_n_Sm_%s",cqcut[iq]),Form("cq_IMnpipi_wSid_n_Sm_%s",cqcut[iq]));
+    if(SetMinimum0)q_IMnpipi_wSid_n_Sm[iq]->SetMinimum(0);
     q_IMnpipi_wSid_n_Sm[iq]->Draw("colz");
     cq_IMnpipi_wK0_wSid_n_Sm[iq] = new TCanvas(Form("cq_IMnpipi_wK0_wSid_n_Sm_%s",cqcut[iq]),Form("cq_IMnpipi_wK0_wSid_n_Sm_%s",cqcut[iq]));
+    if(SetMinimum0)q_IMnpipi_wK0_wSid_n_Sm[iq]->SetMinimum(0);
     q_IMnpipi_wK0_wSid_n_Sm[iq]->Draw("colz");
     cIMnpipi_Sm[iq] = new TCanvas(Form("IMnpipi_Sm_%s",cqcut[iq]),Form("IMnpipi_Sm_%s",cqcut[iq]),1000,800);
     IMnpipi_wSid_n_Sm[iq] = (TH1D*)q_IMnpipi_wSid_n_Sm[iq]->ProjectionX(Form("IMnpipi_wSid_n_Sm_%d",iq));
@@ -191,6 +193,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     lSmoverlap->Draw();
     
     cq_IMnpipi_wSid_n_SpSm[iq] = new TCanvas(Form("cq_IMnpipi_wSid_n_SpSm_%s",cqcut[iq]),Form("cq_IMnpipi_wSid_n_SpSm_%s",cqcut[iq]));
+    if(SetMinimum0)q_IMnpipi_wSid_n_SpSm[iq]->SetMinimum(0);
     q_IMnpipi_wSid_n_SpSm[iq]->Draw("colz");
 
 
