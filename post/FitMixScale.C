@@ -11,7 +11,6 @@ double sysScale=0.05;
 const int dEcut=2;
 const int Version=245;
 const bool Scale=false;
-const int qcut = 0;
 const double mixsysError = 0.05;
 
 const bool gridon=false;
@@ -250,8 +249,8 @@ void FitMixScale()
   int Smbinhi = MMnmiss_IMnpim_woK0_woSp_data->GetXaxis()->FindBin(anacuts::Sigmam_MAX);
   int nlow = MMnmiss_IMnpip_woK0_woSm_data->GetYaxis()->FindBin(anacuts::neutron_MIN);
   int nhi = MMnmiss_IMnpip_woK0_woSm_data->GetYaxis()->FindBin(anacuts::neutron_MAX);
-  int q350 = q_IMnpipi_wSid_n_data->GetYaxis()->FindBin(0.35);
-  int q650 = q_IMnpipi_wSid_n_data->GetYaxis()->FindBin(0.65);
+  int qcut = q_IMnpipi_wSid_n_data->GetYaxis()->FindBin(anacuts::qvalcut);
+  int qmax = q_IMnpipi_wSid_n_data->GetYaxis()->FindBin(anacuts::qvalMAX);
   TH1D* MMnmiss_Sp_data = (TH1D*)MMnmiss_IMnpip_woK0_woSm_data->ProjectionY("MMnmiss_Sp_data",Spbinlow,Spbinhi);
   TH1D* MMnmiss_Sp_mix[3];
   for(int isys=0;isys<3;isys++){  
@@ -283,16 +282,16 @@ void FitMixScale()
     IMpippim_woSid_mix[isys] = (TH1D*)MMnmiss_IMpippim_woSid_mix->ProjectionX(Form("IMpippim_mix_%d",isys),nlow,nhi);
     IMpippim_woSid_mix[isys]->Scale(1+(isys-1)*sysScale);
   }
-  TH1D* IMnpipi_wSid_n_data_qhi = (TH1D*)q_IMnpipi_wSid_n_data->ProjectionX("IMnpipi_wSid_n_data_qhi",q350,q650);
+  TH1D* IMnpipi_wSid_n_data_qhi = (TH1D*)q_IMnpipi_wSid_n_data->ProjectionX("IMnpipi_wSid_n_data_qhi",qcut,qmax-1);
   TH1D* IMnpipi_wSid_n_mix_qhi[3]; 
   for(int isys=0;isys<3;isys++){
-    IMnpipi_wSid_n_mix_qhi[isys] = (TH1D*)q_IMnpipi_wSid_n_mix->ProjectionX(Form("IMnpipi_wSid_n_mix_qhi_%d",isys),q350,q650);   
+    IMnpipi_wSid_n_mix_qhi[isys] = (TH1D*)q_IMnpipi_wSid_n_mix->ProjectionX(Form("IMnpipi_wSid_n_mix_qhi_%d",isys),qcut,qmax-1);   
     IMnpipi_wSid_n_mix_qhi[isys]->Scale(1+(isys-1)*sysScale);
   }
-  TH1D* IMnpipi_wSid_n_data_qlo = (TH1D*)q_IMnpipi_wSid_n_data->ProjectionX("IMnpipi_wSid_n_data_qlo",0,q350);
+  TH1D* IMnpipi_wSid_n_data_qlo = (TH1D*)q_IMnpipi_wSid_n_data->ProjectionX("IMnpipi_wSid_n_data_qlo",0,qcut-1);
   TH1D* IMnpipi_wSid_n_mix_qlo[3];
   for(int isys=0;isys<3;isys++){
-    IMnpipi_wSid_n_mix_qlo[isys] = (TH1D*)q_IMnpipi_wSid_n_mix->ProjectionX(Form("IMnpipi_wSid_n_mix_qlo_%d",isys),0,q350);
+    IMnpipi_wSid_n_mix_qlo[isys] = (TH1D*)q_IMnpipi_wSid_n_mix->ProjectionX(Form("IMnpipi_wSid_n_mix_qlo_%d",isys),0,qcut-1);
     IMnpipi_wSid_n_mix_qlo[isys]->Scale(1+(isys-1)*sysScale);
   }
   

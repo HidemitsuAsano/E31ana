@@ -59,7 +59,7 @@ Double_t K0fit2dNoconvert(Double_t *x,Double_t *par)
 
 const int Version = 245;
 
-void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
+void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
 {
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
@@ -76,19 +76,6 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
     return;
   }
   fr->Print();
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   //
@@ -186,7 +173,7 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   if(qcut==2)f2->FixParameter(3,1.9);
   else if(qcut==1)f2->FixParameter(3,2.9);
   //Log likehoog is to be used when the histogram represents counts,
-  //however this data is not the case because the BG is subtracted by event. 
+  //however this data is not the case because the BG is subtracted by event. (?)
   //Ignoring this because statistic is not enough and chi2 fitting is not stable.
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_0suppress->Fit("f2","RL","");
   IMnpim_IMnpip_dE_wK0_woSid_n_45rot3_0suppress->Print("base");
@@ -347,7 +334,7 @@ void Fit2DK0(const int qcut=2,const int dEcut=2,const int sysud=0)
   f3->SetNpx(nbinsX);//use same nbin to compare the projection
   f3->SetNpy(nbinsY);//use same nbin to compare the projection
   f3->SetParameters(param);
-  if(qcut==2)f3->SetParLimits(0,param[0]*0.3,param[0]*0.45);
+  if(qcut==2)f3->SetParLimits(0,param[0]*0.4,param[0]*0.50);
   else if(qcut==1)f3->SetParLimits(0,param[0]*0.35,param[0]*1.0);
   f3->FixParameter(1,param[1]);
   f3->FixParameter(2,param[2]);

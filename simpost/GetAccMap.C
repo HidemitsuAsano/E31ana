@@ -46,6 +46,8 @@ void GetAccMap(const int dEcut=2)
   const int nqcut=1;
   TH2F* q_IMnpipi_gen_Sp[nqcut];
   TH2F* q_IMnpipi_gen_Sm[nqcut];
+  TH2F* Cosn_IMnpipi_gen_Sp[nqcut];//CM
+  TH2F* Cosn_IMnpipi_gen_Sm[nqcut];
   TH2F* q_IMnpipi_gen_K0[nqcut];
   for(int iq=0;iq<nqcut;iq++){
     q_IMnpipi_gen_Sp[iq] = (TH2F*) fSpgen->Get("React_q_IMPiSigma");
@@ -55,12 +57,26 @@ void GetAccMap(const int dEcut=2)
     q_IMnpipi_gen_Sp[iq]->GetXaxis()->CenterTitle();
     q_IMnpipi_gen_Sp[iq]->GetYaxis()->CenterTitle();
 
+    Cosn_IMnpipi_gen_Sp[iq] = (TH2F*) fSpgen->Get("React_costhetanCM_IMPiSigma");
+    Cosn_IMnpipi_gen_Sp[iq]->SetTitle("generated evt. Sp");
+    Cosn_IMnpipi_gen_Sp[iq]->SetXTitle("true IM(#pi^{-}#Sigma^{+}) [GeV/c^{2}]");
+    Cosn_IMnpipi_gen_Sp[iq]->SetYTitle("true Cosn (CM) [GeV/c]");
+    Cosn_IMnpipi_gen_Sp[iq]->GetXaxis()->CenterTitle();
+    Cosn_IMnpipi_gen_Sp[iq]->GetYaxis()->CenterTitle();
+    
     q_IMnpipi_gen_Sm[iq] = (TH2F*) fSmgen->Get("React_q_IMPiSigma");
     q_IMnpipi_gen_Sm[iq]->SetTitle("generated evt. Sm");
     q_IMnpipi_gen_Sm[iq]->SetXTitle("true IM(#pi^{+}#Sigma^{-}) [GeV/c^{2}]");
     q_IMnpipi_gen_Sm[iq]->SetYTitle("true Mom. Transfer [GeV/c]");
     q_IMnpipi_gen_Sm[iq]->GetXaxis()->CenterTitle();
     q_IMnpipi_gen_Sm[iq]->GetYaxis()->CenterTitle();
+
+    Cosn_IMnpipi_gen_Sm[iq] = (TH2F*) fSmgen->Get("React_costhetanCM_IMPiSigma");
+    Cosn_IMnpipi_gen_Sm[iq]->SetTitle("generated evt. Sm");
+    Cosn_IMnpipi_gen_Sm[iq]->SetXTitle("true IM(#pi^{+}#Sigma^{-}) [GeV/c^{2}]");
+    Cosn_IMnpipi_gen_Sm[iq]->SetYTitle("true Cosn (CM) [GeV/c]");
+    Cosn_IMnpipi_gen_Sm[iq]->GetXaxis()->CenterTitle();
+    Cosn_IMnpipi_gen_Sm[iq]->GetYaxis()->CenterTitle();
     
     q_IMnpipi_gen_K0[iq] = (TH2F*) fK0gen->Get("React_q_IMnpipi");
     q_IMnpipi_gen_K0[iq]->SetTitle("generated evt. K0");
@@ -72,10 +88,13 @@ void GetAccMap(const int dEcut=2)
   //for some reason, Rebin iq = 0-4 histograms
   q_IMnpipi_gen_Sp[0]->RebinX(15);
   q_IMnpipi_gen_Sp[0]->RebinY(10);
+  Cosn_IMnpipi_gen_Sp[0]->RebinX(15);
+
   //q_IMnpipi_gen_Sp[0]->GetXaxis()->SetRangeUser(1.2,2.0);
   
   q_IMnpipi_gen_Sm[0]->RebinX(15);
   q_IMnpipi_gen_Sm[0]->RebinY(10);
+  Cosn_IMnpipi_gen_Sm[0]->RebinX(15);
   //q_IMnpipi_gen_Sm[0]->GetXaxis()->SetRangeUser(1.2,2.0);
   q_IMnpipi_gen_K0[0]->RebinX(15);
   q_IMnpipi_gen_K0[0]->RebinY(10);
@@ -84,6 +103,9 @@ void GetAccMap(const int dEcut=2)
   TH2F* q_IMnpipi_wSid_n_Sp_reco[nqcut];
   TH2F* q_IMnpipi_wSid_n_Sm_reco[nqcut];
   TH2F* q_IMnpipi_wK0_n_K0_reco[nqcut];
+  TH2F* Cosn_IMnpipi_wSid_n_Sp_reco[nqcut];//CM
+  TH2F* Cosn_IMnpipi_wSid_n_Sm_reco[nqcut];//CM
+  TH2F* Cosn_IMnpipi_wK0_n_K0_reco[nqcut];
   TH1F* BLAnaPassedSp = (TH1F*)fSpgen->Get("BLAnaPassed");
   double SimBeamSurvivalOKSp = BLAnaPassedSp->GetBinContent(2);//passed
   double SimBeamSurvivalFailSp = BLAnaPassedSp->GetBinContent(1);//not passed
@@ -105,6 +127,10 @@ void GetAccMap(const int dEcut=2)
     q_IMnpipi_wSid_n_Sp_reco[iq]->SetTitle("reco. evt. Sp");
     q_IMnpipi_wSid_n_Sm_reco[iq] = (TH2F*)fSm[iq]->Get("q_IMnpipi_wSid_n_Sm");
     q_IMnpipi_wSid_n_Sm_reco[iq]->SetTitle("reco. evt. Sm");
+    Cosn_IMnpipi_wSid_n_Sp_reco[iq] = (TH2F*)fSp[iq]->Get("Cosn_IMnpipi_wSid_n_Sp");
+    Cosn_IMnpipi_wSid_n_Sp_reco[iq]->SetTitle("reco. evt. Sp");
+    Cosn_IMnpipi_wSid_n_Sm_reco[iq] = (TH2F*)fSm[iq]->Get("Cosn_IMnpipi_wSid_n_Sm");
+    Cosn_IMnpipi_wSid_n_Sm_reco[iq]->SetTitle("reco. evt. Sm");
     q_IMnpipi_wK0_n_K0_reco[iq] = (TH2F*)fK0[iq]->Get("q_IMnpipi_wK0_n");
     q_IMnpipi_wK0_n_K0_reco[iq]->GetYaxis()->SetRangeUser(0,1.5);
     q_IMnpipi_wK0_n_K0_reco[iq]->SetTitle("reco. evt. K0");
@@ -112,6 +138,10 @@ void GetAccMap(const int dEcut=2)
     q_IMnpipi_wSid_n_Sp_reco[iq]->Scale(1./SimBeamSurvivalRateSp);
     q_IMnpipi_wSid_n_Sm_reco[iq]->RebinX(3);
     q_IMnpipi_wSid_n_Sm_reco[iq]->Scale(1./SimBeamSurvivalRateSm);
+    Cosn_IMnpipi_wSid_n_Sp_reco[iq]->RebinX(3);
+    Cosn_IMnpipi_wSid_n_Sp_reco[iq]->Scale(1./SimBeamSurvivalRateSp);
+    Cosn_IMnpipi_wSid_n_Sm_reco[iq]->RebinX(3);
+    Cosn_IMnpipi_wSid_n_Sm_reco[iq]->Scale(1./SimBeamSurvivalRateSm);
     q_IMnpipi_wK0_n_K0_reco[iq]->RebinX(3);
     q_IMnpipi_wK0_n_K0_reco[iq]->Scale(1./SimBeamSurvivalRateK0);
   }
@@ -119,13 +149,19 @@ void GetAccMap(const int dEcut=2)
 
   TH2F* q_IMnpipi_Sp_acc[nqcut];
   TH2F* q_IMnpipi_Sm_acc[nqcut];
+  TH2F* Cosn_IMnpipi_Sp_acc[nqcut];
+  TH2F* Cosn_IMnpipi_Sm_acc[nqcut];
   TH2F* q_IMnpipi_K0_acc[nqcut];
   for(int iq=0;iq<nqcut;iq++){
     q_IMnpipi_Sp_acc[iq] = (TH2F*)q_IMnpipi_wSid_n_Sp_reco[iq]->Clone(Form("q_IMnpipi_Sp_accp_%d",iq));
     q_IMnpipi_Sm_acc[iq] = (TH2F*)q_IMnpipi_wSid_n_Sm_reco[iq]->Clone(Form("q_IMnpipi_Sm_accp_%d",iq));
+    Cosn_IMnpipi_Sp_acc[iq] = (TH2F*)Cosn_IMnpipi_wSid_n_Sp_reco[iq]->Clone(Form("Cosn_IMnpipi_Sp_accp_%d",iq));
+    Cosn_IMnpipi_Sm_acc[iq] = (TH2F*)Cosn_IMnpipi_wSid_n_Sm_reco[iq]->Clone(Form("Cosn_IMnpipi_Sm_accp_%d",iq));
     q_IMnpipi_K0_acc[iq] = (TH2F*)q_IMnpipi_wK0_n_K0_reco[iq]->Clone(Form("q_IMnpipi_K0_accp_%d",iq));
     q_IMnpipi_Sp_acc[iq]->SetTitle(Form("q_IMnpipi Sp acc. ",iq));
     q_IMnpipi_Sm_acc[iq]->SetTitle(Form("q_IMnpipi Sm acc. ",iq));
+    Cosn_IMnpipi_Sp_acc[iq]->SetTitle(Form("Cosn_IMnpipi Sp acc. ",iq));
+    Cosn_IMnpipi_Sm_acc[iq]->SetTitle(Form("Cosn_IMnpipi Sm acc. ",iq));
     q_IMnpipi_K0_acc[iq]->SetTitle(Form("q_IMnpipi K0 acc. ",iq));
     
     
@@ -137,6 +173,14 @@ void GetAccMap(const int dEcut=2)
     q_IMnpipi_gen_Sm[iq]->Print("base");
     q_IMnpipi_Sm_acc[iq]->Divide(q_IMnpipi_Sm_acc[iq],q_IMnpipi_gen_Sm[iq],1.0,1.0,"b");
     q_IMnpipi_Sm_acc[iq]->Scale(1./PreScale);
+    Cosn_IMnpipi_Sp_acc[iq]->Print("base");
+    Cosn_IMnpipi_gen_Sp[iq]->Print("base");
+    Cosn_IMnpipi_Sp_acc[iq]->Divide(Cosn_IMnpipi_Sp_acc[iq],Cosn_IMnpipi_gen_Sp[iq],1.0,1.0,"b");
+    Cosn_IMnpipi_Sp_acc[iq]->Scale(1./PreScale);
+    Cosn_IMnpipi_Sm_acc[iq]->Print("base");
+    Cosn_IMnpipi_gen_Sm[iq]->Print("base");
+    Cosn_IMnpipi_Sm_acc[iq]->Divide(Cosn_IMnpipi_Sm_acc[iq],Cosn_IMnpipi_gen_Sm[iq],1.0,1.0,"b");
+    Cosn_IMnpipi_Sm_acc[iq]->Scale(1./PreScale);
     q_IMnpipi_K0_acc[iq]->Print("base");
     q_IMnpipi_gen_K0[iq]->Print("base");
     q_IMnpipi_K0_acc[iq]->Divide(q_IMnpipi_K0_acc[iq],q_IMnpipi_gen_K0[iq],1.0,1.0,"b");
@@ -145,6 +189,8 @@ void GetAccMap(const int dEcut=2)
 
   TH2F* q_IMnpipi_Sp_accerr[nqcut];
   TH2F* q_IMnpipi_Sm_accerr[nqcut];
+  TH2F* Cosn_IMnpipi_Sp_accerr[nqcut];
+  TH2F* Cosn_IMnpipi_Sm_accerr[nqcut];
   TH2F* q_IMnpipi_K0_accerr[nqcut];
   for(int iq=0;iq<nqcut;iq++){
     q_IMnpipi_Sp_accerr[iq] = (TH2F*)q_IMnpipi_Sp_acc[0]->Clone(Form("q_IMnpipi_Sp_accerr_%d",iq));
@@ -306,6 +352,7 @@ void GetAccMap(const int dEcut=2)
   q_IMnpipi_Sp_acc[0]->GetZaxis()->SetMaxDigits(2);
   q_IMnpipi_Sp_acc[0]->Draw("colz");
   //TFile *fnuSp = new TFile("NumericalRootFinder_Spmodebin1.root");
+  /*
   TFile *fnuSp = new TFile("NumericalRootFinder_fine_Sp.root");
   TGraph *thSp = (TGraph*)fnuSp->Get("th");
   thSp->SetLineColor(1);
@@ -327,7 +374,7 @@ void GetAccMap(const int dEcut=2)
   texSp1->SetTextSize(0.04);
   texSp1->SetTextColor(1);
   texSp1->DrawLatex( 1.3, 0.2, "cos#theta^{CM}_{n}=0" );
-
+  */
  
   //TMultiGraph *mgSp = (TMultiGraph*)fnuSp->Get("mg");
   //mgSp->Draw("c"); 
@@ -339,11 +386,11 @@ void GetAccMap(const int dEcut=2)
   q_IMnpipi_Sm_acc[0]->GetZaxis()->SetMaxDigits(2);
   q_IMnpipi_Sm_acc[0]->Draw("colz");
   //TFile *fnuSm = new TFile("NumericalRootFinder_Smmodebin1.root");
-  TFile *fnuSm = new TFile("NumericalRootFinder_fine_Sm.root");
+  //TFile *fnuSm = new TFile("NumericalRootFinder_fine_Sm.root");
   //TGraph *thSm = (TGraph*)fnuSm->Get("th");
   //thSm->Draw("pc");
-  TMultiGraph *mgSm = (TMultiGraph*)fnuSm->Get("mg");
-  mgSm->Draw("c"); 
+  //TMultiGraph *mgSm = (TMultiGraph*)fnuSm->Get("mg");
+  //mgSm->Draw("c"); 
 
   caccSpp->SaveAs("accSp.pdf","PDF");
   caccSmp->SaveAs("accSm.pdf","PDF");

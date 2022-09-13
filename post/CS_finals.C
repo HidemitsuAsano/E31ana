@@ -1,3 +1,5 @@
+#include "../src/GlobalVariables.h"
+
 void CS_finals()
 {
   if(gROOT->GetVersionInt() < 60000){
@@ -77,18 +79,29 @@ void CS_finals()
   TCanvas *cqM_Sp[4];
   TCanvas *cqM_Sm[4];
   TCanvas *cqM_K0[4];
+  TFile *fnuSp = new TFile("../simpost/NumericalRootFinder_fine20_Sp.root");
+  TMultiGraph *mgSp = (TMultiGraph*)fnuSp->Get("mg");
+  
+  TFile *fnuSm = new TFile("../simpost/NumericalRootFinder_fine20_Sm.root");
+  TMultiGraph *mgSm = (TMultiGraph*)fnuSm->Get("mg");
   for(int iq=0;iq<4;iq++){
     cqM_Sp[iq] = new TCanvas(Form("cqM_Sp%d",iq),Form("cqM_Sp%d",iq),1000,800);
     q_IMnpipi_Sp_cs[iq][0][0]->SetMinimum(0);
-    q_IMnpipi_Sp_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.8);
+    q_IMnpipi_Sp_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.65);
+    q_IMnpipi_Sp_cs[iq][0][0]->GetXaxis()->SetRangeUser(1.3,1.9);
     q_IMnpipi_Sp_cs[iq][0][0]->Draw("colz");
+    mgSp->Draw("p");
     cqM_Sm[iq] = new TCanvas(Form("cqM_Sm%d",iq),Form("cqM_Sm%d",iq),1000,800);
     q_IMnpipi_Sm_cs[iq][0][0]->SetMinimum(0);
-    q_IMnpipi_Sm_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.8);
+    q_IMnpipi_Sm_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.65);
+    q_IMnpipi_Sm_cs[iq][0][0]->GetXaxis()->SetRangeUser(1.3,1.9);
     q_IMnpipi_Sm_cs[iq][0][0]->Draw("colz");
+    mgSm->Draw("p");
+
     cqM_K0[iq] = new TCanvas(Form("cqM_K0%d",iq),Form("cqM_K0%d",iq),1000,800);
     q_IMnpipi_K0_cs[iq][0][0]->SetMinimum(0);
-    q_IMnpipi_K0_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.8);
+    q_IMnpipi_K0_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.65);
+    q_IMnpipi_K0_cs[iq][0][0]->GetXaxis()->SetRangeUser(1.3,1.9);
     q_IMnpipi_K0_cs[iq][0][0]->Draw("colz");
   }
 
@@ -1097,11 +1110,23 @@ void CS_finals()
     //p->SetLineWidth(2.0);
     p->SetLineStyle(2);
     p->Draw();
+    TLine *pkp = new TLine(kpMass+pMass,0,kpMass+pMass,3);
+    pkp->SetLineColor(1);
+    pkp->SetLineStyle(2);
+    pkp->Draw();
+    
+    TLine *pk0n = new TLine(k0Mass+nMass,0,k0Mass+nMass,3);
+    pk0n->SetLineColor(1);
+    pk0n->SetLineStyle(2);
+    pk0n->Draw();
+
     //gIMnpipi_Sp_cs_Etotal[iq]->Draw("p");
   }
   cboth[1]->SaveAs("cbothqlow.pdf");
   cboth[2]->SaveAs("cbothqhi.pdf");
 
+  std::cout << "k-p mass " <<   kpMass+pMass << std::endl;
+  std::cout << "k0n mass " <<   k0Mass+nMass << std::endl;
   TCanvas *csumqboth = new TCanvas("csumqboth","csumqboth",1100,1100);
   csumqboth->SetBottomMargin(0.12);
   csumqboth->SetLeftMargin(0.14);

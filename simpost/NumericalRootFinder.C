@@ -23,6 +23,7 @@ const double EK = sqrt(K_mass*K_mass+pK*pK);
 
 double func_EM(double *x, double *par);
 double func_cq(double *x, double *par);
+double func_thetalab(double q, double M);
 double func_C(double *x, double *par);
 double func_S2(double *x, double *par);
 double func(double *x, double *par);
@@ -148,6 +149,14 @@ double func_cq(double *x, double *par)
   return f;
 }
 
+double func_thetalab(double q, double M)
+// x      = q
+// par[0] = m
+{ 
+  double f = (n_mass*n_mass+pK*pK+q*q-TMath::Power(EK+d_mass-TMath::Sqrt(M*M+q*q),2.))/(2.*q*pK);
+  double tannlab = -q*(sqrt(1.0-f*f))/(pK-q*f);
+  return -1.0*atan(tannlab)*180./3.1415926535.;
+}
 
 double func_C(double *x, double *par)
 // x      = q
