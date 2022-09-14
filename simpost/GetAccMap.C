@@ -2,6 +2,8 @@ const bool RemoveNotEnough = true;
 const double UncertCut = 0.25;
 const double GenCutSp = 120e3;
 const double GenCutSm = 120e3;
+const double GenCutSpCos = 120e2;
+const double GenCutSmCos = 120e2;
 const double GenCutK0 = 200e3;
 const double PreScale = 2.0;
 
@@ -21,7 +23,7 @@ void GetAccMap(const int dEcut=2)
   TFile *fSpgen=NULL;
   TFile *fSmgen=NULL;
   TFile *fK0gen=NULL;
-  const int versionSigma = 156;
+  const int versionSigma = 158;
   const int versionK0 = 30;
 
   fSp[0] = TFile::Open(Form("simIMpisigma_nSppim_pippimn_v%d_out_dE%d_iso_rej_nostop.root",versionSigma,dEcut));
@@ -189,8 +191,6 @@ void GetAccMap(const int dEcut=2)
 
   TH2F* q_IMnpipi_Sp_accerr[nqcut];
   TH2F* q_IMnpipi_Sm_accerr[nqcut];
-  TH2F* Cosn_IMnpipi_Sp_accerr[nqcut];
-  TH2F* Cosn_IMnpipi_Sm_accerr[nqcut];
   TH2F* q_IMnpipi_K0_accerr[nqcut];
   for(int iq=0;iq<nqcut;iq++){
     q_IMnpipi_Sp_accerr[iq] = (TH2F*)q_IMnpipi_Sp_acc[0]->Clone(Form("q_IMnpipi_Sp_accerr_%d",iq));
@@ -223,65 +223,134 @@ void GetAccMap(const int dEcut=2)
     }
   }
   
-  for(int ix=0;ix<q_IMnpipi_Sp_accerr[0]->GetNbinsX();ix++){
-    for(int iy=0;iy<q_IMnpipi_Sp_accerr[0]->GetNbinsY();iy++){
-      double err = q_IMnpipi_Sp_accerr[0]->GetBinContent(ix,iy);
-      if( RemoveNotEnough && (err>UncertCut)){
-        q_IMnpipi_Sp_acc[0]->SetBinContent(ix,iy,0);
-        q_IMnpipi_Sp_acc[0]->SetBinError(ix,iy,0);
-        q_IMnpipi_Sp_accerr[0]->SetBinContent(ix,iy,0);
-        q_IMnpipi_Sp_accerr[0]->SetBinError(ix,iy,0);
-      }
-      double gencont = q_IMnpipi_gen_Sp[0]->GetBinContent(ix,iy);
-      if(gencont<GenCutSp){
-        q_IMnpipi_Sp_acc[0]->SetBinContent(ix,iy,0);
-        q_IMnpipi_Sp_acc[0]->SetBinError(ix,iy,0);
-        q_IMnpipi_Sp_accerr[0]->SetBinContent(ix,iy,0);
-        q_IMnpipi_Sp_accerr[0]->SetBinError(ix,iy,0);
-      }
-    }
-  }
-  
-  for(int ix=0;ix<q_IMnpipi_Sm_accerr[0]->GetNbinsX();ix++){
-    for(int iy=0;iy<q_IMnpipi_Sm_accerr[0]->GetNbinsY();iy++){
-      double err = q_IMnpipi_Sm_accerr[0]->GetBinContent(ix,iy);
-      if(RemoveNotEnough && err>UncertCut){
-        q_IMnpipi_Sm_acc[0]->SetBinContent(ix,iy,0);
-        q_IMnpipi_Sm_acc[0]->SetBinError(ix,iy,0);
-        q_IMnpipi_Sm_accerr[0]->SetBinContent(ix,iy,0);
-        q_IMnpipi_Sm_accerr[0]->SetBinError(ix,iy,0);
-      }
-      double gencont = q_IMnpipi_gen_Sm[0]->GetBinContent(ix,iy);
-      if(gencont<GenCutSm){
-        q_IMnpipi_Sm_acc[0]->SetBinContent(ix,iy,0);
-        q_IMnpipi_Sm_acc[0]->SetBinError(ix,iy,0);
-        q_IMnpipi_Sm_accerr[0]->SetBinContent(ix,iy,0);
-        q_IMnpipi_Sm_accerr[0]->SetBinError(ix,iy,0);
-      }
-    }
-  }
-  
-  for(int ix=0;ix<q_IMnpipi_K0_accerr[0]->GetNbinsX();ix++){
-    for(int iy=0;iy<q_IMnpipi_K0_accerr[0]->GetNbinsY();iy++){
-      double err = q_IMnpipi_K0_accerr[0]->GetBinContent(ix,iy);
-      if(RemoveNotEnough && err>UncertCut){
-        q_IMnpipi_K0_acc[0]->SetBinContent(ix,iy,0);
-        q_IMnpipi_K0_acc[0]->SetBinError(ix,iy,0);
-        q_IMnpipi_K0_accerr[0]->SetBinContent(ix,iy,0);
-        q_IMnpipi_K0_accerr[0]->SetBinError(ix,iy,0);
-      }
-      double gencont = q_IMnpipi_gen_K0[0]->GetBinContent(ix,iy);
-      if(gencont<GenCutK0){
-        q_IMnpipi_K0_acc[0]->SetBinContent(ix,iy,0);
-        q_IMnpipi_K0_acc[0]->SetBinError(ix,iy,0);
-        q_IMnpipi_K0_accerr[0]->SetBinContent(ix,iy,0);
-        q_IMnpipi_K0_accerr[0]->SetBinError(ix,iy,0);
+  TH2F* Cosn_IMnpipi_Sp_accerr[nqcut];
+  TH2F* Cosn_IMnpipi_Sm_accerr[nqcut];
+  for(int iq=0;iq<nqcut;iq++){
+    Cosn_IMnpipi_Sp_accerr[iq] = (TH2F*)Cosn_IMnpipi_Sp_acc[0]->Clone(Form("Cosn_IMnpipi_Sp_accerr_%d",iq));
+    Cosn_IMnpipi_Sm_accerr[iq] = (TH2F*)Cosn_IMnpipi_Sm_acc[0]->Clone(Form("Cosn_IMnpipi_Sm_accerr_%d",iq));
+    Cosn_IMnpipi_Sp_accerr[iq]->Reset();
+    Cosn_IMnpipi_Sm_accerr[iq]->Reset();
+    Cosn_IMnpipi_Sp_accerr[iq]->SetTitle(Form("Cosn_IMnpipi_Sp precision",iq));
+    Cosn_IMnpipi_Sm_accerr[iq]->SetTitle(Form("Cosn_IMnpipi_Sm precision",iq));
+    for(int ix=0;ix<Cosn_IMnpipi_Sp_acc[0]->GetNbinsX();ix++){
+      for(int iy=0;iy<Cosn_IMnpipi_Sp_acc[0]->GetNbinsY();iy++){
+        double contSp = Cosn_IMnpipi_Sp_acc[iq]->GetBinContent(ix,iy);
+        double errSp = Cosn_IMnpipi_Sp_acc[iq]->GetBinError(ix,iy);
+        if(contSp!=0){
+          Cosn_IMnpipi_Sp_accerr[iq]->SetBinContent(ix,iy,errSp/contSp);  
+        }
+        double contSm = Cosn_IMnpipi_Sm_acc[iq]->GetBinContent(ix,iy);
+        double errSm = Cosn_IMnpipi_Sm_acc[iq]->GetBinError(ix,iy);
+        if(contSm!=0){
+          Cosn_IMnpipi_Sm_accerr[iq]->SetBinContent(ix,iy,errSm/contSm);  
+        }
       }
     }
   }
 
+
+  //remove bins under thresholds of Uncertainties
+  for(int ix=0;ix<q_IMnpipi_Sp_accerr[0]->GetNbinsX();ix++){            
+    for(int iy=0;iy<q_IMnpipi_Sp_accerr[0]->GetNbinsY();iy++){          
+      double err = q_IMnpipi_Sp_accerr[0]->GetBinContent(ix,iy);        
+      if( RemoveNotEnough && (err>UncertCut)){                          
+        q_IMnpipi_Sp_acc[0]->SetBinContent(ix,iy,0);                    
+        q_IMnpipi_Sp_acc[0]->SetBinError(ix,iy,0);                      
+        q_IMnpipi_Sp_accerr[0]->SetBinContent(ix,iy,0);                 
+        q_IMnpipi_Sp_accerr[0]->SetBinError(ix,iy,0);                   
+      }                                                                 
+      double gencont = q_IMnpipi_gen_Sp[0]->GetBinContent(ix,iy);       
+      if(gencont<GenCutSp){                                             
+        q_IMnpipi_Sp_acc[0]->SetBinContent(ix,iy,0);                    
+        q_IMnpipi_Sp_acc[0]->SetBinError(ix,iy,0);                      
+        q_IMnpipi_Sp_accerr[0]->SetBinContent(ix,iy,0);                 
+        q_IMnpipi_Sp_accerr[0]->SetBinError(ix,iy,0);              
+      }
+    }
+  }
+
+  for(int ix=0;ix<q_IMnpipi_Sm_accerr[0]->GetNbinsX();ix++){            
+    for(int iy=0;iy<q_IMnpipi_Sm_accerr[0]->GetNbinsY();iy++){          
+      double err = q_IMnpipi_Sm_accerr[0]->GetBinContent(ix,iy);        
+      if( RemoveNotEnough && (err>UncertCut)){                          
+        q_IMnpipi_Sm_acc[0]->SetBinContent(ix,iy,0);                    
+        q_IMnpipi_Sm_acc[0]->SetBinError(ix,iy,0);                      
+        q_IMnpipi_Sm_accerr[0]->SetBinContent(ix,iy,0);                 
+        q_IMnpipi_Sm_accerr[0]->SetBinError(ix,iy,0);                   
+      }                                                                 
+      double gencont = q_IMnpipi_gen_Sm[0]->GetBinContent(ix,iy);       
+      if(gencont<GenCutSm){                                             
+        q_IMnpipi_Sm_acc[0]->SetBinContent(ix,iy,0);                    
+        q_IMnpipi_Sm_acc[0]->SetBinError(ix,iy,0);                      
+        q_IMnpipi_Sm_accerr[0]->SetBinContent(ix,iy,0);                 
+        q_IMnpipi_Sm_accerr[0]->SetBinError(ix,iy,0);              
+      }
+    }
+  }
+
+  for(int ix=0;ix<q_IMnpipi_K0_accerr[0]->GetNbinsX();ix++){            
+    for(int iy=0;iy<q_IMnpipi_K0_accerr[0]->GetNbinsY();iy++){          
+      double err = q_IMnpipi_K0_accerr[0]->GetBinContent(ix,iy);        
+      if( RemoveNotEnough && (err>UncertCut)){                          
+        q_IMnpipi_K0_acc[0]->SetBinContent(ix,iy,0);                    
+        q_IMnpipi_K0_acc[0]->SetBinError(ix,iy,0);                      
+        q_IMnpipi_K0_accerr[0]->SetBinContent(ix,iy,0);                 
+        q_IMnpipi_K0_accerr[0]->SetBinError(ix,iy,0);                   
+      }                                                                 
+      double gencont = q_IMnpipi_gen_K0[0]->GetBinContent(ix,iy);       
+      if(gencont<GenCutK0){                                             
+        q_IMnpipi_K0_acc[0]->SetBinContent(ix,iy,0);                    
+        q_IMnpipi_K0_acc[0]->SetBinError(ix,iy,0);                      
+        q_IMnpipi_K0_accerr[0]->SetBinContent(ix,iy,0);                 
+        q_IMnpipi_K0_accerr[0]->SetBinError(ix,iy,0);              
+      }
+    }
+  }
+
+  
+  for(int ix=0;ix<Cosn_IMnpipi_Sp_accerr[0]->GetNbinsX();ix++){
+    for(int iy=0;iy<Cosn_IMnpipi_Sp_accerr[0]->GetNbinsY();iy++){
+      double err = Cosn_IMnpipi_Sp_accerr[0]->GetBinContent(ix,iy);
+      if( RemoveNotEnough && (err>UncertCut)){
+        Cosn_IMnpipi_Sp_acc[0]->SetBinContent(ix,iy,0);
+        Cosn_IMnpipi_Sp_acc[0]->SetBinError(ix,iy,0);
+        Cosn_IMnpipi_Sp_accerr[0]->SetBinContent(ix,iy,0);
+        Cosn_IMnpipi_Sp_accerr[0]->SetBinError(ix,iy,0);
+      }
+      double gencont = Cosn_IMnpipi_gen_Sp[0]->GetBinContent(ix,iy);
+      if(gencont<GenCutSpCos){
+        Cosn_IMnpipi_Sp_acc[0]->SetBinContent(ix,iy,0);
+        Cosn_IMnpipi_Sp_acc[0]->SetBinError(ix,iy,0);
+        Cosn_IMnpipi_Sp_accerr[0]->SetBinContent(ix,iy,0);
+        Cosn_IMnpipi_Sp_accerr[0]->SetBinError(ix,iy,0);
+      }
+    }
+  }
+  
+  for(int ix=0;ix<Cosn_IMnpipi_Sm_accerr[0]->GetNbinsX();ix++){
+    for(int iy=0;iy<Cosn_IMnpipi_Sm_accerr[0]->GetNbinsY();iy++){
+      double err = Cosn_IMnpipi_Sm_accerr[0]->GetBinContent(ix,iy);
+      if(RemoveNotEnough && err>UncertCut){
+        Cosn_IMnpipi_Sm_acc[0]->SetBinContent(ix,iy,0);
+        Cosn_IMnpipi_Sm_acc[0]->SetBinError(ix,iy,0);
+        Cosn_IMnpipi_Sm_accerr[0]->SetBinContent(ix,iy,0);
+        Cosn_IMnpipi_Sm_accerr[0]->SetBinError(ix,iy,0);
+      }
+      double gencont = Cosn_IMnpipi_gen_Sm[0]->GetBinContent(ix,iy);
+      if(gencont<GenCutSmCos){
+        Cosn_IMnpipi_Sm_acc[0]->SetBinContent(ix,iy,0);
+        Cosn_IMnpipi_Sm_acc[0]->SetBinError(ix,iy,0);
+        Cosn_IMnpipi_Sm_accerr[0]->SetBinContent(ix,iy,0);
+        Cosn_IMnpipi_Sm_accerr[0]->SetBinError(ix,iy,0);
+      }
+    }
+  }
+  
+
   TCanvas *cSp[nqcut];
+  TCanvas *cSpCos[nqcut];
   TCanvas *cSm[nqcut];
+  TCanvas *cSmCos[nqcut];
   TCanvas *cK0[nqcut];
   for(int iq=0;iq<1;iq++){
     cSp[iq] = new TCanvas(Form("cSp%d",iq),Form("cSp%d",iq),1600,1000);
@@ -297,6 +366,19 @@ void GetAccMap(const int dEcut=2)
     q_IMnpipi_Sp_accerr[iq]->SetMaximum(0.5);
     q_IMnpipi_Sp_accerr[iq]->Draw("colz");
     
+    cSpCos[iq] = new TCanvas(Form("cSpCos%d",iq),Form("cSpCos%d",iq),1600,1000);
+    cSpCos[iq]->Divide(2,2);
+    cSpCos[iq]->cd(1);
+    Cosn_IMnpipi_gen_Sp[iq]->Draw("colz");
+    cSpCos[iq]->cd(2);
+    Cosn_IMnpipi_wSid_n_Sp_reco[iq]->Draw("colz");
+    cSpCos[iq]->cd(3);
+    //q_IMnpipi_Sp_acc[iq]->SetMaximum(0.005);
+    Cosn_IMnpipi_Sp_acc[iq]->Draw("colz");
+    cSpCos[iq]->cd(4);
+    Cosn_IMnpipi_Sp_accerr[iq]->SetMaximum(0.5);
+    Cosn_IMnpipi_Sp_accerr[iq]->Draw("colz");
+    
     cSm[iq] = new TCanvas(Form("cSm%d",iq),Form("cSm%d",iq),1600,1000);
     cSm[iq]->Divide(2,2);
     cSm[iq]->cd(1);
@@ -309,6 +391,19 @@ void GetAccMap(const int dEcut=2)
     cSm[iq]->cd(4);
     q_IMnpipi_Sm_accerr[iq]->SetMaximum(0.5);
     q_IMnpipi_Sm_accerr[iq]->Draw("colz");
+    
+    cSmCos[iq] = new TCanvas(Form("cSmCos%d",iq),Form("cSmCos%d",iq),1600,1000);
+    cSmCos[iq]->Divide(2,2);
+    cSmCos[iq]->cd(1);
+    Cosn_IMnpipi_gen_Sm[iq]->Draw("colz");
+    cSmCos[iq]->cd(2);
+    Cosn_IMnpipi_wSid_n_Sm_reco[iq]->Draw("colz");
+    cSmCos[iq]->cd(3);
+    //Cosn_IMnpipi_Sm_acc[iq]->SetMaximum(0.005);
+    Cosn_IMnpipi_Sm_acc[iq]->Draw("colz");
+    cSmCos[iq]->cd(4);
+    Cosn_IMnpipi_Sm_accerr[iq]->SetMaximum(0.5);
+    Cosn_IMnpipi_Sm_accerr[iq]->Draw("colz");
     
     cK0[iq] = new TCanvas(Form("cK0%d",iq),Form("cK0%d",iq),1600,1000);
     cK0[iq]->Divide(2,2);
@@ -350,6 +445,7 @@ void GetAccMap(const int dEcut=2)
   q_IMnpipi_Sp_acc[0]->SetXTitle("IM(#pi^{-}#Sigma^{+}) [GeV/c^{2}]");
   q_IMnpipi_Sp_acc[0]->SetYTitle("q [GeV/c]");
   q_IMnpipi_Sp_acc[0]->GetZaxis()->SetMaxDigits(2);
+  q_IMnpipi_Sp_acc[0]->SetMaximum(q_IMnpipi_Sm_acc[0]->GetMaximum());
   q_IMnpipi_Sp_acc[0]->Draw("colz");
   //TFile *fnuSp = new TFile("NumericalRootFinder_Spmodebin1.root");
   /*
@@ -402,6 +498,10 @@ void GetAccMap(const int dEcut=2)
     q_IMnpipi_Sp_accerr[iq]->Write();
     q_IMnpipi_Sm_acc[iq]->Write();
     q_IMnpipi_Sm_accerr[iq]->Write();
+    Cosn_IMnpipi_Sp_acc[iq]->Write();
+    Cosn_IMnpipi_Sp_accerr[iq]->Write();
+    Cosn_IMnpipi_Sm_acc[iq]->Write();
+    Cosn_IMnpipi_Sm_accerr[iq]->Write();
     q_IMnpipi_K0_acc[iq]->Write();
     q_IMnpipi_K0_accerr[iq]->Write();
   }
