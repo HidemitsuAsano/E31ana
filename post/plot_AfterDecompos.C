@@ -669,8 +669,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
 
 
   //TFile *fnuSp = new TFile("NumericalRootFinder_Spmode.root");
-  TFile *fnuSp = new TFile("../simpost/NumericalRootFinder_fine.root");
-  //TFile *fnuSp = new TFile("../simpost/NumericalRootFinder_fine20.root");
+  //TFile *fnuSp = new TFile("../simpost/NumericalRootFinder_fine.root");
+  TFile *fnuSp = new TFile("../simpost/NumericalRootFinder_fine20.root");
   TMultiGraph *mg = (TMultiGraph*)fnuSp->Get("mg");
   
   TCanvas *cq_IMnpipi_Sp_afterDeco[4];
