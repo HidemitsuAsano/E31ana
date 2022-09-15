@@ -1004,13 +1004,16 @@ void Util::AnaReactionData( ReactionData *reactionData){
   //TL_beam.SetVectM(beammom, 493.677);
   if(reactionID == gen::reactionID_Spmode || gen::reactionID_Smmode){
     TLorentzVector TL_nmiss = reactionData->GetParticle(0);
+    TLorentzVector TL_nmissCM = reactionData->GetCMParticle(0);
     double q = (TL_beam.Vect()-TL_nmiss.Vect()).Mag()/1000.;
     double costhetan = TL_nmiss.CosTheta();//lab frame
+    double costhetanCM = TL_nmissCM.CosTheta();//lab frame
     TLorentzVector TL_Sigma = reactionData->GetParticle(1);
     TLorentzVector TL_piSigma = TL_Sigma + reactionData->GetParticle(2);
     double mass = TL_piSigma.M()/1000.;
     Tools::H2(Form("React_q_IMPiSigma"),mass,q,900,1.2,2.1,300,0,1.5);
-    Tools::H2(Form("React_costhetan_IMPiSigma"),mass,costhetan,900,1.2,2.1,2000,-1.,1.0);
+    Tools::H2(Form("React_costhetan_IMPiSigma"),mass,costhetan,900,1.2,2.1,100,0.,1.0);
+    Tools::H2(Form("React_costhetanCM_IMPiSigma"),mass,costhetanCM,900,1.2,2.1,100,0.,1.0);
     
     /*
     for(int i=0;i<101;i++){

@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="157"
+set Version="158"
 set DSTVersion="29"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/sim${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
@@ -58,7 +58,7 @@ while ($i < 3200)
   echo ${OUTFILESP}
   
   set lognamesp = "${logdir}/runSp$i.log"
-  bsub -o $lognamesp -q s ${EXEC___} ${CONF___} ${OUTFILESP} ${INPFILESP} ${CDSFILESP}
+#  bsub -o $lognamesp -q s ${EXEC___} ${CONF___} ${OUTFILESP} ${INPFILESP} ${CDSFILESP}
 
   echo ${INPFILESM}
   echo ${CDSFILESM} 
