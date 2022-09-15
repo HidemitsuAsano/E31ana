@@ -2910,11 +2910,11 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   q_nmom_wK0_wSid_n->SetXTitle("nmom [GeV/c]");
   q_nmom_wK0_wSid_n->SetYTitle("Mom. Transfer [GeV/c]");
   
-  q_IMnpipi_wK0_wSid_n_SpSm = new TH2F(Form("q_IMnpipi_wK0_wSid_n_SpSm"),Form("q_IMnpipi_wK0_wSid_n_SpSm"), nbinIMnpipi,IMnpipilow,IMnpipihi, nbinq,0,1.5);
+  q_IMnpipi_wK0_wSid_n_SpSm = new TH2F("q_IMnpipi_wK0_wSid_n_SpSm","q_IMnpipi_wK0_wSid_n_SpSm", nbinIMnpipi,IMnpipilow,IMnpipihi, nbinq,0,1.5);
   q_IMnpipi_wK0_wSid_n_SpSm->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   q_IMnpipi_wK0_wSid_n_SpSm->SetYTitle("Mom. Transfer [GeV/c]");
   
-  Cosn_IMnpipi_wK0_wSid_n_SpSm = new TH2F(Form("Cosn_IMnpipi_wK0_wSid_n_SpSm"),Form("Cosn_IMnpipi_wK0_wSid_n_SpSm"), nbinIMnpipi,IMnpipilow,IMnpipihi, nbinq,0,1);
+  Cosn_IMnpipi_wK0_wSid_n_SpSm = new TH2F("Cosn_IMnpipi_wK0_wSid_n_SpSm","Cosn_IMnpipi_wK0_wSid_n_SpSm", nbinIMnpipi,IMnpipilow,IMnpipihi, nbincos,0,1);
   Cosn_IMnpipi_wK0_wSid_n_SpSm->SetXTitle("IM(n#pi^{+}#pi^{-}) [GeV/c^{2}]");
   Cosn_IMnpipi_wK0_wSid_n_SpSm->SetYTitle("Cos#Theta_{CM}");
 
