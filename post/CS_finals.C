@@ -1,3 +1,5 @@
+#include "../src/GlobalVariables.h"
+
 void CS_finals()
 {
   if(gROOT->GetVersionInt() < 60000){
@@ -77,18 +79,79 @@ void CS_finals()
   TCanvas *cqM_Sp[4];
   TCanvas *cqM_Sm[4];
   TCanvas *cqM_K0[4];
+  TFile *fnuSp = new TFile("../simpost/NumericalRootFinder_fine20_Sp.root");
+  TMultiGraph *mgSp = (TMultiGraph*)fnuSp->Get("mg");
+  TGraph *thSp   = (TGraph*)fnuSp->Get("th");
+  TGraph *gr_50   = (TGraph*)fnuSp->Get("gr_50");
+  TGraph *gr_49   = (TGraph*)fnuSp->Get("gr_49");
+  TGraph *gr_48   = (TGraph*)fnuSp->Get("gr_48");
+  TGraph *gr_47   = (TGraph*)fnuSp->Get("gr_47");
+  TGraph *gr_46   = (TGraph*)fnuSp->Get("gr_46");
+  TGraph *gr_45   = (TGraph*)fnuSp->Get("gr_45");
+ 
+  TFile *fnuSm = new TFile("../simpost/NumericalRootFinder_fine20_Sm.root");
+  TMultiGraph *mgSm = (TMultiGraph*)fnuSm->Get("mg");
+  TGraph *thSm   = (TGraph*)fnuSm->Get("th");
+  TGraph *gr_50Sm   = (TGraph*)fnuSm->Get("gr_50");
+  TGraph *gr_49Sm   = (TGraph*)fnuSm->Get("gr_49");
+  TGraph *gr_48Sm   = (TGraph*)fnuSm->Get("gr_48");
+  TGraph *gr_47Sm   = (TGraph*)fnuSm->Get("gr_47");
+  TGraph *gr_46Sm   = (TGraph*)fnuSm->Get("gr_46");
+  TGraph *gr_45Sm   = (TGraph*)fnuSm->Get("gr_45");
+  
+
   for(int iq=0;iq<4;iq++){
     cqM_Sp[iq] = new TCanvas(Form("cqM_Sp%d",iq),Form("cqM_Sp%d",iq),1000,800);
+    cqM_Sp[iq]->SetRightMargin(0.14);
     q_IMnpipi_Sp_cs[iq][0][0]->SetMinimum(0);
-    q_IMnpipi_Sp_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.8);
+    q_IMnpipi_Sp_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.65);
+    q_IMnpipi_Sp_cs[iq][0][0]->GetXaxis()->SetRangeUser(1.3,1.6);
     q_IMnpipi_Sp_cs[iq][0][0]->Draw("colz");
+    //mgSp->Draw("cp");
+    thSp->SetLineColor(1);
+    thSp->Draw("cp");
+    gr_50->Draw("cp");
+    gr_49->Draw("cp");
+    gr_48->Draw("cp");
+    gr_47->Draw("cp");
+    gr_46->Draw("cp");
+    gr_45->Draw("cp");
+    TPaletteAxis *palette = (TPaletteAxis*)q_IMnpipi_Sp_cs[iq][0][0]->GetListOfFunctions()->FindObject("palette");
+    palette->SetX1NDC(0.865);
+    palette->SetX2NDC(0.91);
+    palette->SetY1NDC(0.1);
+    palette->SetY2NDC(0.9);    
+    gPad->Modified();  
+    gPad->Update();  
+
     cqM_Sm[iq] = new TCanvas(Form("cqM_Sm%d",iq),Form("cqM_Sm%d",iq),1000,800);
+    cqM_Sm[iq]->SetRightMargin(0.14);
     q_IMnpipi_Sm_cs[iq][0][0]->SetMinimum(0);
-    q_IMnpipi_Sm_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.8);
+    q_IMnpipi_Sm_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.65);
+    q_IMnpipi_Sm_cs[iq][0][0]->GetXaxis()->SetRangeUser(1.3,1.6);
     q_IMnpipi_Sm_cs[iq][0][0]->Draw("colz");
+    //mgSm->Draw("p");
+    thSm->SetLineColor(1);
+    thSm->Draw("cp");
+    gr_50Sm->Draw("cp");
+    gr_49Sm->Draw("cp");
+    gr_48Sm->Draw("cp");
+    gr_47Sm->Draw("cp");
+    gr_46Sm->Draw("cp");
+    gr_45Sm->Draw("cp");
+    TPaletteAxis *palette2 = (TPaletteAxis*)q_IMnpipi_Sm_cs[iq][0][0]->GetListOfFunctions()->FindObject("palette");
+    palette2->SetX1NDC(0.865);
+    palette2->SetX2NDC(0.91);
+    palette2->SetY1NDC(0.1);
+    palette2->SetY2NDC(0.9);    
+    //palette2->SetY2NDC(0.3);    
+    gPad->Modified();  
+    gPad->Update();  
+
     cqM_K0[iq] = new TCanvas(Form("cqM_K0%d",iq),Form("cqM_K0%d",iq),1000,800);
     q_IMnpipi_K0_cs[iq][0][0]->SetMinimum(0);
-    q_IMnpipi_K0_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.8);
+    q_IMnpipi_K0_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.65);
+    q_IMnpipi_K0_cs[iq][0][0]->GetXaxis()->SetRangeUser(1.3,1.9);
     q_IMnpipi_K0_cs[iq][0][0]->Draw("colz");
   }
 
@@ -890,7 +953,6 @@ void CS_finals()
     gIMnpipi_Sm_cs_Etotal[iq] = new TGraphAsymmErrors(IMnpipi_Sm_cs[iq][0][1]);
     gIMnpipi_Sm_cs_Etotal[iq]->SetName(Form("gIMnpipi_Sm_cs_Etotal%d",iq));
     gIMnpipi_Sm_cs_Etotal[iq]->SetMarkerColor(1);
-    gIMnpipi_Sm_cs_Etotal[iq]->GetXaxis()->SetRangeUser(1.3,1.6);
     gIMnpipi_Sm_cs_Etotal[iq]->SetTitle("");
     gIMnpipi_Sm_cs_Etotal[iq]->GetXaxis()->SetTitle("IM(#pi^{+}#Sigma^{-}) [GeV/c^{2}]");
     gIMnpipi_Sm_cs_Etotal[iq]->GetXaxis()->CenterTitle();
@@ -914,7 +976,8 @@ void CS_finals()
     int diffstart = (start2-start1)/0.015 + 1 ;
     std::cout << diffstart << std::endl;
     
-    const double dx=0.0015;
+    //const double dx=0.0015;
+    const double dx=0.00;
     for(int ip=0;ip<gIMnpipi_Sm_cs_Etotal[iq]->GetN()-diffstart;ip++){
       double x = gIMnpipi_Sm_cs_Etotal[iq]->GetPointX(ip);
       gIMnpipi_Sm_cs_Etotal[iq]->SetPointX(ip,x+dx);
@@ -940,6 +1003,7 @@ void CS_finals()
       gIMnpipi_Sm_cs_Etotal[iq]->SetPointEYlow(ip+diffstart,Elow);
       gIMnpipi_Sm_cs_Etotal[iq]->SetPointEYhigh(ip+diffstart,Ehigh);
     }    
+    gIMnpipi_Sm_cs_Etotal[iq]->GetXaxis()->SetRangeUser(1.3,1.6);
     gIMnpipi_Sm_cs_Etotal[iq]->Draw("ap");
     gMIXErrorSm_CS[iq]->SetFillStyle(3001);
     gMIXErrorSm_CS[iq]->SetFillColor(12);
@@ -1097,25 +1161,147 @@ void CS_finals()
     //p->SetLineWidth(2.0);
     p->SetLineStyle(2);
     p->Draw();
+    TLine *pkp = new TLine(kpMass+pMass,0,kpMass+pMass,3);
+    pkp->SetLineColor(1);
+    pkp->SetLineStyle(2);
+    pkp->Draw();
+    
+    TLine *pk0n = new TLine(k0Mass+nMass,0,k0Mass+nMass,3);
+    pk0n->SetLineColor(1);
+    pk0n->SetLineStyle(2);
+    pk0n->Draw();
+
     //gIMnpipi_Sp_cs_Etotal[iq]->Draw("p");
   }
   cboth[1]->SaveAs("cbothqlow.pdf");
   cboth[2]->SaveAs("cbothqhi.pdf");
 
-  TCanvas *csumqboth = new TCanvas("csumqboth","csumqboth",1100,1100);
-  csumqboth->SetBottomMargin(0.12);
-  csumqboth->SetLeftMargin(0.14);
-  csumqboth->SetRightMargin(0.08);
-  gIMnpipi_SpSmSum_cs_Etotal[1]->Draw("ap");
-  gIMnpipi_SpSmSum_cs_Etotal[2]->Draw("p");
+  
 
+  TCanvas *cboth2[4];
+  for(int iq=1;iq<3;iq++){
+    cboth2[iq] = new TCanvas(Form("cboth2_%d",iq),Form("cboth2_%d",iq),1800,800);
+    cboth2[iq]->SetBottomMargin(0.12);
+    cboth2[iq]->SetLeftMargin(0.14);
+    cboth2[iq]->SetRightMargin(0.08);
+    cboth2[iq]->Divide(2,1,0,0);
+    cboth2[iq]->cd(1);
+    gIMnpipi_Sp_cs_Etotal[iq]->GetXaxis()->SetTitle("IM(#pi^{-}#Sigma^{+}) [GeV/c^{2}]");
+    gIMnpipi_Sp_cs_Etotal[iq]->Draw("ap");
+    gMIXErrorSp_CS[iq]->Draw("5");
+    double uymax = gPad->GetUymax();
+    double uymin = gPad->GetUymin();
+    //double ymax =  gIMnpipi_Sp_cs_Etotal[1]->GetHistogram()->GetMaximum();
+    //double ymin =  gIMnpipi_Sp_cs_Etotal[1]->GetHistogram()->GetMinimum();
+    double ymax =  gIMnpipi_Sp_cs_Etotal[iq]->GetHistogram()->GetMaximum();
+    double ymin =  gIMnpipi_Sp_cs_Etotal[1]->GetHistogram()->GetMinimum();
+    gIMnpipi_Sp_cs_Etotal[iq]->GetHistogram()->SetMaximum(ymax);
+    gIMnpipi_Sp_cs_Etotal[iq]->GetHistogram()->SetMinimum(ymin);
+    if(iq==1){
+      gr_S1385_ToSqlow->SetLineColor(5);
+      gr_S1385_ToSqlow->SetFillStyle(3002);
+      gr_S1385_ToSqlow->SetFillColor(0);
+      gr_S1385_ToSqlow->Draw("5");
+    }
+    if(iq==2){
+      gr_S1385_ToSqhi->SetLineColor(5);
+      gr_S1385_ToSqhi->SetFillStyle(3002);
+      gr_S1385_ToSqhi->SetFillColor(0);
+      gr_S1385_ToSqhi->Draw("5");
+    }
+    TLine *p = new TLine(1.29,0,1.605,0);
+    p->SetLineColor(1);
+    //p->SetLineWidth(2.0);
+    p->SetLineStyle(2);
+    p->Draw();
+    TLine *pkp = new TLine(kpMass+pMass,0,kpMass+pMass,3);
+    pkp->SetLineColor(1);
+    pkp->SetLineStyle(2);
+    pkp->Draw();
+    
+    TLine *pk0n = new TLine(k0Mass+nMass,0,k0Mass+nMass,3);
+    pk0n->SetLineColor(1);
+    pk0n->SetLineStyle(2);
+    pk0n->Draw();
+
+    cboth2[iq]->cd(2);
+    //gPad->SetUymax(uymax);
+    //gPad->SetUymin(uymin);
+    gIMnpipi_Sm_cs_Etotal[iq]->GetXaxis()->SetTitleSize(0.04);
+    gIMnpipi_Sm_cs_Etotal[iq]->GetYaxis()->SetTitleSize(0.04);
+    gIMnpipi_Sm_cs_Etotal[iq]->GetXaxis()->SetTitleOffset(1.4);
+    gIMnpipi_Sm_cs_Etotal[iq]->GetYaxis()->SetTitleOffset(1.6);
+    gIMnpipi_Sm_cs_Etotal[iq]->GetHistogram()->SetMaximum(ymax);
+    gIMnpipi_Sm_cs_Etotal[iq]->GetHistogram()->SetMinimum(ymin);
+    //gIMnpipi_Sm_cs_Etotal[iq]->GetYaxis()->SetRangeUser(uymin,uymax);
+    gIMnpipi_Sm_cs_Etotal[iq]->Draw("ap");
+    gMIXErrorSm_CS[iq]->Draw("5");
+    if(iq==1){
+      gr_S1385_ToSqlow->SetLineColor(5);
+      gr_S1385_ToSqlow->SetFillStyle(3002);
+      gr_S1385_ToSqlow->SetFillColor(0);
+      gr_S1385_ToSqlow->Draw("5");
+    }
+    if(iq==2){
+      gr_S1385_ToSqhi->SetLineColor(5);
+      gr_S1385_ToSqhi->SetFillStyle(3002);
+      gr_S1385_ToSqhi->SetFillColor(0);
+      gr_S1385_ToSqhi->Draw("5");
+    }
+    p->Draw();
+    pkp->Draw();
+    pk0n->Draw();
+    //gIMnpipi_Sp_cs_Etotal[iq]->Draw("p");
+  }
+
+
+  std::cout << "k-p mass " <<   kpMass+pMass << std::endl;
+  std::cout << "k0n mass " <<   k0Mass+nMass << std::endl;
+  TCanvas *csumqboth = new TCanvas("csumqboth","csumqboth",1800,800);
+  csumqboth->Divide(2,1,0,0);
+  csumqboth->cd(1);
+  csumqboth->SetBottomMargin(0.12);
+  csumqboth->SetLeftMargin(0.25);
+  csumqboth->SetRightMargin(0.08);
+  gIMnpipi_SpSmSum_cs_Etotal[1]->GetXaxis()->SetTitle("IM(#pi^{#pm}#Sigma^{#mp}) [GeV/c^{2}]");
+  gIMnpipi_SpSmSum_cs_Etotal[1]->GetXaxis()->SetTitleSize(0.04);
+  gIMnpipi_SpSmSum_cs_Etotal[1]->GetYaxis()->SetTitleSize(0.04);
+  gIMnpipi_SpSmSum_cs_Etotal[1]->GetXaxis()->SetTitleOffset(1.2);
+  gIMnpipi_SpSmSum_cs_Etotal[1]->GetYaxis()->SetTitleOffset(1.3);
+  gIMnpipi_SpSmSum_cs_Etotal[2]->GetXaxis()->SetTitleSize(0.04);
+  gIMnpipi_SpSmSum_cs_Etotal[2]->GetYaxis()->SetTitleSize(0.04);
+  gIMnpipi_SpSmSum_cs_Etotal[2]->GetXaxis()->SetTitleOffset(1.2);
+  gIMnpipi_SpSmSum_cs_Etotal[1]->Draw("ap");
+  gMIXErrorSpSm_CS[1]->Draw("5");
+  gr_S1385_ToSqlowSum->Draw("5");
   TLine *p = new TLine(1.29,0,1.605,0);
   p->SetLineColor(1);
   //p->SetLineWidth(2.0);
   p->SetLineStyle(2);
   p->Draw();
+  TLine *pkp = new TLine(kpMass+pMass,0,kpMass+pMass,3);
+  pkp->SetLineColor(1);
+  pkp->SetLineStyle(2);
+  pkp->Draw();
 
+  TLine *pk0n = new TLine(k0Mass+nMass,0,k0Mass+nMass,3);
+  pk0n->SetLineColor(1);
+  pk0n->SetLineStyle(2);
+  pk0n->Draw();
+  double ymax =  gIMnpipi_SpSmSum_cs_Etotal[1]->GetHistogram()->GetMaximum();
+  double ymin =  gIMnpipi_SpSmSum_cs_Etotal[1]->GetHistogram()->GetMinimum();
+  csumqboth->cd(2);
+  gIMnpipi_SpSmSum_cs_Etotal[2]->GetHistogram()->SetMaximum(ymax);
+  gIMnpipi_SpSmSum_cs_Etotal[2]->GetHistogram()->SetMinimum(ymin);
+  gIMnpipi_SpSmSum_cs_Etotal[2]->GetXaxis()->SetTitle("IM(#pi^{#pm}#Sigma^{#mp}) [GeV/c^{2}]");
+  gIMnpipi_SpSmSum_cs_Etotal[2]->Draw("ap");
+  gMIXErrorSpSm_CS[2]->Draw("5");
+  gr_S1385_ToSqhiSum->Draw("5");
+  p->Draw();
 
+  pkp->Draw();
+
+  pk0n->Draw();
 
 
 

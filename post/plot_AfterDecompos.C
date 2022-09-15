@@ -33,7 +33,7 @@ const double UncertCut = 0.25;
 
 #include "../src/GlobalVariables.h"
 
-bool SetMinimum0=true;
+bool SetMinimum0=false;
 
 const int Version = 245;
 const int versionSigma = 156;//SIM version
@@ -49,7 +49,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   gROOT->SetBatch();
 
   TFile *fr[4] = {NULL};
-  //Because the statistics is limited, we divide data into q<0.35 and q>0.35 and decompose K0 & Sigma+ & Simga- 
+  //Because the statistics is limited, we divide data into q<qcut and q>qcut and decompose K0 & Sigma+ & Simga- 
   fr[0] = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop_sys%d_sub.root",Version,dEcut,sysud),"READ");
   fr[1] = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_qlo_nostop_sys%d_sub.root",Version,dEcut,sysud),"READ");
   fr[2] = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_qhi_nostop_sys%d_sub.root",Version,dEcut,sysud),"READ");
@@ -297,14 +297,14 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
       //std::cout << "bin high " <<  spbinhi[iwbin-1][iq] << std::endl;
 
       double NevtWide=0.0;
-      const int q350bin = q_IMnpipi_wK0_wSid_n_Sp[iq]->GetYaxis()->FindBin(0.35);
+      const int qcutbin = q_IMnpipi_wK0_wSid_n_Sp[iq]->GetYaxis()->FindBin(anacuts::qvalcut);
       for(int iwbin=1;iwbin<nwbin;iwbin++){
         int wbinl = q_IMnpipi_K0orSp_ToSp[iq][isys]->GetXaxis()->FindBin(wbinlow[iwbin]);
         int wbinh = q_IMnpipi_K0orSp_ToSp[iq][isys]->GetXaxis()->FindBin(wbinhigh[iwbin]);
         for(int ix=wbinl;ix<wbinh;ix++){
           for(int iqbin=0;iqbin<q_IMnpipi_wK0_wSid_n_Sp[iq]->GetNbinsY();iqbin++){
             int qlowhigh = 0;
-            if(q350bin <= iqbin ) qlowhigh=1;
+            if(qcutbin <= iqbin ) qlowhigh=1;
             double nevt = q_IMnpipi_wK0_wSid_n_Sp[iq]->GetBinContent(ix,iqbin);
             double err = q_IMnpipi_wK0_wSid_n_Sp[iq]->GetBinError(ix,iqbin);
             double ToSp =0.0;
@@ -353,13 +353,13 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
         int wbinh = q_IMnpipi_K0orSm_ToSm[iq][isys]->GetXaxis()->FindBin(wbinhigh[iwbin]);
         std::cout << wbinl << "  " << wbinh << std::endl;
         double NevtWide=0.0;
-        const int q350bin = q_IMnpipi_wK0_wSid_n_Sm[iq]->GetYaxis()->FindBin(0.35);
+        const int qcutbin = q_IMnpipi_wK0_wSid_n_Sm[iq]->GetYaxis()->FindBin(anacuts::qvalcut);
         for(int ix=wbinl;ix<wbinh;ix++){
           for(int iqbin=0;iqbin<q_IMnpipi_wK0_wSid_n_Sm[iq]->GetNbinsY();iqbin++){
             double nevt = q_IMnpipi_wK0_wSid_n_Sm[iq]->GetBinContent(ix,iqbin);
             double nerr = q_IMnpipi_wK0_wSid_n_Sm[iq]->GetBinError(ix,iqbin);
             int qlowhigh = 0;
-            if(q350bin <= iqbin ) qlowhigh=1;
+            if(qcutbin <= iqbin ) qlowhigh=1;
             double ToSm = 0.0;
             double ToK0 = 0.0;
             double ToSmerr = 0.0;
@@ -472,9 +472,9 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
         for(int iqbin=0;iqbin<q_IMnpipi_SporSm_ToSp[iq][isys]->GetNbinsY();iqbin++){
           double evt = q_IMnpipi_SporSm_ToSp[iq][isys]->GetBinContent(ibin,iqbin);
           double err = q_IMnpipi_SporSm_ToSp[iq][isys]->GetBinError(ibin,iqbin);
-          const int q350bin = q_IMnpipi_SporSm_ToSp[iq][isys]->GetYaxis()->FindBin(0.35);
+          const int qcutbin = q_IMnpipi_SporSm_ToSp[iq][isys]->GetYaxis()->FindBin(anacuts::qvalcut);
           int qlowhigh = 0;
-          if(q350bin <= iqbin ) qlowhigh=1;
+          if(qcutbin <= iqbin ) qlowhigh=1;
           if((nSp_SporSm[qlowhigh][isys]+nSm_SporSm[qlowhigh][isys])>0.0){
             double evtToSp = evt*nSp_SporSm[qlowhigh][isys]/(nSp_SporSm[qlowhigh][isys]+nSm_SporSm[qlowhigh][isys]);
             double evtToSm = evt*nSm_SporSm[qlowhigh][isys]/(nSp_SporSm[qlowhigh][isys]+nSm_SporSm[qlowhigh][isys]);
@@ -576,8 +576,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
           double cont = q_IMnpipi_wK0_wSid_n_SpSm[iq]->GetBinContent(ix,iy);
           double err = q_IMnpipi_wK0_wSid_n_SpSm[iq]->GetBinError(ix,iy);
           int qlowhi = 0;
-          const int q350bin = q_IMnpipi_wK0_wSid_n_SpSm[iq]->GetYaxis()->FindBin(0.35);
-          if(q350bin <= iy ) qlowhi=1;
+          const int qcutbin = q_IMnpipi_wK0_wSid_n_SpSm[iq]->GetYaxis()->FindBin(anacuts::qvalcut);
+          if(qcutbin <= iy ) qlowhi=1;
           double ToK0 = cont*OverlapToK0[qlowhi][isys]/(OverlapToSp[qlowhi][isys]+OverlapToSm[qlowhi][isys]+OverlapToK0[qlowhi][isys]);
           double ToK0err = err*OverlapToK0[qlowhi][isys]/(OverlapToSp[qlowhi][isys]+OverlapToSm[qlowhi][isys]+OverlapToK0[qlowhi][isys]);
           q_IMnpipi_K0SpSm_ToK0[iq][isys]->SetBinContent(ix,iy,ToK0);
@@ -905,8 +905,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   TH2D* q_IMnpipi_Sp_cserr[4][3];//iq,isys
   TH2D* q_IMnpipi_Sm_cserr[4][3];//iq,isys
   TH2D* q_IMnpipi_K0_cserr[4][3];//iq,isys
-  const int qcut350 =q_IMnpipi_Sp_sum[0][1]->GetYaxis()->FindBin(0.35);
-  const int qcut600 =q_IMnpipi_Sp_sum[0][1]->GetYaxis()->FindBin(0.60);
+  const int qcutMAX =q_IMnpipi_Sp_sum[0][1]->GetYaxis()->FindBin(anacuts::qvalMAX);
   for(int iq=0;iq<4;iq++){
     for(int isys=0;isys<3;isys++){
       q_IMnpipi_Sp_cs[iq][isys] = (TH2D*)q_IMnpipi_Sp_sum[iq][isys]->Clone(Form("q_IMnpipi_Sp_cs%d_sys%d",iq,isys-1));
@@ -972,7 +971,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
             q_IMnpipi_Sp_cserr[iq][isys]->SetBinError(ix,iy,0.);
           }
         
-          if(iy>qcut600){
+          if(iy>qcutMAX){
             q_IMnpipi_Sp_cs[iq][isys]->SetBinContent(ix,iy,0.);
             q_IMnpipi_Sp_cs[iq][isys]->SetBinError(ix,iy,0.);
             q_IMnpipi_Sp_cserr[iq][isys]->SetBinContent(ix,iy,0.);
@@ -987,7 +986,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
             q_IMnpipi_Sm_cs[iq][isys]->SetBinError(ix,iy,0.);
           }
         
-          if(iy>qcut600){
+          if(iy>qcutMAX){
             q_IMnpipi_Sm_cs[iq][isys]->SetBinContent(ix,iy,0.);
             q_IMnpipi_Sm_cs[iq][isys]->SetBinError(ix,iy,0.);
             q_IMnpipi_Sm_cserr[iq][isys]->SetBinContent(ix,iy,0.);
@@ -1003,7 +1002,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
             q_IMnpipi_K0_cs[iq][isys]->SetBinError(ix,iy,0.);
           }
         
-          if(iy>qcut600){
+          if(iy>qcutMAX){
             q_IMnpipi_K0_cs[iq][isys]->SetBinContent(ix,iy,0.);
             q_IMnpipi_K0_cs[iq][isys]->SetBinError(ix,iy,0.);
             q_IMnpipi_K0_cserr[iq][isys]->SetBinContent(ix,iy,0.);
@@ -1037,7 +1036,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     
     double binwidthq = q_IMnpipi_Sp_cs[iq][1]->ProjectionY()->GetBinWidth(1)*1000.0;
     for(int isys=0;isys<3;isys++){
-      IMnpipi_Sp_cs_single[iq][isys]= (TH1D*)q_IMnpipi_Sp_cs[iq][isys]->ProjectionX(Form("IMnpipi_Sp_cs_single%d_sys%d",iq,isys-1),1,qcut600);
+      IMnpipi_Sp_cs_single[iq][isys]= (TH1D*)q_IMnpipi_Sp_cs[iq][isys]->ProjectionX(Form("IMnpipi_Sp_cs_single%d_sys%d",iq,isys-1),1,qcutMAX-1);
       IMnpipi_Sp_cs_single[iq][isys]->SetYTitle("d#sigma/dM [#mub /(MeV/c^{2})]");
       IMnpipi_Sp_cs_single[iq][isys]->GetYaxis()->CenterTitle();
       IMnpipi_Sp_cs_single[iq][isys]->Scale(binwidthq);
@@ -1055,7 +1054,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     q_IMnpipi_Sm_cserr[iq][1]->Draw("colz");
     
     for(int isys=0;isys<3;isys++){
-      IMnpipi_Sm_cs_single[iq][isys]= (TH1D*)q_IMnpipi_Sm_cs[iq][isys]->ProjectionX(Form("IMnpipi_Sm_cs_single%d_sys%d",iq,isys-1),1,qcut600);
+      IMnpipi_Sm_cs_single[iq][isys]= (TH1D*)q_IMnpipi_Sm_cs[iq][isys]->ProjectionX(Form("IMnpipi_Sm_cs_single%d_sys%d",iq,isys-1),1,qcutMAX-1);
       IMnpipi_Sm_cs_single[iq][isys]->SetYTitle("d#sigma/dM [#mub /(MeV/c^{2})]");
       IMnpipi_Sm_cs_single[iq][isys]->GetYaxis()->CenterTitle();
       IMnpipi_Sm_cs_single[iq][isys]->Scale(binwidthq);
@@ -1073,7 +1072,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     q_IMnpipi_K0_cserr[iq][1]->Draw("colz");
 
     for(int isys=0;isys<3;isys++){
-      IMnpipi_K0_cs_single[iq][isys]= (TH1D*)q_IMnpipi_K0_cs[iq][isys]->ProjectionX(Form("IMnpipi_K0_cs_single%d_sys%d",iq,isys-1),1,qcut600);
+      IMnpipi_K0_cs_single[iq][isys]= (TH1D*)q_IMnpipi_K0_cs[iq][isys]->ProjectionX(Form("IMnpipi_K0_cs_single%d_sys%d",iq,isys-1),1,qcutMAX-1);
       IMnpipi_K0_cs_single[iq][isys]->SetYTitle("d#sigma/dM [#mub /(MeV/c^{2})]");
       IMnpipi_K0_cs_single[iq][isys]->GetYaxis()->CenterTitle();
       IMnpipi_K0_cs_single[iq][isys]->Scale(binwidthq);
@@ -1164,7 +1163,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
       q_IMnpipi_SpSmSum[iq][isys] = (TH2D*)q_IMnpipi_Sp_cs[iq][isys]->Clone(Form("q_IMnpipi_SpSmSum%d_sys%d",iq,isys-1));
       q_IMnpipi_SpSmSum[iq][isys]->Add(q_IMnpipi_Sm_cs[iq][isys],1.0);
       q_IMnpipi_SpSmSum[iq][isys]->SetTitle(Form("q_IMnpipi_SpSmSum_%s_sys%d",cqcut[iq],isys-1));
-      IMnpipi_SpSmSum[iq][isys] = (TH1D*)q_IMnpipi_SpSmSum[iq][isys]->ProjectionX(Form("IMnpipi_SpSmSum%d_sys%d",iq,isys-1),1,qcut600);
+      IMnpipi_SpSmSum[iq][isys] = (TH1D*)q_IMnpipi_SpSmSum[iq][isys]->ProjectionX(Form("IMnpipi_SpSmSum%d_sys%d",iq,isys-1),1,qcutMAX-1);
       double binwidthq = q_IMnpipi_SpSmSum[iq][isys]->ProjectionY()->GetBinWidth(1)*1000.0;
       IMnpipi_SpSmSum[iq][isys]->Scale(binwidthq);
     }
@@ -1221,7 +1220,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   q_IMnpipi_SpSmSub[1][1]->SetTitle("q_IMnpipi_SpSmSub");
   q_IMnpipi_SpSmSub[1][1]->Draw("colz");
   csub->cd(2);
-  q_IMnpipi_SpSmSub[1][1]->ProjectionX("sum_px",1,qcut600)->Draw("E");
+  q_IMnpipi_SpSmSub[1][1]->ProjectionX("sum_px",1,qcutMAX-1)->Draw("E");
    
   TCanvas *ccomp[4];//iq,isys
   TH1D* IMnpipi_Sp_cs[4][3];

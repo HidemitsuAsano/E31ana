@@ -1,5 +1,6 @@
 #include <cmath>
 #include <iostream>
+#include "anacuts.h"
 
 Double_t FormP(Double_t *x,Double_t *par)
 {
@@ -155,10 +156,10 @@ void FitCslpim()
   cfittest->cd(1);
   const int binx1320 = CS_sum_fit->GetXaxis()->FindBin(1.32);
   const int binx1440 = CS_sum_fit->GetXaxis()->FindBin(1.44);
-  const int biny350 = CS_sum_fit->GetYaxis()->FindBin(0.35);
-  const int biny650 = CS_sum_fit->GetYaxis()->FindBin(0.65);
+  const int biny350 = CS_sum_fit->GetYaxis()->FindBin(anacuts::qvalcut);
+  const int biny650 = CS_sum_fit->GetYaxis()->FindBin(anacuts::qvalMAX);
   TH1D* CS_sum_fit_px = (TH1D*)CS_sum_fit->ProjectionX("CS_sum_fit_cut_px",biny350,biny650-1);
-  CS_sum_fit_px->SetTitle("projection q: 350-650");
+  CS_sum_fit_px->SetTitle("projection q: 300-650");
   CS_sum_fit_px->GetXaxis()->SetRangeUser(1.2,1.6);
   CS_sum_fit_px->Draw("HE");
   f2hist->SetFillColor(0);
@@ -248,8 +249,8 @@ void FitCslpim()
   f3hist_py2->Scale(binwidth_q);
   CS_q_all->Draw("E");
   f3hist_py2->Draw("same");
-  const int binq350 = f3hist_py2->FindBin(0.35);
-  const int binq650 = f3hist_py2->FindBin(0.65);
+  const int binq350 = f3hist_py2->FindBin(anacuts::qvalcut);
+  const int binq650 = f3hist_py2->FindBin(anacuts::qvalMAX);
   std::cout << f3hist_py2->Integral(binq350,binq650)  << std::endl;
   std::cout << f3hist_py2->Integral(1,binq350) << std::endl;
   
@@ -298,8 +299,8 @@ void FitCslpim()
   TH2F* CS_sum_nofit = (TH2F*)CS_sum->Clone("CS_sum_nofit");
   CS_sum_nofit->SetName("CS_sum_nofit");
   const int binq200nofit = CS_sum_nofit->GetYaxis()->FindBin(0.20);
-  const int binq350nofit = CS_sum_nofit->GetYaxis()->FindBin(0.35);
-  const int binq650nofit = CS_sum_nofit->GetYaxis()->FindBin(0.65);
+  const int binq350nofit = CS_sum_nofit->GetYaxis()->FindBin(anacuts::qvalcut);
+  const int binq650nofit = CS_sum_nofit->GetYaxis()->FindBin(anacuts::qvalMAX);
   const int binM1440  = CS_sum_nofit->GetXaxis()->FindBin(1.440);
   const double br_s1385ToLambdapi = 0.87;
   const double br_s1385TopiSigma = 0.117;
@@ -408,12 +409,12 @@ void FitCslpim()
   std::cout << __LINE__ << std::endl;
   gr_accpro[0]->Print();gr_CS_M_measured[0]->Print();
   TGraphAsymmErrors *gr_M_qlow = new TGraphAsymmErrors(CS_M_measured[0]);//divided by M
-  TGraphAsymmErrors *gr_M_qhi = new TGraphAsymmErrors(CS_M_measured[7]);//divided by M
+  TGraphAsymmErrors *gr_M_qhi = new TGraphAsymmErrors(CS_M_measured[6]);//divided by M
   gr_M_qlow->SetName("gr_M_qlow");  
   gr_M_qhi->SetName("gr_M_qhi");  
   
   for(int ip=0;ip<gr_M_qlow->GetN();ip++){
-    for(int iqbin=1;iqbin<7;iqbin++){
+    for(int iqbin=1;iqbin<6;iqbin++){
       double yh = gr_M_qlow->GetErrorYhigh(ip);
       double yl = gr_M_qlow->GetErrorYlow(ip);
       double y = gr_M_qlow->GetPointY(ip);
@@ -428,7 +429,7 @@ void FitCslpim()
 
   
   for(int ip=0;ip<gr_M_qhi->GetN();ip++){
-    for(int iqbin=8;iqbin<13;iqbin++){
+    for(int iqbin=7;iqbin<13;iqbin++){
       double yh = gr_M_qhi->GetErrorYhigh(ip);
       double yl = gr_M_qhi->GetErrorYlow(ip);
       double y = gr_M_qhi->GetPointY(ip);
@@ -483,7 +484,7 @@ void FitCslpim()
   
   
   TH1D* CS_M_qlowErr = (TH1D*) CS_M_fit[5]->Clone("CS_M_qlowerr");
-  CS_M_qlowErr->Add(CS_M_fit[6]);
+  //CS_M_qlowErr->Add(CS_M_fit[6]);
   //CS_M_qlowErr->Draw("same");
   
   TGraphAsymmErrors *gr_M_qlowErr = new TGraphAsymmErrors(CS_M_qlowErr);//divided by M
@@ -558,8 +559,8 @@ void FitCslpim()
   gr_M_qhi->GetYaxis()->CenterTitle();
   gr_M_qhi->Draw("AP");  
   
-  TH1D* CS_M_qhiErr = (TH1D*) CS_M_fit[7]->Clone("CS_M_qhierr");
-  for(int iq=8;iq<13;iq++){
+  TH1D* CS_M_qhiErr = (TH1D*) CS_M_fit[6]->Clone("CS_M_qhierr");
+  for(int iq=7;iq<13;iq++){
     CS_M_qhiErr->Add(CS_M_fit[iq]);
   }
   //CS_M_qhiErr->Draw("same");

@@ -69,7 +69,8 @@ namespace anacuts {
   const double Sigmam_sidehigh_center = (Sigmam_sidehigh_MAX + Sigmam_sidehigh_MIN)/2.0;
 
 
-  const double qvalcut = 0.35; 
+  const double qvalcut = 0.30; 
+  const double qvalMAX = 0.65; 
   
   
   

@@ -44,11 +44,11 @@ int NumericalRootFinder()
   const double COS_MAX = 1;
   const int    COS_BIN = 100;
 
-  const double M_MIN = piSp_mass;
-  //const double M_MIN = piSm_mass;
+  //const double M_MIN = piSp_mass;
+  const double M_MIN = piSm_mass;
   //const double M_MIN = K0n_mass;
   const double M_MAX = sys.M()-n_mass+0.00001;
-  const int    M_BIN = 1000;
+  const int    M_BIN = 100;
   cerr<<M_MIN<<" "<<M_MAX<<endl;
   
   double value[2][COS_BIN+1][M_BIN]; //[m,q][][]
@@ -98,8 +98,8 @@ int NumericalRootFinder()
     sprintf(com, "gr_%d", i);
     gr[i]->SetName(com);
     gr[i]->SetLineColor(1);
-    gr[i]->SetLineWidth(4);
-    gr[i]->SetLineStyle(10);
+    gr[i]->SetLineWidth(3);
+    gr[i]->SetLineStyle(2);
     mg->Add(gr[i]);
   }
 
@@ -119,7 +119,7 @@ int NumericalRootFinder()
   }
   gr_th->Draw("same");
 
-  TFile *out = new TFile("NumericalRootFinder_fine.root", "recreate");
+  TFile *out = new TFile("NumericalRootFinder_fine100_Sm.root", "recreate");
   for( int i=0; i<COS_BIN+1; i++ ){
     gr[i]->Write();
   }
