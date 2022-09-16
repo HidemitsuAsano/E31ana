@@ -5028,7 +5028,8 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
 
     if( (qkn.P()>=anacuts::qvalcut) && (qvalcutflag==1) ) continue;
     if( (qkn.P()<anacuts::qvalcut) && (qvalcutflag==2) ) continue;
-
+    
+    if(qkn.P()>anacut::qvalMAX) continue;
 
     if( (*LVec_n).P()<anacuts::nmomcut) continue;
     if(RejectStoppedSigma){
