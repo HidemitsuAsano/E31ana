@@ -1366,7 +1366,11 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   }
   
   std::cout << __LINE__ << std::endl;
-
+  if(SetMinimum0){
+    std::cout << "SetMinimum = 0 !!! cross section won't be wrote in file " << std::endl;
+    std::cout << "return " << std::endl;
+    return;
+  }
   TFile* fout = new TFile(Form("cs_pisigma_v%d_dE%d_sys%d.root",Version,dEcut,sysud),"RECREATE");
   fout->Print();
   fout->cd();
