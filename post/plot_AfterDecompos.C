@@ -661,7 +661,6 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
 
 
 
-
   TCanvas *cIMnpipi_SpSm_decosys[4];
   for(int iq=0;iq<4;iq++){
     cIMnpipi_SpSm_decosys[iq] = new TCanvas(Form("cIMnpipi_SpSm_decosys_%d",iq),Form("cIMnpipi_SpSm_decosys_%d",iq),1000,800);
@@ -695,7 +694,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   }
   std::cout << __LINE__ << std::endl;
 
-  //treatment of K0 & Sigma+ & Sigma- overlap
+  //treatment of K0 & Sigma+ & Sigma- triple overlap
   TH2D* q_IMnpipi_K0SpSm_ToK0[4][3];
   TH2D* q_IMnpipi_K0SpSm_ToSp[4][3];
   TH2D* q_IMnpipi_K0SpSm_ToSm[4][3];
@@ -765,6 +764,12 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     }//isys
   }//iq
 
+
+
+
+
+
+
   TCanvas *cK0SpSm[4];
   for(int iq=0;iq<4;iq++){
     cK0SpSm[iq] = new TCanvas(Form("cK0SpSm%d",iq),Form("cK0SpSm%d",iq));
@@ -785,6 +790,9 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     lo->Draw();
   }
 
+  TH2D* Cosn_IMnpipi_K0SpSm_ToK0[4][3];
+  TH2D* Cosn_IMnpipi_K0SpSm_ToSp[4][3];
+  TH2D* Cosn_IMnpipi_K0SpSm_ToSm[4][3];
 
   //TFile *fnuSp = new TFile("NumericalRootFinder_Spmode.root");
   //TFile *fnuSp = new TFile("../simpost/NumericalRootFinder_fine.root");
