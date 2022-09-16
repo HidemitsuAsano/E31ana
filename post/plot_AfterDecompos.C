@@ -764,12 +764,6 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     }//isys
   }//iq
 
-
-
-
-
-
-
   TCanvas *cK0SpSm[4];
   for(int iq=0;iq<4;iq++){
     cK0SpSm[iq] = new TCanvas(Form("cK0SpSm%d",iq),Form("cK0SpSm%d",iq));
@@ -789,10 +783,57 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     lo->AddEntry(IMnpipi_K0SpSm_ToSm[iq][1],"To Sm mode","l");
     lo->Draw();
   }
+  
+  //treatment of K0 & Sigma+ & Sigma- triple overlap
+  //same ratio with q vs M 
+  TH2D* Cosn_IMnpipi_K0SpSm_ToK0[2][3];//qlow-high, isys
+  TH2D* Cosn_IMnpipi_K0SpSm_ToSp[2][3];//qlow-high, isys
+  TH2D* Cosn_IMnpipi_K0SpSm_ToSm[2][3];//qlow-high, isys
 
-  TH2D* Cosn_IMnpipi_K0SpSm_ToK0[4][3];
-  TH2D* Cosn_IMnpipi_K0SpSm_ToSp[4][3];
-  TH2D* Cosn_IMnpipi_K0SpSm_ToSm[4][3];
+  for(int iqlowhi=0;iqlowhi<2;iqlowhi++){
+    for(int isys=0;isys<3;isys++){
+      Cosn_IMnpipi_K0SpSm_ToK0[iq][isys] = (TH2D*)Cosn_IMnpipi_wK0_wSid_n_SpSm[iq]->Clone(Form("q_IMnpipi_K0SpSm_ToK0%d",iq));
+      Cosn_IMnpipi_K0SpSm_ToSp[iq][isys] = (TH2D*)Cosn_IMnpipi_wK0_wSid_n_SpSm[iq]->Clone(Form("q_IMnpipi_K0SpSm_ToSp%d",iq));
+      Cosn_IMnpipi_K0SpSm_ToSm[iq][isys] = (TH2D*)Cosn_IMnpipi_wK0_wSid_n_SpSm[iq]->Clone(Form("q_IMnpipi_K0SpSm_ToSm%d",iq));
+      Cosn_IMnpipi_K0SpSm_ToK0[iq][isys]->Reset();
+      Cosn_IMnpipi_K0SpSm_ToSp[iq][isys]->Reset();
+      Cosn_IMnpipi_K0SpSm_ToSm[iq][isys]->Reset();
+      int wbinl = q_IMnpipi_K0SpSm_ToK0[iq][isys]->GetXaxis()->FindBin(wbinlow[1]);//1.40
+      int wbinh = q_IMnpipi_K0SpSm_ToK0[iq][isys]->GetXaxis()->FindBin(wbinhigh[1]);//1.52
+      for(int ix=wbinl;ix<wbinh;ix++){
+        for(int iy=0;iy<q_IMnpipi_wK0_wSid_n_SpSm[iq]->GetNbinsY();iy++){
+          double cont = q_IMnpipi_wK0_wSid_n_SpSm[iq]->GetBinContent(ix,iy);
+          double err = q_IMnpipi_wK0_wSid_n_SpSm[iq]->GetBinError(ix,iy);
+          int qlowhi = 0;
+          const int qcutbin = q_IMnpipi_wK0_wSid_n_SpSm[iq]->GetYaxis()->FindBin(anacuts::qvalcut);
+          if(qcutbin <= iy ) qlowhi=1;
+          double ToK0 = cont*OverlapToK0[qlowhi][isys]/(OverlapToSp[qlowhi][isys]+OverlapToSm[qlowhi][isys]+OverlapToK0[qlowhi][isys]);
+          double ToK0err = err*OverlapToK0[qlowhi][isys]/(OverlapToSp[qlowhi][isys]+OverlapToSm[qlowhi][isys]+OverlapToK0[qlowhi][isys]);
+          q_IMnpipi_K0SpSm_ToK0[iq][isys]->SetBinContent(ix,iy,ToK0);
+          q_IMnpipi_K0SpSm_ToK0[iq][isys]->SetBinError(ix,iy,ToK0err);
+          
+          double ToSp = cont*OverlapToSp[qlowhi][isys]/(OverlapToSp[qlowhi][isys]+OverlapToSm[qlowhi][isys]+OverlapToK0[qlowhi][isys]);
+          double ToSperr = err*OverlapToSp[qlowhi][isys]/(OverlapToSp[qlowhi][isys]+OverlapToSm[qlowhi][isys]+OverlapToK0[qlowhi][isys]);
+          q_IMnpipi_K0SpSm_ToSp[iq][isys]->SetBinContent(ix,iy,ToSp);
+          q_IMnpipi_K0SpSm_ToSp[iq][isys]->SetBinError(ix,iy,ToSperr);
+          
+          double ToSm = cont*OverlapToSm[qlowhi][isys]/(OverlapToSp[qlowhi][isys]+OverlapToSm[qlowhi][isys]+OverlapToK0[qlowhi][isys]);
+          double ToSmerr = err*OverlapToSm[qlowhi][isys]/(OverlapToSp[qlowhi][isys]+OverlapToSm[qlowhi][isys]+OverlapToK0[qlowhi][isys]);
+          q_IMnpipi_K0SpSm_ToSm[iq][isys]->SetBinContent(ix,iy,ToSm);
+          q_IMnpipi_K0SpSm_ToSm[iq][isys]->SetBinError(ix,iy,ToSmerr);
+        }//iy
+      }//ix
+      IMnpipi_K0SpSm_ToK0[iq][isys] = (TH1D*)q_IMnpipi_K0SpSm_ToK0[iq][isys]->ProjectionX(Form("IMnpipi_K0SpSm_ToK0_%d_sys%d",iq,isys));
+      IMnpipi_K0SpSm_ToSp[iq][isys] = (TH1D*)q_IMnpipi_K0SpSm_ToSp[iq][isys]->ProjectionX(Form("IMnpipi_K0SpSm_ToSp_%d_sys%d",iq,isys));
+      IMnpipi_K0SpSm_ToSm[iq][isys] = (TH1D*)q_IMnpipi_K0SpSm_ToSm[iq][isys]->ProjectionX(Form("IMnpipi_K0SpSm_ToSm_%d_sys%d",iq,isys));
+    }//isys
+  }//iq
+
+
+
+
+
+
 
   //TFile *fnuSp = new TFile("NumericalRootFinder_Spmode.root");
   //TFile *fnuSp = new TFile("../simpost/NumericalRootFinder_fine.root");
