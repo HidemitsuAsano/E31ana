@@ -792,44 +792,36 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
 
   for(int iqlowhi=0;iqlowhi<2;iqlowhi++){
     for(int isys=0;isys<3;isys++){
-      Cosn_IMnpipi_K0SpSm_ToK0[iq][isys] = (TH2D*)Cosn_IMnpipi_wK0_wSid_n_SpSm[iq]->Clone(Form("q_IMnpipi_K0SpSm_ToK0%d",iq));
-      Cosn_IMnpipi_K0SpSm_ToSp[iq][isys] = (TH2D*)Cosn_IMnpipi_wK0_wSid_n_SpSm[iq]->Clone(Form("q_IMnpipi_K0SpSm_ToSp%d",iq));
-      Cosn_IMnpipi_K0SpSm_ToSm[iq][isys] = (TH2D*)Cosn_IMnpipi_wK0_wSid_n_SpSm[iq]->Clone(Form("q_IMnpipi_K0SpSm_ToSm%d",iq));
-      Cosn_IMnpipi_K0SpSm_ToK0[iq][isys]->Reset();
-      Cosn_IMnpipi_K0SpSm_ToSp[iq][isys]->Reset();
-      Cosn_IMnpipi_K0SpSm_ToSm[iq][isys]->Reset();
-      int wbinl = q_IMnpipi_K0SpSm_ToK0[iq][isys]->GetXaxis()->FindBin(wbinlow[1]);//1.40
-      int wbinh = q_IMnpipi_K0SpSm_ToK0[iq][isys]->GetXaxis()->FindBin(wbinhigh[1]);//1.52
+      Cosn_IMnpipi_K0SpSm_ToK0[iqlowhi][isys] = (TH2D*)Cosn_IMnpipi_wK0_wSid_n_SpSm[iqlowhi]->Clone(Form("Cosn_IMnpipi_K0SpSm_ToK0%d",iqlowhi));
+      Cosn_IMnpipi_K0SpSm_ToSp[iqlowhi][isys] = (TH2D*)Cosn_IMnpipi_wK0_wSid_n_SpSm[iqlowhi]->Clone(Form("Cosn_IMnpipi_K0SpSm_ToSp%d",iqlowhi));
+      Cosn_IMnpipi_K0SpSm_ToSm[iqlowhi][isys] = (TH2D*)Cosn_IMnpipi_wK0_wSid_n_SpSm[iqlowhi]->Clone(Form("Cosn_IMnpipi_K0SpSm_ToSm%d",iqlowhi));
+      Cosn_IMnpipi_K0SpSm_ToK0[iqlowhi][isys]->Reset();
+      Cosn_IMnpipi_K0SpSm_ToSp[iqlowhi][isys]->Reset();
+      Cosn_IMnpipi_K0SpSm_ToSm[iqlowhi][isys]->Reset();
+      int wbinl = Cosn_IMnpipi_K0SpSm_ToK0[iqlowhi][isys]->GetXaxis()->FindBin(wbinlow[1]);//1.40
+      int wbinh = Cosn_IMnpipi_K0SpSm_ToK0[iqlowhi][isys]->GetXaxis()->FindBin(wbinhigh[1]);//1.52, triple overlap is localized in this region
       for(int ix=wbinl;ix<wbinh;ix++){
-        for(int iy=0;iy<q_IMnpipi_wK0_wSid_n_SpSm[iq]->GetNbinsY();iy++){
-          double cont = q_IMnpipi_wK0_wSid_n_SpSm[iq]->GetBinContent(ix,iy);
-          double err = q_IMnpipi_wK0_wSid_n_SpSm[iq]->GetBinError(ix,iy);
-          int qlowhi = 0;
-          const int qcutbin = q_IMnpipi_wK0_wSid_n_SpSm[iq]->GetYaxis()->FindBin(anacuts::qvalcut);
-          if(qcutbin <= iy ) qlowhi=1;
-          double ToK0 = cont*OverlapToK0[qlowhi][isys]/(OverlapToSp[qlowhi][isys]+OverlapToSm[qlowhi][isys]+OverlapToK0[qlowhi][isys]);
-          double ToK0err = err*OverlapToK0[qlowhi][isys]/(OverlapToSp[qlowhi][isys]+OverlapToSm[qlowhi][isys]+OverlapToK0[qlowhi][isys]);
-          q_IMnpipi_K0SpSm_ToK0[iq][isys]->SetBinContent(ix,iy,ToK0);
-          q_IMnpipi_K0SpSm_ToK0[iq][isys]->SetBinError(ix,iy,ToK0err);
+        for(int iy=0;iy<Cosn_IMnpipi_wK0_wSid_n_SpSm[iq]->GetNbinsY();iy++){
+          double cont = Cosn_IMnpipi_wK0_wSid_n_SpSm[iq]->GetBinContent(ix,iy);
+          double err = Cosn_IMnpipi_wK0_wSid_n_SpSm[iq]->GetBinError(ix,iy);
+          double ToK0 = cont*OverlapToK0[iqlowhi][isys]/(OverlapToSp[iqlowhi][isys]+OverlapToSm[iqlowhi][isys]+OverlapToK0[iqlowhi][isys]);
+          double ToK0err = err*OverlapToK0[iqlowhi][isys]/(OverlapToSp[iqlowhi][isys]+OverlapToSm[iqlowhi][isys]+OverlapToK0[iqlowhi][isys]);
+          Cosn_IMnpipi_K0SpSm_ToK0[iqlowhi][isys]->SetBinContent(ix,iy,ToK0);
+          Cosn_IMnpipi_K0SpSm_ToK0[iqlowhi][isys]->SetBinError(ix,iy,ToK0err);
           
-          double ToSp = cont*OverlapToSp[qlowhi][isys]/(OverlapToSp[qlowhi][isys]+OverlapToSm[qlowhi][isys]+OverlapToK0[qlowhi][isys]);
-          double ToSperr = err*OverlapToSp[qlowhi][isys]/(OverlapToSp[qlowhi][isys]+OverlapToSm[qlowhi][isys]+OverlapToK0[qlowhi][isys]);
-          q_IMnpipi_K0SpSm_ToSp[iq][isys]->SetBinContent(ix,iy,ToSp);
-          q_IMnpipi_K0SpSm_ToSp[iq][isys]->SetBinError(ix,iy,ToSperr);
+          double ToSp = cont*OverlapToSp[iqlowhi][isys]/(OverlapToSp[iqlowhi][isys]+OverlapToSm[iqlowhi][isys]+OverlapToK0[iqlowhi][isys]);
+          double ToSperr = err*OverlapToSp[iqlowhi][isys]/(OverlapToSp[iqlowhi][isys]+OverlapToSm[iqlowhi][isys]+OverlapToK0[iqlowhi][isys]);
+          Cosn_IMnpipi_K0SpSm_ToSp[iqlowhi][isys]->SetBinContent(ix,iy,ToSp);
+          Cosn_IMnpipi_K0SpSm_ToSp[iqlowhi][isys]->SetBinError(ix,iy,ToSperr);
           
-          double ToSm = cont*OverlapToSm[qlowhi][isys]/(OverlapToSp[qlowhi][isys]+OverlapToSm[qlowhi][isys]+OverlapToK0[qlowhi][isys]);
-          double ToSmerr = err*OverlapToSm[qlowhi][isys]/(OverlapToSp[qlowhi][isys]+OverlapToSm[qlowhi][isys]+OverlapToK0[qlowhi][isys]);
-          q_IMnpipi_K0SpSm_ToSm[iq][isys]->SetBinContent(ix,iy,ToSm);
-          q_IMnpipi_K0SpSm_ToSm[iq][isys]->SetBinError(ix,iy,ToSmerr);
+          double ToSm = cont*OverlapToSm[iqlowhi][isys]/(OverlapToSp[iqlowhi][isys]+OverlapToSm[iqlowhi][isys]+OverlapToK0[iqlowhi][isys]);
+          double ToSmerr = err*OverlapToSm[iqlowhi][isys]/(OverlapToSp[iqlowhi][isys]+OverlapToSm[iqlowhi][isys]+OverlapToK0[iqlowhi][isys]);
+          Cosn_IMnpipi_K0SpSm_ToSm[iqlowhi][isys]->SetBinContent(ix,iy,ToSm);
+          Cosn_IMnpipi_K0SpSm_ToSm[iqlowhi][isys]->SetBinError(ix,iy,ToSmerr);
         }//iy
       }//ix
-      IMnpipi_K0SpSm_ToK0[iq][isys] = (TH1D*)q_IMnpipi_K0SpSm_ToK0[iq][isys]->ProjectionX(Form("IMnpipi_K0SpSm_ToK0_%d_sys%d",iq,isys));
-      IMnpipi_K0SpSm_ToSp[iq][isys] = (TH1D*)q_IMnpipi_K0SpSm_ToSp[iq][isys]->ProjectionX(Form("IMnpipi_K0SpSm_ToSp_%d_sys%d",iq,isys));
-      IMnpipi_K0SpSm_ToSm[iq][isys] = (TH1D*)q_IMnpipi_K0SpSm_ToSm[iq][isys]->ProjectionX(Form("IMnpipi_K0SpSm_ToSm_%d_sys%d",iq,isys));
     }//isys
   }//iq
-
-
 
 
 
