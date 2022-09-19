@@ -1079,6 +1079,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     lK0->AddEntry(IMnpipi_K0_noSp_noSm[iq][1],"K0nn after deco. ","l");
     lK0->Draw();
   }
+
   TGraphAsymmErrors *gDecoErrorK0[4];
   for(int iq=0;iq<4;iq++){
     gDecoErrorK0[iq] = new TGraphAsymmErrors(IMnpipi_K0_noSp_noSm[iq][1]);
