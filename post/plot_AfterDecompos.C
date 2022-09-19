@@ -801,9 +801,9 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
       int wbinl = Cosn_IMnpipi_K0SpSm_ToK0[iqlowhi][isys]->GetXaxis()->FindBin(wbinlow[1]);//1.40
       int wbinh = Cosn_IMnpipi_K0SpSm_ToK0[iqlowhi][isys]->GetXaxis()->FindBin(wbinhigh[1]);//1.52, triple overlap is localized in this region
       for(int ix=wbinl;ix<wbinh;ix++){
-        for(int iy=0;iy<Cosn_IMnpipi_wK0_wSid_n_SpSm[iq]->GetNbinsY();iy++){
-          double cont = Cosn_IMnpipi_wK0_wSid_n_SpSm[iq]->GetBinContent(ix,iy);
-          double err = Cosn_IMnpipi_wK0_wSid_n_SpSm[iq]->GetBinError(ix,iy);
+        for(int iy=0;iy<Cosn_IMnpipi_wK0_wSid_n_SpSm[iqlowhi]->GetNbinsY();iy++){
+          double cont = Cosn_IMnpipi_wK0_wSid_n_SpSm[iqlowhi]->GetBinContent(ix,iy);
+          double err = Cosn_IMnpipi_wK0_wSid_n_SpSm[iqlowhi]->GetBinError(ix,iy);
           double ToK0 = cont*OverlapToK0[iqlowhi][isys]/(OverlapToSp[iqlowhi][isys]+OverlapToSm[iqlowhi][isys]+OverlapToK0[iqlowhi][isys]);
           double ToK0err = err*OverlapToK0[iqlowhi][isys]/(OverlapToSp[iqlowhi][isys]+OverlapToSm[iqlowhi][isys]+OverlapToK0[iqlowhi][isys]);
           Cosn_IMnpipi_K0SpSm_ToK0[iqlowhi][isys]->SetBinContent(ix,iy,ToK0);
