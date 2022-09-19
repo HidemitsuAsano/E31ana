@@ -823,10 +823,6 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     }//isys
   }//iq
 
-
-
-
-
   //TFile *fnuSp = new TFile("NumericalRootFinder_Spmode.root");
   //TFile *fnuSp = new TFile("../simpost/NumericalRootFinder_fine.root");
   TFile *fnuSp = new TFile("../simpost/NumericalRootFinder_fine20_Sp.root");
@@ -849,6 +845,32 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     mg->Draw("c");
   }
 
+  TCanvas *cCosn_IMnpipi_Sp_afterDeco[3];
+  TH2D* Cosn_IMnpipi_Sp_sum[3][3];//iq, isys. iq=0 is for q-all, so add iq=1(qlow) and iq=2(qhi) later.
+  for(int iqlowhi=0;iqlowhi<2;iqlowhi++){
+    for(int isys=0;isys<3;isys++){
+      Cosn_IMnpipi_Sp_sum[iqlowhi+1][isys] = (TH2D*)Cosn_IMnpipi_wSid_n_Sp[iqlowhi]->Clone(Form("Cosn_IMnpipi_Sp_sum%d_sys%d",iqlowhi+1,isys-1));
+      Cosn_IMnpipi_Sp_sum[iqlowhi+1][isys]->Add(Cosn_IMnpipi_K0orSp_ToK0[iqlowhi][isys],-1.0);
+      Cosn_IMnpipi_Sp_sum[iqlowhi+1][isys]->Add(Cosn_IMnpipi_SporSm_ToSm[iqlowhi][isys],-1.0);
+      Cosn_IMnpipi_Sp_sum[iqlowhi+1][isys]->Add(Cosn_IMnpipi_K0SpSm_ToSp[iqlowhi][isys],1.0);//added over-subtraction component
+    }//isys
+  }
+  
+  for(int isys=0;isys<3;isys++){
+    Cosn_IMnpipi_Sp_sum[0][isys] = (TH2D*)Cosn_IMnpipi_Sp_sum[1][isys]->Clone(Form("Cosn_IMnpipi_Sp_sum0_sys%d",isys-1));
+    Cosn_IMnpipi_Sp_sum[0][isys]->Add(Cosn_IMnpipi_Sp_sum[2][isys]);
+  }
+  
+  for(int iq=0;iq<3;iq++){
+    cCosn_IMnpipi_Sp_afterDeco[iq] = new TCanvas(Form("cCosn_IMnpipi_Sp_afterDeco%d",iq),Form("cCosn_IMnpipi_Sp_afterDeco%d",iq));
+    cCosn_IMnpipi_Sp_afterDeco[iq]->cd();
+    Cosn_IMnpipi_Sp_sum[iq][1]->GetXaxis()->SetTitle("IM(#pi^{-}#Sigma^{+}) [GeV/c^{2}]");
+    if(SetMinimum0)Cosn_IMnpipi_Sp_sum[iq][1]->SetMinimum(0);
+    Cosn_IMnpipi_Sp_sum[iq][1]->Draw("colz");
+  }
+
+
+
   TFile *fnuSm = new TFile("NumericalRootFinder_Smmode.root");
   fnuSm->cd();
   TMultiGraph *mg2 = (TMultiGraph*)fnuSm->Get("mg");
@@ -868,6 +890,30 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     q_IMnpipi_Sm_sum[iq][1]->Draw("colz");
     //mg2->Draw("c");
     mg->Draw("c");
+  }
+  
+  TCanvas *cCosn_IMnpipi_Sm_afterDeco[3];
+  TH2D* Cosn_IMnpipi_Sm_sum[3][3];//iq, isys. iq=0 is for q-all, so add iq=1(qlow) and iq=2(qhi) later.
+  for(int iqlowhi=0;iqlowhi<2;iqlowhi++){
+    for(int isys=0;isys<3;isys++){
+      Cosn_IMnpipi_Sm_sum[iqlowhi+1][isys] = (TH2D*)Cosn_IMnpipi_wSid_n_Sm[iqlowhi]->Clone(Form("Cosn_IMnpipi_Sm_sum%d_sys%d",iqlowhi+1,isys-1));
+      Cosn_IMnpipi_Sm_sum[iqlowhi+1][isys]->Add(Cosn_IMnpipi_K0orSm_ToK0[iqlowhi][isys],-1.0);
+      Cosn_IMnpipi_Sm_sum[iqlowhi+1][isys]->Add(Cosn_IMnpipi_SporSm_ToSp[iqlowhi][isys],-1.0);
+      Cosn_IMnpipi_Sm_sum[iqlowhi+1][isys]->Add(Cosn_IMnpipi_K0SpSm_ToSm[iqlowhi][isys],1.0);//added over-subtraction component
+    }//isys
+  }
+  
+  for(int isys=0;isys<3;isys++){
+    Cosn_IMnpipi_Sm_sum[0][isys] = (TH2D*)Cosn_IMnpipi_Sm_sum[1][isys]->Clone(Form("Cosn_IMnpipi_Sm_sum0_sys%d",isys-1));
+    Cosn_IMnpipi_Sm_sum[0][isys]->Add(Cosn_IMnpipi_Sm_sum[2][isys]);
+  }
+  
+  for(int iq=0;iq<3;iq++){
+    cCosn_IMnpipi_Sm_afterDeco[iq] = new TCanvas(Form("cCosn_IMnpipi_Sm_afterDeco%d",iq),Form("cCosn_IMnpipi_Sm_afterDeco%d",iq));
+    cCosn_IMnpipi_Sm_afterDeco[iq]->cd();
+    Cosn_IMnpipi_Sm_sum[iq][1]->GetXaxis()->SetTitle("IM(#pi^{+}#Sigma^{-}) [GeV/c^{2}]");
+    if(SetMinimum0)Cosn_IMnpipi_Sm_sum[iq][1]->SetMinimum(0);
+    Cosn_IMnpipi_Sm_sum[iq][1]->Draw("colz");
   }
 
   std::cout << __LINE__ << std::endl;
@@ -939,7 +985,6 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     gDecoErrorSp[iq]->Draw("5");
   }
   
-
 
   //summary plot with the systematic error of 
   TCanvas *cIMnpipi_Summary_Sp_re[4];
