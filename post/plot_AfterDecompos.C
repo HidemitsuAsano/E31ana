@@ -5,6 +5,7 @@
 
 const bool showBG = true;
 const double UncertCut = 0.25;
+const double UncertCutCos = 0.5;
 #include "anacuts.h"
 
 #include <iostream>
@@ -1328,8 +1329,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
         }
         double contSm =Cosn_IMnpipi_Sm_cs[isys]->GetBinContent(ix,iy);
         double contSmerr =Cosn_IMnpipi_Sm_cs[isys]->GetBinError(ix,iy);
-        double accSm =q_IMnpipi_Sm_accp->GetBinContent(ix,iy);
-        double accerrSm =q_IMnpipi_Sm_accperr->GetBinContent(ix,iy);
+        double accSm =Cosn_IMnpipi_Sm_accp->GetBinContent(ix,iy);
+        double accerrSm =Cosn_IMnpipi_Sm_accperr->GetBinContent(ix,iy);
         double csSm = 0.0; 
         double csSmerr = 0.0; 
         if(accSm>0.0){
@@ -1350,7 +1351,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
           csK0 = contK0/accK0/binwidthM/binwidthq/trigScale/lumi;
           csK0err = contK0err/accK0/binwidthM/binwidthq/trigScale/lumi;
         }*/
-
+        
         if(accerrSp<UncertCut){
           Cosn_IMnpipi_Sp_cs[isys]->SetBinContent(ix,iy,csSp);
           Cosn_IMnpipi_Sp_cs[isys]->SetBinError(ix,iy,csSperr);
@@ -1358,13 +1359,6 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
         }else{
           Cosn_IMnpipi_Sp_cs[isys]->SetBinContent(ix,iy,0.);
           Cosn_IMnpipi_Sp_cs[isys]->SetBinError(ix,iy,0.);
-          Cosn_IMnpipi_Sp_cserr[isys]->SetBinError(ix,iy,0.);
-        }
-
-        if(iy>qcutMAX){
-          Cosn_IMnpipi_Sp_cs[isys]->SetBinContent(ix,iy,0.);
-          Cosn_IMnpipi_Sp_cs[isys]->SetBinError(ix,iy,0.);
-          Cosn_IMnpipi_Sp_cserr[isys]->SetBinContent(ix,iy,0.);
           Cosn_IMnpipi_Sp_cserr[isys]->SetBinError(ix,iy,0.);
         }
 
@@ -1377,13 +1371,6 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
           Cosn_IMnpipi_Sm_cs[isys]->SetBinError(ix,iy,0.);
         }
 
-        if(iy>qcutMAX){
-          Cosn_IMnpipi_Sm_cs[isys]->SetBinContent(ix,iy,0.);
-          Cosn_IMnpipi_Sm_cs[isys]->SetBinError(ix,iy,0.);
-          Cosn_IMnpipi_Sm_cserr[isys]->SetBinContent(ix,iy,0.);
-          Cosn_IMnpipi_Sm_cserr[isys]->SetBinError(ix,iy,0.);
-        }
-         
         /*
         if(accerrK0<UncertCut){
           q_IMnpipi_K0_cs[iq][isys]->SetBinContent(ix,iy,csK0);
@@ -1470,6 +1457,78 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     //IMnpipi_K0_cs_single[iq][1]->SetMinimum(0);
     IMnpipi_K0_cs_single[iq][1]->Draw("E");
   }
+  
+
+  TCanvas *ccsSpCos;
+  TCanvas *ccsSpproCos[4];
+  TCanvas *ccsSmCos;
+  TCanvas *ccsSmproCos[4];
+  //TCanvas *ccsK0Cos;
+  //TCanvas *ccsK0proCo[4];
+  
+  //display each 1D CS
+  TH1D* IMnpipi_Sp_cs_single_Coscut[4][3];//coscut,isys
+  TH1D* IMnpipi_Sm_cs_single_Coscut[4][3];//coscut,isys
+  //TH1D* IMnpipi_K0_cs_single[4][3];//iq,isys
+  ccsSpCos = new TCanvas("ccsSpCos","ccsSpCos",1600,800);
+  ccsSpCos->Divide(2,1);
+  ccsSpCos->cd(1);
+  Cosn_IMnpipi_Sp_cs[1]->Draw("colz");
+  ccsSpCos->cd(2);
+  Cosn_IMnpipi_Sp_cserr[1]->Draw("colz");
+   
+  ccsSmCos = new TCanvas("ccsSmCos","ccsSmCos",1600,800);
+  ccsSmCos->Divide(2,1);
+  ccsSmCos->cd(1);
+  Cosn_IMnpipi_Sm_cs[1]->Draw("colz");
+  ccsSmCos->cd(2);
+  Cosn_IMnpipi_Sm_cserr[1]->Draw("colz");
+  
+  /*
+  for(int iq=0;iq<4;iq++){
+    
+    double binwidthq = q_IMnpipi_Sp_cs[iq][1]->ProjectionY()->GetBinWidth(1)*1000.0;
+    for(int isys=0;isys<3;isys++){
+      IMnpipi_Sp_cs_single[iq][isys]= (TH1D*)q_IMnpipi_Sp_cs[iq][isys]->ProjectionX(Form("IMnpipi_Sp_cs_single%d_sys%d",iq,isys-1),1,qcutMAX-1);
+      IMnpipi_Sp_cs_single[iq][isys]->SetYTitle("d#sigma/dM [#mub /(MeV/c^{2})]");
+      IMnpipi_Sp_cs_single[iq][isys]->GetYaxis()->CenterTitle();
+      IMnpipi_Sp_cs_single[iq][isys]->Scale(binwidthq);
+    }
+    ccsSppro[iq] = new TCanvas(Form("ccsSppro%d",iq),Form("ccsSppro%d",iq),800,800);
+
+    //IMnpipi_Sp_cs_single[iq][1]->SetMinimum(0);
+    IMnpipi_Sp_cs_single[iq][1]->Draw("E");
+
+    
+    for(int isys=0;isys<3;isys++){
+      IMnpipi_Sm_cs_single[iq][isys]= (TH1D*)q_IMnpipi_Sm_cs[iq][isys]->ProjectionX(Form("IMnpipi_Sm_cs_single%d_sys%d",iq,isys-1),1,qcutMAX-1);
+      IMnpipi_Sm_cs_single[iq][isys]->SetYTitle("d#sigma/dM [#mub /(MeV/c^{2})]");
+      IMnpipi_Sm_cs_single[iq][isys]->GetYaxis()->CenterTitle();
+      IMnpipi_Sm_cs_single[iq][isys]->Scale(binwidthq);
+    }
+
+    ccsSmpro[iq] = new TCanvas(Form("ccsSmpro%d",iq),Form("ccsSmpro%d",iq),800,800);
+    //IMnpipi_Sm_cs_single[iq][1]->SetMinimum(0);
+    IMnpipi_Sm_cs_single[iq][1]->Draw("E");
+
+    ccsK0[iq] = new TCanvas(Form("ccsK0%d",iq),Form("ccsK0%d",iq),1600,800);
+    ccsK0[iq]->Divide(2,1);
+    ccsK0[iq]->cd(1);
+    q_IMnpipi_K0_cs[iq][1]->Draw("colz");
+    ccsK0[iq]->cd(2);
+    q_IMnpipi_K0_cserr[iq][1]->Draw("colz");
+
+    for(int isys=0;isys<3;isys++){
+      IMnpipi_K0_cs_single[iq][isys]= (TH1D*)q_IMnpipi_K0_cs[iq][isys]->ProjectionX(Form("IMnpipi_K0_cs_single%d_sys%d",iq,isys-1),1,qcutMAX-1);
+      IMnpipi_K0_cs_single[iq][isys]->SetYTitle("d#sigma/dM [#mub /(MeV/c^{2})]");
+      IMnpipi_K0_cs_single[iq][isys]->GetYaxis()->CenterTitle();
+      IMnpipi_K0_cs_single[iq][isys]->Scale(binwidthq);
+    }
+    ccsK0pro[iq] = new TCanvas(Form("ccsK0pro%d",iq),Form("ccsK0pro%d",iq),800,800);
+    //IMnpipi_K0_cs_single[iq][1]->SetMinimum(0);
+    IMnpipi_K0_cs_single[iq][1]->Draw("E");
+  }
+  */
   
   //systematic error of decomposition
   TGraphAsymmErrors *gDecoErrorSp_CS[4];
