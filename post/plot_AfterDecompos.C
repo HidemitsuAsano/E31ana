@@ -1318,11 +1318,13 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
         double csSp = 0.0; 
         double csSperr = 0.0; 
         double binwidthM = Cosn_IMnpipi_Sp_cs[isys]->ProjectionX()->GetBinWidth(1)*1000.0;
-        double binwidthq = Cosn_IMnpipi_Sp_cs[isys]->ProjectionY()->GetBinWidth(1)*1000.0;
+        //double binwidthCos = Cosn_IMnpipi_Sp_cs[isys]->ProjectionY()->GetBinWidth(1);
 
         if(accSp>0.0){
-          csSp = contSp/accSp/binwidthM/binwidthq/trigScale/lumi ;
-          csSperr = contSperr/accSp/binwidthM/binwidthq/trigScale/lumi;
+          //csSp = contSp/accSp/binwidthM/binwidthq/trigScale/lumi ;
+          //csSperr = contSperr/accSp/binwidthM/binwidthq/trigScale/lumi;
+          csSp = contSp/accSp/binwidthM/trigScale/lumi ;
+          csSperr = contSperr/accSp/binwidthM/trigScale/lumi;
         }
         double contSm =Cosn_IMnpipi_Sm_cs[isys]->GetBinContent(ix,iy);
         double contSmerr =Cosn_IMnpipi_Sm_cs[isys]->GetBinError(ix,iy);
@@ -1331,8 +1333,10 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
         double csSm = 0.0; 
         double csSmerr = 0.0; 
         if(accSm>0.0){
-          csSm = contSm/accSm/binwidthM/binwidthq/trigScale/lumi;
-          csSmerr = contSmerr/accSm/binwidthM/binwidthq/trigScale/lumi;
+          //csSm = contSm/accSm/binwidthM/binwidthq/trigScale/lumi;
+          //csSmerr = contSmerr/accSm/binwidthM/binwidthq/trigScale/lumi;
+          csSm = contSm/accSm/binwidthM/trigScale/lumi;
+          csSmerr = contSmerr/accSm/binwidthM/trigScale/lumi;
         }
         
         /*
