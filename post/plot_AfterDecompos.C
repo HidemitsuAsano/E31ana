@@ -1663,6 +1663,16 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     Cosn_IMnpipi_SpSmSum[isys]->SetXTitle("IM(#pi#Sigma) [GeV/c^{2}]");
   }
   Cosn_IMnpipi_SpSmSum[1]->Draw("colz");
+  
+
+  //sekihara-Yamagata range 1400-1440
+  TCanvas *cCosL1405 = new TCanvas("cCosL1405","cCosL1405");
+  int M1400 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.4);
+  double lowbinEdge = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(M1400);
+  double binwidth = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowWidth(M1400);
+  double lowbinscale = (1.4-lowbinEdge)/binwidth;
+  int M1440 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.44);
+
 
 
   TCanvas *csub = new TCanvas("csub","csub",1600,800);
