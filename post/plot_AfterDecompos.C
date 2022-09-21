@@ -3,6 +3,7 @@
 //
 //output : decoposed spectra q vs IM(npi+pi-) and acceptance corrected spectra
 
+bool SetMinimum0=false;
 const bool showBG = true;
 const double UncertCut = 0.25;
 const double UncertCutCos = 0.5;
@@ -34,7 +35,6 @@ const double UncertCutCos = 0.5;
 
 #include "../src/GlobalVariables.h"
 
-bool SetMinimum0=true;
 
 const int Version = 245;
 const int versionSigma = 158;//SIM version
@@ -122,7 +122,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   TH1D* IMnpipi_wK0_n[nqcut];
 
   const char cqcut[][10]= {"all","qlo","qhi","theta"};
-  std::cout << __LINE__ << std::endl;
+  std::cout << "L." << __LINE__ << std::endl;
   for(int iq=qstart;iq<nqcut;iq++){
     //get hists from root files
     q_IMnpipi_wK0_wSid_n_SpSm[iq] = (TH2F*)fr[iq]->Get("q_IMnpipi_wK0_wSid_n_SpSm");
@@ -324,7 +324,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     }
   }
   
-  std::cout << __LINE__ << std::endl;
+  std::cout << "L." << __LINE__ << std::endl;
   //1st index 0 : all
   //          1 : qlo
   //          2 : qhigh
@@ -673,7 +673,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   }
 
 
-  std::cout << __LINE__ << std::endl;
+  std::cout << "L."<< __LINE__ << std::endl;
   TCanvas *cIMnpipi_SpSm_afterDeco[4];
   for(int iq=0;iq<4;iq++){
     cIMnpipi_SpSm_afterDeco[iq] = new TCanvas(Form("cIMnpipi_SpSm_Deco_%s",cqcut[iq+1]),Form("cIMnpipi_SpSm_Deco_%s",cqcut[iq]),1000,800);
@@ -693,7 +693,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     l->AddEntry(IMnpipi_SporSm_ToSm[iq][1],"ToSm","l");
     l->Draw();
   }
-  std::cout << __LINE__ << std::endl;
+  std::cout << "L." << __LINE__ << std::endl;
 
   //treatment of K0 & Sigma+ & Sigma- triple overlap
   TH2D* q_IMnpipi_K0SpSm_ToK0[4][3];
@@ -917,7 +917,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     Cosn_IMnpipi_Sm_sum[iq][1]->Draw("colz");
   }
 
-  std::cout << __LINE__ << std::endl;
+  std::cout << "L." << __LINE__ << std::endl;
 
   TCanvas *cq_IMnpipi_K0_afterDeco[4];
   TH2D* q_IMnpipi_K0_sum[4][3];
@@ -933,7 +933,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     //q_IMnpipi_K0_sum[iq][1]->SetMinimum(0);
     q_IMnpipi_K0_sum[iq][1]->Draw("colz");
   }
-  std::cout << __LINE__ << std::endl;
+  std::cout << "L." << __LINE__ << std::endl;
 
 
 
@@ -959,7 +959,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     lSp->AddEntry(IMnpipi_Sp_noK0_noSm[iq][1],"Sigma+ after deco. ","l");
     lSp->Draw();
   }
-  std::cout << __LINE__ << std::endl;
+  std::cout << "L." << __LINE__ << std::endl;
   //Systematic graph
   TGraphAsymmErrors *gDecoErrorSp[4];
   for(int iq=0;iq<4;iq++){
@@ -1120,7 +1120,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   //Acceptance correction
   //
 
-  std::cout << __LINE__ << std::endl;
+  std::cout << "L." << __LINE__ << std::endl;
   //TFile *facc = TFile::Open("../simpost/accmap.root");
   //K0 acc is not generated so far
   TFile *facc = TFile::Open(Form("../simpost/accmapv%d_%d_dE%d.root",versionSigma,versionK0,dEcut));
@@ -1601,7 +1601,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   }
 
 
-  std::cout << __LINE__ << std::endl;
+  std::cout << "L." << __LINE__ << std::endl;
   //Sigma+ Sigma- charge sum
   TCanvas *csum[4];
   TH2D* q_IMnpipi_SpSmSum[4][3];//iq,isys
@@ -1660,6 +1660,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     Cosn_IMnpipi_SpSmSum[isys] = (TH2D*)Cosn_IMnpipi_Sp_cs[isys]->Clone(Form("Cosn_IMnpipi_SpSmSum_sys%d",isys-1));
     Cosn_IMnpipi_SpSmSum[isys]->Add(Cosn_IMnpipi_Sm_cs[isys],1.0);
     Cosn_IMnpipi_SpSmSum[isys]->SetTitle(Form("Cosn_IMnpipi_SpSmSum_sys%d",isys-1));
+    Cosn_IMnpipi_SpSmSum[isys]->SetXTitle("IM(#pi#Sigma) [GeV/c^{2}]");
   }
   Cosn_IMnpipi_SpSmSum[1]->Draw("colz");
 
@@ -1776,7 +1777,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
   }
   
-  std::cout << __LINE__ << std::endl;
+  std::cout << "L." << __LINE__ << std::endl;
   if(SetMinimum0){
     std::cout << "SetMinimum = 0 !!! cross section won't be wrote in file " << std::endl;
     std::cout << "return " << std::endl;
@@ -1804,7 +1805,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     for(int isys=0;isys<3;isys++){
       Cosn_IMnpipi_Sp_cs[isys]->Write();
       Cosn_IMnpipi_Sm_cs[isys]->Write();
-
+      Cosn_IMnpipi_SpSmSum[isys]->Write();
     }
   }
   fout->Close();
