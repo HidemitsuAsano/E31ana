@@ -1653,6 +1653,15 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   q_IMnpipi_SpSmSum[1][1]->Draw("col");
   q_IMnpipi_SpSmSum[2][1]->Draw("colsame");
 
+  TCanvas *csumcos = new TCanvas("csumcos","csumcos"); 
+  csumcos->cd();
+  TH2D* Cosn_IMnpipi_SpSmSum[3];//isys
+  for(int isys=0;isys<3;isys++){
+    Cosn_IMnpipi_SpSmSum[isys] = (TH2D*)Cosn_IMnpipi_Sp_cs[isys]->Clone(Form("Cosn_IMnpipi_SpSmSum_sys%d",isys-1));
+    Cosn_IMnpipi_SpSmSum[isys]->Add(Cosn_IMnpipi_Sm_cs[isys],1.0);
+    Cosn_IMnpipi_SpSmSum[isys]->SetTitle(Form("Cosn_IMnpipi_SpSmSum_sys%d",isys-1));
+  }
+  Cosn_IMnpipi_SpSmSum[1]->Draw("colz");
 
 
   TCanvas *csub = new TCanvas("csub","csub",1600,800);
@@ -1666,6 +1675,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   }
   csub->cd(1);
   q_IMnpipi_SpSmSub[1][1]->SetTitle("q_IMnpipi_SpSmSub");
+  q_IMnpipi_SpSmSub[1][1]->GetXaxis()->SetRangeUser(1.3,1.6);
   q_IMnpipi_SpSmSub[1][1]->Draw("colz");
   csub->cd(2);
   q_IMnpipi_SpSmSub[1][1]->ProjectionX("sum_px",1,qcutMAX-1)->Draw("E");
@@ -1790,6 +1800,12 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     gDecoErrorSm_CS[iq]->Write();
     gDecoErrorK0_CS[iq]->Write();
     gDecoErrorSpSmSum_CS[iq]->Write();
+    
+    for(int isys=0;isys<3;isys++){
+      Cosn_IMnpipi_Sp_cs[isys]->Write();
+      Cosn_IMnpipi_Sm_cs[isys]->Write();
+
+    }
   }
   fout->Close();
 
