@@ -1669,12 +1669,20 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   TCanvas *cCosL1405 = new TCanvas("cCosL1405","cCosL1405");
   int M1400 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.4);
   double lowbinEdge = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(M1400);
-  double binwidth = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowWidth(M1400);
+  double binwidth = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinWidth(M1400);
   double lowbinscale = (1.4-lowbinEdge)/binwidth;
-  int M1440 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.44);
-
-
-
+  int M1440 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.44);//<-just bin boundary
+  double hibinEdge = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(M1440);
+  double cosbinwidth  = Cosn_IMnpipi_SpSmSum[1]->GetYaxis()->GetBinWidth(1);
+  TH1D* CosL1405 = (TH1D*) Cosn_IMnpipi_SpSmSum[1]->ProjectionY("Cosl1405",M1400,M1440);
+  CosL1405->Scale(1./cosbinwidth);
+  CosL1405->Scale(binwidth*1000.);
+  CosL1405->Scale(1./2.);
+  CosL1405->Draw("HE");
+  TFile *f = TFile::Open("yamagataL1405.root");
+  TGraph *gry = (TGraph*)f->Get("gr_yamagata");
+  gry->Draw("c");
+ 
   TCanvas *csub = new TCanvas("csub","csub",1600,800);
   csub->Divide(2,1);
   TH2D* q_IMnpipi_SpSmSub[4][3];
