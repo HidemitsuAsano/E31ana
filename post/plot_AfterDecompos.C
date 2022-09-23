@@ -1673,11 +1673,13 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   double lowbinscale = (1.4-lowbinEdge)/binwidth;
   int M1440 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.44);//<-just bin boundary
   double hibinEdge = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(M1440);
+  Cosn_IMnpipi_SpSmSum[1]->RebinY(2);
   double cosbinwidth  = Cosn_IMnpipi_SpSmSum[1]->GetYaxis()->GetBinWidth(1);
   TH1D* CosL1405 = (TH1D*) Cosn_IMnpipi_SpSmSum[1]->ProjectionY("Cosl1405",M1400,M1440);
   CosL1405->Scale(1./cosbinwidth);
   CosL1405->Scale(binwidth*1000.);
   CosL1405->Scale(1./2.);
+  CosL1405->GetXaxis()->SetRangeUser(0.5,1);
   CosL1405->Draw("HE");
   TFile *f = TFile::Open("yamagataL1405.root");
   TGraph *gry = (TGraph*)f->Get("gr_yamagata");
