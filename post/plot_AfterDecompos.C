@@ -1655,7 +1655,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
 
   TCanvas *csumcos = new TCanvas("csumcos","csumcos"); 
   csumcos->cd();
-  TH2D* Cosn_IMnpipi_SpSmSum[3];//isys
+  TH2D* Cosn_IMnpipi_SpSmSum[3];//isys of deco
   for(int isys=0;isys<3;isys++){
     Cosn_IMnpipi_SpSmSum[isys] = (TH2D*)Cosn_IMnpipi_Sp_cs[isys]->Clone(Form("Cosn_IMnpipi_SpSmSum_sys%d",isys-1));
     Cosn_IMnpipi_SpSmSum[isys]->Add(Cosn_IMnpipi_Sm_cs[isys],1.0);
@@ -1670,17 +1670,27 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   int M1400 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.4);
   double lowbinEdge = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(M1400);
   double binwidth = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinWidth(M1400);
-  double lowbinscale = (1.4-lowbinEdge)/binwidth;
-  int M1440 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.44);//<-just bin boundary
-  double hibinEdge = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(M1440);
-  Cosn_IMnpipi_SpSmSum[1]->RebinY(2);
-  double cosbinwidth  = Cosn_IMnpipi_SpSmSum[1]->GetYaxis()->GetBinWidth(1);
-  TH1D* CosL1405 = (TH1D*) Cosn_IMnpipi_SpSmSum[1]->ProjectionY("Cosl1405",M1400,M1440);
-  CosL1405->Scale(1./cosbinwidth);
-  CosL1405->Scale(binwidth*1000.);
-  CosL1405->Scale(1./2.);
-  CosL1405->GetXaxis()->SetRangeUser(0.5,1);
-  CosL1405->Draw("HE");
+  int M1440 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.440);//<-just bin boundary
+  double hibinEdge = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(M1440+1);
+  TH1D* CosL1405[3];//isys of deco 
+  std::cout << "Cos low bin Edge " << lowbinEdge << std::endl;
+  std::cout << "Cos hi bin Edge " <<  hibinEdge << std::endl;
+  for(int isys=0;isys<3;isys++){
+    CosL1405[isys] = (TH1D*) Cosn_IMnpipi_SpSmSum[isys]->ProjectionY(Form("CosL1405_sys%d",isys),M1400,M1440);
+    CosL1405[isys]->RebinX(2);
+    double cosbinwidth  = CosL1405[isys]->GetXaxis()->GetBinWidth(1);
+    CosL1405[isys]->Scale(1./cosbinwidth);
+    CosL1405[isys]->Scale(binwidth*1000.);
+    CosL1405[isys]->Scale(1./2.);
+    //CosL1405[isys]->RebinX(2);
+    for(int ibincos=0;ibincos< (CosL1405[isys]->GetNbinsX());ibincos++){
+      double contlow = Cosn_IMnpipi_SpSmSum[isys]->GetBinContent(M1400,ibincos);
+      double contlowsurplus = contlow*(1.40-lowbinEdge)/binwidth;
+      CosL1405[isys]->AddBinContent(ibincos,-contlowsurplus);
+    }
+    CosL1405[isys]->GetXaxis()->SetRangeUser(0.5,1);
+  }
+  CosL1405[1]->Draw("HE");
   TFile *f = TFile::Open("yamagataL1405.root");
   TGraph *gry = (TGraph*)f->Get("gr_yamagata");
   gry->Draw("c");
