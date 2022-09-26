@@ -1671,7 +1671,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   double lowbinEdge = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(M1400);
   double binwidth = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinWidth(M1400);
   int M1440 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.440);//<-just bin boundary
-  double hibinEdge = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(M1440+1);
+  double hibinEdge = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(M1440+1);//->1.44
   TH1D* CosL1405[3];//isys of deco 
   std::cout << "Cos low bin Edge " << lowbinEdge << std::endl;
   std::cout << "Cos hi bin Edge " <<  hibinEdge << std::endl;
@@ -1693,6 +1693,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   CosL1405[1]->Draw("HE");
   TFile *f = TFile::Open("yamagataL1405.root");
   TGraph *gry = (TGraph*)f->Get("gr_yamagata");
+  gry->SetLineColor(3);
+  gry->SetLineWidth(2);
   gry->Draw("c");
  
   TCanvas *csub = new TCanvas("csub","csub",1600,800);
