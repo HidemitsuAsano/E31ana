@@ -688,7 +688,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     IMnpipi_SporSm_ToSm[iq][1]->SetMarkerColor(5);
     IMnpipi_SporSm_ToSm[iq][1]->Draw("Esame");
     TLegend *l = new TLegend(0.6,0.7,0.9,0.9);
-    l->AddEntry(IMnpipi_wSid_n_SpSm[iq+1],"overlap","l");
+    l->AddEntry(IMnpipi_wSid_n_SpSm[iq],"overlap","l");
     l->AddEntry(IMnpipi_SporSm_ToSp[iq][1],"ToSp","l");
     l->AddEntry(IMnpipi_SporSm_ToSm[iq][1],"ToSm","l");
     l->Draw();
@@ -1815,6 +1815,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     std::cout << "return " << std::endl;
     return;
   }
+
   TFile* fout = new TFile(Form("cs_pisigma_v%d_dE%d_sys%d.root",Version,dEcut,sysud),"RECREATE");
   fout->Print();
   fout->cd();
