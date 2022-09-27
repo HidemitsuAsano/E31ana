@@ -1670,13 +1670,13 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   int M1400 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.4);
   double lowbinEdge = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(M1400);
   double binwidth = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinWidth(M1400);
-  int M1440 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.440);//<-just bin boundary
+  int M1440 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.4400);//<-just bin boundary
   double hibinEdge = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(M1440+1);//->1.44
   TH1D* CosL1405[3];//isys of deco 
   std::cout << "Cos low bin Edge " << lowbinEdge << std::endl;
   std::cout << "Cos hi bin Edge " <<  hibinEdge << std::endl;
   for(int isys=0;isys<3;isys++){
-    CosL1405[isys] = (TH1D*) Cosn_IMnpipi_SpSmSum[isys]->ProjectionY(Form("CosL1405_sys%d",isys),M1400,M1440);
+    CosL1405[isys] = (TH1D*) Cosn_IMnpipi_SpSmSum[isys]->ProjectionY(Form("CosL1405_sys%d",isys-1),M1400,M1440);
     CosL1405[isys]->RebinX(2);
     double cosbinwidth  = CosL1405[isys]->GetXaxis()->GetBinWidth(1);
     CosL1405[isys]->Scale(1./cosbinwidth);
@@ -1839,6 +1839,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
       Cosn_IMnpipi_Sp_cs[isys]->Write();
       Cosn_IMnpipi_Sm_cs[isys]->Write();
       Cosn_IMnpipi_SpSmSum[isys]->Write();
+      CosL1405[isys]->Write();
     }
   }
   fout->Close();
