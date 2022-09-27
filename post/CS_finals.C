@@ -1177,12 +1177,25 @@ void CS_finals()
   TGraphAsymmErrors *grCosL1405 = new TGraphAsymmErrors(CosL1405[1][1]);
   TGraphAsymmErrors *grCosL1405_decosysup = new TGraphAsymmErrors(CosL1405[2][1]);
   TGraphAsymmErrors *grCosL1405_decosysdown = new TGraphAsymmErrors(CosL1405[0][1]);
-  grCosL1405->Draw("ap");
+  
+  for(int ip=0;ip<grCosL1405->GetN();ip++){
+    double valup = grCosL1405_decosysup->GetPointY(ip);
+    double valdef = grCosL1405->GetPointY(ip);
+    double yeh = grCosL1405->GetErrorYhigh(ip);
+    double yel = grCosL1405->GetErrorYlow(ip);
+    double valdown = grCosL1405_decosysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = sqrt(yeh*yeh + diffup*diffup);
 
 
+    }
+  
 
 
-
+  }
 
 
   TCanvas *c = NULL;
