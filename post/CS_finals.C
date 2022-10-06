@@ -86,23 +86,23 @@ void CS_finals()
   TMultiGraph *mgSm = (TMultiGraph*)fnuSm->Get("mg");
   for(int iq=0;iq<4;iq++){
     cqM_Sp[iq] = new TCanvas(Form("cqM_Sp%d",iq),Form("cqM_Sp%d",iq),1000,800);
-    q_IMnpipi_Sp_cs[iq][0][0]->SetMinimum(0);
-    q_IMnpipi_Sp_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.65);
-    q_IMnpipi_Sp_cs[iq][0][0]->GetXaxis()->SetRangeUser(1.3,1.9);
-    q_IMnpipi_Sp_cs[iq][0][0]->Draw("colz");
+    q_IMnpipi_Sp_cs[iq][0][1]->SetMinimum(0);
+    q_IMnpipi_Sp_cs[iq][0][1]->GetYaxis()->SetRangeUser(0,0.65);
+    q_IMnpipi_Sp_cs[iq][0][1]->GetXaxis()->SetRangeUser(1.3,1.9);
+    q_IMnpipi_Sp_cs[iq][0][1]->Draw("colz");
     mgSp->Draw("p");
     cqM_Sm[iq] = new TCanvas(Form("cqM_Sm%d",iq),Form("cqM_Sm%d",iq),1000,800);
-    q_IMnpipi_Sm_cs[iq][0][0]->SetMinimum(0);
-    q_IMnpipi_Sm_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.65);
-    q_IMnpipi_Sm_cs[iq][0][0]->GetXaxis()->SetRangeUser(1.3,1.9);
-    q_IMnpipi_Sm_cs[iq][0][0]->Draw("colz");
+    q_IMnpipi_Sm_cs[iq][0][1]->SetMinimum(0);
+    q_IMnpipi_Sm_cs[iq][0][1]->GetYaxis()->SetRangeUser(0,0.65);
+    q_IMnpipi_Sm_cs[iq][0][1]->GetXaxis()->SetRangeUser(1.3,1.9);
+    q_IMnpipi_Sm_cs[iq][0][1]->Draw("colz");
     mgSm->Draw("p");
 
     cqM_K0[iq] = new TCanvas(Form("cqM_K0%d",iq),Form("cqM_K0%d",iq),1000,800);
-    q_IMnpipi_K0_cs[iq][0][0]->SetMinimum(0);
-    q_IMnpipi_K0_cs[iq][0][0]->GetYaxis()->SetRangeUser(0,0.65);
-    q_IMnpipi_K0_cs[iq][0][0]->GetXaxis()->SetRangeUser(1.3,1.9);
-    q_IMnpipi_K0_cs[iq][0][0]->Draw("colz");
+    q_IMnpipi_K0_cs[iq][0][1]->SetMinimum(0);
+    q_IMnpipi_K0_cs[iq][0][1]->GetYaxis()->SetRangeUser(0,0.65);
+    q_IMnpipi_K0_cs[iq][0][1]->GetXaxis()->SetRangeUser(1.3,1.9);
+    q_IMnpipi_K0_cs[iq][0][1]->Draw("colz");
   }
 
   //zero suppresion of gDecoError
@@ -1140,8 +1140,62 @@ void CS_finals()
   p->SetLineStyle(2);
   p->Draw();
 
+  TH2D* Cosn_IMnpipi_Sp_cs[3][3];//deco sys, mix sys
+  TH2D* Cosn_IMnpipi_Sm_cs[3][3];//deco sys, mix sys
+  TH2D* Cosn_IMnpipi_SpSmSum[3][3];//deco sys, mix sys
+  TH1D* CosL1405[3][3];//deco sys, mix sys
+   
+  
+  for(int idecosys=0;idecosys<3;idecosys++){
+    for(int imixsys=0;imixsys<3;imixsys++){
+      Cosn_IMnpipi_Sp_cs[idecosys][imixsys] = (TH2D*)fpisigma[0][imixsys]->Get(Form("Cosn_IMnpipi_Sp_cs_sys%d",idecosys-1));
+      Cosn_IMnpipi_Sm_cs[idecosys][imixsys] = (TH2D*)fpisigma[0][imixsys]->Get(Form("Cosn_IMnpipi_Sm_cs_sys%d",idecosys-1));
+      Cosn_IMnpipi_SpSmSum[idecosys][imixsys] = (TH2D*)fpisigma[0][imixsys]->Get(Form("Cosn_IMnpipi_SpSmSum_sys%d",idecosys-1));
+      CosL1405[idecosys][imixsys] = (TH1D*)fpisigma[0][imixsys]->Get(Form("CosL1405_sys%d",idecosys-1));
+    }
+  }
+    
+
+  TCanvas *cCosIMpimSp = new TCanvas("cCosIMpimSp","cCosIMpimSp",1200,800);
+  TH2D* Cosn_IMnpipi_Sp_cs_disp = (TH2D*)Cosn_IMnpipi_Sp_cs[1][1]->Clone("Cosn_IMnpipi_Sp_cs_disp");
+  Cosn_IMnpipi_Sp_cs_disp->SetMinimum(0);
+  Cosn_IMnpipi_Sp_cs_disp->RebinY(2);
+  Cosn_IMnpipi_Sp_cs_disp->GetXaxis()->SetRangeUser(1.3,1.6);
+  Cosn_IMnpipi_Sp_cs_disp->GetYaxis()->SetRangeUser(0.6,1);
+  //gPad->SetLogz();
+  Cosn_IMnpipi_Sp_cs_disp->Draw("colz");
+
+  TCanvas *cCosIMpipSm = new TCanvas("cCosIMpipSm","cCosIMpipSm",1200,800);
+  TH2D* Cosn_IMnpipi_Sm_cs_disp = (TH2D*)Cosn_IMnpipi_Sm_cs[1][1]->Clone("Cosn_IMnpipi_Sm_cs_disp");
+  Cosn_IMnpipi_Sm_cs_disp->SetMinimum(0);
+  Cosn_IMnpipi_Sm_cs_disp->RebinY(2);
+  Cosn_IMnpipi_Sm_cs_disp->GetXaxis()->SetRangeUser(1.3,1.6);
+  Cosn_IMnpipi_Sm_cs_disp->GetYaxis()->SetRangeUser(0.6,1);
+  //gPad->SetLogz();
+  Cosn_IMnpipi_Sm_cs_disp->Draw("colz");
+  
+  TGraphAsymmErrors *grCosL1405 = new TGraphAsymmErrors(CosL1405[1][1]);
+  TGraphAsymmErrors *grCosL1405_decosysup = new TGraphAsymmErrors(CosL1405[2][1]);
+  TGraphAsymmErrors *grCosL1405_decosysdown = new TGraphAsymmErrors(CosL1405[0][1]);
+  
+  for(int ip=0;ip<grCosL1405->GetN();ip++){
+    double valup = grCosL1405_decosysup->GetPointY(ip);
+    double valdef = grCosL1405->GetPointY(ip);
+    double yeh = grCosL1405->GetErrorYhigh(ip);
+    double yel = grCosL1405->GetErrorYlow(ip);
+    double valdown = grCosL1405_decosysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = sqrt(yeh*yeh + diffup*diffup);
 
 
+    }
+  
+
+
+  }
 
 
   TCanvas *c = NULL;

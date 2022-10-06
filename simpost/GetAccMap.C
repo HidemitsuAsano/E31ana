@@ -163,7 +163,11 @@ void GetAccMap(const int dEcut=2)
     q_IMnpipi_Sp_acc[iq]->SetTitle(Form("q_IMnpipi Sp acc. ",iq));
     q_IMnpipi_Sm_acc[iq]->SetTitle(Form("q_IMnpipi Sm acc. ",iq));
     Cosn_IMnpipi_Sp_acc[iq]->SetTitle(Form("Cosn_IMnpipi Sp acc. ",iq));
+    Cosn_IMnpipi_Sp_acc[iq]->SetXTitle("IM(#pi^{-}#Sigma^{+}) [GeV/c^{2}]");
+    Cosn_IMnpipi_Sp_acc[iq]->GetXaxis()->CenterTitle();
     Cosn_IMnpipi_Sm_acc[iq]->SetTitle(Form("Cosn_IMnpipi Sm acc. ",iq));
+    Cosn_IMnpipi_Sm_acc[iq]->SetXTitle("IM(#pi^{+}#Sigma^{-}) [GeV/c^{2}]");
+    Cosn_IMnpipi_Sm_acc[iq]->GetXaxis()->CenterTitle();
     q_IMnpipi_K0_acc[iq]->SetTitle(Form("q_IMnpipi K0 acc. ",iq));
     
     
@@ -448,7 +452,7 @@ void GetAccMap(const int dEcut=2)
   q_IMnpipi_Sp_acc[0]->SetMaximum(q_IMnpipi_Sm_acc[0]->GetMaximum());
   q_IMnpipi_Sp_acc[0]->Draw("colz");
   //TFile *fnuSp = new TFile("NumericalRootFinder_Spmodebin1.root");
-  /*
+  
   TFile *fnuSp = new TFile("NumericalRootFinder_fine_Sp.root");
   TGraph *thSp = (TGraph*)fnuSp->Get("th");
   thSp->SetLineColor(1);
@@ -470,7 +474,7 @@ void GetAccMap(const int dEcut=2)
   texSp1->SetTextSize(0.04);
   texSp1->SetTextColor(1);
   texSp1->DrawLatex( 1.3, 0.2, "cos#theta^{CM}_{n}=0" );
-  */
+  
  
   //TMultiGraph *mgSp = (TMultiGraph*)fnuSp->Get("mg");
   //mgSp->Draw("c"); 
