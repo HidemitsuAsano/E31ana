@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="28"
+set Version="29"
 set DSTVersion="5"
 set DATADIR="/gpfs/group/had/knucl/e15/asano/sim/simpLpim${DSTVersion}/"
 set CDSDIR="/gpfs/group/had/knucl/e15/asano/sim/simcds/"
@@ -24,7 +24,9 @@ else
  exit 0
 endif
 
+cd ../
 set SRCDIR="/gpfs/home/had/hiasano/ana/k18ana/src/"
+set CSHDIR="/gpfs/home/had/hiasano/ana/k18ana/jobscripts/"
 cp $SRCDIR/UserSimIMLPim.cpp $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaAnaPar.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaHist.h $OUTDIRSUB/
@@ -33,8 +35,8 @@ cp $SRCDIR/IMPiSigmaUtil.cpp $OUTDIRSUB/
 set CONF___="conf/Run78/analyzer_kwsk_sim.conf"
 cp $CONF___ $OUTDIRSUB
 
-cp hadd_simlpimhist.csh $OUTDIRSUB/
-cp hadd_simlpim_ppimpim.csh $OUTDIRSUB/
+cp $CSHDIR/hadd_simlpimhist.csh $OUTDIRSUB/
+cp $CSHDIR/hadd_simlpim_ppimpim.csh $OUTDIRSUB/
 ln -s $OUTDIRSUB/simIMLpim_all.root simpost/simIMLpim_v${Version}.root
 ln -s $OUTDIRSUB/simIMLpim_ppimpim_all.root simpost/simIMLpim_ppimpim_v${Version}.root
 
