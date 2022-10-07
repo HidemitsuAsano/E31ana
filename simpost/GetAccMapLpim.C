@@ -529,7 +529,7 @@ void GetAccMapLpim()
 
 
   //////////////////////////////////////////////////////////
-  //acceptance map for costheta_missing p v.s. IM(pi-Lambda) 
+  //acceptance map for costheta_missing p (LAB frame) v.s. IM(pi-Lambda) 
   //////////////////////////////////////////////////////////
   TH2F* costhetap_IMLpim_gen=NULL;
   costhetap_IMLpim_gen = (TH2F*)fgen->Get("React_costhetap_IMLPim");
@@ -681,6 +681,102 @@ void GetAccMapLpim()
   TCanvas *cLpimCosClean = new TCanvas("cLpimCosClean","cLpimCosClean",1000,800);
   CosTheta_IMppipi_p_wL_acc_clean->Draw("colz");
         
+
+  TH2F* costhetapCM_IMLpim_gen=NULL;
+  costhetapCM_IMLpim_gen = (TH2F*)fgen->Get("React_costhetapCM_IMLPim");
+  costhetapCM_IMLpim_gen->SetTitle("generated evt. ");
+  costhetapCM_IMLpim_gen->SetXTitle("true IM(#pi^{-}#Lambda) [GeV/c^{2}]");
+  costhetapCM_IMLpim_gen->SetYTitle("true proton CosTheta (CM)");
+  costhetapCM_IMLpim_gen->GetXaxis()->CenterTitle();
+  costhetapCM_IMLpim_gen->GetYaxis()->CenterTitle();
+  costhetapCM_IMLpim_gen->Print("base");
+  costhetapCM_IMLpim_gen->RebinX(15);
+  costhetapCM_IMLpim_gen->Print("base");
+  
+  TH2F* CosThetaCM_IMppipi_p_wL=NULL;
+  CosTheta_IMppipi_p_wL = (TH2F*)fLpim->Get("CosTheta_IMppipi_p_wL_nocombi");
+  CosTheta_IMppipi_p_wL ->SetTitle("reco. evt.");
+  CosTheta_IMppipi_p_wL->Scale(1./SimBeamSurvivalRate);
+
+  TH2F* CosTheta_IMppipi_p_wL_acc=NULL;
+  CosTheta_IMppipi_p_wL_acc = (TH2F*)CosTheta_IMppipi_p_wL->Clone("CosTheta_IMppipi_p_wL_acc");
+  CosTheta_IMppipi_p_wL_acc->SetTitle("CosTheta_IMppipi_p_wL_acc");
+  CosTheta_IMppipi_p_wL_acc->Print("base");
+  CosTheta_IMppipi_p_wL_acc->Divide(CosTheta_IMppipi_p_wL_acc,costhetap_IMLpim_gen,1.0,1.0,"b");
+
+
+  TH2F* CosTheta_IMppipi_p_wL_accerr=NULL;
+  CosTheta_IMppipi_p_wL_accerr = (TH2F*)CosTheta_IMppipi_p_wL_acc->Clone("CosTheta_IMppipi_p_wL_accerr");
+  CosTheta_IMppipi_p_wL_accerr->Reset();
+  CosTheta_IMppipi_p_wL_accerr->SetTitle("CosTheta_IMppipi_p_wL_acc precision");
+  
+  for(int ix=0;ix<CosTheta_IMppipi_p_wL_accerr->GetNbinsX();ix++){
+    for(int iy=0;iy<CosTheta_IMppipi_p_wL_accerr->GetNbinsY();iy++){
+      double cont = CosTheta_IMppipi_p_wL_acc->GetBinContent(ix,iy);
+      double err = CosTheta_IMppipi_p_wL_acc->GetBinError(ix,iy);
+      if(cont!=0){
+        CosTheta_IMppipi_p_wL_accerr->SetBinContent(ix,iy,err/cont);  
+      }
+    }
+  } 
+
+  /*
+  TH2F* CosTheta_IMppipi_p_wL=NULL;
+  CosTheta_IMppipi_p_wL = (TH2F*)fLpim->Get("CosTheta_IMppipi_p_wL_nocombi");
+  CosTheta_IMppipi_p_wL ->SetTitle("reco. evt.");
+  CosTheta_IMppipi_p_wL->Scale(1./SimBeamSurvivalRate);
+
+  TH2F* CosTheta_IMppipi_p_wL_acc=NULL;
+  CosTheta_IMppipi_p_wL_acc = (TH2F*)CosTheta_IMppipi_p_wL->Clone("CosTheta_IMppipi_p_wL_acc");
+  CosTheta_IMppipi_p_wL_acc->SetTitle("CosTheta_IMppipi_p_wL_acc");
+  CosTheta_IMppipi_p_wL_acc->Print("base");
+  CosTheta_IMppipi_p_wL_acc->Divide(CosTheta_IMppipi_p_wL_acc,costhetap_IMLpim_gen,1.0,1.0,"b");
+
+
+  TH2F* CosTheta_IMppipi_p_wL_accerr=NULL;
+  CosTheta_IMppipi_p_wL_accerr = (TH2F*)CosTheta_IMppipi_p_wL_acc->Clone("CosTheta_IMppipi_p_wL_accerr");
+  CosTheta_IMppipi_p_wL_accerr->Reset();
+  CosTheta_IMppipi_p_wL_accerr->SetTitle("CosTheta_IMppipi_p_wL_acc precision");
+  
+  for(int ix=0;ix<CosTheta_IMppipi_p_wL_accerr->GetNbinsX();ix++){
+    for(int iy=0;iy<CosTheta_IMppipi_p_wL_accerr->GetNbinsY();iy++){
+      double cont = CosTheta_IMppipi_p_wL_acc->GetBinContent(ix,iy);
+      double err = CosTheta_IMppipi_p_wL_acc->GetBinError(ix,iy);
+      if(cont!=0){
+        CosTheta_IMppipi_p_wL_accerr->SetBinContent(ix,iy,err/cont);  
+      }
+    }
+  } 
+  */
+
+
+
+
+  
+  TCanvas *cLpimCos;
+  cLpimCos = new TCanvas(Form("cLpimCos"),Form("cLpimCos"),2000,1200);
+  cLpimCos->Divide(2,2);
+  cLpimCos->cd(1);
+  costhetap_IMLpim_gen->GetYaxis()->SetRangeUser(0,1);
+  costhetap_IMLpim_gen->Draw("colz");
+  gPad->SetLogz();
+  cLpimCos->cd(2);
+  CosTheta_IMppipi_p_wL->GetYaxis()->SetRangeUser(0,1);
+  CosTheta_IMppipi_p_wL->Draw("colz");
+  gPad->SetLogz();
+  cLpimCos->cd(3);
+  //CosThetaIMppipi_p_wL_acc->SetMaximum(0.05);
+  CosTheta_IMppipi_p_wL_acc->GetYaxis()->SetRangeUser(0,1);
+  CosTheta_IMppipi_p_wL_acc->SetMaximum(0.05);
+  CosTheta_IMppipi_p_wL_acc->Draw("colz");
+ // gPad->SetLogz();
+  cLpimCos->cd(4);
+  //CosThetaIMppipi_p_wL_accerr->SetMaximum(0.5);
+  CosTheta_IMppipi_p_wL_accerr->GetYaxis()->SetRangeUser(0,1);
+  CosTheta_IMppipi_p_wL_accerr->Draw("colz");
+
+
+
 
 
 
