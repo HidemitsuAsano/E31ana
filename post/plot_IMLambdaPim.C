@@ -268,6 +268,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* q_IMppipi_pboth_wL;
   TH2F* q_IMppipi_p_wL_wp2;
   TH2F* CosTheta_IMppipi_p_wL_sum;
+  TH2F* CosThetaCM_IMppipi_p_wL_sum;
   TH2F* CosTheta_IMppipi_p_wL_sum_mc;
   TH2F* q_IMppipi_p_wL_sum_forward;
   TH2F* q_IMppipi_p_wL_sum_forward_plus;
@@ -317,10 +318,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   //TH2F* q_IMppipi_kin[2];
 
   const int nbinIMppipi = 60;//1.2-2.1 GeV/c^2 15 MeV.
-  //const int nbinIMppipi = 160;//1.2-2 GeV/c^2
-  const int nbinIMppipicos = 90;//1.2-2 GeV/c^2
-  const double IMppipilow = 1.2;//1.2-2 GeV/c^2
-  const double IMppipihigh = 2.1;//1.2-2 GeV/c^2
+  //const int nbinIMppipi = 160;//1.2-2.1 GeV/c^2
+  const int nbinIMppipicos = 60;//1.2-2.1 GeV/c^2
+  const double IMppipilow = 1.2;//1.2-2.1 GeV/c^2
+  const double IMppipihigh = 2.1;//1.2-2.1 GeV/c^2
   const int nbinq = 30;//0-1.5 GeV/c 
   //const int nbinq = 100;//0-1.5 GeV/c
   const int nbinIMppi = 2000; //1-2 GeV/c^2
@@ -636,6 +637,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   CosTheta_IMppipi_p_wL_sum->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
   CosTheta_IMppipi_p_wL_sum->SetYTitle("miss. p CosTheta");
   
+  CosThetaCM_IMppipi_p_wL_sum = new TH2F("CosThetaCM_IMppipi_p_wL_sum","CosThetaCM_IMppipi_p_wL_sum",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1.,1.);
+  CosThetaCM_IMppipi_p_wL_sum->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
+  CosThetaCM_IMppipi_p_wL_sum->SetYTitle("miss. p CosTheta");
+  
   CosTheta_IMppipi_p_wL_sum_mc = new TH2F("CosTheta_IMppipi_p_wL_sum_mc","CosTheta_IMppipi_p_wL_sum_mc",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1.,1.);
   CosTheta_IMppipi_p_wL_sum_mc->SetXTitle("true IM(#Lambda#pi^{-}) [GeV/c^{2}]");
   CosTheta_IMppipi_p_wL_sum_mc->SetYTitle("true miss. p CosTheta");
@@ -840,10 +845,13 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
     TLorentzVector qkn = *LVec_beam-LVec_p_miss;
     TLorentzVector qkn2 = *LVec_beam-LVec_p2_miss;
     TLorentzVector LVec_p_miss_CM = LVec_p_miss;
+    TLorentzVector LVec_p2_miss_CM = LVec_p2_miss;
     TLorentzVector LVec_beam_CM = *LVec_beam;
     LVec_p_miss_CM.Boost(-boost);
+    LVec_p2_miss_CM.Boost(-boost);
     LVec_beam_CM.Boost(-boost);
-    double cos_p = LVec_p_miss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_p_miss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
+    double cos_p_CM = LVec_p_miss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_p_miss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
+    double cos_p2_CM = LVec_p2_miss_CM.Vect().Dot(LVec_beam_CM.Vect())/(LVec_p2_miss_CM.Vect().Mag()*LVec_beam_CM.Vect().Mag());
     TLorentzVector qkn_CM = LVec_beam_CM-LVec_p_miss_CM;
     // calc pi-pi- //
     TLorentzVector LVec_pim1_pim2 = *LVec_pim1+*LVec_pim2;
@@ -1244,6 +1252,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
         q_IMpppipi_p_wL_sum_nop2_addptest->Fill(LVec_pim1_pim2_p_testp.M(),qkn.P());
       }
       CosTheta_IMppipi_p_wL_sum->Fill(LVec_pim1_pim2_p.M(),LVec_p_miss.CosTheta());
+      CosThetaCM_IMppipi_p_wL_sum->Fill(LVec_pim1_pim2_p.M(),cos_p_CM);
       CosTheta_IMppipi_p_wL_sum_mc->Fill(LVec_LambdaPim_reactcor.M(),LVec_pmiss_reactcor.CosTheta());
       if(LVec_p_miss.CosTheta()>ForwardAngle) {
         q_IMppipi_p_wL_sum_forward->Fill(LVec_pim1_pim2_p.M(),qkn.P());
@@ -1334,6 +1343,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       CosTheta_IMp2pipi_p2_wL->Fill(LVec_pim1_pim2_p2.M(),LVec_p2_miss.CosTheta());
       q_IMppipi_p_wL_sum[0]->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
       CosTheta_IMppipi_p_wL_sum->Fill(LVec_pim1_pim2_p2.M(),LVec_p2_miss.CosTheta());
+      CosThetaCM_IMppipi_p_wL_sum->Fill(LVec_pim1_pim2_p2.M(),cos_p2_CM);
       if(LVec_p2_miss.CosTheta()>ForwardAngle) {
         q_IMppipi_p_wL_sum_forward->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
         CosTheta_IMppipi_p_wL_sum_forward->Fill(LVec_pim1_pim2_p2.M(),LVec_p2_miss.CosTheta());

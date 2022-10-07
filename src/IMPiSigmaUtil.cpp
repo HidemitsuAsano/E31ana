@@ -1024,13 +1024,16 @@ void Util::AnaReactionData( ReactionData *reactionData){
   }
   if(reactionID == gen::reactionID_pLpim || reactionID == gen::reactionID_pLpimpi0){
     TLorentzVector TL_pmiss = reactionData->GetParticle(2);
+    TLorentzVector TL_pmissCM = reactionData->GetCMParticle(2);
     double q = (TL_beam.Vect()-TL_pmiss.Vect()).Mag()/1000.;
-    double costhetap = TL_pmiss.CosTheta();//lab frame
+    double Costhetap = TL_pmiss.CosTheta();//lab frame
+    double CosthetapCM = TL_pmissCM.CosTheta();//CM frame
     TLorentzVector TL_Lambda = reactionData->GetParticle(0);
     TLorentzVector TL_LambdaPim = TL_Lambda + reactionData->GetParticle(1);
     double mass = TL_LambdaPim.M()/1000.;
     Tools::H2(Form("React_q_IMLPim"),mass,q,900,1.2,2.1,300,0,1.5);
-    Tools::H2(Form("React_costhetap_IMLPim"),mass,costhetap,900,1.2,2.1,2000,-1,1);
+    Tools::H2(Form("React_costhetap_IMLPim"),mass,Costhetap,900,1.2,2.1,2000,-1,1);
+    Tools::H2(Form("React_costhetapCM_IMLPim"),mass,CosthetapCM,900,1.2,2.1,2000,-1,1);
   }
   if(reactionID == gen::reactionID_pS0pim || reactionID == gen::reactionID_pS0pim_ps){
     TLorentzVector TL_pmiss = reactionData->GetParticle(2);
@@ -1058,6 +1061,9 @@ void Util::AnaReactionData( ReactionData *reactionData){
     TLorentzVector TL_K0n = TL_K0+TL_n;
     double mass = TL_K0n.M()/1000.;
     Tools::H2(Form("React_q_IMnpipi"),mass,q,900,1.2,2.1,300,0,1.5);
+    TLorentzVector TL_nmissCM = reactionData->GetCMParticle(0);
+    double costhetanCM = TL_nmissCM.CosTheta();//lab frame
+    Tools::H2(Form("React_costhetanCM_IMPiSigma"),mass,costhetanCM,900,1.2,2.1,100,0.,1.0);
   }
 }
 

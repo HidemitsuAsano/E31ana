@@ -12,7 +12,7 @@ void GetAccMapLpim()
   TH1::SetDefaultSumw2(true);
   TFile *fLpim=NULL;
   TFile *fgen=NULL;
-  const int version = 28;
+  const int version = 29;
 
   fLpim = TFile::Open(Form("../simpost/simIMLpim_ppimpim_v%d_out.root",version));
   fgen = TFile::Open(Form("../simpost/simIMLpim_v%d.root",version));

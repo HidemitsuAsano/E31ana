@@ -1,5 +1,5 @@
 #!/bin/tcsh -f
-set Version="24"
+set Version="25"
 set DATADIR="/group/had/knucl/e15/data/Run78/"
 set OUTDIR="/group/had/knucl/e15/asano/Run78/"
 set KWSKDIR="/group/had/knucl/e15/shinngo/Run78/evtracking/"
@@ -22,15 +22,17 @@ else
  exit 0 
 endif
 
+cd ../
 set SRCDIR="/gpfs/home/had/hiasano/ana/k18ana/src/"
+set CSHDIR="/gpfs/home/had/hiasano/ana/k18ana/jobscripts/"
 cp $SRCDIR/EventAnalysisIMLambdaPim.cpp $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaAnaPar.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaHist.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaUtil.h $OUTDIRSUB/
 cp $SRCDIR/IMPiSigmaUtil.cpp $OUTDIRSUB/
 
-cp hadd_IMLPimhist.csh $OUTDIRSUB/
-cp hadd_IMppimpim.csh $OUTDIRSUB/
+cp $CSHDIR/hadd_IMLPimhist.csh $OUTDIRSUB/
+cp $CSHDIR/hadd_IMppimpim.csh $OUTDIRSUB/
 ln -s $OUTDIRSUB/evanaIMLambdaPim_all.root post/evanaIMLambdaPim_v${Version}.root
 ln -s $OUTDIRSUB/evanaIMLambdaPim_all_ppimpim.root post/evanaIMLambdaPim_ppimpim_v${Version}.root
 
