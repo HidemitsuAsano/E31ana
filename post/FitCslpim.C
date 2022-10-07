@@ -478,7 +478,7 @@ void FitCslpim()
   gr_M_qlow->GetXaxis()->CenterTitle();
   gr_M_qlow->GetYaxis()->SetTitle("d#sigma/dM [#mub/MeV^{2}]");
   gr_M_qlow->GetYaxis()->CenterTitle();
-  
+  gr_M_qlow->GetYaxis()->SetRangeUser(0,1.0);
   gr_M_qlow->Draw("AP");  
 
   
@@ -557,6 +557,7 @@ void FitCslpim()
   gr_M_qhi->GetXaxis()->CenterTitle();
   gr_M_qhi->GetYaxis()->SetTitle("d#sigma/dM [#mub/MeV^{2}]");
   gr_M_qhi->GetYaxis()->CenterTitle();
+  gr_M_qhi->GetYaxis()->SetRangeUser(0,1.0);
   gr_M_qhi->Draw("AP");  
   
   TH1D* CS_M_qhiErr = (TH1D*) CS_M_fit[6]->Clone("CS_M_qhierr");

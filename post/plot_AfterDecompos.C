@@ -1694,7 +1694,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   TFile *f = TFile::Open("yamagataL1405.root");
   TGraph *gry = (TGraph*)f->Get("gr_yamagata");
   gry->SetLineColor(3);
-  gry->SetLineWidth(2);
+  gry->SetLineWidth(3);
   gry->Draw("c");
  
   TCanvas *csub = new TCanvas("csub","csub",1600,800);

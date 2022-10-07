@@ -693,9 +693,9 @@ void GetAccMapLpim()
   costhetapCM_IMLpim_gen->RebinX(15);
   costhetapCM_IMLpim_gen->Print("base");
   
-  TH2F* CosThetaCM_IMppipi_p_wL=NULL;
-  CosTheta_IMppipi_p_wL = (TH2F*)fLpim->Get("CosTheta_IMppipi_p_wL_nocombi");
-  CosTheta_IMppipi_p_wL ->SetTitle("reco. evt.");
+  TH2F* CosThetaCM_IMppipi_p_wL_sum=NULL;
+  CosThetaCM_IMppipi_p_wL_sum = (TH2F*)fLpim->Get("CosThetaCM_IMppipi_p_wL_sum");
+  CosThetaCM_IMppipi_p_wL_sum ->SetTitle("reco. evt.");
   CosTheta_IMppipi_p_wL->Scale(1./SimBeamSurvivalRate);
 
   TH2F* CosTheta_IMppipi_p_wL_acc=NULL;

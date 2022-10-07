@@ -1177,7 +1177,6 @@ void CS_finals()
   TGraphAsymmErrors *grCosL1405 = new TGraphAsymmErrors(CosL1405[1][1]);
   TGraphAsymmErrors *grCosL1405_decosysup = new TGraphAsymmErrors(CosL1405[2][1]);
   TGraphAsymmErrors *grCosL1405_decosysdown = new TGraphAsymmErrors(CosL1405[0][1]);
-  
   for(int ip=0;ip<grCosL1405->GetN();ip++){
     double valup = grCosL1405_decosysup->GetPointY(ip);
     double valdef = grCosL1405->GetPointY(ip);
@@ -1189,13 +1188,63 @@ void CS_finals()
      
     if(diffup > diffdown){
       yeh = sqrt(yeh*yeh + diffup*diffup);
-
-
+      yel = sqrt(yel*yel + diffdown*diffdown);
+    }else{
+      yeh = sqrt(yeh*yeh + diffdown*diffdown);
+      yel = sqrt(yel*yel + diffup*diffup);
     }
-  
-
-
+    grCosL1405->SetPointEYhigh(ip,yeh);
+    grCosL1405->SetPointEYlow(ip,yel);
   }
+  TGraphAsymmErrors *gMIXErrorCosL1405 = new TGraphAsymmErrors(CosL1405[1][1]);
+  TGraphAsymmErrors *gMIXErrorCosL1405_sysup = new TGraphAsymmErrors(CosL1405[1][2]);
+  TGraphAsymmErrors *gMIXErrorCosL1405_sysdown = new TGraphAsymmErrors(CosL1405[1][0]);
+  for(int ip=0;ip<gMIXErrorCosL1405->GetN();ip++){
+    double valup = gMIXErrorCosL1405_sysup->GetPointY(ip);
+    double valdef = gMIXErrorCosL1405->GetPointY(ip);
+    double yeh = gMIXErrorCosL1405->GetErrorYhigh(ip);
+    double yel = gMIXErrorCosL1405->GetErrorYlow(ip);
+    double valdown = gMIXErrorCosL1405_sysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = fabs(diffup);
+      yel = fabs(diffdown);
+    }else{
+      yeh = fabs(diffdown);
+      yel = fabs(diffup);
+    }
+    gMIXErrorCosL1405->SetPointEYhigh(ip,yeh);
+    gMIXErrorCosL1405->SetPointEYlow(ip,yel);
+    
+    double xe = CosL1405[1][1]->GetBinWidth(ip+1);
+    gMIXErrorCosL1405->SetPointEXhigh(ip,xe/4);
+    gMIXErrorCosL1405->SetPointEXlow(ip,xe/4);
+  }
+  
+  TCanvas *cCosL1405 = new TCanvas("cCosL1405","cCosL1405",1200,800);
+  grCosL1405->GetXaxis()->SetRangeUser(0.6,1);
+  grCosL1405->GetXaxis()->SetTitle("cos#theta_{n} (CM)");
+  grCosL1405->GetXaxis()->CenterTitle();
+  grCosL1405->GetYaxis()->SetTitle("d#sigma / dcos#theta_{n} [#mub]  ");
+  grCosL1405->GetYaxis()->CenterTitle();
+  grCosL1405->Draw("ap");
+  gMIXErrorCosL1405->SetLineColor(12);
+  gMIXErrorCosL1405->SetFillStyle(3001);
+  gMIXErrorCosL1405->SetFillColor(12);
+  gMIXErrorCosL1405->Draw("5");
+  TLine *pL1405 = new TLine(0.6,0,1,0);
+  pL1405->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  pL1405->SetLineStyle(2);
+  pL1405->Draw();
+
+  TFile *f = TFile::Open("yamagataL1405.root");
+  TGraph *gry = (TGraph*)f->Get("gr_yamagata");
+  gry->SetLineColor(3);
+  gry->SetLineWidth(3);
+  //gry->Draw("c");
 
 
   TCanvas *c = NULL;

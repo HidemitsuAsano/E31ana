@@ -353,7 +353,7 @@ void FitMixScale()
   //IMnpip_n_data->GetXaxis()->SetRangeUser(1.0,1.6);
   IMnpip_n_data->SetMinimum(IMnpip_n_sub->GetMinimum());
   IMnpip_n_data->SetMarkerStyle(20);
-  IMnpip_n_data->Draw();
+  //IMnpip_n_data->Draw();
   //IMnpip_n_sub->SetFillStyle(3004);
   //IMnpip_n_sub->SetFillColor(4);
   //IMnpip_n_sub->RebinX(2);
@@ -385,7 +385,18 @@ void FitMixScale()
   gnpip_sys->SetMarkerColor(4);
   //gnpip_sys->SetMarkerStyle(4);
   gnpip_sys->SetLineColor(4);
-  gnpip_sys->Draw("5");
+  gnpip_sys->SetTitle("");
+  gnpip_sys->GetYaxis()->SetRangeUser(0,500);
+  gnpip_sys->GetXaxis()->SetTitle("IM(n#pi^{+}) [GeV/c^{2}]");
+  gnpip_sys->GetXaxis()->CenterTitle();
+  gnpip_sys->GetYaxis()->SetTitle("counts/(0.002 GeV/c^{2})");
+  gnpip_sys->GetYaxis()->CenterTitle();
+  //IMnpip_n_data->RebinX(2);
+  gnpip_sys->GetXaxis()->SetRangeUser(1.15,1.228);
+  //IMnpip_n_data->GetXaxis()->SetRangeUser(1.0,1.6);
+  gnpip_sys->SetMinimum(IMnpip_n_sub->GetMinimum());
+  gnpip_sys->SetMarkerStyle(20);
+  gnpip_sys->Draw("a5");
   IMnpip_n_sub->Draw("Esame");
 
   TLine *psp = new TLine(1.15,0,1.23,0);
@@ -450,7 +461,7 @@ void FitMixScale()
   IMnpim_n_data->GetXaxis()->SetRangeUser(1.15,1.23);
   IMnpim_n_data->SetMinimum(IMnpim_n_sub->GetMinimum());
   IMnpim_n_data->SetMarkerStyle(20);
-  IMnpim_n_data->Draw();
+  //IMnpim_n_data->Draw();
   //IMnpim_n_sub->SetFillStyle(3004);
   //IMnpim_n_sub->SetFillColor(4);
   IMnpim_n_sub->SetLineColor(4);
@@ -479,7 +490,18 @@ void FitMixScale()
   gnpim_sys->SetMarkerColor(4);
   //gnpim_sys->SetMarkerStyle(4);
   gnpim_sys->SetLineColor(4);
-  gnpim_sys->Draw("5");
+  gnpim_sys->SetTitle("");
+  gnpim_sys->GetYaxis()->SetRangeUser(0,500);
+  gnpim_sys->GetXaxis()->SetTitle("IM(n#pi^{-}) [GeV/c^{2}]");
+  gnpim_sys->GetXaxis()->CenterTitle();
+  gnpim_sys->GetYaxis()->SetTitle("counts/(0.002 GeV/c^{2})");
+  gnpim_sys->GetYaxis()->CenterTitle();
+  //IMnpip_n_data->RebinX(2);
+  gnpim_sys->GetXaxis()->SetRangeUser(1.15,1.228);
+  //IMnpip_n_data->GetXaxis()->SetRangeUser(1.0,1.6);
+  gnpim_sys->SetMinimum(IMnpip_n_sub->GetMinimum());
+  gnpim_sys->SetMarkerStyle(20);
+  gnpim_sys->Draw("a5");
   IMnpim_n_sub->Draw("Esame");
   TLine *psm = new TLine(1.15,0,1.23,0);
   psm->SetLineColor(1);
@@ -736,7 +758,7 @@ void FitMixScale()
   MMnmiss_wK0orwSid_data->GetYaxis()->CenterTitle();
   MMnmiss_wK0orwSid_data->SetMarkerStyle(20);
   MMnmiss_wK0orwSid_data->GetXaxis()->SetRangeUser(0.5,1.5);
-  MMnmiss_wK0orwSid_data->Draw("E");
+  //MMnmiss_wK0orwSid_data->Draw("E");
   //MMnmiss_wK0orwSid_sub->SetFillStyle(3004);
   //MMnmiss_wK0orwSid_sub->SetFillColor(2);
   MMnmiss_wK0orwSid_sub->SetLineColor(2);
@@ -761,12 +783,19 @@ void FitMixScale()
   //gnpip_sys->SetMarkerStyle(4);
   gmiss_sys->SetLineColor(2);
   gmiss_sys->SetLineWidth(1);
-  gmiss_sys->Draw("5");
+  gmiss_sys->GetYaxis()->SetRangeUser(-100,1800);
+  gmiss_sys->GetXaxis()->SetRangeUser(0.7,1.3);
+  gmiss_sys->GetXaxis()->SetTitle("Miss. Mass. [GeV/c^{2}]");
+  gmiss_sys->GetXaxis()->CenterTitle();
+  gmiss_sys->SetTitle("");
+  gmiss_sys->GetYaxis()->SetTitle("counts/(0.01 GeV/c^{2})");
+  gmiss_sys->GetYaxis()->CenterTitle();
+  gmiss_sys->Draw("a5");
 
   MMnmiss_wK0orwSid_sub->Draw("Esame");
 
 
-  TLine *p = new TLine(0.5,0,1.5,0);
+  TLine *p = new TLine(0.7,0,1.3,0);
   p->SetLineColor(1);
   //p->SetLineWidth(2.0);
   p->SetLineStyle(2);

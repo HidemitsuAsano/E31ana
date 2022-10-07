@@ -269,7 +269,8 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* q_IMppipi_p_wL_wp2;
   TH2F* CosTheta_IMppipi_p_wL_sum;
   TH2F* CosThetaCM_IMppipi_p_wL_sum;
-  TH2F* CosTheta_IMppipi_p_wL_sum_mc;
+  TH2F* CosThetaCM_IMppipi_p_wL_sum_nocombi;//combinaotrial BG removed for MC
+  TH2F* CosTheta_IMppipi_p_wL_sum_mc;//mc true val
   TH2F* q_IMppipi_p_wL_sum_forward;
   TH2F* q_IMppipi_p_wL_sum_forward_plus;
   TH2F* q_IMppipi_p_wL_sum_forward_minus;
