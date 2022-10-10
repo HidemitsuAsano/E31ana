@@ -682,6 +682,7 @@ void GetAccMapLpim()
   CosTheta_IMppipi_p_wL_acc_clean->Draw("colz");
         
 
+  //acceptance map for costheta_missing p (C.M. frame) v.s. IM(pi-Lambda) 
   TH2F* costhetapCM_IMLpim_gen=NULL;
   costhetapCM_IMLpim_gen = (TH2F*)fgen->Get("React_costhetapCM_IMLPim");
   costhetapCM_IMLpim_gen->SetTitle("generated evt. ");
@@ -696,13 +697,13 @@ void GetAccMapLpim()
   TH2F* CosThetaCM_IMppipi_p_wL_sum=NULL;
   CosThetaCM_IMppipi_p_wL_sum = (TH2F*)fLpim->Get("CosThetaCM_IMppipi_p_wL_sum");
   CosThetaCM_IMppipi_p_wL_sum ->SetTitle("reco. evt.");
-  CosTheta_IMppipi_p_wL->Scale(1./SimBeamSurvivalRate);
+  CosThetaCM_IMppipi_p_wL_sum->Scale(1./SimBeamSurvivalRate);
 
-  TH2F* CosTheta_IMppipi_p_wL_acc=NULL;
-  CosTheta_IMppipi_p_wL_acc = (TH2F*)CosTheta_IMppipi_p_wL->Clone("CosTheta_IMppipi_p_wL_acc");
-  CosTheta_IMppipi_p_wL_acc->SetTitle("CosTheta_IMppipi_p_wL_acc");
-  CosTheta_IMppipi_p_wL_acc->Print("base");
-  CosTheta_IMppipi_p_wL_acc->Divide(CosTheta_IMppipi_p_wL_acc,costhetap_IMLpim_gen,1.0,1.0,"b");
+  TH2F* CosThetaCM_IMppipi_p_wL_acc=NULL;
+  CosThetaCM_IMppipi_p_wL_acc = (TH2F*)CosThetaCM_IMppipi_p_wL_sum->Clone("CosThetaCM_IMppipi_p_wL_acc");
+  CosThetaCM_IMppipi_p_wL_acc->SetTitle("CosThetaCM_IMppipi_p_wL_acc");
+  CosThetaCM_IMppipi_p_wL_acc->Print("base");
+  CosThetaCM_IMppipi_p_wL_acc->Divide(CosThetaCM_IMppipi_p_wL_acc,costhetapCM_IMLpim_gen,1.0,1.0,"b");
 
 
   TH2F* CosTheta_IMppipi_p_wL_accerr=NULL;
