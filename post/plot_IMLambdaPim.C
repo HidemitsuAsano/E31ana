@@ -569,9 +569,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   CosTheta_IMppipi_p_wL_nocombi->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   CosTheta_IMppipi_p_wL_nocombi->SetYTitle("miss. p CosTheta");
   
-  CosThetaCM_IMppipi_p_wL_nocombi = new TH2F("CosTheta_IMppipi_p_wL_nocombi","CosTheta_IMppipi_p_wL_nocombi",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1,1);
+  CosThetaCM_IMppipi_p_wL_nocombi = new TH2F("CosThetaCM_IMppipi_p_wL_nocombi","CosThetaCM_IMppipi_p_wL_nocombi",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1,1);
   CosThetaCM_IMppipi_p_wL_nocombi->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   CosThetaCM_IMppipi_p_wL_nocombi->SetYTitle("miss. p CosTheta");
+  
 
   CosTheta_IMppipi_p_wL_nocombi_mc = new TH2F("CosTheta_IMppipi_p_wL_nocombi_mc","CosTheta_IMppipi_p_wL_nocombi_mc",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1,1);
   CosTheta_IMppipi_p_wL_nocombi_mc->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
@@ -645,7 +646,11 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   
   CosThetaCM_IMppipi_p_wL_sum = new TH2F("CosThetaCM_IMppipi_p_wL_sum","CosThetaCM_IMppipi_p_wL_sum",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1.,1.);
   CosThetaCM_IMppipi_p_wL_sum->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
-  CosThetaCM_IMppipi_p_wL_sum->SetYTitle("miss. p CosTheta");
+  CosThetaCM_IMppipi_p_wL_sum->SetYTitle("miss. p CosTheta_{CM}");
+  
+  CosThetaCM_IMppipi_p_wL_sum_nocombi = new TH2F("CosThetaCM_IMppipi_p_wL_sum_nocombi","CosThetaCM_IMppipi_p_wL_sum_nocombi",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1.,1.);
+  CosThetaCM_IMppipi_p_wL_sum_nocombi->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
+  CosThetaCM_IMppipi_p_wL_sum_nocombi->SetYTitle("miss. p CosTheta_{CM}");
   
   CosTheta_IMppipi_p_wL_sum_mc = new TH2F("CosTheta_IMppipi_p_wL_sum_mc","CosTheta_IMppipi_p_wL_sum_mc",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1.,1.);
   CosTheta_IMppipi_p_wL_sum_mc->SetXTitle("true IM(#Lambda#pi^{-}) [GeV/c^{2}]");
@@ -1234,6 +1239,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
         TLorentzVector LVec_diffpmiss = LVec_p_miss-LVec_pmiss_reactcor;
         if(LVec_diffpcdsMom.P()>LVec_diffpmiss.P()){
           CosTheta_IMppipi_p_wL_nocombi->Fill(LVec_pim1_pim2_p.M(),LVec_p_miss.CosTheta());
+          CosThetaCM_IMppipi_p_wL_nocombi->Fill(LVec_pim1_pim2_p.M(),cos_p_CM);
           CosTheta_IMppipi_p_wL_nocombi_mc->Fill(LVec_LambdaPim_reactcor.M(),LVec_pmiss_reactcor.CosTheta());
         }
       }
@@ -1350,6 +1356,13 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
       q_IMppipi_p_wL_sum[0]->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
       CosTheta_IMppipi_p_wL_sum->Fill(LVec_pim1_pim2_p2.M(),LVec_p2_miss.CosTheta());
       CosThetaCM_IMppipi_p_wL_sum->Fill(LVec_pim1_pim2_p2.M(),cos_p2_CM);
+      if(SimMode){
+        TLorentzVector LVec_diffp2cdsMom = *LVec_p2-LVec_pmiss_reactcor;
+        TLorentzVector LVec_diffp2miss = LVec_p2_miss-LVec_pmiss_reactcor;
+        if(LVec_diffp2cdsMom.P()>LVec_diffp2miss.P()){
+          CosThetaCM_IMppipi_p_wL_nocombi->Fill(LVec_pim1_pim2_p2.M(),cos_p2_CM);
+        }
+      }
       if(LVec_p2_miss.CosTheta()>ForwardAngle) {
         q_IMppipi_p_wL_sum_forward->Fill(LVec_pim1_pim2_p2.M(),qkn2.P());
         CosTheta_IMppipi_p_wL_sum_forward->Fill(LVec_pim1_pim2_p2.M(),LVec_p2_miss.CosTheta());
