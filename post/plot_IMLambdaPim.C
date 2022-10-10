@@ -253,6 +253,7 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* q_IMp2pipi_p2_wL;
   TH2F* CosTheta_IMppipi_p_wL;
   TH2F* CosTheta_IMppipi_p_wL_nocombi;
+  TH2F* CosThetaCM_IMppipi_p_wL_nocombi;
   TH2F* CosTheta_IMppipi_p_wL_nocombi_mc;
   TH2F* CosTheta_IMp2pipi_p2_wL;
   TH2F* q_IMppipi_p_wL_sum[ncut];//0:default, 1 half low, 2 half high, 3 sigma0 region, 4 wide range
@@ -567,6 +568,10 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   CosTheta_IMppipi_p_wL_nocombi = new TH2F("CosTheta_IMppipi_p_wL_nocombi","CosTheta_IMppipi_p_wL_nocombi",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1,1);
   CosTheta_IMppipi_p_wL_nocombi->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
   CosTheta_IMppipi_p_wL_nocombi->SetYTitle("miss. p CosTheta");
+  
+  CosThetaCM_IMppipi_p_wL_nocombi = new TH2F("CosTheta_IMppipi_p_wL_nocombi","CosTheta_IMppipi_p_wL_nocombi",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1,1);
+  CosThetaCM_IMppipi_p_wL_nocombi->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
+  CosThetaCM_IMppipi_p_wL_nocombi->SetYTitle("miss. p CosTheta");
 
   CosTheta_IMppipi_p_wL_nocombi_mc = new TH2F("CosTheta_IMppipi_p_wL_nocombi_mc","CosTheta_IMppipi_p_wL_nocombi_mc",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1,1);
   CosTheta_IMppipi_p_wL_nocombi_mc->SetXTitle("IM(p#pi^{-}#pi^{-}) [GeV/c^{2}]");
