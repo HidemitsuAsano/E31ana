@@ -270,7 +270,6 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   TH2F* q_IMppipi_p_wL_wp2;
   TH2F* CosTheta_IMppipi_p_wL_sum;
   TH2F* CosThetaCM_IMppipi_p_wL_sum;
-  TH2F* CosThetaCM_IMppipi_p_wL_sum_nocombi;//combinaotrial BG removed for MC
   TH2F* CosTheta_IMppipi_p_wL_sum_mc;//mc true val
   TH2F* q_IMppipi_p_wL_sum_forward;
   TH2F* q_IMppipi_p_wL_sum_forward_plus;
@@ -647,10 +646,6 @@ void plot_IMLambdaPim(const char* filename="", const int qvalcutflag=0)
   CosThetaCM_IMppipi_p_wL_sum = new TH2F("CosThetaCM_IMppipi_p_wL_sum","CosThetaCM_IMppipi_p_wL_sum",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1.,1.);
   CosThetaCM_IMppipi_p_wL_sum->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
   CosThetaCM_IMppipi_p_wL_sum->SetYTitle("miss. p CosTheta_{CM}");
-  
-  CosThetaCM_IMppipi_p_wL_sum_nocombi = new TH2F("CosThetaCM_IMppipi_p_wL_sum_nocombi","CosThetaCM_IMppipi_p_wL_sum_nocombi",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1.,1.);
-  CosThetaCM_IMppipi_p_wL_sum_nocombi->SetXTitle("IM(#Lambda#pi^{-}) [GeV/c^{2}]");
-  CosThetaCM_IMppipi_p_wL_sum_nocombi->SetYTitle("miss. p CosTheta_{CM}");
   
   CosTheta_IMppipi_p_wL_sum_mc = new TH2F("CosTheta_IMppipi_p_wL_sum_mc","CosTheta_IMppipi_p_wL_sum_mc",nbinIMppipicos,IMppipilow,IMppipihigh, 2000,-1.,1.);
   CosTheta_IMppipi_p_wL_sum_mc->SetXTitle("true IM(#Lambda#pi^{-}) [GeV/c^{2}]");
