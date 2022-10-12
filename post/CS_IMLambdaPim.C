@@ -1,14 +1,15 @@
 const int ncut=6;
 
+const int DataVersion = 25;
+const int AccVersion = 29;
+
 void CS_IMLambdaPim()
 {
   gROOT->SetBatch();
-  const double ForwardAngle = 0.996;
-  const double ForwardAngle2 = 0.997;
   gStyle->SetOptStat(0);
-  TFile *file = new TFile("evanaIMLambdaPim_ppimpim_v24_out.root","READ");
+  TFile *file = new TFile(Form("evanaIMLambdaPim_ppimpim_v%d_out.root",DataVersion),"READ");
   //TFile *facc = new TFile("../simpost/accmapLpimv28.root","READ");
-  TFile *facc = new TFile("accmapLpimv28.root","READ");
+  TFile *facc = new TFile(Form("accmapLpimv%d.root",AccVersion),"READ");
   TFile *flumi = new TFile("InteLumi.root","READ");
   TFile *fkin = new TFile("../simpost/NumericalRootFinderLPim.root","READ");
   TParameter<double>*IntegLumi = (TParameter<double>*)flumi->Get("IntegLumi");
@@ -244,6 +245,15 @@ void CS_IMLambdaPim()
     CS_q_wp2_mc[icut]->Draw("Esame");*/
   }
 
+  //CosTheta (CM frame) vs IM(Lpim) cross section 
+  TCanvas *cIMLpim_cosCM = new TCanvas("cIMLpim_cosCM","cIMLpim_cosCM",1000,800);
+  //real data (raw counts)
+  TH2F* CosThetaCM_IMppipi_p_wL_sum_data = (TH2F*)file->Get("CosThetaCM_IMppipi_p_wL_sum");
+  CosThetaCM_IMppipi_p_wL_sum_data->RebinY(20);
+  CosThetaCM_IMppipi_p_wL_sum_data->Draw("colz");
+  
+
+
 
   //reco.
   TCanvas *cIMLpim_coscut = new TCanvas("cIMLpim_coscut","cIMLpim_coscut",1000,800);
@@ -253,6 +263,8 @@ void CS_IMLambdaPim()
   CosTheta_IMppipi_p_wL->GetYaxis()->SetRangeUser(0.95,1);
   CosTheta_IMppipi_p_wL->Draw("colz"); 
   
+  const double ForwardAngle = 0.996;
+  const double ForwardAngle2 = 0.997;
   TCanvas *cIMLpim_coscut_px = new TCanvas("cIMLpim_coscut_px","cIMLpim_coscut_px",1000,800);
   const int bin0995 = CosTheta_IMppipi_p_wL->GetYaxis()->FindBin(0.995);
   const int bin0996 = CosTheta_IMppipi_p_wL->GetYaxis()->FindBin(ForwardAngle);
