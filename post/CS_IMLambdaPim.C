@@ -127,10 +127,10 @@ void CS_IMLambdaPim()
  //   q_IMppipi_p_wL_sum_nop2[icut]->SetMaximum(90);
     q_IMppipi_p_wL_sum_nop2[icut]->Draw("colz");
     
-    gth->Draw("pc");
-    gr_0->Draw("pc");
-    gr_100->Draw("pc");
-    gr_65->Draw("pc");
+    //gth->Draw("pc");
+    //gr_0->Draw("pc");
+    //gr_100->Draw("pc");
+    //gr_65->Draw("pc");
 
     cq_IMppipi_p_wL_sum_wp2[icut] = new TCanvas(Form("cq_IMppipi_p_wL_sum_wp2%d",icut),Form("cq_IMppipi_p_wL_sum_wp2%d",icut),1000,800);
     q_IMppipi_p_wL_sum_wp2[icut]->Draw("colz");
@@ -252,7 +252,42 @@ void CS_IMLambdaPim()
   CosThetaCM_IMppipi_p_wL_sum_data->RebinY(20);
   CosThetaCM_IMppipi_p_wL_sum_data->Draw("colz");
   
+  TH2D* CosThetaCM_IMppipi_p_wL_acc = (TH2D*)facc->Get("CosThetaCM_IMppipi_p_wL_acc_clean");
+  CosThetaCM_IMppipi_p_wL_sum_data->Print("base");
+  CosThetaCM_IMppipi_p_wL_acc->Print("base");
+   
+  double binwidthM = CosThetaCM_IMppipi_p_wL_sum_data->GetXaxis()->GetBinWidth(1)*1000.0;
+  double binwidthcosCM = CosThetaCM_IMppipi_p_wL_sum_data->GetYaxis()->GetBinWidth(1);
+  TH2F* CS_CosThetaCM_IMppipi_p_wL = (TH2F*)CosThetaCM_IMppipi_p_wL_sum_data->Clone("CS_CosThetaCM_IMppipi_p_wL");
+  for(int ix=0;ix<CosThetaCM_IMppipi_p_wL_sum_data->GetNbinsX();ix++){
+    for(int iy=0;iy<CosThetaCM_IMppipi_p_wL_sum_data->GetNbinsY();iy++){
+      double cont = CosThetaCM_IMppipi_p_wL_sum_data->GetBinContent(ix,iy);
+      double conterr = CosThetaCM_IMppipi_p_wL_sum_data->GetBinError(ix,iy);
+      double acc = CosThetaCM_IMppipi_p_wL_acc->GetBinContent(ix,iy);
+      double accerr = CosThetaCM_IMppipi_p_wL_acc->GetBinError(ix,iy);
+      double cslpim =0.0;
+      double cslpimerr = 0.0;
 
+      if(acc>0.0){
+        cslpim = cont/acc/binwidthM/binwidthcosCM/trigScale/lumi;
+        cslpimerr = conterr/acc/binwidthM/binwidthcosCM/trigScale/lumi;
+      }
+      CS_CosThetaCM_IMppipi_p_wL->SetBinContent(ix,iy,cslpim);
+      CS_CosThetaCM_IMppipi_p_wL->SetBinError(ix,iy,cslpimerr);
+    }
+  }
+
+  TCanvas *cCS_CosThetaCM_IMppipi_p_wL = new TCanvas("cCS_CosThetaCM_IMppipi_p_wL","cCS_CosThetaCM_IMppipi_p_wL",1000,800);
+  CS_CosThetaCM_IMppipi_p_wL->SetTitle("CS_CosThetaCM_IMppipi_p_wL");
+  CS_CosThetaCM_IMppipi_p_wL->GetXaxis()->SetRangeUser(1.2,1.6);
+  CS_CosThetaCM_IMppipi_p_wL->GetYaxis()->SetRangeUser(-0.2,1);
+  CS_CosThetaCM_IMppipi_p_wL->Draw("colz");
+  
+  
+  TCanvas *cCS_CosThetaCM_IMppipi_p_wL_px = new TCanvas("cCS_CosThetaCM_IMppipi_p_wL_px","cCS_CosThetaCM_IMppipi_p_wL_px",1000,800);
+  TH1D* CS_CosThetaCM_IMppipi_p_wL_px = (TH1D*)CS_CosThetaCM_IMppipi_p_wL->ProjectionX("CS_CosThetaCM_IMppipi_p_wL_px");
+  CS_CosThetaCM_IMppipi_p_wL_px->Scale(binwidthcosCM);
+  CS_CosThetaCM_IMppipi_p_wL_px->Draw("HE");
 
 
   //reco.

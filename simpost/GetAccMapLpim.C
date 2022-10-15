@@ -703,6 +703,8 @@ void GetAccMapLpim()
   CosThetaCM_IMppipi_p_wL_acc = (TH2F*)CosThetaCM_IMppipi_p_wL_nocombi->Clone("CosThetaCM_IMppipi_p_wL_acc");
   CosThetaCM_IMppipi_p_wL_acc->SetTitle("CosThetaCM_IMppipi_p_wL_acc");
   CosThetaCM_IMppipi_p_wL_acc->Print("base");
+  CosThetaCM_IMppipi_p_wL_acc->RebinY(20);
+  costhetapCM_IMLpim_gen->RebinY(20);
   CosThetaCM_IMppipi_p_wL_acc->Divide(CosThetaCM_IMppipi_p_wL_acc,costhetapCM_IMLpim_gen,1.0,1.0,"b");
 
 
@@ -720,6 +722,19 @@ void GetAccMapLpim()
       }
     }
   } 
+  
+  TH2F* CosThetaCM_IMppipi_p_wL_acc_clean = (TH2F*)CosThetaCM_IMppipi_p_wL_acc->Clone("CosThetaCM_IMppipi_p_wL_acc_clean");
+  CosThetaCM_IMppipi_p_wL_acc_clean->SetTitle("CosThetaCM_IMppipi_p_wL_acc_clean");
+  for(int ix=0;ix<CosThetaCM_IMppipi_p_wL_acc->GetNbinsX();ix++){
+    for(int iy=0;iy<CosThetaCM_IMppipi_p_wL_acc->GetNbinsY();iy++){
+      double error = CosThetaCM_IMppipi_p_wL_accerr->GetBinContent(ix,iy);
+      if(error>0.25){
+        CosThetaCM_IMppipi_p_wL_acc_clean->SetBinContent(ix,iy,0);
+        CosThetaCM_IMppipi_p_wL_acc_clean->SetBinError(ix,iy,0);
+      }
+    }
+  }
+
 
   /*
   TH2F* CosTheta_IMppipi_p_wL=NULL;
@@ -773,8 +788,8 @@ void GetAccMapLpim()
   CosThetaCM_IMppipi_p_wL_accerr->GetYaxis()->SetRangeUser(0,1);
   CosThetaCM_IMppipi_p_wL_accerr->Draw("colz");
 
-
-
+  TCanvas *cLpimCosCMClean = new TCanvas("cLpimCosCMClean","cLpimCosCMClean",1000,800);
+  CosThetaCM_IMppipi_p_wL_acc_clean->Draw("colz");
 
 
 
@@ -800,6 +815,8 @@ void GetAccMapLpim()
   CosTheta_IMppipi_p_wL_acc->Write();
   CosTheta_IMppipi_p_wL_acc_clean->Write();
   CosTheta_IMppipi_p_wL_mc_acc->Write();
+  CosThetaCM_IMppipi_p_wL_acc->Write();
+  CosThetaCM_IMppipi_p_wL_acc_clean->Write();
   fout->Close();
 
   TString pdfname = "accmaplpim.pdf";
