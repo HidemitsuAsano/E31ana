@@ -1,6 +1,7 @@
 const bool RemoveNotEnough = true;
 const double UncertCut = 0.20;
 const int ncut=6;
+const double TrigScale = 2.0;
 
 void GetAccMapLpim()
 {
@@ -28,10 +29,6 @@ void GetAccMapLpim()
   q_IMLPim_gen->SetYTitle("true Mom. Transfer [GeV/c]");
   q_IMLPim_gen->GetXaxis()->CenterTitle();
   q_IMLPim_gen->GetYaxis()->CenterTitle();
-  q_IMLPim_gen->Print("base");
-  q_IMLPim_gen->RebinX(15);
-  q_IMLPim_gen->RebinY(10);
-  q_IMLPim_gen->Print("base");
    
 
   TH1F* BLAnaPassed = (TH1F*)fgen->Get("BLAnaPassed");
@@ -47,9 +44,23 @@ void GetAccMapLpim()
     q_IMppipi_p_wL_sum[icut]->GetYaxis()->SetRangeUser(0,1.5);
     q_IMppipi_p_wL_sum[icut]->SetTitle("reco. evt.");
     q_IMppipi_p_wL_sum[icut]->Scale(1./SimBeamSurvivalRate);
+    q_IMppipi_p_wL_sum[icut]->Scale(1./TrigScale);
     //q_IMppipi_p_wL_sum[icut]->RebinX(3);
     //q_IMppipi_p_wL_sum[icut]->RebinY(3);
   }
+  
+  const double wM = q_IMppipi_p_wL_sum[0]->GetXaxis()->GetBinWidth(1);
+  const double wq = q_IMppipi_p_wL_sum[0]->GetYaxis()->GetBinWidth(1);
+  const double wMgen = q_IMLPim_gen->GetXaxis()->GetBinWidth(1);
+  const double wqgen = q_IMLPim_gen->GetYaxis()->GetBinWidth(1);
+  std::cout << "wM " << wM << std::endl; 
+  std::cout << "wq " << wq << std::endl; 
+  std::cout << "wMgen " << wMgen << std::endl; 
+  std::cout << "wqgen " << wqgen << std::endl; 
+  q_IMLPim_gen->Print("base");
+  q_IMLPim_gen->RebinX(wM/wMgen);
+  q_IMLPim_gen->RebinY(wq/wqgen);
+  q_IMLPim_gen->Print("base");
 
   TH2F* q_IMppipi_p_wL_acc[ncut];
   for(int icut=0;icut<ncut;icut++){
@@ -82,6 +93,7 @@ void GetAccMapLpim()
     q_IMppipi_p_wL_sum_nop2[icut]->GetYaxis()->SetRangeUser(0,1.5);
     q_IMppipi_p_wL_sum_nop2[icut]->SetTitle("reco. evt.");
     q_IMppipi_p_wL_sum_nop2[icut]->Scale(1./SimBeamSurvivalRate);
+    q_IMppipi_p_wL_sum_nop2[icut]->Scale(1./TrigScale);
   }//icut 
 
   TH2F* q_IMppipi_p_wL_nop2_acc[ncut];
@@ -116,6 +128,7 @@ void GetAccMapLpim()
     q_IMppipi_p_wL_sum_nop2_mc[icut]->GetYaxis()->SetRangeUser(0,1.5);
     q_IMppipi_p_wL_sum_nop2_mc[icut]->SetTitle("reco. evt.");
     q_IMppipi_p_wL_sum_nop2_mc[icut]->Scale(1./SimBeamSurvivalRate);
+    q_IMppipi_p_wL_sum_nop2_mc[icut]->Scale(1./TrigScale);
   }//icut 
 
   TH2F* q_IMppipi_p_wL_nop2_mc_acc[ncut];
@@ -149,6 +162,7 @@ void GetAccMapLpim()
     q_IMppipi_p_wL_sum_wp2[icut]->GetYaxis()->SetRangeUser(0,1.5);
     q_IMppipi_p_wL_sum_wp2[icut]->SetTitle("reco. evt.");
     q_IMppipi_p_wL_sum_wp2[icut]->Scale(1./SimBeamSurvivalRate);
+    q_IMppipi_p_wL_sum_wp2[icut]->Scale(1./TrigScale);
   }//icut 
 
   TH2F* q_IMppipi_p_wL_wp2_acc[ncut];
@@ -182,6 +196,7 @@ void GetAccMapLpim()
     q_IMppipi_p_wL_sum_wp2_mc[icut]->GetYaxis()->SetRangeUser(0,1.5);
     q_IMppipi_p_wL_sum_wp2_mc[icut]->SetTitle("reco. evt.");
     q_IMppipi_p_wL_sum_wp2_mc[icut]->Scale(1./SimBeamSurvivalRate);
+    q_IMppipi_p_wL_sum_wp2_mc[icut]->Scale(1./TrigScale);
   }//icut 
 
   TH2F* q_IMppipi_p_wL_wp2_mc_acc[ncut];
@@ -538,14 +553,28 @@ void GetAccMapLpim()
   costhetap_IMLpim_gen->SetYTitle("true proton CosTheta");
   costhetap_IMLpim_gen->GetXaxis()->CenterTitle();
   costhetap_IMLpim_gen->GetYaxis()->CenterTitle();
-  costhetap_IMLpim_gen->Print("base");
-  costhetap_IMLpim_gen->RebinX(15);
-  costhetap_IMLpim_gen->Print("base");
+  //costhetap_IMLpim_gen->Print("base");
+  //costhetap_IMLpim_gen->RebinX(15);
+  //costhetap_IMLpim_gen->Print("base");
  
   TH2F* CosTheta_IMppipi_p_wL=NULL;
   CosTheta_IMppipi_p_wL = (TH2F*)fLpim->Get("CosTheta_IMppipi_p_wL_nocombi");
   CosTheta_IMppipi_p_wL ->SetTitle("reco. evt.");
   CosTheta_IMppipi_p_wL->Scale(1./SimBeamSurvivalRate);
+  CosTheta_IMppipi_p_wL->Scale(1./TrigScale);
+
+  const double wMcos = CosTheta_IMppipi_p_wL->GetXaxis()->GetBinWidth(1);
+  const double wqcos = CosTheta_IMppipi_p_wL->GetYaxis()->GetBinWidth(1);
+  const double wMcosgen = costhetap_IMLpim_gen->GetXaxis()->GetBinWidth(1);
+  const double wqcosgen = costhetap_IMLpim_gen->GetYaxis()->GetBinWidth(1);
+  std::cout << "wMcos " << wMcos << std::endl; 
+  std::cout << "wqcos " << wqcos << std::endl; 
+  std::cout << "wMcosgen " << wMcosgen << std::endl; 
+  std::cout << "wqcosgen " << wqcosgen << std::endl; 
+  costhetap_IMLpim_gen->Print("base");
+  costhetap_IMLpim_gen->RebinX(wMcos/wMcosgen);
+  costhetap_IMLpim_gen->RebinY(wqcos/wqcosgen);
+  costhetap_IMLpim_gen->Print("base");
 
   TH2F* CosTheta_IMppipi_p_wL_acc=NULL;
   CosTheta_IMppipi_p_wL_acc = (TH2F*)CosTheta_IMppipi_p_wL->Clone("CosTheta_IMppipi_p_wL_acc");
@@ -596,6 +625,7 @@ void GetAccMapLpim()
   CosTheta_IMppipi_p_wL_mc = (TH2F*)fLpim->Get("CosTheta_IMppipi_p_wL_nocombi_mc");
   CosTheta_IMppipi_p_wL_mc ->SetTitle("reco. evt.");
   CosTheta_IMppipi_p_wL_mc->Scale(1./SimBeamSurvivalRate);
+  CosTheta_IMppipi_p_wL_mc->Scale(1./TrigScale);
 
   TH2F* CosTheta_IMppipi_p_wL_mc_acc=NULL;
   CosTheta_IMppipi_p_wL_mc_acc = (TH2F*)CosTheta_IMppipi_p_wL_mc->Clone("CosTheta_IMppipi_p_wL_mc_acc");
@@ -691,13 +721,23 @@ void GetAccMapLpim()
   costhetapCM_IMLpim_gen->GetXaxis()->CenterTitle();
   costhetapCM_IMLpim_gen->GetYaxis()->CenterTitle();
   costhetapCM_IMLpim_gen->Print("base");
-  costhetapCM_IMLpim_gen->RebinX(15);
+  //costhetapCM_IMLpim_gen->RebinX(15);
   costhetapCM_IMLpim_gen->Print("base");
   
   TH2F* CosThetaCM_IMppipi_p_wL_nocombi=NULL;
   CosThetaCM_IMppipi_p_wL_nocombi = (TH2F*)fLpim->Get("CosThetaCM_IMppipi_p_wL_nocombi");
   CosThetaCM_IMppipi_p_wL_nocombi->SetTitle("reco. evt.");
   CosThetaCM_IMppipi_p_wL_nocombi->Scale(1./SimBeamSurvivalRate);
+  CosThetaCM_IMppipi_p_wL_nocombi->Scale(1./TrigScale);
+  
+  const double wMcosCM = CosThetaCM_IMppipi_p_wL_nocombi->GetXaxis()->GetBinWidth(1);
+  const double wqcosCM = CosThetaCM_IMppipi_p_wL_nocombi->GetYaxis()->GetBinWidth(1);
+  const double wMcosgenCM = costhetapCM_IMLpim_gen->GetXaxis()->GetBinWidth(1);
+  const double wqcosgenCM = costhetapCM_IMLpim_gen->GetYaxis()->GetBinWidth(1);
+  costhetapCM_IMLpim_gen->Print("base");
+  costhetapCM_IMLpim_gen->RebinX(wMcos/wMcosgen);
+  costhetapCM_IMLpim_gen->RebinY(wqcos/wqcosgen);
+  costhetapCM_IMLpim_gen->Print("base");
 
   TH2F* CosThetaCM_IMppipi_p_wL_acc=NULL;
   CosThetaCM_IMppipi_p_wL_acc = (TH2F*)CosThetaCM_IMppipi_p_wL_nocombi->Clone("CosThetaCM_IMppipi_p_wL_acc");

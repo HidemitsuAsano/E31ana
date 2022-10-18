@@ -276,10 +276,14 @@ void CS_IMLambdaPim()
       double accerr = CosThetaCM_IMppipi_p_wL_acc->GetBinError(ix,iy);
       double cslpim =0.0;
       double cslpimerr = 0.0;
+      double cslpimerr1 = 0.0;
+      double cslpimerr2 = 0.0;
 
       if(acc>0.0){
         cslpim = cont/acc/binwidthM/binwidthcosCM/trigScale/lumi;
-        cslpimerr = conterr/acc/binwidthM/binwidthcosCM/trigScale/lumi;
+        cslpimerr1 = conterr/acc/binwidthM/binwidthcosCM/trigScale/lumi;
+        cslpimerr2 = accerr*cont/pow(acc*binwidthM*binwidthcosCM*trigScale*lumi,2.0);
+        cslpimerr = sqrt(pow(cslpimerr1,2.0)+pow(cslpimerr2,2.0));
       }
       CS_CosThetaCM_IMppipi_p_wL->SetBinContent(ix,iy,cslpim);
       CS_CosThetaCM_IMppipi_p_wL->SetBinError(ix,iy,cslpimerr);
@@ -324,7 +328,7 @@ void CS_IMLambdaPim()
   TCanvas *cCS_qS1385Lpim = new TCanvas("cCS_qS1385Lpim","cCS_qS1385Lpim",1000,800);
   //already dividede by q bin width
   TH1D* CS_qS1385Lpim = (TH1D*)CS_q_IMppipi_p_wL_sum->ProjectionY("CS_qS1385Lpim",Mbin1370,Mbin1400-1);
-  CS_qS1385Lpim->SetTitle("CS_CosS1385Lpim M1.37-1.40");
+  CS_qS1385Lpim->SetTitle("CS_qS1385Lpim M1.37-1.40");
   CS_qS1385Lpim->GetXaxis()->SetRangeUser(0.0,0.65);
   CS_qS1385Lpim->Scale(binwidthM);
   CS_qS1385Lpim->Draw("E");
@@ -332,7 +336,6 @@ void CS_IMLambdaPim()
 
   //
   //CM frame analysis end
-  //
   //
   
 

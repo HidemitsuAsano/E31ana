@@ -1144,7 +1144,9 @@ void CS_finals()
   TH2D* Cosn_IMnpipi_Sm_cs[3][3];//deco sys, mix sys
   TH2D* Cosn_IMnpipi_SpSmSum[3][3];//deco sys, mix sys
   TH1D* CosL1405[3][3];//deco sys, mix sys
-   
+  TH1D* CosL1520[3][3];//deco sys, mix sys
+  TH1D* qL1405[3][3];//deco sys, mix sys
+  TH1D* qL1520[3][3];//deco sys, mix sys
   
   for(int idecosys=0;idecosys<3;idecosys++){
     for(int imixsys=0;imixsys<3;imixsys++){
@@ -1152,6 +1154,9 @@ void CS_finals()
       Cosn_IMnpipi_Sm_cs[idecosys][imixsys] = (TH2D*)fpisigma[0][imixsys]->Get(Form("Cosn_IMnpipi_Sm_cs_sys%d",idecosys-1));
       Cosn_IMnpipi_SpSmSum[idecosys][imixsys] = (TH2D*)fpisigma[0][imixsys]->Get(Form("Cosn_IMnpipi_SpSmSum_sys%d",idecosys-1));
       CosL1405[idecosys][imixsys] = (TH1D*)fpisigma[0][imixsys]->Get(Form("CosL1405_sys%d",idecosys-1));
+      CosL1520[idecosys][imixsys] = (TH1D*)fpisigma[0][imixsys]->Get(Form("CosL1520_sys%d",idecosys-1));
+      qL1405[idecosys][imixsys] = (TH1D*)fpisigma[0][imixsys]->Get(Form("qL1405_sys%d",idecosys-1));
+      qL1520[idecosys][imixsys] = (TH1D*)fpisigma[0][imixsys]->Get(Form("qL1520_sys%d",idecosys-1));
     }
   }
     
@@ -1245,6 +1250,211 @@ void CS_finals()
   gry->SetLineColor(3);
   gry->SetLineWidth(3);
   //gry->Draw("c");
+
+  TGraphAsymmErrors *grCosL1520 = new TGraphAsymmErrors(CosL1520[1][1]);
+  TGraphAsymmErrors *grCosL1520_decosysup = new TGraphAsymmErrors(CosL1520[2][1]);
+  TGraphAsymmErrors *grCosL1520_decosysdown = new TGraphAsymmErrors(CosL1520[0][1]);
+  for(int ip=0;ip<grCosL1520->GetN();ip++){
+    double valup = grCosL1520_decosysup->GetPointY(ip);
+    double valdef = grCosL1520->GetPointY(ip);
+    double yeh = grCosL1520->GetErrorYhigh(ip);
+    double yel = grCosL1520->GetErrorYlow(ip);
+    double valdown = grCosL1520_decosysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = sqrt(yeh*yeh + diffup*diffup);
+      yel = sqrt(yel*yel + diffdown*diffdown);
+    }else{
+      yeh = sqrt(yeh*yeh + diffdown*diffdown);
+      yel = sqrt(yel*yel + diffup*diffup);
+    }
+    grCosL1520->SetPointEYhigh(ip,yeh);
+    grCosL1520->SetPointEYlow(ip,yel);
+  }
+  TGraphAsymmErrors *gMIXErrorCosL1520 = new TGraphAsymmErrors(CosL1520[1][1]);
+  TGraphAsymmErrors *gMIXErrorCosL1520_sysup = new TGraphAsymmErrors(CosL1520[1][2]);
+  TGraphAsymmErrors *gMIXErrorCosL1520_sysdown = new TGraphAsymmErrors(CosL1520[1][0]);
+  for(int ip=0;ip<gMIXErrorCosL1520->GetN();ip++){
+    double valup = gMIXErrorCosL1520_sysup->GetPointY(ip);
+    double valdef = gMIXErrorCosL1520->GetPointY(ip);
+    double yeh = gMIXErrorCosL1520->GetErrorYhigh(ip);
+    double yel = gMIXErrorCosL1520->GetErrorYlow(ip);
+    double valdown = gMIXErrorCosL1520_sysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = fabs(diffup);
+      yel = fabs(diffdown);
+    }else{
+      yeh = fabs(diffdown);
+      yel = fabs(diffup);
+    }
+    gMIXErrorCosL1520->SetPointEYhigh(ip,yeh);
+    gMIXErrorCosL1520->SetPointEYlow(ip,yel);
+    
+    double xe = CosL1520[1][1]->GetBinWidth(ip+1);
+    gMIXErrorCosL1520->SetPointEXhigh(ip,xe/4);
+    gMIXErrorCosL1520->SetPointEXlow(ip,xe/4);
+  }
+  
+  TCanvas *cCosL1520 = new TCanvas("cCosL1520","cCosL1520",1200,800);
+  grCosL1520->GetXaxis()->SetRangeUser(0.6,1);
+  grCosL1520->GetXaxis()->SetTitle("cos#theta_{n} (CM)");
+  grCosL1520->GetXaxis()->CenterTitle();
+  grCosL1520->GetYaxis()->SetTitle("d#sigma / dcos#theta_{n} [#mub]  ");
+  grCosL1520->GetYaxis()->CenterTitle();
+  grCosL1520->Draw("ap");
+  gMIXErrorCosL1520->SetLineColor(12);
+  gMIXErrorCosL1520->SetFillStyle(3001);
+  gMIXErrorCosL1520->SetFillColor(12);
+  gMIXErrorCosL1520->Draw("5");
+  TLine *pL1520 = new TLine(0.6,0,1,0);
+  pL1520->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  pL1520->SetLineStyle(2);
+  pL1520->Draw();
+
+  TGraphAsymmErrors *grqL1405 = new TGraphAsymmErrors(qL1405[1][1]);
+  TGraphAsymmErrors *grqL1405_decosysup = new TGraphAsymmErrors(qL1405[2][1]);
+  TGraphAsymmErrors *grqL1405_decosysdown = new TGraphAsymmErrors(qL1405[0][1]);
+  for(int ip=0;ip<grqL1405->GetN();ip++){
+    double valup = grqL1405_decosysup->GetPointY(ip);
+    double valdef = grqL1405->GetPointY(ip);
+    double yeh = grqL1405->GetErrorYhigh(ip);
+    double yel = grqL1405->GetErrorYlow(ip);
+    double valdown = grqL1405_decosysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = sqrt(yeh*yeh + diffup*diffup);
+      yel = sqrt(yel*yel + diffdown*diffdown);
+    }else{
+      yeh = sqrt(yeh*yeh + diffdown*diffdown);
+      yel = sqrt(yel*yel + diffup*diffup);
+    }
+    grqL1405->SetPointEYhigh(ip,yeh);
+    grqL1405->SetPointEYlow(ip,yel);
+  }
+  TGraphAsymmErrors *gMIXErrorqL1405 = new TGraphAsymmErrors(qL1405[1][1]);
+  TGraphAsymmErrors *gMIXErrorqL1405_sysup = new TGraphAsymmErrors(qL1405[1][2]);
+  TGraphAsymmErrors *gMIXErrorqL1405_sysdown = new TGraphAsymmErrors(qL1405[1][0]);
+  for(int ip=0;ip<gMIXErrorqL1405->GetN();ip++){
+    double valup = gMIXErrorqL1405_sysup->GetPointY(ip);
+    double valdef = gMIXErrorqL1405->GetPointY(ip);
+    double yeh = gMIXErrorqL1405->GetErrorYhigh(ip);
+    double yel = gMIXErrorqL1405->GetErrorYlow(ip);
+    double valdown = gMIXErrorqL1405_sysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = fabs(diffup);
+      yel = fabs(diffdown);
+    }else{
+      yeh = fabs(diffdown);
+      yel = fabs(diffup);
+    }
+    gMIXErrorqL1405->SetPointEYhigh(ip,yeh);
+    gMIXErrorqL1405->SetPointEYlow(ip,yel);
+    
+    double xe = qL1405[1][1]->GetBinWidth(ip+1);
+    gMIXErrorqL1405->SetPointEXhigh(ip,xe/4);
+    gMIXErrorqL1405->SetPointEXlow(ip,xe/4);
+  }
+  
+  TCanvas *cqL1405 = new TCanvas("cqL1405","cqL1405",1200,800);
+  grqL1405->SetTitle("CS L1405 M 1400-1440");
+  grqL1405->GetXaxis()->SetRangeUser(0.,0.65);
+  grqL1405->GetXaxis()->SetTitle("Mom. Transfer [GeV/c]");
+  grqL1405->GetXaxis()->CenterTitle();
+  grqL1405->GetYaxis()->SetTitle("d#sigma / dq [#mub/(MeV/c)]  ");
+  grqL1405->GetYaxis()->CenterTitle();
+  grqL1405->Draw("ap");
+  gMIXErrorqL1405->SetLineColor(12);
+  gMIXErrorqL1405->SetFillStyle(3001);
+  gMIXErrorqL1405->SetFillColor(12);
+  gMIXErrorqL1405->Draw("5");
+  TLine *pqL1405 = new TLine(0.0,0,0.65,0);
+  pqL1405->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  pqL1405->SetLineStyle(2);
+  pqL1405->Draw();
+
+
+  TGraphAsymmErrors *grqL1520 = new TGraphAsymmErrors(qL1520[1][1]);
+  TGraphAsymmErrors *grqL1520_decosysup = new TGraphAsymmErrors(qL1520[2][1]);
+  TGraphAsymmErrors *grqL1520_decosysdown = new TGraphAsymmErrors(qL1520[0][1]);
+  for(int ip=0;ip<grqL1520->GetN();ip++){
+    double valup = grqL1520_decosysup->GetPointY(ip);
+    double valdef = grqL1520->GetPointY(ip);
+    double yeh = grqL1520->GetErrorYhigh(ip);
+    double yel = grqL1520->GetErrorYlow(ip);
+    double valdown = grqL1520_decosysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = sqrt(yeh*yeh + diffup*diffup);
+      yel = sqrt(yel*yel + diffdown*diffdown);
+    }else{
+      yeh = sqrt(yeh*yeh + diffdown*diffdown);
+      yel = sqrt(yel*yel + diffup*diffup);
+    }
+    grqL1520->SetPointEYhigh(ip,yeh);
+    grqL1520->SetPointEYlow(ip,yel);
+  }
+  TGraphAsymmErrors *gMIXErrorqL1520 = new TGraphAsymmErrors(qL1520[1][1]);
+  TGraphAsymmErrors *gMIXErrorqL1520_sysup = new TGraphAsymmErrors(qL1520[1][2]);
+  TGraphAsymmErrors *gMIXErrorqL1520_sysdown = new TGraphAsymmErrors(qL1520[1][0]);
+  for(int ip=0;ip<gMIXErrorqL1520->GetN();ip++){
+    double valup = gMIXErrorqL1520_sysup->GetPointY(ip);
+    double valdef = gMIXErrorqL1520->GetPointY(ip);
+    double yeh = gMIXErrorqL1520->GetErrorYhigh(ip);
+    double yel = gMIXErrorqL1520->GetErrorYlow(ip);
+    double valdown = gMIXErrorqL1520_sysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = fabs(diffup);
+      yel = fabs(diffdown);
+    }else{
+      yeh = fabs(diffdown);
+      yel = fabs(diffup);
+    }
+    gMIXErrorqL1520->SetPointEYhigh(ip,yeh);
+    gMIXErrorqL1520->SetPointEYlow(ip,yel);
+    
+    double xe = qL1520[1][1]->GetBinWidth(ip+1);
+    gMIXErrorqL1520->SetPointEXhigh(ip,xe/4);
+    gMIXErrorqL1520->SetPointEXlow(ip,xe/4);
+  }
+  
+  TCanvas *cqL1520 = new TCanvas("cqL1520","cqL1520",1200,800);
+  grqL1520->SetTitle("CS L1520 M 1500-1545");
+  grqL1520->GetXaxis()->SetRangeUser(0.0,0.65);
+  grqL1520->GetXaxis()->SetTitle("Mom. Transfer [GeV/c]");
+  grqL1520->GetXaxis()->CenterTitle();
+  grqL1520->GetYaxis()->SetTitle("d#sigma / dq [#mub/(MeV/c)]  ");
+  grqL1520->GetYaxis()->CenterTitle();
+  grqL1520->Draw("ap");
+  gMIXErrorqL1520->SetLineColor(12);
+  gMIXErrorqL1520->SetFillStyle(3001);
+  gMIXErrorqL1520->SetFillColor(12);
+  gMIXErrorqL1520->Draw("5");
+  TLine *pqL1520 = new TLine(0.0,0,0.65,0);
+  pqL1520->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  pqL1520->SetLineStyle(2);
+  pqL1520->Draw();
+
+
+
+
 
 
   TCanvas *c = NULL;
