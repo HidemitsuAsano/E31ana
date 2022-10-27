@@ -1664,6 +1664,34 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   }
   Cosn_IMnpipi_SpSmSum[1]->Draw("colz");
   
+  //  w/  Cosn cut theta=0.95 CM 
+  const int coscmbin100 = Cosn_IMnpipi_SpSmSum[1]->GetYaxis()->FindBin(1.00);
+  const int coscmbin095 = Cosn_IMnpipi_SpSmSum[1]->GetYaxis()->FindBin(0.95);
+  const int coscmbin060 = Cosn_IMnpipi_SpSmSum[1]->GetYaxis()->FindBin(0.60);
+  std::cout << "095bin" << Cosn_IMnpipi_SpSmSum[1]->GetYaxis()->GetBinLowEdge(coscmbin095) << std::endl;
+ 
+
+  TH1D* IMnpipi_SpSmAvgCosCut[3][2];
+  for(int isys=0;isys<3;isys++){
+    //cos 0.95-1.00
+    IMnpipi_SpSmAvgCosCut[isys][0] = (TH1D*)Cosn_IMnpipi_SpSmSum[isys]->ProjectionX(Form("IMnpipi_SpSmAvgCosCus%d_0",isys),coscmbin095,coscmbin100+1);
+    IMnpipi_SpSmAvgCosCut[isys][0]->SetTitle(Form("IMnpipi_SpSmAvgCosCus%d_0",isys));
+    IMnpipi_SpSmAvgCosCut[isys][0]->Scale(1./2.);
+    //cos 0.60-0.95
+    IMnpipi_SpSmAvgCosCut[isys][1] = (TH1D*)Cosn_IMnpipi_SpSmSum[isys]->ProjectionX(Form("IMnpipi_SpSmAvgCosCus%d_1",isys),coscmbin060,coscmbin095-1);
+    IMnpipi_SpSmAvgCosCut[isys][1]->SetTitle(Form("IMnpipi_SpSmAvgCosCus%d_1",isys));
+    IMnpipi_SpSmAvgCosCut[isys][1]->Scale(1./2.);
+    //cos 0.60-0.95
+  }
+
+  TCanvas *cIMPiSigmaCoscut[2]; 
+  for(int iccut=0;iccut<2;iccut++){
+    cIMPiSigmaCoscut[iccut] = new TCanvas(Form("iccut%d",iccut),Form("iccut%d",iccut),1000,800);
+    cIMPiSigmaCoscut[iccut]->cd();
+    IMnpipi_SpSmAvgCosCut[1][iccut]->GetXaxis()->SetRangeUser(1.3,1.6);
+    IMnpipi_SpSmAvgCosCut[1][iccut]->Draw("E"); 
+  }
+
 
   //sekihara-Yamagata range 1400-1440
   TCanvas *cCosL1405 = new TCanvas("cCosL1405","cCosL1405");
@@ -1906,16 +1934,17 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     gDecoErrorSm_CS[iq]->Write();
     gDecoErrorK0_CS[iq]->Write();
     gDecoErrorSpSmSum_CS[iq]->Write();
-    
-    for(int isys=0;isys<3;isys++){
-      Cosn_IMnpipi_Sp_cs[isys]->Write();
-      Cosn_IMnpipi_Sm_cs[isys]->Write();
-      Cosn_IMnpipi_SpSmSum[isys]->Write();
-      CosL1405[isys]->Write();
-      CosL1520[isys]->Write();
-      qL1405[isys]->Write();
-      qL1520[isys]->Write();
-    }
+  }
+  for(int isys=0;isys<3;isys++){
+    Cosn_IMnpipi_Sp_cs[isys]->Write();
+    Cosn_IMnpipi_Sm_cs[isys]->Write();
+    Cosn_IMnpipi_SpSmSum[isys]->Write();
+    IMnpipi_SpSmAvgCosCut[isys][0]->Write();
+    IMnpipi_SpSmAvgCosCut[isys][1]->Write();
+    CosL1405[isys]->Write();
+    CosL1520[isys]->Write();
+    qL1405[isys]->Write();
+    qL1520[isys]->Write();
   }
   fout->Close();
 
