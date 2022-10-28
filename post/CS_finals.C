@@ -1166,8 +1166,40 @@ void CS_finals()
   }
   cSysSpSmAvgEtotal[1]->SaveAs("Avgqlow.pdf");
   cSysSpSmAvgEtotal[2]->SaveAs("Avgqhi.pdf");
+   
 
+  TCanvas *cSysSpSmAvgEtotalSide = new TCanvas("cSysSpSmAvgEtotalSide","cSysSpSmAvgEtotalSide",1700,800);
+  cSysSpSmAvgEtotalSide->SetBottomMargin(0.12);
+  cSysSpSmAvgEtotalSide->SetLeftMargin(0.14);
+  cSysSpSmAvgEtotalSide->SetRightMargin(0.08);
+  cSysSpSmAvgEtotalSide->Divide(2,1,0,0);
+  cSysSpSmAvgEtotalSide->cd(1);
+  gIMnpipi_SpSmAvg_cs_Etotal[1]->GetYaxis()->SetRangeUser(-0.2,1.6);
+  gIMnpipi_SpSmAvg_cs_Etotal[2]->GetYaxis()->SetRangeUser(-0.2,1.6);
+  gIMnpipi_SpSmAvg_cs_Etotal[1]->Draw("ap");
+  gMIXErrorSpSmAvg_CS[1]->Draw("5");
+  gr_S1385_ToSqlow->Draw("5");
+  TLine *ps = new TLine(1.29,0,1.605,0);
+  ps->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  ps->SetLineStyle(2);
+  ps->Draw();
+  TLine *pkp = new TLine(kpMass+pMass,0,kpMass+pMass,3);
+  pkp->SetLineColor(1);
+  pkp->SetLineStyle(2);
+  pkp->Draw();
 
+  TLine *pk0n = new TLine(k0Mass+nMass,0,k0Mass+nMass,3);
+  pk0n->SetLineColor(1);
+  pk0n->SetLineStyle(2);
+  pk0n->Draw();
+  cSysSpSmAvgEtotalSide->cd(2);
+  gIMnpipi_SpSmAvg_cs_Etotal[2]->Draw("ap");
+  gMIXErrorSpSmAvg_CS[2]->Draw("5");
+  gr_S1385_ToSqhi->Draw("5");
+  ps->Draw();
+  pkp->Draw();
+  pk0n->Draw();
 
   TCanvas *cboth[4];
   for(int iq=1;iq<3;iq++){
@@ -1684,10 +1716,11 @@ void CS_finals()
   }
   
   TCanvas *cIMnpipi_SpSmAvgCosCut0 = new TCanvas("cIMnpipi_SpSmAvgCosCut0","cIMnpipi_SpSmAvgCosCut0",1200,800);
+  grIMnpipi_SpSmAvgCosCut0->SetTitle("");
   grIMnpipi_SpSmAvgCosCut0->GetXaxis()->SetRangeUser(1.3,1.6);
   grIMnpipi_SpSmAvgCosCut0->GetXaxis()->SetTitle("IM(#pi#Sigma) [GeV/c^{2}]");
   grIMnpipi_SpSmAvgCosCut0->GetXaxis()->CenterTitle();
-  grIMnpipi_SpSmAvgCosCut0->GetYaxis()->SetTitle("d#sigma / dM  ");
+  grIMnpipi_SpSmAvgCosCut0->GetYaxis()->SetTitle("d#sigma/dM [#mub/MeV^{2}]");
   grIMnpipi_SpSmAvgCosCut0->GetYaxis()->CenterTitle();
   grIMnpipi_SpSmAvgCosCut0->Draw("ap");
   gMIXErrorIMnpipi_SpSmAvgCosCut0->SetLineColor(12);
@@ -1764,10 +1797,11 @@ void CS_finals()
   }
   
   TCanvas *cIMnpipi_SpSmAvgCosCut1 = new TCanvas("cIMnpipi_SpSmAvgCosCut1","cIMnpipi_SpSmAvgCosCut1",1200,800);
+  grIMnpipi_SpSmAvgCosCut1->SetTitle("");
   grIMnpipi_SpSmAvgCosCut1->GetXaxis()->SetRangeUser(1.3,1.6);
   grIMnpipi_SpSmAvgCosCut1->GetXaxis()->SetTitle("IM(#pi#Sigma) [GeV/c^{2}]");
   grIMnpipi_SpSmAvgCosCut1->GetXaxis()->CenterTitle();
-  grIMnpipi_SpSmAvgCosCut1->GetYaxis()->SetTitle("d#sigma / dM  ");
+  grIMnpipi_SpSmAvgCosCut1->GetYaxis()->SetTitle("d#sigma/dM [#mub/(MeV/c^{2}])");
   grIMnpipi_SpSmAvgCosCut1->GetYaxis()->CenterTitle();
   grIMnpipi_SpSmAvgCosCut1->Draw("ap");
   gMIXErrorIMnpipi_SpSmAvgCosCut1->SetLineColor(12);
@@ -1780,9 +1814,25 @@ void CS_finals()
   pIMnpipi_SpSmAvgCosCut1->SetLineStyle(2);
   pIMnpipi_SpSmAvgCosCut1->Draw();
 
-
-  
-
+  TCanvas *cIMnpipi_SpSmAvgCosCut = new TCanvas("cIMnpipi_SpSmAvgCosCut","cIMnpipi_SpSmAvgCosCut",1600,800);
+  cIMnpipi_SpSmAvgCosCut->SetBottomMargin(0.12);
+  cIMnpipi_SpSmAvgCosCut->SetLeftMargin(0.14);
+  cIMnpipi_SpSmAvgCosCut->SetRightMargin(0.08);
+  cIMnpipi_SpSmAvgCosCut->Divide(2,1,0.,0.0);
+  cIMnpipi_SpSmAvgCosCut->cd(1);
+  grIMnpipi_SpSmAvgCosCut0->GetYaxis()->SetRangeUser(-0.1,1.4);
+  grIMnpipi_SpSmAvgCosCut0->Draw("ap");
+  gMIXErrorIMnpipi_SpSmAvgCosCut0->Draw("5");
+  pIMnpipi_SpSmAvgCosCut0->Draw();
+  pkp->Draw();
+  pk0n->Draw();
+  cIMnpipi_SpSmAvgCosCut->cd(2);
+  grIMnpipi_SpSmAvgCosCut1->GetYaxis()->SetRangeUser(-0.1,1.4);
+  grIMnpipi_SpSmAvgCosCut1->Draw("ap");
+  gMIXErrorIMnpipi_SpSmAvgCosCut1->Draw("5");
+  pIMnpipi_SpSmAvgCosCut1->Draw();
+  pkp->Draw();
+  pk0n->Draw();
 
 
 
