@@ -31,6 +31,7 @@ void CS_finals()
   TH1D* IMnpipi_Sm_cs[4][3][3];
   TH1D* IMnpipi_K0_cs[4][3][3];
   TH1D* IMnpipi_SpSmSum[4][3][3];
+  TH1D* IMnpipi_SpSmAvg[4][3][3];
   TGraphAsymmErrors* gIMnpipi_Sp_cs_Etotal[4];//CS with bin by bin total error
   TGraphAsymmErrors* gIMnpipi_Sm_cs_Etotal[4];//CS with bin by bin total error
   TGraphAsymmErrors* gIMnpipi_K0_cs_Etotal[4];//CS with bin by bin total error
@@ -50,6 +51,8 @@ void CS_finals()
       IMnpipi_Sm_cs[iq][iEcut][1] = (TH1D*)fpisigma[iEcut][1]->Get(Form("IMnpipi_Sm_cs%d_sys0",iq));
       IMnpipi_K0_cs[iq][iEcut][1] = (TH1D*)fpisigma[iEcut][1]->Get(Form("IMnpipi_K0_cs%d_sys0",iq));
       IMnpipi_SpSmSum[iq][iEcut][1] = (TH1D*)fpisigma[iEcut][1]->Get(Form("IMnpipi_SpSmSum%d_sys0",iq));
+      IMnpipi_SpSmAvg[iq][iEcut][1] = (TH1D*)IMnpipi_SpSmSum[iq][iEcut][1]->Clone(Form("IMnpipi_SpSmAvg%d_dE%d_sys0",iq,iEcut));
+      IMnpipi_SpSmAvg[iq][iEcut][1]->Scale(1./2.);
     }
     q_IMnpipi_Sp_cs[iq][0][0] = (TH2D*)fpisigma[0][0]->Get(Form("q_IMnpipi_Sp_cs%d_sys0",iq));
     q_IMnpipi_Sm_cs[iq][0][0] = (TH2D*)fpisigma[0][0]->Get(Form("q_IMnpipi_Sm_cs%d_sys0",iq));
@@ -59,6 +62,8 @@ void CS_finals()
     IMnpipi_Sm_cs[iq][0][0] = (TH1D*)fpisigma[0][0]->Get(Form("IMnpipi_Sm_cs%d_sys0",iq));
     IMnpipi_K0_cs[iq][0][0] = (TH1D*)fpisigma[0][0]->Get(Form("IMnpipi_K0_cs%d_sys0",iq));
     IMnpipi_SpSmSum[iq][0][0] = (TH1D*)fpisigma[0][0]->Get(Form("IMnpipi_SpSmSum%d_sys0",iq));
+    IMnpipi_SpSmAvg[iq][0][0] = (TH1D*)IMnpipi_SpSmSum[iq][0][0]->Clone(Form("IMnpipi_SpSmAvg%d_sys-1",iq));
+    IMnpipi_SpSmAvg[iq][0][0]->Scale(1./2.);
     
     q_IMnpipi_Sp_cs[iq][0][2] = (TH2D*)fpisigma[0][2]->Get(Form("q_IMnpipi_Sp_cs%d_sys0",iq));
     q_IMnpipi_Sm_cs[iq][0][2] = (TH2D*)fpisigma[0][2]->Get(Form("q_IMnpipi_Sm_cs%d_sys0",iq));
@@ -68,12 +73,17 @@ void CS_finals()
     IMnpipi_Sm_cs[iq][0][2] = (TH1D*)fpisigma[0][2]->Get(Form("IMnpipi_Sm_cs%d_sys0",iq));
     IMnpipi_K0_cs[iq][0][2] = (TH1D*)fpisigma[0][2]->Get(Form("IMnpipi_K0_cs%d_sys0",iq));
     IMnpipi_SpSmSum[iq][0][2] = (TH1D*)fpisigma[0][2]->Get(Form("IMnpipi_SpSmSum%d_sys0",iq));
+    IMnpipi_SpSmAvg[iq][0][2] = (TH1D*)IMnpipi_SpSmSum[iq][0][2]->Clone(Form("IMnpipi_SpSmAvg%d_sys1",iq));
+    IMnpipi_SpSmAvg[iq][0][2]->Scale(1./2.);
     
     gDecoErrorSp_CS[iq] = (TGraphAsymmErrors*)fpisigma[0][1]->Get(Form("Graph_from_IMnpipi_Sp_cs_single%d_sys0",iq));
     gDecoErrorSm_CS[iq] = (TGraphAsymmErrors*)fpisigma[0][1]->Get(Form("Graph_from_IMnpipi_Sm_cs_single%d_sys0",iq));
     gDecoErrorK0_CS[iq] = (TGraphAsymmErrors*)fpisigma[0][1]->Get(Form("Graph_from_IMnpipi_K0_cs_single%d_sys0",iq));
     gDecoErrorSpSm_CS[iq] = (TGraphAsymmErrors*)fpisigma[0][1]->Get(Form("Graph_from_IMnpipi_SpSmSum%d_sys0",iq));
   }
+
+ 
+
 
   std::cout << "FILE GET " << std::endl;
   TCanvas *cqM_Sp[4];
@@ -141,6 +151,7 @@ void CS_finals()
   TGraphAsymmErrors *gMIXErrorSm_CS[4];
   TGraphAsymmErrors *gMIXErrorK0_CS[4];
   TGraphAsymmErrors *gMIXErrorSpSm_CS[4];
+  TGraphAsymmErrors *gMIXErrorSpSmAvg_CS[4];
   TGraphAsymmErrors *gdEErrorSp_CS[4];
   TGraphAsymmErrors *gdEErrorSm_CS[4];
   TGraphAsymmErrors *gdEErrorK0_CS[4];
@@ -151,10 +162,12 @@ void CS_finals()
     gMIXErrorSm_CS[iq] = new TGraphAsymmErrors(IMnpipi_Sm_cs[iq][0][1]);
     gMIXErrorK0_CS[iq] = new TGraphAsymmErrors(IMnpipi_K0_cs[iq][0][1]);
     gMIXErrorSpSm_CS[iq] = new TGraphAsymmErrors(IMnpipi_SpSmSum[iq][0][1]);
+    gMIXErrorSpSmAvg_CS[iq] = new TGraphAsymmErrors(IMnpipi_SpSmAvg[iq][0][1]);
     gMIXErrorSp_CS[iq]->SetName(Form("gMIXErrorSp_CS%d",iq));
     gMIXErrorSm_CS[iq]->SetName(Form("gMIXErrorSm_CS%d",iq));
     gMIXErrorK0_CS[iq]->SetName(Form("gMIXErrorK0_CS%d",iq));
     gMIXErrorSpSm_CS[iq]->SetName(Form("gMIXErrorSpSm_CS%d",iq));
+    gMIXErrorSpSmAvg_CS[iq]->SetName(Form("gMIXErrorSpSmAvg_CS%d",iq));
 
     gdEErrorSp_CS[iq] = new TGraphAsymmErrors(IMnpipi_Sp_cs[iq][0][1]);
     gdEErrorSm_CS[iq] = new TGraphAsymmErrors(IMnpipi_Sm_cs[iq][0][1]);
@@ -223,6 +236,22 @@ void CS_finals()
          
       gMIXErrorSpSm_CS[iq]->SetPointEYhigh(ip,fabs(yeh));
       gMIXErrorSpSm_CS[iq]->SetPointEYlow(ip,fabs(yel));
+    }
+    
+    for(int ip=0;ip<( gMIXErrorSpSmAvg_CS[iq]->GetN());ip++){
+      double xe = IMnpipi_SpSmSum[iq][0][0]->GetBinWidth(ip+1);
+      gMIXErrorSpSmAvg_CS[iq]->SetPointEXhigh(ip,xe/4);
+      gMIXErrorSpSmAvg_CS[iq]->SetPointEXlow(ip,xe/4);
+      
+      double  valdown = IMnpipi_SpSmAvg[iq][0][0]->GetBinContent(ip+1);
+      double  valdef = IMnpipi_SpSmAvg[iq][0][1]->GetBinContent(ip+1);
+      double  valup  = IMnpipi_SpSmAvg[iq][0][2]->GetBinContent(ip+1);
+      
+      double yeh = valup-valdef;
+      double yel = valdown-valdef;
+         
+      gMIXErrorSpSmAvg_CS[iq]->SetPointEYhigh(ip,fabs(yeh));
+      gMIXErrorSpSmAvg_CS[iq]->SetPointEYlow(ip,fabs(yel));
     }
 
     //shift dE cut and estimate systematics
@@ -1006,7 +1035,7 @@ void CS_finals()
     gIMnpipi_SpSmSum_cs_Etotal[iq]->GetYaxis()->SetTitleSize(0.04);
     gIMnpipi_SpSmSum_cs_Etotal[iq]->GetXaxis()->SetTitleOffset(1.4);
     gIMnpipi_SpSmSum_cs_Etotal[iq]->GetYaxis()->SetTitleOffset(1.6);
-   if(iq==1){
+    if(iq==1){
       for(int ip=0;ip<10;ip++){
         gIMnpipi_SpSmSum_cs_Etotal[iq]->RemovePoint(0);
         gMIXErrorSpSm_CS[iq]->RemovePoint(0);
@@ -1061,8 +1090,85 @@ void CS_finals()
   }
   cSysSpSmSumEtotal[1]->SaveAs("Sumqlow.pdf");
   cSysSpSmSumEtotal[2]->SaveAs("Sumqhi.pdf");
-
   
+  TCanvas *cSysSpSmAvgEtotal[4];
+  TGraphAsymmErrors *gIMnpipi_SpSmAvg_cs_Etotal[4];
+  for(int iq=1;iq<3;iq++){  
+    cSysSpSmAvgEtotal[iq] = new TCanvas(Form("cSysSpSmAvgEtotal%d",iq),Form("cSysSpSmAvgEtotal%d",iq),1100,1100);
+    
+    cSysSpSmAvgEtotal[iq]->SetBottomMargin(0.12);
+    cSysSpSmAvgEtotal[iq]->SetLeftMargin(0.14);
+    cSysSpSmAvgEtotal[iq]->SetRightMargin(0.08);
+    
+    gIMnpipi_SpSmAvg_cs_Etotal[iq] = new TGraphAsymmErrors(IMnpipi_SpSmAvg[iq][0][1]);
+    gIMnpipi_SpSmAvg_cs_Etotal[iq]->SetName(Form("gIMnpipi_SpSmAvg_cs_Etotal%d",iq));
+    gIMnpipi_SpSmAvg_cs_Etotal[iq]->SetMarkerColor(1);
+    gIMnpipi_SpSmAvg_cs_Etotal[iq]->GetXaxis()->SetRangeUser(1.3,1.6);
+    gIMnpipi_SpSmAvg_cs_Etotal[iq]->SetTitle("");
+    gIMnpipi_SpSmAvg_cs_Etotal[iq]->GetXaxis()->SetTitle("IM(#pi#Sigma) [GeV/c^{2}]");
+    gIMnpipi_SpSmAvg_cs_Etotal[iq]->GetXaxis()->CenterTitle();
+    gIMnpipi_SpSmAvg_cs_Etotal[iq]->GetYaxis()->SetTitle("d#sigma/dM  [#mub/(MeV/c^{2})]");
+    gIMnpipi_SpSmAvg_cs_Etotal[iq]->GetYaxis()->CenterTitle();
+
+    gIMnpipi_SpSmAvg_cs_Etotal[iq]->GetXaxis()->SetTitleSize(0.04);
+    gIMnpipi_SpSmAvg_cs_Etotal[iq]->GetYaxis()->SetTitleSize(0.04);
+    gIMnpipi_SpSmAvg_cs_Etotal[iq]->GetXaxis()->SetTitleOffset(1.4);
+    gIMnpipi_SpSmAvg_cs_Etotal[iq]->GetYaxis()->SetTitleOffset(1.6);
+   if(iq==1){
+      for(int ip=0;ip<10;ip++){
+        gIMnpipi_SpSmAvg_cs_Etotal[iq]->RemovePoint(0);
+      }
+    }
+    if(iq==2){
+      for(int ip=0;ip<8;ip++){
+        gIMnpipi_SpSmAvg_cs_Etotal[iq]->RemovePoint(0);
+      }
+    }
+   
+    double start1 = gIMnpipi_SpSmAvg_cs_Etotal[iq]->GetPointX(0);
+    double start2 = gDecoErrorSpSm_CS[iq]->GetPointX(0);
+    int diffstart = (start2-start1)/0.015 + 1 ;
+
+    for(int ip=0;ip<gIMnpipi_SpSmAvg_cs_Etotal[iq]->GetN()-diffstart;ip++){
+      double statElow  = gIMnpipi_SpSmAvg_cs_Etotal[iq]->GetErrorYlow(ip+diffstart);
+      double statEhigh = gIMnpipi_SpSmAvg_cs_Etotal[iq]->GetErrorYhigh(ip+diffstart);
+      double decoElow  = (gDecoErrorSpSm_CS[iq]->GetErrorYlow(ip))/2.0;
+      double decoEhigh = (gDecoErrorSpSm_CS[iq]->GetErrorYhigh(ip))/2.0;
+      double Elow = sqrt(pow(statElow,2.0)+pow(decoElow,2.0));  
+      double Ehigh = sqrt(pow(statEhigh,2.0)+pow(decoEhigh,2.0));  
+      gIMnpipi_SpSmAvg_cs_Etotal[iq]->SetPointEYlow(ip+diffstart,Elow);
+      gIMnpipi_SpSmAvg_cs_Etotal[iq]->SetPointEYhigh(ip+diffstart,Ehigh);
+    }    
+    gIMnpipi_SpSmAvg_cs_Etotal[iq]->Draw("ap");
+    gMIXErrorSpSmAvg_CS[iq]->SetFillStyle(3001);
+    //gMIXErrorSpSmAvg_CS[iq]->SetFillColor(4);
+    gMIXErrorSpSmAvg_CS[iq]->SetFillColor(12);
+    gMIXErrorSpSmAvg_CS[iq]->SetMarkerColor(4);
+    gMIXErrorSpSmAvg_CS[iq]->SetLineColor(12);
+    gMIXErrorSpSmAvg_CS[iq]->Draw("5");
+    if(iq==1){
+      gr_S1385_ToSqlow->SetLineColor(5);
+      gr_S1385_ToSqlow->SetFillStyle(3002);
+      gr_S1385_ToSqlow->SetFillColor(0);
+      gr_S1385_ToSqlow->Draw("5");
+    }
+    if(iq==2){
+      gr_S1385_ToSqhi->SetLineColor(5);
+      gr_S1385_ToSqhi->SetFillStyle(3002);
+      gr_S1385_ToSqhi->SetFillColor(0);
+      gr_S1385_ToSqhi->Draw("5");
+    }
+    TLine *p = new TLine(1.29,0,1.605,0);
+    p->SetLineColor(1);
+    //p->SetLineWidth(2.0);
+    p->SetLineStyle(2);
+    p->Draw();
+  }
+  cSysSpSmAvgEtotal[1]->SaveAs("Avgqlow.pdf");
+  cSysSpSmAvgEtotal[2]->SaveAs("Avgqhi.pdf");
+
+
+
   TCanvas *cboth[4];
   for(int iq=1;iq<3;iq++){
     cboth[iq] = new TCanvas(Form("cboth%d",iq),Form("cboth%d",iq),1100,1100);
@@ -1147,7 +1253,9 @@ void CS_finals()
   TH1D* CosL1520[3][3];//deco sys, mix sys
   TH1D* qL1405[3][3];//deco sys, mix sys
   TH1D* qL1520[3][3];//deco sys, mix sys
-  
+  TH1D* IMnpipi_SpSmAvgCosCut[3][3][2];//deco sys, mix sys, cos cut 0.95-1
+
+
   for(int idecosys=0;idecosys<3;idecosys++){
     for(int imixsys=0;imixsys<3;imixsys++){
       Cosn_IMnpipi_Sp_cs[idecosys][imixsys] = (TH2D*)fpisigma[0][imixsys]->Get(Form("Cosn_IMnpipi_Sp_cs_sys%d",idecosys-1));
@@ -1157,6 +1265,8 @@ void CS_finals()
       CosL1520[idecosys][imixsys] = (TH1D*)fpisigma[0][imixsys]->Get(Form("CosL1520_sys%d",idecosys-1));
       qL1405[idecosys][imixsys] = (TH1D*)fpisigma[0][imixsys]->Get(Form("qL1405_sys%d",idecosys-1));
       qL1520[idecosys][imixsys] = (TH1D*)fpisigma[0][imixsys]->Get(Form("qL1520_sys%d",idecosys-1));
+      IMnpipi_SpSmAvgCosCut[idecosys][imixsys][0] = (TH1D*)fpisigma[0][imixsys]->Get(Form("IMnpipi_SpSmAvgCosCut%d_0",idecosys-1));
+      IMnpipi_SpSmAvgCosCut[idecosys][imixsys][1] = (TH1D*)fpisigma[0][imixsys]->Get(Form("IMnpipi_SpSmAvgCosCut%d_1",idecosys-1));
     }
   }
     
@@ -1509,6 +1619,166 @@ void CS_finals()
   CS_qS1385Lpim->SetLineColor(5);
   CS_qS1385Lpim->Draw("same");
   pqL1405->Draw();
+
+
+  TGraphAsymmErrors *grIMnpipi_SpSmAvgCosCut0 = new TGraphAsymmErrors(IMnpipi_SpSmAvgCosCut[1][1][0]);
+  TGraphAsymmErrors *grIMnpipi_SpSmAvgCosCut0_decosysup = new TGraphAsymmErrors(IMnpipi_SpSmAvgCosCut[2][1][0]);
+  TGraphAsymmErrors *grIMnpipi_SpSmAvgCosCut0_decosysdown = new TGraphAsymmErrors(IMnpipi_SpSmAvgCosCut[0][1][0]);
+  for(int ip=0;ip<grIMnpipi_SpSmAvgCosCut0->GetN();ip++){
+    double valup = grIMnpipi_SpSmAvgCosCut0_decosysup->GetPointY(ip);
+    double valdef = grIMnpipi_SpSmAvgCosCut0->GetPointY(ip);
+    double yeh = grIMnpipi_SpSmAvgCosCut0->GetErrorYhigh(ip);
+    double yel = grIMnpipi_SpSmAvgCosCut0->GetErrorYlow(ip);
+    double valdown = grIMnpipi_SpSmAvgCosCut0_decosysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = sqrt(yeh*yeh + diffup*diffup);
+      yel = sqrt(yel*yel + diffdown*diffdown);
+    }else{
+      yeh = sqrt(yeh*yeh + diffdown*diffdown);
+      yel = sqrt(yel*yel + diffup*diffup);
+    }
+    grIMnpipi_SpSmAvgCosCut0->SetPointEYhigh(ip,yeh);
+    grIMnpipi_SpSmAvgCosCut0->SetPointEYlow(ip,yel);
+  }
+
+
+  TGraphAsymmErrors *gMIXErrorIMnpipi_SpSmAvgCosCut0 = new TGraphAsymmErrors(IMnpipi_SpSmAvgCosCut[1][1][0]);
+  TGraphAsymmErrors *gMIXErrorIMnpipi_SpSmAvgCosCut0_sysup = new TGraphAsymmErrors(IMnpipi_SpSmAvgCosCut[1][2][0]);
+  TGraphAsymmErrors *gMIXErrorIMnpipi_SpSmAvgCosCut0_sysdown = new TGraphAsymmErrors(IMnpipi_SpSmAvgCosCut[1][0][0]);
+  for(int ip=0;ip<gMIXErrorIMnpipi_SpSmAvgCosCut0->GetN();ip++){
+    double valup = gMIXErrorIMnpipi_SpSmAvgCosCut0_sysup->GetPointY(ip);
+    double valdef = gMIXErrorIMnpipi_SpSmAvgCosCut0->GetPointY(ip);
+    double yeh = gMIXErrorIMnpipi_SpSmAvgCosCut0->GetErrorYhigh(ip);
+    double yel = gMIXErrorIMnpipi_SpSmAvgCosCut0->GetErrorYlow(ip);
+    double valdown = gMIXErrorIMnpipi_SpSmAvgCosCut0_sysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = fabs(diffup);
+      yel = fabs(diffdown);
+    }else{
+      yeh = fabs(diffdown);
+      yel = fabs(diffup);
+    }
+    gMIXErrorIMnpipi_SpSmAvgCosCut0->SetPointEYhigh(ip,yeh);
+    gMIXErrorIMnpipi_SpSmAvgCosCut0->SetPointEYlow(ip,yel);
+    
+    double xe = IMnpipi_SpSmAvgCosCut[1][1][0]->GetBinWidth(ip+1);
+    gMIXErrorIMnpipi_SpSmAvgCosCut0->SetPointEXhigh(ip,xe/4);
+    gMIXErrorIMnpipi_SpSmAvgCosCut0->SetPointEXlow(ip,xe/4);
+  }
+  
+  {
+    double n = grIMnpipi_SpSmAvgCosCut0->GetN();
+    double *yval = grIMnpipi_SpSmAvgCosCut0->GetEYlow();
+    for(int ip=n;ip>=0;ip--){
+      if(yval[ip]<=0.00001){
+        grIMnpipi_SpSmAvgCosCut0->RemovePoint(ip);
+        gMIXErrorIMnpipi_SpSmAvgCosCut0->RemovePoint(ip);
+      }
+    }
+  }
+  
+  TCanvas *cIMnpipi_SpSmAvgCosCut0 = new TCanvas("cIMnpipi_SpSmAvgCosCut0","cIMnpipi_SpSmAvgCosCut0",1200,800);
+  grIMnpipi_SpSmAvgCosCut0->GetXaxis()->SetRangeUser(1.3,1.6);
+  grIMnpipi_SpSmAvgCosCut0->GetXaxis()->SetTitle("IM(#pi#Sigma) [GeV/c^{2}]");
+  grIMnpipi_SpSmAvgCosCut0->GetXaxis()->CenterTitle();
+  grIMnpipi_SpSmAvgCosCut0->GetYaxis()->SetTitle("d#sigma / dM  ");
+  grIMnpipi_SpSmAvgCosCut0->GetYaxis()->CenterTitle();
+  grIMnpipi_SpSmAvgCosCut0->Draw("ap");
+  gMIXErrorIMnpipi_SpSmAvgCosCut0->SetLineColor(12);
+  gMIXErrorIMnpipi_SpSmAvgCosCut0->SetFillStyle(3001);
+  gMIXErrorIMnpipi_SpSmAvgCosCut0->SetFillColor(12);
+  gMIXErrorIMnpipi_SpSmAvgCosCut0->Draw("5");
+  TLine *pIMnpipi_SpSmAvgCosCut0 = new TLine(1.3,0,1.6,0);
+  pIMnpipi_SpSmAvgCosCut0->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  pIMnpipi_SpSmAvgCosCut0->SetLineStyle(2);
+  pIMnpipi_SpSmAvgCosCut0->Draw();
+
+
+  TGraphAsymmErrors *grIMnpipi_SpSmAvgCosCut1 = new TGraphAsymmErrors(IMnpipi_SpSmAvgCosCut[1][1][1]);
+  TGraphAsymmErrors *grIMnpipi_SpSmAvgCosCut1_decosysup = new TGraphAsymmErrors(IMnpipi_SpSmAvgCosCut[2][1][1]);
+  TGraphAsymmErrors *grIMnpipi_SpSmAvgCosCut1_decosysdown = new TGraphAsymmErrors(IMnpipi_SpSmAvgCosCut[0][1][1]);
+  for(int ip=0;ip<grIMnpipi_SpSmAvgCosCut1->GetN();ip++){
+    double valup = grIMnpipi_SpSmAvgCosCut1_decosysup->GetPointY(ip);
+    double valdef = grIMnpipi_SpSmAvgCosCut1->GetPointY(ip);
+    double yeh = grIMnpipi_SpSmAvgCosCut1->GetErrorYhigh(ip);
+    double yel = grIMnpipi_SpSmAvgCosCut1->GetErrorYlow(ip);
+    double valdown = grIMnpipi_SpSmAvgCosCut1_decosysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = sqrt(yeh*yeh + diffup*diffup);
+      yel = sqrt(yel*yel + diffdown*diffdown);
+    }else{
+      yeh = sqrt(yeh*yeh + diffdown*diffdown);
+      yel = sqrt(yel*yel + diffup*diffup);
+    }
+    grIMnpipi_SpSmAvgCosCut1->SetPointEYhigh(ip,yeh);
+    grIMnpipi_SpSmAvgCosCut1->SetPointEYlow(ip,yel);
+  }
+
+
+  TGraphAsymmErrors *gMIXErrorIMnpipi_SpSmAvgCosCut1 = new TGraphAsymmErrors(IMnpipi_SpSmAvgCosCut[1][1][1]);
+  TGraphAsymmErrors *gMIXErrorIMnpipi_SpSmAvgCosCut1_sysup = new TGraphAsymmErrors(IMnpipi_SpSmAvgCosCut[1][2][1]);
+  TGraphAsymmErrors *gMIXErrorIMnpipi_SpSmAvgCosCut1_sysdown = new TGraphAsymmErrors(IMnpipi_SpSmAvgCosCut[1][0][1]);
+  for(int ip=0;ip<gMIXErrorIMnpipi_SpSmAvgCosCut1->GetN();ip++){
+    double valup = gMIXErrorIMnpipi_SpSmAvgCosCut1_sysup->GetPointY(ip);
+    double valdef = gMIXErrorIMnpipi_SpSmAvgCosCut1->GetPointY(ip);
+    double yeh = gMIXErrorIMnpipi_SpSmAvgCosCut1->GetErrorYhigh(ip);
+    double yel = gMIXErrorIMnpipi_SpSmAvgCosCut1->GetErrorYlow(ip);
+    double valdown = gMIXErrorIMnpipi_SpSmAvgCosCut1_sysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = fabs(diffup);
+      yel = fabs(diffdown);
+    }else{
+      yeh = fabs(diffdown);
+      yel = fabs(diffup);
+    }
+    gMIXErrorIMnpipi_SpSmAvgCosCut1->SetPointEYhigh(ip,yeh);
+    gMIXErrorIMnpipi_SpSmAvgCosCut1->SetPointEYlow(ip,yel);
+    
+    double xe = IMnpipi_SpSmAvgCosCut[1][1][1]->GetBinWidth(ip+1);
+    gMIXErrorIMnpipi_SpSmAvgCosCut1->SetPointEXhigh(ip,xe/4);
+    gMIXErrorIMnpipi_SpSmAvgCosCut1->SetPointEXlow(ip,xe/4);
+  }
+  
+  {
+    double n = grIMnpipi_SpSmAvgCosCut1->GetN();
+    double *yval = grIMnpipi_SpSmAvgCosCut1->GetEYlow();
+    for(int ip=n;ip>=0;ip--){
+      if(yval[ip]<=0.00001){
+        grIMnpipi_SpSmAvgCosCut1->RemovePoint(ip);
+        gMIXErrorIMnpipi_SpSmAvgCosCut1->RemovePoint(ip);
+      }
+    }
+  }
+  
+  TCanvas *cIMnpipi_SpSmAvgCosCut1 = new TCanvas("cIMnpipi_SpSmAvgCosCut1","cIMnpipi_SpSmAvgCosCut1",1200,800);
+  grIMnpipi_SpSmAvgCosCut1->GetXaxis()->SetRangeUser(1.3,1.6);
+  grIMnpipi_SpSmAvgCosCut1->GetXaxis()->SetTitle("IM(#pi#Sigma) [GeV/c^{2}]");
+  grIMnpipi_SpSmAvgCosCut1->GetXaxis()->CenterTitle();
+  grIMnpipi_SpSmAvgCosCut1->GetYaxis()->SetTitle("d#sigma / dM  ");
+  grIMnpipi_SpSmAvgCosCut1->GetYaxis()->CenterTitle();
+  grIMnpipi_SpSmAvgCosCut1->Draw("ap");
+  gMIXErrorIMnpipi_SpSmAvgCosCut1->SetLineColor(12);
+  gMIXErrorIMnpipi_SpSmAvgCosCut1->SetFillStyle(3001);
+  gMIXErrorIMnpipi_SpSmAvgCosCut1->SetFillColor(12);
+  gMIXErrorIMnpipi_SpSmAvgCosCut1->Draw("5");
+  TLine *pIMnpipi_SpSmAvgCosCut1 = new TLine(1.3,0,1.6,0);
+  pIMnpipi_SpSmAvgCosCut1->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  pIMnpipi_SpSmAvgCosCut1->SetLineStyle(2);
+  pIMnpipi_SpSmAvgCosCut1->Draw();
 
 
   
