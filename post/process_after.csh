@@ -9,8 +9,8 @@ cd ../post/
 root -l -b -q 'plot_AfterDecompos.C(2,0)'
 root -l -b -q 'plot_AfterDecompos.C(2,1)'
 root -l -b -q 'plot_AfterDecompos.C(2,-1)'
-root -l -b -q 'plot_AfterDecompos.C(4,0)'
-root -l -b -q 'plot_AfterDecompos.C(6,0)'
+#root -l -b -q 'plot_AfterDecompos.C(4,0)'
+#root -l -b -q 'plot_AfterDecompos.C(6,0)'
 
 
 root -l -b -q 'CS_finals.C'

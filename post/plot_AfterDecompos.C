@@ -1467,8 +1467,8 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   //TCanvas *ccsK0proCo[4];
   
   //display each 1D CS
-  TH1D* IMnpipi_Sp_cs_single_Coscut[4][3];//coscut,isys
-  TH1D* IMnpipi_Sm_cs_single_Coscut[4][3];//coscut,isys
+  //TH1D* IMnpipi_Sp_cs_single_Coscut[4][3];//coscut,isys for deco
+  //TH1D* IMnpipi_Sm_cs_single_Coscut[4][3];//coscut,isys
   //TH1D* IMnpipi_K0_cs_single[4][3];//iq,isys
   ccsSpCos = new TCanvas("ccsSpCos","ccsSpCos",1600,800);
   ccsSpCos->Divide(2,1);
@@ -1671,15 +1671,15 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   std::cout << "095bin" << Cosn_IMnpipi_SpSmSum[1]->GetYaxis()->GetBinLowEdge(coscmbin095) << std::endl;
  
 
-  TH1D* IMnpipi_SpSmAvgCosCut[3][2];
+  TH1D* IMnpipi_SpSmAvgCosCut[3][2];//deco error , icos cut
   for(int isys=0;isys<3;isys++){
     //cos 0.95-1.00
-    IMnpipi_SpSmAvgCosCut[isys][0] = (TH1D*)Cosn_IMnpipi_SpSmSum[isys]->ProjectionX(Form("IMnpipi_SpSmAvgCosCus%d_0",isys),coscmbin095,coscmbin100+1);
-    IMnpipi_SpSmAvgCosCut[isys][0]->SetTitle(Form("IMnpipi_SpSmAvgCosCus%d_0",isys));
+    IMnpipi_SpSmAvgCosCut[isys][0] = (TH1D*)Cosn_IMnpipi_SpSmSum[isys]->ProjectionX(Form("IMnpipi_SpSmAvgCosCut%d_0",isys-1),coscmbin095,coscmbin100+1);
+    IMnpipi_SpSmAvgCosCut[isys][0]->SetTitle(Form("IMnpipi_SpSmAvgCosCut%d_0",isys-1));
     IMnpipi_SpSmAvgCosCut[isys][0]->Scale(1./2.);
     //cos 0.60-0.95
-    IMnpipi_SpSmAvgCosCut[isys][1] = (TH1D*)Cosn_IMnpipi_SpSmSum[isys]->ProjectionX(Form("IMnpipi_SpSmAvgCosCus%d_1",isys),coscmbin060,coscmbin095-1);
-    IMnpipi_SpSmAvgCosCut[isys][1]->SetTitle(Form("IMnpipi_SpSmAvgCosCus%d_1",isys));
+    IMnpipi_SpSmAvgCosCut[isys][1] = (TH1D*)Cosn_IMnpipi_SpSmSum[isys]->ProjectionX(Form("IMnpipi_SpSmAvgCosCut%d_1",isys-1),coscmbin060,coscmbin095-1);
+    IMnpipi_SpSmAvgCosCut[isys][1]->SetTitle(Form("IMnpipi_SpSmAvgCosCut%d_1",isys-1));
     IMnpipi_SpSmAvgCosCut[isys][1]->Scale(1./2.);
     //cos 0.60-0.95
   }
@@ -1703,21 +1703,21 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   TH1D* CosL1405[3];//isys of deco 
   std::cout << "Cos low bin Edge " << lowbinEdge << std::endl;
   std::cout << "Cos hi bin Edge " <<  hibinEdge << std::endl;
-  for(int isys=0;isys<3;isys++){
-    CosL1405[isys] = (TH1D*) Cosn_IMnpipi_SpSmSum[isys]->ProjectionY(Form("CosL1405_sys%d",isys-1),M1400,M1440);
-    CosL1405[isys]->RebinX(2);
-    double cosbinwidth  = CosL1405[isys]->GetXaxis()->GetBinWidth(1);
-    CosL1405[isys]->Scale(1./cosbinwidth);
-    CosL1405[isys]->Scale(binwidth);
+  for(int idecosys=0;idecosys<3;idecosys++){
+    CosL1405[idecosys] = (TH1D*) Cosn_IMnpipi_SpSmSum[idecosys]->ProjectionY(Form("CosL1405_sys%d",idecosys-1),M1400,M1440);
+    CosL1405[idecosys]->RebinX(2);
+    double cosbinwidth  = CosL1405[idecosys]->GetXaxis()->GetBinWidth(1);
+    CosL1405[idecosys]->Scale(1./cosbinwidth);
+    CosL1405[idecosys]->Scale(binwidth);
     //charge sum -> charge average
-    CosL1405[isys]->Scale(1./2.);
-    //CosL1405[isys]->RebinX(2);
-    for(int ibincos=0;ibincos< (CosL1405[isys]->GetNbinsX());ibincos++){
-      double contlow = Cosn_IMnpipi_SpSmSum[isys]->GetBinContent(M1400,ibincos);
+    CosL1405[idecosys]->Scale(1./2.);
+    //CosL1405[idecosys]->RebinX(2);
+    for(int ibincos=0;ibincos< (CosL1405[idecosys]->GetNbinsX());ibincos++){
+      double contlow = Cosn_IMnpipi_SpSmSum[idecosys]->GetBinContent(M1400,ibincos);
       double contlowsurplus = contlow*(1.40-lowbinEdge)/binwidth;
-      CosL1405[isys]->AddBinContent(ibincos,-1.0*contlowsurplus);
+      CosL1405[idecosys]->AddBinContent(ibincos,-1.0*contlowsurplus);
     }
-    CosL1405[isys]->GetXaxis()->SetRangeUser(0.5,1);
+    CosL1405[idecosys]->GetXaxis()->SetRangeUser(0.5,1);
   }
   CosL1405[1]->Draw("HE");
   TFile *f = TFile::Open("yamagataL1405.root");

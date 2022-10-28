@@ -18,7 +18,7 @@ const double piSm_mass = 1.197449+0.13957;
 #endif
 
 //const double pK = 1.05; //GeV/c = maximum ~ 1.018*1.025
-const double pK = 1.00; //default value of simulation
+const double pK = 0.8; //default value of simulation
 const double EK = sqrt(K_mass*K_mass+pK*pK);
 
 double func_EM(double *x, double *par);
@@ -46,8 +46,8 @@ int NumericalRootFinder()
   const double COS_MAX = 1;
   const int    COS_BIN = 100;
 
-  //const double M_MIN = piSp_mass;
-  const double M_MIN = piSm_mass;
+  //const double M_MIN = piSm_mass;
+  const double M_MIN = piSp_mass;
   //const double M_MIN = K0n_mass;
   const double M_MAX = sys.M()-n_mass+0.00001;
   const int    M_BIN = 100;
@@ -121,7 +121,7 @@ int NumericalRootFinder()
   }
   gr_th->Draw("same");
 
-  TFile *out = new TFile("NumericalRootFinder_fine100_Sm.root", "recreate");
+  TFile *out = new TFile("NumericalRootFinder_fine100_Sp800MeV.root", "recreate");
   for( int i=0; i<COS_BIN+1; i++ ){
     gr[i]->Write();
   }
@@ -156,7 +156,7 @@ double func_thetalab(double q, double M)
 { 
   double f = (n_mass*n_mass+pK*pK+q*q-TMath::Power(EK+d_mass-TMath::Sqrt(M*M+q*q),2.))/(2.*q*pK);
   double tannlab = -q*(sqrt(1.0-f*f))/(pK-q*f);
-  return -1.0*atan(tannlab)*180./3.1415926535.;
+  return -1.0*atan(tannlab)*180./3.1415926535;
 }
 
 double func_C(double *x, double *par)
