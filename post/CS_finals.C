@@ -23,10 +23,10 @@ void CS_finals()
   gStyle->SetPadGridX(0);
   gStyle->SetPadGridY(0);
   //gROOT->ForceStyle();
-  TH2D* q_IMnpipi_Sp_cs[4][3][3];//iq,dEcut,sysud
-  TH2D* q_IMnpipi_Sm_cs[4][3][3];
-  TH2D* q_IMnpipi_K0_cs[4][3][3];
-  TH2D* q_IMnpipi_SpSmSum[4][3][3];
+  TH2D* q_IMnpipi_Sp_cs[4][3][3];//iq,dEcut,sysud of mix
+  TH2D* q_IMnpipi_Sm_cs[4][3][3];//iq,dEcut,sysud of mix
+  TH2D* q_IMnpipi_K0_cs[4][3][3];//iq,dEcut,sysud of mix
+  TH2D* q_IMnpipi_SpSmSum[4][3][3];//iq,dEcut,sysud of mix
   TH1D* IMnpipi_Sp_cs[4][3][3];
   TH1D* IMnpipi_Sm_cs[4][3][3];
   TH1D* IMnpipi_K0_cs[4][3][3];
