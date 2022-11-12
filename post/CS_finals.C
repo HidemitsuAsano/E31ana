@@ -42,7 +42,8 @@ void CS_finals()
   TGraphAsymmErrors  *gDecoErrorK0_CS[4];  
   TGraphAsymmErrors  *gDecoErrorSpSm_CS[4];
   
-  for(int iq=0;iq<4;iq++){
+  for(int iq=0;iq<4;iq++){ 
+    //mix center val
     for(int iEcut=0;iEcut<3;iEcut++){
       q_IMnpipi_Sp_cs[iq][iEcut][1] = (TH2D*)fpisigma[iEcut][1]->Get(Form("q_IMnpipi_Sp_cs%d_sys0",iq));
       q_IMnpipi_Sm_cs[iq][iEcut][1] = (TH2D*)fpisigma[iEcut][1]->Get(Form("q_IMnpipi_Sm_cs%d_sys0",iq));
@@ -55,6 +56,7 @@ void CS_finals()
       IMnpipi_SpSmAvg[iq][iEcut][1] = (TH1D*)IMnpipi_SpSmSum[iq][iEcut][1]->Clone(Form("IMnpipi_SpSmAvg%d_dE%d_sys0",iq,iEcut));
       IMnpipi_SpSmAvg[iq][iEcut][1]->Scale(1./2.);
     }
+    //mix sys. down
     q_IMnpipi_Sp_cs[iq][0][0] = (TH2D*)fpisigma[0][0]->Get(Form("q_IMnpipi_Sp_cs%d_sys0",iq));
     q_IMnpipi_Sm_cs[iq][0][0] = (TH2D*)fpisigma[0][0]->Get(Form("q_IMnpipi_Sm_cs%d_sys0",iq));
     q_IMnpipi_K0_cs[iq][0][0] = (TH2D*)fpisigma[0][0]->Get(Form("q_IMnpipi_K0_cs%d_sys0",iq));
@@ -65,7 +67,7 @@ void CS_finals()
     IMnpipi_SpSmSum[iq][0][0] = (TH1D*)fpisigma[0][0]->Get(Form("IMnpipi_SpSmSum%d_sys0",iq));
     IMnpipi_SpSmAvg[iq][0][0] = (TH1D*)IMnpipi_SpSmSum[iq][0][0]->Clone(Form("IMnpipi_SpSmAvg%d_sys-1",iq));
     IMnpipi_SpSmAvg[iq][0][0]->Scale(1./2.);
-    
+    //mix sys. up
     q_IMnpipi_Sp_cs[iq][0][2] = (TH2D*)fpisigma[0][2]->Get(Form("q_IMnpipi_Sp_cs%d_sys0",iq));
     q_IMnpipi_Sm_cs[iq][0][2] = (TH2D*)fpisigma[0][2]->Get(Form("q_IMnpipi_Sm_cs%d_sys0",iq));
     q_IMnpipi_K0_cs[iq][0][2] = (TH2D*)fpisigma[0][2]->Get(Form("q_IMnpipi_K0_cs%d_sys0",iq));
@@ -1390,9 +1392,9 @@ void CS_finals()
 
   TFile *f = TFile::Open("yamagataL1405.root");
   TGraph *gry = (TGraph*)f->Get("gr_yamagata");
-  gry->SetLineColor(3);
-  gry->SetLineWidth(3);
-  //gry->Draw("c");
+  gry->SetLineColor(2);
+  gry->SetLineWidth(2);
+  gry->Draw("c");
 
   TGraphAsymmErrors *grCosL1520 = new TGraphAsymmErrors(CosL1520[1][1]);
   TGraphAsymmErrors *grCosL1520_decosysup = new TGraphAsymmErrors(CosL1520[2][1]);
@@ -1624,6 +1626,7 @@ void CS_finals()
   CS_CosS1385Lpim->SetLineColor(5);
   CS_CosS1385Lpim->Draw("same");
   pL1405->Draw();
+  gry->Draw("c");
   //gPad->SetLogy();
   
 
@@ -1834,6 +1837,24 @@ void CS_finals()
   pIMnpipi_SpSmAvgCosCut1->Draw();
   pkp->Draw();
   pk0n->Draw();
+  
+
+  TCanvas *cq_IMnpipi_SpSmAvg = new TCanvas("cq_IMnpipi_SpSmAvg","cq_IMnpipi_SpSmAvg",1400,1000);
+  cq_IMnpipi_SpSmAvg->SetBottomMargin(0.12);
+  cq_IMnpipi_SpSmAvg->SetLeftMargin(0.10);
+  cq_IMnpipi_SpSmAvg->SetRightMargin(0.10);
+
+  q_IMnpipi_SpSmSum[0][0][1]->Scale(1./2);
+  q_IMnpipi_SpSmSum[0][0][1]->SetTitle("#pi^{+}#Sigma^{-} + #pi^{-}#Sigma^{+} charge avg.");
+  q_IMnpipi_SpSmSum[0][0][1]->GetXaxis()->SetTitle("IM(#pi#Sigma) [GeV/c^{2}]");
+  q_IMnpipi_SpSmSum[0][0][1]->SetMinimum(0);
+  q_IMnpipi_SpSmSum[0][0][1]->GetZaxis()->SetMaxDigits(3);
+  q_IMnpipi_SpSmSum[0][0][1]->GetZaxis()->SetLabelSize(0.03);
+  q_IMnpipi_SpSmSum[0][0][1]->GetXaxis()->SetRangeUser(1.3,1.6);
+  q_IMnpipi_SpSmSum[0][0][1]->GetYaxis()->SetRangeUser(0,0.65);
+  q_IMnpipi_SpSmSum[0][0][1]->Draw("colz");
+  mgSp->Draw("c");
+  
 
 
 
