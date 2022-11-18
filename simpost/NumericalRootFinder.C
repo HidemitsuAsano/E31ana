@@ -18,7 +18,7 @@ const double piSm_mass = 1.197449+0.13957;
 #endif
 
 //const double pK = 1.05; //GeV/c = maximum ~ 1.018*1.025
-const double pK = 0.8; //default value of simulation
+const double pK = 1.0; //default value of simulation
 const double EK = sqrt(K_mass*K_mass+pK*pK);
 
 double func_EM(double *x, double *par);
@@ -44,7 +44,7 @@ int NumericalRootFinder()
 
   const double COS_MIN = -1;
   const double COS_MAX = 1;
-  const int    COS_BIN = 100;
+  const int    COS_BIN = 20;
 
   //const double M_MIN = piSm_mass;
   const double M_MIN = piSp_mass;
@@ -121,7 +121,7 @@ int NumericalRootFinder()
   }
   gr_th->Draw("same");
 
-  TFile *out = new TFile("NumericalRootFinder_fine100_Sp800MeV.root", "recreate");
+  TFile *out = new TFile("NumericalRootFinder_fine20_Sp1GeV.root", "recreate");
   for( int i=0; i<COS_BIN+1; i++ ){
     gr[i]->Write();
   }

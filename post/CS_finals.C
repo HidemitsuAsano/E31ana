@@ -1094,6 +1094,9 @@ void CS_finals()
   cSysSpSmSumEtotal[1]->SaveAs("Sumqlow.pdf");
   cSysSpSmSumEtotal[2]->SaveAs("Sumqhi.pdf");
   
+  TFile *flpimnofit = TFile::Open("cs_lpim_killcombi.root","READ");
+  TH1D* CS_IMppipi_p_wL_sum_0 = (TH1D*)flpimnofit->Get("CS_IMppipi_p_wL_sum_0");
+  TH1D* CS_IMppipi_p_wL_sum_300 = (TH1D*)flpimnofit->Get("CS_IMppipi_p_wL_sum_300");
   TCanvas *cSysSpSmAvgEtotal[4];
   TGraphAsymmErrors *gIMnpipi_SpSmAvg_cs_Etotal[4];
   for(int iq=1;iq<3;iq++){  
@@ -1153,13 +1156,21 @@ void CS_finals()
       gr_S1385_ToSqlow->SetLineColor(5);
       gr_S1385_ToSqlow->SetFillStyle(3002);
       gr_S1385_ToSqlow->SetFillColor(0);
-      gr_S1385_ToSqlow->Draw("5");
+      //gr_S1385_ToSqlow->Draw("5");
+      CS_IMppipi_p_wL_sum_0->SetLineColor(5);
+      CS_IMppipi_p_wL_sum_0->SetFillColor(5);
+      CS_IMppipi_p_wL_sum_0->SetMarkerColor(5);
+      CS_IMppipi_p_wL_sum_0->Draw("Esame");
     }
     if(iq==2){
       gr_S1385_ToSqhi->SetLineColor(5);
       gr_S1385_ToSqhi->SetFillStyle(3002);
       gr_S1385_ToSqhi->SetFillColor(0);
-      gr_S1385_ToSqhi->Draw("5");
+      //gr_S1385_ToSqhi->Draw("5");
+      CS_IMppipi_p_wL_sum_300->SetLineColor(5);
+      CS_IMppipi_p_wL_sum_300->SetFillColor(5);
+      CS_IMppipi_p_wL_sum_300->SetMarkerColor(5);
+      CS_IMppipi_p_wL_sum_300->Draw("Esame");
     }
     TLine *p = new TLine(1.29,0,1.605,0);
     p->SetLineColor(1);
@@ -1181,7 +1192,13 @@ void CS_finals()
   gIMnpipi_SpSmAvg_cs_Etotal[2]->GetYaxis()->SetRangeUser(-0.2,1.6);
   gIMnpipi_SpSmAvg_cs_Etotal[1]->Draw("ap");
   gMIXErrorSpSmAvg_CS[1]->Draw("5");
-  gr_S1385_ToSqlow->Draw("5");
+  CS_IMppipi_p_wL_sum_0->SetLineColor(5);
+  CS_IMppipi_p_wL_sum_0->SetFillColor(5);
+  CS_IMppipi_p_wL_sum_0->SetMarkerColor(5);
+  CS_IMppipi_p_wL_sum_0->SetMarkerStyle(20);
+  CS_IMppipi_p_wL_sum_0->SetMarkerSize(1.2);
+  CS_IMppipi_p_wL_sum_0->Draw("Esame");
+  //gr_S1385_ToSqlow->Draw("5");
   TLine *ps = new TLine(1.29,0,1.605,0);
   ps->SetLineColor(1);
   //p->SetLineWidth(2.0);
@@ -1199,7 +1216,14 @@ void CS_finals()
   cSysSpSmAvgEtotalSide->cd(2);
   gIMnpipi_SpSmAvg_cs_Etotal[2]->Draw("ap");
   gMIXErrorSpSmAvg_CS[2]->Draw("5");
-  gr_S1385_ToSqhi->Draw("5");
+  //gr_S1385_ToSqhi->Draw("5");
+  CS_IMppipi_p_wL_sum_300->SetLineColor(5);
+  CS_IMppipi_p_wL_sum_300->SetLineWidth(2);
+  CS_IMppipi_p_wL_sum_300->SetFillColor(5);
+  CS_IMppipi_p_wL_sum_300->SetMarkerColor(5);
+  CS_IMppipi_p_wL_sum_300->SetMarkerStyle(20);
+  CS_IMppipi_p_wL_sum_300->SetMarkerSize(1.2);
+  CS_IMppipi_p_wL_sum_300->Draw("Esame");
   ps->Draw();
   pkp->Draw();
   pk0n->Draw();
@@ -1217,7 +1241,7 @@ void CS_finals()
     gIMnpipi_Sp_cs_Etotal[iq]->GetYaxis()->SetTitleSize(0.04);
     gIMnpipi_Sp_cs_Etotal[iq]->GetXaxis()->SetTitleOffset(1.4);
     gIMnpipi_Sp_cs_Etotal[iq]->GetYaxis()->SetTitleOffset(1.6);
-    gIMnpipi_Sp_cs_Etotal[iq]->SetMarkerColor(kGreen+2);
+   gIMnpipi_Sp_cs_Etotal[iq]->SetMarkerColor(kGreen+2);
     gMIXErrorSp_CS[iq]->SetLineColor(kGreen+2);
     gMIXErrorSp_CS[iq]->SetFillColor(0);
     gMIXErrorSp_CS[iq]->SetFillStyle(0);
@@ -1598,7 +1622,6 @@ void CS_finals()
   pqL1520->Draw();
 
 
-  TFile *flpimnofit = TFile::Open("cs_lpim_killcombi.root","READ");
   TH1D* CS_CosS1385Lpim = (TH1D*)flpimnofit->Get("CS_CosS1385Lpim");
   CS_CosS1385Lpim->Print("base");
   TH1D* CS_qS1385Lpim = (TH1D*)flpimnofit->Get("CS_qS1385Lpim");
