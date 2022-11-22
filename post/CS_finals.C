@@ -1375,6 +1375,8 @@ void CS_finals()
     grCosL1405->SetPointEYlow(ip,yel);
   }
   TGraphAsymmErrors *gMIXErrorCosL1405 = new TGraphAsymmErrors(CosL1405[1][1]);
+  gMIXErrorCosL1405->SetName("gMIXErrorCosL1405");
+
   TGraphAsymmErrors *gMIXErrorCosL1405_sysup = new TGraphAsymmErrors(CosL1405[1][2]);
   TGraphAsymmErrors *gMIXErrorCosL1405_sysdown = new TGraphAsymmErrors(CosL1405[1][0]);
   for(int ip=0;ip<gMIXErrorCosL1405->GetN();ip++){
@@ -1928,11 +1930,7 @@ void CS_finals()
     gCS_coscutSpSm[iq]->Write();
   }
   grCosL1405->Write();
-  grCosL1405_decosysup->Write();
-  grCosL1405_decosysdown->Write();
-  
-
-
+  gMIXErrorCosL1405->Write();
 
 
 
