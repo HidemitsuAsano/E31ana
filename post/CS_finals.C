@@ -1349,8 +1349,12 @@ void CS_finals()
   Cosn_IMnpipi_Sm_cs_disp->Draw("colz");
   
   TGraphAsymmErrors *grCosL1405 = new TGraphAsymmErrors(CosL1405[1][1]);
+  grCosL1405->SetName("grCosL1405");
   TGraphAsymmErrors *grCosL1405_decosysup = new TGraphAsymmErrors(CosL1405[2][1]);
+  grCosL1405_decosysup->SetName("grCosL1405_decosysup");
   TGraphAsymmErrors *grCosL1405_decosysdown = new TGraphAsymmErrors(CosL1405[0][1]);
+  grCosL1405_decosysdown->SetName("grCosL1405_decosysdown");
+
   for(int ip=0;ip<grCosL1405->GetN();ip++){
     double valup = grCosL1405_decosysup->GetPointY(ip);
     double valdef = grCosL1405->GetPointY(ip);
@@ -1419,6 +1423,13 @@ void CS_finals()
   gry->SetLineColor(2);
   gry->SetLineWidth(2);
   gry->Draw("c");
+
+  TFile *fele = TFile::Open("feleangle.root");
+  fele->cd();
+  TGraphAsymmErrors *grsumn = (TGraphAsymmErrors*)fele->Get("grsumn");
+  grsumn->Draw("4p");
+  
+
 
   TGraphAsymmErrors *grCosL1520 = new TGraphAsymmErrors(CosL1520[1][1]);
   TGraphAsymmErrors *grCosL1520_decosysup = new TGraphAsymmErrors(CosL1520[2][1]);
@@ -1916,7 +1927,9 @@ void CS_finals()
     gCS_coscutSm[iq]->Write();
     gCS_coscutSpSm[iq]->Write();
   }
-
+  grCosL1405->Write();
+  grCosL1405_decosysup->Write();
+  grCosL1405_decosysdown->Write();
   
 
 
