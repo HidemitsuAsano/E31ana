@@ -1428,8 +1428,8 @@ void CS_finals()
 
   TFile *fele = TFile::Open("feleangle.root");
   fele->cd();
-  TGraphAsymmErrors *grsumn = (TGraphAsymmErrors*)fele->Get("grsumn");
-  grsumn->Draw("4p");
+  //TGraphAsymmErrors *grsumn = (TGraphAsymmErrors*)fele->Get("grsumn");
+  //grsumn->Draw("4p");
   
 
 
@@ -1891,8 +1891,29 @@ void CS_finals()
   q_IMnpipi_SpSmSum[0][0][1]->Draw("colz");
   mgSp->Draw("c");
   
+  const double Kp_mass = pMass + kpMass;
+  const double Kn_mass = nMass + k0Mass;
+  TF1 *fkp = new TF1("f1", "sqrt(((x*x-[0]*[0]-[1]*[1])/(2*[0]))*((x*x-[0]*[0]-[1]*[1])/(2*[0]))-[1]*[1])",Kp_mass+0.001,1.8);
+  fkp->SetParameter(0,nMass);
+  fkp->SetParameter(1,kpMass);
 
+  //fkp->SetLineColor(4);
+  fkp->SetLineWidth(5);
+  fkp->SetLineStyle(4);
+  fkp->SetLineColorAlpha(kPink, 0.35);
+  fkp->Draw("same");
+   
+  /*
+  TF1 *fk0 = new TF1("f2", "sqrt(((x*x-[0]*[0]-[1]*[1])/(2*[0]))*((x*x-[0]*[0]-[1]*[1])/(2*[0]))-[1]*[1])",Kn_mass-0.0005,1.8);
+  fk0->SetParameter(0,pMass);
+  fk0->SetParameter(1,k0Mass);
 
+  //fkp->SetLineColor(4);
+  fk0->SetLineWidth(5);
+  fk0->SetLineStyle(4);
+  fk0->SetLineColorAlpha(kBlue, 0.35);
+  fk0->Draw("same");
+  */
 
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
