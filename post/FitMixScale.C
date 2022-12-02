@@ -461,7 +461,7 @@ void FitMixScale()
   IMnpim_n_data->GetXaxis()->SetRangeUser(1.15,1.23);
   IMnpim_n_data->SetMinimum(IMnpim_n_sub->GetMinimum());
   IMnpim_n_data->SetMarkerStyle(20);
-  //IMnpim_n_data->Draw();
+  IMnpim_n_data->Draw();
   //IMnpim_n_sub->SetFillStyle(3004);
   //IMnpim_n_sub->SetFillColor(4);
   IMnpim_n_sub->SetLineColor(4);
@@ -474,8 +474,10 @@ void FitMixScale()
   texnpim->DrawLatex( 1.155,texnpim_ymax , "(b)" );
   //add systematic
   TGraphAsymmErrors *gnpim_sys = new TGraphAsymmErrors(IMnpim_n_sub);
+  TGraphAsymmErrors *gnpim_sys_mev = new TGraphAsymmErrors();
   double *ynpim_sys = gnpim_sys->GetY();
   for(int ip=0;ip<gnpim_sys->GetN();ip++){
+    double x = IMnpim_n_sub_sysup->GetBinCenter(ip+1) ;
     double yh = IMnpim_n_sub_sysup->GetBinContent(ip+1) ;
     double yl = IMnpim_n_sub_sysdown->GetBinContent(ip+1);
     double yeh = yh - IMnpim_n_sub->GetBinContent(ip+1);
@@ -484,6 +486,11 @@ void FitMixScale()
     gnpim_sys->SetPointEYlow(ip,yel);
     gnpim_sys->SetPointEXhigh(ip,0.0005);
     gnpim_sys->SetPointEXlow(ip,0.0005);
+    gnpim_sys_mev->SetPoint(ip,x*1000,ynpim_sys[ip]);
+    gnpim_sys_mev->SetPointEYhigh(ip,yeh);
+    gnpim_sys_mev->SetPointEYlow(ip,yel);
+    gnpim_sys_mev->SetPointEXhigh(ip,0.5);
+    gnpim_sys_mev->SetPointEXlow(ip,0.5);
   }
   //gnpim_sys->SetFillStyle(3002);
   //gnpim_sys->SetFillColor(4);
@@ -501,13 +508,57 @@ void FitMixScale()
   //IMnpip_n_data->GetXaxis()->SetRangeUser(1.0,1.6);
   gnpim_sys->SetMinimum(IMnpip_n_sub->GetMinimum());
   gnpim_sys->SetMarkerStyle(20);
-  gnpim_sys->Draw("a5");
+  gnpim_sys->Draw("5");
   IMnpim_n_sub->Draw("Esame");
   TLine *psm = new TLine(1.15,0,1.23,0);
   psm->SetLineColor(1);
   //p->SetLineWidth(2.0);
   psm->SetLineStyle(2);
-  psm->Draw();
+  psm->Draw(); 
+
+  TCanvas *cnpim = new TCanvas("cnpim","cnpim");
+  const int nbinnpim =  IMnpim_n_data->GetNbinsX();
+  const double npimmin = IMnpim_n_data->GetXaxis()->GetXmin();
+  const double npimmax =  IMnpim_n_data->GetXaxis()->GetXmax();
+  TH1D* IMnpim_n_data_mev = new TH1D("IMnpim_n_data_mev","IMnpim_n_data_mev",nbinnpim,npimmin*1000,npimmax*1000);
+  TH1D* IMnpim_n_sub_mev = new TH1D("IMnpim_n_sub_mev","IMnpim_n_sub_mev",nbinnpim,npimmin*1000,npimmax*1000);
+  for(int ibin=0;ibin<nbinnpim;ibin++){
+    double x = IMnpim_n_data->GetBinCenter(ibin+1)*1000;
+    double y = IMnpim_n_data->GetBinContent(ibin+1);
+    double ye = IMnpim_n_data->GetBinError(ibin+1);
+    IMnpim_n_data_mev->SetBinContent(ibin+1,y);
+    IMnpim_n_data_mev->SetBinError(ibin+1,ye);
+  }
+  for(int ibin=0;ibin<nbinnpim;ibin++){
+    double x = IMnpim_n_sub->GetBinCenter(ibin+1)*1000;
+    double y = IMnpim_n_sub->GetBinContent(ibin+1);
+    double ye = IMnpim_n_sub->GetBinError(ibin+1);
+    IMnpim_n_sub_mev->SetBinContent(ibin+1,y);
+    IMnpim_n_sub_mev->SetBinError(ibin+1,ye);
+  }
+  IMnpim_n_data_mev->SetTitle("");
+  IMnpim_n_data_mev->GetXaxis()->SetTitle("IM(n#pi^{-}) [MeV/c^{2}]");
+  IMnpim_n_data_mev->GetXaxis()->CenterTitle();
+  IMnpim_n_data_mev->GetYaxis()->SetTitle("counts/(2 MeV/c^{2})");
+  IMnpim_n_data_mev->GetYaxis()->CenterTitle();
+  IMnpim_n_data_mev->GetXaxis()->SetRangeUser(1150,1230);
+  IMnpim_n_data_mev->SetMinimum(IMnpim_n_sub->GetMinimum());
+  IMnpim_n_data_mev->SetMarkerStyle(20);
+  IMnpim_n_data_mev->Draw("E");
+   
+  TLatex *texnpim_mev = new TLatex();
+  double texnpim_ymax_mev = IMnpim_n_data_mev->GetMaximum();
+  texnpim_mev->SetTextSize(0.05);
+  texnpim_mev->SetTextColor(1);
+  texnpim_mev->DrawLatex( 1155,texnpim_ymax_mev , "(b)" );
+
+  gnpim_sys_mev->SetMarkerColor(4);
+  gnpim_sys_mev->SetLineColor(4);
+  gnpim_sys_mev->SetMarkerStyle(20);
+  gnpim_sys_mev->Draw("5");
+  IMnpim_n_sub_mev->SetLineColor(4);
+  IMnpim_n_sub_mev->SetMarkerColor(4);
+  IMnpim_n_sub_mev->Draw("Esame");
 
   TCanvas *c12_3 = new TCanvas("c12_3","c12_3");
   IMnpim_n_sub_wide->RebinX(4);
@@ -758,7 +809,7 @@ void FitMixScale()
   MMnmiss_wK0orwSid_data->GetYaxis()->CenterTitle();
   MMnmiss_wK0orwSid_data->SetMarkerStyle(20);
   MMnmiss_wK0orwSid_data->GetXaxis()->SetRangeUser(0.5,1.5);
-  //MMnmiss_wK0orwSid_data->Draw("E");
+  MMnmiss_wK0orwSid_data->Draw("E");
   //MMnmiss_wK0orwSid_sub->SetFillStyle(3004);
   //MMnmiss_wK0orwSid_sub->SetFillColor(2);
   MMnmiss_wK0orwSid_sub->SetLineColor(2);
@@ -766,8 +817,10 @@ void FitMixScale()
   MMnmiss_wK0orwSid_sub->SetMarkerColor(2);
 
   TGraphAsymmErrors *gmiss_sys = new TGraphAsymmErrors(MMnmiss_wK0orwSid_sub);
+  TGraphAsymmErrors *gmiss_sys_mev = new TGraphAsymmErrors();
   double *ymiss_sys = gmiss_sys->GetY();
   for(int ip=0;ip<gmiss_sys->GetN();ip++){
+    double x = MMnmiss_wK0orwSid_sub_sysup->GetBinCenter(ip+1);
     double yh = MMnmiss_wK0orwSid_sub_sysup->GetBinContent(ip+1) ;
     double yl = MMnmiss_wK0orwSid_sub_sysdown->GetBinContent(ip+1);
     double yeh = yh - MMnmiss_wK0orwSid_sub->GetBinContent(ip+1);
@@ -776,6 +829,11 @@ void FitMixScale()
     gmiss_sys->SetPointEYlow(ip,yel);
     gmiss_sys->SetPointEXhigh(ip,0.003);
     gmiss_sys->SetPointEXlow(ip,0.003);
+    gmiss_sys_mev->SetPoint(ip,x*1000, ymiss_sys[ip]);
+    gmiss_sys_mev->SetPointEYhigh(ip,yeh);
+    gmiss_sys_mev->SetPointEYlow(ip,yel);
+    gmiss_sys_mev->SetPointEXhigh(ip,3);
+    gmiss_sys_mev->SetPointEXlow(ip,3);
   }
   //gmiss_sys->SetFillStyle(3002);
   //gmiss_sys->SetFillColor(2);
@@ -790,16 +848,58 @@ void FitMixScale()
   gmiss_sys->SetTitle("");
   gmiss_sys->GetYaxis()->SetTitle("counts/(0.01 GeV/c^{2})");
   gmiss_sys->GetYaxis()->CenterTitle();
-  gmiss_sys->Draw("a5");
-
+  gmiss_sys->Draw("5");
   MMnmiss_wK0orwSid_sub->Draw("Esame");
-
-
-  TLine *p = new TLine(0.7,0,1.3,0);
+  
+  TLine *p = new TLine(0.5,0,1.5,0);
   p->SetLineColor(1);
   //p->SetLineWidth(2.0);
   p->SetLineStyle(2);
   p->Draw();
+
+  TCanvas *c23_2 = new TCanvas("cmm","cmm",1000,800);
+  const int nbinmm =  MMnmiss_wK0orwSid_data->GetNbinsX();
+  const double mmmin =  MMnmiss_wK0orwSid_data->GetXaxis()->GetXmin();
+  const double mmmax =  MMnmiss_wK0orwSid_data->GetXaxis()->GetXmax();
+  std::cout << "mm range " << mmmin << "  " << mmmax << std::endl;
+  TH1D* MMnmiss_wK0orwSid_data_mev = new TH1D("MMnmiss_wK0orwSid_data_mev","MMnmiss_wK0orwSid_data_mev",nbinmm,mmmin*1000,mmmax*1000);
+  TH1D* MMnmiss_wK0orwSid_sub_mev = new TH1D("MMnmiss_wK0orwSid_sub_mev","MMnmiss_wK0orwSid_sub_mev",nbinmm,mmmin*1000,mmmax*1000);
+  for(int ibin=0;ibin<nbinmm;ibin++){
+    double x = MMnmiss_wK0orwSid_data->GetBinCenter(ibin+1)*1000;
+    double y = MMnmiss_wK0orwSid_data->GetBinContent(ibin+1);
+    double ye = MMnmiss_wK0orwSid_data->GetBinError(ibin+1);
+    MMnmiss_wK0orwSid_data_mev->SetBinContent(ibin+1,y);
+    MMnmiss_wK0orwSid_data_mev->SetBinError(ibin+1,ye);
+  }
+  for(int ibin=0;ibin<nbinmm;ibin++){
+    double x = MMnmiss_wK0orwSid_sub->GetBinCenter(ibin+1)*1000;
+    double y = MMnmiss_wK0orwSid_sub->GetBinContent(ibin+1);
+    double ye = MMnmiss_wK0orwSid_sub->GetBinError(ibin+1);
+    MMnmiss_wK0orwSid_sub_mev->SetBinContent(ibin+1,y);
+    MMnmiss_wK0orwSid_sub_mev->SetBinError(ibin+1,ye);
+  }
+  MMnmiss_wK0orwSid_data_mev->SetMinimum(-100);
+  MMnmiss_wK0orwSid_data_mev->SetTitle("");
+  MMnmiss_wK0orwSid_data_mev->GetXaxis()->SetTitle("Miss. Mass. [MeV/c^{2}]");
+  MMnmiss_wK0orwSid_data_mev->GetXaxis()->CenterTitle();
+  MMnmiss_wK0orwSid_data_mev->SetYTitle("counts/(10 MeV/c^{2})");
+  MMnmiss_wK0orwSid_data_mev->GetYaxis()->CenterTitle();
+  MMnmiss_wK0orwSid_data_mev->SetMarkerStyle(20);
+  MMnmiss_wK0orwSid_data_mev->GetXaxis()->SetRangeUser(500,1500);
+  MMnmiss_wK0orwSid_data_mev->Draw("E");
+  gmiss_sys_mev->SetLineColor(2);
+  gmiss_sys_mev->SetMarkerColor(2);
+  gmiss_sys_mev->Draw("5");
+  MMnmiss_wK0orwSid_sub_mev->SetLineColor(2);
+  MMnmiss_wK0orwSid_sub_mev->SetMarkerColor(2);
+  MMnmiss_wK0orwSid_sub_mev->Draw("Esame");
+
+
+  TLine *pmev = new TLine(500,0,1500,0);
+  pmev->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  pmev->SetLineStyle(2);
+  pmev->Draw();
 
 
 
