@@ -494,6 +494,44 @@ void GetAccMap(const int dEcut=2)
 
   caccSpp->SaveAs("accSp.pdf","PDF");
   caccSmp->SaveAs("accSm.pdf","PDF");
+  
+  TCanvas *caccSpp_mev = new TCanvas("caccSpp_mev","caccSpp_mev",1000,800);
+  caccSpp_mev->cd();
+  const int nbinx = q_IMnpipi_Sp_acc[0]->GetNbinsX();
+  const double xmin = q_IMnpipi_Sp_acc[0]->GetXaxis()->GetXmin();
+  const double xmax = q_IMnpipi_Sp_acc[0]->GetXaxis()->GetXmax();
+  const double ymin = q_IMnpipi_Sp_acc[0]->GetYaxis()->GetXmin();
+  const double ymax = q_IMnpipi_Sp_acc[0]->GetYaxis()->GetXmax();
+  const int nbiny = q_IMnpipi_Sp_acc[0]->GetNbinsY();
+  TH2D* q_IMnpipi_Sp_acc_mev = new TH2D("q_IMnpipi_Sp_acc_mev","",nbinx,xmin*1000,xmax*1000,nbiny,ymin*1000,ymax*1000);
+  for(int ix=0;ix<nbinx;ix++){
+    for(int iy=0;iy<nbiny;iy++){
+      double cont = q_IMnpipi_Sp_acc[0]->GetBinContent(ix,iy);
+      q_IMnpipi_Sp_acc_mev->SetBinContent(ix,iy,cont);
+    }
+  } 
+  q_IMnpipi_Sp_acc_mev->GetZaxis()->SetMaxDigits(2);
+  q_IMnpipi_Sp_acc_mev->SetXTitle("IM(#pi^{-}#Sigma^{+}) [MeV/c^{2}]");
+  q_IMnpipi_Sp_acc_mev->GetXaxis()->CenterTitle();
+  q_IMnpipi_Sp_acc_mev->SetYTitle("q [MeV/c]");
+  q_IMnpipi_Sp_acc_mev->GetYaxis()->CenterTitle();
+  q_IMnpipi_Sp_acc_mev->Draw("colz");
+  
+  TCanvas *caccSmp_mev = new TCanvas("caccSmp_mev","caccSmp_mev",1000,800);
+  caccSmp_mev->cd();
+  TH2D* q_IMnpipi_Sm_acc_mev = new TH2D("q_IMnpipi_Sm_acc_mev","",nbinx,xmin*1000,xmax*1000,nbiny,ymin*1000,ymax*1000);
+  for(int ix=0;ix<nbinx;ix++){
+    for(int iy=0;iy<nbiny;iy++){
+      double cont = q_IMnpipi_Sm_acc[0]->GetBinContent(ix,iy);
+      q_IMnpipi_Sm_acc_mev->SetBinContent(ix,iy,cont);
+    }
+  } 
+  q_IMnpipi_Sm_acc_mev->GetZaxis()->SetMaxDigits(2);
+  q_IMnpipi_Sm_acc_mev->SetXTitle("IM(#pi^{+}#Sigma^{-}) [MeV/c^{2}]");
+  q_IMnpipi_Sm_acc_mev->GetXaxis()->CenterTitle();
+  q_IMnpipi_Sm_acc_mev->SetYTitle("q [MeV/c]");
+  q_IMnpipi_Sm_acc_mev->GetYaxis()->CenterTitle();
+  q_IMnpipi_Sm_acc_mev->Draw("colz");
 
 
   TFile *fout = new TFile(Form("accmapv%d_%d_dE%d.root",versionSigma,versionK0,dEcut), "RECREATE");
