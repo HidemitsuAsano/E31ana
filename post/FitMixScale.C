@@ -456,6 +456,12 @@ void FitMixScale()
   IMnpip_n_sub_mev->SetLineColor(4);
   IMnpip_n_sub_mev->SetMarkerColor(4);
   IMnpip_n_sub_mev->Draw("Esame");
+  
+  TLine *pspmev = new TLine(1150,0,1230,0);
+  pspmev->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  pspmev->SetLineStyle(2);
+  pspmev->Draw();
 
   TCanvas *c10_3 = new TCanvas("c10_3","c10_3");
   IMnpip_n_sub_wide->SetMinimum(0); 
@@ -611,6 +617,12 @@ void FitMixScale()
   IMnpim_n_sub_mev->SetLineColor(4);
   IMnpim_n_sub_mev->SetMarkerColor(4);
   IMnpim_n_sub_mev->Draw("Esame");
+  
+  TLine *psmmev = new TLine(1150,0,1230,0);
+  psmmev->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  psmmev->SetLineStyle(2);
+  psmmev->Draw();
 
   TCanvas *c12_3 = new TCanvas("c12_3","c12_3");
   IMnpim_n_sub_wide->RebinX(4);
@@ -733,7 +745,7 @@ void FitMixScale()
   double texpippim_ymax_mev = IMpippim_woSid_data_mev->GetMaximum();
   texpippim_mev->SetTextSize(0.05);
   texpippim_mev->SetTextColor(1);
-  texpippim_mev->DrawLatex( 455,texpippim_ymax_mev , "(c)" );
+  texpippim_mev->DrawLatex( 415,texpippim_ymax_mev , "(c)" );
 
   gpippim_sys_mev->SetMarkerColor(3);
   gpippim_sys_mev->SetLineColor(3);
@@ -742,6 +754,11 @@ void FitMixScale()
   IMpippim_woSid_sub_mev->SetLineColor(3);
   IMpippim_woSid_sub_mev->SetMarkerColor(3);
   IMpippim_woSid_sub_mev->Draw("Esame");
+  
+  TLine *pK0mev = new TLine(400,0,600,0);
+  pK0mev->SetLineColor(1);
+  pK0mev->SetLineStyle(2);
+  pK0mev->Draw();
 
   TCanvas *c14 = new TCanvas("c14","c14");
   IMnpipi_wSid_n_data_qhi->RebinX(3);
