@@ -1296,6 +1296,9 @@ void CS_finals()
   TGraphAsymmErrors* gIMnpipi_Sm_cs_Etotal_mev[2];
   TGraphAsymmErrors* gMIXErrorSp_CS_mev[2];
   TGraphAsymmErrors* gMIXErrorSm_CS_mev[2];
+  TGraphAsymmErrors* gr_S1385_ToSqlow_mev;
+  TGraphAsymmErrors* gr_S1385_ToSqhi_mev;
+  
   for(int iqlh=0;iqlh<2;iqlh++){
     cboth_mev[iqlh] = new TCanvas(Form("cboth_mev%d",iqlh),Form("cboth_mev%d",iqlh),1100,1100);
     cboth_mev[iqlh]->SetBottomMargin(0.12);
@@ -1324,6 +1327,7 @@ void CS_finals()
       gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->SetTitle("d#sigma/dM  [#mub/MeV^{2}]");
       gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->CenterTitle();
       gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetXaxis()->SetTitleSize(0.04);
+      gIMnpipi_Sp_cs_Etotal_mev[iqlh]->SetLineWidth(2);
       gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->SetTitleSize(0.04);
       gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetXaxis()->SetTitleOffset(1.4);
       gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->SetTitleOffset(1.6);
@@ -1344,6 +1348,7 @@ void CS_finals()
       gMIXErrorSp_CS_mev[iqlh]->SetPointEYlow(ip,yel);
       gMIXErrorSp_CS_mev[iqlh]->SetPointEYhigh(ip,yeh);
       gMIXErrorSp_CS_mev[iqlh]->SetLineColor(kGreen+2);
+      gMIXErrorSp_CS_mev[iqlh]->SetLineWidth(2);
       gMIXErrorSp_CS_mev[iqlh]->SetFillColor(0);
       gMIXErrorSp_CS_mev[iqlh]->SetFillStyle(0);
       gMIXErrorSp_CS_mev[iqlh]->SetMarkerColor(kGreen+2);
@@ -1364,6 +1369,7 @@ void CS_finals()
       gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetPointEYhigh(ip,yeh);
       gIMnpipi_Sm_cs_Etotal_mev[iqlh]->GetXaxis()->SetRangeUser(1300,1600);
       gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetLineColor(kBlue+2);
+      gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetLineWidth(2);
       gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetFillColor(0);
       gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetMarkerColor(kBlue+2);
       gIMnpipi_Sm_cs_Etotal_mev[iqlh]->Draw("p");
@@ -1382,25 +1388,81 @@ void CS_finals()
       gMIXErrorSm_CS_mev[iqlh]->SetPointEYlow(ip,yel);
       gMIXErrorSm_CS_mev[iqlh]->SetPointEYhigh(ip,yeh);
       gMIXErrorSm_CS_mev[iqlh]->SetLineColor(kBlue+2);
+      gMIXErrorSm_CS_mev[iqlh]->SetLineWidth(2);
       gMIXErrorSm_CS_mev[iqlh]->SetFillColor(0);
       gMIXErrorSm_CS_mev[iqlh]->SetFillStyle(0);
       gMIXErrorSm_CS_mev[iqlh]->SetMarkerColor(kBlue+2);
       gMIXErrorSm_CS_mev[iqlh]->Draw("5");
     }
-    TLine *p = new TLine(1290,0,1605,0);
-    p->SetLineColor(1);
-    //p->SetLineWidth(2.0);
-    p->SetLineStyle(2);
-    p->Draw();
-    TLine *pkp = new TLine((kpMass+pMass)*1000,0,(kpMass+pMass)*1000,2.5);
-    pkp->SetLineColor(1);
-    pkp->SetLineStyle(2);
-    pkp->Draw();
-    
-    TLine *pk0n = new TLine((k0Mass+nMass)*1000,0,(k0Mass+nMass)*1000,1);
-    pk0n->SetLineColor(1);
-    pk0n->SetLineStyle(2);
-    pk0n->Draw();
+    if(iqlh==0){
+      gr_S1385_ToSqlow_mev = new TGraphAsymmErrors();
+      for(int ip=0;ip<gr_S1385_ToSqlow->GetN();ip++){
+        double x = gr_S1385_ToSqlow->GetPointX(ip);
+        double y = gr_S1385_ToSqlow->GetPointY(ip);
+        double xe = gr_S1385_ToSqlow->GetErrorXhigh(ip);
+        double yeh = gr_S1385_ToSqlow->GetErrorYhigh(ip);
+        double yel = gr_S1385_ToSqlow->GetErrorYlow(ip);
+        gr_S1385_ToSqlow_mev->SetPoint(ip,x*1000.,y);
+        gr_S1385_ToSqlow_mev->SetPoint(ip,x*1000.,y);
+        gr_S1385_ToSqlow_mev->SetPointEXhigh(ip,xe*1000.);
+        gr_S1385_ToSqlow_mev->SetPointEXlow(ip,xe*1000.);
+        gr_S1385_ToSqlow_mev->SetPointEYlow(ip,yel);
+        gr_S1385_ToSqlow_mev->SetPointEYhigh(ip,yeh);
+      }
+      gr_S1385_ToSqlow_mev->SetLineColor(5);
+      gr_S1385_ToSqlow_mev->SetFillStyle(3002);
+      gr_S1385_ToSqlow_mev->SetFillColor(0);
+      gr_S1385_ToSqlow_mev->Draw("5");
+      
+      
+      TLine *p = new TLine(1290,0,1605,0);
+      p->SetLineColor(1);
+      //p->SetLineWidth(2.0);
+      p->SetLineStyle(2);
+      p->Draw();
+      TLine *pkp = new TLine((kpMass+pMass)*1000,0,(kpMass+pMass)*1000,2.5);
+      pkp->SetLineColor(1);
+      pkp->SetLineStyle(2);
+      pkp->Draw();
+
+      TLine *pk0n = new TLine((k0Mass+nMass)*1000,0,(k0Mass+nMass)*1000,2.5);
+      pk0n->SetLineColor(1);
+      pk0n->SetLineStyle(2);
+      pk0n->Draw(); 
+    }else if(iqlh==1){
+      gr_S1385_ToSqhi_mev = new TGraphAsymmErrors();
+      for(int ip=0;ip<gr_S1385_ToSqhi->GetN();ip++){
+        double x = gr_S1385_ToSqhi->GetPointX(ip);
+        double y = gr_S1385_ToSqhi->GetPointY(ip);
+        double xe = gr_S1385_ToSqhi->GetErrorXhigh(ip);
+        double yeh = gr_S1385_ToSqhi->GetErrorYhigh(ip);
+        double yel = gr_S1385_ToSqhi->GetErrorYlow(ip);
+        gr_S1385_ToSqhi_mev->SetPoint(ip,x*1000.,y);
+        gr_S1385_ToSqhi_mev->SetPoint(ip,x*1000.,y);
+        gr_S1385_ToSqhi_mev->SetPointEXhigh(ip,xe*1000.);
+        gr_S1385_ToSqhi_mev->SetPointEXlow(ip,xe*1000.);
+        gr_S1385_ToSqhi_mev->SetPointEYlow(ip,yel);
+        gr_S1385_ToSqhi_mev->SetPointEYhigh(ip,yeh);
+      }
+      gr_S1385_ToSqhi_mev->SetLineColor(5);
+      gr_S1385_ToSqhi_mev->SetFillStyle(3002);
+      gr_S1385_ToSqhi_mev->SetFillColor(0);
+      gr_S1385_ToSqhi_mev->Draw("5");
+      TLine *p = new TLine(1290,0,1605,0);
+      p->SetLineColor(1);
+      //p->SetLineWidth(2.0);
+      p->SetLineStyle(2);
+      p->Draw();
+      TLine *pkp = new TLine((kpMass+pMass)*1000,0,(kpMass+pMass)*1000,1);
+      pkp->SetLineColor(1);
+      pkp->SetLineStyle(2);
+      pkp->Draw();
+
+      TLine *pk0n = new TLine((k0Mass+nMass)*1000,0,(k0Mass+nMass)*1000,1);
+      pk0n->SetLineColor(1);
+      pk0n->SetLineStyle(2);
+      pk0n->Draw(); 
+    }
   }
 
 
