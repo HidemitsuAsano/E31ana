@@ -1181,6 +1181,34 @@ void CS_finals()
   cSysSpSmAvgEtotal[1]->SaveAs("Avgqlow.pdf");
   cSysSpSmAvgEtotal[2]->SaveAs("Avgqhi.pdf");
    
+  
+  TCanvas *cAvg_mev[2];
+  TGraphAsymmErrors* gIMnpipi_SpSmAvg_cs_Etotal_mev[2];
+  TGraphAsymmErrors* gMIXErrorSpSmAvg_CS_mev[2];
+  
+  for(int iqlh=0;iqlh<2;iqlh++){
+    gIMnpipi_SpSmAvg_cs_Etotal_mev[iqlh] = new TGraphAsymmErrors();
+    for(int ip=0;ip<gIMnpipi_SpSmAvg_cs_Etotal[iqlh+1]->GetN();ip++){
+      double x = gIMnpipi_SpSmAvg_cs_Etotal[iqlh+1]->GetPointX(ip);
+      double y = gIMnpipi_SpSmAvg_cs_Etotal[iqlh+1]->GetPointY(ip);
+      double xe = gIMnpipi_SpSmAvg_cs_Etotal[iqlh+1]->GetErrorXhigh(ip);
+      double yeh = gIMnpipi_SpSmAvg_cs_Etotal[iqlh+1]->GetErrorYhigh(ip);
+      double yel = gIMnpipi_SpSmAvg_cs_Etotal[iqlh+1]->GetErrorYlow(ip);
+      gIMnpipi_SpSmAvg_cs_Etotal_mev[iqlh]->SetPoint(ip,x*1000.,y);
+      gIMnpipi_SpSmAvg_cs_Etotal_mev[iqlh]->SetPoint(ip,x*1000.,y);
+      gIMnpipi_SpSmAvg_cs_Etotal_mev[iqlh]->SetPointEXhigh(ip,xe*1000.);
+      gIMnpipi_SpSmAvg_cs_Etotal_mev[iqlh]->SetPointEXlow(ip,xe*1000.);
+      gIMnpipi_SpSmAvg_cs_Etotal_mev[iqlh]->SetPointEYlow(ip,yel);
+      gIMnpipi_SpSmAvg_cs_Etotal_mev[iqlh]->SetPointEYhigh(ip,yeh);
+    }//for ip
+
+
+
+  }
+
+
+
+
 
   TCanvas *cSysSpSmAvgEtotalSide = new TCanvas("cSysSpSmAvgEtotalSide","cSysSpSmAvgEtotalSide",1700,800);
   cSysSpSmAvgEtotalSide->SetBottomMargin(0.12);
@@ -1442,7 +1470,7 @@ void CS_finals()
     gMIXErrorSm_CS_mev[iqlh]->Draw("5");
      
     if(iqlh==0){
-      gr_S1385_ToSqlow_mev->Draw("5");
+      //gr_S1385_ToSqlow_mev->Draw("5");
       TLine *p = new TLine(1290,0,1605,0);
       p->SetLineColor(1);
       //p->SetLineWidth(2.0);
@@ -1463,7 +1491,7 @@ void CS_finals()
       tex->SetTextColor(1);
       tex->DrawLatex( 1320,tex_ymax*0.85 , "(a)" );
     }else if(iqlh==1){
-      gr_S1385_ToSqhi_mev->Draw("5");
+      //gr_S1385_ToSqhi_mev->Draw("5");
       TLine *p = new TLine(1290,0,1605,0);
       p->SetLineColor(1);
       //p->SetLineWidth(2.0);
@@ -1494,8 +1522,64 @@ void CS_finals()
   cboth_mev[0]->SaveAs("cbothqlow_mev.pdf");
   cboth_mev[1]->SaveAs("cbothqhi_mev.pdf");
 
+  TCanvas *cboth_mev_side = new TCanvas("cboth_mev_side","cboth_mev_side",1700,800);
+  cboth_mev_side->SetBottomMargin(0.12);
+  cboth_mev_side->SetLeftMargin(0.14);
+  cboth_mev_side->SetRightMargin(0.08);
+  cboth_mev_side->Divide(2,1,0,0);
+  for(int iqlh=0;iqlh<2;iqlh++){
+    cboth_mev_side->cd(iqlh+1);
+    if(iqlh==1)gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetXaxis()->SetLimits(1301,1610);
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->SetMaximum(gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetHistogram()->GetMaximum()*1.01);
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->Draw("ap");
+    gMIXErrorSp_CS_mev[iqlh]->Draw("5");
+    gIMnpipi_Sm_cs_Etotal_mev[iqlh]->Draw("p");
+    gMIXErrorSm_CS_mev[iqlh]->Draw("5");
+    if(iqlh==0){
+      //gr_S1385_ToSqlow_mev->Draw("5");
+      TLine *p = new TLine(1290,0,1605,0);
+      p->SetLineColor(1);
+      p->SetLineStyle(2);
+      p->Draw();
+      TLine *pkp = new TLine((kpMass+pMass)*1000,0,(kpMass+pMass)*1000,gIMnpipi_Sp_cs_Etotal_mev[0]->GetHistogram()->GetMaximum());
+      pkp->SetLineColor(1);
+      pkp->SetLineStyle(2);
+      pkp->Draw();
 
+      TLine *pk0n = new TLine((k0Mass+nMass)*1000,0,(k0Mass+nMass)*1000,gIMnpipi_Sp_cs_Etotal_mev[0]->GetHistogram()->GetMaximum());
+      pk0n->SetLineColor(1);
+      pk0n->SetLineStyle(2);
+      pk0n->Draw(); 
+      TLatex *tex = new TLatex();
+      double tex_ymax = gIMnpipi_Sp_cs_Etotal_mev[0]->GetHistogram()->GetMaximum();
+      tex->SetTextSize(0.05);
+      tex->SetTextColor(1);
+      tex->DrawLatex( 1320,tex_ymax*0.85 , "(a)" );
+    }else if(iqlh==1){
+      //gr_S1385_ToSqhi_mev->Draw("5");
+      TLine *p = new TLine(1290,0,1605,0);
+      p->SetLineColor(1);
+      //p->SetLineWidth(2.0);
+      p->SetLineStyle(2);
+      p->Draw();
+      TLine *pkp = new TLine((kpMass+pMass)*1000,0,(kpMass+pMass)*1000,gIMnpipi_Sp_cs_Etotal_mev[0]->GetHistogram()->GetMaximum());
+      pkp->SetLineColor(1);
+      pkp->SetLineStyle(2);
+      pkp->Draw();
 
+      TLine *pk0n = new TLine((k0Mass+nMass)*1000,0,(k0Mass+nMass)*1000,gIMnpipi_Sp_cs_Etotal_mev[0]->GetHistogram()->GetMaximum());
+      pk0n->SetLineColor(1);
+      pk0n->SetLineStyle(2);
+      pk0n->Draw(); 
+
+      TLatex *tex = new TLatex();
+      double tex_ymax = gIMnpipi_Sp_cs_Etotal_mev[1]->GetHistogram()->GetMaximum();
+      tex->SetTextSize(0.05);
+      tex->SetTextColor(1);
+      tex->DrawLatex( 1320,tex_ymax*0.85 , "(b)" );
+    }
+  }
+  cboth_mev_side->SaveAs("cboth_mev.pdf");
 
   std::cout << "k-p mass " <<   kpMass+pMass << std::endl;
   std::cout << "k0n mass " <<   k0Mass+nMass << std::endl;
