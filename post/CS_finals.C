@@ -1300,10 +1300,6 @@ void CS_finals()
   TGraphAsymmErrors* gr_S1385_ToSqhi_mev;
   
   for(int iqlh=0;iqlh<2;iqlh++){
-    cboth_mev[iqlh] = new TCanvas(Form("cboth_mev%d",iqlh),Form("cboth_mev%d",iqlh),1100,1100);
-    cboth_mev[iqlh]->SetBottomMargin(0.12);
-    cboth_mev[iqlh]->SetLeftMargin(0.14);
-    cboth_mev[iqlh]->SetRightMargin(0.08);
     gIMnpipi_Sp_cs_Etotal_mev[iqlh] = new TGraphAsymmErrors();
     for(int ip=0;ip<gIMnpipi_Sp_cs_Etotal[iqlh+1]->GetN();ip++){
       double x = gIMnpipi_Sp_cs_Etotal[iqlh+1]->GetPointX(ip);
@@ -1317,22 +1313,26 @@ void CS_finals()
       gIMnpipi_Sp_cs_Etotal_mev[iqlh]->SetPointEXlow(ip,xe*1000.);
       gIMnpipi_Sp_cs_Etotal_mev[iqlh]->SetPointEYlow(ip,yel);
       gIMnpipi_Sp_cs_Etotal_mev[iqlh]->SetPointEYhigh(ip,yeh);
-      gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetXaxis()->SetRangeUser(1300,1600);
-      if(iqlh==0)gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->SetRangeUser(-0.2,2.5);
-      if(iqlh==1)gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->SetRangeUser(-0.4,1);
-      gIMnpipi_Sp_cs_Etotal_mev[iqlh]->SetLineColor(kGreen+2);
-      gIMnpipi_Sp_cs_Etotal_mev[iqlh]->SetFillColor(0);
-      gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetXaxis()->SetTitle("IM(#pi^{#pm}#Sigma^{#mp}) [MeV/c^{2}]");
-      gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetXaxis()->CenterTitle();
-      gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->SetTitle("d#sigma/dM  [#mub/MeV^{2}]");
-      gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->CenterTitle();
-      gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetXaxis()->SetTitleSize(0.04);
-      gIMnpipi_Sp_cs_Etotal_mev[iqlh]->SetLineWidth(2);
-      gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->SetTitleSize(0.04);
-      gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetXaxis()->SetTitleOffset(1.4);
-      gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->SetTitleOffset(1.6);
-      gIMnpipi_Sp_cs_Etotal_mev[iqlh]->SetMarkerColor(kGreen+2);
-      gIMnpipi_Sp_cs_Etotal_mev[iqlh]->Draw("ap");
+    }//for ip
+    if(iqlh==0)gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->SetRangeUser(-0.2,2.5);
+    if(iqlh==1)gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->SetRangeUser(-0.4,1);
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->SetLineColor(kGreen+2);
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->SetFillColor(0);
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetXaxis()->SetTitle("IM(#pi^{#pm}#Sigma^{#mp}) [MeV/c^{2}]");
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetXaxis()->CenterTitle();
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->SetTitle("d#sigma/dM  [#mub/MeV^{2}]");
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->CenterTitle();
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetXaxis()->SetTitleSize(0.04);
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->SetLineWidth(2);
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->SetTitleSize(0.04);
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetXaxis()->SetTitleOffset(1.4);
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetYaxis()->SetTitleOffset(1.6);
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->SetMarkerColor(kGreen+2);
+    if(iqlh==1){
+      gIMnpipi_Sp_cs_Etotal_mev[1]->SetMaximum(gIMnpipi_Sp_cs_Etotal_mev[0]->GetHistogram()->GetMaximum());
+      gIMnpipi_Sp_cs_Etotal_mev[0]->SetMinimum(gIMnpipi_Sp_cs_Etotal_mev[1]->GetHistogram()->GetMinimum());
+      //double maxY = TMath::MaxElement(n,gIMnpipi_Sp_cs_Etotal_mev[0]->GetY());
+      //std::cout << "MAX" << gIMnpipi_Sp_cs_Etotal_mev[0]->GetMaximum() << std::endl;
     }
     gMIXErrorSp_CS_mev[iqlh] = new TGraphAsymmErrors();
     for(int ip=0;ip<gMIXErrorSp_CS[iqlh+1]->GetN();ip++){
@@ -1347,13 +1347,12 @@ void CS_finals()
       gMIXErrorSp_CS_mev[iqlh]->SetPointEXlow(ip,xe*1000.);
       gMIXErrorSp_CS_mev[iqlh]->SetPointEYlow(ip,yel);
       gMIXErrorSp_CS_mev[iqlh]->SetPointEYhigh(ip,yeh);
-      gMIXErrorSp_CS_mev[iqlh]->SetLineColor(kGreen+2);
-      gMIXErrorSp_CS_mev[iqlh]->SetLineWidth(2);
-      gMIXErrorSp_CS_mev[iqlh]->SetFillColor(0);
-      gMIXErrorSp_CS_mev[iqlh]->SetFillStyle(0);
-      gMIXErrorSp_CS_mev[iqlh]->SetMarkerColor(kGreen+2);
-      gMIXErrorSp_CS_mev[iqlh]->Draw("5");
     }
+    gMIXErrorSp_CS_mev[iqlh]->SetLineColor(kGreen+2);
+    gMIXErrorSp_CS_mev[iqlh]->SetLineWidth(2);
+    gMIXErrorSp_CS_mev[iqlh]->SetFillColor(0);
+    gMIXErrorSp_CS_mev[iqlh]->SetFillStyle(0);
+    gMIXErrorSp_CS_mev[iqlh]->SetMarkerColor(kGreen+2);
     gIMnpipi_Sm_cs_Etotal_mev[iqlh] = new TGraphAsymmErrors();
     for(int ip=0;ip<gIMnpipi_Sm_cs_Etotal[iqlh+1]->GetN();ip++){
       double x = gIMnpipi_Sm_cs_Etotal[iqlh+1]->GetPointX(ip);
@@ -1367,13 +1366,11 @@ void CS_finals()
       gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetPointEXlow(ip,xe*1000.);
       gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetPointEYlow(ip,yel);
       gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetPointEYhigh(ip,yeh);
-      gIMnpipi_Sm_cs_Etotal_mev[iqlh]->GetXaxis()->SetRangeUser(1300,1600);
-      gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetLineColor(kBlue+2);
-      gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetLineWidth(2);
-      gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetFillColor(0);
-      gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetMarkerColor(kBlue+2);
-      gIMnpipi_Sm_cs_Etotal_mev[iqlh]->Draw("p");
     }
+    gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetLineColor(kBlue+2);
+    gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetLineWidth(2);
+    gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetFillColor(0);
+    gIMnpipi_Sm_cs_Etotal_mev[iqlh]->SetMarkerColor(kBlue+2);
     gMIXErrorSm_CS_mev[iqlh] = new TGraphAsymmErrors();
     for(int ip=0;ip<gMIXErrorSm_CS[iqlh+1]->GetN();ip++){
       double x = gMIXErrorSm_CS[iqlh+1]->GetPointX(ip);
@@ -1387,13 +1384,12 @@ void CS_finals()
       gMIXErrorSm_CS_mev[iqlh]->SetPointEXlow(ip,xe*1000.);
       gMIXErrorSm_CS_mev[iqlh]->SetPointEYlow(ip,yel);
       gMIXErrorSm_CS_mev[iqlh]->SetPointEYhigh(ip,yeh);
-      gMIXErrorSm_CS_mev[iqlh]->SetLineColor(kBlue+2);
-      gMIXErrorSm_CS_mev[iqlh]->SetLineWidth(2);
-      gMIXErrorSm_CS_mev[iqlh]->SetFillColor(0);
-      gMIXErrorSm_CS_mev[iqlh]->SetFillStyle(0);
-      gMIXErrorSm_CS_mev[iqlh]->SetMarkerColor(kBlue+2);
-      gMIXErrorSm_CS_mev[iqlh]->Draw("5");
     }
+    gMIXErrorSm_CS_mev[iqlh]->SetLineColor(kBlue+2);
+    gMIXErrorSm_CS_mev[iqlh]->SetLineWidth(2);
+    gMIXErrorSm_CS_mev[iqlh]->SetFillColor(0);
+    gMIXErrorSm_CS_mev[iqlh]->SetFillStyle(0);
+    gMIXErrorSm_CS_mev[iqlh]->SetMarkerColor(kBlue+2);
     if(iqlh==0){
       gr_S1385_ToSqlow_mev = new TGraphAsymmErrors();
       for(int ip=0;ip<gr_S1385_ToSqlow->GetN();ip++){
@@ -1412,23 +1408,6 @@ void CS_finals()
       gr_S1385_ToSqlow_mev->SetLineColor(5);
       gr_S1385_ToSqlow_mev->SetFillStyle(3002);
       gr_S1385_ToSqlow_mev->SetFillColor(0);
-      gr_S1385_ToSqlow_mev->Draw("5");
-      
-      
-      TLine *p = new TLine(1290,0,1605,0);
-      p->SetLineColor(1);
-      //p->SetLineWidth(2.0);
-      p->SetLineStyle(2);
-      p->Draw();
-      TLine *pkp = new TLine((kpMass+pMass)*1000,0,(kpMass+pMass)*1000,2.5);
-      pkp->SetLineColor(1);
-      pkp->SetLineStyle(2);
-      pkp->Draw();
-
-      TLine *pk0n = new TLine((k0Mass+nMass)*1000,0,(k0Mass+nMass)*1000,2.5);
-      pk0n->SetLineColor(1);
-      pk0n->SetLineStyle(2);
-      pk0n->Draw(); 
     }else if(iqlh==1){
       gr_S1385_ToSqhi_mev = new TGraphAsymmErrors();
       for(int ip=0;ip<gr_S1385_ToSqhi->GetN();ip++){
@@ -1447,24 +1426,73 @@ void CS_finals()
       gr_S1385_ToSqhi_mev->SetLineColor(5);
       gr_S1385_ToSqhi_mev->SetFillStyle(3002);
       gr_S1385_ToSqhi_mev->SetFillColor(0);
+    }
+  }
+
+  for(int iqlh=0;iqlh<2;iqlh++){
+    cboth_mev[iqlh] = new TCanvas(Form("cboth_mev%d",iqlh),Form("cboth_mev%d",iqlh),1100,1100);
+    cboth_mev[iqlh]->SetBottomMargin(0.12);
+    cboth_mev[iqlh]->SetLeftMargin(0.14);
+    cboth_mev[iqlh]->SetRightMargin(0.08);
+    cboth_mev[iqlh]->cd(); 
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetXaxis()->SetLimits(1300,1610);
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->Draw("ap");
+    gMIXErrorSp_CS_mev[iqlh]->Draw("5");
+    gIMnpipi_Sm_cs_Etotal_mev[iqlh]->Draw("p");
+    gMIXErrorSm_CS_mev[iqlh]->Draw("5");
+     
+    if(iqlh==0){
+      gr_S1385_ToSqlow_mev->Draw("5");
+      TLine *p = new TLine(1290,0,1605,0);
+      p->SetLineColor(1);
+      //p->SetLineWidth(2.0);
+      p->SetLineStyle(2);
+      p->Draw();
+      TLine *pkp = new TLine((kpMass+pMass)*1000,0,(kpMass+pMass)*1000,gIMnpipi_Sp_cs_Etotal_mev[0]->GetHistogram()->GetMaximum());
+      pkp->SetLineColor(1);
+      pkp->SetLineStyle(2);
+      pkp->Draw();
+
+      TLine *pk0n = new TLine((k0Mass+nMass)*1000,0,(k0Mass+nMass)*1000,gIMnpipi_Sp_cs_Etotal_mev[0]->GetHistogram()->GetMaximum());
+      pk0n->SetLineColor(1);
+      pk0n->SetLineStyle(2);
+      pk0n->Draw(); 
+      TLatex *tex = new TLatex();
+      double tex_ymax = gIMnpipi_Sp_cs_Etotal_mev[0]->GetHistogram()->GetMaximum();
+      tex->SetTextSize(0.05);
+      tex->SetTextColor(1);
+      tex->DrawLatex( 1320,tex_ymax*0.85 , "(a)" );
+    }else if(iqlh==1){
       gr_S1385_ToSqhi_mev->Draw("5");
       TLine *p = new TLine(1290,0,1605,0);
       p->SetLineColor(1);
       //p->SetLineWidth(2.0);
       p->SetLineStyle(2);
       p->Draw();
-      TLine *pkp = new TLine((kpMass+pMass)*1000,0,(kpMass+pMass)*1000,1);
+      TLine *pkp = new TLine((kpMass+pMass)*1000,0,(kpMass+pMass)*1000,gIMnpipi_Sp_cs_Etotal_mev[0]->GetHistogram()->GetMaximum());
       pkp->SetLineColor(1);
       pkp->SetLineStyle(2);
       pkp->Draw();
 
-      TLine *pk0n = new TLine((k0Mass+nMass)*1000,0,(k0Mass+nMass)*1000,1);
+      TLine *pk0n = new TLine((k0Mass+nMass)*1000,0,(k0Mass+nMass)*1000,gIMnpipi_Sp_cs_Etotal_mev[0]->GetHistogram()->GetMaximum());
       pk0n->SetLineColor(1);
       pk0n->SetLineStyle(2);
       pk0n->Draw(); 
-    }
-  }
 
+      TLatex *tex = new TLatex();
+      double tex_ymax = gIMnpipi_Sp_cs_Etotal_mev[1]->GetHistogram()->GetMaximum();
+      tex->SetTextSize(0.05);
+      tex->SetTextColor(1);
+      tex->DrawLatex( 1320,tex_ymax*0.85 , "(b)" );
+    }
+
+    cboth_mev[iqlh]->Update(); 
+    cboth_mev[iqlh]->Modified(); 
+
+   
+  }
+  cboth_mev[0]->SaveAs("cbothqlow_mev.pdf");
+  cboth_mev[1]->SaveAs("cbothqhi_mev.pdf");
 
 
 
