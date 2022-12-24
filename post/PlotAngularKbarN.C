@@ -37,18 +37,28 @@ void PlotAngularKbarN()
   double normK0 = CSK0/2.05008;//integral of K0
   double normKm800 = CSKm800/6.69481;//integral of K-
   double normK0800 = CSK0800/1.36187;//integral of K0
-
+  
+  TH2D *h2Kmn = new TH2D("h2Kmn","h2Kmn",1000,-1,1,2400,0,12000);
+  TH2D *h2Kmn800 = new TH2D("h2Kmn800","h2Kmn800",1000,-1,1,2400,0,12000);
+  TH2D *h2K0n = new TH2D("h2K0n","h2K0n",1000,-1,1,2400,0,12000);
+  TH2D *h2K0n800 = new TH2D("h2K0n800","h2K0n800",1000,-1,1,2400,0,12000);
   for(double coscm=-1.;coscm<1;coscm += 0.001){
     double S_Kmn=0;
-    double S_Kmnup=0;
-    double S_Kmndown=0;
+    //compute default val.
     for(int il=0;il<nparamKm;il++){
       S_Kmn += LegendreC_Kmn[il]*Legendre(il,coscm);
-      S_Kmnup += (LegendreC_Kmn[il]+LegendreC_Kmnerr[il]  ) *Legendre(il,coscm);
-      S_Kmndown += (LegendreC_Kmn[il]-LegendreC_Kmnerr[il]  ) *Legendre(il,coscm);
+    }
+   
+    for(int imc=0;imc<10000;imc++){ 
+      double val  = 0;
+      for(int il=0;il<nparamKm;il++){
+        val += (LegendreC_Kmn[il]+gRandom->Gaus(0,LegendreC_Kmnerr[il]))*Legendre(il,coscm);
+      }
+      h2Kmn->Fill(-1.*coscm,val*normKm);
     }
     coscmKmn.push_back(-1.*coscm);
     yKmn.push_back(S_Kmn*normKm);
+    /*
     if(S_Kmnup > S_Kmndown){
       yKmnehi.push_back((S_Kmnup-S_Kmn)*normKm);
       yKmnelow.push_back((S_Kmn-S_Kmndown)*normKm);
@@ -111,9 +121,12 @@ void PlotAngularKbarN()
     }else{
       yK0nehi800.push_back((S_K0ndown800-S_K0n800)*normK0800);
       yK0nelow800.push_back((S_K0n800-S_K0nup800)*normK0800);
-    }
+    }*/
   }
 
+  h2Kmn->Draw("colz");
+
+  return;  
   std::vector<double> coscmsumn, ysumn, ysumnehi, ysumnelow;//n angle (K0n + K-n sum) 
   std::vector<double> coscmsumn800, ysumn800, ysumnehi800, ysumnelow800;//n angle (K0n + K-n sum) 
   const int ndata = coscmKmn.size();
