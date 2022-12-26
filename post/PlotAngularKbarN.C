@@ -38,10 +38,10 @@ void PlotAngularKbarN()
   double normKm800 = CSKm800/6.69481;//integral of K-
   double normK0800 = CSK0800/1.36187;//integral of K0
   
-  TH2D *h2Kmn = new TH2D("h2Kmn","h2Kmn",1000,-1,1,2400,0,12000);
-  TH2D *h2Kmn800 = new TH2D("h2Kmn800","h2Kmn800",1000,-1,1,2400,0,12000);
-  TH2D *h2K0n = new TH2D("h2K0n","h2K0n",1000,-1,1,2400,0,12000);
-  TH2D *h2K0n800 = new TH2D("h2K0n800","h2K0n800",1000,-1,1,2400,0,12000);
+  TH2D *h2Kmn = new TH2D("h2Kmn","h2Kmn",2000,-1,1,4000,0,20000);
+  TH2D *h2Kmn800 = new TH2D("h2Kmn800","h2Kmn800",2000,-1,1,4000,0,20000);
+  TH2D *h2K0n = new TH2D("h2K0n","h2K0n",2000,-1,1,4000,0,20000);
+  TH2D *h2K0n800 = new TH2D("h2K0n800","h2K0n800",2000,-1,1,4000,0,20000);
   for(double coscm=-1.;coscm<1;coscm += 0.001){
     double S_Kmn=0;
     //compute default val.
@@ -58,78 +58,94 @@ void PlotAngularKbarN()
     }
     coscmKmn.push_back(-1.*coscm);
     yKmn.push_back(S_Kmn*normKm);
-    /*
-    if(S_Kmnup > S_Kmndown){
-      yKmnehi.push_back((S_Kmnup-S_Kmn)*normKm);
-      yKmnelow.push_back((S_Kmn-S_Kmndown)*normKm);
-    }else{
-      yKmnehi.push_back((S_Kmndown-S_Kmn)*normKm);
-      yKmnelow.push_back((S_Kmn-S_Kmnup)*normKm);
-    }
 
     double S_Kmn800=0;
-    double S_Kmnup800=0;
-    double S_Kmndown800=0;
-    for(int il=0;il<nparamKm;il++){
-      S_Kmn800 += LegendreC_Kmn800[il]*Legendre(il,coscm);
-      S_Kmnup800 += (LegendreC_Kmn800[il]+LegendreC_Kmnerr800[il]  ) *Legendre(il,coscm);
-      S_Kmndown800 += (LegendreC_Kmn800[il]-LegendreC_Kmnerr800[il]  ) *Legendre(il,coscm);
+    for(int imc=0;imc<10000;imc++){ 
+      double val  = 0;
+      for(int il=0;il<nparamKm;il++){
+        val += (LegendreC_Kmn800[il]+gRandom->Gaus(0,LegendreC_Kmnerr800[il]))*Legendre(il,coscm);
+      }
+      h2Kmn800->Fill(-1.*coscm,val*normKm800);
     }
     coscmKmn800.push_back(-1.0*coscm);
     yKmn800.push_back(S_Kmn800*normKm800);
-    if(S_Kmnup800 > S_Kmndown800){
-      yKmnehi800.push_back((S_Kmnup800-S_Kmn800)*normKm800);
-      yKmnelow800.push_back((S_Kmn800-S_Kmndown800)*normKm800);
-    }else{
-      yKmnehi800.push_back((S_Kmndown800-S_Kmn800)*normKm800);
-      yKmnelow800.push_back((S_Kmn800-S_Kmnup800)*normKm800);
-    }
-
-
     double S_K0n=0;
-    double S_K0nup=0;
-    double S_K0ndown=0;
-    for(int il=0;il<nparamK0;il++){
-      S_K0n += LegendreC_K0n[il]*Legendre(il,coscm);
-      S_K0nup += (LegendreC_K0n[il]+LegendreC_K0nerr[il]  ) *Legendre(il,coscm);
-      S_K0ndown += (LegendreC_K0n[il]-LegendreC_K0nerr[il]  ) *Legendre(il,coscm);
+    for(int imc=0;imc<10000;imc++){ 
+      double val  = 0;
+      for(int il=0;il<nparamK0;il++){
+        val += (LegendreC_K0n[il]+gRandom->Gaus(0,LegendreC_K0nerr[il]))*Legendre(il,coscm);
+      }
+      h2K0n->Fill(-1.*coscm,val*normK0);
     }
     coscmK0n.push_back(-1.0*coscm);
     yK0n.push_back(S_K0n*normK0);
-    if(S_K0nup > S_K0ndown){
-      yK0nehi.push_back((S_K0nup-S_K0n)*normK0);
-      yK0nelow.push_back((S_K0n-S_K0ndown)*normK0);
-    }else{
-      yK0nehi.push_back((S_K0ndown-S_K0n)*normK0);
-      yK0nelow.push_back((S_K0n-S_K0nup)*normK0);
-    }
-    
     
     double S_K0n800=0;
-    double S_K0nup800=0;
-    double S_K0ndown800=0;
-    for(int il=0;il<nparamK0;il++){
-      S_K0n800 += LegendreC_K0n800[il]*Legendre(il,coscm);
-      S_K0nup800 += (LegendreC_K0n800[il]+LegendreC_K0nerr800[il]  ) *Legendre(il,coscm);
-      S_K0ndown800 += (LegendreC_K0n800[il]-LegendreC_K0nerr800[il]  ) *Legendre(il,coscm);
+    for(int imc=0;imc<10000;imc++){ 
+      double val  = 0;
+      for(int il=0;il<nparamK0;il++){
+        val += (LegendreC_K0n800[il]+gRandom->Gaus(0,LegendreC_K0nerr800[il]))*Legendre(il,coscm);
+      }
+      h2K0n800->Fill(-1.*coscm,val*normK0800);
     }
     coscmK0n800.push_back(-1.0*coscm);
     yK0n800.push_back(S_K0n800*normK0800);
-    if(S_K0nup800 > S_K0ndown800){
-      yK0nehi800.push_back((S_K0nup800-S_K0n800)*normK0800);
-      yK0nelow800.push_back((S_K0n800-S_K0ndown800)*normK0800);
-    }else{
-      yK0nehi800.push_back((S_K0ndown800-S_K0n800)*normK0800);
-      yK0nelow800.push_back((S_K0n800-S_K0nup800)*normK0800);
-    }*/
   }
-
+   
+  auto *ch2Kmn = new TCanvas("ch2Kmn","ch2Kmn");
   h2Kmn->Draw("colz");
+  auto *ch2K0n = new TCanvas("ch2K0n","ch2K0n");
+  h2K0n->Draw("colz");
+  
+  //
+  //TGraphAsymmErrors *gKmn = new TGraphAsymmErrors();
+  //gKmn->SetName("gKmn");
+  //TGraphAsymmErrors *gK0n = new TGraphAsymmErrors();
+  //gK0n->SetName("gK0n");
+ 
+  const int ndata = coscmKmn.size();
+  std::cout << "ndata" << ndata << std::endl;
+  TH1D* pyKmn[ndata];
+  for(int ip = 0;ip<ndata;ip++){
+    pyKmn[ip] = (TH1D*)h2Kmn->ProjectionY(Form("pyKmn%d",ip),ip+1,ip+1);
+    double rms = pyKmn[ip]->GetRMS();
+    yKmnelow.push_back( rms);
+    yKmnehi.push_back( rms);
+    std::cout << "ip " << ip << "  " <<  rms << std::endl; 
+  }
+  TCanvas *ctest = new TCanvas("ctest");   
+  pyKmn[1800]->Draw("HE");  
 
-  return;  
+  //K-n -> K-n elastic
+  TCanvas *cKm = new TCanvas("cKm","cKm");
+  TGraphAsymmErrors *grKmn = new TGraphAsymmErrors(coscmKmn.size(),&coscmKmn[0],&yKmn[0],0,0,&yKmnelow[0],&yKmnehi[0]);
+  grKmn->SetTitle("K^{-}n #rightarrow K^{-}n");
+  grKmn->SetLineColor(4);
+  grKmn->SetFillColor(4);
+  grKmn->SetFillStyle(3001);
+  //grKmn->GetXaxis()->SetTitle("cosCM K^{-}");
+  grKmn->GetXaxis()->SetTitle("cosCM n");
+  grKmn->GetXaxis()->CenterTitle();
+  grKmn->GetYaxis()->SetTitle("A.U.");
+  grKmn->GetYaxis()->SetMaxDigits(3);
+  grKmn->GetYaxis()->CenterTitle();
+  grKmn->Draw("ap4");
+  //grKmn->Print();
+  std::cout << "K- " << grKmn->Integral(0,coscmKmn.size())  << std::endl;
+ 
+  return; 
+     
+
+
+
+
+
+  
+
+
+
   std::vector<double> coscmsumn, ysumn, ysumnehi, ysumnelow;//n angle (K0n + K-n sum) 
   std::vector<double> coscmsumn800, ysumn800, ysumnehi800, ysumnelow800;//n angle (K0n + K-n sum) 
-  const int ndata = coscmKmn.size();
   for(int i=0;i<ndata;i++){
     double S_nsum=0;
     double S_nsumup=0;
@@ -147,22 +163,6 @@ void PlotAngularKbarN()
     ysumnelow800.push_back(yKmnelow800.at(i)+yK0nelow800.at(i));
   }
 
-
-  //K-n -> K-n elastic
-  TCanvas *cKm = new TCanvas("cKm","cKm");
-  TGraphAsymmErrors *grKmn = new TGraphAsymmErrors(coscmKmn.size(),&coscmKmn[0],&yKmn[0],0,0,&yKmnelow[0],&yKmnehi[0]);
-  grKmn->SetTitle("K^{-}n #rightarrow K^{-}n");
-  grKmn->SetLineColor(4);
-  grKmn->SetFillColor(4);
-  grKmn->SetFillStyle(3001);
-  //grKmn->GetXaxis()->SetTitle("cosCM K^{-}");
-  grKmn->GetXaxis()->SetTitle("cosCM n");
-  grKmn->GetXaxis()->CenterTitle();
-  grKmn->GetYaxis()->SetTitle("A.U.");
-  grKmn->GetYaxis()->SetMaxDigits(3);
-  grKmn->GetYaxis()->CenterTitle();
-  grKmn->Draw("a4");
-  std::cout << "K- " << grKmn->Integral(0,coscmKmn.size())  << std::endl;
 
   //K-n -> K-n elastic
   TCanvas *cKm800 = new TCanvas("cKm800","cKm800");
