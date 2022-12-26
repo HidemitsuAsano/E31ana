@@ -70,6 +70,9 @@ void PlotAngularKbarN()
     coscmKmn800.push_back(-1.0*coscm);
     yKmn800.push_back(S_Kmn800*normKm800);
     double S_K0n=0;
+    for(int il=0;il<nparamKm;il++){
+      S_K0n += LegendreC_K0n[il]*Legendre(il,coscm);
+    }
     for(int imc=0;imc<10000;imc++){ 
       double val  = 0;
       for(int il=0;il<nparamK0;il++){
@@ -107,14 +110,20 @@ void PlotAngularKbarN()
   std::cout << "ndata" << ndata << std::endl;
   TH1D* pyKmn[ndata];
   for(int ip = 0;ip<ndata;ip++){
-    pyKmn[ip] = (TH1D*)h2Kmn->ProjectionY(Form("pyKmn%d",ip),ip+1,ip+1);
+    pyKmn[ip] = (TH1D*)h2Kmn->ProjectionY(Form("pyKmn%d",ip),ip+1,ip+2);
     double rms = pyKmn[ip]->GetRMS();
     yKmnelow.push_back( rms);
     yKmnehi.push_back( rms);
-    std::cout << "ip " << ip << "  " <<  rms << std::endl; 
   }
-  TCanvas *ctest = new TCanvas("ctest");   
-  pyKmn[1800]->Draw("HE");  
+
+  TH1D* pyK0n[ndata];
+  for(int ip = 0;ip<ndata;ip++){
+    pyK0n[ip] = (TH1D*)h2K0n->ProjectionY(Form("pyK0n%d",ip),ip+1,ip+2);
+    double rms = pyK0n[ip]->GetRMS();
+    yK0nelow.push_back( rms);
+    yK0nehi.push_back( rms);
+  }
+
 
   //K-n -> K-n elastic
   TCanvas *cKm = new TCanvas("cKm","cKm");
@@ -133,56 +142,7 @@ void PlotAngularKbarN()
   //grKmn->Print();
   std::cout << "K- " << grKmn->Integral(0,coscmKmn.size())  << std::endl;
  
-  return; 
-     
 
-
-
-
-
-  
-
-
-
-  std::vector<double> coscmsumn, ysumn, ysumnehi, ysumnelow;//n angle (K0n + K-n sum) 
-  std::vector<double> coscmsumn800, ysumn800, ysumnehi800, ysumnelow800;//n angle (K0n + K-n sum) 
-  for(int i=0;i<ndata;i++){
-    double S_nsum=0;
-    double S_nsumup=0;
-    double S_nsumdown=0;
-    coscmsumn.push_back(coscmKmn.at(i));
-    ysumn.push_back(yKmn.at(i)+yK0n.at(i));
-    ysumnehi.push_back(yKmnehi.at(i)+yK0nehi.at(i));
-    ysumnelow.push_back(yKmnelow.at(i)+yK0nelow.at(i));
-    double S_nsum800=0;
-    double S_nsumup800=0;
-    double S_nsumdown800=0;
-    coscmsumn800.push_back(coscmKmn800.at(i));
-    ysumn800.push_back(yKmn800.at(i)+yK0n800.at(i));
-    ysumnehi800.push_back(yKmnehi800.at(i)+yK0nehi800.at(i));
-    ysumnelow800.push_back(yKmnelow800.at(i)+yK0nelow800.at(i));
-  }
-
-
-  //K-n -> K-n elastic
-  TCanvas *cKm800 = new TCanvas("cKm800","cKm800");
-  TGraphAsymmErrors *grKmn800 = new TGraphAsymmErrors(coscmKmn800.size(),&coscmKmn800[0],&yKmn800[0],0,0,&yKmnelow800[0],&yKmnehi800[0]);
-  grKmn800->SetTitle("K^{-}n #rightarrow K^{-}n");
-  grKmn800->SetLineColor(3);
-  grKmn800->SetFillColor(3);
-  grKmn800->SetFillStyle(3001);
-  //grKmn800->GetXaxis()->SetTitle("cosCM K^{-}");
-  grKmn800->GetXaxis()->SetTitle("cosCM n");
-  grKmn800->GetXaxis()->CenterTitle();
-  grKmn800->GetYaxis()->SetTitle("A.U.");
-  grKmn800->GetYaxis()->SetMaxDigits(3);
-  grKmn800->GetYaxis()->CenterTitle();
-  grKmn800->Draw("a4");
-  std::cout << "K-800: " << grKmn800->Integral(0,coscmKmn800.size())  << std::endl;
-  cKm->cd();
-  grKmn800->Draw("4");
-
-  //K-p ->K0n 
   TCanvas *cK0 = new TCanvas("cK0","cK0");
   TGraphAsymmErrors *grK0n = new TGraphAsymmErrors(coscmK0n.size(),&coscmK0n[0],&yK0n[0],0,0,&yK0nelow[0],&yK0nehi[0]);
   grK0n->SetTitle("K^{-}p #rightarrow #bar{K}^{0}n");
@@ -195,22 +155,62 @@ void PlotAngularKbarN()
   grK0n->GetYaxis()->SetTitle("A.U.");
   grK0n->GetYaxis()->SetMaxDigits(3);
   grK0n->GetYaxis()->CenterTitle();
-  grK0n->Draw("a4");
+  grK0n->Draw("ap4");
   std::cout << "K0 " << grK0n->Integral(0,coscmK0n.size())  << std::endl;
-  TGraphAsymmErrors *grK0n800 = new TGraphAsymmErrors(coscmK0n800.size(),&coscmK0n800[0],&yK0n800[0],0,0,&yK0nelow800[0],&yK0nehi800[0]);
-  grK0n800->SetTitle("K^{-}p #rightarrow #bar{K}^{0}n");
-  grK0n800->SetLineColor(3);
-  grK0n800->SetFillColor(3);
-  grK0n800->SetFillStyle(3001);
-  grK0n800->GetXaxis()->SetTitle("cosCM n");
-  grK0n800->GetXaxis()->CenterTitle();
-  grK0n800->Scale(1.8);
-  grK0n800->Draw("c");
-  std::cout << "K0800 " << grK0n800->Integral(0,coscmK0n800.size())  << std::endl;
+
+  std::vector<double> coscmsumn, ysumn, ysumnehi, ysumnelow;//n angle (K0n + K-n sum) 
+  //std::vector<double> coscmsumn800, ysumn800, ysumnehi800, ysumnelow800;//n angle (K0n + K-n sum) 
+  for(int i=0;i<ndata;i++){
+    double S_nsum=0;
+    double S_nsumup=0;
+    double S_nsumdown=0;
+    coscmsumn.push_back(coscmKmn.at(i));
+    ysumn.push_back(yKmn.at(i)+yK0n.at(i));
+    ysumnehi.push_back(yKmnehi.at(i)+yK0nehi.at(i));
+    ysumnelow.push_back(yKmnelow.at(i)+yK0nelow.at(i));
+    //double S_nsum800=0;
+    //double S_nsumup800=0;
+    //double S_nsumdown800=0;
+    //coscmsumn800.push_back(coscmKmn800.at(i));
+    //ysumn800.push_back(yKmn800.at(i)+yK0n800.at(i));
+    //ysumnehi800.push_back(yKmnehi800.at(i)+yK0nehi800.at(i));
+    //ysumnelow800.push_back(yKmnelow800.at(i)+yK0nelow800.at(i));
+  }
+
+
+  //K-n -> K-n elastic
+  //TCanvas *cKm800 = new TCanvas("cKm800","cKm800");
+  //TGraphAsymmErrors *grKmn800 = new TGraphAsymmErrors(coscmKmn800.size(),&coscmKmn800[0],&yKmn800[0],0,0,&yKmnelow800[0],&yKmnehi800[0]);
+  //grKmn800->SetTitle("K^{-}n #rightarrow K^{-}n");
+  //grKmn800->SetLineColor(3);
+  //grKmn800->SetFillColor(3);
+  //grKmn800->SetFillStyle(3001);
+  //grKmn800->GetXaxis()->SetTitle("cosCM K^{-}");
+  //grKmn800->GetXaxis()->SetTitle("cosCM n");
+  //grKmn800->GetXaxis()->CenterTitle();
+  //grKmn800->GetYaxis()->SetTitle("A.U.");
+  //grKmn800->GetYaxis()->SetMaxDigits(3);
+  //grKmn800->GetYaxis()->CenterTitle();
+  //grKmn800->Draw("a4");
+  //std::cout << "K-800: " << grKmn800->Integral(0,coscmKmn800.size())  << std::endl;
+  //cKm->cd();
+  //grKmn800->Draw("4");
+
+  //K-p ->K0n 
+  //TGraphAsymmErrors *grK0n800 = new TGraphAsymmErrors(coscmK0n800.size(),&coscmK0n800[0],&yK0n800[0],0,0,&yK0nelow800[0],&yK0nehi800[0]);
+  //grK0n800->SetTitle("K^{-}p #rightarrow #bar{K}^{0}n");
+  //grK0n800->SetLineColor(3);
+  //grK0n800->SetFillColor(3);
+  //grK0n800->SetFillStyle(3001);
+  //grK0n800->GetXaxis()->SetTitle("cosCM n");
+  //grK0n800->GetXaxis()->CenterTitle();
+  //grK0n800->Scale(1.8);
+  //grK0n800->Draw("c");
+  //std::cout << "K0800 " << grK0n800->Integral(0,coscmK0n800.size())  << std::endl;
   
   TCanvas *csum = new TCanvas("csum","csum");
   TGraphAsymmErrors *grsumn = new TGraphAsymmErrors(coscmsumn.size(),&coscmsumn[0],&ysumn[0],0,0,&ysumnelow[0],&ysumnehi[0]);
-  TGraphAsymmErrors *grsumn800 = new TGraphAsymmErrors(coscmsumn800.size(),&coscmsumn800[0],&ysumn800[0],0,0,&ysumnelow800[0],&ysumnehi800[0]);
+  //TGraphAsymmErrors *grsumn800 = new TGraphAsymmErrors(coscmsumn800.size(),&coscmsumn800[0],&ysumn800[0],0,0,&ysumnelow800[0],&ysumnehi800[0]);
   grsumn->SetTitle("K^{-}p #rightarrow #bar{K}^{0}n  &  K^{-}n #rightarrow K^{-}n  sum");
   grsumn->SetLineColor(2);
   grsumn->SetFillColor(2);
@@ -222,27 +222,27 @@ void PlotAngularKbarN()
   grsumn->GetYaxis()->CenterTitle();
   grsumn->Draw("ac");
 
-  grsumn800->SetLineColor(3);
-  grsumn800->SetFillColor(3);
-  grsumn800->SetFillColor(3);
-  grsumn800->SetFillStyle(3002);
-  grsumn800->Scale(1.9);
-  grsumn800->Draw("c");
+  //grsumn800->SetLineColor(3);
+  //grsumn800->SetFillColor(3);
+  //grsumn800->SetFillColor(3);
+  //grsumn800->SetFillStyle(3002);
+  //grsumn800->Scale(1.9);
+  //grsumn800->Draw("c");
 
  
   grsumn->SetName("grsumn");
-  grsumn->SetName("grsumn800");
+  //grsumn->SetName("grsumn800");
   grK0n->SetName("grK0n");
   grKmn->SetName("grKmn");
-  grKmn800->SetName("grKmn");
+  //grKmn800->SetName("grKmn");
   std::cout << "n " << grsumn->Integral(0,coscmsumn.size())  << std::endl;
   TFile *feleangle = new TFile("feleangle.root","RECREATE");
   grsumn->Write();
-  grsumn800->Write();
+  //grsumn800->Write();
   grK0n->Write();
   grKmn->Write();
-  grKmn800->Write();
-  grK0n800->Write();
+  //grKmn800->Write();
+  //grK0n800->Write();
 
 }
 

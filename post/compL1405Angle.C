@@ -22,17 +22,17 @@ void compL1405Angle()
   gry->SetLineColor(2);
   gry->SetLineWidth(2);
   gry->Scale(1./2.7);
-  gry->Draw("c");
+  //gry->Draw("c");
 
   TFile *fele = TFile::Open("feleangle.root");
   fele->cd();
-  TGraphAsymmErrors *grsumn = (TGraphAsymmErrors*)fele->Get("grsumn800");
+  TGraphAsymmErrors *grsumn = (TGraphAsymmErrors*)fele->Get("grsumn");
   grsumn->SetLineColor(4);
   grsumn->SetFillColor(4);
   //grsumn->Scale(0.025*2.7*1.05);
   //grsumn->Scale(0.025*2.7*0.92);
-  grsumn->Scale(0.025*0.92);
-  grsumn->Draw("c");
+  grsumn->Scale(0.064);
+  grsumn->Draw("c3");
   TGraphAsymmErrors *grK0n = (TGraphAsymmErrors*)fele->Get("grK0n");
   TGraphAsymmErrors *grKmn = (TGraphAsymmErrors*)fele->Get("grKmn");
   //grK0n->Scale(0.05);
