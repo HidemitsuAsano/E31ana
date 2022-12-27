@@ -1693,33 +1693,45 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   }
 
 
-  //sekihara-Yamagata range 1400-1440
-  TCanvas *cCosL1405 = new TCanvas("cCosL1405","cCosL1405");
-  int M1400 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.4);
+  //sekihara-Yamagata range 1400-1440 
+  //my definition from data 1365-1425 //bin edge
+  int M1365 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.3651);
+  int M1400 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.4001);
   double lowbinEdge = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(M1400);
   double binwidth = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinWidth(M1400)*1000.;
-  int M1440 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.4400);//<-just bin boundary
-  double hibinEdge = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(M1440+1);//->1.44
-  TH1D* CosL1405[3];//isys of deco 
-  std::cout << "Cos low bin Edge " << lowbinEdge << std::endl;
-  std::cout << "Cos hi bin Edge " <<  hibinEdge << std::endl;
+  int M1425 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.425);//
+  int M1440 = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.4400);//<-just bin boundary if rebin3
+  //double hibinEdge = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(M1440+1);//->1.44
+  TH1D* CosL1405_ys[3];//isys of deco : 1400-1440, Yamagata paper range
+  TH1D* CosL1405[3];//isys of deco : 1365-1425, my range for paper
+  //std::cout << "Cos low bin Edge " << lowbinEdge << std::endl;
+  //std::cout << "Cos hi bin Edge " <<  hibinEdge << std::endl;
   for(int idecosys=0;idecosys<3;idecosys++){
-    CosL1405[idecosys] = (TH1D*) Cosn_IMnpipi_SpSmSum[idecosys]->ProjectionY(Form("CosL1405_sys%d",idecosys-1),M1400,M1440);
+    CosL1405_ys[idecosys] = (TH1D*) Cosn_IMnpipi_SpSmSum[idecosys]->ProjectionY(Form("CosL1405_ys_sys%d",idecosys-1),M1400,M1440);
+    CosL1405[idecosys] = (TH1D*) Cosn_IMnpipi_SpSmSum[idecosys]->ProjectionY(Form("CosL1405_sys%d",idecosys-1),M1365,M1425);
+    CosL1405_ys[idecosys]->RebinX(2);
     CosL1405[idecosys]->RebinX(2);
-    double cosbinwidth  = CosL1405[idecosys]->GetXaxis()->GetBinWidth(1);
+    double cosbinwidth  = CosL1405_ys[idecosys]->GetXaxis()->GetBinWidth(1);
+    CosL1405_ys[idecosys]->Scale(1./cosbinwidth);
+    CosL1405_ys[idecosys]->Scale(binwidth);
     CosL1405[idecosys]->Scale(1./cosbinwidth);
     CosL1405[idecosys]->Scale(binwidth);
     //charge sum -> charge average
+    CosL1405_ys[idecosys]->Scale(1./2.);
     CosL1405[idecosys]->Scale(1./2.);
     //CosL1405[idecosys]->RebinX(2);
-    for(int ibincos=0;ibincos< (CosL1405[idecosys]->GetNbinsX());ibincos++){
+    //1400 is not bin boundary 
+    for(int ibincos=0;ibincos< (CosL1405_ys[idecosys]->GetNbinsX());ibincos++){
       double contlow = Cosn_IMnpipi_SpSmSum[idecosys]->GetBinContent(M1400,ibincos);
       double contlowsurplus = contlow*(1.40-lowbinEdge)/binwidth;
-      CosL1405[idecosys]->AddBinContent(ibincos,-1.0*contlowsurplus);
+      CosL1405_ys[idecosys]->AddBinContent(ibincos,-1.0*contlowsurplus);
     }
+    CosL1405_ys[idecosys]->GetXaxis()->SetRangeUser(0.5,1);
     CosL1405[idecosys]->GetXaxis()->SetRangeUser(0.5,1);
   }
-  CosL1405[1]->Draw("HE");
+  TCanvas *cCosL1405_ys = new TCanvas("cCosL1405_ys","cCosL1405_ys");
+  CosL1405_ys[1]->Draw("HE");
+  CosL1405[1]->Draw("HEsame");
   TFile *f = TFile::Open("yamagataL1405.root");
   TGraph *gry = (TGraph*)f->Get("gr_yamagata");
   gry->SetLineColor(3);
@@ -1758,8 +1770,6 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
 
   TCanvas *cqL1405 = new TCanvas("cqL1405","cqL1405");
   TH1D* qL1405[3];//isys of deco 
-  std::cout << "Cos low bin Edge " << lowbinEdge << std::endl;
-  std::cout << "Cos hi bin Edge " <<  hibinEdge << std::endl;
   for(int isys=0;isys<3;isys++){
     qL1405[isys] = (TH1D*) q_IMnpipi_SpSmSum[0][isys]->ProjectionY(Form("qL1405_sys%d",isys-1),M1400,M1440);
     //qL1405[isys]->RebinX(2);
@@ -1941,7 +1951,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     Cosn_IMnpipi_SpSmSum[isys]->Write();
     IMnpipi_SpSmAvgCosCut[isys][0]->Write();
     IMnpipi_SpSmAvgCosCut[isys][1]->Write();
-    CosL1405[isys]->Write();
+    CosL1405_ys[isys]->Write();
     CosL1520[isys]->Write();
     qL1405[isys]->Write();
     qL1520[isys]->Write();
