@@ -1731,6 +1731,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   }
   TCanvas *cCosL1405_ys = new TCanvas("cCosL1405_ys","cCosL1405_ys");
   CosL1405_ys[1]->Draw("HE");
+  //CosL1405[1]->SetLineColor(2);
   CosL1405[1]->Draw("HEsame");
   TFile *f = TFile::Open("yamagataL1405.root");
   TGraph *gry = (TGraph*)f->Get("gr_yamagata");
