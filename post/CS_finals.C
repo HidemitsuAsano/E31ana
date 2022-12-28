@@ -1264,7 +1264,6 @@ void CS_finals()
       gMIXErrorSpSmAvg_CS_mev[iqlh]->SetPointEYlow(ip,yel);
       gMIXErrorSpSmAvg_CS_mev[iqlh]->SetPointEYhigh(ip,yeh);
     }
-
   }
 
 

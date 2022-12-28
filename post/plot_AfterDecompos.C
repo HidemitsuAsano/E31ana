@@ -1953,6 +1953,7 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     IMnpipi_SpSmAvgCosCut[isys][0]->Write();
     IMnpipi_SpSmAvgCosCut[isys][1]->Write();
     CosL1405_ys[isys]->Write();
+    CosL1405[isys]->Write();
     CosL1520[isys]->Write();
     qL1405[isys]->Write();
     qL1520[isys]->Write();
