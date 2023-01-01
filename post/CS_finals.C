@@ -1808,6 +1808,7 @@ void CS_finals()
 
 
   TGraphAsymmErrors *grCosL1520 = new TGraphAsymmErrors(CosL1520[1][1]);
+  grCosL1520->SetName("grCosL1520");
   TGraphAsymmErrors *grCosL1520_decosysup = new TGraphAsymmErrors(CosL1520[2][1]);
   TGraphAsymmErrors *grCosL1520_decosysdown = new TGraphAsymmErrors(CosL1520[0][1]);
   for(int ip=0;ip<grCosL1520->GetN();ip++){
@@ -1830,6 +1831,7 @@ void CS_finals()
     grCosL1520->SetPointEYlow(ip,yel);
   }
   TGraphAsymmErrors *gMIXErrorCosL1520 = new TGraphAsymmErrors(CosL1520[1][1]);
+  gMIXErrorCosL1520->SetName("gMIXErrorCosL1520");
   TGraphAsymmErrors *gMIXErrorCosL1520_sysup = new TGraphAsymmErrors(CosL1520[1][2]);
   TGraphAsymmErrors *gMIXErrorCosL1520_sysdown = new TGraphAsymmErrors(CosL1520[1][0]);
   for(int ip=0;ip<gMIXErrorCosL1520->GetN();ip++){
@@ -2328,7 +2330,7 @@ void CS_finals()
   gMIXErrorCosL1405->Write();
   grCosL1520->Write();
   gMIXErrorCosL1520->Write();
-  grCosL1385->Write();
+  CS_CosS1385Lpim->Write();
 
 
   return;

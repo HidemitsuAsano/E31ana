@@ -38,11 +38,11 @@ void PlotAngularKbarN()
   double normKm800 = CSKm800/6.69481;//integral of K-
   double normK0800 = CSK0800/1.36187;//integral of K0
   
-  TH2D *h2Kmn = new TH2D("h2Kmn","h2Kmn",2000,-1,1,4000,0,20000);
-  TH2D *h2Kmn800 = new TH2D("h2Kmn800","h2Kmn800",2000,-1,1,4000,0,20000);
-  TH2D *h2K0n = new TH2D("h2K0n","h2K0n",2000,-1,1,4000,0,20000);
-  TH2D *h2K0n800 = new TH2D("h2K0n800","h2K0n800",2000,-1,1,4000,0,20000);
-  for(double coscm=-1.;coscm<1;coscm += 0.001){
+  TH2D *h2Kmn = new TH2D("h2Kmn","h2Kmn",200,-1,1,4000,0,20000);
+  TH2D *h2Kmn800 = new TH2D("h2Kmn800","h2Kmn800",200,-1,1,4000,0,20000);
+  TH2D *h2K0n = new TH2D("h2K0n","h2K0n",200,-1,1,4000,0,20000);
+  TH2D *h2K0n800 = new TH2D("h2K0n800","h2K0n800",200,-1,1,4000,0,20000);
+  for(double coscm=-1.;coscm<1;coscm += 0.01){
     double S_Kmn=0;
     //compute default val.
     for(int il=0;il<nparamKm;il++){

@@ -43,8 +43,8 @@ void compL1405Angle()
   //grsumn->Scale(0.025*2.7*0.92);
   grsumn->Scale(0.069);
   grsumn->Draw("c3");
-  TGraphAsymmErrors *grK0n = (TGraphAsymmErrors*)fele->Get("grK0n");
-  TGraphAsymmErrors *grKmn = (TGraphAsymmErrors*)fele->Get("grKmn");
+  //TGraphAsymmErrors *grK0n = (TGraphAsymmErrors*)fele->Get("grK0n");
+  //TGraphAsymmErrors *grKmn = (TGraphAsymmErrors*)fele->Get("grKmn");
   //grK0n->Scale(0.05);
   //grKmn->Scale(0.015);
   //grK0n->Draw("c");
