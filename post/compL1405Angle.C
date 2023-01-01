@@ -31,7 +31,7 @@ void compL1405Angle()
   grsumn->SetFillColor(4);
   //grsumn->Scale(0.025*2.7*1.05);
   //grsumn->Scale(0.025*2.7*0.92);
-  grsumn->Scale(0.064);
+  grsumn->Scale(0.069);
   grsumn->Draw("c3");
   TGraphAsymmErrors *grK0n = (TGraphAsymmErrors*)fele->Get("grK0n");
   TGraphAsymmErrors *grKmn = (TGraphAsymmErrors*)fele->Get("grKmn");

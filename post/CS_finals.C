@@ -2326,7 +2326,9 @@ void CS_finals()
   }
   grCosL1405->Write();
   gMIXErrorCosL1405->Write();
-
+  grCosL1520->Write();
+  gMIXErrorCosL1520->Write();
+  grCosL1385->Write();
 
 
   return;
