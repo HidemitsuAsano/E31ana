@@ -33,8 +33,8 @@ void PlotAngularKbarN()
   std::vector<double> coscmKmn800, yKmn800, yKmnehi800, yKmnelow800;
   std::vector<double> coscmK0n, yK0n, yK0nehi, yK0nelow;
   std::vector<double> coscmK0n800, yK0n800, yK0nehi800, yK0nelow800;
-  double normKm = CSKm/7.7461;//integral of K-
-  double normK0 = CSK0/2.05008;//integral of K0
+  double normKm = CSKm/7.7461*1.0405394;//integral of K-
+  double normK0 = CSK0/2.05008*1.0086326;//integral of K0
   double normKm800 = CSKm800/6.69481;//integral of K-
   double normK0800 = CSK0800/1.36187;//integral of K0
   
@@ -42,6 +42,7 @@ void PlotAngularKbarN()
   TH2D *h2Kmn800 = new TH2D("h2Kmn800","h2Kmn800",200,-1,1,4000,0,20000);
   TH2D *h2K0n = new TH2D("h2K0n","h2K0n",200,-1,1,4000,0,20000);
   TH2D *h2K0n800 = new TH2D("h2K0n800","h2K0n800",200,-1,1,4000,0,20000);
+  const int nmc = 100000;
   for(double coscm=-1.;coscm<1;coscm += 0.01){
     double S_Kmn=0;
     //compute default val.
@@ -49,7 +50,7 @@ void PlotAngularKbarN()
       S_Kmn += LegendreC_Kmn[il]*Legendre(il,coscm);
     }
    
-    for(int imc=0;imc<10000;imc++){ 
+    for(int imc=0;imc<nmc;imc++){ 
       double val  = 0;
       for(int il=0;il<nparamKm;il++){
         val += (LegendreC_Kmn[il]+gRandom->Gaus(0,LegendreC_Kmnerr[il]))*Legendre(il,coscm);
@@ -60,7 +61,7 @@ void PlotAngularKbarN()
     yKmn.push_back(S_Kmn*normKm);
 
     double S_Kmn800=0;
-    for(int imc=0;imc<10000;imc++){ 
+    for(int imc=0;imc<nmc;imc++){ 
       double val  = 0;
       for(int il=0;il<nparamKm;il++){
         val += (LegendreC_Kmn800[il]+gRandom->Gaus(0,LegendreC_Kmnerr800[il]))*Legendre(il,coscm);
@@ -73,7 +74,7 @@ void PlotAngularKbarN()
     for(int il=0;il<nparamKm;il++){
       S_K0n += LegendreC_K0n[il]*Legendre(il,coscm);
     }
-    for(int imc=0;imc<10000;imc++){ 
+    for(int imc=0;imc<nmc;imc++){ 
       double val  = 0;
       for(int il=0;il<nparamK0;il++){
         val += (LegendreC_K0n[il]+gRandom->Gaus(0,LegendreC_K0nerr[il]))*Legendre(il,coscm);
@@ -84,7 +85,7 @@ void PlotAngularKbarN()
     yK0n.push_back(S_K0n*normK0);
     
     double S_K0n800=0;
-    for(int imc=0;imc<10000;imc++){ 
+    for(int imc=0;imc<nmc;imc++){ 
       double val  = 0;
       for(int il=0;il<nparamK0;il++){
         val += (LegendreC_K0n800[il]+gRandom->Gaus(0,LegendreC_K0nerr800[il]))*Legendre(il,coscm);
@@ -220,7 +221,7 @@ void PlotAngularKbarN()
   grsumn->GetYaxis()->SetTitle("A.U.");
   grsumn->GetYaxis()->SetMaxDigits(3);
   grsumn->GetYaxis()->CenterTitle();
-  grsumn->Draw("ac");
+  grsumn->Draw("ac3");
 
   //grsumn800->SetLineColor(3);
   //grsumn800->SetFillColor(3);

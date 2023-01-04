@@ -3,6 +3,8 @@ void compL1405Angle()
   gStyle->SetOptStat(0);
   gStyle->SetPadGridX(0);
   gStyle->SetPadGridY(0);
+  gStyle->SetTitleYOffset(1.7);
+  gStyle->SetLabelOffset(0.0002,"y");
 
   TFile *ff = TFile::Open("csfinal.root");
 
@@ -12,14 +14,16 @@ void compL1405Angle()
   auto *grCosL1520 = (TGraphAsymmErrors*)ff->Get("grCosL1520");
   auto *gMIXErrorCosL1520 = (TGraphAsymmErrors*)ff->Get("gMIXErrorCosL1520");
 
-  TCanvas *c1 = new TCanvas("c1","c1",1200,800);
+  TCanvas *c1 = new TCanvas("c1","c1",1200,900);
   grCosL1405->SetTitle("");
+  grCosL1405->GetYaxis()->SetTitleOffset(1.5);
   grCosL1405->Draw("ap");
   gMIXErrorCosL1405->Draw("5");
   //grCosL1520->Draw("p");
   //gMIXErrorCosL1520->Draw("5");
   //CS_CosS1385Lpim->Draw("same");
 
+  gPad->SetLeftMargin(0.15);
   TLine *pL1405 = new TLine(0.6,0,1,0);
   pL1405->SetLineColor(1);
   //p->SetLineWidth(2.0);
@@ -41,7 +45,7 @@ void compL1405Angle()
   grsumn->SetFillColor(4);
   //grsumn->Scale(0.025*2.7*1.05);
   //grsumn->Scale(0.025*2.7*0.92);
-  grsumn->Scale(0.069);
+  grsumn->Scale(0.068);
   grsumn->Draw("c3");
   //TGraphAsymmErrors *grK0n = (TGraphAsymmErrors*)fele->Get("grK0n");
   //TGraphAsymmErrors *grKmn = (TGraphAsymmErrors*)fele->Get("grKmn");
@@ -57,8 +61,8 @@ void compL1405Angle()
   //tex->SetTextColor(1);
   //tex->DrawLatex( 0.63,1000 , "(a)" );
   TLegend *leg = new TLegend(0.2,0.6,0.5,0.8);
-  leg->AddEntry(gMIXErrorCosL1405,"K^{-}d #rightarrow #pi^{#pm}#Sigma^{#mp}n ");
-  leg->AddEntry(grsumn,"#splitline{(K^{-}p #rightarrow #bar{K}^{0}n) + (K^{-}n #rightarrow K^{-}n)}{sum (scaled)}  ");
+  leg->AddEntry(gMIXErrorCosL1405,"#splitline{K^{-}d #rightarrow #pi^{+}#Sigma^{-}n & K^{-}d #rightarrow #pi^{-}#Sigma^{+}n}{average} ");
+  leg->AddEntry(grsumn,"#splitline{(K^{-}p #rightarrow #bar{K}^{0}n) & (K^{-}n #rightarrow K^{-}n)}{average (scaled)}  ");
   leg->SetLineWidth(0);
   leg->Draw();
   
