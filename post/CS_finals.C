@@ -1536,14 +1536,14 @@ void CS_finals()
   cboth_mev[1]->SaveAs("cbothqhi_mev.pdf");
 
   TCanvas *cboth_mev_side = new TCanvas("cboth_mev_side","cboth_mev_side",1700,800);
-  cboth_mev_side->SetBottomMargin(0.12);
+  //cboth_mev_side->SetBottomMargin(0.12);
   cboth_mev_side->SetLeftMargin(0.14);
   cboth_mev_side->SetRightMargin(0.08);
   cboth_mev_side->Divide(2,1,0,0);
   for(int iqlh=0;iqlh<2;iqlh++){
     cboth_mev_side->cd(iqlh+1);
     if(iqlh==1)gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetXaxis()->SetLimits(1301,1610);
-    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->SetMaximum(gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetHistogram()->GetMaximum()*1.01);
+    gIMnpipi_Sp_cs_Etotal_mev[iqlh]->SetMaximum(gIMnpipi_Sp_cs_Etotal_mev[iqlh]->GetHistogram()->GetMaximum()*1.03);
     gIMnpipi_Sp_cs_Etotal_mev[iqlh]->Draw("ap");
     gMIXErrorSp_CS_mev[iqlh]->Draw("5");
     gIMnpipi_Sm_cs_Etotal_mev[iqlh]->Draw("p");
@@ -1568,6 +1568,13 @@ void CS_finals()
       tex->SetTextSize(0.05);
       tex->SetTextColor(1);
       tex->DrawLatex( 1320,tex_ymax*0.85 , "(a)" );
+      TLegend *leg = new TLegend(0.20,0.6,0.50,0.8);
+      leg->AddEntry(gMIXErrorSp_CS_mev[iqlh],"#pi^{-}#Sigma^{+}");
+      leg->AddEntry(gMIXErrorSm_CS_mev[iqlh],"#pi^{+}#Sigma^{-}");
+      leg->SetLineWidth(0);
+      leg->SetFillStyle(0);
+      leg->Draw();
+   
     }else if(iqlh==1){
       //gr_S1385_ToSqhi_mev->Draw("5");
       TLine *p = new TLine(1290,0,1605,0);

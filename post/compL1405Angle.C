@@ -60,9 +60,9 @@ void compL1405Angle()
   //tex->SetTextSize(0.05);
   //tex->SetTextColor(1);
   //tex->DrawLatex( 0.63,1000 , "(a)" );
-  TLegend *leg = new TLegend(0.2,0.6,0.5,0.8);
-  leg->AddEntry(gMIXErrorCosL1405,"#splitline{K^{-}d #rightarrow #pi^{+}#Sigma^{-}n & K^{-}d #rightarrow #pi^{-}#Sigma^{+}n}{average} ");
-  leg->AddEntry(grsumn,"#splitline{(K^{-}p #rightarrow #bar{K}^{0}n) & (K^{-}n #rightarrow K^{-}n)}{average (scaled)}  ");
+  TLegend *leg = new TLegend(0.2,0.60,0.5,0.8);
+  leg->AddEntry(gMIXErrorCosL1405,"#splitline{K^{-}d #rightarrow #pi^{+}#Sigma^{-}n & K^{-}d #rightarrow #pi^{-}#Sigma^{+}n}{average} ","");
+  leg->AddEntry(grsumn,"#splitline{(K^{-}p #rightarrow #bar{K}^{0}n) & (K^{-}n #rightarrow K^{-}n)}{average (scaled)} ","");
   leg->SetLineWidth(0);
   leg->Draw();
   
