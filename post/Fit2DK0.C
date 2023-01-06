@@ -10,6 +10,7 @@
 #include "anacuts.h"
 
 const double sysscale=0.2;
+const bool NoRebin = false;
 //2-dimensional fit
 //x gaus
 //y expo x gaus convoluted fit
@@ -278,8 +279,8 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   std::cout  << "hf2wide integral " << hf2wide->Integral() << std::endl;
   std::cout << " K0inter         " << h2K0inter->Integral() << std::endl;
 
-  IMnpim_IMnpip_dE_wK0_woSid_n_2->Rebin2D(4,4);
-  h2K0inter->Rebin2D(4,4);
+  if(!NoRebin)IMnpim_IMnpip_dE_wK0_woSid_n_2->Rebin2D(4,4);
+  if(!NoRebin)h2K0inter->Rebin2D(4,4);
   cinter->cd(3);
   IMnpim_IMnpip_dE_wK0_woSid_n_2->Draw("colz");
 
@@ -754,7 +755,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   TCanvas *cwK0orwSid_n = new TCanvas("cwK0orwSid_n","cwK0orwSid_n",1600,800);
   cwK0orwSid_n->Divide(2,1);
   cwK0orwSid_n->cd(1);
-  IMnpim_IMnpip_dE_wK0orwSid_n->Rebin2D(4,4);
+  if(!NoRebin)IMnpim_IMnpip_dE_wK0orwSid_n->Rebin2D(4,4);
   //Sigma is bright in this histogram. K0 is included.
   IMnpim_IMnpip_dE_wK0orwSid_n->Draw("colz");
   //IMnpim_IMnpip_dE_wSid_n->Rebin2D(4,4);
@@ -762,6 +763,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   
   cwK0orwSid_n->cd(2);
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_K0sub = (TH2F*)IMnpim_IMnpip_dE_wK0orwSid_n->Clone("IMnpim_IMnpip_dE_wK0orwSid_n_K0sub");
+  IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->SetTitle("IMnpim_IMnpip_dE_wK0orwSid_n_K0sub");
   //subtract K0
   IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Add(IMnpim_IMnpip_dE_wK0_woSid_n_2,-1.0);
   IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->SetMaximum(IMnpim_IMnpip_dE_wK0orwSid_n->GetMaximum());
@@ -773,16 +775,19 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   cwK0orwSid_n_pro->Divide(2,1);
   cwK0orwSid_n_pro->cd(1);
   TH1D* IMnpip_wK0orwSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n->ProjectionX("IMnpip_wK0orwSid_n");
-  IMnpip_wK0orwSid_n->Draw("HE");
+  IMnpip_wK0orwSid_n->Draw("E");
   IMnpip_wK0_woSid->SetLineColor(2);
-  IMnpip_wK0_woSid->Draw("HEsame");
+  IMnpip_wK0_woSid->Draw("Esame");
+  TLegend *leg = new TLegend(0.6,0.6,0.8,0.8);
+  leg->AddEntry(IMnpip_wK0_woSid,"K0");
+  leg->AddEntry(IMnpip_wK0orwSid_n,"Sigma+/-/K0 total");
+  leg->Draw();
 
   cwK0orwSid_n_pro->cd(2);
   TH1D* IMnpim_wK0orwSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n->ProjectionY("IMnpim_wK0orwSid_n");
-  IMnpim_wK0orwSid_n->Draw("HE");
+  IMnpim_wK0orwSid_n->Draw("E");
   IMnpim_wK0_woSid->SetLineColor(2);
-  IMnpim_wK0_woSid->Draw("HEsame");
-
+  IMnpim_wK0_woSid->Draw("Esame");
 
 
   //K0 subtracted events
