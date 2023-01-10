@@ -1003,6 +1003,31 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   TCanvas *c3overlap2 = new TCanvas("c3overlap2","c3overlap2",800,800);
   IMnpim_IMnpip_wK0_wSid_n_SpSm->SetMinimum(0);
   IMnpim_IMnpip_wK0_wSid_n_SpSm->Draw("colz");
+   
+  cwK0orwSid_n_pro->cd(1);
+  gr_SmONnpip_fin_pol1_final->Draw("p");
+  cwK0orwSid_n_pro->cd(2);
+  gr_SpONnpim_fin_pol1_final->Draw("p");
+  
+  //final decomposition summary plots for the paper 
+  TCanvas *cFinalDeco = new TCanvas("cFinalDeco","cFinalDeco");
+  cFinalDeco->Divide(2,1);
+  cFinalDeco->cd(1);
+  IMnpip_wK0orwSid_n->Draw("E");
+  IMnpip_wK0_woSid->SetLineColor(2);
+  IMnpip_wK0_woSid->Draw("Esame");
+  //gr_SmONnpip_fin_pol1_final->Draw("p");
+  TH1F* h_SmONnpip_fin_pol1_final = (TH1F*)gr_SmONnpip_fin_pol1_final->GetHistogram();
+  TLegend *legf = new TLegend(0.6,0.6,0.8,0.8);
+  legf->AddEntry(IMnpip_wK0_woSid,"K0");
+  legf->AddEntry(IMnpip_wK0orwSid_n,"Sigma+/-/K0 total");
+  legf->Draw();
+  
+  cFinalDeco->cd(2);
+  IMnpim_wK0orwSid_n->Draw("E");
+  IMnpim_wK0_woSid->SetLineColor(2);
+  IMnpim_wK0_woSid->Draw("Esame");
+  gr_SpONnpim_fin_pol1_final->Draw("p");
 
 
   TFile *fout = NULL;
