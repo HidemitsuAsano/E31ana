@@ -9,7 +9,7 @@
 #include <TMath.h>
 #include "anacuts.h"
 
-const double sysscale=0.2;
+const double sysscale=0.2;//systematic error for K0 inter ratio
 const bool NoRebin = false;
 //2-dimensional fit
 //x gaus
@@ -297,7 +297,9 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   K0interpy->SetFillColor(2);
   K0interpy->Draw("HISTsame");
   
-  //fit to original histogram
+
+  //In the steps up to this point, the scaling parameter were determined by eye. 
+  //From here, the scaling parameter will be determined using fits.
   TH2D *IMnpim_IMnpip_dE_wK0_woSid_n_3 = (TH2D*)IMnpim_IMnpip_dE_wK0_woSid_n_1->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_3");
   TCanvas *cK0fit = new TCanvas("cK0fit","cK0fit",800,800);
   cK0fit->Divide(2,2);
@@ -1010,14 +1012,17 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   gr_SpONnpim_fin_pol1_final->Draw("p");
   
   //final decomposition summary plots for the paper 
-  TCanvas *cFinalDeco = new TCanvas("cFinalDeco","cFinalDeco");
+  TCanvas *cFinalDeco = new TCanvas("cFinalDeco","cFinalDeco",1600,800);
   cFinalDeco->Divide(2,1);
   cFinalDeco->cd(1);
   IMnpip_wK0orwSid_n->Draw("E");
   IMnpip_wK0_woSid->SetLineColor(2);
   IMnpip_wK0_woSid->Draw("Esame");
-  //gr_SmONnpip_fin_pol1_final->Draw("p");
-  TH1F* h_SmONnpip_fin_pol1_final = (TH1F*)gr_SmONnpip_fin_pol1_final->GetHistogram();
+  gr_SmONnpip_fin_pol1_final->Draw("p");
+  //auto* h_SmONnpip_fin_pol1_final = gr_SmONnpip_fin_pol1_final->GetHistogram();
+  //h_SmONnpip_fin_pol1_final->SetLineColor(3);
+  //h_SmONnpip_fin_pol1_final->Draw("Esame");
+  //h_SmONnpip_fin_pol1_final->Print("");
   TLegend *legf = new TLegend(0.6,0.6,0.8,0.8);
   legf->AddEntry(IMnpip_wK0_woSid,"K0");
   legf->AddEntry(IMnpip_wK0orwSid_n,"Sigma+/-/K0 total");
