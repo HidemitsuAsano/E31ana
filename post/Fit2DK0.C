@@ -11,6 +11,7 @@
 
 const double sysscale=0.2;//systematic error for K0 inter ratio
 const bool NoRebin = false;
+const int RebinFactor = 4;
 //2-dimensional fit
 //x gaus
 //y expo x gaus convoluted fit
@@ -279,8 +280,8 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   std::cout  << "hf2wide integral " << hf2wide->Integral() << std::endl;
   std::cout << " K0inter         " << h2K0inter->Integral() << std::endl;
 
-  if(!NoRebin)IMnpim_IMnpip_dE_wK0_woSid_n_2->Rebin2D(4,4);
-  if(!NoRebin)h2K0inter->Rebin2D(4,4);
+  if(!NoRebin)IMnpim_IMnpip_dE_wK0_woSid_n_2->Rebin2D(RebinFactor,RebinFactor);
+  if(!NoRebin)h2K0inter->Rebin2D(RebinFactor,RebinFactor);
   cinter->cd(3);
   IMnpim_IMnpip_dE_wK0_woSid_n_2->Draw("colz");
 
@@ -309,7 +310,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
       double cont = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetBinContent(ix,iy);
       double xcent = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->GetBinCenter(ix);
       double ycent = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->GetBinCenter(iy);
-      //remove edge region
+      //remove edge region which K0nn cannot go.
       //if((cont < 0.0001) || (xcent<1.18 && ycent<1.18)) {       
       if( (xcent<1.18 && ycent<1.18)) {       
         IMnpim_IMnpip_dE_wK0_woSid_n_3->SetBinContent(ix,iy,0);
@@ -534,15 +535,20 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   TH2D* h2K0inter_3fine = (TH2D*)h2K0inter_3->Clone("h2K0inter_3fine");
   TH2D* h2K0inter_3fine_sysup = (TH2D*)h2K0inter_3_sysup->Clone("h2K0inter_3fine_sysup");
   TH2D* h2K0inter_3fine_sysdown = (TH2D*)h2K0inter_3_sysdown->Clone("h2K0inter_3fine_sysdown");
-  IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Rebin2D(4,4);//+/- 2sigma binning
-  h2K0inter_3->Rebin2D(4,4);
-  h2K0inter_3_sysup->Rebin2D(4,4);
-  h2K0inter_3_sysdown->Rebin2D(4,4);
+  IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Rebin2D(RebinFactor,RebinFactor);//+/- 2sigma binning
+  IMnpim_IMnpip_dE_wK0_woSid_n_3_inter_sysup->Rebin2D(RebinFactor,RebinFactor);//+/- 2sigma binning
+  IMnpim_IMnpip_dE_wK0_woSid_n_3_inter_sysdown->Rebin2D(RebinFactor,RebinFactor);//+/- 2sigma binning
+  h2K0inter_3->Rebin2D(RebinFactor,RebinFactor);
+  h2K0inter_3_sysup->Rebin2D(RebinFactor,RebinFactor);
+  h2K0inter_3_sysdown->Rebin2D(RebinFactor,RebinFactor);
   IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Draw("colz");
   
   h2K0inter_3->SetFillColor(2);
   cinter_3->cd(1);
+  //K0nn final
   TH1D *IMnpip_3_inter = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->ProjectionX("IMnpip_3_inter");
+  TH1D *IMnpip_3_inter_sysup = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter_sysup->ProjectionX("IMnpip_3_inter_sysup");
+  TH1D *IMnpip_3_inter_sysdown = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter_sysdown->ProjectionX("IMnpip_3_inter_sysdown");
   IMnpip_3_inter->Draw("HE");
   h2K0inter_3_sysup->SetLineColor(3);
   h2K0inter_3_sysdown->SetLineColor(4);
@@ -551,9 +557,12 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   h2K0inter_3_sysdown->ProjectionX()->Draw("HEsame");
 
   cinter_3->cd(4);
+  //K0nn final
   TH1D *IMnpim_3_inter = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->ProjectionY("IMnpim_3_inter");
-  IMnpim_3_inter->Draw("HE");
-  h2K0inter_3->ProjectionY()->Draw("HEsame");
+  TH1D *IMnpim_3_inter_sysup = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter_sysup->ProjectionY("IMnpim_3_inter_sysup");
+  TH1D *IMnpim_3_inter_sysdown = (TH1D*)IMnpim_IMnpip_dE_wK0_woSid_n_3_inter_sysdown->ProjectionY("IMnpim_3_inter_sysdown");
+  IMnpim_3_inter->Draw("HE");//estimated K0nn whole region
+  h2K0inter_3->ProjectionY()->Draw("HEsame");//estimated K0nn on Sp or Sm region 
   h2K0inter_3_sysup->ProjectionY()->Draw("HEsame");
   h2K0inter_3_sysdown->ProjectionY()->Draw("HEsame");
 
@@ -1016,22 +1025,26 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   cFinalDeco->Divide(2,1);
   cFinalDeco->cd(1);
   IMnpip_wK0orwSid_n->Draw("E");
-  IMnpip_wK0_woSid->SetLineColor(2);
-  IMnpip_wK0_woSid->Draw("Esame");
+  //IMnpip_wK0_woSid->SetLineColor(2);
+  //IMnpip_wK0_woSid->Draw("Esame");
+  IMnpip_3_inter->Draw("same");
+  IMnpip_3_inter->Draw("same");
   gr_SmONnpip_fin_pol1_final->Draw("p");
   //auto* h_SmONnpip_fin_pol1_final = gr_SmONnpip_fin_pol1_final->GetHistogram();
   //h_SmONnpip_fin_pol1_final->SetLineColor(3);
   //h_SmONnpip_fin_pol1_final->Draw("Esame");
   //h_SmONnpip_fin_pol1_final->Print("");
   TLegend *legf = new TLegend(0.6,0.6,0.8,0.8);
-  legf->AddEntry(IMnpip_wK0_woSid,"K0");
+  //legf->AddEntry(IMnpip_wK0_woSid,"K0");
+  legf->AddEntry(IMnpip_3_inter,"K0");
   legf->AddEntry(IMnpip_wK0orwSid_n,"Sigma+/-/K0 total");
   legf->Draw();
   
   cFinalDeco->cd(2);
   IMnpim_wK0orwSid_n->Draw("E");
-  IMnpim_wK0_woSid->SetLineColor(2);
-  IMnpim_wK0_woSid->Draw("Esame");
+  //IMnpim_wK0_woSid->SetLineColor(2);
+  //IMnpim_wK0_woSid->Draw("Esame");
+  IMnpim_3_inter->Draw("same");
   gr_SpONnpim_fin_pol1_final->Draw("p");
 
 
