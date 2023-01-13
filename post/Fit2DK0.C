@@ -1028,7 +1028,12 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   IMnpip_3_inter->Draw("same");
   IMnpip_3_inter_sysup->Draw("same");
   IMnpip_3_inter_sysdown->Draw("same");
-  gr_SmONnpip_fin_pol1_final->Draw("p");
+  TGraphErrors *gr_SmONnpip_fin_pol1_final_sort = (TGraphErrors*)gr_SmONnpip_fin_pol1_final->Clone("gr_SmONnpip_fin_pol1_final_sort");
+  gr_SmONnpip_fin_pol1_final_sort->SetName("gr_SmONnpip_fin_pol1_final_sort");
+  gr_SmONnpip_fin_pol1_final_sort->Sort();
+  gr_SmONnpip_fin_pol1_final_sort->SetFillStyle(0);
+  gr_SmONnpip_fin_pol1_final_sort->SetFillColor(3);
+  gr_SmONnpip_fin_pol1_final_sort->Draw("p");
   //auto* h_SmONnpip_fin_pol1_final = gr_SmONnpip_fin_pol1_final->GetHistogram();
   //h_SmONnpip_fin_pol1_final->SetLineColor(3);
   //h_SmONnpip_fin_pol1_final->Draw("Esame");
@@ -1047,6 +1052,64 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   IMnpim_3_inter_sysup->Draw("same");
   IMnpim_3_inter_sysdown->Draw("same");
   gr_SpONnpim_fin_pol1_final->Draw("p");
+
+  gStyle->SetPadGridX(0);
+  gStyle->SetPadGridY(0);
+  
+  TCanvas *cFinalDeco_mev = new TCanvas("cFinalDeco_mev","cFinalDeco_mev",1800,800);
+  cFinalDeco_mev->Divide(2,1);
+  cFinalDeco_mev->cd(1);
+  const int npipbin = IMnpip_wK0orwSid_n->GetNbinsX();
+  const double npipmin = (IMnpip_wK0orwSid_n->GetXaxis()->GetXmin())*1000;
+  const double npipmax = (IMnpip_wK0orwSid_n->GetXaxis()->GetXmax())*1000;
+  TH1D* IMnpip_wK0orwSid_n_mev = new TH1D("IMnpip_wK0orwSid_n_mev","",npipbin,npipmin,npipmax);
+  for(int ibin = 0;ibin<IMnpip_wK0orwSid_n->GetNbinsX();ibin++){
+    double x =  IMnpip_wK0orwSid_n->GetBinCenter(ibin+1)*1000.;
+    double y =  IMnpip_wK0orwSid_n->GetBinContent(ibin+1);
+    double ye = IMnpip_wK0orwSid_n->GetBinError(ibin+1);
+    IMnpip_wK0orwSid_n_mev->SetBinContent(ibin+1,y);
+    IMnpip_wK0orwSid_n_mev->SetBinError(ibin+1,ye);
+  }
+  gPad->SetRightMargin(0.08);
+  gPad->SetLeftMargin(0.14);  
+
+  IMnpip_wK0orwSid_n_mev->GetXaxis()->SetTitle("IM(n#pi^{+}) [MeV/c^{2}]");
+  IMnpip_wK0orwSid_n_mev->GetXaxis()->CenterTitle();
+  IMnpip_wK0orwSid_n_mev->GetXaxis()->SetRangeUser(1050,1500);
+  IMnpip_wK0orwSid_n_mev->GetYaxis()->SetTitle("counts");
+  IMnpip_wK0orwSid_n_mev->GetYaxis()->CenterTitle();
+  IMnpip_wK0orwSid_n_mev->GetYaxis()->SetTitleOffset(1.6);
+  IMnpip_wK0orwSid_n_mev->SetMaximum(IMnpip_wK0orwSid_n_mev->GetMaximum()*1.11);
+  IMnpip_wK0orwSid_n_mev->Draw("E");
+
+
+  cFinalDeco_mev->cd(2);
+  const int npimbin = IMnpim_wK0orwSid_n->GetNbinsX();
+  const double npimmin = (IMnpim_wK0orwSid_n->GetXaxis()->GetXmin())*1000;
+  const double npimmax = (IMnpim_wK0orwSid_n->GetXaxis()->GetXmax())*1000;
+  TH1D* IMnpim_wK0orwSid_n_mev = new TH1D("IMnpim_wK0orwSid_n_mev","",npimbin,npimmin,npimmax);
+  for(int ibin = 0;ibin<IMnpim_wK0orwSid_n->GetNbinsX();ibin++){
+    double x =  IMnpim_wK0orwSid_n->GetBinCenter(ibin+1)*1000.;
+    double y =  IMnpim_wK0orwSid_n->GetBinContent(ibin+1);
+    double ye = IMnpim_wK0orwSid_n->GetBinError(ibin+1);
+    IMnpim_wK0orwSid_n_mev->SetBinContent(ibin+1,y);
+    IMnpim_wK0orwSid_n_mev->SetBinError(ibin+1,ye);
+  }
+  gPad->SetRightMargin(0.08);
+  gPad->SetLeftMargin(0.14);  
+
+  IMnpim_wK0orwSid_n_mev->GetXaxis()->SetTitle("IM(n#pi^{-}) [MeV/c^{2}]");
+  IMnpim_wK0orwSid_n_mev->GetXaxis()->CenterTitle();
+  IMnpim_wK0orwSid_n_mev->GetXaxis()->SetRangeUser(1050,1500);
+  IMnpim_wK0orwSid_n_mev->GetYaxis()->SetTitle("counts");
+  IMnpim_wK0orwSid_n_mev->GetYaxis()->CenterTitle();
+  IMnpim_wK0orwSid_n_mev->GetYaxis()->SetTitleOffset(1.6);
+  IMnpim_wK0orwSid_n_mev->SetMaximum(IMnpip_wK0orwSid_n_mev->GetMaximum());
+  IMnpim_wK0orwSid_n_mev->Draw("E");
+
+
+
+
 
 
   TFile *fout = NULL;
