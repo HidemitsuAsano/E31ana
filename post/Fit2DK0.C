@@ -567,8 +567,6 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   h2K0inter_3_sysdown->ProjectionY()->Draw("HEsame");
 
 
-
-   
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sp = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_Sp");
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin1 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin1");
@@ -577,7 +575,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin1 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin1");
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin2 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin2");
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_rebin = (TH2F*)IMnpim_IMnpip_dE_wK0orwSid_n->Clone("IMnpim_IMnpip_dE_wK0orwSid_n_rebin");
-  IMnpim_IMnpip_dE_wK0orwSid_n_rebin->Rebin2D(4,4);
+  IMnpim_IMnpip_dE_wK0orwSid_n_rebin->Rebin2D(RebinFactor,RebinFactor);
   TCanvas *ccomp = new TCanvas("ccomp","ccomp",1600,800);
   ccomp->Divide(2,1);
   ccomp->cd(1);
@@ -587,18 +585,18 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   TCanvas *ccomp2 = new TCanvas("ccomp2","ccomp2",1600,800);
   ccomp2->Divide(2,1);
   ccomp2->cd(1);
-  IMnpim_IMnpip_dE_wK0_wSid_n_Sp->Rebin2D(4,4);
-  IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin1->Rebin2D(4,4);
-  IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin2->Rebin2D(4,4);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sp->Rebin2D(RebinFactor,RebinFactor);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin1->Rebin2D(RebinFactor,RebinFactor);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin2->Rebin2D(RebinFactor,RebinFactor);
   IMnpim_IMnpip_dE_wK0_wSid_n_Sp->Draw("colz");
   ccomp2->cd(2);
-  IMnpim_IMnpip_dE_wK0_wSid_n_Sm->Rebin2D(4,4);
-  IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin1->Rebin2D(4,4);
-  IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin2->Rebin2D(4,4);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sm->Rebin2D(RebinFactor,RebinFactor);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin1->Rebin2D(RebinFactor,RebinFactor);
+  IMnpim_IMnpip_dE_wK0_wSid_n_Sm_wbin2->Rebin2D(RebinFactor,RebinFactor);
   IMnpim_IMnpip_dE_wK0_wSid_n_Sm->Draw("colz");
  
   //projection in Sigma+ region to IM(npi-)
-  TCanvas *ccomp_Spregion = new TCanvas("ccomp_Spregion");
+  TCanvas *ccomp_Spregion = new TCanvas("ccomp_Spregion","ccomp_Spregion");
   IMnpim_IMnpip_dE_wK0_wSid_n_Sp->ProjectionY()->Draw();
   const int Spbinlow = h2K0inter_3->GetXaxis()->FindBin(anacuts::Sigmap_MIN);
   const int Spbinhi = h2K0inter_3->GetXaxis()->FindBin(anacuts::Sigmap_MAX);
@@ -766,7 +764,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   TCanvas *cwK0orwSid_n = new TCanvas("cwK0orwSid_n","cwK0orwSid_n",1600,800);
   cwK0orwSid_n->Divide(2,1);
   cwK0orwSid_n->cd(1);
-  if(!NoRebin)IMnpim_IMnpip_dE_wK0orwSid_n->Rebin2D(4,4);
+  if(!NoRebin)IMnpim_IMnpip_dE_wK0orwSid_n->Rebin2D(RebinFactor,RebinFactor);
   //Sigma is bright in this histogram. K0 is included.
   IMnpim_IMnpip_dE_wK0orwSid_n->Draw("colz");
   //IMnpim_IMnpip_dE_wSid_n->Rebin2D(4,4);
@@ -1028,7 +1026,8 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   //IMnpip_wK0_woSid->SetLineColor(2);
   //IMnpip_wK0_woSid->Draw("Esame");
   IMnpip_3_inter->Draw("same");
-  IMnpip_3_inter->Draw("same");
+  IMnpip_3_inter_sysup->Draw("same");
+  IMnpip_3_inter_sysdown->Draw("same");
   gr_SmONnpip_fin_pol1_final->Draw("p");
   //auto* h_SmONnpip_fin_pol1_final = gr_SmONnpip_fin_pol1_final->GetHistogram();
   //h_SmONnpip_fin_pol1_final->SetLineColor(3);
@@ -1045,6 +1044,8 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   //IMnpim_wK0_woSid->SetLineColor(2);
   //IMnpim_wK0_woSid->Draw("Esame");
   IMnpim_3_inter->Draw("same");
+  IMnpim_3_inter_sysup->Draw("same");
+  IMnpim_3_inter_sysdown->Draw("same");
   gr_SpONnpim_fin_pol1_final->Draw("p");
 
 
