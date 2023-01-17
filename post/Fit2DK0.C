@@ -1025,9 +1025,26 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   IMnpip_wK0orwSid_n->Draw("E");
   //IMnpip_wK0_woSid->SetLineColor(2);
   //IMnpip_wK0_woSid->Draw("Esame");
-  IMnpip_3_inter->Draw("same");
-  IMnpip_3_inter_sysup->Draw("same");
-  IMnpip_3_inter_sysdown->Draw("same");
+  //IMnpip_3_inter->Draw("same");
+  //IMnpip_3_inter_sysup->Draw("same");
+  //IMnpip_3_inter_sysdown->Draw("same");
+  TGraphAsymmErrors *gr_K0inter_onnpip = new TGraphAsymmErrors(IMnpip_3_inter);
+  TGraphAsymmErrors *gr_K0inter_onnpip_sysup = new TGraphAsymmErrors(IMnpip_3_inter_sysup);
+  TGraphAsymmErrors *gr_K0inter_onnpip_sysdown = new TGraphAsymmErrors(IMnpip_3_inter_sysdown);
+  for(int ip=0;ip<gr_K0inter_onnpip->GetN();ip++){
+    double cont = gr_K0inter_onnpip->GetPointY(ip);
+    double contup = gr_K0inter_onnpip_sysup->GetPointY(ip);
+    double contdown = gr_K0inter_onnpip_sysdown->GetPointY(ip);
+    double ystat = gr_K0inter_onnpip->GetErrorY(ip);
+    double yehi = contup - cont; 
+    double yelo = cont - contdown;
+    gr_K0inter_onnpip->SetPointEYhigh(ip,sqrt(yehi*yehi+ystat*ystat));
+    gr_K0inter_onnpip->SetPointEYlow(ip,sqrt(yelo*yelo+ystat*ystat));
+  }
+  gr_K0inter_onnpip->SetMarkerColor(2);
+  gr_K0inter_onnpip->SetLineColor(2);
+  gr_K0inter_onnpip->Draw("p");
+ 
   TGraphErrors *gr_SmONnpip_fin_pol1_final_sort = (TGraphErrors*)gr_SmONnpip_fin_pol1_final->Clone("gr_SmONnpip_fin_pol1_final_sort");
   gr_SmONnpip_fin_pol1_final_sort->SetName("gr_SmONnpip_fin_pol1_final_sort");
   gr_SmONnpip_fin_pol1_final_sort->Sort();
@@ -1038,6 +1055,18 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   //h_SmONnpip_fin_pol1_final->SetLineColor(3);
   //h_SmONnpip_fin_pol1_final->Draw("Esame");
   //h_SmONnpip_fin_pol1_final->Print("");
+  TGraphErrors *gr_K0inter_plusSm_onnpip = (TGraphErrors*)gr_K0inter_onnpip->Clone("gr_K0inter_plusSm_onnpip");
+  gr_K0inter_plusSm_onnpip->SetName("gr_K0inter_plusSm_onnpip");
+  for(int ip=0;ip<gr_K0inter_plusSm_onnpip->GetN();ip++){
+    double x = gr_K0inter_plusSm_onnpip->GetPointX(ip);
+    double y = gr_K0inter_plusSm_onnpip->GetPointY(ip);
+    double addval = gr_SmONnpip_fin_pol1_final_sort->Eval(x);
+    gr_K0inter_plusSm_onnpip->SetPointY(ip,y+addval);
+  }
+  gr_K0inter_plusSm_onnpip->SetLineColor(4);
+  gr_K0inter_plusSm_onnpip->SetMarkerColor(4);
+  gr_K0inter_plusSm_onnpip->Draw("P");
+
   TLegend *legf = new TLegend(0.6,0.6,0.8,0.8);
   //legf->AddEntry(IMnpip_wK0_woSid,"K0");
   legf->AddEntry(IMnpip_3_inter,"K0");
@@ -1048,14 +1077,32 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   IMnpim_wK0orwSid_n->Draw("E");
   //IMnpim_wK0_woSid->SetLineColor(2);
   //IMnpim_wK0_woSid->Draw("Esame");
-  IMnpim_3_inter->Draw("same");
-  IMnpim_3_inter_sysup->Draw("same");
-  IMnpim_3_inter_sysdown->Draw("same");
+  //IMnpim_3_inter->Draw("same");
+  //IMnpim_3_inter_sysup->Draw("same");
+  //IMnpim_3_inter_sysdown->Draw("same");
+  TGraphAsymmErrors *gr_K0inter_onnpim = new TGraphAsymmErrors(IMnpim_3_inter);
+  TGraphAsymmErrors *gr_K0inter_onnpim_sysup = new TGraphAsymmErrors(IMnpim_3_inter_sysup);
+  TGraphAsymmErrors *gr_K0inter_onnpim_sysdown = new TGraphAsymmErrors(IMnpim_3_inter_sysdown);
+  for(int ip=0;ip<gr_K0inter_onnpim->GetN();ip++){
+    double cont = gr_K0inter_onnpim->GetPointY(ip);
+    double contup = gr_K0inter_onnpim_sysup->GetPointY(ip);
+    double contdown = gr_K0inter_onnpim_sysdown->GetPointY(ip);
+    double ystat = gr_K0inter_onnpim->GetErrorY(ip);
+    double yehi = contup - cont; 
+    double yelo = cont - contdown;
+    gr_K0inter_onnpim->SetPointEYhigh(ip,sqrt(yehi*yehi+ystat*ystat));
+    gr_K0inter_onnpim->SetPointEYlow(ip,sqrt(yelo*yelo+ystat*ystat));
+  }
+  gr_K0inter_onnpim->SetMarkerColor(2);
+  gr_K0inter_onnpim->SetLineColor(2);
+  gr_K0inter_onnpim->Draw("p");
   gr_SpONnpim_fin_pol1_final->Draw("p");
 
+
+  //summary plot
+  //gev->mev conversion for ptep paper
   gStyle->SetPadGridX(0);
   gStyle->SetPadGridY(0);
-  
   TCanvas *cFinalDeco_mev = new TCanvas("cFinalDeco_mev","cFinalDeco_mev",1800,800);
   cFinalDeco_mev->Divide(2,1);
   cFinalDeco_mev->cd(1);
@@ -1080,8 +1127,28 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   IMnpip_wK0orwSid_n_mev->GetYaxis()->CenterTitle();
   IMnpip_wK0orwSid_n_mev->GetYaxis()->SetTitleOffset(1.6);
   IMnpip_wK0orwSid_n_mev->SetMaximum(IMnpip_wK0orwSid_n_mev->GetMaximum()*1.11);
+  IMnpip_wK0orwSid_n_mev->SetLineWidth(2);
   IMnpip_wK0orwSid_n_mev->Draw("E");
-
+  TGraphErrors *gr_SmOnnpip_fin_mev = new TGraphErrors();
+  for(int ip=0;ip<gr_SmONnpip_fin_pol1_final->GetN();ip++){
+    double x = gr_SmONnpip_fin_pol1_final->GetPointX(ip);
+    double y = gr_SmONnpip_fin_pol1_final->GetPointY(ip);
+    double xe = gr_SmONnpip_fin_pol1_final->GetErrorX(2);
+    double ye = gr_SmONnpip_fin_pol1_final->GetErrorY(ip);
+    gr_SmOnnpip_fin_mev->SetPoint(ip,x*1000.,y);
+    gr_SmOnnpip_fin_mev->SetPointError(ip,xe*1000.,ye);
+  }
+  gr_SmOnnpip_fin_mev->SetMarkerColor(3);
+  gr_SmOnnpip_fin_mev->SetLineColor(3);
+  gr_SmOnnpip_fin_mev->SetLineWidth(2);
+  gr_SmOnnpip_fin_mev->RemovePoint(0);
+  gr_SmOnnpip_fin_mev->RemovePoint(0);
+  gr_SmOnnpip_fin_mev->Draw("p");
+  TLine *p = new TLine(1050,0,1500,0);
+  p->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  p->SetLineStyle(2);
+  p->Draw();
 
   cFinalDeco_mev->cd(2);
   const int npimbin = IMnpim_wK0orwSid_n->GetNbinsX();
@@ -1105,9 +1172,25 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   IMnpim_wK0orwSid_n_mev->GetYaxis()->CenterTitle();
   IMnpim_wK0orwSid_n_mev->GetYaxis()->SetTitleOffset(1.6);
   IMnpim_wK0orwSid_n_mev->SetMaximum(IMnpip_wK0orwSid_n_mev->GetMaximum());
+  IMnpim_wK0orwSid_n_mev->SetLineWidth(2);
   IMnpim_wK0orwSid_n_mev->Draw("E");
-
-
+  TGraphErrors *gr_SpOnnpim_fin_mev = new TGraphErrors();
+  for(int ip=0;ip<gr_SpONnpim_fin_pol1_final->GetN();ip++){
+    double x = gr_SpONnpim_fin_pol1_final->GetPointX(ip);
+    double y = gr_SpONnpim_fin_pol1_final->GetPointY(ip);
+    double xe = gr_SpONnpim_fin_pol1_final->GetErrorX(2);
+    double ye = gr_SpONnpim_fin_pol1_final->GetErrorY(ip);
+    gr_SpOnnpim_fin_mev->SetPoint(ip,x*1000.,y);
+    gr_SpOnnpim_fin_mev->SetPointError(ip,xe*1000.,ye);
+  }
+  gr_SpOnnpim_fin_mev->SetMarkerColor(2);
+  gr_SpOnnpim_fin_mev->SetLineColor(2);
+  gr_SpOnnpim_fin_mev->SetLineWidth(2);
+  gr_SpOnnpim_fin_mev->RemovePoint(0);
+  gr_SpOnnpim_fin_mev->RemovePoint(0);
+  gr_SpOnnpim_fin_mev->RemovePoint(0);
+  gr_SpOnnpim_fin_mev->Draw("p");
+  p->Draw();
 
 
 
