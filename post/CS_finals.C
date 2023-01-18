@@ -1244,7 +1244,6 @@ void CS_finals()
       double yeh = gIMnpipi_SpSmAvg_cs_Etotal[iqlh+1]->GetErrorYhigh(ip);
       double yel = gIMnpipi_SpSmAvg_cs_Etotal[iqlh+1]->GetErrorYlow(ip);
       gIMnpipi_SpSmAvg_cs_Etotal_mev[iqlh]->SetPoint(ip,x*1000.,y);
-      gIMnpipi_SpSmAvg_cs_Etotal_mev[iqlh]->SetPoint(ip,x*1000.,y);
       gIMnpipi_SpSmAvg_cs_Etotal_mev[iqlh]->SetPointEXhigh(ip,xe*1000.);
       gIMnpipi_SpSmAvg_cs_Etotal_mev[iqlh]->SetPointEXlow(ip,xe*1000.);
       gIMnpipi_SpSmAvg_cs_Etotal_mev[iqlh]->SetPointEYlow(ip,yel);
