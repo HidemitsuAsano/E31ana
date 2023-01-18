@@ -338,14 +338,16 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   f3->SetNpx(nbinsX);//use same nbin to compare the projection
   f3->SetNpy(nbinsY);//use same nbin to compare the projection
   f3->SetParameters(param);
-  if(qcut==2)f3->SetParLimits(0,param[0]*0.4,param[0]*0.50);
-  else if(qcut==1)f3->SetParLimits(0,param[0]*0.35,param[0]*1.0);
+  if(qcut==2)f3->SetParLimits(0,param[0]*0.4,param[0]*0.45);
+  //else if(qcut==1)f3->SetParLimits(0,param[0]*0.35,param[0]*0.9);
+  else if(qcut==1)f3->SetParLimits(0,param[0]*0.3,param[0]*0.5);
   f3->FixParameter(1,param[1]);
   f3->FixParameter(2,param[2]);
   f3->FixParameter(3,param[3]);
   //f3->FixParameter(3,1.9);
   //f3->SetParLimits(0,param[0]/3.0,param[0]/1.5);
   f3->SetRange(1.1,1.1,1.4,1.4);
+  //f3->SetRange(1.1,1.1,1.45,1.45);
   IMnpim_IMnpip_dE_wK0_woSid_n_3->Fit("f3","R","");
   //f3->Draw("cont2 same");
    
@@ -399,10 +401,10 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   f3widehist->Print("base");
   
   //wide (= 3sigma cut)
-  const int SpbinMIN = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->FindBin(anacuts::Sigmap_MIN_wide);
-  const int SpbinMAX = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->FindBin(anacuts::Sigmap_MAX_wide);
-  const int SmbinMIN = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->FindBin(anacuts::Sigmam_MIN_wide);
-  const int SmbinMAX = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->FindBin(anacuts::Sigmam_MAX_wide);
+  const int SpbinMIN_wide = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->FindBin(anacuts::Sigmap_MIN_wide);
+  const int SpbinMAX_wide = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetXaxis()->FindBin(anacuts::Sigmap_MAX_wide);
+  const int SmbinMIN_wide = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->FindBin(anacuts::Sigmam_MIN_wide);
+  const int SmbinMAX_wide = IMnpim_IMnpip_dE_wK0_woSid_n_3->GetYaxis()->FindBin(anacuts::Sigmam_MAX_wide);
   
   //removing Sp OR Sm
   //idea:  also remove negative bin of IMnpim_IMnpip histogram ? 
@@ -415,12 +417,12 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
         //f3widehist->SetBinError(ixbin,iybin,0);
       //}
       //3 sigma cut
-      if(SpbinMIN <= ixbin && ixbin<=SpbinMAX){
+      if(SpbinMIN_wide <= ixbin && ixbin<=SpbinMAX_wide){
         f3widehist->SetBinContent(ixbin,iybin,0);
         f3widehist->SetBinError(ixbin,iybin,0);
       }
       //3 sigma cut
-      if(SmbinMIN <= iybin && iybin<=SmbinMAX){
+      if(SmbinMIN_wide <= iybin && iybin<=SmbinMAX_wide){
         f3widehist->SetBinContent(ixbin,iybin,0);
         f3widehist->SetBinError(ixbin,iybin,0);
       }
@@ -510,7 +512,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
       double yy = 1.0/sqrt(2.0)*(xcent+ycent);
       double yy2 = yy-(sqrt(6.76*xx*xx+2.765)-1.0);//
       if(yy2<0.98 ) continue;
-      if(SpbinMIN <= ixbin && ixbin<=SpbinMAX){
+      if(SpbinMIN_wide <= ixbin && ixbin<=SpbinMAX_wide){
         //std::cout << xcent << " " << ycent << "  " << cont << std::endl;
         IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->SetBinContent(ixbin,iybin,cont);
         IMnpim_IMnpip_dE_wK0_woSid_n_3_inter_sysup->SetBinContent(ixbin,iybin,contup);
@@ -519,7 +521,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
         h2K0inter_3_sysup->SetBinContent(ixbin,iybin,contup);
         h2K0inter_3_sysdown->SetBinContent(ixbin,iybin,contdown);
       }
-      if(SmbinMIN <= iybin && iybin<=SmbinMAX){
+      if(SmbinMIN_wide <= iybin && iybin<=SmbinMAX_wide){
         IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->SetBinContent(ixbin,iybin,cont);
         IMnpim_IMnpip_dE_wK0_woSid_n_3_inter_sysup->SetBinContent(ixbin,iybin,contup);
         IMnpim_IMnpip_dE_wK0_woSid_n_3_inter_sysdown->SetBinContent(ixbin,iybin,contdown);
@@ -774,9 +776,12 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_K0sub = (TH2F*)IMnpim_IMnpip_dE_wK0orwSid_n->Clone("IMnpim_IMnpip_dE_wK0orwSid_n_K0sub");
   IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->SetTitle("IMnpim_IMnpip_dE_wK0orwSid_n_K0sub");
   //subtract K0
-  IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Add(IMnpim_IMnpip_dE_wK0_woSid_n_2,-1.0);
+  //IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Add(IMnpim_IMnpip_dE_wK0_woSid_n_2,-1.0);
+  TH2F* IMnpim_IMnpip_dE_wK0_woSid_n_3_rebin = (TH2F*)IMnpim_IMnpip_dE_wK0_woSid_n_3->Clone("IMnpim_IMnpip_dE_wK0_woSid_n_3_rebin");
+  IMnpim_IMnpip_dE_wK0_woSid_n_3_rebin->Rebin2D(RebinFactor,RebinFactor);
+  IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Add(IMnpim_IMnpip_dE_wK0_woSid_n_3_rebin,-1.0);
   IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->SetMaximum(IMnpim_IMnpip_dE_wK0orwSid_n->GetMaximum());
-  IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->SetMinimum(0);
+  //IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->SetMinimum(0);
   IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Draw("colz");
   
 
@@ -808,6 +813,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   cwSid_n_K0sub->cd(1);
   //2 sigma, narrow cut
   const int SmbinStart = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->FindBin(anacuts::Sigmam_MIN);
+//  const int SmbinStart = IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->FindBin(anacuts::Sigmam_MIN_wide);
   std::cout << "Sigma m mass center " << anacuts::Sigmam_center << std::endl;
   std::cout << "SmbinStart low Edge " << IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->GetYaxis()->GetBinLowEdge(SmbinStart) << std::endl;
   std::cout << "Sigmam_MIN " << anacuts::Sigmam_MIN << std::endl;
@@ -1029,8 +1035,14 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   //IMnpip_3_inter_sysup->Draw("same");
   //IMnpip_3_inter_sysdown->Draw("same");
   TGraphAsymmErrors *gr_K0inter_onnpip = new TGraphAsymmErrors(IMnpip_3_inter);
+  gr_K0inter_onnpip->SetName("gr_K0inter_onnpip");
   TGraphAsymmErrors *gr_K0inter_onnpip_sysup = new TGraphAsymmErrors(IMnpip_3_inter_sysup);
+  gr_K0inter_onnpip_sysup->SetName("gr_K0inter_onnpip_sysup");
   TGraphAsymmErrors *gr_K0inter_onnpip_sysdown = new TGraphAsymmErrors(IMnpip_3_inter_sysdown);
+  gr_K0inter_onnpip_sysdown->SetName("gr_K0inter_onnpip_sysdown");
+  //TGraphAsymmErrors *gr_K0inter_onnpip = new TGraphAsymmErrors(f3widehist_px);
+  //TGraphAsymmErrors *gr_K0inter_onnpip_sysup = new TGraphAsymmErrors(f3widehist_sysup_px);
+  //TGraphAsymmErrors *gr_K0inter_onnpip_sysdown = new TGraphAsymmErrors(f3widehist_sysdown_px);
   for(int ip=0;ip<gr_K0inter_onnpip->GetN();ip++){
     double cont = gr_K0inter_onnpip->GetPointY(ip);
     double contup = gr_K0inter_onnpip_sysup->GetPointY(ip);
@@ -1081,8 +1093,11 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   //IMnpim_3_inter_sysup->Draw("same");
   //IMnpim_3_inter_sysdown->Draw("same");
   TGraphAsymmErrors *gr_K0inter_onnpim = new TGraphAsymmErrors(IMnpim_3_inter);
+  gr_K0inter_onnpim->SetName("gr_K0inter_onnpim");
   TGraphAsymmErrors *gr_K0inter_onnpim_sysup = new TGraphAsymmErrors(IMnpim_3_inter_sysup);
+  gr_K0inter_onnpim_sysup->SetName("gr_K0inter_onnpim_sysup");
   TGraphAsymmErrors *gr_K0inter_onnpim_sysdown = new TGraphAsymmErrors(IMnpim_3_inter_sysdown);
+  gr_K0inter_onnpim_sysdown->SetName("gr_K0inter_onnpim_sysdown");
   for(int ip=0;ip<gr_K0inter_onnpim->GetN();ip++){
     double cont = gr_K0inter_onnpim->GetPointY(ip);
     double contup = gr_K0inter_onnpim_sysup->GetPointY(ip);
@@ -1096,7 +1111,24 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   gr_K0inter_onnpim->SetMarkerColor(2);
   gr_K0inter_onnpim->SetLineColor(2);
   gr_K0inter_onnpim->Draw("p");
-  gr_SpONnpim_fin_pol1_final->Draw("p");
+  //gr_SpONnpim_fin_pol1_final->Draw("p");
+  TGraphErrors *gr_SpONnpim_fin_pol1_final_sort = (TGraphErrors*)gr_SpONnpim_fin_pol1_final->Clone("gr_SpONnpim_fin_pol1_final_sort");
+  gr_SpONnpim_fin_pol1_final_sort->SetName("gr_SpONnpim_fin_pol1_final_sort");
+  gr_SpONnpim_fin_pol1_final_sort->Sort();
+  gr_SpONnpim_fin_pol1_final_sort->SetFillStyle(0);
+  gr_SpONnpim_fin_pol1_final_sort->SetFillColor(3);
+  gr_SpONnpim_fin_pol1_final_sort->Draw("p");
+  TGraphErrors *gr_K0inter_plusSp_onnpim = (TGraphErrors*)gr_K0inter_onnpim->Clone("gr_K0inter_plusSp_onnpim");
+  gr_K0inter_plusSp_onnpim->SetName("gr_K0inter_plusSp_onnpim");
+  for(int ip=0;ip<gr_K0inter_plusSp_onnpim->GetN();ip++){
+    double x = gr_K0inter_plusSp_onnpim->GetPointX(ip);
+    double y = gr_K0inter_plusSp_onnpim->GetPointY(ip);
+    double addval = gr_SpONnpim_fin_pol1_final_sort->Eval(x);
+    gr_K0inter_plusSp_onnpim->SetPointY(ip,y+addval);
+  }
+  gr_K0inter_plusSp_onnpim->SetLineColor(4);
+  gr_K0inter_plusSp_onnpim->SetMarkerColor(4);
+  gr_K0inter_plusSp_onnpim->Draw("P");
 
 
   //summary plot
