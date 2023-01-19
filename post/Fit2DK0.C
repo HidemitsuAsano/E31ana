@@ -1069,11 +1069,18 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   //h_SmONnpip_fin_pol1_final->Print("");
   TGraphErrors *gr_K0inter_plusSm_onnpip = (TGraphErrors*)gr_K0inter_onnpip->Clone("gr_K0inter_plusSm_onnpip");
   gr_K0inter_plusSm_onnpip->SetName("gr_K0inter_plusSm_onnpip");
+  
+  //->current procudure does not consider tail components of signal outside of +/- 2 sigma
+  //but such an arbitrary factor is not good...
+  //so I fix it at 1
+  //original strategy is to determine the ratio of K0/S+/S- on overlap region, fixing the counts.
+  //so that summary plots which conserve the counts will be made later, converting xaxis to MeV.
+  const double TailFactor = 1.0;// 
   for(int ip=0;ip<gr_K0inter_plusSm_onnpip->GetN();ip++){
     double x = gr_K0inter_plusSm_onnpip->GetPointX(ip);
     double y = gr_K0inter_plusSm_onnpip->GetPointY(ip);
     double addval = gr_SmONnpip_fin_pol1_final_sort->Eval(x);
-    gr_K0inter_plusSm_onnpip->SetPointY(ip,y+addval);
+    gr_K0inter_plusSm_onnpip->SetPointY(ip,y+addval*TailFactor);
   }
   gr_K0inter_plusSm_onnpip->SetLineColor(4);
   gr_K0inter_plusSm_onnpip->SetMarkerColor(4);
@@ -1124,7 +1131,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
     double x = gr_K0inter_plusSp_onnpim->GetPointX(ip);
     double y = gr_K0inter_plusSp_onnpim->GetPointY(ip);
     double addval = gr_SpONnpim_fin_pol1_final_sort->Eval(x);
-    gr_K0inter_plusSp_onnpim->SetPointY(ip,y+addval);
+    gr_K0inter_plusSp_onnpim->SetPointY(ip,y+addval*TailFactor);
   }
   gr_K0inter_plusSp_onnpim->SetLineColor(4);
   gr_K0inter_plusSp_onnpim->SetMarkerColor(4);
