@@ -1168,7 +1168,9 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   IMnpip_wK0orwSid_n_mev->SetMaximum(IMnpip_wK0orwSid_n_mev->GetMaximum()*1.11);
   IMnpip_wK0orwSid_n_mev->SetLineWidth(2);
   IMnpip_wK0orwSid_n_mev->SetLineColor(2);
-  IMnpip_wK0orwSid_n_mev->Draw("E");
+  IMnpip_wK0orwSid_n_mev->SetFillColor(2);
+  IMnpip_wK0orwSid_n_mev->SetFillStyle(3002);
+  IMnpip_wK0orwSid_n_mev->Draw("HE");
   TGraphErrors *gr_SmOnnpip_fin_mev = new TGraphErrors();
   for(int ip=0;ip<gr_SmONnpip_fin_pol1_final->GetN();ip++){
     double x = gr_SmONnpip_fin_pol1_final->GetPointX(ip);
@@ -1209,9 +1211,11 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   }
   gr_K0inter_plusSm_onnpip_mev->SetMarkerColor(4);
   gr_K0inter_plusSm_onnpip_mev->SetLineColor(4);
+  gr_K0inter_plusSm_onnpip_mev->SetFillColor(4);
   gr_K0inter_plusSm_onnpip_mev->SetLineWidth(2);
-  gr_K0inter_plusSm_onnpip_mev->Draw("p");
-
+  gr_K0inter_plusSm_onnpip_mev->Draw("3");
+  TH1D* htest = (TH1D*)gr_K0inter_plusSm_onnpip_mev->GetHistogram();
+  htest->Draw("HEsame");  
 
   cFinalDeco_mev->cd(2);
   const int npimbin = IMnpim_wK0orwSid_n->GetNbinsX();
