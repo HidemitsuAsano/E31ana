@@ -1167,16 +1167,28 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   IMnpip_wK0orwSid_n_mev->GetYaxis()->SetTitleOffset(1.6);
   IMnpip_wK0orwSid_n_mev->SetMaximum(IMnpip_wK0orwSid_n_mev->GetMaximum()*1.11);
   IMnpip_wK0orwSid_n_mev->SetLineWidth(2);
-  IMnpip_wK0orwSid_n_mev->SetLineColor(2);
+  IMnpip_wK0orwSid_n_mev->SetLineColor(0);
   IMnpip_wK0orwSid_n_mev->SetFillColor(2);
   IMnpip_wK0orwSid_n_mev->SetFillStyle(3002);
   IMnpip_wK0orwSid_n_mev->Draw("HE");
+  TGraphErrors *gr_K0inter_onnpip_mev = new TGraphErrors();
+  for(int ip=0;ip<gr_K0inter_onnpip->GetN();ip++){
+    double x = gr_K0inter_onnpip->GetPointX(ip);
+    double y = gr_K0inter_onnpip->GetPointY(ip);
+    double xe = gr_K0inter_onnpip->GetErrorX(2);
+    double ye = gr_K0inter_onnpip->GetErrorY(ip);
+    gr_K0inter_onnpip_mev->SetPoint(ip,x*1000.,y);
+    gr_K0inter_onnpip_mev->SetPointError(ip,xe*1000.,ye);
+  }
+  gr_K0inter_onnpip_mev->SetMarkerColor(3);
+  gr_K0inter_onnpip_mev->SetLineColor(3);
+  gr_K0inter_onnpip_mev->SetLineWidth(0);
   TGraphErrors *gr_SmOnnpip_fin_mev = new TGraphErrors();
-  for(int ip=0;ip<gr_SmONnpip_fin_pol1_final->GetN();ip++){
-    double x = gr_SmONnpip_fin_pol1_final->GetPointX(ip);
-    double y = gr_SmONnpip_fin_pol1_final->GetPointY(ip);
-    double xe = gr_SmONnpip_fin_pol1_final->GetErrorX(2);
-    double ye = gr_SmONnpip_fin_pol1_final->GetErrorY(ip);
+  for(int ip=0;ip<gr_SmONnpip_fin_pol1_final_sort->GetN();ip++){
+    double x = gr_SmONnpip_fin_pol1_final_sort->GetPointX(ip);
+    double y = gr_SmONnpip_fin_pol1_final_sort->GetPointY(ip);
+    double xe = gr_SmONnpip_fin_pol1_final_sort->GetErrorX(2);
+    double ye = gr_SmONnpip_fin_pol1_final_sort->GetErrorY(ip);
     gr_SmOnnpip_fin_mev->SetPoint(ip,x*1000.,y);
     gr_SmOnnpip_fin_mev->SetPointError(ip,xe*1000.,ye);
   }
@@ -1185,7 +1197,39 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   gr_SmOnnpip_fin_mev->SetLineWidth(2);
   gr_SmOnnpip_fin_mev->RemovePoint(0);
   gr_SmOnnpip_fin_mev->RemovePoint(0);
-  gr_SmOnnpip_fin_mev->Draw("p");
+  TH1D* h_SmOnnpip_mev = (TH1D*)IMnpip_wK0orwSid_n_mev->Clone("h_SmOnnpip_mev");
+  h_SmOnnpip_mev->Reset();
+  for(int ip=0;ip<gr_SmOnnpip_fin_mev->GetN();ip++){
+    double x,y;
+    gr_SmOnnpip_fin_mev->GetPoint(ip,x,y);
+    double ye = gr_SmOnnpip_fin_mev->GetErrorY(ip);
+    double hbin = h_SmOnnpip_mev->GetXaxis()->FindBin(x);
+    h_SmOnnpip_mev->SetBinContent(hbin,y);
+    h_SmOnnpip_mev->SetBinError(hbin,ye);
+  }
+  h_SmOnnpip_mev->SetFillStyle(3002);
+  h_SmOnnpip_mev->SetMarkerColor(3);
+  h_SmOnnpip_mev->SetLineColor(3);
+  h_SmOnnpip_mev->SetFillColor(3);
+  h_SmOnnpip_mev->SetLineWidth(2);
+  
+  TH1D* h_K0inter_onnpip_mev = (TH1D*)IMnpip_wK0orwSid_n_mev->Clone("h_K0inter_onnpip_mev");
+  h_K0inter_onnpip_mev->Reset();
+  for(int ip=0;ip<gr_K0inter_onnpip_mev->GetN();ip++){
+    double x,y;
+    gr_K0inter_onnpip_mev->GetPoint(ip,x,y);
+    double ye = gr_K0inter_onnpip_mev->GetErrorY(ip);
+    double hbin = h_K0inter_onnpip_mev->GetXaxis()->FindBin(x);
+    h_K0inter_onnpip_mev->SetBinContent(hbin,y);
+    h_K0inter_onnpip_mev->SetBinError(hbin,ye);
+  }
+  h_K0inter_onnpip_mev->SetFillStyle(3002);
+  h_K0inter_onnpip_mev->SetMarkerColor(3);
+  h_K0inter_onnpip_mev->SetLineColor(3);
+  h_K0inter_onnpip_mev->SetFillColor(3);
+  h_K0inter_onnpip_mev->SetLineWidth(2);
+
+
   TLine *p = new TLine(1050,0,1500,0);
   p->SetLineColor(1);
   //p->SetLineWidth(2.0);
@@ -1205,17 +1249,31 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
        val = y;
        vale = ye;
     }
-
     gr_K0inter_plusSm_onnpip_mev->SetPoint(ip,x*1000.,val);
     gr_K0inter_plusSm_onnpip_mev->SetPointError(ip,xe*1000.,vale);
   }
   gr_K0inter_plusSm_onnpip_mev->SetMarkerColor(4);
   gr_K0inter_plusSm_onnpip_mev->SetLineColor(4);
   gr_K0inter_plusSm_onnpip_mev->SetFillColor(4);
-  gr_K0inter_plusSm_onnpip_mev->SetLineWidth(2);
-  gr_K0inter_plusSm_onnpip_mev->Draw("3");
-  TH1D* htest = (TH1D*)gr_K0inter_plusSm_onnpip_mev->GetHistogram();
-  htest->Draw("HEsame");  
+  gr_K0inter_plusSm_onnpip_mev->SetFillStyle(3002);
+  //gr_K0inter_plusSm_onnpip_mev->SetLineWidth(2);
+  gr_K0inter_plusSm_onnpip_mev->SetLineWidth(0);
+  gr_K0inter_plusSm_onnpip_mev->Draw("FB");
+  gr_SmOnnpip_fin_mev->SetFillStyle(3002);
+  gr_SmOnnpip_fin_mev->SetFillColor(3);
+  gr_SmOnnpip_fin_mev->SetLineColor(3);
+  gr_K0inter_onnpip_mev->SetFillStyle(3002);
+  gr_K0inter_onnpip_mev->SetFillColor(3);
+  gr_K0inter_onnpip_mev->SetLineColor(3);
+  //gr_SmOnnpip_fin_mev->Draw("FB1");
+  //h_SmOnnpip_mev->Draw("E1Hsame");
+  gr_K0inter_onnpip_mev->Draw("FB");
+  //h_K0inter_onnpip_mev->Draw("HE0same");
+  
+  TGraphErrors *g1 = new TGraphErrors(IMnpip_wK0orwSid_n_mev);
+  g1->SetLineColor(1);
+  g1->SetMarkerColor(1);
+  g1->Draw("p");  
 
   cFinalDeco_mev->cd(2);
   const int npimbin = IMnpim_wK0orwSid_n->GetNbinsX();
