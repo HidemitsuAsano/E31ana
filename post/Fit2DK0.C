@@ -340,7 +340,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   f3->SetParameters(param);
   if(qcut==2)f3->SetParLimits(0,param[0]*0.25,param[0]*0.30);
   //else if(qcut==1)f3->SetParLimits(0,param[0]*0.35,param[0]*0.9);
-  else if(qcut==1)f3->SetParLimits(0,param[0]*0.3,param[0]*0.5);
+  else if(qcut==1)f3->SetParLimits(0,param[0]*0.3,param[0]*0.6);
   f3->FixParameter(1,param[1]);
   f3->FixParameter(2,param[2]);
   f3->FixParameter(3,param[3]);
@@ -1140,6 +1140,8 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
 
   //summary plot
   //gev->mev conversion for ptep paper
+  const double HISTMAX = 1800;
+  const int fillstyle = 1001;
   gStyle->SetPadGridX(0);
   gStyle->SetPadGridY(0);
   TCanvas *cFinalDeco_mev = new TCanvas("cFinalDeco_mev","cFinalDeco_mev",1800,800);
@@ -1171,12 +1173,13 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   IMnpip_wK0orwSid_n_mev_disp->GetYaxis()->SetTitle("counts");
   IMnpip_wK0orwSid_n_mev_disp->GetYaxis()->CenterTitle();
   IMnpip_wK0orwSid_n_mev_disp->GetYaxis()->SetTitleOffset(1.6);
-  IMnpip_wK0orwSid_n_mev_disp->SetMaximum(IMnpip_wK0orwSid_n_mev->GetMaximum()*1.11);
+//  IMnpip_wK0orwSid_n_mev_disp->SetMaximum(IMnpip_wK0orwSid_n_mev->GetMaximum()*1.11);
+  IMnpip_wK0orwSid_n_mev_disp->SetMaximum(HISTMAX);
   IMnpip_wK0orwSid_n_mev_disp->SetMinimum(-100);
   IMnpip_wK0orwSid_n_mev_disp->SetLineWidth(2);
   IMnpip_wK0orwSid_n_mev_disp->SetLineColor(0);
-  IMnpip_wK0orwSid_n_mev_disp->SetFillColor(2);
-  IMnpip_wK0orwSid_n_mev_disp->SetFillStyle(3002);
+  IMnpip_wK0orwSid_n_mev_disp->SetFillColor(46);
+  IMnpip_wK0orwSid_n_mev_disp->SetFillStyle(fillstyle);
   IMnpip_wK0orwSid_n_mev_disp->Draw("HE");
   TGraphErrors *gr_K0inter_onnpip_mev = new TGraphErrors();
   for(int ip=0;ip<gr_K0inter_onnpip->GetN();ip++){
@@ -1214,10 +1217,10 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
     h_SmOnnpip_mev->SetBinContent(hbin,y);
     h_SmOnnpip_mev->SetBinError(hbin,ye);
   }
-  h_SmOnnpip_mev->SetFillStyle(3002);
+  h_SmOnnpip_mev->SetFillStyle(fillstyle);
   h_SmOnnpip_mev->SetMarkerColor(3);
   h_SmOnnpip_mev->SetLineColor(3);
-  h_SmOnnpip_mev->SetFillColor(3);
+  h_SmOnnpip_mev->SetFillColor(38);
   h_SmOnnpip_mev->SetLineWidth(2);
   
   TH1D* h_K0inter_onnpip_mev = (TH1D*)IMnpip_wK0orwSid_n_mev->Clone("h_K0inter_onnpip_mev");
@@ -1230,10 +1233,10 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
     h_K0inter_onnpip_mev->SetBinContent(hbin,y);
     h_K0inter_onnpip_mev->SetBinError(hbin,ye);
   }
-  h_K0inter_onnpip_mev->SetFillStyle(3002);
+  h_K0inter_onnpip_mev->SetFillStyle(fillstyle);
   h_K0inter_onnpip_mev->SetMarkerColor(3);
   h_K0inter_onnpip_mev->SetLineColor(3);
-  h_K0inter_onnpip_mev->SetFillColor(3);
+  h_K0inter_onnpip_mev->SetFillColor(30);
   h_K0inter_onnpip_mev->SetLineWidth(2);
 
 
@@ -1261,17 +1264,17 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   }
   gr_K0inter_plusSm_onnpip_mev->SetMarkerColor(4);
   gr_K0inter_plusSm_onnpip_mev->SetLineColor(4);
-  gr_K0inter_plusSm_onnpip_mev->SetFillColor(4);
-  gr_K0inter_plusSm_onnpip_mev->SetFillStyle(3002);
+  gr_K0inter_plusSm_onnpip_mev->SetFillColor(38);
+  gr_K0inter_plusSm_onnpip_mev->SetFillStyle(fillstyle);
   //gr_K0inter_plusSm_onnpip_mev->SetLineWidth(2);
   gr_K0inter_plusSm_onnpip_mev->SetLineWidth(0);
   gr_K0inter_plusSm_onnpip_mev->Draw("Fc");
-  gr_SmOnnpip_fin_mev->SetFillStyle(3002);
-  gr_SmOnnpip_fin_mev->SetFillColor(3);
-  gr_SmOnnpip_fin_mev->SetLineColor(3);
-  gr_K0inter_onnpip_mev->SetFillStyle(3002);
-  gr_K0inter_onnpip_mev->SetFillColor(3);
-  gr_K0inter_onnpip_mev->SetLineColor(3);
+  gr_SmOnnpip_fin_mev->SetFillStyle(fillstyle);
+  gr_SmOnnpip_fin_mev->SetFillColor(30);
+  gr_SmOnnpip_fin_mev->SetLineColor(30);
+  gr_K0inter_onnpip_mev->SetFillStyle(fillstyle);
+  gr_K0inter_onnpip_mev->SetFillColor(30);
+  gr_K0inter_onnpip_mev->SetLineColor(30);
   //gr_SmOnnpip_fin_mev->Draw("FB1");
   //h_SmOnnpip_mev->Draw("E1Hsame");
   gr_K0inter_onnpip_mev->Draw("Fc");
@@ -1281,6 +1284,24 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   g1->SetLineColor(1);
   g1->SetMarkerColor(1);
   g1->Draw("p");  
+
+
+  TLegend *legp = new TLegend(0.60,0.6,0.8,0.75);
+  legp->SetLineWidth(0);   
+  legp->SetFillStyle(0);   
+  //legp->AddEntry(g1,"data");
+  legp->AddEntry(IMnpip_wK0orwSid_n_mev_disp,"#pi^{-}#Sigma^{+}n","f");
+  legp->AddEntry(gr_K0inter_plusSm_onnpip_mev,"#pi^{+}#Sigma^{-}n","f");
+  legp->AddEntry(gr_K0inter_onnpip_mev,"#bar{K}^{0}nn","f");
+  legp->SetTextSize(0.04);
+  legp->Draw();  
+
+  TLatex *texnpip = new TLatex();
+  double texnpip_ymax = HISTMAX*0.9;
+  texnpip->SetTextSize(0.04);
+  texnpip->SetTextColor(1);
+  if(qcut == 1) texnpip->DrawLatex( 1100, texnpip_ymax, "(c)   0 < q < 300 MeV/c" );
+  if(qcut == 2) texnpip->DrawLatex( 1100, texnpip_ymax, "(a)   300 < q < 650 MeV/c" );
 
   cFinalDeco_mev->cd(2);
   const int npimbin = IMnpim_wK0orwSid_n->GetNbinsX();
@@ -1311,11 +1332,12 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   IMnpim_wK0orwSid_n_mev_disp->GetYaxis()->SetTitleOffset(1.6);
 //  IMnpim_wK0orwSid_n_mev_disp->SetMaximum(IMnpim_wK0orwSid_n_mev->GetMaximum()*1.11);
   IMnpim_wK0orwSid_n_mev_disp->SetMinimum(-100);
-  IMnpim_wK0orwSid_n_mev_disp->SetMaximum(IMnpip_wK0orwSid_n_mev->GetMaximum()*1.11);
+  //IMnpim_wK0orwSid_n_mev_disp->SetMaximum(IMnpip_wK0orwSid_n_mev->GetMaximum()*1.11);
+  IMnpim_wK0orwSid_n_mev_disp->SetMaximum(HISTMAX);
   IMnpim_wK0orwSid_n_mev_disp->SetLineWidth(2);
   IMnpim_wK0orwSid_n_mev_disp->SetLineColor(0);
-  IMnpim_wK0orwSid_n_mev_disp->SetFillColor(4);
-  IMnpim_wK0orwSid_n_mev_disp->SetFillStyle(3002);
+  IMnpim_wK0orwSid_n_mev_disp->SetFillColor(38);
+  IMnpim_wK0orwSid_n_mev_disp->SetFillStyle(fillstyle);
   IMnpim_wK0orwSid_n_mev_disp->Draw("HE");
   TGraphErrors *gr_K0inter_onnpim_mev = new TGraphErrors();
   for(int ip=0;ip<gr_K0inter_onnpim->GetN();ip++){
@@ -1353,10 +1375,10 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
     h_SpOnnpim_mev->SetBinContent(hbin,y);
     h_SpOnnpim_mev->SetBinError(hbin,ye);
   }
-  h_SpOnnpim_mev->SetFillStyle(3002);
+  h_SpOnnpim_mev->SetFillStyle(fillstyle);
   h_SpOnnpim_mev->SetMarkerColor(3);
   h_SpOnnpim_mev->SetLineColor(3);
-  h_SpOnnpim_mev->SetFillColor(3);
+  h_SpOnnpim_mev->SetFillColor(30);
   h_SpOnnpim_mev->SetLineWidth(2);
   
   TH1D* h_K0inter_onnpim_mev = (TH1D*)IMnpim_wK0orwSid_n_mev->Clone("h_K0inter_onnpim_mev");
@@ -1369,10 +1391,10 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
     h_K0inter_onnpim_mev->SetBinContent(hbin,y);
     h_K0inter_onnpim_mev->SetBinError(hbin,ye);
   }
-  h_K0inter_onnpim_mev->SetFillStyle(3002);
+  h_K0inter_onnpim_mev->SetFillStyle(fillstyle);
   h_K0inter_onnpim_mev->SetMarkerColor(3);
-  h_K0inter_onnpim_mev->SetLineColor(3);
-  h_K0inter_onnpim_mev->SetFillColor(3);
+  h_K0inter_onnpim_mev->SetLineColor(30);
+  h_K0inter_onnpim_mev->SetFillColor(30);
   h_K0inter_onnpim_mev->SetLineWidth(2);
 
 
@@ -1395,17 +1417,17 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   }
   gr_K0inter_plusSp_onnpim_mev->SetMarkerColor(2);
   gr_K0inter_plusSp_onnpim_mev->SetLineColor(2);
-  gr_K0inter_plusSp_onnpim_mev->SetFillColor(2);
-  gr_K0inter_plusSp_onnpim_mev->SetFillStyle(3002);
+  gr_K0inter_plusSp_onnpim_mev->SetFillColor(46);
+  gr_K0inter_plusSp_onnpim_mev->SetFillStyle(fillstyle);
   //gr_K0inter_plusSp_onnpim_mev->SetLineWidth(2);
   gr_K0inter_plusSp_onnpim_mev->SetLineWidth(0);
   gr_K0inter_plusSp_onnpim_mev->Draw("Fc");
-  gr_SpOnnpim_fin_mev->SetFillStyle(3002);
-  gr_SpOnnpim_fin_mev->SetFillColor(2);
-  gr_SpOnnpim_fin_mev->SetLineColor(2);
-  gr_K0inter_onnpim_mev->SetFillStyle(3002);
-  gr_K0inter_onnpim_mev->SetFillColor(3);
-  gr_K0inter_onnpim_mev->SetLineColor(3);
+  gr_SpOnnpim_fin_mev->SetFillStyle(fillstyle);
+  gr_SpOnnpim_fin_mev->SetFillColor(46);
+  gr_SpOnnpim_fin_mev->SetLineColor(46);
+  gr_K0inter_onnpim_mev->SetFillStyle(fillstyle);
+  gr_K0inter_onnpim_mev->SetFillColor(30);
+  gr_K0inter_onnpim_mev->SetLineColor(30);
   //gr_SpOnnpim_fin_mev->Draw("FB1");
   //h_SpOnnpim_mev->Draw("E1Hsame");
   gr_K0inter_onnpim_mev->Draw("Fc");
@@ -1417,6 +1439,12 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   g2->Draw("p");  
   p->Draw();
 
+  TLatex *texnpim = new TLatex();
+  double texnpim_ymax = HISTMAX*0.9;
+  texnpim->SetTextSize(0.04);
+  texnpim->SetTextColor(1);
+  if(qcut == 1) texnpim->DrawLatex( 1100, texnpim_ymax, "(d)    0 < q < 300 MeV/c" );
+  if(qcut == 2) texnpim->DrawLatex( 1250, texnpim_ymax, "(b)    300 < q < 650 MeV/c" );
 
 
 
@@ -1473,7 +1501,8 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
     //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
   }
 
-
+  if(qcut==1) cFinalDeco_mev->SaveAs("cDeco_qlo.pdf");
+  else if(qcut==2) cFinalDeco_mev->SaveAs("cDeco_qhi.pdf");
 
 
 }
