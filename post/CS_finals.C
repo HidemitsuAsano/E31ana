@@ -22,6 +22,10 @@ void CS_finals()
   gStyle->SetOptStat(0);
   gStyle->SetPadGridX(0);
   gStyle->SetPadGridY(0);
+  gStyle->SetNdivisions(505,"x");
+  gStyle->SetNdivisions(505,"y");
+  gStyle->SetTitleXSize(0.05);
+  gStyle->SetTitleYSize(0.05);
   //gROOT->ForceStyle();
   //deco. err. is already added to statstical err in quadruture
   TH2D* q_IMnpipi_Sp_cs[4][3][3];//iq,dEcut,sysud of mix
@@ -1534,8 +1538,8 @@ void CS_finals()
   cboth_mev[0]->SaveAs("cbothqlow_mev.pdf");
   cboth_mev[1]->SaveAs("cbothqhi_mev.pdf");
 
-  TCanvas *cboth_mev_side = new TCanvas("cboth_mev_side","cboth_mev_side",1700,800);
-  //cboth_mev_side->SetBottomMargin(0.12);
+  TCanvas *cboth_mev_side = new TCanvas("cboth_mev_side","cboth_mev_side",1500,800);
+  cboth_mev_side->SetBottomMargin(0.12);
   cboth_mev_side->SetLeftMargin(0.14);
   cboth_mev_side->SetRightMargin(0.08);
   cboth_mev_side->Divide(2,1,0,0);
@@ -1600,10 +1604,11 @@ void CS_finals()
   }
   cboth_mev_side->SaveAs("cboth_mev.pdf");
 
-  TCanvas *cAvgmev_side = new TCanvas("cAvgmev_side","cAvgmevv_side",1700,800);
-  cSysSpSmAvgEtotalSide->SetBottomMargin(0.12);
-  cSysSpSmAvgEtotalSide->SetLeftMargin(0.14);
-  cSysSpSmAvgEtotalSide->SetRightMargin(0.08);
+  TCanvas *cAvgmev_side = new TCanvas("cAvgmev_side","cAvgmevv_side",1800,1050);
+  cAvgmev_side->SetBottomMargin(0.23);
+  cAvgmev_side->SetTopMargin(-0.50);
+  cAvgmev_side->SetLeftMargin(0.21);
+  //cAvgmev_side->SetRightMargin(0.08);
   for(int iqlh=0;iqlh<2;iqlh++){
     gIMnpipi_SpSmAvg_cs_Etotal_mev[iqlh]->GetYaxis()->SetRangeUser(-0.2,1.65);
     gMIXErrorSpSmAvg_CS_mev[iqlh]->SetFillStyle(3001);
@@ -1611,21 +1616,46 @@ void CS_finals()
     gMIXErrorSpSmAvg_CS_mev[iqlh]->SetMarkerColor(4);
     gMIXErrorSpSmAvg_CS_mev[iqlh]->SetLineColor(12);
   }
-  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetLimits(1300,1610);
-  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetLimits(1301,1610);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetLimits(1300,1625);
+  /*
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetLabelSize(0.05);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetYaxis()->SetLabelSize(0.05);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetLabelOffset(0.03);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetYaxis()->SetLabelOffset(0.03);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetTickLength(0.02);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetYaxis()->SetTickLength(0.02);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetTickLength(0.02);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetYaxis()->SetTickLength(0.02);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetLabelSize(0.05);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetYaxis()->SetLabelSize(0.05);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetLabelOffset(0.03);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetYaxis()->SetLabelOffset(0.03);
+  */
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetLimits(1301,1625);
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetTitle("IM(#pi#Sigma) [MeV/c^{2}]");
   gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetTitle("IM(#pi#Sigma) [MeV/c^{2}]");
+  /*
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetTitleSize(0.05);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetTitleOffset(2);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetYaxis()->SetTitleSize(0.05);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetYaxis()->SetTitleOffset(2);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetTitleSize(0.05);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetTitleOffset(2);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetYaxis()->SetTitleSize(0.05);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetYaxis()->SetTitleOffset(2);
+  */
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->CenterTitle();
   gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->CenterTitle();
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->SetTitle("");
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetYaxis()->SetTitle("d#sigma/dM  [#mub/MeV^{2}]");
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetYaxis()->CenterTitle();
   cAvgmev_side->Divide(2,1,0,0);
+  //cAvgmev_side->Divide(2,1,0.0001,0.001);
   cAvgmev_side->cd(1);
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->Draw("ap");
   gMIXErrorSpSmAvg_CS_mev[0]->Draw("5");
   gr_S1385_ToSqlow_mev->Draw("5");
-  TLine *pmev = new TLine(1290,0,1605,0);
+  TLine *pmev = new TLine(1295,0,1605,0);
   pmev->SetLineColor(1);
   //p->SetLineWidth(2.0);
   pmev->SetLineStyle(2);
@@ -1636,6 +1666,7 @@ void CS_finals()
     tex->SetTextSize(0.05);
     tex->SetTextColor(1);
     tex->DrawLatex( 1320,tex_ymax*0.85 , "(a)" );
+    tex->DrawLatex( 1475,tex_ymax*0.85 , "0 < q < 300 MeV/c" );
     TLine *pkp = new TLine((kpMass+pMass)*1000,0,(kpMass+pMass)*1000,gIMnpipi_Sp_cs_Etotal_mev[0]->GetHistogram()->GetMaximum());
     pkp->SetLineColor(1);
     pkp->SetLineStyle(2);
@@ -1657,6 +1688,7 @@ void CS_finals()
     tex->SetTextSize(0.05);
     tex->SetTextColor(1);
     tex->DrawLatex( 1320,tex_ymax*0.85 , "(b)" );
+    tex->DrawLatex( 1450,tex_ymax*0.85 , "300 < q < 650 MeV/c" );
     TLine *pkp = new TLine((kpMass+pMass)*1000,0,(kpMass+pMass)*1000,gIMnpipi_Sp_cs_Etotal_mev[0]->GetHistogram()->GetMaximum());
     pkp->SetLineColor(1);
     pkp->SetLineStyle(2);
