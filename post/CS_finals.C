@@ -1635,11 +1635,11 @@ void CS_finals()
   gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetTitle("IM(#pi#Sigma) [MeV/c^{2}]");
   
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetTitleSize(0.07);
-  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetTitleOffset(1.6);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetTitleOffset(1.4);
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetYaxis()->SetTitleSize(0.07);
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetYaxis()->SetTitleOffset(1.2);
   gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetTitleSize(0.07);
-  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetTitleOffset(1.6);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetTitleOffset(1.4);
   gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetYaxis()->SetTitleSize(0.07);
   gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetYaxis()->SetTitleOffset(1.6);
   
@@ -1651,6 +1651,8 @@ void CS_finals()
   cAvgmev_side->Divide(2,1,0,0);
   //cAvgmev_side->Divide(2,1,0.0001,0.001);
   cAvgmev_side->cd(1);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->SetMaximum(1.8);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->SetMaximum(1.8);
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->Draw("ap");
   gMIXErrorSpSmAvg_CS_mev[0]->Draw("5");
   gr_S1385_ToSqlow_mev->Draw("5");
@@ -1662,10 +1664,10 @@ void CS_finals()
   {
     TLatex *tex = new TLatex();
     double tex_ymax = gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetHistogram()->GetMaximum();
-    tex->SetTextSize(0.05);
+    tex->SetTextSize(0.06);
     tex->SetTextColor(1);
     tex->DrawLatex( 1320,tex_ymax*0.85 , "(a)" );
-    tex->DrawLatex( 1475,tex_ymax*0.85 , "0 < q < 300 MeV/c" );
+    tex->DrawLatex( 1480,tex_ymax*0.85 , "q < 300 MeV/c" );
     TLine *pkp = new TLine((kpMass+pMass)*1000,0,(kpMass+pMass)*1000,gIMnpipi_Sp_cs_Etotal_mev[0]->GetHistogram()->GetMaximum());
     pkp->SetLineColor(1);
     pkp->SetLineStyle(2);
@@ -1684,10 +1686,10 @@ void CS_finals()
   {
     TLatex *tex = new TLatex();
     double tex_ymax = gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetHistogram()->GetMaximum();
-    tex->SetTextSize(0.05);
+    tex->SetTextSize(0.06);
     tex->SetTextColor(1);
     tex->DrawLatex( 1320,tex_ymax*0.85 , "(b)" );
-    tex->DrawLatex( 1450,tex_ymax*0.85 , "300 < q < 650 MeV/c" );
+    tex->DrawLatex( 1445,tex_ymax*0.85 , "300 < q < 650 MeV/c" );
     TLine *pkp = new TLine((kpMass+pMass)*1000,0,(kpMass+pMass)*1000,gIMnpipi_Sp_cs_Etotal_mev[0]->GetHistogram()->GetMaximum());
     pkp->SetLineColor(1);
     pkp->SetLineStyle(2);
