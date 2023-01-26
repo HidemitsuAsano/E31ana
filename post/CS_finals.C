@@ -1604,7 +1604,7 @@ void CS_finals()
   }
   cboth_mev_side->SaveAs("cboth_mev.pdf");
 
-  TCanvas *cAvgmev_side = new TCanvas("cAvgmev_side","cAvgmevv_side",1800,1050);
+  TCanvas *cAvgmev_side = new TCanvas("cAvgmev_side","cAvgmevv_side",2200,1050);
   cAvgmev_side->SetBottomMargin(0.23);
   cAvgmev_side->SetTopMargin(-0.50);
   cAvgmev_side->SetLeftMargin(0.21);
@@ -1616,8 +1616,8 @@ void CS_finals()
     gMIXErrorSpSmAvg_CS_mev[iqlh]->SetMarkerColor(4);
     gMIXErrorSpSmAvg_CS_mev[iqlh]->SetLineColor(12);
   }
-  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetLimits(1300,1625);
-  /*
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetLimits(1300,1620);
+  
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetLabelSize(0.05);
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetYaxis()->SetLabelSize(0.05);
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetLabelOffset(0.03);
@@ -1630,20 +1630,19 @@ void CS_finals()
   gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetYaxis()->SetLabelSize(0.05);
   gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetLabelOffset(0.03);
   gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetYaxis()->SetLabelOffset(0.03);
-  */
-  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetLimits(1301,1625);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetLimits(1301,1620);
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetTitle("IM(#pi#Sigma) [MeV/c^{2}]");
   gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetTitle("IM(#pi#Sigma) [MeV/c^{2}]");
-  /*
-  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetTitleSize(0.05);
-  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetTitleOffset(2);
-  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetYaxis()->SetTitleSize(0.05);
-  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetYaxis()->SetTitleOffset(2);
-  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetTitleSize(0.05);
-  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetTitleOffset(2);
-  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetYaxis()->SetTitleSize(0.05);
-  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetYaxis()->SetTitleOffset(2);
-  */
+  
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetTitleSize(0.07);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->SetTitleOffset(1.6);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetYaxis()->SetTitleSize(0.07);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetYaxis()->SetTitleOffset(1.2);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetTitleSize(0.07);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->SetTitleOffset(1.6);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetYaxis()->SetTitleSize(0.07);
+  gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetYaxis()->SetTitleOffset(1.6);
+  
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->GetXaxis()->CenterTitle();
   gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->GetXaxis()->CenterTitle();
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->SetTitle("");
@@ -1655,7 +1654,7 @@ void CS_finals()
   gIMnpipi_SpSmAvg_cs_Etotal_mev[0]->Draw("ap");
   gMIXErrorSpSmAvg_CS_mev[0]->Draw("5");
   gr_S1385_ToSqlow_mev->Draw("5");
-  TLine *pmev = new TLine(1295,0,1605,0);
+  TLine *pmev = new TLine(1295,0,1620,0);
   pmev->SetLineColor(1);
   //p->SetLineWidth(2.0);
   pmev->SetLineStyle(2);
