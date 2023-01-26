@@ -12,7 +12,7 @@ double funcos(double q, double M);
 
 const double costhetacutCMhi = 1.0; 
 const double costhetacutCMlo = -1.0; 
-
+#include "anacuts.h"
 void CalcLpimCSFromFit()
 {
   TFile *flpim = TFile::Open("CSLpimFit.root","READ");
@@ -34,9 +34,9 @@ void CalcLpimCSFromFit()
     CS_lpim_qcut[iq]->SetMinimum(0);
     CS_lpim_qcut[iq]->SetFillColor(0);
   }
-  CS_lpim_qcut[0]->GetYaxis()->SetRangeUser(0,0.65);//total
-  CS_lpim_qcut[1]->GetYaxis()->SetRangeUser(0,0.35);//
-  CS_lpim_qcut[2]->GetYaxis()->SetRangeUser(0.35,0.65);
+  CS_lpim_qcut[0]->GetYaxis()->SetRangeUser(0,anacuts::qvalMAX);//total
+  CS_lpim_qcut[1]->GetYaxis()->SetRangeUser(0,anacuts::qvalcut);//
+  CS_lpim_qcut[2]->GetYaxis()->SetRangeUser(anacuts::qvalcut,anacuts::qvalMAX);
   double binwidthq = CS_lpim_qcut[0]->GetYaxis()->GetBinWidth(1)*1000.0; 
   std::cout << "binq width " << binwidthq  << std::endl;
   
