@@ -1677,10 +1677,10 @@ void CS_finals()
     pk0n->SetLineColor(1);
     pk0n->SetLineStyle(2);
     pk0n->Draw(); 
-    TArrow *ar3 = new TArrow(1365,tex_ymax*0.85 ,1425,tex_ymax*0.85 ,0.05,"<|>");
-    ar3->SetAngle(40);
-    ar3->SetLineWidth(2);
-    ar3->Draw();
+    //TArrow *ar3 = new TArrow(1365,tex_ymax*0.85 ,1425,tex_ymax*0.85 ,0.04,"<|>");
+    //ar3->SetAngle(20);
+    //ar3->SetLineWidth(2);
+    //ar3->Draw();
   }
   cAvgmev_side->cd(2);
   gIMnpipi_SpSmAvg_cs_Etotal_mev[1]->Draw("ap");
