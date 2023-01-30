@@ -462,10 +462,12 @@ void QACDS(TFile *f){
   h1_2mevcut->GetYaxis()->SetMaxDigits(4);
   h1_2mevcut->GetYaxis()->SetNdivisions(5,5,0,kTRUE);
   h1_2mevcut->SetTitle("");
-  h1_2mevcut->GetXaxis()->SetRangeUser(0,10);
+  h1_2mevcut->GetXaxis()->SetRangeUser(0,6.79);
   h1_2mevcut->SetMarkerStyle(20);
   h1_2mevcut->SetYTitle("counts");
   h1_2mevcut->GetYaxis()->CenterTitle();
+  h1_2mevcut->GetYaxis()->SetLabelSize(0.04);
+  h1_2mevcut->GetYaxis()->SetTitleSize(0.04);
   h1_2mevcut->Draw("E");
    
   double maxbeta =  h1_2mevcut->GetMaximum();
