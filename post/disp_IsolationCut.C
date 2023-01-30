@@ -73,7 +73,7 @@ void disp_IsolationCut()
   gStyle->SetOptStat(0);
   gStyle->SetPadGridX(0);
   gStyle->SetPadGridY(0);
-
+  const double CHDR= 55.9;//center cm
   TCanvas *c1 = new TCanvas("c1","c1",1600,600);
   c1->Divide(2,1,0.000001,0.0001);
   //gStyle->SetPadRightMargin(1.3);
