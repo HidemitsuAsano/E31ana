@@ -890,6 +890,34 @@ void FitMixScale()
     MMnmiss_wK0orwSid_mix[isys]->Draw("same");
   }
 
+  TCanvas *c22_2 = new TCanvas("c22_2","c22_2");
+  MMnmiss_wK0orwSid_data->Draw("E");
+  MMnmiss_wK0orwSid_mix[1]->SetLineColor(6);
+  //MMnmiss_wK0orwSid_mix[1]->Draw("same");
+  TGraphAsymmErrors *gMMnmiss_wK0orwSid_mix_sys = new TGraphAsymmErrors(MMnmiss_wK0orwSid_mix[1]);
+  for(int ix=1;ix<MMnmiss_wK0orwSid_mix[0]->GetNbinsX();ix++){
+    double x = MMnmiss_wK0orwSid_mix[0]->GetXaxis()->GetBinCenter(ix);
+    double xe = MMnmiss_wK0orwSid_mix[0]->GetXaxis()->GetBinWidth(ix);
+    double cont_down = MMnmiss_wK0orwSid_mix[0]->GetBinContent(ix);
+    double cont = MMnmiss_wK0orwSid_mix[1]->GetBinContent(ix);
+    double cont_up = MMnmiss_wK0orwSid_mix[2]->GetBinContent(ix);
+    double yehi = cont_up-cont;
+    double yelo = cont-cont_down;
+    gMMnmiss_wK0orwSid_mix_sys->SetPoint(ix-1,x,cont);
+    gMMnmiss_wK0orwSid_mix_sys->SetPointEXhigh(ix-1,xe);
+    gMMnmiss_wK0orwSid_mix_sys->SetPointEXlow(ix-1,xe);
+    gMMnmiss_wK0orwSid_mix_sys->SetPointEYhigh(ix-1,yehi);
+    gMMnmiss_wK0orwSid_mix_sys->SetPointEYlow(ix-1,yelo);
+  }
+  gMMnmiss_wK0orwSid_mix_sys->SetLineColor(6);
+  gMMnmiss_wK0orwSid_mix_sys->SetFillColor(6);
+  gMMnmiss_wK0orwSid_mix_sys->SetFillStyle(3001);
+  gMMnmiss_wK0orwSid_mix_sys->Draw("3");
+  
+
+
+
+
   gStyle->SetPadRightMargin(0.15);
   gStyle->SetPadLeftMargin(0.12);
   TCanvas *c23 = new TCanvas("c23","c23",1000,800);
@@ -1011,8 +1039,21 @@ void FitMixScale()
   gmiss_sys_mev->Draw("5");
   MMnmiss_wK0orwSid_sub_mev->SetLineColor(2);
   MMnmiss_wK0orwSid_sub_mev->SetMarkerColor(2);
-  MMnmiss_wK0orwSid_sub_mev->Draw("Esame");
+  MMnmiss_wK0orwSid_sub_mev->Draw("sameE");
 
+
+  TCanvas *c23_22 = new TCanvas("cmm2","cmm2",1000,800);
+  MMnmiss_wK0orwSid_data_mev->Draw("E");
+
+  TCanvas *c23_3 = new TCanvas("cmms","cmms",1000,800);
+  gmiss_sys_mev->SetLineColor(2);
+  gmiss_sys_mev->SetMarkerColor(2);
+  gmiss_sys_mev->GetXaxis()->SetRangeUser(500,1500);
+  MMnmiss_wK0orwSid_sub_mev->GetXaxis()->SetRangeUser(500,1500);
+  MMnmiss_wK0orwSid_sub_mev->SetLineColor(2);
+  MMnmiss_wK0orwSid_sub_mev->SetMarkerColor(2);
+  gmiss_sys_mev->Draw("pa5");
+  MMnmiss_wK0orwSid_sub_mev->Draw("sameE");
 
   TLine *pmev = new TLine(500,0,1500,0);
   pmev->SetLineColor(1);
