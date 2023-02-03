@@ -29,6 +29,8 @@ void FitMixScale()
   gStyle->SetOptFit(0);
   gStyle->SetPadRightMargin(0.15);
   gStyle->SetPadLeftMargin(0.12);
+  //gStyle->SetNdivisions(505,"x");
+  gStyle->SetNdivisions(505,"y");
   TFile *fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE%d_iso_nostop.root",Version,dEcut));
   TFile *fmix = TFile::Open(Form("evanaIMpisigma_npippim_v%d_MIX_cut4_out_dE%d_iso_nostop_sys0.root",Version,dEcut));
   fr->Print();
@@ -414,6 +416,9 @@ void FitMixScale()
   
   
   TCanvas *cnpip = new TCanvas("cnpip","cnpip");
+  cnpip->SetTopMargin(0.01);
+  cnpip->SetLeftMargin(0.16);
+  cnpip->SetBottomMargin(0.16);
   const int nbinnpip =  IMnpip_n_data->GetNbinsX();
   const double npipmin = IMnpip_n_data->GetXaxis()->GetXmin();
   const double npipmax =  IMnpip_n_data->GetXaxis()->GetXmax();
@@ -441,6 +446,14 @@ void FitMixScale()
   IMnpip_n_data_mev->GetXaxis()->SetRangeUser(1150,1230);
   IMnpip_n_data_mev->SetMinimum(IMnpip_n_sub->GetMinimum());
   IMnpip_n_data_mev->SetMarkerStyle(20);
+  IMnpip_n_data_mev->GetXaxis()->SetTitleSize(0.06);
+  IMnpip_n_data_mev->GetYaxis()->SetTitleSize(0.06);
+  IMnpip_n_data_mev->GetXaxis()->SetLabelSize(0.05);
+  IMnpip_n_data_mev->GetYaxis()->SetLabelSize(0.05);
+  IMnpip_n_data_mev->GetXaxis()->SetTitleOffset(1.31);
+  IMnpip_n_data_mev->GetYaxis()->SetTitleOffset(1.42);
+  IMnpip_n_data_mev->GetXaxis()->SetNdivisions(505);
+  IMnpip_n_data_mev->GetYaxis()->SetTitleOffset(1.42);
   IMnpip_n_data_mev->Draw("E");
    
   TLatex *texnpip_mev = new TLatex();
@@ -575,6 +588,9 @@ void FitMixScale()
   psm->Draw(); 
 
   TCanvas *cnpim = new TCanvas("cnpim","cnpim");
+  cnpim->SetTopMargin(0.01);
+  cnpim->SetLeftMargin(0.16);
+  cnpim->SetBottomMargin(0.16);
   const int nbinnpim =  IMnpim_n_data->GetNbinsX();
   const double npimmin = IMnpim_n_data->GetXaxis()->GetXmin();
   const double npimmax =  IMnpim_n_data->GetXaxis()->GetXmax();
@@ -602,6 +618,14 @@ void FitMixScale()
   IMnpim_n_data_mev->GetXaxis()->SetRangeUser(1150,1230);
   IMnpim_n_data_mev->SetMinimum(IMnpim_n_sub->GetMinimum());
   IMnpim_n_data_mev->SetMarkerStyle(20);
+  IMnpim_n_data_mev->GetXaxis()->SetTitleSize(0.06);
+  IMnpim_n_data_mev->GetYaxis()->SetTitleSize(0.06);
+  IMnpim_n_data_mev->GetXaxis()->SetLabelSize(0.05);
+  IMnpim_n_data_mev->GetYaxis()->SetLabelSize(0.05);
+  IMnpim_n_data_mev->GetXaxis()->SetTitleOffset(1.31);
+  IMnpim_n_data_mev->GetYaxis()->SetTitleOffset(1.42);
+  IMnpim_n_data_mev->GetXaxis()->SetNdivisions(505);
+  IMnpim_n_data_mev->GetYaxis()->SetTitleOffset(1.42);
   IMnpim_n_data_mev->Draw("E");
    
   TLatex *texnpim_mev = new TLatex();
@@ -712,6 +736,9 @@ void FitMixScale()
   pk0->Draw();
 
   TCanvas *cpippim = new TCanvas("cpippim","cpippim");
+  cpippim->SetTopMargin(0.01);
+  cpippim->SetLeftMargin(0.16);
+  cpippim->SetBottomMargin(0.16);
   const int nbinpippim =  IMpippim_woSid_data->GetNbinsX();
   const double pippimmin = IMpippim_woSid_data->GetXaxis()->GetXmin();
   const double pippimmax =  IMpippim_woSid_data->GetXaxis()->GetXmax();
@@ -739,6 +766,14 @@ void FitMixScale()
   IMpippim_woSid_data_mev->GetXaxis()->SetRangeUser(400,600);
   IMpippim_woSid_data_mev->SetMinimum(IMpippim_woSid_sub->GetMinimum());
   IMpippim_woSid_data_mev->SetMarkerStyle(20);
+  IMpippim_woSid_data_mev->GetXaxis()->SetTitleSize(0.06);
+  IMpippim_woSid_data_mev->GetYaxis()->SetTitleSize(0.06);
+  IMpippim_woSid_data_mev->GetXaxis()->SetLabelSize(0.05);
+  IMpippim_woSid_data_mev->GetYaxis()->SetLabelSize(0.05);
+  IMpippim_woSid_data_mev->GetXaxis()->SetTitleOffset(1.31);
+  IMpippim_woSid_data_mev->GetYaxis()->SetTitleOffset(1.42);
+  IMpippim_woSid_data_mev->GetXaxis()->SetNdivisions(505);
+  IMpippim_woSid_data_mev->GetYaxis()->SetTitleOffset(1.42);
   IMpippim_woSid_data_mev->Draw("E");
    
   TLatex *texpippim_mev = new TLatex();
@@ -895,6 +930,7 @@ void FitMixScale()
   MMnmiss_wK0orwSid_mix[1]->SetLineColor(6);
   //MMnmiss_wK0orwSid_mix[1]->Draw("same");
   TGraphAsymmErrors *gMMnmiss_wK0orwSid_mix_sys = new TGraphAsymmErrors(MMnmiss_wK0orwSid_mix[1]);
+  TGraphAsymmErrors *gMMnmiss_wK0orwSid_mix_sys_mev = new TGraphAsymmErrors();
   for(int ix=1;ix<MMnmiss_wK0orwSid_mix[0]->GetNbinsX();ix++){
     double x = MMnmiss_wK0orwSid_mix[0]->GetXaxis()->GetBinCenter(ix);
     double xe = MMnmiss_wK0orwSid_mix[0]->GetXaxis()->GetBinWidth(ix);
@@ -908,6 +944,11 @@ void FitMixScale()
     gMMnmiss_wK0orwSid_mix_sys->SetPointEXlow(ix-1,xe);
     gMMnmiss_wK0orwSid_mix_sys->SetPointEYhigh(ix-1,yehi);
     gMMnmiss_wK0orwSid_mix_sys->SetPointEYlow(ix-1,yelo);
+    gMMnmiss_wK0orwSid_mix_sys_mev->SetPoint(ix-1,x*1000.,cont);
+    gMMnmiss_wK0orwSid_mix_sys_mev->SetPointEXhigh(ix-1,xe*1000.);
+    gMMnmiss_wK0orwSid_mix_sys_mev->SetPointEXlow(ix-1,xe*1000.);
+    gMMnmiss_wK0orwSid_mix_sys_mev->SetPointEYhigh(ix-1,yehi);
+    gMMnmiss_wK0orwSid_mix_sys_mev->SetPointEYlow(ix-1,yelo);
   }
   gMMnmiss_wK0orwSid_mix_sys->SetLineColor(6);
   gMMnmiss_wK0orwSid_mix_sys->SetFillColor(6);
@@ -1042,25 +1083,73 @@ void FitMixScale()
   MMnmiss_wK0orwSid_sub_mev->Draw("sameE");
 
 
-  TCanvas *c23_22 = new TCanvas("cmm2","cmm2",1000,800);
+  TCanvas *c23_22 = new TCanvas("cmm2","cmm2",1200,800);
+  c23_22->SetTopMargin(0.01);
+  c23_22->SetLeftMargin(0.16);
+  c23_22->SetBottomMargin(0.16);
+  MMnmiss_wK0orwSid_data_mev->GetXaxis()->SetRangeUser(499,1501);
+  MMnmiss_wK0orwSid_data_mev->GetXaxis()->SetTitleSize(0.06);
+  MMnmiss_wK0orwSid_data_mev->GetYaxis()->SetTitleSize(0.06);
+  MMnmiss_wK0orwSid_data_mev->GetXaxis()->SetLabelSize(0.05);
+  MMnmiss_wK0orwSid_data_mev->GetYaxis()->SetLabelSize(0.05);
+  MMnmiss_wK0orwSid_data_mev->GetXaxis()->SetTitleOffset(1.31);
+  MMnmiss_wK0orwSid_data_mev->GetYaxis()->SetTitleOffset(1.42);
   MMnmiss_wK0orwSid_data_mev->Draw("E");
+  gMMnmiss_wK0orwSid_mix_sys_mev->SetLineColor(6);
+  gMMnmiss_wK0orwSid_mix_sys_mev->SetFillColor(6);
+  gMMnmiss_wK0orwSid_mix_sys_mev->SetFillStyle(3001);
+  gMMnmiss_wK0orwSid_mix_sys_mev->Draw("3");
+  TLine *pmev = new TLine(500,0,1500,0);
+  pmev->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  pmev->SetLineStyle(2);
+  pmev->Draw();
+  {
+    TLatex *tex = new TLatex();
+    double tex_ymax = MMnmiss_wK0orwSid_data_mev->GetMaximum();
+    tex->SetTextSize(0.06);
+    tex->SetTextColor(1);
+    tex->DrawLatex( 550, tex_ymax*0.95, "(a)" );
+  }   
 
-  TCanvas *c23_3 = new TCanvas("cmms","cmms",1000,800);
+  TCanvas *c23_3 = new TCanvas("cmms","cmms",1200,800);
+  c23_3->SetTopMargin(0.01);
+  c23_3->SetLeftMargin(0.16);
+  c23_3->SetBottomMargin(0.16);
   gmiss_sys_mev->SetLineColor(2);
   gmiss_sys_mev->SetMarkerColor(2);
   gmiss_sys_mev->GetXaxis()->SetRangeUser(500,1500);
   MMnmiss_wK0orwSid_sub_mev->GetXaxis()->SetRangeUser(500,1500);
   MMnmiss_wK0orwSid_sub_mev->SetLineColor(2);
   MMnmiss_wK0orwSid_sub_mev->SetMarkerColor(2);
+  gmiss_sys_mev->GetXaxis()->SetTitle("Miss. Mass. [MeV/c^{2}]");
+  gmiss_sys_mev->GetXaxis()->CenterTitle();
+  gmiss_sys_mev->SetMinimum(-150);
+  //MMnmiss_wK0orwSid_data_mev->GetXaxis()->SetTitleSize(0.4);
+  //MMnmiss_wK0orwSid_data_mev->GetYaxis()->SetTitleSize(0.4);
+  gmiss_sys_mev->GetXaxis()->SetTitleSize(0.06);
+  gmiss_sys_mev->GetYaxis()->SetTitleSize(0.06);
+  gmiss_sys_mev->GetXaxis()->SetLabelSize(0.05);
+  gmiss_sys_mev->GetYaxis()->SetLabelSize(0.05);
+  gmiss_sys_mev->GetXaxis()->SetTitleOffset(1.31);
+  gmiss_sys_mev->GetYaxis()->SetTitleOffset(1.42);
+  //gmiss_sys_mev->GetYaxis()->SetTitle("counts/(0.01 GeV/c^{2})");
+  gmiss_sys_mev->GetYaxis()->SetTitle("counts/(10 MeV/c^{2})");
+  gmiss_sys_mev->GetYaxis()->CenterTitle();
+  for(int id=0;id<4;id++){
+    int n = gmiss_sys_mev->GetN();
+    gmiss_sys_mev->RemovePoint(n-1);
+  }  
   gmiss_sys_mev->Draw("pa5");
   MMnmiss_wK0orwSid_sub_mev->Draw("sameE");
-
-  TLine *pmev = new TLine(500,0,1500,0);
-  pmev->SetLineColor(1);
-  //p->SetLineWidth(2.0);
-  pmev->SetLineStyle(2);
   pmev->Draw();
-
+  {
+    TLatex *tex = new TLatex();
+    double tex_ymax = gmiss_sys_mev->GetMaximum();
+    tex->SetTextSize(0.05);
+    tex->SetTextColor(1);
+    tex->DrawLatex( 550, 1200, "(b)" );
+  }   
 
 
   TCanvas *c = NULL;

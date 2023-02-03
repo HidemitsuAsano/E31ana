@@ -449,7 +449,11 @@ void QACDS(TFile *f){
   h2_dE_betainv->SetYTitle("dE [MeV]");
   h2_dE_betainv->Draw("colz");
 
-  TCanvas *cdE_betainv_fiducial_px = new TCanvas("cdE_betainv_fiducial_px","dE_betainv_fiducial_px");
+  TCanvas *cdE_betainv_fiducial_px = new TCanvas("cdE_betainv_fiducial_px","dE_betainv_fiducial_px",1200,800);
+  //cdE_betainv_fiducial_px->SetTopMargin(0.01);
+  //cdE_betainv_fiducial_px->SetLogy();
+  cdE_betainv_fiducial_px->SetLeftMargin(0.16);
+  cdE_betainv_fiducial_px->SetBottomMargin(0.16);
   int bin2mev = h2_dE_betainv->GetYaxis()->FindBin(2.0);
   int bin4mev = h2_dE_betainv->GetYaxis()->FindBin(4.0);
   int bin6mev = h2_dE_betainv->GetYaxis()->FindBin(6.0);
@@ -458,7 +462,7 @@ void QACDS(TFile *f){
   TH1D* h1_2mevcut = h2_dE_betainv->ProjectionX("px1",bin2mev,-1);
   TH1D* h1_4mevcut = h2_dE_betainv->ProjectionX("px2",bin4mev,-1);
   TH1D* h1_6mevcut = h2_dE_betainv->ProjectionX("px3",bin6mev,-1);
-  h1_2mevcut->GetXaxis()->SetRangeUser(0,15);
+  //h1_2mevcut->GetXaxis()->SetRangeUser(0,15);
   h1_2mevcut->GetYaxis()->SetMaxDigits(4);
   h1_2mevcut->GetYaxis()->SetNdivisions(5,5,0,kTRUE);
   h1_2mevcut->SetTitle("");
@@ -466,8 +470,10 @@ void QACDS(TFile *f){
   h1_2mevcut->SetMarkerStyle(20);
   h1_2mevcut->SetYTitle("counts");
   h1_2mevcut->GetYaxis()->CenterTitle();
-  h1_2mevcut->GetYaxis()->SetLabelSize(0.04);
-  h1_2mevcut->GetYaxis()->SetTitleSize(0.04);
+  h1_2mevcut->GetXaxis()->SetLabelSize(0.05);
+  h1_2mevcut->GetXaxis()->SetTitleSize(0.06);
+  h1_2mevcut->GetYaxis()->SetLabelSize(0.05);
+  h1_2mevcut->GetYaxis()->SetTitleSize(0.06);
   h1_2mevcut->Draw("E");
    
   double maxbeta =  h1_2mevcut->GetMaximum();

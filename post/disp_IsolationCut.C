@@ -200,7 +200,6 @@ void disp_IsolationCut()
   f8->Draw("same");
   gPad->SetLogz();
 
-  c1->Print("Isolationcut.pdf");
   
   //convert phi radian to cm, and display projection (?, trial)
   TH2D* diff2d_CDC_CDH_pim_philen = new TH2D("diff2d_CDC_CDH_pim_philen","",100,-1.0*TMath::Pi()*CDHR,TMath::Pi()*CDHR,100,-100,100);
@@ -310,22 +309,53 @@ void disp_IsolationCut()
 
  
    
-  TCanvas *c2 = new TCanvas("c2","c2",1600,600);
-  c2->Divide(2,1);
+  TCanvas *c2 = new TCanvas("c2","c2",2000,500);
+  c2->Divide(2,1,0.001,0.001);
   c2->cd(1);
+  gPad->SetTopMargin(0.07);
+  gPad->SetLeftMargin(0.16);
+  gPad->SetBottomMargin(0.16);
+  diff2d_CDC_CDH_pim_philen->GetXaxis()->SetTitleSize(0.06);
+  diff2d_CDC_CDH_pim_philen->GetYaxis()->SetTitleSize(0.06);
+  diff2d_CDC_CDH_pim_philen->GetXaxis()->SetLabelSize(0.05);
+  diff2d_CDC_CDH_pim_philen->GetYaxis()->SetLabelSize(0.05);
+  diff2d_CDC_CDH_pim_philen->GetXaxis()->SetTitleOffset(1.2);
+  diff2d_CDC_CDH_pim_philen->GetYaxis()->SetTitleOffset(1.2);
   diff2d_CDC_CDH_pim_philen->Draw("col");
   f1len->Draw("same");
   f2len->Draw("same");
   f3len->Draw("same");
   f4len->Draw("same");
   gPad->SetLogz();
+  {
+    TLatex *tex = new TLatex();
+    tex->SetTextSize(0.06);
+    tex->SetTextColor(1);
+    tex->DrawLatex( -230, 100, "(a)" );
+  }   
   c2->cd(2);
+  gPad->SetTopMargin(0.07);
+  gPad->SetLeftMargin(0.16);
+  gPad->SetBottomMargin(0.16);
+  diff2d_CDC_CDH_pip_philen->GetXaxis()->SetTitleSize(0.06);
+  diff2d_CDC_CDH_pip_philen->GetYaxis()->SetTitleSize(0.06);
+  diff2d_CDC_CDH_pip_philen->GetXaxis()->SetLabelSize(0.05);
+  diff2d_CDC_CDH_pip_philen->GetYaxis()->SetLabelSize(0.05);
+  diff2d_CDC_CDH_pip_philen->GetXaxis()->SetTitleOffset(1.2);
+  diff2d_CDC_CDH_pip_philen->GetYaxis()->SetTitleOffset(1.2);
   diff2d_CDC_CDH_pip_philen->Draw("colz");
   f5len->Draw("same");
   f6len->Draw("same");
   f7len->Draw("same");
   f8len->Draw("same");
   gPad->SetLogz();
+  {
+    TLatex *tex = new TLatex();
+    tex->SetTextSize(0.06);
+    tex->SetTextColor(1);
+    tex->DrawLatex( -230, 100, "(b)" );
+  }   
+  c2->Print("Isolationcut.pdf");
 }
 
 
