@@ -570,6 +570,8 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
 
 
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
+  TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_norebin = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
+  IMnpim_IMnpip_dE_wK0orwSid_n_norebin->SetName("IMnpim_IMnpip_dE_wK0orwSid_n_norebin");
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sp = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_Sp");
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin1 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin1");
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin2 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin2");
@@ -583,7 +585,8 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   ccomp->cd(1);
   h2K0inter_3->Draw("colz");
   ccomp->cd(2);
-  IMnpim_IMnpip_dE_wK0orwSid_n_rebin->Draw("colz");
+  //IMnpim_IMnpip_dE_wK0orwSid_n_norebin->SetMinimum(0);
+  IMnpim_IMnpip_dE_wK0orwSid_n_norebin->Draw("colz");
   TCanvas *ccomp2 = new TCanvas("ccomp2","ccomp2",1600,800);
   ccomp2->Divide(2,1);
   ccomp2->cd(1);
