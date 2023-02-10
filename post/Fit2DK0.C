@@ -1463,6 +1463,9 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   //IMnpim_K0sub_woSm->Write();
   //IMnpim_IMnpip_dE_wK0orwSid_n_K0sub->Write();
   //IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Write();
+
+  f3wide->Write();
+  f3widehist->Write();
   gr_SmONnpip_fin_pol1_final->Write();
   gr_SpONnpim_fin_pol1_final->Write();
   h2K0inter_3fine->Write(); 
