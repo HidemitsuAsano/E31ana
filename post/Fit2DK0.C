@@ -1147,7 +1147,12 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   const int fillstyle = 1001;
   gStyle->SetPadGridX(0);
   gStyle->SetPadGridY(0);
-  TCanvas *cFinalDeco_mev = new TCanvas("cFinalDeco_mev","cFinalDeco_mev",1800,800);
+  gStyle->SetNdivisions(505,"x");
+  gStyle->SetNdivisions(505,"y");
+  TCanvas *cFinalDeco_mev = new TCanvas("cFinalDeco_mev","cFinalDeco_mev",2200,1050);
+  cFinalDeco_mev->SetBottomMargin(0.23);
+  cFinalDeco_mev->SetTopMargin(-0.50);
+  cFinalDeco_mev->SetLeftMargin(0.22);
   cFinalDeco_mev->Divide(2,1);
   cFinalDeco_mev->cd(1);
   const int npipbin = IMnpip_wK0orwSid_n->GetNbinsX();
@@ -1167,15 +1172,20 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
       IMnpip_wK0orwSid_n_mev_disp->SetBinError(ibin+1,ye);
     }
   }
-  gPad->SetRightMargin(0.08);
-  gPad->SetLeftMargin(0.14);  
+  gPad->SetBottomMargin(0.20);
+  gPad->SetLeftMargin(0.21);  
 
   IMnpip_wK0orwSid_n_mev_disp->GetXaxis()->SetTitle("IM(n#pi^{+}) [MeV/c^{2}]");
   IMnpip_wK0orwSid_n_mev_disp->GetXaxis()->CenterTitle();
   IMnpip_wK0orwSid_n_mev_disp->GetXaxis()->SetRangeUser(1050,1500);
   IMnpip_wK0orwSid_n_mev_disp->GetYaxis()->SetTitle("counts");
   IMnpip_wK0orwSid_n_mev_disp->GetYaxis()->CenterTitle();
-  IMnpip_wK0orwSid_n_mev_disp->GetYaxis()->SetTitleOffset(1.6);
+  IMnpip_wK0orwSid_n_mev_disp->GetXaxis()->SetTitleSize(0.07);
+  IMnpip_wK0orwSid_n_mev_disp->GetYaxis()->SetTitleSize(0.07);
+  IMnpip_wK0orwSid_n_mev_disp->GetXaxis()->SetLabelSize(0.05);
+  IMnpip_wK0orwSid_n_mev_disp->GetYaxis()->SetLabelSize(0.05);
+  IMnpip_wK0orwSid_n_mev_disp->GetXaxis()->SetTitleOffset(1.4);
+  IMnpip_wK0orwSid_n_mev_disp->GetYaxis()->SetTitleOffset(1.4);
 //  IMnpip_wK0orwSid_n_mev_disp->SetMaximum(IMnpip_wK0orwSid_n_mev->GetMaximum()*1.11);
   IMnpip_wK0orwSid_n_mev_disp->SetMaximum(HISTMAX);
   IMnpip_wK0orwSid_n_mev_disp->SetMinimum(-100);
@@ -1183,6 +1193,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   IMnpip_wK0orwSid_n_mev_disp->SetLineColor(0);
   IMnpip_wK0orwSid_n_mev_disp->SetFillColor(46);
   IMnpip_wK0orwSid_n_mev_disp->SetFillStyle(fillstyle);
+  
   IMnpip_wK0orwSid_n_mev_disp->Draw("HE");
   TGraphErrors *gr_K0inter_onnpip_mev = new TGraphErrors();
   for(int ip=0;ip<gr_K0inter_onnpip->GetN();ip++){
@@ -1289,14 +1300,14 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   g1->Draw("p");  
 
 
-  TLegend *legp = new TLegend(0.60,0.6,0.8,0.75);
+  TLegend *legp = new TLegend(0.60,0.5,0.8,0.75);
   legp->SetLineWidth(0);   
   legp->SetFillStyle(0);   
   //legp->AddEntry(g1,"data");
   legp->AddEntry(IMnpip_wK0orwSid_n_mev_disp,"#pi^{-}#Sigma^{+}n","f");
   legp->AddEntry(gr_K0inter_plusSm_onnpip_mev,"#pi^{+}#Sigma^{-}n","f");
   legp->AddEntry(gr_K0inter_onnpip_mev,"#bar{K}^{0}nn","f");
-  legp->SetTextSize(0.04);
+  legp->SetTextSize(0.05);
   legp->Draw();  
 
   TLatex *texnpip = new TLatex();
@@ -1307,6 +1318,8 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   if(qcut == 2) texnpip->DrawLatex( 1100, texnpip_ymax, "(a)   300 < q < 650 MeV/c" );
 
   cFinalDeco_mev->cd(2);
+  gPad->SetBottomMargin(0.20);
+  gPad->SetLeftMargin(0.21);  
   const int npimbin = IMnpim_wK0orwSid_n->GetNbinsX();
   const double npimmin = (IMnpim_wK0orwSid_n->GetXaxis()->GetXmin())*1000;
   const double npimmax = (IMnpim_wK0orwSid_n->GetXaxis()->GetXmax())*1000;
@@ -1324,15 +1337,20 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
       IMnpim_wK0orwSid_n_mev_disp->SetBinError(ibin+1,ye);
     }
   }
-  gPad->SetRightMargin(0.08);
-  gPad->SetLeftMargin(0.14);  
+  //gPad->SetRightMargin(0.02);
+  gPad->SetLeftMargin(0.18);  
 
   IMnpim_wK0orwSid_n_mev_disp->GetXaxis()->SetTitle("IM(n#pi^{-}) [MeV/c^{2}]");
   IMnpim_wK0orwSid_n_mev_disp->GetXaxis()->CenterTitle();
   IMnpim_wK0orwSid_n_mev_disp->GetXaxis()->SetRangeUser(1050,1500);
   IMnpim_wK0orwSid_n_mev_disp->GetYaxis()->SetTitle("counts");
   IMnpim_wK0orwSid_n_mev_disp->GetYaxis()->CenterTitle();
-  IMnpim_wK0orwSid_n_mev_disp->GetYaxis()->SetTitleOffset(1.6);
+  IMnpim_wK0orwSid_n_mev_disp->GetXaxis()->SetTitleSize(0.07);
+  IMnpim_wK0orwSid_n_mev_disp->GetYaxis()->SetTitleSize(0.07);
+  IMnpim_wK0orwSid_n_mev_disp->GetXaxis()->SetLabelSize(0.05);
+  IMnpim_wK0orwSid_n_mev_disp->GetYaxis()->SetLabelSize(0.05);
+  IMnpim_wK0orwSid_n_mev_disp->GetXaxis()->SetTitleOffset(1.3);
+  IMnpim_wK0orwSid_n_mev_disp->GetYaxis()->SetTitleOffset(1.4);
 //  IMnpim_wK0orwSid_n_mev_disp->SetMaximum(IMnpim_wK0orwSid_n_mev->GetMaximum()*1.11);
   IMnpim_wK0orwSid_n_mev_disp->SetMinimum(-100);
   //IMnpim_wK0orwSid_n_mev_disp->SetMaximum(IMnpip_wK0orwSid_n_mev->GetMaximum()*1.11);
@@ -1447,7 +1465,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   texnpim->SetTextSize(0.04);
   texnpim->SetTextColor(1);
   if(qcut == 1) texnpim->DrawLatex( 1100, texnpim_ymax, "(d)    0 < q < 300 MeV/c" );
-  if(qcut == 2) texnpim->DrawLatex( 1250, texnpim_ymax, "(b)    300 < q < 650 MeV/c" );
+  if(qcut == 2) texnpim->DrawLatex( 1230, texnpim_ymax, "(b)    300 < q < 650 MeV/c" );
 
 
 
