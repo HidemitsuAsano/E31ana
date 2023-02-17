@@ -9,7 +9,8 @@ const double PreScale = 2.0;
 
 void GetAccMap(const int dEcut=2)
 {
-  
+  gStyle->SetNdivisions(505,"x");
+  gStyle->SetNdivisions(505,"y");
   gStyle->SetPalette(1);
   gStyle->SetOptStat("e");
   gStyle->SetStatX(0.8);
@@ -443,7 +444,8 @@ void GetAccMap(const int dEcut=2)
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
   gStyle->SetPadRightMargin(0.15);
-  gStyle->SetPadLeftMargin(0.12);
+  gStyle->SetPadLeftMargin(0.18);
+  gStyle->SetPadBottomMargin(0.17);
   TCanvas *caccSpp = new TCanvas("caccSpp","caccSpp",1000,800);
   q_IMnpipi_Sp_acc[0]->SetTitle("");
   q_IMnpipi_Sp_acc[0]->SetXTitle("IM(#pi^{-}#Sigma^{+}) [GeV/c^{2}]");
@@ -529,21 +531,29 @@ void GetAccMap(const int dEcut=2)
   q_IMnpipi_Sp_acc_mev->GetZaxis()->SetMaxDigits(2);
   q_IMnpipi_Sp_acc_mev->SetXTitle("IM(#pi^{-}#Sigma^{+}) [MeV/c^{2}]");
   q_IMnpipi_Sp_acc_mev->GetXaxis()->CenterTitle();
+  q_IMnpipi_Sp_acc_mev->GetXaxis()->SetTitleSize(0.07);
+  q_IMnpipi_Sp_acc_mev->GetXaxis()->SetTitleOffset(1.1);
+  q_IMnpipi_Sp_acc_mev->GetYaxis()->SetTitleSize(0.07);
+  q_IMnpipi_Sp_acc_mev->GetYaxis()->SetTitleOffset(1.2);
+  q_IMnpipi_Sp_acc_mev->GetXaxis()->SetLabelSize(0.05);
+  q_IMnpipi_Sp_acc_mev->GetXaxis()->SetLabelOffset(0.03);
+  q_IMnpipi_Sp_acc_mev->GetYaxis()->SetLabelSize(0.05);
+  q_IMnpipi_Sp_acc_mev->GetYaxis()->SetLabelOffset(0.03);
   q_IMnpipi_Sp_acc_mev->SetYTitle("q [MeV/c]");
   q_IMnpipi_Sp_acc_mev->GetYaxis()->CenterTitle();
   q_IMnpipi_Sp_acc_mev->Draw("colz");
   TLatex *texSp1_mev = new TLatex();
-  texSp1_mev->SetTextSize(0.03);
+  texSp1_mev->SetTextSize(0.04);
   texSp1_mev->SetTextColor(1);
-  texSp1_mev->DrawLatex( 1350, 100, "cos#theta^{CM}_{n}=1" );
+  texSp1_mev->DrawLatex( 1320, 100, "cos#theta^{CM}_{n}=1" );
   texSp1_mev->DrawLatex( 1750, 100, "cos#theta^{CM}_{n}=1" );
   texSp1_mev->DrawLatex( 1650,1250, "cos#theta^{CM}_{n}=-1" );
-  texSp1_mev->DrawLatex( 1250,1350 , "(a)" );
+  texSp1_mev->DrawLatex( 2000,1350 , "(a)" );
   texSp1_mev->SetTextColor(0);
-  texSp1_mev->DrawLatex( 1500,800, "cos#theta^{CM}_{n}=0" );
+  texSp1_mev->DrawLatex( 1510,720, "cos#theta^{CM}_{n}=0" );
   texSp1_mev->SetTextColor(1);
   texSp1_mev->SetTextAngle(90);
-  texSp1_mev->DrawLatex(1280,600, "#pi#Sigma mass threshold") ;
+  texSp1_mev->DrawLatex(1300,600, "#pi#Sigma mass threshold") ;
 
   TGraph *thSp_mev = new TGraph();//(TGraph*)fnuSp->Get("th");
   TGraph *gr_0_mev = new TGraph(); // TGraph*)fnuSp->Get("gr_0");
@@ -597,22 +607,31 @@ void GetAccMap(const int dEcut=2)
   q_IMnpipi_Sm_acc_mev->GetZaxis()->SetMaxDigits(2);
   q_IMnpipi_Sm_acc_mev->SetXTitle("IM(#pi^{+}#Sigma^{-}) [MeV/c^{2}]");
   q_IMnpipi_Sm_acc_mev->GetXaxis()->CenterTitle();
+  q_IMnpipi_Sm_acc_mev->GetXaxis()->SetTitleSize(0.07);
+  q_IMnpipi_Sm_acc_mev->GetXaxis()->SetTitleOffset(1.1);
+  q_IMnpipi_Sm_acc_mev->GetYaxis()->SetTitleSize(0.07);
+  q_IMnpipi_Sm_acc_mev->GetYaxis()->SetTitleOffset(1.2);
+  q_IMnpipi_Sm_acc_mev->GetXaxis()->SetLabelSize(0.05);
+  q_IMnpipi_Sm_acc_mev->GetXaxis()->SetLabelOffset(0.03);
+  q_IMnpipi_Sm_acc_mev->GetYaxis()->SetLabelSize(0.05);
+  q_IMnpipi_Sm_acc_mev->GetYaxis()->SetLabelOffset(0.03);
   q_IMnpipi_Sm_acc_mev->SetYTitle("q [MeV/c]");
   q_IMnpipi_Sm_acc_mev->GetYaxis()->CenterTitle();
+ 
   q_IMnpipi_Sm_acc_mev->Draw("colz");
 
   TLatex *texSm1_mev = new TLatex();
-  texSm1_mev->SetTextSize(0.03);
+  texSm1_mev->SetTextSize(0.04);
   texSm1_mev->SetTextColor(1);
-  texSm1_mev->DrawLatex( 1350, 100, "cos#theta^{CM}_{n}=1" );
+  texSm1_mev->DrawLatex( 1320, 100, "cos#theta^{CM}_{n}=1" );
   texSm1_mev->DrawLatex( 1750, 100, "cos#theta^{CM}_{n}=1" );
   texSm1_mev->DrawLatex( 1650,1250, "cos#theta^{CM}_{n}=-1" );
-  texSm1_mev->DrawLatex( 1250,1350 , "(b)" );
+  texSm1_mev->DrawLatex( 2000,1350 , "(b)" );
   texSm1_mev->SetTextColor(0);
-  texSm1_mev->DrawLatex( 1500,800, "cos#theta^{CM}_{n}=0" );
+  texSm1_mev->DrawLatex( 1510,720, "cos#theta^{CM}_{n}=0" );
   texSm1_mev->SetTextColor(1);
   texSm1_mev->SetTextAngle(90);
-  texSm1_mev->DrawLatex(1280,600, "#pi#Sigma mass threshold") ;
+  texSm1_mev->DrawLatex(1300,600, "#pi#Sigma mass threshold") ;
 
   TGraph *thSm_mev = new TGraph();//(TGraph*)fnuSp->Get("th");
   TGraph *gr_0_Sm_mev = new TGraph(); // TGraph*)fnuSp->Get("gr_0");
