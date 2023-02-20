@@ -1741,8 +1741,10 @@ void CS_finals()
   TH2D* Cosn_IMnpipi_SpSmSum[3][3];//deco sys, mix sys
   TH1D* CosL1405[3][3];//deco sys, mix sys
   TH1D* CosL1520[3][3];//deco sys, mix sys
+  TH1D* CosQF[3][3];//deco sys, mix sys
   TH1D* qL1405[3][3];//deco sys, mix sys
   TH1D* qL1520[3][3];//deco sys, mix sys
+  TH1D* qQF[3][3];//deco sys, mix sys
   TH1D* IMnpipi_SpSmAvgCosCut[3][3][2];//deco sys, mix sys, cos cut 0.95-1
 
 
@@ -1753,8 +1755,10 @@ void CS_finals()
       Cosn_IMnpipi_SpSmSum[idecosys][imixsys] = (TH2D*)fpisigma[0][imixsys]->Get(Form("Cosn_IMnpipi_SpSmSum_sys%d",idecosys-1));
       CosL1405[idecosys][imixsys] = (TH1D*)fpisigma[0][imixsys]->Get(Form("CosL1405_sys%d",idecosys-1));
       CosL1520[idecosys][imixsys] = (TH1D*)fpisigma[0][imixsys]->Get(Form("CosL1520_sys%d",idecosys-1));
+      CosQF[idecosys][imixsys] = (TH1D*)fpisigma[0][imixsys]->Get(Form("CosQF_sys%d",idecosys-1));
       qL1405[idecosys][imixsys] = (TH1D*)fpisigma[0][imixsys]->Get(Form("qL1405_sys%d",idecosys-1));
       qL1520[idecosys][imixsys] = (TH1D*)fpisigma[0][imixsys]->Get(Form("qL1520_sys%d",idecosys-1));
+      qQF[idecosys][imixsys] = (TH1D*)fpisigma[0][imixsys]->Get(Form("qQF_sys%d",idecosys-1));
       IMnpipi_SpSmAvgCosCut[idecosys][imixsys][0] = (TH1D*)fpisigma[0][imixsys]->Get(Form("IMnpipi_SpSmAvgCosCut%d_0",idecosys-1));
       IMnpipi_SpSmAvgCosCut[idecosys][imixsys][1] = (TH1D*)fpisigma[0][imixsys]->Get(Form("IMnpipi_SpSmAvgCosCut%d_1",idecosys-1));
     }
@@ -1862,8 +1866,6 @@ void CS_finals()
   //TGraphAsymmErrors *grsumn = (TGraphAsymmErrors*)fele->Get("grsumn");
   //grsumn->Draw("4p");
   
-
-
   TGraphAsymmErrors *grCosL1520 = new TGraphAsymmErrors(CosL1520[1][1]);
   grCosL1520->SetName("grCosL1520");
   TGraphAsymmErrors *grCosL1520_decosysup = new TGraphAsymmErrors(CosL1520[2][1]);
@@ -1931,6 +1933,77 @@ void CS_finals()
   //p->SetLineWidth(2.0);
   pL1520->SetLineStyle(2);
   pL1520->Draw();
+
+
+  TGraphAsymmErrors *grCosQF = new TGraphAsymmErrors(CosQF[1][1]);
+  grCosQF->SetName("grCosQF");
+  TGraphAsymmErrors *grCosQF_decosysup = new TGraphAsymmErrors(CosQF[2][1]);
+  TGraphAsymmErrors *grCosQF_decosysdown = new TGraphAsymmErrors(CosQF[0][1]);
+  for(int ip=0;ip<grCosQF->GetN();ip++){
+    double valup = grCosQF_decosysup->GetPointY(ip);
+    double valdef = grCosQF->GetPointY(ip);
+    double yeh = grCosQF->GetErrorYhigh(ip);
+    double yel = grCosQF->GetErrorYlow(ip);
+    double valdown = grCosQF_decosysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = sqrt(yeh*yeh + diffup*diffup);
+      yel = sqrt(yel*yel + diffdown*diffdown);
+    }else{
+      yeh = sqrt(yeh*yeh + diffdown*diffdown);
+      yel = sqrt(yel*yel + diffup*diffup);
+    }
+    grCosQF->SetPointEYhigh(ip,yeh);
+    grCosQF->SetPointEYlow(ip,yel);
+  }
+  TGraphAsymmErrors *gMIXErrorCosQF = new TGraphAsymmErrors(CosQF[1][1]);
+  gMIXErrorCosQF->SetName("gMIXErrorCosQF");
+  TGraphAsymmErrors *gMIXErrorCosQF_sysup = new TGraphAsymmErrors(CosQF[1][2]);
+  TGraphAsymmErrors *gMIXErrorCosQF_sysdown = new TGraphAsymmErrors(CosQF[1][0]);
+  for(int ip=0;ip<gMIXErrorCosQF->GetN();ip++){
+    double valup = gMIXErrorCosQF_sysup->GetPointY(ip);
+    double valdef = gMIXErrorCosQF->GetPointY(ip);
+    double yeh = gMIXErrorCosQF->GetErrorYhigh(ip);
+    double yel = gMIXErrorCosQF->GetErrorYlow(ip);
+    double valdown = gMIXErrorCosQF_sysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = fabs(diffup);
+      yel = fabs(diffdown);
+    }else{
+      yeh = fabs(diffdown);
+      yel = fabs(diffup);
+    }
+    gMIXErrorCosQF->SetPointEYhigh(ip,yeh);
+    gMIXErrorCosQF->SetPointEYlow(ip,yel);
+    
+    double xe = CosQF[1][1]->GetBinWidth(ip+1);
+    gMIXErrorCosQF->SetPointEXhigh(ip,xe/4);
+    gMIXErrorCosQF->SetPointEXlow(ip,xe/4);
+  }
+  
+  TCanvas *cCosQF = new TCanvas("cCosQF","cCosQF",1200,800);
+  grCosQF->GetXaxis()->SetRangeUser(0.6,1);
+  grCosQF->GetXaxis()->SetTitle("cos#theta_{n} (CM)");
+  grCosQF->GetXaxis()->CenterTitle();
+  grCosQF->GetYaxis()->SetTitle("d#sigma / dcos#theta_{n} [#mub]  ");
+  grCosQF->GetYaxis()->CenterTitle();
+  grCosQF->Draw("ap");
+  gMIXErrorCosQF->SetLineColor(12);
+  gMIXErrorCosQF->SetFillStyle(3001);
+  gMIXErrorCosQF->SetFillColor(12);
+  gMIXErrorCosQF->Draw("5");
+  TLine *pQF = new TLine(0.6,0,1,0);
+  pQF->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  pQF->SetLineStyle(2);
+  pQF->Draw();
+
+
 
   TGraphAsymmErrors *grqL1405 = new TGraphAsymmErrors(qL1405[1][1]);
   TGraphAsymmErrors *grqL1405_decosysup = new TGraphAsymmErrors(qL1405[2][1]);
@@ -2067,6 +2140,72 @@ void CS_finals()
   pqL1520->SetLineStyle(2);
   pqL1520->Draw();
 
+  TGraphAsymmErrors *grqQF = new TGraphAsymmErrors(qQF[1][1]);
+  TGraphAsymmErrors *grqQF_decosysup = new TGraphAsymmErrors(qQF[2][1]);
+  TGraphAsymmErrors *grqQF_decosysdown = new TGraphAsymmErrors(qQF[0][1]);
+  for(int ip=0;ip<grqQF->GetN();ip++){
+    double valup = grqQF_decosysup->GetPointY(ip);
+    double valdef = grqQF->GetPointY(ip);
+    double yeh = grqQF->GetErrorYhigh(ip);
+    double yel = grqQF->GetErrorYlow(ip);
+    double valdown = grqQF_decosysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = sqrt(yeh*yeh + diffup*diffup);
+      yel = sqrt(yel*yel + diffdown*diffdown);
+    }else{
+      yeh = sqrt(yeh*yeh + diffdown*diffdown);
+      yel = sqrt(yel*yel + diffup*diffup);
+    }
+    grqQF->SetPointEYhigh(ip,yeh);
+    grqQF->SetPointEYlow(ip,yel);
+  }
+  TGraphAsymmErrors *gMIXErrorqQF = new TGraphAsymmErrors(qQF[1][1]);
+  TGraphAsymmErrors *gMIXErrorqQF_sysup = new TGraphAsymmErrors(qQF[1][2]);
+  TGraphAsymmErrors *gMIXErrorqQF_sysdown = new TGraphAsymmErrors(qQF[1][0]);
+  for(int ip=0;ip<gMIXErrorqQF->GetN();ip++){
+    double valup = gMIXErrorqQF_sysup->GetPointY(ip);
+    double valdef = gMIXErrorqQF->GetPointY(ip);
+    double yeh = gMIXErrorqQF->GetErrorYhigh(ip);
+    double yel = gMIXErrorqQF->GetErrorYlow(ip);
+    double valdown = gMIXErrorqQF_sysdown->GetPointY(ip);
+    double diffup = valup - valdef;
+    double diffdown = valdown - valdef;
+     
+    if(diffup > diffdown){
+      yeh = fabs(diffup);
+      yel = fabs(diffdown);
+    }else{
+      yeh = fabs(diffdown);
+      yel = fabs(diffup);
+    }
+    gMIXErrorqQF->SetPointEYhigh(ip,yeh);
+    gMIXErrorqQF->SetPointEYlow(ip,yel);
+    
+    double xe = qQF[1][1]->GetBinWidth(ip+1);
+    gMIXErrorqQF->SetPointEXhigh(ip,xe/4);
+    gMIXErrorqQF->SetPointEXlow(ip,xe/4);
+  }
+  
+  TCanvas *cqQF = new TCanvas("cqQF","cqQF",1200,800);
+  grqQF->SetTitle("CS QF M 1500-1545");
+  grqQF->GetXaxis()->SetRangeUser(0.0,0.65);
+  grqQF->GetXaxis()->SetTitle("Mom. Transfer [GeV/c]");
+  grqQF->GetXaxis()->CenterTitle();
+  grqQF->GetYaxis()->SetTitle("d#sigma / dq [#mub/(MeV/c)]  ");
+  grqQF->GetYaxis()->CenterTitle();
+  grqQF->Draw("ap");
+  gMIXErrorqQF->SetLineColor(12);
+  gMIXErrorqQF->SetFillStyle(3001);
+  gMIXErrorqQF->SetFillColor(12);
+  gMIXErrorqQF->Draw("5");
+  TLine *pqQF = new TLine(0.0,0,0.65,0);
+  pqQF->SetLineColor(1);
+  //p->SetLineWidth(2.0);
+  pqQF->SetLineStyle(2);
+  pqQF->Draw();
 
   TH1D* CS_CosS1385Lpim = (TH1D*)flpimnofit->Get("CS_CosS1385Lpim");
   CS_CosS1385Lpim->Print("base");
