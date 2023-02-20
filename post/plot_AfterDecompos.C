@@ -1769,20 +1769,53 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
   }
   CosL1520[1]->Draw("HE");
 
+  TCanvas *cCosQF = new TCanvas("cCosQF","cCosQF");
+  int MQFlow = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.441);
+  double lowbinEdgeQF = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(MQFlow);
+  int MQFhi = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->FindBin(1.499999);//
+  double hibinEdgeQF = Cosn_IMnpipi_SpSmSum[1]->GetXaxis()->GetBinLowEdge(MQFhi);//
+  TH1D* CosQF[3];//isys of deco 
+  std::cout << "Cos QF low bin Edge " << lowbinEdgeQF << std::endl;
+  std::cout << "Cos QF hi bin Edge " <<  hibinEdgeQF << std::endl;
+  for(int isys=0;isys<3;isys++){
+    //not divided by cos bin width yet
+    CosQF[isys] = (TH1D*) Cosn_IMnpipi_SpSmSum[isys]->ProjectionY(Form("CosQF_sys%d",isys-1),MQFlow,MQFhi);
+    CosQF[isys]->RebinX(2);
+    double cosbinwidth  = CosQF[isys]->GetXaxis()->GetBinWidth(1);
+    CosQF[isys]->Scale(1./cosbinwidth);
+    //mb -> ub conversion
+    CosQF[isys]->Scale(binwidth);
+    CosQF[isys]->Scale(1./2.);
+    //CosL1405[isys]->RebinX(2);
+    /*
+    for(int ibincos=0;ibincos< (CosQF[isys]->GetNbinsX());ibincos++){
+      double contlow = Cosn_IMnpipi_SpSmSum[isys]->GetBinContent(M1400,ibincos);
+      double contlowsurplus = contlow*(1.40-lowbinEdge)/binwidth;
+      CosL1405[isys]->AddBinContent(ibincos,-1.0*contlowsurplus);
+    }
+    */
+    CosQF[isys]->GetXaxis()->SetRangeUser(0.5,1);
+  }
+  CosQF[1]->Draw("HE");
+
+
+
+
+
   TCanvas *cqL1405 = new TCanvas("cqL1405","cqL1405");
   TH1D* qL1405[3];//isys of deco 
   for(int isys=0;isys<3;isys++){
-    qL1405[isys] = (TH1D*) q_IMnpipi_SpSmSum[0][isys]->ProjectionY(Form("qL1405_sys%d",isys-1),M1400,M1440);
+    qL1405[isys] = (TH1D*) q_IMnpipi_SpSmSum[0][isys]->ProjectionY(Form("qL1405_sys%d",isys-1),M1365,M1425);
     //qL1405[isys]->RebinX(2);
     double qbinwidth  = qL1405[isys]->GetXaxis()->GetBinWidth(1);
     qL1405[isys]->Scale(binwidth);
     //charge sum -> charge average
     qL1405[isys]->Scale(1./2.);
-    for(int ibincos=0;ibincos< (qL1405[isys]->GetNbinsX());ibincos++){
-      double contlow = q_IMnpipi_SpSmSum[0][isys]->GetBinContent(M1400,ibincos);
-      double contlowsurplus = contlow*(1.40-lowbinEdge)/binwidth;
-      qL1405[isys]->AddBinContent(ibincos,-1.0*contlowsurplus);
-    }
+    //for(int ibincos=0;ibincos< (qL1405[isys]->GetNbinsX());ibincos++){
+    //  double contlow = q_IMnpipi_SpSmSum[0][isys]->GetBinContent(M1400,ibincos);
+    //  double contlowsurplus = contlow*(1.40-lowbinEdge)/binwidth;
+    //  qL1405[isys]->AddBinContent(ibincos,-1.0*contlowsurplus);
+    //}
     qL1405[isys]->GetXaxis()->SetRangeUser(0.0,0.65);
   }
   qL1405[1]->Draw("HE");
@@ -1806,6 +1839,24 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     qL1520[isys]->GetXaxis()->SetRangeUser(0.0,0.65);
   }
   qL1520[1]->Draw("HE");
+  
+  TCanvas *cqQF = new TCanvas("cqQF","cqQF");
+  TH1D* qQF[3];//isys of deco 
+  for(int isys=0;isys<3;isys++){
+    qQF[isys] = (TH1D*) q_IMnpipi_SpSmSum[0][isys]->ProjectionY(Form("qQF_sys%d",isys-1),MQFlow,MQFhi);
+    //qL1405[isys]->RebinX(2);
+    double qbinwidth  = qQF[isys]->GetXaxis()->GetBinWidth(1);
+    qQF[isys]->Scale(binwidth);
+    //charge sum -> charge average
+    qQF[isys]->Scale(1./2.);
+    //for(int ibincos=0;ibincos< (qL1405[isys]->GetNbinsX());ibincos++){
+    //  double contlow = q_IMnpipi_SpSmSum[0][isys]->GetBinContent(M1400,ibincos);
+    //  double contlowsurplus = contlow*(1.40-lowbinEdge)/binwidth;
+    //  qL1405[isys]->AddBinContent(ibincos,-1.0*contlowsurplus);
+    //}
+    qQF[isys]->GetXaxis()->SetRangeUser(0.0,0.65);
+  }
+  qQF[1]->Draw("HE");
   
 
   TCanvas *csub = new TCanvas("csub","csub",1600,800);
@@ -1955,8 +2006,10 @@ void plot_AfterDecompos(const int dEcut=2,const int sysud=0)
     CosL1405_ys[isys]->Write();
     CosL1405[isys]->Write();
     CosL1520[isys]->Write();
+    CosQF[isys]->Write();
     qL1405[isys]->Write();
     qL1520[isys]->Write();
+    qQF[isys]->Write();
   }
   fout->Close();
 
