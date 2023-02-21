@@ -2526,6 +2526,8 @@ void CS_finals()
   gMIXErrorCosL1405->Write();
   grCosL1520->Write();
   gMIXErrorCosL1520->Write();
+  grCosQF->Write();
+  gMIXErrorCosQF->Write();
   CS_CosS1385Lpim->Write();
 
 
