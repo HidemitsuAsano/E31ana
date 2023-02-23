@@ -1,5 +1,5 @@
 const bool RemoveNotEnough = true;
-const double UncertCut = 0.20;
+const double UncertCut = 0.36;
 const int ncut=6;
 const double TrigScale = 2.0;
 

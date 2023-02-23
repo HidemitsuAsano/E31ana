@@ -14,6 +14,9 @@ void plotSlewCDH(const char* filename){
   double egatemin = 1.0;
   double egatemax = 30.0;
   TF1 *slewfunc[36*2]; 
+  TVector3 Pos_CDH;//CDH position
+  conf->GetGeomMapManager()->GetPos( CID_CDH,12, Pos_CDH );
+  std::cout << "CDH r " << Pos_CDH.Perp() << std::endl;
   for(int iseg=0;iseg<36;iseg++){
     c1->cd(iseg+1);
     dECDH_T03_CDHU_PIM[iseg] = (TH2F*) file->Get(Form("dECDH_T03_CDHU%d_PIM",iseg+1));

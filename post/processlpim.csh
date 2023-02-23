@@ -1,12 +1,14 @@
 #!/bin/tcsh -f
 
-root -b -q 'plot_IMLambdaPim.C+'
-root -l -b -q 'plot_IMLambdaPim.C+ ("evanaIMLambdaPim_ppimpim_v25.root")'     
-root -l -b -q 'plot_IMLambdaPim.C+ ("../simpost/simIMLpim_ppimpim_v29.root")'     
+#root -b -q 'plot_IMLambdaPim.C+'
+#root -l -b -q 'plot_IMLambdaPim.C+ ("evanaIMLambdaPim_ppimpim_v25.root")'     
+#root -l -b -q 'plot_IMLambdaPim.C+ ("../simpost/simIMLpim_ppimpim_v29.root")'     
 cd ../simpost/
 pwd
 root -l -b -q 'GetAccMapLpim.C'
 cd ../post/
 pwd
 root -l -b -q 'CS_IMLambdaPim.C'
+root -l -b -q 'FitCslpim.C'
+root -l -b -q 'CalcLpimCSFromFit.C'
 #root -l -b -q 'plot_IMLambdaPim.C+ ("../simpost/simIMLpim_ppimpim_pS0pim_v2.root")'     
