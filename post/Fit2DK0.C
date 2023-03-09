@@ -1034,6 +1034,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   TCanvas *cFinalDeco = new TCanvas("cFinalDeco","cFinalDeco",1600,800);
   cFinalDeco->Divide(2,1);
   cFinalDeco->cd(1);
+  IMnpip_wK0orwSid_n_norebin->GetXaxis()->SetRangeUser(1.1,1.45);
   IMnpip_wK0orwSid_n_norebin->Draw("E");
   //IMnpip_wK0_woSid->SetLineColor(2);
   //IMnpip_wK0_woSid->Draw("Esame");
@@ -1056,8 +1057,10 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
     double ystat = gr_K0inter_onnpip->GetErrorY(ip);
     double yehi = contup - cont; 
     double yelo = cont - contdown;
-    gr_K0inter_onnpip->SetPointEYhigh(ip,sqrt(yehi*yehi+ystat*ystat));
-    gr_K0inter_onnpip->SetPointEYlow(ip,sqrt(yelo*yelo+ystat*ystat));
+    //gr_K0inter_onnpip->SetPointEYhigh(ip,sqrt(yehi*yehi+ystat*ystat));
+    //gr_K0inter_onnpip->SetPointEYlow(ip,sqrt(yelo*yelo+ystat*ystat));
+    gr_K0inter_onnpip->SetPointEYhigh(ip,0);
+    gr_K0inter_onnpip->SetPointEYlow(ip,0);
   }
   gr_K0inter_onnpip->SetMarkerColor(2);
   gr_K0inter_onnpip->SetLineColor(2);
@@ -1068,7 +1071,8 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   gr_SmONnpip_fin_pol1_final_sort->Sort();
   gr_SmONnpip_fin_pol1_final_sort->SetFillStyle(0);
   gr_SmONnpip_fin_pol1_final_sort->SetFillColor(3);
-  gr_SmONnpip_fin_pol1_final_sort->Draw("p");
+  gr_SmONnpip_fin_pol1_final_sort->Scale((double)1./RebinFactor);
+  //gr_SmONnpip_fin_pol1_final_sort->Draw("p");
   //auto* h_SmONnpip_fin_pol1_final = gr_SmONnpip_fin_pol1_final->GetHistogram();
   //h_SmONnpip_fin_pol1_final->SetLineColor(3);
   //h_SmONnpip_fin_pol1_final->Draw("Esame");
@@ -1081,7 +1085,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   //so I fix it at 1
   //original strategy is to determine the ratio of K0/S+/S- on overlap region, fixing the counts.
   //so that summary plots which conserve the counts will be made later, converting xaxis to MeV.
-  const double TailFactor = 1.0;// 
+  const double TailFactor = 0.85;// 
   for(int ip=0;ip<gr_K0inter_plusSm_onnpip->GetN();ip++){
     double x = gr_K0inter_plusSm_onnpip->GetPointX(ip);
     double y = gr_K0inter_plusSm_onnpip->GetPointY(ip);
@@ -1099,6 +1103,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   legf->Draw();
   
   cFinalDeco->cd(2);
+  IMnpim_wK0orwSid_n->GetXaxis()->SetRangeUser(1.08,1.45);
   IMnpim_wK0orwSid_n->Draw("E");
   //IMnpim_wK0_woSid->SetLineColor(2);
   //IMnpim_wK0_woSid->Draw("Esame");
@@ -1118,8 +1123,10 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
     double ystat = gr_K0inter_onnpim->GetErrorY(ip);
     double yehi = contup - cont; 
     double yelo = cont - contdown;
-    gr_K0inter_onnpim->SetPointEYhigh(ip,sqrt(yehi*yehi+ystat*ystat));
-    gr_K0inter_onnpim->SetPointEYlow(ip,sqrt(yelo*yelo+ystat*ystat));
+    //gr_K0inter_onnpim->SetPointEYhigh(ip,sqrt(yehi*yehi+ystat*ystat));
+    //gr_K0inter_onnpim->SetPointEYlow(ip,sqrt(yelo*yelo+ystat*ystat));
+    gr_K0inter_onnpim->SetPointEYhigh(ip,0);
+    gr_K0inter_onnpim->SetPointEYlow(ip,0);
   }
   gr_K0inter_onnpim->SetMarkerColor(2);
   gr_K0inter_onnpim->SetLineColor(2);
@@ -1130,7 +1137,8 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   gr_SpONnpim_fin_pol1_final_sort->Sort();
   gr_SpONnpim_fin_pol1_final_sort->SetFillStyle(0);
   gr_SpONnpim_fin_pol1_final_sort->SetFillColor(3);
-  gr_SpONnpim_fin_pol1_final_sort->Draw("p");
+  gr_SpONnpim_fin_pol1_final_sort->Scale((double)1./RebinFactor);
+  //gr_SpONnpim_fin_pol1_final_sort->Draw("p");
   TGraphErrors *gr_K0inter_plusSp_onnpim = (TGraphErrors*)gr_K0inter_onnpim->Clone("gr_K0inter_plusSp_onnpim");
   gr_K0inter_plusSp_onnpim->SetName("gr_K0inter_plusSp_onnpim");
   for(int ip=0;ip<gr_K0inter_plusSp_onnpim->GetN();ip++){
@@ -1146,7 +1154,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
 
   //summary plot
   //gev->mev conversion for ptep paper
-  const double HISTMAX = 1800;
+  const double HISTMAX = 700;
   const int fillstyle = 1001;
   gStyle->SetPadGridX(0);
   gStyle->SetPadGridY(0);
@@ -1190,7 +1198,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   IMnpip_wK0orwSid_n_mev_disp->GetXaxis()->SetTitleOffset(1.4);
   IMnpip_wK0orwSid_n_mev_disp->GetYaxis()->SetTitleOffset(1.4);
 //  IMnpip_wK0orwSid_n_mev_disp->SetMaximum(IMnpip_wK0orwSid_n_mev->GetMaximum()*1.11);
-  IMnpip_wK0orwSid_n_mev_disp->SetMaximum(HISTMAX/3.);
+  IMnpip_wK0orwSid_n_mev_disp->SetMaximum(HISTMAX);
   IMnpip_wK0orwSid_n_mev_disp->SetMinimum(-100);
   IMnpip_wK0orwSid_n_mev_disp->SetLineWidth(2);
   IMnpip_wK0orwSid_n_mev_disp->SetLineColor(0);
@@ -1258,12 +1266,13 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   h_K0inter_onnpip_mev->SetLineWidth(2);
 
 
-  TLine *p = new TLine(1050,0,1500,0);
+  TLine *p = new TLine(1050,0,1450,0);
   p->SetLineColor(1);
   //p->SetLineWidth(2.0);
   p->SetLineStyle(2);
   p->Draw();
   TGraphErrors *gr_K0inter_plusSm_onnpip_mev = new TGraphErrors();
+  //gr_K0inter_plusSm_onnpip->Rebinned graph
   for(int ip=0;ip<gr_K0inter_plusSm_onnpip->GetN();ip++){
     double x = gr_K0inter_plusSm_onnpip->GetPointX(ip);
     double y = gr_K0inter_plusSm_onnpip->GetPointY(ip);
@@ -1273,12 +1282,12 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
     double val = IMnpip_wK0orwSid_n_mev->GetBinContent(ibin);
     double vale = IMnpip_wK0orwSid_n_mev->GetBinError(ibin);
     int Spbin = IMnpip_wK0orwSid_n_mev->GetXaxis()->FindBin(anacuts::Sigmap_center*1000.);
-    if(Spbin == ibin){
+    if( (Spbin == ibin+1) || (Spbin == ibin) || (Spbin == ibin-1) || (Spbin == ibin-2)  ){
        val = y;
        vale = ye;
     }
     gr_K0inter_plusSm_onnpip_mev->SetPoint(ip,x*1000.,val);
-    gr_K0inter_plusSm_onnpip_mev->SetPointError(ip,xe*1000.,vale);
+    //gr_K0inter_plusSm_onnpip_mev->SetPointError(ip,xe*1000.,vale);
   }
   gr_K0inter_plusSm_onnpip_mev->SetMarkerColor(4);
   gr_K0inter_plusSm_onnpip_mev->SetLineColor(4);
@@ -1295,7 +1304,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   gr_K0inter_onnpip_mev->SetLineColor(30);
   //gr_SmOnnpip_fin_mev->Draw("FB1");
   //h_SmOnnpip_mev->Draw("E1Hsame");
-  gr_K0inter_onnpip_mev->Draw("Fpc");
+  gr_K0inter_onnpip_mev->Draw("Fc");
   //h_K0inter_onnpip_mev->Draw("HE0same");
   
   TGraphErrors *g1 = new TGraphErrors(IMnpip_wK0orwSid_n_mev);
@@ -1329,16 +1338,16 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   const double npimmax = (IMnpim_wK0orwSid_n->GetXaxis()->GetXmax())*1000;
   TH1D* IMnpim_wK0orwSid_n_mev = new TH1D("IMnpim_wK0orwSid_n_mev","",npimbin,npimmin,npimmax);
   TH1D* IMnpim_wK0orwSid_n_mev_disp = new TH1D("IMnpim_wK0orwSid_n_mev_disp","",npimbin,npimmin,npimmax);
-  for(int ibin = 0;ibin<IMnpim_wK0orwSid_n->GetNbinsX();ibin++){
-    double x =  IMnpim_wK0orwSid_n->GetBinCenter(ibin+1)*1000.;
-    double y =  IMnpim_wK0orwSid_n->GetBinContent(ibin+1);
-    double ye = IMnpim_wK0orwSid_n->GetBinError(ibin+1);
+  for(int ibin = 1;ibin<IMnpim_wK0orwSid_n->GetNbinsX();ibin++){
+    double x =  IMnpim_wK0orwSid_n->GetBinCenter(ibin)*1000.;
+    double y =  IMnpim_wK0orwSid_n->GetBinContent(ibin);
+    double ye = IMnpim_wK0orwSid_n->GetBinError(ibin);
     int Smbin = IMnpim_wK0orwSid_n->GetXaxis()->FindBin(anacuts::Sigmam_center);
-    IMnpim_wK0orwSid_n_mev->SetBinContent(ibin+1,y);
-    IMnpim_wK0orwSid_n_mev->SetBinError(ibin+1,ye);
-    if(Smbin == (ibin+1 || ibin+2 || ibin || ibin-1) ){
-      IMnpim_wK0orwSid_n_mev_disp->SetBinContent(ibin+1,y);
-      IMnpim_wK0orwSid_n_mev_disp->SetBinError(ibin+1,ye);
+    IMnpim_wK0orwSid_n_mev->SetBinContent(ibin,y);
+    IMnpim_wK0orwSid_n_mev->SetBinError(ibin,ye);
+    if( (Smbin == ibin+1) || (Smbin == ibin)  || (Smbin == ibin-1) || (Smbin == ibin-2) ){
+      IMnpim_wK0orwSid_n_mev_disp->SetBinContent(ibin,y);
+      IMnpim_wK0orwSid_n_mev_disp->SetBinError(ibin,ye);
     }
   }
   //gPad->SetRightMargin(0.02);
@@ -1433,12 +1442,13 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
     double val = IMnpim_wK0orwSid_n_mev->GetBinContent(ibin);
     double vale = IMnpim_wK0orwSid_n_mev->GetBinError(ibin);
     int Spbin = IMnpim_wK0orwSid_n_mev->GetXaxis()->FindBin(anacuts::Sigmap_center*1000.);
-    if(Spbin == ibin){
+    if( (Spbin == ibin) || (Spbin == ibin+1) ||  (Spbin == ibin-1) ||(Spbin == ibin-2) ){
        val = y;
        vale = ye;
     }
     gr_K0inter_plusSp_onnpim_mev->SetPoint(ip,x*1000.,val);
-    gr_K0inter_plusSp_onnpim_mev->SetPointError(ip,xe*1000.,vale);
+    //gr_K0inter_plusSp_onnpim_mev->SetPointError(ip,xe*1000.,vale);
+    gr_K0inter_plusSp_onnpim_mev->SetPointError(ip,xe*1000.,0);
   }
   gr_K0inter_plusSp_onnpim_mev->SetMarkerColor(2);
   gr_K0inter_plusSp_onnpim_mev->SetLineColor(2);
