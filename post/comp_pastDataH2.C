@@ -6,6 +6,7 @@ const int legendflag = 0;
 
 void comp_pastDataH2()
 {
+  gStyle->SetNdivisions(505,"y");
   gStyle->SetPadGridX(0);
   gStyle->SetPadGridY(0);
   //gStyle->SetErrorX(0);
@@ -58,6 +59,7 @@ void comp_pastDataH2()
   p7071_d40x1y1->SetName("/HepData/7071/d40x1y1");
   p7071_d40x1y1->SetTitle("/HepData/7071/d40x1y1");
   p7071_d40x1y1->SetLineColor(2);
+  p7071_d40x1y1->SetLineWidth(2);
   p7071_d40x1y1->SetMarkerColor(2);
   p7071_d40x1y1->SetMarkerStyle(24);
   //TCanvas *ctest1 = new TCanvas("ctest1","ctest1");
@@ -108,6 +110,7 @@ void comp_pastDataH2()
   p7071_d60x1y1->SetName("/HepData/7071/d60x1y1");
   p7071_d60x1y1->SetTitle("/HepData/7071/d60x1y1");
   p7071_d60x1y1->SetLineColor(2);
+  p7071_d60x1y1->SetLineWidth(2);
   p7071_d60x1y1->SetMarkerColor(2);
   p7071_d60x1y1->SetMarkerStyle(24);
   //TCanvas *ctest1 = new TCanvas("ctest1","ctest1");
@@ -158,6 +161,7 @@ void comp_pastDataH2()
   p7006_d21x1y2->SetName("/HepData/7006/d21x1y2");
   p7006_d21x1y2->SetTitle("/HepData/7006/d21x1y2");
   p7006_d21x1y2->SetLineColor(4);
+  p7006_d21x1y2->SetLineWidth(2);
   p7006_d21x1y2->SetMarkerColor(4);
   p7006_d21x1y2->SetMarkerStyle(25);
   //p7006_d21x1y2.Draw("AP");
@@ -202,6 +206,7 @@ void comp_pastDataH2()
   p7006_d20x1y2->SetName("/HepData/7006/d20x1y2");
   p7006_d20x1y2->SetTitle("/HepData/7006/d20x1y2");
   p7006_d20x1y2->SetLineColor(4);
+  p7006_d20x1y2->SetLineWidth(2);
   p7006_d20x1y2->SetMarkerColor(4);
   p7006_d20x1y2->SetMarkerStyle(25);
   //p7006_d20x1y2.Draw("AP");
@@ -247,6 +252,7 @@ void comp_pastDataH2()
   past_data1->SetName("past_data1");
   past_data1->SetTitle("past_data1");
   past_data1->SetLineColor(6);
+  past_data1->SetLineWidth(2);
   past_data1->SetMarkerColor(6);
   past_data1->SetMarkerStyle(26);
  
@@ -288,6 +294,7 @@ void comp_pastDataH2()
   past_data2->SetName("past_data2");
   past_data2->SetTitle("past_data2");
   past_data2->SetLineColor(8);
+  past_data2->SetLineWidth(2);
   past_data2->SetMarkerColor(8);
   past_data2->SetMarkerStyle(27);
   //past_data2.Draw("AP");
@@ -329,6 +336,7 @@ void comp_pastDataH2()
   past_data3->SetName("past_data3");
   past_data3->SetTitle("past_data3");
   past_data3->SetLineColor(6);
+  past_data3->SetLineWidth(2);
   past_data3->SetMarkerColor(6);
   past_data3->SetMarkerStyle(26);
   //past_data3.Draw("AP");
@@ -369,6 +377,7 @@ void comp_pastDataH2()
   past_data4->SetName("past_data4");
   past_data4->SetTitle("past_data4");
   past_data4->SetLineColor(8);
+  past_data4->SetLineWidth(2);
   past_data4->SetMarkerColor(8);
   past_data4->SetMarkerStyle(27);
   //past_data4.Draw("AP");
@@ -418,6 +427,7 @@ void comp_pastDataH2()
   p7266_d12x1y8->SetName("/HepData/7266/d12x1y8");
   p7266_d12x1y8->SetTitle("/HepData/7266/d12x1y8");
   p7266_d12x1y8->SetLineColor(3);
+  p7266_d12x1y8->SetLineWidth(2);
   p7266_d12x1y8->SetMarkerColor(3);
   p7266_d12x1y8->SetMarkerStyle(28);
   //p7266_d12x1y8.Draw("AP");
@@ -462,6 +472,7 @@ void comp_pastDataH2()
   p7266_d17x1y8->SetName("/HepData/7266/d17x1y8");
   p7266_d17x1y8->SetTitle("/HepData/7266/d17x1y8");
   p7266_d17x1y8->SetLineColor(3);
+  p7266_d17x1y8->SetLineWidth(2);
   p7266_d17x1y8->SetMarkerColor(3);
   p7266_d17x1y8->SetMarkerStyle(28);
   //p7266_d17x1y8.Draw("AP");
@@ -515,7 +526,9 @@ void comp_pastDataH2()
   gCS_Sp->GetYaxis()->CenterTitle();
   gCS_Sp->GetXaxis()->SetTitleOffset(1.2);
   gCS_Sp->GetYaxis()->SetTitleOffset(1.3);
-  gCS_Sp->SetTitle("K^{-}p #rightarrow #Sigma^{+}#pi^{-}");
+  //gCS_Sp->SetTitle("K^{-}p #rightarrow #Sigma^{+}#pi^{-}");
+  gCS_Sp->SetTitle("");
+
   gCS_Sp->Draw("AP");
   gCS_Spsys->SetLineColor(1);
   gCS_Spsys->Draw("5");
@@ -537,6 +550,10 @@ void comp_pastDataH2()
     leg->AddEntry(p7006_d21x1y2, "NPB105(1976)189 ", "LP");
     leg->AddEntry(past_data2,    "NPB8(1968)233   ", "LP");
   }
+  TLatex *tex = new TLatex();
+  tex->SetTextSize(0.06);
+  tex->SetTextColor(1);
+  tex->DrawLatex(0.65,620,"K^{-}p #rightarrow #Sigma^{+}#pi^{-}");
         //  }
       //leg->Draw();
    // else if(x==1){ // K- P --> PI+ SIGMA-
@@ -552,7 +569,8 @@ void comp_pastDataH2()
   gCS_Sm->GetYaxis()->CenterTitle();
   gCS_Sm->GetXaxis()->SetTitleOffset(1.2);
   gCS_Sm->GetYaxis()->SetTitleOffset(1.3);
-  gCS_Sm->SetTitle("K^{-}p #rightarrow #Sigma^{-}#pi^{+}");
+  //gCS_Sm->SetTitle("K^{-}p #rightarrow #Sigma^{-}#pi^{+}");
+  gCS_Sm->SetTitle("");
   gCS_Sm->Draw("AP");
   //remove 0 consistent data (2 points)
   gCS_Sm->RemovePoint(5);
@@ -561,28 +579,32 @@ void comp_pastDataH2()
   gCS_Smsys->RemovePoint(5);
   gCS_Smsys->SetLineColor(1);
   gCS_Smsys->Draw("5");
-      p7071_d60x1y1->Draw("same PZ");
-      p7006_d20x1y2->Draw("same PZ");
-      past_data3->Draw("same PZ");
-      past_data4->Draw("same PZ");
-      p7266_d17x1y8->Draw("same PZ");
-      TLegend *leg2 = new TLegend(0.3, 0.6, 0.6, 0.9);
-      leg2->AddEntry(gCS_Sm, "Present Results ", "LP");
-      if(legendflag==0){
-        leg2->AddEntry(p7266_d17x1y8, "NPB193(1981)21   0.99 GeV/c", "LP");
-        leg2->AddEntry(past_data3,    "NPB8(1968)233,   0.991 GeV/c", "LP");
-        leg2->AddEntry(p7071_d60x1y1, "NPB90(1975)349,  1.001 GeV/c", "LP");
-        leg2->AddEntry(p7006_d20x1y2, "NPB105(1976)189, 1.005 GeV/c", "LP");
-        leg2->AddEntry(past_data4,    "NPB8(1968)233,   1.022 GeV/c", "LP");
-      }else{
-        leg2->AddEntry(p7266_d17x1y8, "NPB193(1981)21  ", "LP");
-        leg2->AddEntry(past_data3,    "NPB8(1968)233  ", "LP");
-        leg2->AddEntry(p7071_d60x1y1, "NPB90(1975)349 ", "LP");
-        leg2->AddEntry(p7006_d20x1y2, "NPB105(1976)189", "LP");
-        leg2->AddEntry(past_data4,    "NPB8(1968)233  ", "LP");
-      }
-    //}
-    leg2->Draw();
+  p7071_d60x1y1->Draw("same PZ");
+  p7006_d20x1y2->Draw("same PZ");
+  past_data3->Draw("same PZ");
+  past_data4->Draw("same PZ");
+  p7266_d17x1y8->Draw("same PZ");
+  TLegend *leg2 = new TLegend(0.2, 0.5, 0.6, 0.9);
+  leg2->AddEntry(gCS_Sm, "Present Results ", "LP");
+  if(legendflag==0){
+    leg2->AddEntry(p7266_d17x1y8, "NPB193(1981)21   0.99 GeV/c", "LP");
+    leg2->AddEntry(past_data3,    "NPB8(1968)233,   0.991 GeV/c", "LP");
+    leg2->AddEntry(p7071_d60x1y1, "NPB90(1975)349,  1.001 GeV/c", "LP");
+    leg2->AddEntry(p7006_d20x1y2, "NPB105(1976)189, 1.005 GeV/c", "LP");
+    leg2->AddEntry(past_data4,    "NPB8(1968)233,   1.022 GeV/c", "LP");
+  }else{
+    leg2->AddEntry(p7266_d17x1y8, "NPB193(1981)21  ", "LP");
+    leg2->AddEntry(past_data3,    "NPB8(1968)233  ", "LP");
+    leg2->AddEntry(p7071_d60x1y1, "NPB90(1975)349 ", "LP");
+    leg2->AddEntry(p7006_d20x1y2, "NPB105(1976)189", "LP");
+    leg2->AddEntry(past_data4,    "NPB8(1968)233  ", "LP");
+  }
+  //}
+  leg2->Draw();
+  TLatex *tex2 = new TLatex();
+  tex2->SetTextSize(0.06);
+  tex2->SetTextColor(1);
+  tex2->DrawLatex(0.65,310,"K^{-}p #rightarrow #Sigma^{-}#pi^{+}");
     //his->Draw("same");
  // }
   cCS_wide->SaveAs("h2comp.pdf","PDF");

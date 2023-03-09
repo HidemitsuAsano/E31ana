@@ -454,6 +454,11 @@ void FitMixScale()
   IMnpip_n_data_mev->GetYaxis()->SetTitleOffset(1.42);
   IMnpip_n_data_mev->GetXaxis()->SetNdivisions(505);
   IMnpip_n_data_mev->GetYaxis()->SetTitleOffset(1.42);
+  {
+    IMnpip_n_data_mev->SetLineColor(0);
+    IMnpip_n_data_mev->SetMarkerColor(0);
+    IMnpip_n_data_mev->SetMaximum(450);
+  }
   IMnpip_n_data_mev->Draw("E");
    
   TLatex *texnpip_mev = new TLatex();
@@ -626,6 +631,11 @@ void FitMixScale()
   IMnpim_n_data_mev->GetYaxis()->SetTitleOffset(1.42);
   IMnpim_n_data_mev->GetXaxis()->SetNdivisions(505);
   IMnpim_n_data_mev->GetYaxis()->SetTitleOffset(1.42);
+  {
+    IMnpim_n_data_mev->SetMaximum(450);
+    IMnpim_n_data_mev->SetLineColor(0);
+    IMnpim_n_data_mev->SetMarkerColor(0);
+  }
   IMnpim_n_data_mev->Draw("E");
    
   TLatex *texnpim_mev = new TLatex();

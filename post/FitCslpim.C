@@ -49,6 +49,10 @@ Double_t VGandLandau(Double_t *x,Double_t *par)
 
 void FitCslpim()
 {
+  gStyle->SetNdivisions(505,"x");
+  gStyle->SetNdivisions(505,"y");
+  gStyle->SetTitleXSize(0.05);
+  gStyle->SetTitleYSize(0.05);
   gROOT->ForceStyle();
   //gROOT->SetBatch();
   TFile *file = TFile::Open("cs_lpim_killcombi.root");
@@ -156,9 +160,9 @@ void FitCslpim()
   cfittest->cd(1);
   const int binx1320 = CS_sum_fit->GetXaxis()->FindBin(1.32);
   const int binx1440 = CS_sum_fit->GetXaxis()->FindBin(1.44);
-  const int biny350 = CS_sum_fit->GetYaxis()->FindBin(anacuts::qvalcut);
+  const int binyqcutlow = CS_sum_fit->GetYaxis()->FindBin(anacuts::qvalcut);
   const int biny650 = CS_sum_fit->GetYaxis()->FindBin(anacuts::qvalMAX);
-  TH1D* CS_sum_fit_px = (TH1D*)CS_sum_fit->ProjectionX("CS_sum_fit_cut_px",biny350,biny650-1);
+  TH1D* CS_sum_fit_px = (TH1D*)CS_sum_fit->ProjectionX("CS_sum_fit_cut_px",binyqcutlow,biny650-1);
   CS_sum_fit_px->SetTitle("projection q: 300-650");
   CS_sum_fit_px->GetXaxis()->SetRangeUser(1.2,1.6);
   CS_sum_fit_px->Draw("HE");
@@ -249,10 +253,10 @@ void FitCslpim()
   f3hist_py2->Scale(binwidth_q);
   CS_q_all->Draw("E");
   f3hist_py2->Draw("same");
-  const int binq350 = f3hist_py2->FindBin(anacuts::qvalcut);
+  const int binyqlow = f3hist_py2->FindBin(anacuts::qvalcut);
   const int binq650 = f3hist_py2->FindBin(anacuts::qvalMAX);
-  std::cout << f3hist_py2->Integral(binq350,binq650)  << std::endl;
-  std::cout << f3hist_py2->Integral(1,binq350) << std::endl;
+  std::cout << f3hist_py2->Integral(binyqlow,binq650)  << std::endl;
+  std::cout << f3hist_py2->Integral(1,binyqlow) << std::endl;
   
   //q-dep systematic error
   TCanvas *cCS_q_allsys = new TCanvas("cCS_q_allsys","cCS_q_allsys",1000,800);
@@ -299,7 +303,7 @@ void FitCslpim()
   TH2F* CS_sum_nofit = (TH2F*)CS_sum->Clone("CS_sum_nofit");
   CS_sum_nofit->SetName("CS_sum_nofit");
   const int binq200nofit = CS_sum_nofit->GetYaxis()->FindBin(0.20);
-  const int binq350nofit = CS_sum_nofit->GetYaxis()->FindBin(anacuts::qvalcut);
+  const int binyqlownofit = CS_sum_nofit->GetYaxis()->FindBin(anacuts::qvalcut);
   const int binq650nofit = CS_sum_nofit->GetYaxis()->FindBin(anacuts::qvalMAX);
   const int binM1440  = CS_sum_nofit->GetXaxis()->FindBin(1.440);
   const double br_s1385ToLambdapi = 0.87;
@@ -311,8 +315,8 @@ void FitCslpim()
   double binwidthq = CS_sum_nofit->GetYaxis()->GetBinWidth(1)*1000.0; 
   //CS_sum_nofit->Scale(br_s1385TopiSigma/2.0/br_s1385ToLambdapi/IsospinCGFactor);
 
-  TH1D* CS_sum_nofit_qlow = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qlow",1,binq350nofit-1);
-  TH1D* CS_sum_nofit_qhi = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qhi",binq350nofit,binq650nofit-1);
+  TH1D* CS_sum_nofit_qlow = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qlow",1,binyqlownofit-1);
+  TH1D* CS_sum_nofit_qhi = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qhi",binyqlownofit,binq650nofit-1);
   TH1D* CS_sum_nofit_qall = (TH1D*)CS_sum_nofit->ProjectionX("CS_sum_nofit_qall",binq200nofit,binq650nofit-1);
    
   gStyle->SetPadGridX(0);
@@ -594,9 +598,123 @@ void FitCslpim()
   gr_M_qhiErr->Draw("5");
   gr_M_qhi->Draw("P");  
 
-  cMerr_qlow->SaveAs("Lpimqlow.pdf","PDF");
-  cMerr_qhi->SaveAs("Lpimqhi.pdf","PDF");
 
+  TCanvas *cMerr_qlow_mev = new TCanvas("cMerr_qlow_mev","cMerr_qlow_mev",1100,1100); 
+  cMerr_qlow_mev->SetBottomMargin(0.12);
+  cMerr_qlow_mev->SetLeftMargin(0.14);
+  cMerr_qlow_mev->SetRightMargin(0.08);
+  TGraphAsymmErrors *gr_M_qlow_mev = new TGraphAsymmErrors();//divided by M
+  for(int ip=0;ip<gr_M_qlow->GetN();ip++){
+    double x = gr_M_qlow->GetPointX(ip);
+    double y = gr_M_qlow->GetPointY(ip);
+    double xe = gr_M_qlow->GetErrorXhigh(ip);
+    double yh = gr_M_qlow->GetErrorYhigh(ip);
+    double yl = gr_M_qlow->GetErrorYlow(ip);
+    gr_M_qlow_mev->SetPoint(ip,x*1000,y);
+    gr_M_qlow_mev->SetPointEXhigh(ip,xe*1000);
+    gr_M_qlow_mev->SetPointEXlow(ip,xe*1000);
+    gr_M_qlow_mev->SetPointEYhigh(ip,yh);
+    gr_M_qlow_mev->SetPointEYlow(ip,yl);
+  } 
+  TGraphAsymmErrors *gr_M_qlowErr_mev = new TGraphAsymmErrors();//divided by M
+  for(int ip=0;ip<gr_M_qlowErr->GetN();ip++){
+    double x = gr_M_qlowErr->GetPointX(ip);
+    double y = gr_M_qlowErr->GetPointY(ip);
+    double xe = gr_M_qlowErr->GetErrorXhigh(ip);
+    double yh = gr_M_qlowErr->GetErrorYhigh(ip);
+    double yl = gr_M_qlowErr->GetErrorYlow(ip);
+    gr_M_qlowErr_mev->SetPoint(ip,x*1000,y);
+    gr_M_qlowErr_mev->SetPointEXhigh(ip,xe*1000);
+    gr_M_qlowErr_mev->SetPointEXlow(ip,xe*1000);
+    gr_M_qlowErr_mev->SetPointEYhigh(ip,yh);
+    gr_M_qlowErr_mev->SetPointEYlow(ip,yl);
+  } 
+  gr_M_qlow_mev->GetXaxis()->SetRangeUser(1300,1600);
+  gr_M_qlow_mev->GetYaxis()->SetRangeUser(0,1.0);
+  gr_M_qlow_mev->GetXaxis()->SetTitleSize(0.04);
+  gr_M_qlow_mev->GetYaxis()->SetTitleSize(0.04);
+  gr_M_qlow_mev->GetXaxis()->SetTitleOffset(1.4);
+  gr_M_qlow_mev->GetYaxis()->SetTitleOffset(1.6);
+  gr_M_qlow_mev->SetLineColor(1);  
+  gr_M_qlow_mev->SetLineWidth(2);  
+  gr_M_qlow_mev->SetMarkerColor(1);  
+  gr_M_qlow_mev->SetMarkerStyle(20);  
+  gr_M_qlow_mev->SetTitle("");
+  gr_M_qlow_mev->GetXaxis()->SetTitle("IM(#Lambda#pi^{-}) [MeV/c^{2}]");
+  gr_M_qlow_mev->GetXaxis()->CenterTitle();
+  gr_M_qlow_mev->GetYaxis()->SetTitle("d#sigma/dM [#mub/MeV^{2}]");
+  gr_M_qlow_mev->GetYaxis()->CenterTitle();
+  gr_M_qlow_mev->Draw("ap"); 
+  gr_M_qlowErr_mev->SetLineColor(2);
+  gr_M_qlowErr_mev->SetFillColor(0);
+  gr_M_qlowErr_mev->Draw("5"); 
+  gr_M_qlow_mev->Draw("p"); 
+  TLatex *tex = new TLatex();
+  double tex_ymax = gr_M_qlow_mev->GetHistogram()->GetMaximum();
+  tex->SetTextSize(0.05);
+  tex->SetTextColor(1);
+  tex->DrawLatex( 1320,tex_ymax*0.85 , "(a)" );
+  
+
+  TCanvas *cMerr_qhi_mev = new TCanvas("cMerr_qhi_mev","cMerr_qhi_mev",1100,1100); 
+  cMerr_qhi_mev->SetBottomMargin(0.12);
+  cMerr_qhi_mev->SetLeftMargin(0.14);
+  cMerr_qhi_mev->SetRightMargin(0.08);
+  TGraphAsymmErrors *gr_M_qhi_mev = new TGraphAsymmErrors();//divided by M
+  for(int ip=0;ip<gr_M_qhi->GetN();ip++){
+    double x = gr_M_qhi->GetPointX(ip);
+    double y = gr_M_qhi->GetPointY(ip);
+    double xe = gr_M_qhi->GetErrorXhigh(ip);
+    double yh = gr_M_qhi->GetErrorYhigh(ip);
+    double yl = gr_M_qhi->GetErrorYlow(ip);
+    gr_M_qhi_mev->SetPoint(ip,x*1000,y);
+    gr_M_qhi_mev->SetPointEXhigh(ip,xe*1000);
+    gr_M_qhi_mev->SetPointEXlow(ip,xe*1000);
+    gr_M_qhi_mev->SetPointEYhigh(ip,yh);
+    gr_M_qhi_mev->SetPointEYlow(ip,yl);
+  } 
+  TGraphAsymmErrors *gr_M_qhiErr_mev = new TGraphAsymmErrors();//divided by M
+  for(int ip=0;ip<gr_M_qhiErr->GetN();ip++){
+    double x = gr_M_qhiErr->GetPointX(ip);
+    double y = gr_M_qhiErr->GetPointY(ip);
+    double xe = gr_M_qhiErr->GetErrorXhigh(ip);
+    double yh = gr_M_qhiErr->GetErrorYhigh(ip);
+    double yl = gr_M_qhiErr->GetErrorYlow(ip);
+    gr_M_qhiErr_mev->SetPoint(ip,x*1000,y);
+    gr_M_qhiErr_mev->SetPointEXhigh(ip,xe*1000);
+    gr_M_qhiErr_mev->SetPointEXlow(ip,xe*1000);
+    gr_M_qhiErr_mev->SetPointEYhigh(ip,yh);
+    gr_M_qhiErr_mev->SetPointEYlow(ip,yl);
+  } 
+  gr_M_qhi_mev->GetXaxis()->SetRangeUser(1300,1600);
+  gr_M_qhi_mev->GetYaxis()->SetRangeUser(0,1.0);
+  gr_M_qhi_mev->GetXaxis()->SetTitleSize(0.04);
+  gr_M_qhi_mev->GetYaxis()->SetTitleSize(0.04);
+  gr_M_qhi_mev->GetXaxis()->SetTitleOffset(1.4);
+  gr_M_qhi_mev->GetYaxis()->SetTitleOffset(1.6);
+  gr_M_qhi_mev->SetLineColor(1);  
+  gr_M_qhi_mev->SetLineWidth(2);  
+  gr_M_qhi_mev->SetMarkerColor(1);  
+  gr_M_qhi_mev->SetMarkerStyle(20);  
+  gr_M_qhi_mev->SetTitle("");
+  gr_M_qhi_mev->GetXaxis()->SetTitle("IM(#Lambda#pi^{-}) [MeV/c^{2}]");
+  gr_M_qhi_mev->GetXaxis()->CenterTitle();
+  gr_M_qhi_mev->GetYaxis()->SetTitle("d#sigma/dM [#mub/MeV^{2}]");
+  gr_M_qhi_mev->GetYaxis()->CenterTitle();
+  gr_M_qhi_mev->Draw("ap"); 
+  gr_M_qhiErr_mev->SetLineColor(2);
+  gr_M_qhiErr_mev->SetFillColor(0);
+  gr_M_qhiErr_mev->Draw("5"); 
+  gr_M_qhi_mev->Draw("p"); 
+  tex->SetTextSize(0.05);
+  tex->SetTextColor(1);
+  tex->DrawLatex( 1320,tex_ymax*0.85 , "(b)" );
+
+  //cMerr_qlow->SaveAs("Lpimqlow.pdf","PDF");
+  //cMerr_qhi->SaveAs("Lpimqhi.pdf","PDF");
+  cMerr_qlow_mev->SaveAs("Lpimqlow.pdf","PDF");
+  cMerr_qhi_mev->SaveAs("Lpimqhi.pdf","PDF");
+  
   TCanvas *c = NULL;
   TSeqCollection *SCol = gROOT->GetListOfCanvases();
   int size = SCol->GetSize();

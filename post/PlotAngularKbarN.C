@@ -4,9 +4,9 @@ void PlotAngularKbarN()
 {
   //K-n -> K-n elastic
   const double CSKm = 20000.0;//ub
-  const double CSKmerr = 1000.0;
-  const double CSKm800 = 9560; 
-  const double CSKm800err =  960; 
+  const double CSKmerr = 1000.0;//ub
+  const double CSKm800 = 9560; //ub
+  const double CSKm800err =  960; //ub
 
   //963 MeV
   double LegendreC_Kmn[7]    = {1.0,  1.09,  2.53,  1.13,  1.08,  0.29,  0.28} ;
@@ -136,7 +136,7 @@ void PlotAngularKbarN()
   //grKmn->GetXaxis()->SetTitle("cosCM K^{-}");
   grKmn->GetXaxis()->SetTitle("cosCM n");
   grKmn->GetXaxis()->CenterTitle();
-  grKmn->GetYaxis()->SetTitle("A.U.");
+  grKmn->GetYaxis()->SetTitle("C.S. [ub]");
   grKmn->GetYaxis()->SetMaxDigits(3);
   grKmn->GetYaxis()->CenterTitle();
   grKmn->Draw("ap4");
@@ -153,7 +153,7 @@ void PlotAngularKbarN()
   //grK0n->GetXaxis()->SetTitle("cosCM #bar{K}^{0}");
   grK0n->GetXaxis()->SetTitle("cosCM n");
   grK0n->GetXaxis()->CenterTitle();
-  grK0n->GetYaxis()->SetTitle("A.U.");
+  grK0n->GetYaxis()->SetTitle("C.S. [ub]");
   grK0n->GetYaxis()->SetMaxDigits(3);
   grK0n->GetYaxis()->CenterTitle();
   grK0n->Draw("ap4");
@@ -218,7 +218,7 @@ void PlotAngularKbarN()
   grsumn->SetFillStyle(3001);
   grsumn->GetXaxis()->SetTitle("cosCM n");
   grsumn->GetXaxis()->CenterTitle();
-  grsumn->GetYaxis()->SetTitle("A.U.");
+  grsumn->GetYaxis()->SetTitle("C.S. [ub]");
   grsumn->GetYaxis()->SetMaxDigits(3);
   grsumn->GetYaxis()->CenterTitle();
   grsumn->Draw("ac3");

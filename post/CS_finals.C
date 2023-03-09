@@ -1842,7 +1842,7 @@ void CS_finals()
   grCosL1405->GetXaxis()->SetRangeUser(0.6,1);
   grCosL1405->GetXaxis()->SetTitle("cos#theta_{n} (CM)");
   grCosL1405->GetXaxis()->CenterTitle();
-  grCosL1405->GetYaxis()->SetTitle("d#sigma / dcos#theta_{n} [#mub]  ");
+  grCosL1405->GetYaxis()->SetTitle("d#sigma / d(cos#theta_{n}) [#mub]  ");
   grCosL1405->GetYaxis()->CenterTitle();
   grCosL1405->Draw("ap");
   gMIXErrorCosL1405->SetLineColor(12);
@@ -1921,7 +1921,7 @@ void CS_finals()
   grCosL1520->GetXaxis()->SetRangeUser(0.6,1);
   grCosL1520->GetXaxis()->SetTitle("cos#theta_{n} (CM)");
   grCosL1520->GetXaxis()->CenterTitle();
-  grCosL1520->GetYaxis()->SetTitle("d#sigma / dcos#theta_{n} [#mub]  ");
+  grCosL1520->GetYaxis()->SetTitle("d#sigma / d(cos#theta_{n}) [#mub]  ");
   grCosL1520->GetYaxis()->CenterTitle();
   grCosL1520->Draw("ap");
   gMIXErrorCosL1520->SetLineColor(12);
@@ -1990,7 +1990,7 @@ void CS_finals()
   grCosQF->GetXaxis()->SetRangeUser(0.6,1);
   grCosQF->GetXaxis()->SetTitle("cos#theta_{n} (CM)");
   grCosQF->GetXaxis()->CenterTitle();
-  grCosQF->GetYaxis()->SetTitle("d#sigma / dcos#theta_{n} [#mub]  ");
+  grCosQF->GetYaxis()->SetTitle("d#sigma / d(cos#theta_{n}) [#mub]  ");
   grCosQF->GetYaxis()->CenterTitle();
   grCosQF->Draw("ap");
   gMIXErrorCosQF->SetLineColor(12);
@@ -2234,7 +2234,7 @@ void CS_finals()
   CS_CosS1385Lpim->SetLineColor(5);
   CS_CosS1385Lpim->Draw("same");
   pL1405->Draw();
-  gry->Draw("c");
+  //gry->Draw("c");//yamagata san paper
   //gPad->SetLogy();
   
 
@@ -2249,16 +2249,29 @@ void CS_finals()
   gMIXErrorqL1405->RemovePoint(0);
   gMIXErrorqL1405->RemovePoint(0);
   gMIXErrorqL1405->Draw("5");
-  grqL1520->RemovePoint(0);
-  grqL1520->RemovePoint(0);
-  grqL1520->SetLineColor(3);
-  grqL1520->SetMarkerColor(3);
-  grqL1520->Draw("p");
-  gMIXErrorqL1520->RemovePoint(0);
-  gMIXErrorqL1520->RemovePoint(0);
-  gMIXErrorqL1520->SetLineColor(3);
-  gMIXErrorqL1520->SetFillColor(3);
-  gMIXErrorqL1520->Draw("5");
+  grqQF->RemovePoint(0);
+  grqQF->RemovePoint(0);
+  grqQF->RemovePoint(0);
+  grqQF->SetLineColor(3);
+  grqQF->SetMarkerColor(3);
+  grqQF->Draw("p");
+  gMIXErrorqQF->RemovePoint(0);
+  gMIXErrorqQF->RemovePoint(0);
+  gMIXErrorqQF->RemovePoint(0);
+  gMIXErrorqQF->SetLineColor(3);
+  gMIXErrorqQF->SetFillColor(3);
+  gMIXErrorqQF->Draw("5");
+  
+  //grqL1520->RemovePoint(0);
+  //grqL1520->RemovePoint(0);
+  //grqL1520->SetLineColor(3);
+  //grqL1520->SetMarkerColor(3);
+  //grqL1520->Draw("p");
+  //gMIXErrorqL1520->RemovePoint(0);
+  //gMIXErrorqL1520->RemovePoint(0);
+  //gMIXErrorqL1520->SetLineColor(3);
+  //gMIXErrorqL1520->SetFillColor(3);
+  //gMIXErrorqL1520->Draw("5");
   CS_qS1385Lpim->SetMarkerColor(5);
   CS_qS1385Lpim->SetLineColor(5);
   CS_qS1385Lpim->Draw("same");

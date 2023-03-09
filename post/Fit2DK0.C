@@ -537,12 +537,12 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   TH2D* h2K0inter_3fine = (TH2D*)h2K0inter_3->Clone("h2K0inter_3fine");
   TH2D* h2K0inter_3fine_sysup = (TH2D*)h2K0inter_3_sysup->Clone("h2K0inter_3fine_sysup");
   TH2D* h2K0inter_3fine_sysdown = (TH2D*)h2K0inter_3_sysdown->Clone("h2K0inter_3fine_sysdown");
-  IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Rebin2D(RebinFactor,RebinFactor);//+/- 2sigma binning
-  IMnpim_IMnpip_dE_wK0_woSid_n_3_inter_sysup->Rebin2D(RebinFactor,RebinFactor);//+/- 2sigma binning
-  IMnpim_IMnpip_dE_wK0_woSid_n_3_inter_sysdown->Rebin2D(RebinFactor,RebinFactor);//+/- 2sigma binning
-  h2K0inter_3->Rebin2D(RebinFactor,RebinFactor);
-  h2K0inter_3_sysup->Rebin2D(RebinFactor,RebinFactor);
-  h2K0inter_3_sysdown->Rebin2D(RebinFactor,RebinFactor);
+  //IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Rebin2D(RebinFactor,RebinFactor);//+/- 2sigma binning
+  //IMnpim_IMnpip_dE_wK0_woSid_n_3_inter_sysup->Rebin2D(RebinFactor,RebinFactor);//+/- 2sigma binning
+  //IMnpim_IMnpip_dE_wK0_woSid_n_3_inter_sysdown->Rebin2D(RebinFactor,RebinFactor);//+/- 2sigma binning
+  //h2K0inter_3->Rebin2D(RebinFactor,RebinFactor);
+  //h2K0inter_3_sysup->Rebin2D(RebinFactor,RebinFactor);
+  //h2K0inter_3_sysdown->Rebin2D(RebinFactor,RebinFactor);
   IMnpim_IMnpip_dE_wK0_woSid_n_3_inter->Draw("colz");
   
   h2K0inter_3->SetFillColor(2);
@@ -570,7 +570,8 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
 
 
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
-  TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_norebin = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
+  //TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_norebin = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
+  TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_norebin = (TH2F*)IMnpim_IMnpip_dE_wK0orwSid_n->Clone("IMnpim_IMnpip_dE_wK0orwSid_n_norebin");
   IMnpim_IMnpip_dE_wK0orwSid_n_norebin->SetName("IMnpim_IMnpip_dE_wK0orwSid_n_norebin");
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sp = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_Sp");
   TH2F* IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin1 = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0_wSid_n_Sp_wbin1");
@@ -791,17 +792,19 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   TCanvas *cwK0orwSid_n_pro = new TCanvas("cwK0orwSid_n_pro","cwK0orwSid_n_pro",1600,800);
   cwK0orwSid_n_pro->Divide(2,1);
   cwK0orwSid_n_pro->cd(1);
-  TH1D* IMnpip_wK0orwSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n->ProjectionX("IMnpip_wK0orwSid_n");
-  IMnpip_wK0orwSid_n->Draw("E");
+//  TH1D* IMnpip_wK0orwSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n->ProjectionX("IMnpip_wK0orwSid_n");
+  TH1D* IMnpip_wK0orwSid_n_norebin = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_norebin->ProjectionX("IMnpip_wK0orwSid_n");
+  IMnpip_wK0orwSid_n_norebin->Draw("E");
   IMnpip_wK0_woSid->SetLineColor(2);
   IMnpip_wK0_woSid->Draw("Esame");
   TLegend *leg = new TLegend(0.6,0.6,0.8,0.8);
   leg->AddEntry(IMnpip_wK0_woSid,"K0");
-  leg->AddEntry(IMnpip_wK0orwSid_n,"Sigma+/-/K0 total");
+  leg->AddEntry(IMnpip_wK0orwSid_n_norebin,"Sigma+/-/K0 total");
   leg->Draw();
 
   cwK0orwSid_n_pro->cd(2);
-  TH1D* IMnpim_wK0orwSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n->ProjectionY("IMnpim_wK0orwSid_n");
+  //TH1D* IMnpim_wK0orwSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n->ProjectionY("IMnpim_wK0orwSid_n");
+  TH1D* IMnpim_wK0orwSid_n = (TH1D*)IMnpim_IMnpip_dE_wK0orwSid_n_norebin->ProjectionY("IMnpim_wK0orwSid_n");
   IMnpim_wK0orwSid_n->Draw("E");
   IMnpim_wK0_woSid->SetLineColor(2);
   IMnpim_wK0_woSid->Draw("Esame");
@@ -1031,7 +1034,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   TCanvas *cFinalDeco = new TCanvas("cFinalDeco","cFinalDeco",1600,800);
   cFinalDeco->Divide(2,1);
   cFinalDeco->cd(1);
-  IMnpip_wK0orwSid_n->Draw("E");
+  IMnpip_wK0orwSid_n_norebin->Draw("E");
   //IMnpip_wK0_woSid->SetLineColor(2);
   //IMnpip_wK0_woSid->Draw("Esame");
   //IMnpip_3_inter->Draw("same");
@@ -1092,7 +1095,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   TLegend *legf = new TLegend(0.6,0.6,0.8,0.8);
   //legf->AddEntry(IMnpip_wK0_woSid,"K0");
   legf->AddEntry(IMnpip_3_inter,"K0");
-  legf->AddEntry(IMnpip_wK0orwSid_n,"Sigma+/-/K0 total");
+  legf->AddEntry(IMnpip_wK0orwSid_n_norebin,"Sigma+/-/K0 total");
   legf->Draw();
   
   cFinalDeco->cd(2);
@@ -1155,21 +1158,21 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   cFinalDeco_mev->SetLeftMargin(0.22);
   cFinalDeco_mev->Divide(2,1);
   cFinalDeco_mev->cd(1);
-  const int npipbin = IMnpip_wK0orwSid_n->GetNbinsX();
-  const double npipmin = (IMnpip_wK0orwSid_n->GetXaxis()->GetXmin())*1000;
-  const double npipmax = (IMnpip_wK0orwSid_n->GetXaxis()->GetXmax())*1000;
+  const int npipbin = IMnpip_wK0orwSid_n_norebin->GetNbinsX();
+  const double npipmin = (IMnpip_wK0orwSid_n_norebin->GetXaxis()->GetXmin())*1000;
+  const double npipmax = (IMnpip_wK0orwSid_n_norebin->GetXaxis()->GetXmax())*1000;
   TH1D* IMnpip_wK0orwSid_n_mev = new TH1D("IMnpip_wK0orwSid_n_mev","",npipbin,npipmin,npipmax);
   TH1D* IMnpip_wK0orwSid_n_mev_disp = new TH1D("IMnpip_wK0orwSid_n_mev_disp","",npipbin,npipmin,npipmax);
-  for(int ibin = 0;ibin<IMnpip_wK0orwSid_n->GetNbinsX();ibin++){
-    double x =  IMnpip_wK0orwSid_n->GetBinCenter(ibin+1)*1000.;
-    double y =  IMnpip_wK0orwSid_n->GetBinContent(ibin+1);
-    double ye = IMnpip_wK0orwSid_n->GetBinError(ibin+1);
-    int Spbin = IMnpip_wK0orwSid_n->GetXaxis()->FindBin(anacuts::Sigmap_center);
-    IMnpip_wK0orwSid_n_mev->SetBinContent(ibin+1,y);
-    IMnpip_wK0orwSid_n_mev->SetBinError(ibin+1,ye);
-    if(Spbin == ibin+1){
-      IMnpip_wK0orwSid_n_mev_disp->SetBinContent(ibin+1,y);
-      IMnpip_wK0orwSid_n_mev_disp->SetBinError(ibin+1,ye);
+  for(int ibin = 1;ibin<IMnpip_wK0orwSid_n_norebin->GetNbinsX();ibin++){
+    double x =  IMnpip_wK0orwSid_n_norebin->GetBinCenter(ibin)*1000.;
+    double y =  IMnpip_wK0orwSid_n_norebin->GetBinContent(ibin);
+    double ye = IMnpip_wK0orwSid_n_norebin->GetBinError(ibin);
+    int Spbin = IMnpip_wK0orwSid_n_norebin->GetXaxis()->FindBin(anacuts::Sigmap_center);
+    IMnpip_wK0orwSid_n_mev->SetBinContent(ibin,y);
+    IMnpip_wK0orwSid_n_mev->SetBinError(ibin,ye);
+    if((Spbin == ibin-1) || (Spbin == ibin) || (Spbin == ibin+1) || (Spbin == ibin+2)){
+      IMnpip_wK0orwSid_n_mev_disp->SetBinContent(ibin,y);
+      IMnpip_wK0orwSid_n_mev_disp->SetBinError(ibin,ye);
     }
   }
   gPad->SetBottomMargin(0.20);
@@ -1177,7 +1180,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
 
   IMnpip_wK0orwSid_n_mev_disp->GetXaxis()->SetTitle("IM(n#pi^{+}) [MeV/c^{2}]");
   IMnpip_wK0orwSid_n_mev_disp->GetXaxis()->CenterTitle();
-  IMnpip_wK0orwSid_n_mev_disp->GetXaxis()->SetRangeUser(1050,1500);
+  IMnpip_wK0orwSid_n_mev_disp->GetXaxis()->SetRangeUser(1050,1450);
   IMnpip_wK0orwSid_n_mev_disp->GetYaxis()->SetTitle("counts");
   IMnpip_wK0orwSid_n_mev_disp->GetYaxis()->CenterTitle();
   IMnpip_wK0orwSid_n_mev_disp->GetXaxis()->SetTitleSize(0.07);
@@ -1187,15 +1190,16 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   IMnpip_wK0orwSid_n_mev_disp->GetXaxis()->SetTitleOffset(1.4);
   IMnpip_wK0orwSid_n_mev_disp->GetYaxis()->SetTitleOffset(1.4);
 //  IMnpip_wK0orwSid_n_mev_disp->SetMaximum(IMnpip_wK0orwSid_n_mev->GetMaximum()*1.11);
-  IMnpip_wK0orwSid_n_mev_disp->SetMaximum(HISTMAX);
+  IMnpip_wK0orwSid_n_mev_disp->SetMaximum(HISTMAX/3.);
   IMnpip_wK0orwSid_n_mev_disp->SetMinimum(-100);
   IMnpip_wK0orwSid_n_mev_disp->SetLineWidth(2);
   IMnpip_wK0orwSid_n_mev_disp->SetLineColor(0);
   IMnpip_wK0orwSid_n_mev_disp->SetFillColor(46);
   IMnpip_wK0orwSid_n_mev_disp->SetFillStyle(fillstyle);
-  
   IMnpip_wK0orwSid_n_mev_disp->Draw("HE");
+  
   TGraphErrors *gr_K0inter_onnpip_mev = new TGraphErrors();
+  //gr_K0inter_onnpip->Rebinned graph obtained from fit
   for(int ip=0;ip<gr_K0inter_onnpip->GetN();ip++){
     double x = gr_K0inter_onnpip->GetPointX(ip);
     double y = gr_K0inter_onnpip->GetPointY(ip);
@@ -1291,7 +1295,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   gr_K0inter_onnpip_mev->SetLineColor(30);
   //gr_SmOnnpip_fin_mev->Draw("FB1");
   //h_SmOnnpip_mev->Draw("E1Hsame");
-  gr_K0inter_onnpip_mev->Draw("Fc");
+  gr_K0inter_onnpip_mev->Draw("Fpc");
   //h_K0inter_onnpip_mev->Draw("HE0same");
   
   TGraphErrors *g1 = new TGraphErrors(IMnpip_wK0orwSid_n_mev);
@@ -1332,7 +1336,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
     int Smbin = IMnpim_wK0orwSid_n->GetXaxis()->FindBin(anacuts::Sigmam_center);
     IMnpim_wK0orwSid_n_mev->SetBinContent(ibin+1,y);
     IMnpim_wK0orwSid_n_mev->SetBinError(ibin+1,ye);
-    if(Smbin == ibin+1){
+    if(Smbin == (ibin+1 || ibin+2 || ibin || ibin-1) ){
       IMnpim_wK0orwSid_n_mev_disp->SetBinContent(ibin+1,y);
       IMnpim_wK0orwSid_n_mev_disp->SetBinError(ibin+1,ye);
     }
@@ -1342,7 +1346,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
 
   IMnpim_wK0orwSid_n_mev_disp->GetXaxis()->SetTitle("IM(n#pi^{-}) [MeV/c^{2}]");
   IMnpim_wK0orwSid_n_mev_disp->GetXaxis()->CenterTitle();
-  IMnpim_wK0orwSid_n_mev_disp->GetXaxis()->SetRangeUser(1050,1500);
+  IMnpim_wK0orwSid_n_mev_disp->GetXaxis()->SetRangeUser(1050,1450);
   IMnpim_wK0orwSid_n_mev_disp->GetYaxis()->SetTitle("counts");
   IMnpim_wK0orwSid_n_mev_disp->GetYaxis()->CenterTitle();
   IMnpim_wK0orwSid_n_mev_disp->GetXaxis()->SetTitleSize(0.07);

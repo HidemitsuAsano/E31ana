@@ -29,6 +29,8 @@ const int Version = 245;
 
 void plotOverlap()
 {
+  gStyle->SetNdivisions(505,"x");
+  gStyle->SetNdivisions(505,"y");
   TFile *fr = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE2_iso_nostop_sys0_sub.root",Version),"READ");
   TFile *flo = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE2_iso_qlo_nostop_sys0_sub.root",Version),"READ");
   TFile *fhi = TFile::Open(Form("evanaIMpisigma_npippim_v%d_out_dE2_iso_qhi_nostop_sys0_sub.root",Version),"READ");
@@ -106,12 +108,25 @@ void plotOverlap()
   IMnpim_IMnpip_dE_wK0orwSid_n_mev->GetYaxis()->SetLabelSize(0.05);
   IMnpim_IMnpip_dE_wK0orwSid_n_mev->GetXaxis()->SetTitleOffset(1.31);
   IMnpim_IMnpip_dE_wK0orwSid_n_mev->GetYaxis()->SetTitleOffset(1.42);
+  IMnpim_IMnpip_dE_wK0orwSid_n_mev->GetXaxis()->SetRangeUser(1050,1450);
+  IMnpim_IMnpip_dE_wK0orwSid_n_mev->GetYaxis()->SetRangeUser(1050,1450);
   IMnpim_IMnpip_dE_wK0orwSid_n_mev->Draw("colz");
-  hf3add_mev->SetLineColor(2);
-  //hf3add_mev->SetLineWidth(1);
-  hf3add_mev->SetMinimum(-1.);
-  hf3add_mev->Draw("cont2same");
+  //hf3add_mev->Draw("cont2same");
   c1->SaveAs("K0orwSid.pdf");
+  TCanvas *c1side = new TCanvas("c1side","",1000,800);
+  hf3add_mev->GetXaxis()->SetRangeUser(1050,1450);
+  hf3add_mev->GetYaxis()->SetRangeUser(1050,1450);
+  hf3add_mev->GetXaxis()->SetTitleSize(0.06);
+  hf3add_mev->GetYaxis()->SetTitleSize(0.06);
+  hf3add_mev->GetXaxis()->SetLabelSize(0.05);
+  hf3add_mev->GetYaxis()->SetLabelSize(0.05);
+  hf3add_mev->GetXaxis()->SetTitleOffset(1.31);
+  hf3add_mev->GetYaxis()->SetTitleOffset(1.42);
+  hf3add_mev->SetLineColor(2);
+  hf3add_mev->SetLineWidth(1);
+  hf3add_mev->Draw("cont1z");
+  //hf3add_mev->SetMinimum(-1.);
+  //hf3add_mev->SetMaximum(IMnpim_IMnpip_dE_wK0orwSid_n_mev->GetMaximum() );
 
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_qlo = (TH2F*)flo->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
   IMnpim_IMnpip_dE_wK0orwSid_n_qlo->Rebin2D(2,2);
