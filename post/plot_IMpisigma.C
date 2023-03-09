@@ -4857,7 +4857,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     double MassNPim= (*LVec_n+*LVec_pim).M();
     
     if(anacuts::neutron_MIN<nmiss_mass && nmiss_mass<anacuts::neutron_MAX ) MissNFlag=true;
-    if(anacuts::Lambda_MIN<nmiss_mass && nmiss_mass<anacuts::Lambda_MAX ) MissLFlag=true;
+    if(anacuts::MLambda_MIN<nmiss_mass && nmiss_mass<anacuts::MLambda_MAX ) MissLFlag=true;
     if(anacuts::neutron_MIN_wide<nmiss_mass && nmiss_mass<anacuts::neutron_MAX_wide ) MissNwideFlag=true;
 
     //K0 rejection using original momentum
