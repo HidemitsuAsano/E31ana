@@ -32,10 +32,10 @@ namespace anacuts {
   const double Lambda_NSigmacut_wide = 3.0;//+/- N sigma
   const double Lambda_center = 1115.683;
   const double Lambda_sigma = 0.010;
-  const double Lambda_MIN = Lambda_center-Lambda_NSigmacut*Lambda_sigma;
-  const double Lambda_MAX = Lambda_center+Lambda_NSigmacut*Lambda_sigma;
-  const double Lambda_MIN_wide = Lambda_center-Lambda_NSigmacut_wide*Lambda_sigma; 
-  const double Lambda_MAX_wide = Lambda_center+Lambda_NSigmacut_wide*Lambda_sigma; 
+  const double MLambda_MIN = Lambda_center-Lambda_NSigmacut*Lambda_sigma;
+  const double MLambda_MAX = Lambda_center+Lambda_NSigmacut*Lambda_sigma;
+  const double MLambda_MIN_wide = Lambda_center-Lambda_NSigmacut_wide*Lambda_sigma; 
+  const double MLambda_MAX_wide = Lambda_center+Lambda_NSigmacut_wide*Lambda_sigma; 
   
   //neutron cut of CDS, this is necesarry due to the range of CDH3 trigger
   const double nmomcut = 0.14;
