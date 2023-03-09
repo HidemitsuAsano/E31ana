@@ -658,6 +658,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   TH2F* MMnpim_MMnpip_n;
   TH2F* MMnpim_MMnpip_woSid_n;
   TH2F* MMnpim_MMnpip_woK0_woSid_n;
+  TH2F* MMnpim_MMnpip_woK0_woSid_L;
   TH2F* MMnpim_MMnpip_mc;
   TH2F* MMnpim_MMnpip_wSid_n;
   TH2F* MMnpim_MMnpip_wSid_n_mc;
@@ -2567,6 +2568,10 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
   MMnpim_MMnpip_woK0_woSid_n = new TH2F("MMnpim_MMnpip_woK0_woSid_n","MMnpim_MMnpip_woK0_woSid_n",280, 1, 1.7, 280, 1, 1.7);
   MMnpim_MMnpip_woK0_woSid_n->SetXTitle("Miss. Mass (K^{-}d #rightarrow n#pi^{+}) [GeV/c^{2}]");
   MMnpim_MMnpip_woK0_woSid_n->SetYTitle("Miss. Mass (K^{-}d #rightarrow n#pi^{-}) [GeV/c^{2}]");
+  
+  MMnpim_MMnpip_woK0_woSid_L = new TH2F("MMnpim_MMnpip_woK0_woSid_L","MMnpim_MMnpip_woK0_woSid_L",280, 1, 1.7, 280, 1, 1.7);
+  MMnpim_MMnpip_woK0_woSid_L->SetXTitle("Miss. Mass (K^{-}d #rightarrow n#pi^{+}) [GeV/c^{2}]");
+  MMnpim_MMnpip_woK0_woSid_L->SetYTitle("Miss. Mass (K^{-}d #rightarrow n#pi^{-}) [GeV/c^{2}]");
 
   MMnpim_MMnpip_mc = new TH2F("MMnpim_MMnpip_mc","MMnpim_MMnpip_mc",280, 1, 1.7, 280, 1, 1.7);
   MMnpim_MMnpip_mc->SetXTitle("true IM(n_{miss}#pi^{+}) [GeV/c^{2}]");
@@ -4711,6 +4716,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     bool K0Flag=false;
     bool K0rejectFlag=false;
     bool MissNFlag=false;
+    bool MissLFlag=false;
     bool MissNwideFlag=false;
     bool NBetaOK=false;
     bool NdEOK=false;
@@ -4851,6 +4857,7 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
     double MassNPim= (*LVec_n+*LVec_pim).M();
     
     if(anacuts::neutron_MIN<nmiss_mass && nmiss_mass<anacuts::neutron_MAX ) MissNFlag=true;
+    if(anacuts::Lambda_MIN<nmiss_mass && nmiss_mass<anacuts::Lambda_MAX ) MissLFlag=true;
     if(anacuts::neutron_MIN_wide<nmiss_mass && nmiss_mass<anacuts::neutron_MAX_wide ) MissNwideFlag=true;
 
     //K0 rejection using original momentum
@@ -5654,8 +5661,13 @@ void plot_IMpisigma(const char* filename="", const int qvalcutflag=0,const int d
       }//wK0
     }
 
-
-
+    if(NBetaOK && NdEOK && MissLFlag) {
+      if(!SigmaPFlag  && !SigmaMFlag){
+        if(K0rejectFlag){
+          MMnpim_MMnpip_woK0_woSid_L->Fill(LVec_pimmiss_nmiss.M(),LVec_pipmiss_nmiss.M(),weight);
+        }
+      }
+    }
     //std::cout << __LINE__ << std::endl;
     if(NBetaOK && NdEOK && MissNFlag) {
       IMnpim_IMnpip_dE_n->Fill(LVec_pip_n.M(),LVec_pim_n.M(),weight);
