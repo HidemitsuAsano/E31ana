@@ -1486,6 +1486,7 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   g2->SetMarkerColor(1);
   g2->Draw("p");  
   p->Draw();
+  legp->Draw();
 
   TLatex *texnpim = new TLatex();
   double texnpim_ymax = HISTMAX*0.9;
@@ -1493,7 +1494,6 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
   texnpim->SetTextColor(1);
   if(qcut == 1) texnpim->DrawLatex( 1100, texnpim_ymax, "(d)    0 < q < 300 MeV/c" );
   if(qcut == 2) texnpim->DrawLatex( 1230, texnpim_ymax, "(b)    300 < q < 650 MeV/c" );
-
 
 
   TFile *fout = NULL;
@@ -1552,8 +1552,10 @@ void Fit2DK0(const int qcut=1,const int dEcut=2,const int sysud=0)
     //c->Print(Form("pdf/%s.pdf",c->GetTitle()));
   }
 
-  if(qcut==1) cFinalDeco_mev->SaveAs("cDeco_qlo.pdf");
-  else if(qcut==2) cFinalDeco_mev->SaveAs("cDeco_qhi.pdf");
+  //if(qcut==1) cFinalDeco_mev->SaveAs("cDeco_qlo.pdf");
+  //else if(qcut==2) cFinalDeco_mev->SaveAs("cDeco_qhi.pdf");
 
+  if(qcut==1) cFinalDeco_mev->SaveAs("cDeco_qlo_norebin.pdf");
+  else if(qcut==2) cFinalDeco_mev->SaveAs("cDeco_qhi_norebin.pdf");
 
 }

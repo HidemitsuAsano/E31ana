@@ -39,7 +39,7 @@ void plotOverlap()
 
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n = (TH2F*)fr->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
   gStyle->SetOptStat(0);   
-  IMnpim_IMnpip_dE_wK0orwSid_n->Rebin2D(4,4);
+  //IMnpim_IMnpip_dE_wK0orwSid_n->Rebin2D(4,4);
   TF2* f3widelo = (TF2*)ffitlo->Get("f3wide"); 
   TF2* f3widehi = (TF2*)ffithi->Get("f3wide"); 
   TH2F* hf3widelo = (TH2F*)f3widelo->GetHistogram();
@@ -112,6 +112,10 @@ void plotOverlap()
   IMnpim_IMnpip_dE_wK0orwSid_n_mev->GetYaxis()->SetRangeUser(1050,1450);
   IMnpim_IMnpip_dE_wK0orwSid_n_mev->Draw("colz");
   //hf3add_mev->Draw("cont2same");
+  TLatex *tex1 = new TLatex();
+  tex1->SetTextSize(0.06);
+  tex1->SetTextColor(1);
+  tex1->DrawLatex( 1100,1100 , "(a)" );
   c1->SaveAs("K0orwSid.pdf");
   TCanvas *c1side = new TCanvas("c1side","",1000,800);
   hf3add_mev->GetXaxis()->SetRangeUser(1050,1450);
@@ -125,11 +129,16 @@ void plotOverlap()
   hf3add_mev->SetLineColor(2);
   hf3add_mev->SetLineWidth(1);
   hf3add_mev->Draw("cont1z");
+  TLatex *tex = new TLatex();
+  tex->SetTextSize(0.06);
+  tex->SetTextColor(1);
+  tex->DrawLatex( 1100,1100 , "(b)" );
+  c1side->SaveAs("K0orwSid_K0Fit.pdf");
   //hf3add_mev->SetMinimum(-1.);
   //hf3add_mev->SetMaximum(IMnpim_IMnpip_dE_wK0orwSid_n_mev->GetMaximum() );
 
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_qlo = (TH2F*)flo->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
-  IMnpim_IMnpip_dE_wK0orwSid_n_qlo->Rebin2D(2,2);
+ // IMnpim_IMnpip_dE_wK0orwSid_n_qlo->Rebin2D(2,2);
   TCanvas *c2 = new TCanvas("c2","",1000,800);
   IMnpim_IMnpip_dE_wK0orwSid_n_qlo->SetMinimum(0);
   IMnpim_IMnpip_dE_wK0orwSid_n_qlo->SetTitle("");
@@ -142,7 +151,7 @@ void plotOverlap()
   IMnpim_IMnpip_dE_wK0orwSid_n_qlo->Draw("colz");
   hf3widelo->Draw("cont2same");
   TH2F* IMnpim_IMnpip_dE_wK0orwSid_n_qhi = (TH2F*)fhi->Get("IMnpim_IMnpip_dE_wK0orwSid_n");
-  IMnpim_IMnpip_dE_wK0orwSid_n_qhi->Rebin2D(2,2);
+//  IMnpim_IMnpip_dE_wK0orwSid_n_qhi->Rebin2D(2,2);
   TCanvas *c3 = new TCanvas("c3","",1000,800);
   IMnpim_IMnpip_dE_wK0orwSid_n_qhi->SetMinimum(0);
   IMnpim_IMnpip_dE_wK0orwSid_n_qhi->SetTitle("");

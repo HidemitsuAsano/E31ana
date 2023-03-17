@@ -6,6 +6,8 @@ const double GenCutSpCos = 120e2;
 const double GenCutSmCos = 120e2;
 const double GenCutK0 = 200e3;
 const double PreScale = 2.0;
+const double SpBr = 0.4831;
+const double SmBr = 0.99848;
 
 void GetAccMap(const int dEcut=2)
 {
@@ -451,27 +453,39 @@ void GetAccMap(const int dEcut=2)
   q_IMnpipi_Sp_acc[0]->SetXTitle("IM(#pi^{-}#Sigma^{+}) [GeV/c^{2}]");
   q_IMnpipi_Sp_acc[0]->SetYTitle("q [GeV/c]");
   q_IMnpipi_Sp_acc[0]->GetZaxis()->SetMaxDigits(2);
-  q_IMnpipi_Sp_acc[0]->SetMaximum(q_IMnpipi_Sm_acc[0]->GetMaximum());
+  //q_IMnpipi_Sp_acc[0]->SetMaximum(q_IMnpipi_Sm_acc[0]->GetMaximum());
   q_IMnpipi_Sp_acc[0]->Draw("colz");
   //TFile *fnuSp = new TFile("NumericalRootFinder_Spmodebin1.root");
   
-  TFile *fnuSp = new TFile("NumericalRootFinder_fine_Sp.root");
+  TFile *fnuSp = new TFile("NumericalRootFinder_fine200_Sp1GeV.root");
   TGraph *thSp = (TGraph*)fnuSp->Get("th");
   thSp->SetLineColor(1);
   thSp->SetLineStyle(2);
   thSp->Draw("pc");
-  TGraph *gr_0 = (TGraph*)fnuSp->Get("gr_0");
+  TGraph *gr_0 = (TGraph*)fnuSp->Get("gr_0");//cos = -1
   gr_0->SetLineColor(1);
   gr_0->SetLineStyle(2);
   gr_0->Draw("pc");
-  TGraph *gr_100 = (TGraph*)fnuSp->Get("gr_100");
+  TGraph *gr_200 = (TGraph*)fnuSp->Get("gr_200");//cos = 1
+  gr_200->SetLineColor(1);
+  gr_200->SetLineStyle(2);
+  gr_200->Draw("pc");
+  TGraph *gr_100 = (TGraph*)fnuSp->Get("gr_100");//cos = 0
   gr_100->SetLineColor(1);
-  gr_100->SetLineStyle(2);
+  gr_100->SetLineStyle(10);
   gr_100->Draw("pc");
-  TGraph *gr_50 = (TGraph*)fnuSp->Get("gr_50");
-  gr_50->SetLineColor(1);
-  gr_50->SetLineStyle(10);
-  gr_50->Draw("pc");
+  TGraph *gr_120 = (TGraph*)fnuSp->Get("gr_120");//60
+  gr_120->SetLineColor(1);
+  gr_120->SetLineStyle(10);
+  gr_120->Draw("pc");
+  TGraph *gr_150 = (TGraph*)fnuSp->Get("gr_150");//cos = 0.5
+  gr_150->SetLineColor(1);
+  gr_150->SetLineStyle(10);
+  gr_150->Draw("pc");
+  TGraph *gr_190 = (TGraph*)fnuSp->Get("gr_190");//cos = 0.9
+  gr_190->SetLineColor(1);
+  gr_190->SetLineStyle(10);
+  gr_190->Draw("pc");
   TLatex *texSp1 = new TLatex();
   texSp1->SetTextSize(0.04);
   texSp1->SetTextColor(1);
@@ -488,7 +502,8 @@ void GetAccMap(const int dEcut=2)
   q_IMnpipi_Sm_acc[0]->GetZaxis()->SetMaxDigits(2);
   q_IMnpipi_Sm_acc[0]->Draw("colz");
   //TFile *fnuSm = new TFile("NumericalRootFinder_Smmodebin1.root");
-  TFile *fnuSm = new TFile("NumericalRootFinder_fine_Sm.root");
+  //TFile *fnuSm = new TFile("NumericalRootFinder_fine_Sm.root");
+  TFile *fnuSm = new TFile("NumericalRootFinder_fine200_Sm1GeV.root");
   TGraph *thSm = (TGraph*)fnuSm->Get("th");
   thSm->Draw("pc");
   //TMultiGraph *mgSm = (TMultiGraph*)fnuSm->Get("mg");
@@ -497,14 +512,26 @@ void GetAccMap(const int dEcut=2)
   gr_0_Sm->SetLineColor(1);
   gr_0_Sm->SetLineStyle(2);
   gr_0_Sm->Draw("pc");
+  TGraph *gr_200_Sm = (TGraph*)fnuSm->Get("gr_200");
+  gr_200_Sm->SetLineColor(1);
+  gr_200_Sm->SetLineStyle(2);
+  gr_200_Sm->Draw("pc");
   TGraph *gr_100_Sm = (TGraph*)fnuSm->Get("gr_100");
   gr_100_Sm->SetLineColor(1);
-  gr_100_Sm->SetLineStyle(2);
+  gr_100_Sm->SetLineStyle(10);
   gr_100_Sm->Draw("pc");
-  TGraph *gr_50_Sm = (TGraph*)fnuSm->Get("gr_50");
-  gr_50_Sm->SetLineColor(1);
-  gr_50_Sm->SetLineStyle(10);
-  gr_50_Sm->Draw("pc");
+  TGraph *gr_120_Sm = (TGraph*)fnuSm->Get("gr_120");
+  gr_120_Sm->SetLineColor(1);
+  gr_120_Sm->SetLineStyle(10);
+  gr_120_Sm->Draw("pc");
+  TGraph *gr_150_Sm = (TGraph*)fnuSm->Get("gr_150");
+  gr_150_Sm->SetLineColor(1);
+  gr_150_Sm->SetLineStyle(10);
+  gr_150_Sm->Draw("pc");
+  TGraph *gr_190_Sm = (TGraph*)fnuSm->Get("gr_190");
+  gr_190_Sm->SetLineColor(1);
+  gr_190_Sm->SetLineStyle(10);
+  gr_190_Sm->Draw("pc");
   TLatex *texSm1 = new TLatex();
   texSm1->SetTextSize(0.04);
   texSm1->SetTextColor(1);
@@ -541,6 +568,7 @@ void GetAccMap(const int dEcut=2)
   q_IMnpipi_Sp_acc_mev->GetYaxis()->SetLabelOffset(0.03);
   q_IMnpipi_Sp_acc_mev->SetYTitle("q [MeV/c]");
   q_IMnpipi_Sp_acc_mev->GetYaxis()->CenterTitle();
+  q_IMnpipi_Sp_acc_mev->Scale(1./SpBr);
   q_IMnpipi_Sp_acc_mev->Draw("colz");
   TLatex *texSp1_mev = new TLatex();
   texSp1_mev->SetTextSize(0.04);
@@ -557,8 +585,11 @@ void GetAccMap(const int dEcut=2)
 
   TGraph *thSp_mev = new TGraph();//(TGraph*)fnuSp->Get("th");
   TGraph *gr_0_mev = new TGraph(); // TGraph*)fnuSp->Get("gr_0");
-  TGraph *gr_100_mev =  new TGraph();//(TGraph*)fnuSp->Get("gr_100");
-  TGraph *gr_50_mev = new TGraph();//(TGraph*)fnuSp->Get("gr_50");
+  TGraph *gr_200_mev =  new TGraph();//(TGraph*)fnuSp->Get("gr_100");
+  TGraph *gr_100_mev = new TGraph();//(TGraph*)fnuSp->Get("gr_50");
+  TGraph *gr_120_mev = new TGraph();//(TGraph*)fnuSp->Get("gr_50");
+  TGraph *gr_150_mev = new TGraph();//(TGraph*)fnuSp->Get("gr_50");
+  TGraph *gr_190_mev = new TGraph();//(TGraph*)fnuSp->Get("gr_50");
   
   for(int ip=0;ip<thSp->GetN();ip++){
     double x = thSp->GetPointX(ip);
@@ -570,15 +601,30 @@ void GetAccMap(const int dEcut=2)
     double y = gr_0->GetPointY(ip);
     gr_0_mev->SetPoint(ip,x*1000.,y*1000.);
   }
+  for(int ip=0;ip<gr_200->GetN();ip++){
+    double x = gr_200->GetPointX(ip);
+    double y = gr_200->GetPointY(ip);
+    gr_200_mev->SetPoint(ip,x*1000.,y*1000.);
+  }
   for(int ip=0;ip<gr_100->GetN();ip++){
     double x = gr_100->GetPointX(ip);
     double y = gr_100->GetPointY(ip);
     gr_100_mev->SetPoint(ip,x*1000.,y*1000.);
   }
-  for(int ip=0;ip<gr_50->GetN();ip++){
-    double x = gr_50->GetPointX(ip);
-    double y = gr_50->GetPointY(ip);
-    gr_50_mev->SetPoint(ip,x*1000.,y*1000.);
+  for(int ip=0;ip<gr_120->GetN();ip++){
+    double x = gr_120->GetPointX(ip);
+    double y = gr_120->GetPointY(ip);
+    gr_120_mev->SetPoint(ip,x*1000.,y*1000.);
+  }
+  for(int ip=0;ip<gr_150->GetN();ip++){
+    double x = gr_150->GetPointX(ip);
+    double y = gr_150->GetPointY(ip);
+    gr_150_mev->SetPoint(ip,x*1000.,y*1000.);
+  }
+  for(int ip=0;ip<gr_190->GetN();ip++){
+    double x = gr_190->GetPointX(ip);
+    double y = gr_190->GetPointY(ip);
+    gr_190_mev->SetPoint(ip,x*1000.,y*1000.);
   }
   thSp_mev->SetLineColor(1);
   thSp_mev->SetLineStyle(2);
@@ -586,13 +632,21 @@ void GetAccMap(const int dEcut=2)
   gr_0_mev->SetLineColor(1);
   gr_0_mev->SetLineStyle(2);
   gr_0_mev->Draw("pc");
+  gr_200_mev->SetLineColor(1);
+  gr_200_mev->SetLineStyle(2);
+  gr_200_mev->Draw("pc");
   gr_100_mev->SetLineColor(1);
-  gr_100_mev->SetLineStyle(2);
+  gr_100_mev->SetLineStyle(10);
   gr_100_mev->Draw("pc");
-  gr_50_mev->SetLineColor(1);
-  gr_50_mev->SetLineStyle(10);
-  gr_50_mev->Draw("pc");
-
+  gr_120_mev->SetLineColor(1);
+  gr_120_mev->SetLineStyle(10);
+  //gr_120_mev->Draw("pc");
+  gr_150_mev->SetLineColor(1);
+  gr_150_mev->SetLineStyle(10);
+  gr_150_mev->Draw("pc");
+  gr_190_mev->SetLineColor(1);
+  gr_190_mev->SetLineStyle(10);
+  gr_190_mev->Draw("pc");
 
 
   TCanvas *caccSmp_mev = new TCanvas("caccSmp_mev","caccSmp_mev",1000,800);
@@ -617,7 +671,7 @@ void GetAccMap(const int dEcut=2)
   q_IMnpipi_Sm_acc_mev->GetYaxis()->SetLabelOffset(0.03);
   q_IMnpipi_Sm_acc_mev->SetYTitle("q [MeV/c]");
   q_IMnpipi_Sm_acc_mev->GetYaxis()->CenterTitle();
- 
+  q_IMnpipi_Sm_acc_mev->Scale(1./SmBr);
   q_IMnpipi_Sm_acc_mev->Draw("colz");
 
   TLatex *texSm1_mev = new TLatex();
@@ -635,8 +689,11 @@ void GetAccMap(const int dEcut=2)
 
   TGraph *thSm_mev = new TGraph();//(TGraph*)fnuSp->Get("th");
   TGraph *gr_0_Sm_mev = new TGraph(); // TGraph*)fnuSp->Get("gr_0");
-  TGraph *gr_100_Sm_mev =  new TGraph();//(TGraph*)fnuSp->Get("gr_100");
-  TGraph *gr_50_Sm_mev = new TGraph();//(TGraph*)fnuSp->Get("gr_50");
+  TGraph *gr_200_Sm_mev =  new TGraph();//(TGraph*)fnuSp->Get("gr_100");
+  TGraph *gr_100_Sm_mev = new TGraph();//(TGraph*)fnuSp->Get("gr_50");
+  TGraph *gr_120_Sm_mev = new TGraph();//(TGraph*)fnuSp->Get("gr_50");
+  TGraph *gr_150_Sm_mev = new TGraph();//(TGraph*)fnuSp->Get("gr_50");
+  TGraph *gr_190_Sm_mev = new TGraph();//(TGraph*)fnuSp->Get("gr_50");
   
   for(int ip=0;ip<thSm->GetN();ip++){
     double x = thSm->GetPointX(ip);
@@ -648,15 +705,30 @@ void GetAccMap(const int dEcut=2)
     double y = gr_0_Sm->GetPointY(ip);
     gr_0_Sm_mev->SetPoint(ip,x*1000.,y*1000.);
   }
+  for(int ip=0;ip<gr_200_Sm->GetN();ip++){
+    double x = gr_200_Sm->GetPointX(ip);
+    double y = gr_200_Sm->GetPointY(ip);
+    gr_200_Sm_mev->SetPoint(ip,x*1000.,y*1000.);
+  }
   for(int ip=0;ip<gr_100_Sm->GetN();ip++){
     double x = gr_100_Sm->GetPointX(ip);
     double y = gr_100_Sm->GetPointY(ip);
     gr_100_Sm_mev->SetPoint(ip,x*1000.,y*1000.);
   }
-  for(int ip=0;ip<gr_50_Sm->GetN();ip++){
-    double x = gr_50_Sm->GetPointX(ip);
-    double y = gr_50_Sm->GetPointY(ip);
-    gr_50_Sm_mev->SetPoint(ip,x*1000.,y*1000.);
+  for(int ip=0;ip<gr_120_Sm->GetN();ip++){
+    double x = gr_120_Sm->GetPointX(ip);
+    double y = gr_120_Sm->GetPointY(ip);
+    gr_120_Sm_mev->SetPoint(ip,x*1000.,y*1000.);
+  }
+  for(int ip=0;ip<gr_150_Sm->GetN();ip++){
+    double x = gr_150_Sm->GetPointX(ip);
+    double y = gr_150_Sm->GetPointY(ip);
+    gr_150_Sm_mev->SetPoint(ip,x*1000.,y*1000.);
+  }
+  for(int ip=0;ip<gr_190_Sm->GetN();ip++){
+    double x = gr_190_Sm->GetPointX(ip);
+    double y = gr_190_Sm->GetPointY(ip);
+    gr_190_Sm_mev->SetPoint(ip,x*1000.,y*1000.);
   }
   thSm_mev->SetLineColor(1);
   thSm_mev->SetLineStyle(2);
@@ -664,20 +736,81 @@ void GetAccMap(const int dEcut=2)
   gr_0_Sm_mev->SetLineColor(1);
   gr_0_Sm_mev->SetLineStyle(2);
   gr_0_Sm_mev->Draw("pc");
+  gr_200_Sm_mev->SetLineColor(1);
+  gr_200_Sm_mev->SetLineStyle(2);
+  gr_200_Sm_mev->Draw("pc");
   gr_100_Sm_mev->SetLineColor(1);
-  gr_100_Sm_mev->SetLineStyle(2);
+  gr_100_Sm_mev->SetLineStyle(10);
   gr_100_Sm_mev->Draw("pc");
-  gr_50_Sm_mev->SetLineColor(1);
-  gr_50_Sm_mev->SetLineStyle(10);
-  gr_50_Sm_mev->Draw("pc");
+  gr_120_Sm_mev->SetLineColor(1);
+  gr_120_Sm_mev->SetLineStyle(10);
+//  gr_120_Sm_mev->Draw("pc");
+  gr_150_Sm_mev->SetLineColor(1);
+  gr_150_Sm_mev->SetLineStyle(10);
+  gr_150_Sm_mev->Draw("pc");
+  gr_190_Sm_mev->SetLineColor(1);
+  gr_190_Sm_mev->SetLineStyle(10);
+  gr_190_Sm_mev->Draw("pc");
+  std::cout << "Sp max " << q_IMnpipi_Sp_acc_mev->GetMaximum() << std::endl;
+  std::cout << "Sm max " << q_IMnpipi_Sm_acc_mev->GetMaximum() << std::endl;
+  std::cout << q_IMnpipi_Sp_acc_mev->GetMaximum()/q_IMnpipi_Sm_acc_mev->GetMaximum() << std::endl;
 
 
   caccSpp_mev->SaveAs("accSpmev.pdf","PDF");
   caccSmp_mev->SaveAs("accSmmev.pdf","PDF");
 
-
-
-
+  TCanvas *caccSpm_mev = new TCanvas("caccSpm_mev","caccSpm_mev",1000,800);
+  TH2D* q_IMnpipi_Spm_acc_mev = (TH2D*)q_IMnpipi_Sp_acc_mev->Clone("q_IMnpipi_Spm_acc_mev");
+  q_IMnpipi_Spm_acc_mev->Add(q_IMnpipi_Sm_acc_mev);
+  q_IMnpipi_Spm_acc_mev->Scale(1./2.);
+  q_IMnpipi_Spm_acc_mev->GetXaxis()->SetTitle("IM(#pi#Sigma) [MeV/c^{2}]");
+  q_IMnpipi_Spm_acc_mev->GetXaxis()->SetRangeUser(1100,2000);
+  q_IMnpipi_Spm_acc_mev->Draw("colz");
+  thSm_mev->SetLineColor(1);
+  thSm_mev->SetLineStyle(2);
+  thSm_mev->SetLineWidth(2);
+  thSm_mev->Draw("pc");
+  gr_0_Sm_mev->SetLineColor(1);
+  gr_0_Sm_mev->SetLineWidth(2);
+  gr_0_Sm_mev->SetLineStyle(2);
+  gr_0_Sm_mev->Draw("pc");
+  gr_200_Sm_mev->SetLineColor(1);
+  gr_200_Sm_mev->SetLineStyle(2);
+  gr_200_Sm_mev->SetLineWidth(2);
+  gr_200_Sm_mev->Draw("pc");
+  gr_100_Sm_mev->SetLineColor(1);
+  gr_100_Sm_mev->SetLineWidth(2);
+  gr_100_Sm_mev->SetLineStyle(2);
+  gr_100_Sm_mev->Draw("pc");
+  gr_120_Sm_mev->SetLineColor(1);
+  gr_120_Sm_mev->SetLineWidth(2);
+  gr_120_Sm_mev->SetLineStyle(2);
+//  gr_120_Sm_mev->Draw("pc");
+  gr_150_Sm_mev->SetLineColor(1);
+  gr_150_Sm_mev->SetLineStyle(2);
+  gr_150_Sm_mev->SetLineWidth(2);
+  gr_150_Sm_mev->Draw("pc");
+  gr_190_Sm_mev->SetLineColor(1);
+  gr_190_Sm_mev->SetLineStyle(2);
+  gr_190_Sm_mev->SetLineWidth(2);
+  gr_190_Sm_mev->Draw("pc");
+  TLatex *texSpm_mev = new TLatex();
+  texSpm_mev->SetTextSize(0.04);
+  texSpm_mev->SetTextColor(1);
+  texSpm_mev->DrawLatex( 1320, 100, "cos#theta^{CM}_{n}=1" );
+  texSpm_mev->DrawLatex( 1750, 100, "cos#theta^{CM}_{n}=1" );
+  texSpm_mev->DrawLatex( 1650,1220, "cos#theta^{CM}_{n}=-1" );
+  texSpm_mev->SetTextColor(0);
+  //texSpm_mev->DrawLatex( 1510,720, "cos#theta^{CM}_{n}=0" );
+  //texSpm_mev->DrawLatex( 1480,490, "cos#theta^{CM}_{n}=0.5" );
+  //texSpm_mev->DrawLatex( 1480,190, "cos#theta^{CM}_{n}=0.9" );
+  texSpm_mev->DrawLatex( 1600,859, "cos#theta^{CM}_{n}=0" );
+  texSpm_mev->DrawLatex( 1550,650, "cos#theta^{CM}_{n}=0.5" );
+  texSpm_mev->DrawLatex( 1500,350, "cos#theta^{CM}_{n}=0.9" );
+  texSpm_mev->SetTextColor(1);
+  texSpm_mev->SetTextAngle(90);
+  texSpm_mev->DrawLatex(1300,600, "#pi#Sigma mass threshold") ;
+  caccSpm_mev->SaveAs("accSpmmev.pdf","PDF");
   TFile *fout = new TFile(Form("accmapv%d_%d_dE%d.root",versionSigma,versionK0,dEcut), "RECREATE");
   for(int iq=0;iq<nqcut;iq++){
     q_IMnpipi_Sp_acc[iq]->Write();

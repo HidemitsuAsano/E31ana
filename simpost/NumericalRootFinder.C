@@ -44,7 +44,7 @@ int NumericalRootFinder()
 
   const double COS_MIN = -1;
   const double COS_MAX = 1;
-  const int    COS_BIN = 20;
+  const int    COS_BIN = 200;
 
   //const double M_MIN = piSm_mass;
   const double M_MIN = piSp_mass;
@@ -121,7 +121,7 @@ int NumericalRootFinder()
   }
   gr_th->Draw("same");
 
-  TFile *out = new TFile("NumericalRootFinder_fine20_Sp1GeV.root", "recreate");
+  TFile *out = new TFile("NumericalRootFinder_fine200_Sm1GeV.root", "recreate");
   for( int i=0; i<COS_BIN+1; i++ ){
     gr[i]->Write();
   }
